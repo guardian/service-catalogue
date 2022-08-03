@@ -1,0 +1,19 @@
+{
+  "name": "repo-fetcher",
+  "version": "0.0.1",
+  "description": "A fetcher for repository metadata in your GitHub organisation",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild src/*.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
+    "esbuild": "esbuild"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.53"
+  },
+  "dependencies": {
+    "@octokit/auth-app": "^4.0.4",
+    "@octokit/core": "^4.0.4",
+    "@octokit/plugin-throttling": "^4.1.0",
+    "@octokit/rest": "^19.0.3"
+  }
+}
