@@ -7,16 +7,18 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	dynamoTypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 )
 
 type Role struct {
 	OwnerID string
-	Role    string
+	ARN     string
 }
 
 type Config struct {
@@ -40,14 +42,13 @@ func main() {
 	// load roles from Dynamo
 
 	ctx := context.Background()
-	stacks := []Stack{}
 
-	cfg, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
+	globalCfn, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
 	if err != nil {
 		log.Fatalf("unable to load AWS config: %v", err)
 	}
 
-	dynamodbClient := dynamodb.NewFromConfig(cfg)
+	dynamodbClient := dynamodb.NewFromConfig(globalCfn)
 	items, err := dynamodbClient.Query(ctx, &dynamodb.QueryInput{
 		TableName:                 aws.String("config-deploy"),
 		KeyConditionExpression:    aws.String("App = :app AND Stage = :stage"),
@@ -65,35 +66,55 @@ func main() {
 		log.Fatalf("unable to unmarshal roles from dynamo: %v", err)
 	}
 
-	log.Printf("%v", rolesConfig)
+	stsClient := sts.NewFromConfig(globalCfn)
 
-	return // Temp
-
-	cfnClient := cloudformation.NewFromConfig(cfg)
-	//s3Client := s3.NewFromConfig(cfg)
-
-	paginator := cloudformation.NewListStacksPaginator(cfnClient, &cloudformation.ListStacksInput{})
-
-	for paginator.HasMorePages() {
-		page, err := paginator.NextPage(ctx)
+	stacks := []Stack{}
+	for _, role := range rolesConfig.Config.Roles {
+		// assume role
+		// get data and add to stacks
+		roleOutput, err := stsClient.AssumeRole(ctx, &sts.AssumeRoleInput{
+			DurationSeconds: aws.Int32(900),
+			RoleArn:         &role.ARN,
+			RoleSessionName: aws.String("devx-cdk-metadata"),
+		})
 		if err != nil {
-			log.Printf("unable to read page for account %s: %v", "TODO", err)
+			log.Printf("unable to assume role for %s: %v", role.OwnerID, err)
+			continue
 		}
 
-		for _, stackSummary := range page.StackSummaries {
-			if stackSummary.StackStatus == types.StackStatusDeleteComplete {
-				continue
-			}
+		provider := credentials.NewStaticCredentialsProvider(
+			*roleOutput.Credentials.AccessKeyId,
+			*roleOutput.Credentials.SecretAccessKey,
+			*roleOutput.Credentials.SessionToken,
+		)
+		cfg, err := config.LoadDefaultConfig(ctx, config.WithCredentialsProvider(provider))
 
-			stackName := stackSummary.StackName
-			input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
-			summary, err := cfnClient.GetTemplateSummary(ctx, input)
+		cfnClient := cloudformation.NewFromConfig(cfg)
+		//s3Client := s3.NewFromConfig(cfg)
+
+		paginator := cloudformation.NewListStacksPaginator(cfnClient, &cloudformation.ListStacksInput{})
+
+		for paginator.HasMorePages() {
+			page, err := paginator.NextPage(ctx)
 			if err != nil {
-				log.Printf("unable to get template summary for stack %s: %v", *stackName, err)
-				continue
+				log.Printf("unable to read page for account %s: %v", "TODO", err)
 			}
 
-			stacks = append(stacks, Stack{StackName: *stackName, Account: "TODO", Metadata: getString(summary.Metadata, "missing")})
+			for _, stackSummary := range page.StackSummaries {
+				if stackSummary.StackStatus == types.StackStatusDeleteComplete {
+					continue
+				}
+
+				stackName := stackSummary.StackName
+				input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
+				summary, err := cfnClient.GetTemplateSummary(ctx, input)
+				if err != nil {
+					log.Printf("unable to get template summary for stack %s: %v", *stackName, err)
+					continue
+				}
+
+				stacks = append(stacks, Stack{StackName: *stackName, Account: "TODO", Metadata: getString(summary.Metadata, "missing")})
+			}
 		}
 	}
 
