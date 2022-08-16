@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -32,29 +33,37 @@ func main() {
 	cfnClient := cloudformation.NewFromConfig(cfg)
 	//s3Client := s3.NewFromConfig(cfg)
 
-	output, err := cfnClient.ListStacks(ctx, &cloudformation.ListStacksInput{})
-	if err != nil {
-		log.Printf("Unable to list stacks for account %s: %v", "deployTools", err)
-		return
-	}
+	paginator := cloudformation.NewListStacksPaginator(cfnClient, &cloudformation.ListStacksInput{})
 
-	for _, stackSummary := range output.StackSummaries {
-		if stackSummary.StackStatus == types.StackStatusDeleteComplete {
-			continue
-		}
-
-		stackName := stackSummary.StackName
-		input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
-		summary, err := cfnClient.GetTemplateSummary(ctx, input)
+	for paginator.HasMorePages() {
+		page, err := paginator.NextPage(ctx)
 		if err != nil {
-			log.Printf("Unable to get template summary for stack %s: %v", *stackName, err)
-			continue
+			log.Printf("unable to read page for account %s: %v", "TODO", err)
 		}
 
-		stacks = append(stacks, Stack{StackName: *stackName, Account: "TODO", Metadata: getString(summary.Metadata, "missing")})
+		for _, stackSummary := range page.StackSummaries {
+			if stackSummary.StackStatus == types.StackStatusDeleteComplete {
+				continue
+			}
+
+			stackName := stackSummary.StackName
+			input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
+			summary, err := cfnClient.GetTemplateSummary(ctx, input)
+			if err != nil {
+				log.Printf("unable to get template summary for stack %s: %v", *stackName, err)
+				continue
+			}
+
+			stacks = append(stacks, Stack{StackName: *stackName, Account: "TODO", Metadata: getString(summary.Metadata, "missing")})
+		}
 	}
 
-	log.Printf("%v", stacks)
+	out, err := json.Marshal(stacks)
+	if err != nil {
+		log.Fatalf("unable to marshal stacks: %v", err)
+	}
+
+	log.Println(string(out))
 }
 
 func getString(ptr *string, defaultValue string) string {
