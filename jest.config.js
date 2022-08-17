@@ -5,7 +5,7 @@ const generateProject = name => {
       '^.+\\.tsx?$': 'ts-jest',
     },
     testMatch: [`<rootDir>/packages/${name}/**/*.test.ts`],
-    // setupFilesAfterEnv: [`./jest.setup.${name}.js`],
+    setupFilesAfterEnv: [`./packages/${name}/jest.setup.js`],
   }
 }
 

@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "esbuild src/*.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
-    "esbuild": "esbuild"
+    "esbuild": "esbuild",
+    "dev": "../../node_modules/.bin/ts-node ./src/handler"
   },
   "devDependencies": {
     "esbuild": "^0.14.53"
@@ -14,6 +15,7 @@
     "@octokit/auth-app": "^4.0.4",
     "@octokit/core": "^4.0.4",
     "@octokit/plugin-throttling": "^4.1.0",
-    "@octokit/rest": "^19.0.3"
+    "@octokit/rest": "^19.0.3",
+    "dotenv": "^16.0.1"
   }
 }
