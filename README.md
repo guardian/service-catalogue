@@ -2,14 +2,28 @@
 _A lens into your GitHub organisations_, GitHub Lens provides a cached snapshot of your GitHub organisation repositories
 and teams via a simple API.
 
-## API
+The project consists of the following subprojects:
 
-A simple API to expose the cached GitHub data we have already fetched.
+- **API**: A simple API to expose the cached GitHub data we have already fetched.
 
-## Repo Fetcher
+- **Repo Fetcher**: A fetcher for repository metadata
 
-A fetcher for repository metadata
+- **Teams Fetcher**: A fetcher for teams metadata
 
-## Teams Fetcher
+## Local Development
 
-A fetcher for teams metadata
+If this your first time developing github-lens, you should run
+```
+./scripts/setup.sh
+```
+
+Local configuration uses [dotenv](https://www.npmjs.com/package/dotenv). This means you should have a `.env` file 
+at the root of the project and add the necessary environment variables (or otherwise configure them in your environment.) 
+The setup script will download a starter `.env`.
+
+### Running locally
+
+The project uses npm workspaces, and individual workspaces should have a `dev` script that can be run to execute e.g.
+```
+npm -w packages/repo-fetcher run dev
+```
