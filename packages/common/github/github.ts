@@ -1,8 +1,8 @@
 import { createAppAuth } from '@octokit/auth-app';
 import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
-import { Config } from './config';
-import sleep from './sleep';
+import { Config } from '../config';
+import sleep from '../sleep';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
 
 
@@ -21,6 +21,7 @@ const octokit = new Octokit();
 export type RepositoriesResponse = GetResponseDataTypeFromEndpointMethod<
     typeof octokit.repos.listForOrg
     >;
+export type RepositoryResponse = RepositoriesResponse[number];
 
 let _octokit: Octokit | undefined;
 
