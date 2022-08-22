@@ -3,6 +3,7 @@ module github.com/guardian/cdk-metadata
 go 1.18
 
 require (
+	github.com/aws/aws-sdk-go v1.44.77 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.11 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.4 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.17.1 // indirect
