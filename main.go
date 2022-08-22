@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -73,11 +74,10 @@ func main() {
 	// [x] get metadata
 	// [x] across accounts
 	// [ ] switch to lambda on cron schedule
-	// [ ]
 
-	// TODO get via env vars
-	profile := "deployTools"
-	dryRun := true
+	profile := os.Getenv("PROFILE")
+	dryRun := os.Getenv("DRY_RUN") == "true"
+	log.Printf("profile is: '%s', dryRun is: '%t'", profile, dryRun)
 
 	ctx := context.Background()
 
