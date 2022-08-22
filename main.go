@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
-	"os"
 
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
@@ -69,17 +71,8 @@ func targetsFromProfile(profile string) ([]Target, error) {
 	return targets, err
 }
 
-func main() {
-	// Steps:
-	// [x] get metadata
-	// [x] across accounts
-	// [ ] switch to lambda on cron schedule
-
-	profile := os.Getenv("PROFILE")
-	dryRun := os.Getenv("DRY_RUN") == "true"
-	log.Printf("profile is: '%s', dryRun is: '%t'", profile, dryRun)
-
-	ctx := context.Background()
+func crawl(ctx context.Context, profile string) error {
+	dryRun := profile != "" // print output when running locally rather than writing to S3.
 
 	globalConfig, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
 	check(err, "unable to load AWS config")
@@ -139,22 +132,20 @@ func main() {
 	}
 
 	out, err := json.Marshal(stacks)
-	if err != nil {
-		log.Fatalf("unable to marshal stacks: %v", err)
-	}
+	check(err, "unable to marshal stacks")
 
-	switch dryRun {
-	case true:
+	if dryRun {
 		log.Println(string(out))
-	case false:
-		s3Client := s3.NewFromConfig(globalConfig)
-		s3Client.PutObject(ctx, &s3.PutObjectInput{
-			Bucket: aws.String("TODO"),
-			Key:    aws.String("cdk-stack-metadata.json"),
-		})
-
+		return nil
 	}
 
+	s3Client := s3.NewFromConfig(globalConfig)
+	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: aws.String("TODO"),
+		Key:    aws.String("cdk-stack-metadata.json"),
+	})
+
+	return err
 }
 
 func getString(ptr *string, defaultValue string) string {
@@ -169,4 +160,22 @@ func check(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s; %v", msg, err)
 	}
+}
+
+func HandleRequest(ctx context.Context, event events.CloudWatchEvent) (string, error) {
+	return "", crawl(ctx, "")
+}
+
+func main() {
+	// Steps:
+	// [ ] fix bucket
+	var profile = flag.String("profile", "", "Set to use a specific profile when testing locally.")
+	flag.Parse()
+
+	if *profile != "" {
+		crawl(context.Background(), *profile)
+		return
+	}
+
+	lambda.Start(HandleRequest)
 }

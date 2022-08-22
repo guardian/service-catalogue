@@ -12,7 +12,9 @@ Dynamodb - the same roles as Prism currently uses.
 
 To run locally:
 
-    $ PROFILE=deployTools DRY_RUN=true go run main.go
+    $ go run main.go --profile [profile]
+
+Output is written to stdout rather than S3 for local invocations.
 
 To test:
 
