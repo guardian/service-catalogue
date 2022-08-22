@@ -25,6 +25,7 @@ jobs:
         with:
           node-version-file: "cdk/.nvmrc"
           cache: npm
+          cache-dependency-path: cdk/package-lock.json
 
       - name: synth CDK
         run: |
