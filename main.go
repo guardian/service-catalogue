@@ -6,6 +6,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -43,17 +45,19 @@ type Target struct {
 	Config  aws.Config
 }
 
-func targetsFromRoles(stsClient *sts.Client, roles []Role) ([]Target, error) {
+var bucket string = os.Getenv("BUCKET")
+
+func targetsFromRoles(ctx context.Context, stsClient *sts.Client, roles []Role) ([]Target, error) {
 	targets := []Target{}
 
 	for _, role := range roles {
 		provider := stscreds.NewAssumeRoleProvider(stsClient, role.ARN)
-		cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithCredentialsProvider(provider))
+		cfg, err := config.LoadDefaultConfig(ctx, config.WithCredentialsProvider(provider))
 		if err != nil {
 			return targets, fmt.Errorf("unable to build config for role %s: %v", role.OwnerID, err)
 		}
 
-		targets = append(targets, Target{Account: role.OwnerID, Config: cfg})
+		targets = append(targets, Target{Account: role.OwnerID, Config: cfg}) // TODO fix account to be actual number.
 	}
 
 	return targets, nil
@@ -67,12 +71,12 @@ func targetsFromProfile(profile string) ([]Target, error) {
 		return targets, fmt.Errorf("unable to build config for profile %s: %v", profile, err)
 	}
 
-	targets = append(targets, Target{Account: "deployTools", Config: cfg})
+	targets = append(targets, Target{Account: profile, Config: cfg})
 	return targets, err
 }
 
 func crawl(ctx context.Context, profile string) error {
-	dryRun := profile != "" // print output when running locally rather than writing to S3.
+	dryRun := profile != "" // Print output when running locally rather than writing to S3.
 
 	globalConfig, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
 	check(err, "unable to load AWS config")
@@ -95,7 +99,7 @@ func crawl(ctx context.Context, profile string) error {
 
 	switch profile {
 	case "":
-		targets, err = targetsFromRoles(stsClient, rolesConfig.Config.Roles)
+		targets, err = targetsFromRoles(ctx, stsClient, rolesConfig.Config.Roles)
 		check(err, "unable to get targets from roles")
 	default:
 		targets, err = targetsFromProfile(profile)
@@ -110,7 +114,7 @@ func crawl(ctx context.Context, profile string) error {
 		for paginator.HasMorePages() {
 			page, err := paginator.NextPage(ctx)
 			if err != nil {
-				log.Printf("unable to read page for account %s: %v", "TODO", err)
+				log.Printf("unable to get Cloudformation next page for account %s: %v", target.Account, err)
 			}
 
 			for _, stackSummary := range page.StackSummaries {
@@ -126,7 +130,7 @@ func crawl(ctx context.Context, profile string) error {
 					continue
 				}
 
-				stacks = append(stacks, Stack{StackName: *stackName, Account: "TODO", Metadata: getString(summary.Metadata, "missing")})
+				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "missing")})
 			}
 		}
 	}
@@ -140,9 +144,12 @@ func crawl(ctx context.Context, profile string) error {
 	}
 
 	s3Client := s3.NewFromConfig(globalConfig)
+	date := time.Now().Format("2006-01-02")
+	key := fmt.Sprintf("cdk-stack-metadata-%s.json", date)
+
 	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String("TODO"),
-		Key:    aws.String("cdk-stack-metadata.json"),
+		Bucket: &bucket,
+		Key:    &key,
 	})
 
 	return err
@@ -167,8 +174,6 @@ func HandleRequest(ctx context.Context, event events.CloudWatchEvent) (string, e
 }
 
 func main() {
-	// Steps:
-	// [ ] fix bucket
 	var profile = flag.String("profile", "", "Set to use a specific profile when testing locally.")
 	flag.Parse()
 

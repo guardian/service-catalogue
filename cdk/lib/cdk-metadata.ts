@@ -5,13 +5,16 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 
 export class CdkMetadata extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
+		const bucket = new Bucket(this, "data-bucket");
+
 		new GuScheduledLambda(this, 'lambda', {
-			app: 'TODO',
+			app: 'cdk-metadata',
 			rules: [
 				{
 					schedule: Schedule.rate(Duration.days(1)),
@@ -22,6 +25,9 @@ export class CdkMetadata extends GuStack {
 			handler: 'main',
 			fileName: 'lambda.zip',
 			monitoringConfiguration: { noMonitoring: true }, // FIXME
+			environment: {
+				BUCKET: bucket.bucketName,
+			}
 		});
 	}
 }
