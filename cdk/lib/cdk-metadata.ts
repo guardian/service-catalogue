@@ -29,6 +29,7 @@ export class CdkMetadata extends GuStack {
 			environment: {
 				BUCKET: bucket.bucketName,
 			},
+			timeout: Duration.minutes(15),
 		});
 
 		lambda.addToRolePolicy(
