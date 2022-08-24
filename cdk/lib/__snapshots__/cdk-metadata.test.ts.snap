@@ -233,6 +233,22 @@ Object {
                 ],
               },
             },
+            Object {
+              "Action": "dynamodb:Query",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:dynamodb:eu-west-1:",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/config-deploy",
+                  ],
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
