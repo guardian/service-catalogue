@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -24,8 +25,8 @@ import (
 )
 
 type Role struct {
-	OwnerID string
-	ARN     string
+	AccountName string
+	ARN         string
 }
 
 type Config struct {
@@ -36,16 +37,23 @@ type Config struct {
 
 type Stack struct {
 	StackName string `json:"stackName"`
-	Account   string `json:"account"`
+	AccountID string `json:"accountId"`
 	Metadata  string `json:"metadata"`
 }
 
 type Target struct {
-	Account string
-	Config  aws.Config
+	AccountID   string
+	AccountName string
+	Config      aws.Config
 }
 
 var bucket string = os.Getenv("BUCKET")
+
+func AccountIDFromRoleARN(roleARN string) string {
+	re := regexp.MustCompile(`arn:aws:iam::(\d+):role.*`)
+	accountID := re.FindStringSubmatch(roleARN)
+	return string(accountID[1])
+}
 
 func targetsFromRoles(ctx context.Context, stsClient *sts.Client, roles []Role) ([]Target, error) {
 	targets := []Target{}
@@ -54,10 +62,10 @@ func targetsFromRoles(ctx context.Context, stsClient *sts.Client, roles []Role) 
 		provider := stscreds.NewAssumeRoleProvider(stsClient, role.ARN)
 		cfg, err := config.LoadDefaultConfig(ctx, config.WithCredentialsProvider(provider))
 		if err != nil {
-			return targets, fmt.Errorf("unable to build config for role %s: %v", role.OwnerID, err)
+			return targets, fmt.Errorf("unable to build config for role %s: %v", role.AccountName, err)
 		}
 
-		targets = append(targets, Target{Account: role.OwnerID, Config: cfg}) // TODO fix account to be actual number.
+		targets = append(targets, Target{AccountID: AccountIDFromRoleARN(role.ARN), AccountName: role.AccountName, Config: cfg})
 	}
 
 	return targets, nil
@@ -71,7 +79,7 @@ func targetsFromProfile(profile string) ([]Target, error) {
 		return targets, fmt.Errorf("unable to build config for profile %s: %v", profile, err)
 	}
 
-	targets = append(targets, Target{Account: profile, Config: cfg})
+	targets = append(targets, Target{AccountName: profile, AccountID: "unknown", Config: cfg})
 	return targets, err
 }
 
@@ -117,7 +125,7 @@ func crawl(ctx context.Context, profile string) error {
 
 	stacks := []Stack{}
 	for _, target := range targets {
-		log.Printf("Scanning account: %s...", target.Account)
+		log.Printf("Scanning account: %s...", target.AccountID)
 
 		cfnClient := cloudformation.NewFromConfig(target.Config)
 		paginator := cloudformation.NewDescribeStacksPaginator(cfnClient, &cloudformation.DescribeStacksInput{})
@@ -126,7 +134,7 @@ func crawl(ctx context.Context, profile string) error {
 
 		for hasMorePages {
 			page, err := paginator.NextPage(ctx)
-			check(err, "unable to get Cloudformation next page for account: "+target.Account)
+			check(err, "unable to get Cloudformation next page for account: "+target.AccountID)
 
 			for _, stackSummary := range page.Stacks {
 				if stackSummary.StackStatus == types.StackStatusDeleteComplete {
@@ -141,7 +149,7 @@ func crawl(ctx context.Context, profile string) error {
 					continue
 				}
 
-				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "missing")})
+				stacks = append(stacks, Stack{StackName: *stackName, AccountID: target.AccountID, Metadata: getString(summary.Metadata, "missing")})
 			}
 
 			hasMorePages = paginator.HasMorePages()
