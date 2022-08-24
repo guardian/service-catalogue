@@ -78,8 +78,16 @@ func targetsFromProfile(profile string) ([]Target, error) {
 func crawl(ctx context.Context, profile string) error {
 	dryRun := profile != "" // Print output when running locally rather than writing to S3.
 
-	globalConfig, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
-	check(err, "unable to load AWS config")
+	var globalConfig aws.Config
+	var err error
+
+	if profile != "" {
+		globalConfig, err = config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
+		check(err, "unable to load AWS config")
+	} else {
+		globalConfig, err = config.LoadDefaultConfig(ctx, config.WithRegion("eu-west-1"))
+		check(err, "unable to load AWS config")
+	}
 
 	dynamodbClient := dynamodb.NewFromConfig(globalConfig)
 	items, err := dynamodbClient.Query(ctx, &dynamodb.QueryInput{
