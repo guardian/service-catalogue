@@ -52,5 +52,13 @@ export class CdkMetadata extends GuStack {
 				actions: ['sts:AssumeRole'],
 			}),
 		);
+
+		lambda.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: [`${bucket.bucketArn}/*`],
+				actions: ['s3:PutObject'],
+			}),
+		);
 	}
 }
