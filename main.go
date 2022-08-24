@@ -117,13 +117,13 @@ func crawl(ctx context.Context, profile string) error {
 	stacks := []Stack{}
 	for _, target := range targets {
 		cfnClient := cloudformation.NewFromConfig(target.Config)
-		paginator := cloudformation.NewListStacksPaginator(cfnClient, &cloudformation.ListStacksInput{})
+		paginator := cloudformation.NewDescribeStacksPaginator(cfnClient, &cloudformation.DescribeStacksInput{})
 
 		for paginator.HasMorePages() {
 			page, err := paginator.NextPage(ctx)
 			check(err, "unable to get Cloudformation next page for account: "+target.Account)
 
-			for _, stackSummary := range page.StackSummaries {
+			for _, stackSummary := range page.Stacks {
 				if stackSummary.StackStatus == types.StackStatusDeleteComplete {
 					continue
 				}
