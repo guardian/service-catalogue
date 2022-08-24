@@ -108,6 +108,7 @@ func crawl(ctx context.Context, profile string) error {
 	switch profile {
 	case "":
 		targets, err = targetsFromRoles(ctx, stsClient, rolesConfig.Config.Roles)
+		log.Printf("Targets are: %v", targets)
 		check(err, "unable to get targets from roles")
 	default:
 		targets, err = targetsFromProfile(profile)
@@ -116,10 +117,14 @@ func crawl(ctx context.Context, profile string) error {
 
 	stacks := []Stack{}
 	for _, target := range targets {
+		log.Printf("Scanning account: %s...", target.Account)
+
 		cfnClient := cloudformation.NewFromConfig(target.Config)
 		paginator := cloudformation.NewDescribeStacksPaginator(cfnClient, &cloudformation.DescribeStacksInput{})
 
-		for paginator.HasMorePages() {
+		hasMorePages := true
+
+		for hasMorePages {
 			page, err := paginator.NextPage(ctx)
 			check(err, "unable to get Cloudformation next page for account: "+target.Account)
 
@@ -138,6 +143,8 @@ func crawl(ctx context.Context, profile string) error {
 
 				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "missing")})
 			}
+
+			hasMorePages = paginator.HasMorePages()
 		}
 	}
 
