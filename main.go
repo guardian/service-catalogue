@@ -121,9 +121,7 @@ func crawl(ctx context.Context, profile string) error {
 
 		for paginator.HasMorePages() {
 			page, err := paginator.NextPage(ctx)
-			if err != nil {
-				log.Printf("unable to get Cloudformation next page for account %s: %v", target.Account, err)
-			}
+			check(err, "unable to get Cloudformation next page for account: "+target.Account)
 
 			for _, stackSummary := range page.StackSummaries {
 				if stackSummary.StackStatus == types.StackStatusDeleteComplete {
