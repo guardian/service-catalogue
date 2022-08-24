@@ -35,10 +35,21 @@ export class CdkMetadata extends GuStack {
 		lambda.addToRolePolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,
-				actions: ['dynamodb:Query'],
 				resources: [
 					`arn:aws:dynamodb:eu-west-1:${this.account}:table/config-deploy`,
 				],
+				actions: ['dynamodb:Query'],
+			}),
+		);
+
+		lambda.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: [
+					'arn:aws:iam::*:role/*Prism*',
+					'arn:aws:iam::*:role/*prism*',
+				],
+				actions: ['sts:AssumeRole'],
 			}),
 		);
 	}

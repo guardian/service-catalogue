@@ -249,6 +249,14 @@ Object {
                 ],
               },
             },
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": Array [
+                "arn:aws:iam::*:role/*Prism*",
+                "arn:aws:iam::*:role/*prism*",
+              ],
+            },
           ],
           "Version": "2012-10-17",
         },
