@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -171,6 +172,7 @@ func crawl(ctx context.Context, profile string) error {
 	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: &bucket,
 		Key:    &key,
+		Body:   bytes.NewBuffer(out),
 	})
 
 	return err
