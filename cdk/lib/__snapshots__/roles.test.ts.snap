@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Roles stack matches the snapshot 1`] = `
+Object {
+  "Outputs": Object {
+    "Role": Object {
+      "Description": "CdkMetadata Role",
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "CdkMetadataRole1FF70BE2",
+          "Arn",
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "Stack": Object {
+      "Description": "Riffraff stack",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "CdkMetadataPolicyD9889917": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "cloudformation:Describe*",
+                "cloudformation:Get*",
+                "cloudformation:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CdkMetadataCollection",
+        "Roles": Array [
+          Object {
+            "Ref": "CdkMetadataRole1FF70BE2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CdkMetadataRole1FF70BE2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": "arn:aws:iam::095768028460:root",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Role CdkMetadata uses to crawl resources in this account",
+        "RoleName": "cdk-metadata-access",
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": Object {
+              "Ref": "Stack",
+            },
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+}
+`;

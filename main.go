@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -16,75 +15,75 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	dynamoTypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 )
 
-type Role struct {
-	AccountName string
-	ARN         string
+// Account describes an AWS account.
+type Account struct {
+	ID   string `json:"accountId"`
+	Name string `json:"accountName"`
 }
 
-type Config struct {
-	Config struct {
-		Roles []Role
-	}
+// Target is an account with Config (credentials).
+type Target struct {
+	Account
+	Config aws.Config
 }
 
+// Stack is a Cloudformation stack with metadata.
 type Stack struct {
 	StackName string `json:"stackName"`
-	AccountID string `json:"accountId"`
 	Metadata  string `json:"metadata"`
-}
-
-type Target struct {
-	AccountID   string
-	AccountName string
-	Config      aws.Config
+	Account
 }
 
 var bucket string = os.Getenv("BUCKET")
 
-func AccountIDFromRoleARN(roleARN string) string {
-	re := regexp.MustCompile(`arn:aws:iam::(\d+):role.*`)
-	accountID := re.FindStringSubmatch(roleARN)
-	return string(accountID[1])
+var accounts []Account = []Account{
+	{Name: "capi", ID: "308506855511"},
+	{Name: "deployTools", ID: "095768028460"},
 }
 
-func targetsFromRoles(ctx context.Context, stsClient *sts.Client, roles []Role) ([]Target, error) {
+func accountForProfile(profile string, accounts []Account) (Account, error) {
+	for _, account := range accounts {
+		if account.Name == profile {
+			return account, nil
+		}
+	}
+
+	return Account{}, fmt.Errorf("unable to find account for profile %s", profile)
+}
+
+func targetsForAccounts(ctx context.Context, stsClient *sts.Client, accounts []Account) ([]Target, error) {
 	targets := []Target{}
 
-	for _, role := range roles {
-		provider := stscreds.NewAssumeRoleProvider(stsClient, role.ARN)
+	for _, account := range accounts {
+		roleARN := fmt.Sprintf("arn:aws:iam::%s:role/cdk-metadata-access", account.ID)
+		provider := stscreds.NewAssumeRoleProvider(stsClient, roleARN)
 		cfg, err := config.LoadDefaultConfig(ctx, config.WithCredentialsProvider(provider))
 		if err != nil {
-			return targets, fmt.Errorf("unable to build config for role %s: %v", role.AccountName, err)
+			return targets, fmt.Errorf("unable to build config for role %s: %v", account.Name, err)
 		}
 
-		targets = append(targets, Target{AccountID: AccountIDFromRoleARN(role.ARN), AccountName: role.AccountName, Config: cfg})
+		targets = append(targets, Target{Account: account, Config: cfg})
 	}
 
 	return targets, nil
 }
 
-func targetsFromProfile(profile string) ([]Target, error) {
-	targets := []Target{}
-
+func targetForProfile(profile string, account Account) (Target, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithSharedConfigProfile(profile), config.WithRegion("eu-west-1"))
 	if err != nil {
-		return targets, fmt.Errorf("unable to build config for profile %s: %v", profile, err)
+		return Target{}, fmt.Errorf("unable to build config for profile %s: %v", profile, err)
 	}
 
-	targets = append(targets, Target{AccountName: profile, AccountID: "unknown", Config: cfg})
-	return targets, err
+	return Target{Account: account, Config: cfg}, nil
 }
 
-func crawl(ctx context.Context, profile string) error {
+func crawl(ctx context.Context, accounts []Account, profile string) error {
 	dryRun := profile != "" // Print output when running locally rather than writing to S3.
 
 	var globalConfig aws.Config
@@ -98,35 +97,28 @@ func crawl(ctx context.Context, profile string) error {
 		check(err, "unable to load AWS config")
 	}
 
-	dynamodbClient := dynamodb.NewFromConfig(globalConfig)
-	items, err := dynamodbClient.Query(ctx, &dynamodb.QueryInput{
-		TableName:                 aws.String("config-deploy"),
-		KeyConditionExpression:    aws.String("App = :app AND Stage = :stage"),
-		ExpressionAttributeValues: map[string]dynamoTypes.AttributeValue{":app": &dynamoTypes.AttributeValueMemberS{Value: "cdk-metadata"}, ":stage": &dynamoTypes.AttributeValueMemberS{Value: "INFRA"}},
-	})
-	check(err, "unable to load roles from Dynamodb")
-
-	rolesConfig := Config{}
-	err = attributevalue.UnmarshalMap(items.Items[0], &rolesConfig)
-	check(err, "unable to unmarshal roles from Dynamob")
-
 	stsClient := sts.NewFromConfig(globalConfig)
 
 	var targets []Target
 
 	switch profile {
 	case "":
-		targets, err = targetsFromRoles(ctx, stsClient, rolesConfig.Config.Roles)
+		targets, err = targetsForAccounts(ctx, stsClient, accounts)
 		log.Printf("Targets are: %v", targets)
 		check(err, "unable to get targets from roles")
 	default:
-		targets, err = targetsFromProfile(profile)
+		account, err := accountForProfile(profile, accounts)
+		check(err, "unable to match profile to account")
+
+		target, err := targetForProfile(profile, account)
 		check(err, "unable to get targets from profile")
+
+		targets = []Target{target}
 	}
 
 	stacks := []Stack{}
 	for _, target := range targets {
-		log.Printf("Scanning account: %s...", target.AccountID)
+		log.Printf("Scanning account: %s...", target.Account.ID)
 
 		cfnClient := cloudformation.NewFromConfig(target.Config)
 		paginator := cloudformation.NewDescribeStacksPaginator(cfnClient, &cloudformation.DescribeStacksInput{})
@@ -135,7 +127,7 @@ func crawl(ctx context.Context, profile string) error {
 
 		for hasMorePages {
 			page, err := paginator.NextPage(ctx)
-			check(err, "unable to get Cloudformation next page for account: "+target.AccountID)
+			check(err, "unable to get Cloudformation next page for account: "+target.Account.ID)
 
 			for _, stackSummary := range page.Stacks {
 				if stackSummary.StackStatus == types.StackStatusDeleteComplete {
@@ -150,7 +142,7 @@ func crawl(ctx context.Context, profile string) error {
 					continue
 				}
 
-				stacks = append(stacks, Stack{StackName: *stackName, AccountID: target.AccountID, Metadata: getString(summary.Metadata, "missing")})
+				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "missing")})
 			}
 
 			hasMorePages = paginator.HasMorePages()
@@ -193,7 +185,7 @@ func check(err error, msg string) {
 }
 
 func HandleRequest(ctx context.Context, event events.CloudWatchEvent) (string, error) {
-	return "", crawl(ctx, "")
+	return "", crawl(ctx, accounts, "")
 }
 
 func main() {
@@ -201,7 +193,7 @@ func main() {
 	flag.Parse()
 
 	if *profile != "" {
-		crawl(context.Background(), *profile)
+		crawl(context.Background(), accounts, *profile)
 		return
 	}
 
