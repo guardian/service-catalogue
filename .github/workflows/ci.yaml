@@ -77,6 +77,7 @@ jobs:
       - uses: guardian/actions-riff-raff@v1
         with:
           app: cdk-metadata-roles
+          projectName: deploy::cdk-metadata-roles
           config: |
             stacks:
               - playground
