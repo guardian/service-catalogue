@@ -104,7 +104,6 @@ func crawl(ctx context.Context, accounts []Account, profile string) error {
 	switch profile {
 	case "":
 		targets, err = targetsForAccounts(ctx, stsClient, accounts)
-		log.Printf("Targets are: %v", targets)
 		check(err, "unable to get targets from roles")
 	default:
 		account, err := accountForProfile(profile, accounts)
