@@ -1,6 +1,7 @@
 import config from "../../common/config";
-import { listRepositories, RepositoriesResponse, RepositoryResponse } from "../../common/github/github";
+import { listRepositories, RepositoriesResponse, RepositoryResponse, TeamsResponse, listTeams, getReposForTeam } from "../../common/github/github";
 import { putItem } from "../../common/aws/s3";
+import { Octokit } from "@octokit/rest";
 
 interface Repository {
     id: number,
@@ -27,7 +28,7 @@ const parseDateString = (dateString: string | null | undefined): Date | null => 
     return new Date(dateString);
 }
 
-const transform = (repo: RepositoryResponse): Repository => {
+const transformRepo = (repo: RepositoryResponse): Repository => {
     return {
         id: repo.id,
         name: repo.name,
@@ -56,11 +57,14 @@ export const main = async (): Promise<void> => {
     console.log('[INFO] starting repo-fetcher');
 
     const reposResponse: RepositoriesResponse = await listRepositories(config);
-    const repos = reposResponse.map(transform)
-
+    const repos = reposResponse.map(transformRepo)
+    const teams: TeamsResponse = await listTeams(config)
+    const edToolsRepos = await getReposForTeam(config, "digital-cms")
     await save(repos)
     console.log(`[INFO] found ${repos.length} repos`);
+    console.log(`[INFO] found ${teams.length} teams`);
     console.log(`[INFO] finishing repo-fetcher`);
+
 }
 
 if (require.main === module) {

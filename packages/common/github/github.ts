@@ -21,6 +21,12 @@ const octokit = new Octokit();
 export type RepositoriesResponse = GetResponseDataTypeFromEndpointMethod<
     typeof octokit.repos.listForOrg
     >;
+export type TeamsResponse = GetResponseDataTypeFromEndpointMethod<
+typeof octokit.teams.list
+>;
+export type TeamRepoResponse = GetResponseDataTypeFromEndpointMethod<
+typeof octokit.teams.listReposInOrg
+>;
 export type RepositoryResponse = RepositoriesResponse[number];
 
 let _octokit: Octokit | undefined;
@@ -77,4 +83,22 @@ export const listRepositories = async (config: Config): Promise<RepositoriesResp
             org: 'guardian',
             per_page: defaultPageSize,
         }, (response) => response.data);
+};
+
+export const listTeams = async (config: Config): Promise<TeamsResponse> => {
+    const octokit = await getOctokit(config);
+    return await octokit.paginate(
+        octokit.teams.list, {
+            org: 'guardian',
+            per_page: defaultPageSize,
+        }, (response) => response.data);
+};
+
+export const getReposForTeam = async (config: Config, teamName: string): Promise<TeamRepoResponse> => {
+    const octokit = await getOctokit(config);
+    const request =  await octokit.request("GET /orgs/guardian/teams/{team}/repos", {
+        team: teamName,
+        per_page: defaultPageSize,
+      });
+    return request.data;
 };
