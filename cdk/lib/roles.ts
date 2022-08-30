@@ -4,6 +4,7 @@ import { GuRole } from '@guardian/cdk/lib/constructs/iam';
 import { CfnOutput, CfnParameter, Tags } from 'aws-cdk-lib';
 import type { App } from 'aws-cdk-lib';
 import {
+	AccountPrincipal,
 	ArnPrincipal,
 	Effect,
 	Policy,
@@ -14,7 +15,7 @@ export class CdkMetadataAccess extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
-		const cdkMetadataAccount = 'arn:aws:iam::095768028460:root';
+		const cdkMetadataAccountId = '095768028460';
 
 		const stack = new CfnParameter(this, 'Stack', {
 			description: 'Riffraff stack',
@@ -25,7 +26,7 @@ export class CdkMetadataAccess extends GuStack {
 		const role = new GuRole(this, 'CdkMetadataRole', {
 			roleName: 'cdk-metadata-access',
 			description: 'Role CdkMetadata uses to crawl resources in this account',
-			assumedBy: new ArnPrincipal(cdkMetadataAccount),
+			assumedBy: new AccountPrincipal(cdkMetadataAccountId),
 		});
 
 		new Policy(this, 'CdkMetadataPolicy', {

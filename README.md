@@ -22,7 +22,3 @@ To test:
 
 If you need to install Go: `brew install go`. VS Code is the recommended editor
 if unsure.
-
-- [x] define roles in CDK
-- [ ] then lookup based on name/account (see @guardian/grafana example)
-- [ ] lookup accounts by Organisational ID

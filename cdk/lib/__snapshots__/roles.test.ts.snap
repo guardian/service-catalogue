@@ -53,7 +53,18 @@ Object {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "AWS": "arn:aws:iam::095768028460:root",
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::095768028460:root",
+                    ],
+                  ],
+                },
               },
             },
           ],
