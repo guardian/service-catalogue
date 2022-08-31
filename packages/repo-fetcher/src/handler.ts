@@ -1,7 +1,7 @@
-import config, { Config } from "../../common/config";
-import { listRepositories, RepositoriesResponse, RepositoryResponse, listTeams, getReposForTeam, TeamRepoResponse } from "../../common/github/github";
+import config from "../../common/config";
+import { listRepositories, RepositoriesResponse, RepositoryResponse, listTeams} from "../../common/github/github";
 import { putItem } from "../../common/aws/s3";
-
+import {createOwnerObjects, findOwnersOfRepo, RepoAndOwner} from "../src/transformations"
 interface Repository {
     id: number,
     name: string,
@@ -19,15 +19,6 @@ interface Repository {
     topics: string[] | undefined,
     default_branch: string | undefined,
     owners: string[]
-}
-
-class RepoAndOwner {
-    teamSlug: string;
-    repoName: string
-    constructor(teamSlug: string, repoName: string) {
-        this.teamSlug = teamSlug
-        this.repoName = repoName
-    }
 }
 
 const parseDateString = (dateString: string | null | undefined): Date | null => {
@@ -64,21 +55,7 @@ const save = (repos: Repository[]): Promise<void> => {
     return putItem(key, JSON.stringify(repos), config.dataBucketName)
 }
 
-export const getAdminReposFromResponse = (repos: TeamRepoResponse): string[] => {
-    return repos.filter(repo => repo.role_name === "admin").map(repo => repo.name);
-}
 
-export const createOwnerObjects = async (config: Config, teamSlug: string): Promise<RepoAndOwner[]> => {
-    const allRepos: TeamRepoResponse = await getReposForTeam(config, teamSlug);
-    const adminRepos: string[] = getAdminReposFromResponse(allRepos);
-    return adminRepos.map(repoName => new RepoAndOwner(teamSlug, repoName))
-}
-
-export const findOwnersOfRepo = (repoName: string, ownerObjects: RepoAndOwner[]): string[] => {
-    return ownerObjects
-        .filter(repoAndOwner => repoAndOwner.repoName == repoName)
-        .map(repoAndOwner => repoAndOwner.repoName)
-}
 
 export const main = async (): Promise<void> => {
     console.log('[INFO] starting repo-fetcher');
