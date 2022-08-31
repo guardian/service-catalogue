@@ -1,7 +1,6 @@
-import config from "../../common/config";
-import { listRepositories, RepositoriesResponse, RepositoryResponse, TeamsResponse, listTeams, getReposForTeam } from "../../common/github/github";
+import config, { Config } from "../../common/config";
+import { listRepositories, RepositoriesResponse, RepositoryResponse, listTeams, getReposForTeam, TeamRepoResponse } from "../../common/github/github";
 import { putItem } from "../../common/aws/s3";
-import { Octokit } from "@octokit/rest";
 
 interface Repository {
     id: number,
@@ -19,6 +18,16 @@ interface Repository {
     is_template: boolean | undefined,
     topics: string[] | undefined,
     default_branch: string | undefined,
+    owners: string[]
+}
+
+class RepoAndOwner {
+    teamSlug: string;
+    repoName: string
+    constructor(teamSlug: string, repoName: string) {
+        this.teamSlug = teamSlug
+        this.repoName = repoName
+    }
 }
 
 const parseDateString = (dateString: string | null | undefined): Date | null => {
@@ -28,7 +37,8 @@ const parseDateString = (dateString: string | null | undefined): Date | null => 
     return new Date(dateString);
 }
 
-const transformRepo = (repo: RepositoryResponse): Repository => {
+const transformRepo = (repo: RepositoryResponse, owners: string[]): Repository => {
+
     return {
         id: repo.id,
         name: repo.name,
@@ -45,6 +55,7 @@ const transformRepo = (repo: RepositoryResponse): Repository => {
         is_template: repo.is_template,
         topics: repo.topics,
         default_branch: repo.default_branch,
+        owners: owners
     }
 }
 
@@ -53,16 +64,30 @@ const save = (repos: Repository[]): Promise<void> => {
     return putItem(key, JSON.stringify(repos), config.dataBucketName)
 }
 
+export const getAdminReposFromResponse = (repos: TeamRepoResponse): string[] => {
+    return repos.filter(repo => repo.role_name === "admin").map(repo => repo.name);
+}
+
+export const createOwnerObjects = async (config: Config, teamSlug: string): Promise<RepoAndOwner[]> => {
+    const allRepos: TeamRepoResponse = await getReposForTeam(config, teamSlug);
+    const adminRepos: string[] = getAdminReposFromResponse(allRepos);
+    return adminRepos.map(repoName => new RepoAndOwner(teamSlug, repoName))
+}
+
+export const findOwnersOfRepo = (repoName: string, ownerObjects: RepoAndOwner[]): string[] => {
+    return ownerObjects
+        .filter(repoAndOwner => repoAndOwner.repoName == repoName)
+        .map(repoAndOwner => repoAndOwner.repoName)
+}
+
 export const main = async (): Promise<void> => {
     console.log('[INFO] starting repo-fetcher');
-
+    const teamNames = await listTeams(config)
+    const reposAndOwners: RepoAndOwner[] = (await Promise.all((teamNames).map(team => createOwnerObjects(config, team.slug)))).flat();
     const reposResponse: RepositoriesResponse = await listRepositories(config);
-    const repos = reposResponse.map(transformRepo)
-    const teams: TeamsResponse = await listTeams(config)
-    const edToolsRepos = await getReposForTeam(config, "digital-cms")
+    const repos = reposResponse.map(response => transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)))
     await save(repos)
     console.log(`[INFO] found ${repos.length} repos`);
-    console.log(`[INFO] found ${teams.length} teams`);
     console.log(`[INFO] finishing repo-fetcher`);
 
 }

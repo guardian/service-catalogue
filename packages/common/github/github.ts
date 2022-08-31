@@ -96,9 +96,10 @@ export const listTeams = async (config: Config): Promise<TeamsResponse> => {
 
 export const getReposForTeam = async (config: Config, teamName: string): Promise<TeamRepoResponse> => {
     const octokit = await getOctokit(config);
-    const request =  await octokit.request("GET /orgs/guardian/teams/{team}/repos", {
-        team: teamName,
+    const request =  await octokit.paginate(octokit.teams.listReposInOrg, {
+        org: "guardian",
+        team_slug: teamName,
         per_page: defaultPageSize,
-      });
-    return request.data;
+      }, response => response.data);
+    return request;
 };
