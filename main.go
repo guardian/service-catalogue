@@ -174,6 +174,14 @@ func crawl(ctx context.Context, profile string) error {
 		Key:    &key,
 		Body:   bytes.NewBuffer(out),
 	})
+	check(err, "unable to write dated object to S3")
+
+	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: &bucket,
+		Key:    aws.String("cdk-stack-metadata-latest.json"),
+		Body:   bytes.NewBuffer(out),
+	})
+	check(err, "unable to write 'latest' object to S3")
 
 	return err
 }
