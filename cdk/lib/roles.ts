@@ -5,7 +5,6 @@ import { CfnOutput, CfnParameter, Tags } from 'aws-cdk-lib';
 import type { App } from 'aws-cdk-lib';
 import {
 	AccountPrincipal,
-	ArnPrincipal,
 	Effect,
 	Policy,
 	PolicyStatement,
