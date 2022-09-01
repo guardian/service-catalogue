@@ -252,10 +252,7 @@ Object {
             Object {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": Array [
-                "arn:aws:iam::*:role/*Prism*",
-                "arn:aws:iam::*:role/*prism*",
-              ],
+              "Resource": "arn:aws:iam::*:role/cdk-metadata-access",
             },
             Object {
               "Action": "s3:PutObject",

@@ -45,10 +45,7 @@ export class CdkMetadata extends GuStack {
 		lambda.addToRolePolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,
-				resources: [
-					'arn:aws:iam::*:role/*Prism*',
-					'arn:aws:iam::*:role/*prism*',
-				],
+				resources: ['arn:aws:iam::*:role/cdk-metadata-access'],
 				actions: ['sts:AssumeRole'],
 			}),
 		);
