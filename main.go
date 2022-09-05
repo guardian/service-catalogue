@@ -35,8 +35,8 @@ type Target struct {
 
 // Stack is a Cloudformation stack with metadata.
 type Stack struct {
-	StackName string `json:"stackName"`
-	Metadata  string `json:"metadata"`
+	StackName string         `json:"stackName"`
+	Metadata  map[string]any `json:"metadata"`
 	Account
 }
 
@@ -141,7 +141,12 @@ func crawl(ctx context.Context, accounts []Account, profile string) error {
 					continue
 				}
 
-				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "{}")})
+				metadata := getString(summary.Metadata, "{}")
+				metadataMap := map[string]any{}
+				err = json.Unmarshal([]byte(metadata), &metadataMap)
+				check(err, fmt.Sprintf("Unable to parse metadata (%s)", metadata))
+
+				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: metadataMap})
 			}
 
 			hasMorePages = paginator.HasMorePages()
