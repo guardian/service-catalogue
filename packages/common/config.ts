@@ -9,8 +9,14 @@ export type Config = {
 		appInstallationId: string;
 	};
 	dataBucketName: string | undefined;
+	dataKeyPrefix: string | undefined;
 };
 
+export const decrypt = <T>(configValue: T, secret: boolean): T => {
+	if (!secret || configValue === undefined) return configValue;
+
+	return configValue;
+};
 export const mandatory = (item: string): string => {
 	const config = process.env[item];
 	if (!config) {
@@ -23,7 +29,7 @@ export const optional = (item: string): string | undefined => process.env[item];
 export const optionalWithDefault = (item: string, _default: string): string =>
 	optional(item) ?? _default;
 
-export const config = {
+export const config: Config = {
 	github: {
 		appId: mandatory('GITHUB_APP_ID'),
 		appPrivateKey: mandatory('GITHUB_APP_PRIVATE_KEY'),
