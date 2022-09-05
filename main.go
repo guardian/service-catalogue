@@ -141,7 +141,7 @@ func crawl(ctx context.Context, accounts []Account, profile string) error {
 					continue
 				}
 
-				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "missing")})
+				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "{}")})
 			}
 
 			hasMorePages = paginator.HasMorePages()
