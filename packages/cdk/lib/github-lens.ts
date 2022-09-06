@@ -9,8 +9,6 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class GithubLens extends GuStack {
-	//TODO: for sharing parameter names between CDK (here) and lambda(s) config code?
-	static parameterNames = {};
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
@@ -44,14 +42,14 @@ export class GithubLens extends GuStack {
 			},
 		);
 
-		//TODO: finisalise KMS decryption of this (add permissions, add decryption to lambda(s) etc.)
+		// TODO: Finalize KMS decryption of this (add permissions, add decryption to lambda(s) etc.)
 		const githubPrivateKey = new GuStringParameter(this, 'github-private-key', {
 			description:
 				'(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org',
 			fromSSM: true,
 		});
 
-		// TODO: double check props
+		// TODO: Make DATA_KEY_PREFIX configurable
 		new GuScheduledLambda(this, `${repoFetcherApp}-lambda`, {
 			app: repoFetcherApp,
 			runtime: Runtime.NODEJS_16_X,
@@ -65,7 +63,11 @@ export class GithubLens extends GuStack {
 			rules: [{ schedule: Schedule.expression('cron(0 8 ? * * *)') }],
 			timeout: Duration.seconds(300),
 			environment: {
-				STAGE: this.stage, //TODO: finish environment definition
+				STAGE: this.stage,
+				GITHUB_APP_ID: githubAppId.valueAsString,
+				GITHUB_APP_PRIVATE_KEY: githubPrivateKey.valueAsString,
+				GITHUB_APP_INSTALLATION_ID: githubInstallationId.valueAsString,
+				DATA_BUCKET_NAME: dataBucket.bucketName,
 			},
 			initialPolicy: [dataPutPolicy],
 		});
