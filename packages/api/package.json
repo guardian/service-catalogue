@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "API that exposes a snapshot of your GitHub organisation",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typecheck": "tsc -noEmit"
   }
 }
