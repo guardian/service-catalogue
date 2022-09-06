@@ -39,9 +39,10 @@ jobs:
         run: ./script/ci.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@v1.1.4
+        uses: guardian/actions-riff-raff@v1
         with:
           app: github-lens
+          buildNumber: 'dev'
           projectName: playground::github-lens
           configPath: riff-raff.yml
     env:
