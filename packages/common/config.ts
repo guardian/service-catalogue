@@ -12,11 +12,6 @@ export type Config = {
 	dataKeyPrefix: string | undefined;
 };
 
-export const decrypt = <T>(configValue: T, secret: boolean): T => {
-	if (!secret || configValue === undefined) return configValue;
-
-	return configValue;
-};
 export const mandatory = (item: string): string => {
 	const config = process.env[item];
 	if (!config) {
