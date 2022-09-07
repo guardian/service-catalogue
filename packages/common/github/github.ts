@@ -3,7 +3,7 @@ import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
 import type { Config } from '../config';
-import sleep from '../sleep';
+import { sleep } from '../sleep';
 
 const ThrottledOctokit = Octokit.plugin(throttling);
 const defaultPageSize = 100;
@@ -24,7 +24,7 @@ export type RepositoryResponse = RepositoriesResponse[number];
 
 let _octokit: Octokit | undefined;
 
-const getOctokit = async (config: Config): Promise<Octokit> => {
+const getOctokit = (config: Config): Octokit => {
 	if (_octokit) {
 		return _octokit;
 	}
@@ -72,7 +72,7 @@ const getOctokit = async (config: Config): Promise<Octokit> => {
 export const listRepositories = async (
 	config: Config,
 ): Promise<RepositoriesResponse> => {
-	const octokit = await getOctokit(config);
+	const octokit = getOctokit(config);
 	return await octokit.paginate(
 		octokit.repos.listForOrg,
 		{

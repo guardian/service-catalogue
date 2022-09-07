@@ -23,7 +23,7 @@ export const putItem = async (
 			await s3Client.send(command);
 			console.log('[INFO] Item uploaded to s3 successfully');
 		} catch (e) {
-			console.log(`[ERROR] ${e}`);
+			console.log(`[ERROR] ${(e as Error).message}`);
 		}
 	} else {
 		console.log('[WARN] No data bucket configured, skipping putItem');
