@@ -4,4 +4,4 @@ import { GithubLens } from '../lib/github-lens';
 
 const app = new App();
 
-new GithubLens(app, 'GithubLens-CODE', { stack: 'playground', stage: 'CODE' });
+new GithubLens(app, 'GithubLens-CODE', { stack: 'deploy', stage: 'CODE' });
