@@ -1,20 +1,11 @@
 regions: [eu-west-1]
 stacks: [deploy]
 deployments:
-  lambda-to-s3:
-    type: aws-s3
-    app: repo-fetcher
-    sources:
-      - packages/repo-fetcher/dist/repo-fetcher.zip
-    parameters:
-      bucket: developer-playground-dist
-      cacheControl: no-cache
-      publicReadAcl: false
-      prefixApp: true
   repo-fetcher:
     type: aws-lambda
     dependencies: [cdk-cloudformation]
     actions:
+      - uploadLambda
       - updateLambda
     parameters:
       bucketSsmLookup: true
