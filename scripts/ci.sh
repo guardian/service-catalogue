@@ -22,8 +22,9 @@ get_abs_filename() {
 for file in "${ROOT_DIR}/packages/*/dist/handler.js"
 do
 	filename=$(get_abs_filename $file)
-    directory=$(dirname "$filename")
-	handler_name=$(basename "$filename" .js)    
+  directory=$(dirname "$filename")
+  app_directory=$(dirname "$directory")
+  app_name=$(basename "$app_directory")
 
-    zip -FSjr "${directory}/${handler_name}.zip" "$filename"
+  zip -FSjr "${directory}/${app_name}.zip" "$filename"
 done

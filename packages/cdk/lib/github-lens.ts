@@ -48,6 +48,7 @@ export class GithubLens extends GuStack {
 		// TODO: Finalize KMS decryption of this (add permissions, add decryption to lambda(s) etc.)
 		const githubPrivateKey = new GuStringParameter(this, 'github-private-key', {
 			default: `${paramPathBase}/github-private-key`,
+			noEcho: true,
 			description:
 				'(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org',
 			fromSSM: true,

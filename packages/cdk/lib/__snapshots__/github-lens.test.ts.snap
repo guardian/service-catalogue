@@ -21,6 +21,7 @@ Object {
     "githubprivatekey": Object {
       "Default": "/TEST/deploy/github-lens/github-private-key",
       "Description": "(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org",
+      "NoEcho": true,
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },

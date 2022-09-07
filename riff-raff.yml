@@ -3,22 +3,22 @@ stacks: [playground]
 deployments:
   lambda-to-s3:
     type: aws-s3
-    app: github-lens
+    app: repo-fetcher
     sources:
-      - packages/repo-fetcher/dist/handler.zip
+      - packages/repo-fetcher/dist/repo-fetcher.zip
     parameters:
       bucket: developer-playground-dist
       cacheControl: no-cache
       publicReadAcl: false
       prefixApp: true
-  github-lens:
+  repo-fetcher:
     type: aws-lambda
     dependencies: [cdk-cloudformation]
     actions:
       - updateLambda
     parameters:
       bucketSsmLookup: true
-      fileName: handler.zip
+      fileName: repo-fetcher.zip
       lookupByTags: true
   cdk-cloudformation:
     type: cloud-formation
