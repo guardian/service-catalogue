@@ -1,5 +1,5 @@
 regions: [eu-west-1]
-stacks: [playground]
+stacks: [deploy]
 deployments:
   lambda-to-s3:
     type: aws-s3

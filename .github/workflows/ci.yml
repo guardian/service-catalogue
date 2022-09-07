@@ -43,7 +43,7 @@ jobs:
         with:
           app: github-lens
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
-          projectName: playground::github-lens
+          projectName: deploy::github-lens
           configPath: riff-raff.yml
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
