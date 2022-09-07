@@ -2,7 +2,7 @@ import config from "../../common/config";
 import { listRepositories, RepositoriesResponse, RepositoryResponse, listTeams} from "../../common/github/github";
 import { putItem } from "../../common/aws/s3";
 import {createOwnerObjects, findOwnersOfRepo, RepoAndOwner} from "../src/transformations"
-interface Repository {
+export interface Repository {
     id: number,
     name: string,
     full_name: string,
@@ -28,7 +28,7 @@ const parseDateString = (dateString: string | null | undefined): Date | null => 
     return new Date(dateString);
 }
 
-const transformRepo = (repo: RepositoryResponse, owners: string[]): Repository => {
+export const transformRepo = (repo: RepositoryResponse, owners: string[]): Repository => {
 
     return {
         id: repo.id,

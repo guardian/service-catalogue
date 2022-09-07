@@ -23,5 +23,5 @@ export const createOwnerObjects = async (config: Config, teamSlug: string): Prom
 export const findOwnersOfRepo = (repoName: string, ownerObjects: RepoAndOwner[]): string[] => {
     return ownerObjects
         .filter(repoAndOwner => repoAndOwner.repoName == repoName)
-        .map(repoAndOwner => repoAndOwner.repoName)
+        .map(repoAndOwner => repoAndOwner.teamSlug)
 }
