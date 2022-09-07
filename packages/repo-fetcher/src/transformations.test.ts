@@ -1,7 +1,9 @@
-import { RepositoryResponse } from '../../common/github/github';
-import type { Repository } from './handler';
-import { transformRepo } from './handler';
-import { findOwnersOfRepo, RepoAndOwner } from './transformations';
+import type { Repository } from './transformations';
+import {
+	findOwnersOfRepo,
+	RepoAndOwner,
+	transformRepo,
+} from './transformations';
 
 describe('repository owners', function () {
 	it('should not be returned if none exist for that repo', function () {
