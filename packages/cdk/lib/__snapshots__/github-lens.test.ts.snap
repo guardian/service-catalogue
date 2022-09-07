@@ -9,17 +9,17 @@ Object {
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "githubappid": Object {
-      "Default": "/$STAGE/$STACK/$APP/parameter",
+      "Default": "/TEST/deploy/github-lens/github-app-id",
       "Description": "(From SSM) The GitHub app ID of the app used to authenticate github-lens",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "githubinstallationid": Object {
-      "Default": "/$STAGE/$STACK/$APP/parameter",
+      "Default": "/TEST/deploy/github-lens/github-installation-id",
       "Description": "(From SSM) The GitHub installation ID of the app used to authenticate github-lens in the Guardian org",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "githubprivatekey": Object {
-      "Default": "/$STAGE/$STACK/$APP/parameter",
+      "Default": "/TEST/deploy/github-lens/github-private-key",
       "Description": "(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },

@@ -24,9 +24,11 @@ export class GithubLens extends GuStack {
 			resources: [`${dataBucket.bucketArn}/github/*`],
 		});
 
+		const paramPathBase = `/${this.stage}/${this.stack}/${app}`;
 		const repoFetcherApp = 'repo-fetcher';
 
 		const githubAppId = new GuStringParameter(this, 'github-app-id', {
+			default: `${paramPathBase}/github-app-id`,
 			description:
 				'(From SSM) The GitHub app ID of the app used to authenticate github-lens',
 			fromSSM: true,
@@ -36,6 +38,7 @@ export class GithubLens extends GuStack {
 			this,
 			'github-installation-id',
 			{
+				default: `${paramPathBase}/github-installation-id`,
 				description:
 					'(From SSM) The GitHub installation ID of the app used to authenticate github-lens in the Guardian org',
 				fromSSM: true,
@@ -44,6 +47,7 @@ export class GithubLens extends GuStack {
 
 		// TODO: Finalize KMS decryption of this (add permissions, add decryption to lambda(s) etc.)
 		const githubPrivateKey = new GuStringParameter(this, 'github-private-key', {
+			default: `${paramPathBase}/github-private-key`,
 			description:
 				'(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org',
 			fromSSM: true,
