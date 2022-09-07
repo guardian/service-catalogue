@@ -92,7 +92,7 @@ Object {
             "STAGE": "TEST",
           },
         },
-        "Handler": "cron.handler",
+        "Handler": "handler.main",
         "MemorySize": 512,
         "Role": Object {
           "Fn::GetAtt": Array [

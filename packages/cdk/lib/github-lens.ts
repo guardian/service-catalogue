@@ -59,7 +59,7 @@ export class GithubLens extends GuStack {
 			app: repoFetcherApp,
 			runtime: Runtime.NODEJS_16_X,
 			memorySize: 512,
-			handler: 'cron.handler',
+			handler: 'handler.main',
 			fileName: `${repoFetcherApp}.zip`,
 			monitoringConfiguration: {
 				toleratedErrorPercentage: 0,
