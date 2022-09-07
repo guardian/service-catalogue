@@ -1,5 +1,3 @@
-import type { Config } from '../../common/config';
-import { getReposForTeam } from '../../common/github/github';
 import type {
 	RepositoryResponse,
 	TeamRepoResponse,
@@ -76,15 +74,6 @@ export const getAdminReposFromResponse = (
 	return repos
 		.filter((repo) => repo.role_name === 'admin')
 		.map((repo) => repo.name);
-};
-
-export const createOwnerObjects = async (
-	config: Config,
-	teamSlug: string,
-): Promise<RepoAndOwner[]> => {
-	const allRepos: TeamRepoResponse = await getReposForTeam(config, teamSlug);
-	const adminRepos: string[] = getAdminReposFromResponse(allRepos);
-	return adminRepos.map((repoName) => new RepoAndOwner(teamSlug, repoName));
 };
 
 export const findOwnersOfRepo = (

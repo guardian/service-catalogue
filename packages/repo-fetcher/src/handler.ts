@@ -1,11 +1,20 @@
 import { putItem } from '../../common/aws/s3';
 import { config } from '../../common/config';
-import type { RepositoriesResponse } from '../../common/github/github';
-import { listRepositories, listTeams } from '../../common/github/github';
-import type { RepoAndOwner, Repository } from '../src/transformations';
+import type { Config } from '../../common/config';
+import type {
+	RepositoriesResponse,
+	TeamRepoResponse,
+} from '../../common/github/github';
 import {
-	createOwnerObjects,
+	getReposForTeam,
+	listRepositories,
+	listTeams,
+} from '../../common/github/github';
+import type { Repository } from '../src/transformations';
+import {
 	findOwnersOfRepo,
+	getAdminReposFromResponse,
+	RepoAndOwner,
 	transformRepo,
 } from '../src/transformations';
 
@@ -14,6 +23,15 @@ const save = (repos: Repository[]): Promise<void> => {
 	const key = `${prefix}/github/repos.json`;
 
 	return putItem(key, JSON.stringify(repos), config.dataBucketName);
+};
+
+const createOwnerObjects = async (
+	config: Config,
+	teamSlug: string,
+): Promise<RepoAndOwner[]> => {
+	const allRepos: TeamRepoResponse = await getReposForTeam(config, teamSlug);
+	const adminRepos: string[] = getAdminReposFromResponse(allRepos);
+	return adminRepos.map((repoName) => new RepoAndOwner(teamSlug, repoName));
 };
 
 export const main = async (): Promise<void> => {
