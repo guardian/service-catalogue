@@ -3,6 +3,8 @@ stacks: [deploy]
 deployments:
   repo-fetcher:
     type: aws-lambda
+    sources:
+      - packages/repo-fetcher/dist/repo-fetcher.zip
     dependencies: [cdk-cloudformation]
     actions:
       - uploadLambda
