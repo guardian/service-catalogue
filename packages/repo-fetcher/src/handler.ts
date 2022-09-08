@@ -1,75 +1,51 @@
 import { putItem } from '../../common/aws/s3';
 import { config } from '../../common/config';
+import type { Config } from '../../common/config';
 import type {
 	RepositoriesResponse,
-	RepositoryResponse,
+	TeamRepoResponse,
 } from '../../common/github/github';
-import { listRepositories } from '../../common/github/github';
-
-interface Repository {
-	id: number;
-	name: string;
-	full_name: string;
-	private: boolean;
-	description: string | null;
-	created_at: Date | null;
-	updated_at: Date | null;
-	pushed_at: Date | null;
-	size: number | undefined;
-	language: string | null | undefined;
-	archived: boolean | undefined;
-	open_issues_count: number | undefined;
-	is_template: boolean | undefined;
-	topics: string[] | undefined;
-	default_branch: string | undefined;
-}
-
-const parseDateString = (
-	dateString: string | null | undefined,
-): Date | null => {
-	if (
-		dateString === undefined ||
-		dateString === null ||
-		dateString.length === 0
-	) {
-		return null;
-	}
-	return new Date(dateString);
-};
-
-const transform = (repo: RepositoryResponse): Repository => {
-	return {
-		id: repo.id,
-		name: repo.name,
-		full_name: repo.full_name,
-		private: repo.private,
-		description: repo.description,
-		created_at: parseDateString(repo.created_at),
-		updated_at: parseDateString(repo.updated_at),
-		pushed_at: parseDateString(repo.pushed_at),
-		size: repo.size,
-		language: repo.language,
-		archived: repo.archived,
-		open_issues_count: repo.open_issues_count,
-		is_template: repo.is_template,
-		topics: repo.topics,
-		default_branch: repo.default_branch,
-	};
-};
+import {
+	getReposForTeam,
+	listRepositories,
+	listTeams,
+} from '../../common/github/github';
+import type { Repository } from '../src/transformations';
+import {
+	findOwnersOfRepo,
+	getAdminReposFromResponse,
+	RepoAndOwner,
+	transformRepo,
+} from '../src/transformations';
 
 const save = (repos: Repository[]): Promise<void> => {
-	const prefix = config.dataKeyPrefix ?? '';
+	const prefix = config.dataKeyPrefix;
 	const key = `${prefix}/github/repos.json`;
 
 	return putItem(key, JSON.stringify(repos), config.dataBucketName);
 };
 
+const createOwnerObjects = async (
+	config: Config,
+	teamSlug: string,
+): Promise<RepoAndOwner[]> => {
+	const allRepos: TeamRepoResponse = await getReposForTeam(config, teamSlug);
+	const adminRepos: string[] = getAdminReposFromResponse(allRepos);
+	return adminRepos.map((repoName) => new RepoAndOwner(teamSlug, repoName));
+};
+
 export const main = async (): Promise<void> => {
 	console.log('[INFO] starting repo-fetcher');
-
+	const teamNames = await listTeams(config);
+	const reposAndOwners: RepoAndOwner[] = (
+		await Promise.all(
+			teamNames.map((team) => createOwnerObjects(config, team.slug)),
+		)
+	).flat();
 	const reposResponse: RepositoriesResponse = await listRepositories(config);
-	const repos = reposResponse.map(transform);
-
+	const repos = reposResponse.map((response) =>
+		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
+	);
 	await save(repos);
 	console.log(`[INFO] found ${repos.length} repos`);
 	console.log(`[INFO] finishing repo-fetcher`);

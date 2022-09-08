@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A fetcher for repository metadata in your GitHub organisation",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
     "build": "esbuild src/*.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
     "esbuild": "esbuild",
     "dev": "../../node_modules/.bin/ts-node ./src/handler",
