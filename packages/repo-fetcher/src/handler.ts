@@ -10,19 +10,19 @@ import {
 	listRepositories,
 	listTeams,
 } from '../../common/github/github';
-import type { Repository } from '../src/transformations';
 import {
 	findOwnersOfRepo,
 	getAdminReposFromResponse,
 	RepoAndOwner,
 	transformRepo,
 } from '../src/transformations';
+import { validGithubTeams } from './validGithubTeams';
 
-const save = (repos: Repository[]): Promise<void> => {
+const save = (JsonString: string, path: string): Promise<void> => {
 	const prefix = config.dataKeyPrefix;
-	const key = `${prefix}/github/repos.json`;
+	const key = `${prefix}/${path}`;
 
-	return putItem(key, JSON.stringify(repos), config.dataBucketName);
+	return putItem(key, JsonString, config.dataBucketName);
 };
 
 const createOwnerObjects = async (
@@ -36,7 +36,19 @@ const createOwnerObjects = async (
 
 export const main = async (): Promise<void> => {
 	console.log('[INFO] starting repo-fetcher');
+
+	await save(JSON.stringify(validGithubTeams), 'github/teamValidity.json');
+	const productAndEngineeringTeamCount: number = validGithubTeams.filter(
+		(x) => x.engineering,
+	).length;
+	console.log(`[INFO] found ${validGithubTeams.length} already recorded teams`);
+	console.log(
+		`[INFO] found ${productAndEngineeringTeamCount} already recorded valid P&E teams`,
+	);
+
 	const teamNames = await listTeams(config);
+	console.log(`[INFO] found ${teamNames.length} github teams`);
+
 	const reposAndOwners: RepoAndOwner[] = (
 		await Promise.all(
 			teamNames.map((team) => createOwnerObjects(config, team.slug)),
@@ -46,7 +58,7 @@ export const main = async (): Promise<void> => {
 	const repos = reposResponse.map((response) =>
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
 	);
-	await save(repos);
+	await save(JSON.stringify(repos), 'github/repos.json');
 	console.log(`[INFO] found ${repos.length} repos`);
 	console.log(`[INFO] finishing repo-fetcher`);
 };

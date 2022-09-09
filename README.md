@@ -27,3 +27,7 @@ The project uses npm workspaces, and individual workspaces should have a `dev` s
 ```
 npm -w packages/repo-fetcher run dev
 ```
+
+### Testing
+
+To run all the tests, `npm run test`. To run tests under a particular path, `npm run test -w <PATH_TO_DIRECTORY>`.
