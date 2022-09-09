@@ -19,7 +19,7 @@ import {
 import { validGithubTeams } from './validGithubTeams';
 
 const save = (JsonString: string, path: string): Promise<void> => {
-	const prefix = config.dataKeyPrefix;
+	const prefix: string = config.dataKeyPrefix;
 	const key = `${prefix}/${path}`;
 
 	return putItem(key, JsonString, config.dataBucketName);
