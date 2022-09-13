@@ -22,7 +22,7 @@ export class GithubLens extends GuStack {
 		const dataPutPolicy = new PolicyStatement({
 			effect: Effect.ALLOW,
 			actions: ['s3:PutObject', 's3:PutObjectAcl'],
-			resources: [`${dataBucket.bucketArn}/github/*`],
+			resources: [`${dataBucket.bucketArn}/*`],
 		});
 
 		const kmsKeyAlias = `${this.stage}/${this.stack}/${app}`;
