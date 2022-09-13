@@ -23,8 +23,8 @@ const save = (
 	dataBucketName: string | undefined,
 	repos: Repository[],
 ): Promise<void> => {
-	const prefix = dataKeyPrefix ?? '';
-	const key = `${prefix}/github/repos.json`;
+	const prefix = dataKeyPrefix ? `${dataKeyPrefix}/` : '';
+	const key = `${prefix}github/repos.json`;
 
 	return putItem(key, JSON.stringify(repos), dataBucketName);
 };
