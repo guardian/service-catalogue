@@ -17,11 +17,11 @@ import {
 	transformRepo,
 } from '../src/transformations';
 
-const save = (JsonString: string, path: string): Promise<void> => {
+const save = (json: string, path: string): Promise<void> => {
 	const prefix: string = config.dataKeyPrefix;
 	const key = `${prefix}/${path}`;
 
-	return putItem(key, JsonString, config.dataBucketName);
+	return putItem(key, json, config.dataBucketName);
 };
 
 const createOwnerObjects = async (
