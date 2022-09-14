@@ -16,7 +16,6 @@ import {
 	RepoAndOwner,
 	transformRepo,
 } from '../src/transformations';
-import { validGithubTeams } from './validGithubTeams';
 
 const save = (JsonString: string, path: string): Promise<void> => {
 	const prefix: string = config.dataKeyPrefix;
@@ -36,15 +35,6 @@ const createOwnerObjects = async (
 
 export const main = async (): Promise<void> => {
 	console.log('[INFO] starting repo-fetcher');
-
-	await save(JSON.stringify(validGithubTeams), 'github/teamValidity.json');
-	const productAndEngineeringTeamCount: number = validGithubTeams.filter(
-		(x) => x.engineering,
-	).length;
-	console.log(`[INFO] found ${validGithubTeams.length} already recorded teams`);
-	console.log(
-		`[INFO] found ${productAndEngineeringTeamCount} already recorded valid P&E teams`,
-	);
 
 	const teamNames = await listTeams(config);
 	console.log(`[INFO] found ${teamNames.length} github teams`);
