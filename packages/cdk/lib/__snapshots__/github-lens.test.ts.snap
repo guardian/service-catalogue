@@ -26,6 +26,60 @@ Object {
     },
   },
   "Resources": Object {
+    "TESTdeploygithublensFF348C57": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "EnableKeyRotation": true,
+        "KeyPolicy": Object {
+          "Statement": Array [
+            Object {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
+    },
     "githublensdatabucketGithublens7C07FDE7": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
@@ -87,6 +141,9 @@ Object {
             },
             "GITHUB_APP_PRIVATE_KEY": Object {
               "Ref": "githubprivatekey",
+            },
+            "KMS_KEY_ID": Object {
+              "Ref": "TESTdeploygithublensFF348C57",
             },
             "STACK": "deploy",
             "STAGE": "TEST",
@@ -308,8 +365,18 @@ Object {
                         "Arn",
                       ],
                     },
-                    "/github/*",
+                    "/*",
                   ],
+                ],
+              },
+            },
+            Object {
+              "Action": "kms:Decrypt",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TESTdeploygithublensFF348C57",
+                  "Arn",
                 ],
               },
             },

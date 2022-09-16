@@ -1,5 +1,5 @@
 import { putItem } from '../../common/aws/s3';
-import { config } from '../../common/config';
+import { getConfig } from '../../common/config';
 import type { Config } from '../../common/config';
 import type {
 	RepositoriesResponse,
@@ -18,11 +18,15 @@ import {
 	transformRepo,
 } from '../src/transformations';
 
-const save = (repos: Repository[]): Promise<void> => {
-	const prefix = config.dataKeyPrefix;
-	const key = `${prefix}/github/repos.json`;
+const save = (
+	dataKeyPrefix: string | undefined,
+	dataBucketName: string | undefined,
+	repos: Repository[],
+): Promise<void> => {
+	const prefix = dataKeyPrefix ? `${dataKeyPrefix}/` : '';
+	const key = `${prefix}github/repos.json`;
 
-	return putItem(key, JSON.stringify(repos), config.dataBucketName);
+	return putItem(key, JSON.stringify(repos), dataBucketName);
 };
 
 const createOwnerObjects = async (
@@ -36,6 +40,9 @@ const createOwnerObjects = async (
 
 export const main = async (): Promise<void> => {
 	console.log('[INFO] starting repo-fetcher');
+
+	const config = await getConfig();
+
 	const teamNames = await listTeams(config);
 	const reposAndOwners: RepoAndOwner[] = (
 		await Promise.all(
@@ -46,7 +53,8 @@ export const main = async (): Promise<void> => {
 	const repos = reposResponse.map((response) =>
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
 	);
-	await save(repos);
+	await save(config.dataKeyPrefix, config.dataBucketName, repos);
+
 	console.log(`[INFO] found ${repos.length} repos`);
 	console.log(`[INFO] finishing repo-fetcher`);
 };

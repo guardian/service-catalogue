@@ -6,6 +6,7 @@ import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Key } from 'aws-cdk-lib/aws-kms';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 export class GithubLens extends GuStack {
@@ -21,7 +22,18 @@ export class GithubLens extends GuStack {
 		const dataPutPolicy = new PolicyStatement({
 			effect: Effect.ALLOW,
 			actions: ['s3:PutObject', 's3:PutObjectAcl'],
-			resources: [`${dataBucket.bucketArn}/github/*`],
+			resources: [`${dataBucket.bucketArn}/*`],
+		});
+
+		const kmsKeyAlias = `${this.stage}/${this.stack}/${app}`;
+		const kmsKey = new Key(this, kmsKeyAlias, {
+			enableKeyRotation: true,
+		});
+
+		const kmsDecryptPolicy = new PolicyStatement({
+			effect: Effect.ALLOW,
+			actions: ['kms:Decrypt'],
+			resources: [kmsKey.keyArn],
 		});
 
 		const paramPathBase = `/${this.stage}/${this.stack}/${app}`;
@@ -45,7 +57,6 @@ export class GithubLens extends GuStack {
 			},
 		);
 
-		// TODO: Finalize KMS decryption of this (add permissions, add decryption to lambda(s) etc.)
 		const githubPrivateKey = new GuStringParameter(this, 'github-private-key', {
 			default: `${paramPathBase}/github-private-key`,
 			noEcho: true,
@@ -69,12 +80,13 @@ export class GithubLens extends GuStack {
 			timeout: Duration.seconds(300),
 			environment: {
 				STAGE: this.stage,
+				KMS_KEY_ID: kmsKey.keyId,
 				GITHUB_APP_ID: githubAppId.valueAsString,
 				GITHUB_APP_PRIVATE_KEY: githubPrivateKey.valueAsString,
 				GITHUB_APP_INSTALLATION_ID: githubInstallationId.valueAsString,
 				DATA_BUCKET_NAME: dataBucket.bucketName,
 			},
-			initialPolicy: [dataPutPolicy],
+			initialPolicy: [dataPutPolicy, kmsDecryptPolicy],
 		});
 	}
 }
