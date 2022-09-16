@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: `${__dirname}/../../.env` });
 
 export type Config = {
+	dataKeyPrefix: string;
 	github: {
 		appId: string;
 		appPrivateKey: string;
@@ -23,7 +24,7 @@ export const optional = (item: string): string | undefined => process.env[item];
 export const optionalWithDefault = (item: string, _default: string): string =>
 	optional(item) ?? _default;
 
-export const config = {
+export const config: Config = {
 	github: {
 		appId: mandatory('GITHUB_APP_ID'),
 		appPrivateKey: mandatory('GITHUB_APP_PRIVATE_KEY'),
