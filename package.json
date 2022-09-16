@@ -6,6 +6,7 @@
     "test": "jest --detectOpenHandles",
     "synth": "npm run synth --workspace=cdk",
     "typecheck": "npm run typecheck --workspaces",
+    "build": "npm run build --workspace=repo-fetcher",
     "lint": "eslint packages/** --ext .ts --no-error-on-unmatched-pattern"
   },
   "author": "Guardian Developers",

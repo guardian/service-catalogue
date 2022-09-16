@@ -6,17 +6,19 @@
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
     "build": "esbuild src/*.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
     "esbuild": "esbuild",
-    "dev": "../../node_modules/.bin/ts-node ./src/handler"
+    "dev": "../../node_modules/.bin/ts-node ./src/handler",
+    "typecheck": "tsc -noEmit"
   },
   "devDependencies": {
     "esbuild": "^0.14.53"
   },
   "dependencies": {
+    "@aws-sdk/client-kms": "^3.169.0",
+    "@aws-sdk/client-s3": "^3.169.0",
     "@octokit/auth-app": "^4.0.4",
     "@octokit/core": "^4.0.4",
     "@octokit/plugin-throttling": "^4.1.0",
     "@octokit/rest": "^19.0.3",
-    "@aws-sdk/client-s3": "^3.150.0",
     "dotenv": "^16.0.1"
   }
 }
