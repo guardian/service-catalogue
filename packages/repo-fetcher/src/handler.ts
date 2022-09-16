@@ -42,8 +42,9 @@ export const main = async (): Promise<void> => {
 	console.log('[INFO] starting repo-fetcher');
 
 	const config = await getConfig();
-
 	const teamNames = await listTeams(config);
+	console.log(`[INFO] found ${teamNames.length} github teams`);
+
 	const reposAndOwners: RepoAndOwner[] = (
 		await Promise.all(
 			teamNames.map((team) => createOwnerObjects(config, team.slug)),

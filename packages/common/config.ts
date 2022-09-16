@@ -4,13 +4,13 @@ import { decrypt } from './aws/kms';
 dotenv.config({ path: `${__dirname}/../../.env` });
 
 export type Config = {
+	dataKeyPrefix: string;
 	github: {
 		appId: string;
 		appPrivateKey: string;
 		appInstallationId: string;
 	};
 	dataBucketName: string | undefined;
-	dataKeyPrefix: string | undefined;
 };
 
 export const mandatoryEncrypted = async (
