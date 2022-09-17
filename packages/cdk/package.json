@@ -7,7 +7,7 @@
     "synth": "cdk synth --path-metadata false --version-reporting false"
   },
   "devDependencies": {
-    "@guardian/cdk": "47.0.0",
+    "@guardian/cdk": "47.3.3",
     "aws-cdk": "2.32.1",
     "aws-cdk-lib": "2.32.1",
     "constructs": "10.1.50",
