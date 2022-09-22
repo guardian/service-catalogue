@@ -8,14 +8,28 @@ beforeEach(() => {
 	kmsMock.reset();
 });
 
-describe('test', function () {
-	it('should fail', async function () {
+describe('decrypt', function () {
+	it('should return the string representation of data decrypted by KMS', async function () {
+		const expectedOutput = 'foo';
+		const enc = new TextEncoder();
+		const expectedOutputArrayBuffer = enc.encode(expectedOutput);
+
 		kmsMock.on(DecryptCommand).resolves({
-			Plaintext: Buffer.from('boo', 'base64'),
+			Plaintext: expectedOutputArrayBuffer,
 		});
 
-		const bat = await decrypt('foo', 'bar');
+		const actualOutput = await decrypt('keyId', expectedOutput);
 
-		expect(bat).toBe(false);
+		expect(actualOutput).toBe(expectedOutput);
+	});
+
+	it('should return undefined if the decrypt operation fails', async function () {
+		const expectedOutput = 'plaintext';
+
+		kmsMock.on(DecryptCommand).rejects();
+
+		const actualOutput = await decrypt('keyId', expectedOutput);
+
+		expect(actualOutput).toBe(undefined);
 	});
 });

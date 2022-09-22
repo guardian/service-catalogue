@@ -26,6 +26,6 @@ export const decrypt = async (
 			console.log('[ERROR] Plaintext is missing from DecryptCommandOutput!');
 		}
 	} catch (e) {
-		console.log(`[ERROR] ${(e as Error).message}`);
+		console.log(`[ERROR] Decryption failed: ${(e as Error).message}`);
 	}
 };
