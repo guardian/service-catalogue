@@ -9,7 +9,7 @@ beforeEach(() => {
 });
 
 describe('decrypt', function () {
-	it('should return the string representation of data decrypted by KMS', async function () {
+	it('returns the string representation of data decrypted by KMS', async function () {
 		const expectedOutput = 'foo';
 		const enc = new TextEncoder();
 		const expectedOutputArrayBuffer = enc.encode(expectedOutput);
@@ -23,7 +23,7 @@ describe('decrypt', function () {
 		expect(actualOutput).toBe(expectedOutput);
 	});
 
-	it('should return undefined if the decrypt operation fails', async function () {
+	it('returns undefined if the decrypt operation fails', async function () {
 		const expectedOutput = 'plaintext';
 
 		kmsMock.on(DecryptCommand).rejects();
