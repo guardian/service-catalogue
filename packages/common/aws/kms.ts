@@ -9,16 +9,23 @@ export const decrypt = async (
 	cipherText: string,
 	keyId: string,
 ): Promise<string | undefined> => {
-	// TODO: Surround this in try/catch
 	const decryptCommand = new DecryptCommand({
 		CiphertextBlob: Buffer.from(cipherText, 'base64'),
 		KeyId: keyId,
 	});
 
-	const { Plaintext } = await kmsClient.send(decryptCommand);
+	try {
+		const { Plaintext } = await kmsClient.send(decryptCommand);
+		console.log('[INFO] Decrypt command sent successfully');
 
-	if (Plaintext) {
-		const plaintextString = Buffer.from(Plaintext).toString();
-		return plaintextString;
+		if (Plaintext) {
+			console.log('[INFO] Ciphertext successfully decrypted');
+			const plaintextString = Buffer.from(Plaintext).toString();
+			return plaintextString;
+		} else {
+			console.log('[ERROR] Plaintext is missing from DecryptCommandOutput!');
+		}
+	} catch (e) {
+		console.log(`[ERROR] Decryption failed: ${(e as Error).message}`);
 	}
 };
