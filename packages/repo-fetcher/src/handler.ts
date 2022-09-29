@@ -50,6 +50,7 @@ export const main = async (): Promise<void> => {
 			teamNames.map((team) => createOwnerObjects(config, team.slug)),
 		)
 	).flat();
+
 	const reposResponse: RepositoriesResponse = await listRepositories(config);
 	const repos = reposResponse.map((response) =>
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
