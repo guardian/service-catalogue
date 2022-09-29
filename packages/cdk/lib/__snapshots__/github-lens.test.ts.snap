@@ -2,6 +2,18 @@
 
 exports[`The GithubLens stack matches the snapshot 1`] = `
 Object {
+  "Metadata": Object {
+    "gu:cdk:constructs": Array [
+      "GuS3Bucket",
+      "GuStringParameter",
+      "GuStringParameter",
+      "GuStringParameter",
+      "GuDistributionBucketParameter",
+      "GuScheduledLambda",
+      "GuLambdaErrorPercentageAlarm",
+    ],
+    "gu:cdk:version": "TEST",
+  },
   "Parameters": Object {
     "DistributionBucketName": Object {
       "Default": "/account/services/artifact.bucket",
@@ -415,7 +427,7 @@ Object {
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/*",
+                      "/deploy/TEST/repo-fetcher/repo-fetcher.zip",
                     ],
                   ],
                 },
