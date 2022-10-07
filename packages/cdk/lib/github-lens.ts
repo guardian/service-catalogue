@@ -5,7 +5,11 @@ import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import {
+	ApiKey,
+	MethodOptions,
+	MethodResponse,
 	MockIntegration,
+	Model,
 	PassthroughBehavior,
 	RestApi,
 } from 'aws-cdk-lib/aws-apigateway';
@@ -79,15 +83,28 @@ export class GithubLens extends GuStack {
 
 		const getReposIntegration = new MockIntegration({
 			integrationResponses: [{ statusCode: '200' }],
-			passthroughBehavior: PassthroughBehavior.NEVER,
+			passthroughBehavior: PassthroughBehavior.WHEN_NO_TEMPLATES,
 			requestTemplates: {
-				'application/json': '{ "statgusCode": 200 }',
+				'application/json': '{ "statusCode": 200 }',
 			},
 		});
 
 		const reposResource = api.root.addResource('repos');
 
-		reposResource.addMethod('GET', getReposIntegration);
+		const methodResponses: MethodResponse[] = [
+			{
+				statusCode: '200',
+				responseModels: {
+					'application/json': Model.EMPTY_MODEL,
+				},
+			},
+		];
+
+		const methodOptions: MethodOptions = {
+			methodResponses,
+		};
+
+		reposResource.addMethod('GET', getReposIntegration, methodOptions);
 		// API Definition ends
 
 		// TODO: Make DATA_KEY_PREFIX configurable

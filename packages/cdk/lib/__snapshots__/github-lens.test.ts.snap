@@ -212,7 +212,7 @@ Object {
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublensDeployment30D22A9E4591515aca2e53b0da112a1cec7907e5": Object {
+    "githublensDeployment30D22A9Eaafaf39cfa71bbf6520c78c43f4906d1": Object {
       "DependsOn": Array [
         "githublensreposGETF199EB37",
         "githublensrepos4B767F30",
@@ -231,7 +231,7 @@ Object {
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "githublensDeployment30D22A9E4591515aca2e53b0da112a1cec7907e5",
+          "Ref": "githublensDeployment30D22A9Eaafaf39cfa71bbf6520c78c43f4906d1",
         },
         "RestApiId": Object {
           "Ref": "githublens9CE5C757",
@@ -318,12 +318,20 @@ Object {
               "StatusCode": "200",
             },
           ],
-          "PassthroughBehavior": "NEVER",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
           "RequestTemplates": Object {
-            "application/json": "{ \\"statgusCode\\": 200 }",
+            "application/json": "{ \\"statusCode\\": 200 }",
           },
           "Type": "MOCK",
         },
+        "MethodResponses": Array [
+          Object {
+            "ResponseModels": Object {
+              "application/json": "Empty",
+            },
+            "StatusCode": "200",
+          },
+        ],
         "ResourceId": Object {
           "Ref": "githublensrepos4B767F30",
         },
