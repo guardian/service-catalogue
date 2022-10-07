@@ -1,17 +1,18 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { GuScheduledLambda } from '@guardian/cdk';
 import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
-import { ApiDefinition, SpecRestApi } from 'aws-cdk-lib/aws-apigateway';
+import {
+	MockIntegration,
+	PassthroughBehavior,
+	RestApi,
+} from 'aws-cdk-lib/aws-apigateway';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Key } from 'aws-cdk-lib/aws-kms';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import yaml from 'js-yaml';
 
 export class GithubLens extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
@@ -69,20 +70,25 @@ export class GithubLens extends GuStack {
 			fromSSM: true,
 		});
 
-		const yamlPath = path.join(
-			__dirname,
-			'..',
-			'..',
-			'api',
-			'src',
-			'api-definition.yaml',
-		);
-		const openApiYaml = fs.readFileSync(yamlPath).toString();
-		const yamlString = yaml.load(openApiYaml);
-
-		new SpecRestApi(this, 'lens-api', {
-			apiDefinition: ApiDefinition.fromInline(yamlString),
+		// API Definition starts
+		const api = new RestApi(this, 'github-lens', {
+			restApiName: 'GitHub Metadata API',
+			description:
+				"Returns information about The Guardian's various GitHub projects.",
 		});
+
+		const getReposIntegration = new MockIntegration({
+			integrationResponses: [{ statusCode: '200' }],
+			passthroughBehavior: PassthroughBehavior.NEVER,
+			requestTemplates: {
+				'application/json': '{ "statgusCode": 200 }',
+			},
+		});
+
+		const reposResource = api.root.addResource('repos');
+
+		reposResource.addMethod('GET', getReposIntegration);
+		// API Definition ends
 
 		// TODO: Make DATA_KEY_PREFIX configurable
 		new GuScheduledLambda(this, `${repoFetcherApp}-lambda`, {
