@@ -9,14 +9,10 @@ export class GithubLensApi extends Stack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
-		//this constant also exists in github-lens.ts and should probably be pulled out.
-		const app = 'github-lens';
+		const openApiYaml = fs.readFileSync('../api/src/openApi.yaml').toString();
+		const yamlString = yaml.load(openApiYaml);
 
-		const yamlString = yaml.load(
-			fs.readFileSync('../api/src/openapi.yaml').toString(),
-		);
-
-		const api = new SpecRestApi(this, 'lens-api', {
+		new SpecRestApi(this, 'lens-api', {
 			apiDefinition: ApiDefinition.fromInline(yamlString),
 		});
 	}
