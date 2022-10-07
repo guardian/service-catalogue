@@ -1,5 +1,6 @@
 import type { APIGatewayProxyEvent } from 'aws-lambda';
 
+// This is taken from https://github.com/awsdocs/aws-lambda-developer-guide/blob/main/sample-apps/nodejs-apig/event.jsong
 export const exampleEvent: APIGatewayProxyEvent = {
 	resource: '/',
 	path: '/',
