@@ -19,7 +19,7 @@ get_abs_filename() {
 }
 
 # Create zip files for guardian/actions-riff-raff@v1 GHA
-for file in "${ROOT_DIR}/packages/*/dist/handler.js"
+for file in $(find $ROOT_DIR/packages/*/dist/handler.js)
 do
   filename=$(get_abs_filename $file)
   directory=$(dirname "$filename")
