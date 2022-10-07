@@ -6,7 +6,7 @@ set -x
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR="${DIR}/.."
 
-npm ci
+npm ci --include=dev
 npm run typecheck
 npm run lint
 npm run test
