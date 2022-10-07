@@ -13,7 +13,8 @@
   "author": "Guardian Developers",
   "workspaces": [
     "packages/repo-fetcher",
-    "packages/cdk"
+    "packages/cdk",
+    "packages/api"
   ],
   "devDependencies": {
     "@guardian/eslint-config-typescript": "^1.0.2",
