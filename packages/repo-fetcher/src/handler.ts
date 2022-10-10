@@ -26,7 +26,7 @@ const save = (
 ): Promise<void> => {
 	const key = join(dataKeyPrefix, 'github', 'repos.json');
 
-	return putItem(key, JSON.stringify(repos), dataBucketName);
+	return putItem(key, repos, dataBucketName);
 };
 
 const createOwnerObjects = async (
