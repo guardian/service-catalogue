@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { putItem } from '../../common/aws/s3';
 import { getConfig } from '../../common/config';
 import type { Config } from '../../common/config';
@@ -19,12 +20,11 @@ import {
 } from '../src/transformations';
 
 const save = (
-	dataKeyPrefix: string | undefined,
+	dataKeyPrefix: string,
 	dataBucketName: string | undefined,
 	repos: Repository[],
 ): Promise<void> => {
-	const prefix = dataKeyPrefix ? `${dataKeyPrefix}/` : '';
-	const key = `${prefix}github/repos.json`;
+	const key = join(dataKeyPrefix, 'github', 'repos.json');
 
 	return putItem(key, JSON.stringify(repos), dataBucketName);
 };

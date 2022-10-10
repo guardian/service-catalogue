@@ -57,6 +57,6 @@ export const getConfig = async (): Promise<Config> => {
 			appInstallationId: mandatory('GITHUB_APP_INSTALLATION_ID'),
 		},
 		dataBucketName: optional('DATA_BUCKET_NAME'),
-		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', 'DEV/'),
+		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', 'DEV'),
 	};
 };
