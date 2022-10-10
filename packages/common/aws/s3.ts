@@ -5,9 +5,9 @@ const s3Client = new S3Client({
 	region,
 });
 
-export const putItem = async (
+export const putItem = async <T>(
 	key: string,
-	body: unknown,
+	body: T,
 	dataBucketName: string | undefined,
 ): Promise<void> => {
 	if (dataBucketName) {
