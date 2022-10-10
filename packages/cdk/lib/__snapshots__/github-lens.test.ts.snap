@@ -488,9 +488,28 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repofetcherlambdarepofetcherlambdacron0805CB6002E": Object {
+    "repofetcherlambdarepofetcherlambdacron080AllowEventRuleGithubLensrepofetcherlambda584DB7587F4F78A1": Object {
       "Properties": Object {
-        "ScheduleExpression": "cron(0 8 ? * * *)",
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "repofetcherlambda3F53E41B",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "repofetcherlambdarepofetcherlambdacron080B8E1215D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "repofetcherlambdarepofetcherlambdacron080B8E1215D": Object {
+      "Properties": Object {
+        "ScheduleExpression": "cron(0 8 * * ? *)",
         "State": "ENABLED",
         "Targets": Array [
           Object {
@@ -505,25 +524,6 @@ Object {
         ],
       },
       "Type": "AWS::Events::Rule",
-    },
-    "repofetcherlambdarepofetcherlambdacron080AllowEventRuleGithubLensrepofetcherlambda584DB7584EDCB1FC": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "repofetcherlambda3F53E41B",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
-            "repofetcherlambdarepofetcherlambdacron0805CB6002E",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
   },
 }
