@@ -12,7 +12,7 @@ const generateProject = (name) => {
 module.exports = {
 	verbose: true,
 	testEnvironment: 'node',
-	projects: ['cdk', 'api', 'repo-fetcher', 'teams-fetcher', 'common'].map(
+	projects: ['cdk', 'api', 'repo-fetcher', 'common'].map(
 		generateProject,
 	),
 };
