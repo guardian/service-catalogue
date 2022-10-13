@@ -12,7 +12,8 @@ The project consists of the following subprojects:
 
 ## Local Development
 
-If this your first time developing github-lens, you should run
+If this your first time developing github-lens, you should run:
+
 ```
 ./scripts/setup.sh
 ```
