@@ -9,20 +9,21 @@ Object {
       "GuStringParameter",
       "GuStringParameter",
       "GuDistributionBucketParameter",
+      "GuApiLambda",
       "GuScheduledLambda",
       "GuLambdaErrorPercentageAlarm",
     ],
     "gu:cdk:version": "TEST",
   },
   "Outputs": Object {
-    "githublensEndpoint50F83866": Object {
+    "apilambdaapiEndpoint824141A5": Object {
       "Value": Object {
         "Fn::Join": Array [
           "",
           Array [
             "https://",
             Object {
-              "Ref": "githublens9CE5C757",
+              "Ref": "apilambdaapi69E59617",
             },
             ".execute-api.",
             Object {
@@ -34,7 +35,7 @@ Object {
             },
             "/",
             Object {
-              "Ref": "githublensDeploymentStageprod251885B9",
+              "Ref": "apilambdaapiDeploymentStageprod650AEF27",
             },
             "/",
           ],
@@ -120,11 +121,222 @@ Object {
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublens9CE5C757": Object {
+    "apilambda052863DD": Object {
+      "DependsOn": Array [
+        "apilambdaServiceRoleDefaultPolicyCFD83890",
+        "apilambdaServiceRoleF2D743F5",
+      ],
       "Properties": Object {
-        "Description": "Returns information about The Guardian's various GitHub projects.",
-        "Name": "GitHub Metadata API",
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "deploy/TEST/github-lens/api.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "APP": "github-lens",
+            "STACK": "deploy",
+            "STAGE": "TEST",
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 512,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "apilambdaServiceRoleF2D743F5",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
         "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "apilambdaServiceRoleDefaultPolicyCFD83890": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/deploy/TEST/github-lens/api.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/github-lens",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:ssm:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/github-lens/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "apilambdaServiceRoleDefaultPolicyCFD83890",
+        "Roles": Array [
+          Object {
+            "Ref": "apilambdaServiceRoleF2D743F5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "apilambdaServiceRoleF2D743F5": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "apilambdaapi69E59617": Object {
+      "Properties": Object {
+        "Description": "API that proxies all requests to Lambda",
+        "Name": "deploy-TEST-api",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens",
+          },
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -145,15 +357,136 @@ Object {
       },
       "Type": "AWS::ApiGateway::RestApi",
     },
-    "githublensAccount9C8A7CF3": Object {
+    "apilambdaapiANYA6E56FB9": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "apilambda052863DD",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Fn::GetAtt": Array [
+            "apilambdaapi69E59617",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": Object {
+          "Ref": "apilambdaapi69E59617",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "apilambdaapiANYApiPermissionGithubLensapilambdaapi4E08563EANYF4BAC28F": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "apilambda052863DD",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "apilambdaapi69E59617",
+              },
+              "/",
+              Object {
+                "Ref": "apilambdaapiDeploymentStageprod650AEF27",
+              },
+              "/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "apilambdaapiANYApiPermissionTestGithubLensapilambdaapi4E08563EANY8D62D09A": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "apilambda052863DD",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "apilambdaapi69E59617",
+              },
+              "/test-invoke-stage/*/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "apilambdaapiAccount50F5C584": Object {
       "DeletionPolicy": "Retain",
       "DependsOn": Array [
-        "githublens9CE5C757",
+        "apilambdaapi69E59617",
       ],
       "Properties": Object {
         "CloudWatchRoleArn": Object {
           "Fn::GetAtt": Array [
-            "githublensCloudWatchRole4719BF07",
+            "apilambdaapiCloudWatchRoleB5394908",
             "Arn",
           ],
         },
@@ -161,7 +494,7 @@ Object {
       "Type": "AWS::ApiGateway::Account",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublensCloudWatchRole4719BF07": Object {
+    "apilambdaapiCloudWatchRoleB5394908": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
@@ -192,6 +525,10 @@ Object {
         ],
         "Tags": Array [
           Object {
+            "Key": "App",
+            "Value": "github-lens",
+          },
+          Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -212,32 +549,37 @@ Object {
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublensDeployment30D22A9Eaafaf39cfa71bbf6520c78c43f4906d1": Object {
+    "apilambdaapiDeploymentE6A861718aa3f63b2ecf011f4a180f23c47bf28c": Object {
       "DependsOn": Array [
-        "githublensreposGETF199EB37",
-        "githublensrepos4B767F30",
+        "apilambdaapiproxyANY97D1C3FE",
+        "apilambdaapiproxy7287C00B",
+        "apilambdaapiANYA6E56FB9",
       ],
       "Properties": Object {
-        "Description": "Returns information about The Guardian's various GitHub projects.",
+        "Description": "API that proxies all requests to Lambda",
         "RestApiId": Object {
-          "Ref": "githublens9CE5C757",
+          "Ref": "apilambdaapi69E59617",
         },
       },
       "Type": "AWS::ApiGateway::Deployment",
     },
-    "githublensDeploymentStageprod251885B9": Object {
+    "apilambdaapiDeploymentStageprod650AEF27": Object {
       "DependsOn": Array [
-        "githublensAccount9C8A7CF3",
+        "apilambdaapiAccount50F5C584",
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "githublensDeployment30D22A9Eaafaf39cfa71bbf6520c78c43f4906d1",
+          "Ref": "apilambdaapiDeploymentE6A861718aa3f63b2ecf011f4a180f23c47bf28c",
         },
         "RestApiId": Object {
-          "Ref": "githublens9CE5C757",
+          "Ref": "apilambdaapi69E59617",
         },
         "StageName": "prod",
         "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens",
+          },
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -257,6 +599,139 @@ Object {
         ],
       },
       "Type": "AWS::ApiGateway::Stage",
+    },
+    "apilambdaapiproxy7287C00B": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "apilambdaapi69E59617",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "{proxy+}",
+        "RestApiId": Object {
+          "Ref": "apilambdaapi69E59617",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "apilambdaapiproxyANY97D1C3FE": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "apilambda052863DD",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "apilambdaapiproxy7287C00B",
+        },
+        "RestApiId": Object {
+          "Ref": "apilambdaapi69E59617",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "apilambdaapiproxyANYApiPermissionGithubLensapilambdaapi4E08563EANYproxyE6E4492B": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "apilambda052863DD",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "apilambdaapi69E59617",
+              },
+              "/",
+              Object {
+                "Ref": "apilambdaapiDeploymentStageprod650AEF27",
+              },
+              "/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "apilambdaapiproxyANYApiPermissionTestGithubLensapilambdaapi4E08563EANYproxyD65CC0A4": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "apilambda052863DD",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "apilambdaapi69E59617",
+              },
+              "/test-invoke-stage/*/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "githublensdatabucketGithublens7C07FDE7": Object {
       "DeletionPolicy": "Retain",
@@ -292,54 +767,6 @@ Object {
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
-    },
-    "githublensrepos4B767F30": Object {
-      "Properties": Object {
-        "ParentId": Object {
-          "Fn::GetAtt": Array [
-            "githublens9CE5C757",
-            "RootResourceId",
-          ],
-        },
-        "PathPart": "repos",
-        "RestApiId": Object {
-          "Ref": "githublens9CE5C757",
-        },
-      },
-      "Type": "AWS::ApiGateway::Resource",
-    },
-    "githublensreposGETF199EB37": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "GET",
-        "Integration": Object {
-          "IntegrationResponses": Array [
-            Object {
-              "StatusCode": "200",
-            },
-          ],
-          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "RequestTemplates": Object {
-            "application/json": "{ \\"statusCode\\": 200 }",
-          },
-          "Type": "MOCK",
-        },
-        "MethodResponses": Array [
-          Object {
-            "ResponseModels": Object {
-              "application/json": "Empty",
-            },
-            "StatusCode": "200",
-          },
-        ],
-        "ResourceId": Object {
-          "Ref": "githublensrepos4B767F30",
-        },
-        "RestApiId": Object {
-          "Ref": "githublens9CE5C757",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
     },
     "repofetcherlambda3F53E41B": Object {
       "DependsOn": Array [

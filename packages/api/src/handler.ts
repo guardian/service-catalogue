@@ -7,14 +7,12 @@ export const main = async (
 	console.log('[INFO] starting');
 	console.log(event);
 
-	const result: APIGatewayProxyResult = await Promise.resolve({
+	return Promise.resolve({
 		statusCode: 200,
 		body: 'ok',
 	});
-
-	return result;
 };
 
 if (require.main === module) {
-	void (async () => await main(exampleEvent))();
+	void (async () => main(exampleEvent))();
 }
