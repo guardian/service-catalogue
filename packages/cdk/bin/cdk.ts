@@ -9,4 +9,3 @@ new GithubLens(app, 'GithubLens-INFRA', {
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
 });
-//new GithubLens(app, "my-stack-PROD", {stack: 'deploy', stage: 'PROD'});
