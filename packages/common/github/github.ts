@@ -88,15 +88,48 @@ export const listRepositories = async (
 	);
 };
 
-export const getTeams(stage: Stage, client: Octokit) {
-  return stage=== "DEV" ? listTeamForLocalDevelopment() : listTeams(client)
+export const getTeams = (stage: Stage, client: Octokit) => {
+  return stage=== "DEV" ? listTeamsForLocalDevelopment(client) : listTeams(client)
 }
 
-const listTeamForLocalDevelopment = async (client: Octokit): Promise<TeamsResponse> => {
-  return Promise.resolve() // TODO!
-}
+// const listTeamForLocalDevelopment = async (client: Octokit): Promise<TeamsResponse> => {
+// 	return await client.paginate(
+// 		client.teams.list,
+// 		{
+// 			org: 'guardian',
+// 			per_page: defaultPageSize,
+// 		},
+// 		(response) => response.data,
+// 	);
+//
+// 	// return await client.
+// 	// gh api \
+// 	//   -H "Accept: application/vnd.github+json" \
+// 	//   /orgs/guardian/teams/devx-operations
+//
+// }
 
-const listTeams = async (client: Octokit): Promise<TeamsResponse> => {
+let teamCounter=0;
+const numberOfTeams=2
+export const listTeamsForLocalDevelopment = async (client: Octokit): Promise<TeamsResponse> => {
+	return await client.paginate(
+		client.teams.list,
+		{
+			org: 'guardian',
+			per_page: 1
+		},
+		(response, done) => {
+			teamCounter += response.data.length;
+			if (teamCounter >= numberOfTeams) {
+				done();
+			}
+			return response.data
+		}
+	)
+};
+
+
+export const listTeams = async (client: Octokit): Promise<TeamsResponse> => {
   return await client.paginate(
 		client.teams.list,
 		{

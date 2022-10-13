@@ -7,10 +7,10 @@ import type {
 	TeamRepoResponse,
 } from '../../common/github/github';
 import {
-    getOctokit,
-	getReposForTeam,
+	getOctokit,
+	getReposForTeam, getTeams,
 	listRepositories,
-	listTeams,
+	listTeams, listTeamsForLocalDevelopment,
 } from '../../common/github/github';
 import type { Repository } from "./transformations";
 import {
@@ -34,7 +34,7 @@ const createOwnerObjects = async (
     client: Octokit,
 	teamSlug: string,
 ): Promise<RepoAndOwner[]> => {
-    const allRepos: TeamRepoResponse = await getReposForTeam(client, teamSlug);
+	const allRepos: TeamRepoResponse = await getReposForTeam(client, teamSlug);
 	const adminRepos: string[] = getAdminReposFromResponse(allRepos);
 	return adminRepos.map((repoName) => new RepoAndOwner(teamSlug, repoName));
 };
@@ -44,9 +44,14 @@ export const main = async (): Promise<void> => {
 
 	const config = await getConfig();
     const client = getOctokit(config);
-    const teamNames = await listTeams(client);
 
-    console.log(`[INFO] found ${teamNames.length} github teams`);
+	const stage=config.stage
+	console.log(`[INFO] stage is ${stage}`);
+
+	const teamNames = await getTeams(config.stage,client)
+
+	console.log(`[INFO] found ${teamNames.length} github teams`);
+
 
 	const reposAndOwners: RepoAndOwner[] = (
 		await Promise.all(
@@ -54,11 +59,21 @@ export const main = async (): Promise<void> => {
 		)
 	).flat();
 
+	console.log(`[INFO] ran createOwnerObjects`);
+
 	const reposResponse: RepositoriesResponse = await listRepositories(client);
+
+	console.log(`[INFO] ran listRepositories`);
+
 	const repos = reposResponse.map((response) =>
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
 	);
+
+	console.log(`[INFO] ran transformRepo`);
+
 	await save(config.dataKeyPrefix, config.dataBucketName, repos);
+
+	console.log(`[INFO] ran save to bucket`);
 
 	console.log(`[INFO] found ${repos.length} repos`);
 	console.log(`[INFO] finishing repo-fetcher`);
