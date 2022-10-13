@@ -30,7 +30,7 @@ export type RepositoryResponse = RepositoriesResponse[number];
 
 let _octokit: Octokit | undefined;
 
-const getOctokit = (config: Config): Octokit => {
+export const getOctokit = (config: Config): Octokit => {
 	if (_octokit) {
 		return _octokit;
 	}
@@ -76,11 +76,10 @@ const getOctokit = (config: Config): Octokit => {
 };
 
 export const listRepositories = async (
-	config: Config,
+	client: Octokit,
 ): Promise<RepositoriesResponse> => {
-	const octokit = getOctokit(config);
-	return await octokit.paginate(
-		octokit.repos.listForOrg,
+	return await client.paginate(
+		client.repos.listForOrg,
 		{
 			org: 'guardian',
 			per_page: defaultPageSize,
@@ -89,10 +88,9 @@ export const listRepositories = async (
 	);
 };
 
-export const listTeams = async (config: Config): Promise<TeamsResponse> => {
-	const octokit = getOctokit(config);
-	return await octokit.paginate(
-		octokit.teams.list,
+export const listTeams = async (client: Octokit): Promise<TeamsResponse> => {
+	return await client.paginate(
+		client.teams.list,
 		{
 			org: 'guardian',
 			per_page: defaultPageSize,
@@ -102,12 +100,11 @@ export const listTeams = async (config: Config): Promise<TeamsResponse> => {
 };
 
 export const getReposForTeam = async (
-	config: Config,
+	client: Octokit,
 	teamName: string,
 ): Promise<TeamRepoResponse> => {
-	const octokit = getOctokit(config);
-	const request = await octokit.paginate(
-		octokit.teams.listReposInOrg,
+	return await client.paginate(
+		client.teams.listReposInOrg,
 		{
 			org: 'guardian',
 			team_slug: teamName,
@@ -115,5 +112,4 @@ export const getReposForTeam = async (
 		},
 		(response) => response.data,
 	);
-	return request;
 };

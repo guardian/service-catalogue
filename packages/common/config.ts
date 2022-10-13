@@ -3,6 +3,7 @@ import { decrypt } from './aws/kms';
 
 dotenv.config({ path: `${__dirname}/../../.env` });
 
+export type Stage = 'PROD' | 'CODE' | 'DEV';
 export type Config = {
 	dataKeyPrefix: string;
 	github: {
@@ -11,6 +12,7 @@ export type Config = {
 		appInstallationId: string;
 	};
 	dataBucketName: string | undefined;
+	stage: Stage;
 };
 
 export const mandatoryEncrypted = async (
@@ -49,6 +51,7 @@ export const getConfig = async (): Promise<Config> => {
 		'GITHUB_APP_PRIVATE_KEY',
 		configDecryptionKeyId,
 	);
+	const stage = optionalWithDefault('STAGE', 'DEV') as Stage;
 
 	return {
 		github: {
@@ -57,6 +60,7 @@ export const getConfig = async (): Promise<Config> => {
 			appInstallationId: mandatory('GITHUB_APP_INSTALLATION_ID'),
 		},
 		dataBucketName: optional('DATA_BUCKET_NAME'),
-		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', 'DEV'),
+		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', stage),
+		stage,
 	};
 };
