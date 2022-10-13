@@ -44,7 +44,7 @@ jobs:
           app: github-lens
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
           projectName: deploy::github-lens
-          configPath: packages/cdk/cdk.out/riff-raff.yml
+          configPath: packages/cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
             cdk.out:
               - packages/cdk/cdk.out
