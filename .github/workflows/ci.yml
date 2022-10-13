@@ -39,11 +39,17 @@ jobs:
         run: ./scripts/ci.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@v1.1.3
+        uses: guardian/actions-riff-raff@v2
         with:
           app: github-lens
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
           projectName: deploy::github-lens
-          configPath: riff-raff.yml
+          configPath: packages/cdk/cdk.out/riff-raff.yml
+          contentDirectories: |
+            cdk.out:
+              - packages/cdk/cdk.out
+            repo-fetcher:
+              - packages/repo-fetcher/dist/repo-fetcher.zip
+
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
