@@ -1,4 +1,5 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import path from 'path';
 
 const region = 'eu-west-1';
 const s3Client = new S3Client({
@@ -18,10 +19,10 @@ export const putItem = async <T>(
 			ContentType: 'application/json; charset=utf-8',
 			ACL: 'private',
 		});
-
+        const s3Path = path.join("s3://", dataBucketName, key);
 		try {
 			await s3Client.send(command);
-			console.log('[INFO] Item uploaded to s3 successfully');
+            console.log(`[INFO] Item uploaded to s3 successfully to: ${s3Path}`);
 		} catch (e) {
 			console.log(`[ERROR] ${(e as Error).message}`);
 		}
