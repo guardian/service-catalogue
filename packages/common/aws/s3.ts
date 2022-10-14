@@ -18,10 +18,11 @@ export const putItem = async <T>(
 			ContentType: 'application/json; charset=utf-8',
 			ACL: 'private',
 		});
-
 		try {
 			await s3Client.send(command);
-			console.log('[INFO] Item uploaded to s3 successfully');
+			console.log(
+				`[INFO] Item uploaded to s3 successfully to: s3://${dataBucketName}/${key}`,
+			);
 		} catch (e) {
 			console.log(`[ERROR] ${(e as Error).message}`);
 		}
