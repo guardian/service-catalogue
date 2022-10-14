@@ -76,7 +76,7 @@ export class GithubLens extends GuStack {
 			monitoringConfiguration: noMonitoring,
 			app,
 			api: {
-				id: 'api',
+				id: 'github-lens',
 				description: 'API that proxies all requests to Lambda',
 			},
 		});
