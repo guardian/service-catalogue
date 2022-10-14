@@ -14,4 +14,4 @@ if (process.env.LOCAL === 'true') {
 	});
 }
 
-export const handler = serverlessExpress({ app });
+export const main = serverlessExpress({ app });

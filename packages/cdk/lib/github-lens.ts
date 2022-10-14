@@ -66,7 +66,7 @@ export class GithubLens extends GuStack {
 		const noMonitoring: NoMonitoring = { noMonitoring: true };
 
 		const apiLambda = new GuApiLambda(this, `${apiApp}-lambda`, {
-			fileName: `${apiApp}.zip`,
+			fileName: 'api.zip',
 			handler: 'handler.main',
 			runtime: Runtime.NODEJS_16_X,
 			monitoringConfiguration: noMonitoring,

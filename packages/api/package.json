@@ -5,8 +5,8 @@
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
     "prebuild": "rm -rf dist",
-    "build": "tsc --noEmit & esbuild src/index.ts --bundle --minify --outfile=dist/index.js --external:aws-sdk --platform=node",
-    "dev": "LOCAL=true ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc --noEmit & esbuild src/handler.ts --bundle --minify --outfile=dist/handler.js --external:aws-sdk --platform=node",
+    "dev": "LOCAL=true ts-node-dev --respawn --transpile-only src/handler.ts",
     "start": "npm run dev",
     "typecheck": "tsc -noEmit"
   },

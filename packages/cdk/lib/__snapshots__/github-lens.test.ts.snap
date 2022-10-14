@@ -180,7 +180,7 @@ Object {
           "S3Bucket": Object {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/INFRA/github-lens-api/github-lens-api.zip",
+          "S3Key": "deploy/INFRA/github-lens-api/api.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -263,7 +263,7 @@ Object {
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/INFRA/github-lens-api/github-lens-api.zip",
+                      "/deploy/INFRA/github-lens-api/api.zip",
                     ],
                   ],
                 },
