@@ -10,6 +10,7 @@ Object {
       "GuStringParameter",
       "GuDistributionBucketParameter",
       "GuApiLambda",
+      "GuCertificate",
       "GuScheduledLambda",
       "GuLambdaErrorPercentageAlarm",
     ],
@@ -50,24 +51,72 @@ Object {
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "githubappid": Object {
-      "Default": "/TEST/deploy/github-lens/github-app-id",
+      "Default": "/INFRA/deploy/github-lens/github-app-id",
       "Description": "(From SSM) The GitHub app ID of the app used to authenticate github-lens",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "githubinstallationid": Object {
-      "Default": "/TEST/deploy/github-lens/github-installation-id",
+      "Default": "/INFRA/deploy/github-lens/github-installation-id",
       "Description": "(From SSM) The GitHub installation ID of the app used to authenticate github-lens in the Guardian org",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "githubprivatekey": Object {
-      "Default": "/TEST/deploy/github-lens/github-private-key",
+      "Default": "/INFRA/deploy/github-lens/github-private-key",
       "Description": "(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org",
       "NoEcho": true,
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": Object {
-    "TESTdeploygithublensFF348C57": Object {
+    "CertificateGithublens25494A00": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "DomainName": "github-lens.gutools.co.uk",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DNS": Object {
+      "Properties": Object {
+        "Name": "github-lens.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "githublensapilambdagithublensdomainAF6EC35F",
+              "RegionalDomainName",
+            ],
+          },
+        ],
+        "Stage": "INFRA",
+        "TTL": 86400,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
+    "INFRAdeploygithublens2B0B3293": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "EnableKeyRotation": true,
@@ -114,7 +163,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
@@ -131,13 +180,13 @@ Object {
           "S3Bucket": Object {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/github-lens-api/github-lens-api.zip",
+          "S3Key": "deploy/INFRA/github-lens-api/github-lens-api.zip",
         },
         "Environment": Object {
           "Variables": Object {
             "APP": "github-lens-api",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "INFRA",
           },
         },
         "Handler": "handler.main",
@@ -168,7 +217,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
         "Timeout": 30,
@@ -214,7 +263,7 @@ Object {
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/github-lens-api/github-lens-api.zip",
+                      "/deploy/INFRA/github-lens-api/github-lens-api.zip",
                     ],
                   ],
                 },
@@ -235,7 +284,7 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/github-lens-api",
+                    ":parameter/INFRA/deploy/github-lens-api",
                   ],
                 ],
               },
@@ -258,10 +307,40 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/github-lens-api/*",
+                    ":parameter/INFRA/deploy/github-lens-api/*",
                   ],
                 ],
               },
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "githublensdatabucketGithublens7C07FDE7",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "githublensdatabucketGithublens7C07FDE7",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
@@ -322,7 +401,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
@@ -513,14 +592,14 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublensapilambdagithublensDeploymentF3C58D95ef32a25e73d20ee567532c281f12b6c9": Object {
+    "githublensapilambdagithublensDeploymentF3C58D95e46845091e43c98251412ef4837752d2": Object {
       "DependsOn": Array [
         "githublensapilambdagithublensproxyANYFD25689D",
         "githublensapilambdagithublensproxy306AC689",
@@ -540,7 +619,7 @@ Object {
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "githublensapilambdagithublensDeploymentF3C58D95ef32a25e73d20ee567532c281f12b6c9",
+          "Ref": "githublensapilambdagithublensDeploymentF3C58D95e46845091e43c98251412ef4837752d2",
         },
         "RestApiId": Object {
           "Ref": "githublensapilambdagithublensFC5CBB44",
@@ -565,7 +644,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
@@ -574,7 +653,7 @@ Object {
     "githublensapilambdagithublensFC5CBB44": Object {
       "Properties": Object {
         "Description": "API that proxies all requests to Lambda",
-        "Name": "deploy-TEST-github-lens",
+        "Name": "deploy-INFRA-github-lens",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -594,11 +673,61 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
       "Type": "AWS::ApiGateway::RestApi",
+    },
+    "githublensapilambdagithublensdomainAF6EC35F": Object {
+      "Properties": Object {
+        "DomainName": "github-lens.gutools.co.uk",
+        "EndpointConfiguration": Object {
+          "Types": Array [
+            "REGIONAL",
+          ],
+        },
+        "RegionalCertificateArn": Object {
+          "Ref": "CertificateGithublens25494A00",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens-api",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::DomainName",
+    },
+    "githublensapilambdagithublensdomainMapGithubLensgithublensapilambdagithublens0420DDC236C3D399": Object {
+      "Properties": Object {
+        "DomainName": Object {
+          "Ref": "githublensapilambdagithublensdomainAF6EC35F",
+        },
+        "RestApiId": Object {
+          "Ref": "githublensapilambdagithublensFC5CBB44",
+        },
+        "Stage": Object {
+          "Ref": "githublensapilambdagithublensDeploymentStageprod05B08EE8",
+        },
+      },
+      "Type": "AWS::ApiGateway::BasePathMapping",
     },
     "githublensapilambdagithublensproxy306AC689": Object {
       "Properties": Object {
@@ -761,7 +890,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
@@ -778,7 +907,7 @@ Object {
           "S3Bucket": Object {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/repo-fetcher/repo-fetcher.zip",
+          "S3Key": "deploy/INFRA/repo-fetcher/repo-fetcher.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -796,10 +925,10 @@ Object {
               "Ref": "githubprivatekey",
             },
             "KMS_KEY_ID": Object {
-              "Ref": "TESTdeploygithublensFF348C57",
+              "Ref": "INFRAdeploygithublens2B0B3293",
             },
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "INFRA",
           },
         },
         "Handler": "handler.main",
@@ -830,7 +959,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
         "Timeout": 300,
@@ -877,7 +1006,7 @@ Object {
               Object {
                 "Ref": "repofetcherlambda3F53E41B",
               },
-              " lambda in TEST",
+              " lambda in INFRA",
             ],
           ],
         },
@@ -992,7 +1121,7 @@ Object {
           },
           Object {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "INFRA",
           },
         ],
       },
@@ -1003,32 +1132,11 @@ Object {
         "PolicyDocument": Object {
           "Statement": Array [
             Object {
-              "Action": Array [
-                "s3:PutObject",
-                "s3:PutObjectAcl",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "githublensdatabucketGithublens7C07FDE7",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            Object {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "TESTdeploygithublensFF348C57",
+                  "INFRAdeploygithublens2B0B3293",
                   "Arn",
                 ],
               },
@@ -1068,7 +1176,7 @@ Object {
                       Object {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/repo-fetcher/repo-fetcher.zip",
+                      "/deploy/INFRA/repo-fetcher/repo-fetcher.zip",
                     ],
                   ],
                 },
@@ -1089,7 +1197,7 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/repo-fetcher",
+                    ":parameter/INFRA/deploy/repo-fetcher",
                   ],
                 ],
               },
@@ -1112,10 +1220,47 @@ Object {
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/repo-fetcher/*",
+                    ":parameter/INFRA/deploy/repo-fetcher/*",
                   ],
                 ],
               },
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "githublensdatabucketGithublens7C07FDE7",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "githublensdatabucketGithublens7C07FDE7",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",

@@ -3,7 +3,7 @@ import type { Express } from 'express';
 import request from 'supertest';
 import { buildApp } from './app';
 
-describe('Galaxies auth lambda', () => {
+describe('github-lens api lambda', () => {
 	let app: Express;
 
 	beforeEach(() => {
