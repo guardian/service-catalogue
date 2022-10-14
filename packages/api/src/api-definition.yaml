@@ -11,7 +11,7 @@ servers:
 paths:
  /repos:
    get:
-     summary: Returns a list of repo objects, representing unarchived repositories in the guardian organisation.
+     summary: Returns a list of repo objects, representing un-archived repositories in the guardian organisation.
      description: Optional extended description in CommonMark or HTML.
      parameters:
        - name: limit

@@ -14,6 +14,34 @@ Object {
     ],
     "gu:cdk:version": "TEST",
   },
+  "Outputs": Object {
+    "lensapiEndpoint62764F13": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "lensapi6D87001F",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "lensapiDeploymentStageprodDBC7B676",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
   "Parameters": Object {
     "DistributionBucketName": Object {
       "Default": "/account/services/artifact.bucket",
@@ -126,6 +154,256 @@ Object {
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
+    },
+    "lensapi6D87001F": Object {
+      "Properties": Object {
+        "Body": Object {
+          "components": Object {
+            "x-amazon-apigateway-integrations": Object {
+              "mocked": Object {
+                "type": "mock",
+              },
+            },
+          },
+          "info": Object {
+            "description": "Returns= information about The Guardian's various GitHub projects.",
+            "title": "GitHub Metadata API",
+            "version": "0.0.1",
+          },
+          "openapi": "3.0.0",
+          "paths": Object {
+            "/repos": Object {
+              "get": Object {
+                "description": "Optional extended description in CommonMark or HTML.",
+                "parameters": Array [
+                  Object {
+                    "description": "Maximum number of entries to return",
+                    "in": "path",
+                    "name": "limit",
+                    "schema": Object {
+                      "default": 100,
+                      "format": "int64",
+                      "maximum": 100,
+                      "minimum": 1,
+                      "type": "integer",
+                    },
+                  },
+                  Object {
+                    "description": "Pagination mechanism.",
+                    "in": "path",
+                    "name": "offset",
+                    "schema": Object {
+                      "default": 0,
+                      "format": "int64",
+                      "minimum": 0,
+                      "type": "integer",
+                    },
+                  },
+                ],
+                "responses": Object {
+                  "200": Object {
+                    "content": Object {
+                      "application/json": Object {
+                        "schema": Object {
+                          "items": Object {
+                            "properties": Object {
+                              "default_branch": Object {
+                                "description": "Typically master or main.",
+                                "type": "string",
+                              },
+                              "name": Object {
+                                "description": "Short name of the repo",
+                                "type": "string",
+                              },
+                              "owners": Object {
+                                "description": "Which GitHub teams are designated as repository 'Owners'",
+                                "items": Object {
+                                  "type": "string",
+                                },
+                                "type": "array",
+                              },
+                              "topics": Object {
+                                "description": "How has the repository been tagged? Used to determine production status.",
+                                "items": Object {
+                                  "type": "string",
+                                },
+                                "type": "array",
+                              },
+                            },
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                    },
+                    "description": "A JSON array of user names",
+                  },
+                  "404": Object {
+                    "content": Object {
+                      "application/json": Object {
+                        "schema": Object {
+                          "type": "string",
+                        },
+                      },
+                    },
+                    "description": "An error message, if the user requests data that doesn't exist (ie the offset is too large)",
+                  },
+                  "500": Object {
+                    "content": Object {
+                      "application/json": Object {
+                        "schema": Object {
+                          "type": "string",
+                        },
+                      },
+                    },
+                    "description": "Internal server error",
+                  },
+                },
+                "summary": "Returns a list of repo objects, representing un-archived repositories in the guardian organisation.",
+                "x-amazon-apigateway-integration": Object {
+                  "$ref": "#/components/x-amazon-apigateway-integrations/mocked",
+                },
+              },
+            },
+          },
+          "servers": Array [
+            Object {
+              "description": "Optional server description, e.g. Main (production) server",
+              "url": "http://repos.gutools.co.uk/v1",
+            },
+            Object {
+              "description": "Optional server description, e.g. Internal staging server for testing",
+              "url": "http://repos.test.gutools.co.uk/v1",
+            },
+          ],
+        },
+        "Name": "lens-api",
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "lensapiAccount6B4C6C4E": Object {
+      "DeletionPolicy": "Retain",
+      "DependsOn": Array [
+        "lensapi6D87001F",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "lensapiCloudWatchRole67910D5E",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "lensapiCloudWatchRole67910D5E": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "lensapiDeploymentA1B5CA24dd1313c773e74549f225347d00b5446d": Object {
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "lensapi6D87001F",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "lensapiDeploymentStageprodDBC7B676": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "lensapiDeploymentA1B5CA24dd1313c773e74549f225347d00b5446d",
+        },
+        "RestApiId": Object {
+          "Ref": "lensapi6D87001F",
+        },
+        "StageName": "prod",
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ApiGateway::Stage",
     },
     "repofetcherlambda3F53E41B": Object {
       "DependsOn": Array [
