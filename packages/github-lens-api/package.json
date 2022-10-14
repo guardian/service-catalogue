@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "github-lens-api",
   "version": "0.0.1",
   "description": "API that exposes a snapshot of your GitHub organisation",
   "scripts": {

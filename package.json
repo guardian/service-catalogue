@@ -7,7 +7,7 @@
     "start": "npm -w packages/repo-fetcher run dev",
     "synth": "npm run synth --workspace=cdk",
     "typecheck": "npm run typecheck --workspaces",
-    "build": "npm run build --workspace=repo-fetcher --workspace=api",
+    "build": "npm run build --workspace=repo-fetcher --workspace=github-lens-api",
     "lint": "eslint packages/** --ext .ts --no-error-on-unmatched-pattern"
   },
   "author": "Guardian Developers",
