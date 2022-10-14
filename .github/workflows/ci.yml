@@ -50,7 +50,7 @@ jobs:
               - packages/cdk/cdk.out
             repo-fetcher:
               - packages/repo-fetcher/dist/repo-fetcher.zip
-            github-lens:
+            github-lens-api:
               - packages/api/dist/api.zip
 
     env:

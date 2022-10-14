@@ -39,7 +39,7 @@ export class GithubLens extends GuStack {
 
 		const paramPathBase = `/${this.stage}/${this.stack}/${app}`;
 		const repoFetcherApp = 'repo-fetcher';
-		const apiApp = 'api';
+		const apiApp = 'github-lens-api';
 
 		const githubAppId = new GuStringParameter(this, 'github-app-id', {
 			default: `${paramPathBase}/github-app-id`,
@@ -74,7 +74,7 @@ export class GithubLens extends GuStack {
 			handler: 'handler.main',
 			runtime: Runtime.NODEJS_16_X,
 			monitoringConfiguration: noMonitoring,
-			app,
+			app: apiApp,
 			api: {
 				id: 'github-lens',
 				description: 'API that proxies all requests to Lambda',
