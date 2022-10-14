@@ -1,7 +1,11 @@
 import 'source-map-support/register';
-import { App } from 'aws-cdk-lib';
+import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
 import { GithubLens } from '../lib/github-lens';
 
-const app = new App();
+const app = new GuRootExperimental();
 
-new GithubLens(app, 'GithubLens-CODE', { stack: 'deploy', stage: 'CODE' });
+new GithubLens(app, 'GithubLens-INFRA', {
+	stack: 'deploy',
+	stage: 'INFRA',
+	env: { region: 'eu-west-1' },
+});
