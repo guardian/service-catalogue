@@ -140,7 +140,7 @@ Object {
             "STAGE": "TEST",
           },
         },
-        "Handler": "index.handler",
+        "Handler": "handler.main",
         "MemorySize": 512,
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -148,7 +148,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Tags": Array [
           Object {
             "Key": "App",

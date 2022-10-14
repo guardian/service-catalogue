@@ -71,8 +71,8 @@ export class GithubLens extends GuStack {
 
 		new GuApiLambda(this, `${apiApp}-lambda`, {
 			fileName: `${apiApp}.zip`,
-			handler: 'index.handler',
-			runtime: Runtime.NODEJS_14_X,
+			handler: 'handler.main',
+			runtime: Runtime.NODEJS_16_X,
 			monitoringConfiguration: noMonitoring,
 			app,
 			api: {
