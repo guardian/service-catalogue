@@ -3,7 +3,14 @@
   "version": "0.0.1",
   "description": "API that exposes a snapshot of your GitHub organisation",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
+    "build": "esbuild src/*.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
+    "esbuild": "esbuild",
+    "dev": "../../node_modules/.bin/ts-node ./src/handler",
     "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.106",
+    "esbuild": "^0.14.53"
   }
 }

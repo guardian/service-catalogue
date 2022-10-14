@@ -4,10 +4,8 @@ import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
+import type { MethodOptions, MethodResponse } from 'aws-cdk-lib/aws-apigateway';
 import {
-	ApiKey,
-	MethodOptions,
-	MethodResponse,
 	MockIntegration,
 	Model,
 	PassthroughBehavior,
