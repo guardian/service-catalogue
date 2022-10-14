@@ -16,14 +16,14 @@ Object {
     "gu:cdk:version": "TEST",
   },
   "Outputs": Object {
-    "apilambdaapiEndpoint824141A5": Object {
+    "apilambdagithublensEndpointE3B69DA2": Object {
       "Value": Object {
         "Fn::Join": Array [
           "",
           Array [
             "https://",
             Object {
-              "Ref": "apilambdaapi69E59617",
+              "Ref": "apilambdagithublens2EE5CEE0",
             },
             ".execute-api.",
             Object {
@@ -35,7 +35,7 @@ Object {
             },
             "/",
             Object {
-              "Ref": "apilambdaapiDeploymentStageprod650AEF27",
+              "Ref": "apilambdagithublensDeploymentStageprod9C5BA2F0",
             },
             "/",
           ],
@@ -328,10 +328,10 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "apilambdaapi69E59617": Object {
+    "apilambdagithublens2EE5CEE0": Object {
       "Properties": Object {
         "Description": "API that proxies all requests to Lambda",
-        "Name": "deploy-TEST-api",
+        "Name": "deploy-TEST-github-lens",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -357,7 +357,7 @@ Object {
       },
       "Type": "AWS::ApiGateway::RestApi",
     },
-    "apilambdaapiANYA6E56FB9": Object {
+    "apilambdagithublensANY1E665ABB": Object {
       "Properties": Object {
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
@@ -390,17 +390,17 @@ Object {
         },
         "ResourceId": Object {
           "Fn::GetAtt": Array [
-            "apilambdaapi69E59617",
+            "apilambdagithublens2EE5CEE0",
             "RootResourceId",
           ],
         },
         "RestApiId": Object {
-          "Ref": "apilambdaapi69E59617",
+          "Ref": "apilambdagithublens2EE5CEE0",
         },
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "apilambdaapiANYApiPermissionGithubLensapilambdaapi4E08563EANYF4BAC28F": Object {
+    "apilambdagithublensANYApiPermissionGithubLensapilambdagithublens994B5CF8ANYBE9563CC": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -428,11 +428,11 @@ Object {
               },
               ":",
               Object {
-                "Ref": "apilambdaapi69E59617",
+                "Ref": "apilambdagithublens2EE5CEE0",
               },
               "/",
               Object {
-                "Ref": "apilambdaapiDeploymentStageprod650AEF27",
+                "Ref": "apilambdagithublensDeploymentStageprod9C5BA2F0",
               },
               "/*/",
             ],
@@ -441,7 +441,7 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "apilambdaapiANYApiPermissionTestGithubLensapilambdaapi4E08563EANY8D62D09A": Object {
+    "apilambdagithublensANYApiPermissionTestGithubLensapilambdagithublens994B5CF8ANY14A4AE4E": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -469,7 +469,7 @@ Object {
               },
               ":",
               Object {
-                "Ref": "apilambdaapi69E59617",
+                "Ref": "apilambdagithublens2EE5CEE0",
               },
               "/test-invoke-stage/*/",
             ],
@@ -478,15 +478,15 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "apilambdaapiAccount50F5C584": Object {
+    "apilambdagithublensAccountBA2B8C53": Object {
       "DeletionPolicy": "Retain",
       "DependsOn": Array [
-        "apilambdaapi69E59617",
+        "apilambdagithublens2EE5CEE0",
       ],
       "Properties": Object {
         "CloudWatchRoleArn": Object {
           "Fn::GetAtt": Array [
-            "apilambdaapiCloudWatchRoleB5394908",
+            "apilambdagithublensCloudWatchRole57F9BA99",
             "Arn",
           ],
         },
@@ -494,7 +494,7 @@ Object {
       "Type": "AWS::ApiGateway::Account",
       "UpdateReplacePolicy": "Retain",
     },
-    "apilambdaapiCloudWatchRoleB5394908": Object {
+    "apilambdagithublensCloudWatchRole57F9BA99": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
@@ -549,30 +549,30 @@ Object {
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "apilambdaapiDeploymentE6A861718aa3f63b2ecf011f4a180f23c47bf28c": Object {
+    "apilambdagithublensDeployment5100A45721722487b71921c22455ee7785cfa2fa": Object {
       "DependsOn": Array [
-        "apilambdaapiproxyANY97D1C3FE",
-        "apilambdaapiproxy7287C00B",
-        "apilambdaapiANYA6E56FB9",
+        "apilambdagithublensproxyANY1E0659D5",
+        "apilambdagithublensproxy8F5FE545",
+        "apilambdagithublensANY1E665ABB",
       ],
       "Properties": Object {
         "Description": "API that proxies all requests to Lambda",
         "RestApiId": Object {
-          "Ref": "apilambdaapi69E59617",
+          "Ref": "apilambdagithublens2EE5CEE0",
         },
       },
       "Type": "AWS::ApiGateway::Deployment",
     },
-    "apilambdaapiDeploymentStageprod650AEF27": Object {
+    "apilambdagithublensDeploymentStageprod9C5BA2F0": Object {
       "DependsOn": Array [
-        "apilambdaapiAccount50F5C584",
+        "apilambdagithublensAccountBA2B8C53",
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "apilambdaapiDeploymentE6A861718aa3f63b2ecf011f4a180f23c47bf28c",
+          "Ref": "apilambdagithublensDeployment5100A45721722487b71921c22455ee7785cfa2fa",
         },
         "RestApiId": Object {
-          "Ref": "apilambdaapi69E59617",
+          "Ref": "apilambdagithublens2EE5CEE0",
         },
         "StageName": "prod",
         "Tags": Array [
@@ -600,22 +600,22 @@ Object {
       },
       "Type": "AWS::ApiGateway::Stage",
     },
-    "apilambdaapiproxy7287C00B": Object {
+    "apilambdagithublensproxy8F5FE545": Object {
       "Properties": Object {
         "ParentId": Object {
           "Fn::GetAtt": Array [
-            "apilambdaapi69E59617",
+            "apilambdagithublens2EE5CEE0",
             "RootResourceId",
           ],
         },
         "PathPart": "{proxy+}",
         "RestApiId": Object {
-          "Ref": "apilambdaapi69E59617",
+          "Ref": "apilambdagithublens2EE5CEE0",
         },
       },
       "Type": "AWS::ApiGateway::Resource",
     },
-    "apilambdaapiproxyANY97D1C3FE": Object {
+    "apilambdagithublensproxyANY1E0659D5": Object {
       "Properties": Object {
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
@@ -647,15 +647,15 @@ Object {
           },
         },
         "ResourceId": Object {
-          "Ref": "apilambdaapiproxy7287C00B",
+          "Ref": "apilambdagithublensproxy8F5FE545",
         },
         "RestApiId": Object {
-          "Ref": "apilambdaapi69E59617",
+          "Ref": "apilambdagithublens2EE5CEE0",
         },
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "apilambdaapiproxyANYApiPermissionGithubLensapilambdaapi4E08563EANYproxyE6E4492B": Object {
+    "apilambdagithublensproxyANYApiPermissionGithubLensapilambdagithublens994B5CF8ANYproxyDA1C2D57": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -683,11 +683,11 @@ Object {
               },
               ":",
               Object {
-                "Ref": "apilambdaapi69E59617",
+                "Ref": "apilambdagithublens2EE5CEE0",
               },
               "/",
               Object {
-                "Ref": "apilambdaapiDeploymentStageprod650AEF27",
+                "Ref": "apilambdagithublensDeploymentStageprod9C5BA2F0",
               },
               "/*/*",
             ],
@@ -696,7 +696,7 @@ Object {
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "apilambdaapiproxyANYApiPermissionTestGithubLensapilambdaapi4E08563EANYproxyD65CC0A4": Object {
+    "apilambdagithublensproxyANYApiPermissionTestGithubLensapilambdagithublens994B5CF8ANYproxy8486A4A2": Object {
       "Properties": Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
@@ -724,7 +724,7 @@ Object {
               },
               ":",
               Object {
-                "Ref": "apilambdaapi69E59617",
+                "Ref": "apilambdagithublens2EE5CEE0",
               },
               "/test-invoke-stage/*/*",
             ],
