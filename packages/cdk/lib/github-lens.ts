@@ -81,7 +81,6 @@ export class GithubLens extends GuStack {
 			},
 		});
 
-		// TODO: Make DATA_KEY_PREFIX configurable
 		new GuScheduledLambda(this, `${repoFetcherApp}-lambda`, {
 			app: repoFetcherApp,
 			runtime: Runtime.NODEJS_16_X,
