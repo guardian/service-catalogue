@@ -7,7 +7,8 @@ describe('The GithubLens stack', () => {
 		const app = new App();
 		const stack = new GithubLens(app, 'GithubLens', {
 			stack: 'deploy',
-			stage: 'TEST',
+			stage: 'INFRA',
+			domainName: 'github-lens.gutools.co.uk',
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();

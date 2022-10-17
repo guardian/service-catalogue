@@ -1,6 +1,9 @@
-import { GuScheduledLambda } from '@guardian/cdk';
-import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { GuApiLambda, GuScheduledLambda } from '@guardian/cdk';
+import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
+import type { NoMonitoring } from '@guardian/cdk/lib/constructs/cloudwatch';
 import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
+import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
@@ -9,20 +12,18 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Key } from 'aws-cdk-lib/aws-kms';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
+interface GithubLensProps extends GuStackProps {
+	domainName: string;
+}
+
 export class GithubLens extends GuStack {
-	constructor(scope: App, id: string, props: GuStackProps) {
+	constructor(scope: App, id: string, props: GithubLensProps) {
 		super(scope, id, props);
 
 		const app = 'github-lens';
 
 		const dataBucket = new GuS3Bucket(this, `${app}-data-bucket`, {
 			app,
-		});
-
-		const dataPutPolicy = new PolicyStatement({
-			effect: Effect.ALLOW,
-			actions: ['s3:PutObject', 's3:PutObjectAcl'],
-			resources: [`${dataBucket.bucketArn}/*`],
 		});
 
 		const kmsKeyAlias = `${this.stage}/${this.stack}/${app}`;
@@ -38,6 +39,7 @@ export class GithubLens extends GuStack {
 
 		const paramPathBase = `/${this.stage}/${this.stack}/${app}`;
 		const repoFetcherApp = 'repo-fetcher';
+		const apiApp = 'github-lens-api';
 
 		const githubAppId = new GuStringParameter(this, 'github-app-id', {
 			default: `${paramPathBase}/github-app-id`,
@@ -65,28 +67,63 @@ export class GithubLens extends GuStack {
 			fromSSM: true,
 		});
 
-		// TODO: Make DATA_KEY_PREFIX configurable
-		new GuScheduledLambda(this, `${repoFetcherApp}-lambda`, {
-			app: repoFetcherApp,
-			runtime: Runtime.NODEJS_16_X,
-			memorySize: 512,
+		const noMonitoring: NoMonitoring = { noMonitoring: true };
+
+		const apiLambda = new GuApiLambda(this, `${apiApp}-lambda`, {
+			fileName: `${apiApp}.zip`,
 			handler: 'handler.main',
-			fileName: `${repoFetcherApp}.zip`,
-			monitoringConfiguration: {
-				toleratedErrorPercentage: 0,
-				snsTopicName: 'devx-alerts',
+			runtime: Runtime.NODEJS_16_X,
+			monitoringConfiguration: noMonitoring,
+			app: apiApp,
+			api: {
+				id: 'github-lens',
+				description: 'API that proxies all requests to Lambda',
 			},
-			rules: [{ schedule: Schedule.cron({ minute: '0', hour: '8' }) }],
-			timeout: Duration.seconds(300),
-			environment: {
-				STAGE: this.stage,
-				KMS_KEY_ID: kmsKey.keyId,
-				GITHUB_APP_ID: githubAppId.valueAsString,
-				GITHUB_APP_PRIVATE_KEY: githubPrivateKey.valueAsString,
-				GITHUB_APP_INSTALLATION_ID: githubInstallationId.valueAsString,
-				DATA_BUCKET_NAME: dataBucket.bucketName,
-			},
-			initialPolicy: [dataPutPolicy, kmsDecryptPolicy],
 		});
+
+		const domain = apiLambda.api.addDomainName('domain', {
+			domainName: props.domainName,
+			certificate: new GuCertificate(this, {
+				app: app,
+				domainName: props.domainName,
+			}),
+		});
+
+		new GuCname(this, 'DNS', {
+			app: app,
+			ttl: Duration.days(1),
+			domainName: props.domainName,
+			resourceRecord: domain.domainNameAliasDomainName,
+		});
+
+		const scheduledLambda = new GuScheduledLambda(
+			this,
+			`${repoFetcherApp}-lambda`,
+			{
+				app: repoFetcherApp,
+				runtime: Runtime.NODEJS_16_X,
+				memorySize: 512,
+				handler: 'handler.main',
+				fileName: `${repoFetcherApp}.zip`,
+				monitoringConfiguration: {
+					toleratedErrorPercentage: 0,
+					snsTopicName: 'devx-alerts',
+				},
+				rules: [{ schedule: Schedule.cron({ minute: '0', hour: '8' }) }],
+				timeout: Duration.seconds(300),
+				environment: {
+					STAGE: this.stage,
+					KMS_KEY_ID: kmsKey.keyId,
+					GITHUB_APP_ID: githubAppId.valueAsString,
+					GITHUB_APP_PRIVATE_KEY: githubPrivateKey.valueAsString,
+					GITHUB_APP_INSTALLATION_ID: githubInstallationId.valueAsString,
+					DATA_BUCKET_NAME: dataBucket.bucketName,
+				},
+				initialPolicy: [kmsDecryptPolicy],
+			},
+		);
+
+		dataBucket.grantRead(apiLambda);
+		dataBucket.grantReadWrite(scheduledLambda);
 	}
 }

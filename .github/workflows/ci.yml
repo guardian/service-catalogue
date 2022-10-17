@@ -50,6 +50,8 @@ jobs:
               - packages/cdk/cdk.out
             repo-fetcher:
               - packages/repo-fetcher/dist/repo-fetcher.zip
+            github-lens-api:
+              - packages/github-lens-api/dist/github-lens-api.zip
 
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
