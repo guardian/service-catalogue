@@ -42,13 +42,14 @@ const createOwnerObjects = async (
 
 export const main = async (): Promise<void> => {
 	configureLogging(getLogLevel(process.env['LOG_LEVEL']));
-	console.log('[INFO] starting repo-fetcher');
+
+	console.log('Starting repo-fetcher');
 
 	const config = await getConfig();
 	const client = getOctokit(config);
 	const teamNames = await listTeams(client);
 
-	console.log(`[INFO] found ${teamNames.length} github teams`);
+	console.log(`Found ${teamNames.length} github teams`);
 
 	const reposAndOwners: RepoAndOwner[] = (
 		await Promise.all(
@@ -62,8 +63,8 @@ export const main = async (): Promise<void> => {
 	);
 	await save(config.dataKeyPrefix, config.dataBucketName, repos);
 
-	console.log(`[INFO] found ${repos.length} repos`);
-	console.log(`[INFO] finishing repo-fetcher`);
+	console.log(`Found ${repos.length} repos`);
+	console.log(`Finishing repo-fetcher`);
 };
 
 if (require.main === module) {
