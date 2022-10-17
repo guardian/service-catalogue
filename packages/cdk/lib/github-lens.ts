@@ -12,8 +12,12 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Key } from 'aws-cdk-lib/aws-kms';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
+interface GithubLensProps extends GuStackProps {
+	domainName: string;
+}
+
 export class GithubLens extends GuStack {
-	constructor(scope: App, id: string, props: GuStackProps, domainName: string) {
+	constructor(scope: App, id: string, props: GithubLensProps) {
 		super(scope, id, props);
 
 		const app = 'github-lens';
@@ -78,17 +82,17 @@ export class GithubLens extends GuStack {
 		});
 
 		const domain = apiLambda.api.addDomainName('domain', {
-			domainName: domainName,
+			domainName: props.domainName,
 			certificate: new GuCertificate(this, {
 				app: app,
-				domainName: domainName,
+				domainName: props.domainName,
 			}),
 		});
 
 		new GuCname(this, 'DNS', {
 			app: app,
 			ttl: Duration.days(1),
-			domainName: domainName,
+			domainName: props.domainName,
 			resourceRecord: domain.domainNameAliasDomainName,
 		});
 
