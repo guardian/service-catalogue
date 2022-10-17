@@ -12,6 +12,7 @@ import {
 	listRepositories,
 	listTeams,
 } from '../../common/github/github';
+import { configureLogging, getLogLevel } from '../../common/log/log';
 import type { Repository } from './transformations';
 import {
 	findOwnersOfRepo,
@@ -40,6 +41,7 @@ const createOwnerObjects = async (
 };
 
 export const main = async (): Promise<void> => {
+	configureLogging(getLogLevel(process.env['LOG_LEVEL']));
 	console.log('[INFO] starting repo-fetcher');
 
 	const config = await getConfig();

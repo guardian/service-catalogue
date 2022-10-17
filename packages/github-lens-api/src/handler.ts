@@ -1,6 +1,9 @@
 import serverlessExpress from '@vendia/serverless-express';
 import { config as dotEnvConfig } from 'dotenv';
+import { configureLogging, getLogLevel } from '../../common/log/log';
 import { buildApp } from './app';
+
+configureLogging(getLogLevel(process.env['LOG_LEVEL']));
 
 dotEnvConfig();
 
