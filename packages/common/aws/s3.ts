@@ -21,12 +21,12 @@ export const putItem = async <T>(
 		try {
 			await s3Client.send(command);
 			console.log(
-				`[INFO] Item uploaded to s3 successfully to: s3://${dataBucketName}/${key}`,
+				`Item uploaded to s3 successfully to: s3://${dataBucketName}/${key}`,
 			);
 		} catch (e) {
-			console.log(`[ERROR] ${(e as Error).message}`);
+			console.error(`${(e as Error).message}`);
 		}
 	} else {
-		console.log('[WARN] No data bucket configured, skipping putItem');
+		console.warn('No data bucket configured, skipping putItem');
 	}
 };
