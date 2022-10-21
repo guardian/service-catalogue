@@ -24,9 +24,16 @@ The setup script will download a starter `.env`.
 
 ### Running locally
 
-The project uses npm workspaces, and individual workspaces should have a `dev` script that can be run to execute e.g.
+The project uses npm workspaces, and individual workspaces should have a `dev` script that can be run to execute 
+
+To fetch the data you need to run
 ```
 npm -w packages/repo-fetcher run dev
+```
+
+This will start the api on localhost:3232
+```
+npm -w packages/github-lens-api run dev
 ```
 
 ### Testing
