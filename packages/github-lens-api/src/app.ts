@@ -55,6 +55,24 @@ export function buildApp(): Express {
 					info: 'info about riffraff repo',
 					testlink: 'http://localhost:3232/riffraff',
 				},
+				// https://galaxies.gutools.co.uk/data/people.json
+				// https://galaxies.gutools.co.uk/data/teams.json
+				// https://galaxies.gutools.co.uk/data/streams.json
+				{
+					endpoint: 'people',
+					info: 'galaxies info about people',
+					testlink: 'http://localhost:3232/people',
+				},
+				{
+					endpoint: 'stream',
+					info: 'galaxies info about streams',
+					testlink: 'http://localhost:3232/stream',
+				},
+				{
+					endpoint: 'teams',
+					info: 'galaxies info about teamss',
+					testlink: 'http://localhost:3232/teams',
+				},
 			]);
 		});
 
@@ -93,6 +111,33 @@ export function buildApp(): Express {
 
 		app.get('/riffraff', (req: express.Request, res: express.Response) => {
 			res.status(200).json(JSON.parse(riffraff));
+		});
+
+		const people = readFileSync(
+			join(__dirname, '../../../test/people.json'),
+			'utf8',
+		);
+
+		app.get('/people', (req: express.Request, res: express.Response) => {
+			res.status(200).json(JSON.parse(people));
+		});
+
+		const teams = readFileSync(
+			join(__dirname, '../../../test/teams.json'),
+			'utf8',
+		);
+
+		app.get('/teams', (req: express.Request, res: express.Response) => {
+			res.status(200).json(JSON.parse(teams));
+		});
+
+		const streams = readFileSync(
+			join(__dirname, '../../../test/streams.json'),
+			'utf8',
+		);
+
+		app.get('/streams', (req: express.Request, res: express.Response) => {
+			res.status(200).json(JSON.parse(streams));
 		});
 	}
 
