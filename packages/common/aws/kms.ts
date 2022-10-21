@@ -16,16 +16,16 @@ export const decrypt = async (
 
 	try {
 		const { Plaintext } = await kmsClient.send(decryptCommand);
-		console.log('[INFO] Decrypt command sent successfully');
+		console.log('Decrypt command sent successfully');
 
 		if (Plaintext) {
-			console.log('[INFO] Ciphertext successfully decrypted');
+			console.log('Ciphertext successfully decrypted');
 			const plaintextString = Buffer.from(Plaintext).toString();
 			return plaintextString;
 		} else {
-			console.log('[ERROR] Plaintext is missing from DecryptCommandOutput!');
+			console.error('Plaintext is missing from DecryptCommandOutput!');
 		}
 	} catch (e) {
-		console.log(`[ERROR] Decryption failed: ${(e as Error).message}`);
+		console.error(`Decryption failed: ${(e as Error).message}`);
 	}
 };

@@ -18,6 +18,7 @@ import {
 	listRepositories,
 	listTeams,
 } from '../../common/github/github';
+import { configureLogging, getLogLevel } from '../../common/log/log';
 import type { Repository } from './transformations';
 import {
 	findOwnersOfRepo,
@@ -60,15 +61,17 @@ const createOwnerObjects = async (
 };
 
 export const main = async (): Promise<void> => {
-	console.log('[INFO] starting repo-fetcher');
+	configureLogging(getLogLevel(process.env['LOG_LEVEL']));
+
+	console.log('Starting repo-fetcher');
 
 	const config = await getConfig();
 	const client = getOctokit(config);
 
 	const stage = config.stage;
-	console.log(`[INFO] stage is ${stage}`);
+	console.log(` stage is ${stage}`);
 
-	console.log(`[INFO] running ListTeams`);
+	console.log(` running ListTeams`);
 	//teamNames array of teamNames
 	const teamNames = await getTeams(config.stage, client);
 	const teamNamesFileName = join(__dirname, '../../../test/teamNames.json');
@@ -93,8 +96,8 @@ export const main = async (): Promise<void> => {
 		});
 	}
 
-	console.log(`[INFO] found ${teamNames.length} github teams`);
-	console.log(`[INFO] running createOwnerObjects`);
+	console.log(` found ${teamNames.length} github teams`);
+	console.log(` running createOwnerObjects`);
 
 	const reposAndOwnersFileName = join(
 		__dirname,
@@ -115,7 +118,7 @@ export const main = async (): Promise<void> => {
 			teamNames.map((team) => createOwnerObjects(client, team.slug)),
 		)
 	).flat();
-	console.log(`[INFO] createOwnerObjects done`);
+	console.log(` createOwnerObjects done`);
 
 	//getting all repos for the guardian takes a long time, so get less on DEV
 	const reposResponse: RepositoriesResponse = await getRepos(
@@ -123,13 +126,13 @@ export const main = async (): Promise<void> => {
 		client,
 	);
 
-	console.log(`[INFO] running transformRepo`);
+	console.log(` running transformRepo`);
 	const repos = reposResponse.map((response) =>
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
 	);
-	console.log(`[INFO] transformRepo done`);
+	console.log(` transformRepo done`);
 
-	console.log(`[INFO] saving to bucket`);
+	console.log(` saving to bucket`);
 	if (stage === 'DEV') {
 		writeFileSync(
 			join(__dirname, '../../../test/repos.json'),
@@ -146,9 +149,9 @@ export const main = async (): Promise<void> => {
 			'repos.json',
 		);
 	}
-	console.log(`[INFO] save to bucket done`);
+	console.log(` save to bucket done`);
 
-	console.log(`[INFO] found ${repos.length} repos`);
+	console.log(` found ${repos.length} repos`);
 
 	if (stage === 'DEV') {
 		writeFileSync(
@@ -160,7 +163,7 @@ export const main = async (): Promise<void> => {
 		);
 	}
 
-	console.log(`[INFO] finishing repo-fetcher`);
+	console.log(` finishing repo-fetcher`);
 };
 
 if (require.main === module) {

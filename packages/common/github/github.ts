@@ -58,25 +58,25 @@ export const getOctokit = (config: Config): Octokit => {
 		},
 		throttle: {
 			onRateLimit: (retryAfter: number, options: Options) => {
-				console.log(
-					`[WARN]: Request quota exhausted for request ${options.method} ${options.url}`,
+				console.warn(
+					`Request quota exhausted for request ${options.method} ${options.url}`,
 				);
 
 				// Retry twice after hitting a rate limit error, then give up
 				if (options.request.retryCount <= 2) {
-					console.log(`[INFO]: Retrying after ${retryAfter} seconds!`);
+					console.log(`Retrying after ${retryAfter} seconds!`);
 					return true;
 				}
 			},
 			onAbuseLimit: async (retryAfter: number, options: Options) => {
 				// does not retry, only logs a warning
-				console.log(
-					`[WARN]: Abuse detected for request ${options.method} ${options.url}`,
+				console.warn(
+					`Abuse detected for request ${options.method} ${options.url}`,
 				);
 
 				// Retry once after hitting a rate limit error, then give up
 				if (options.request.retryCount <= 1) {
-					console.log(`[INFO]: Retrying after 1 minute ${retryAfter} seconds!`);
+					console.log(`Retrying after 1 minute ${retryAfter} seconds!`);
 					await sleep(60000);
 					return true;
 				}
