@@ -1,32 +1,40 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
-const region = 'eu-west-1';
-const s3Client = new S3Client({
-	region,
-});
+export class S3Ops {
+	private readonly s3Client: S3Client;
 
-export const putItem = async <T>(
-	key: string,
-	body: T,
-	dataBucketName: string | undefined,
-): Promise<void> => {
-	if (dataBucketName) {
-		const command = new PutObjectCommand({
-			Bucket: dataBucketName,
-			Key: key,
-			Body: JSON.stringify(body),
-			ContentType: 'application/json; charset=utf-8',
-			ACL: 'private',
+	constructor(region: string, endpoint: string | undefined) {
+		this.s3Client = new S3Client({
+			region,
+			endpoint,
+			forcePathStyle: true,
 		});
+	}
+
+	async putObject(
+		bucketName: string,
+		key: string,
+		body: unknown,
+	): Promise<void> {
 		try {
-			await s3Client.send(command);
+			const command = new PutObjectCommand({
+				Bucket: bucketName,
+				Key: key,
+				Body: JSON.stringify(body),
+				ContentType: 'application/json; charset=utf-8',
+				ACL: 'private',
+			});
+
+			await this.s3Client.send(command);
 			console.log(
-				`Item uploaded to s3 successfully to: s3://${dataBucketName}/${key}`,
+				`Item uploaded to s3 successfully to: s3://${bucketName}/${key}`,
 			);
 		} catch (e) {
-			console.error(`${(e as Error).message}`);
+			if (e instanceof Error) {
+				console.error(`Error uploading item to s3: ${e.message}`);
+			} else {
+				console.error(e);
+			}
 		}
-	} else {
-		console.warn('No data bucket configured, skipping putItem');
 	}
-};
+}

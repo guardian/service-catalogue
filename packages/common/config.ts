@@ -11,8 +11,10 @@ export type Config = {
 		appPrivateKey: string;
 		appInstallationId: string;
 	};
-	dataBucketName: string | undefined;
+	bucketName: string;
 	stage: Stage;
+	region: string;
+	endpoint: string | undefined;
 };
 
 export const mandatoryEncrypted = async (
@@ -45,6 +47,8 @@ export const optional = (item: string): string | undefined => process.env[item];
 export const optionalWithDefault = (item: string, _default: string): string =>
 	optional(item) ?? _default;
 
+export const stage = optionalWithDefault('STAGE', 'DEV') as Stage;
+
 export const getConfig = async (): Promise<Config> => {
 	const configDecryptionKeyId = mandatory('KMS_KEY_ID');
 	const appPrivateKey = await mandatoryEncrypted(
@@ -52,6 +56,8 @@ export const getConfig = async (): Promise<Config> => {
 		configDecryptionKeyId,
 	);
 	const stage = optionalWithDefault('STAGE', 'DEV') as Stage;
+	const region = optionalWithDefault('AWS_REGION', 'eu-west-1');
+	const endpoint = stage === 'DEV' ? 'http://localhost:4566/' : undefined;
 
 	return {
 		github: {
@@ -59,8 +65,10 @@ export const getConfig = async (): Promise<Config> => {
 			appPrivateKey: appPrivateKey,
 			appInstallationId: mandatory('GITHUB_APP_INSTALLATION_ID'),
 		},
-		dataBucketName: optional('DATA_BUCKET_NAME'),
+		bucketName: optionalWithDefault('DATA_BUCKET_NAME', 'data-bucket'),
 		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', stage),
 		stage,
+		region,
+		endpoint,
 	};
 };

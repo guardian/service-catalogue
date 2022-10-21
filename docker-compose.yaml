@@ -1,0 +1,19 @@
+version: '3'
+services:
+    localstack:
+      container_name: localstack-aws
+      image: localstack/localstack
+      ports:
+        - "4566:4566" # Default port forward
+        - "${PORT_WEB_UI-8181}:${PORT_WEB_UI-8181}"       
+      environment:
+        - SERVICES=s3 #AWS Services that you want in your localstack
+        - DEBUG=1 # Debug level 1 if you want to logs, 0 if you want to disable
+        - START_WEB=0 # Flag to control whether the Web UI should be started in Docker
+        - LAMBDA_REMOTE_DOCKER=0
+        - DATA_DIR=/var/lib/localstack #  Local directory for saving persistent data(Example: es storage)
+        - DEFAULT_REGION=eu-west-1
+      volumes:
+        - './.localstack:/tmp/localstack'
+        - '/var/run/docker.sock:/var/run/docker.sock'
+        - ./scripts/localstack:/docker-entrypoint-initaws.d

@@ -1,5 +1,6 @@
 *.zip
 .idea
+.localstack
 .DS_Store
 data
 node_modules

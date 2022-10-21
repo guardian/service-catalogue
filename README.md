@@ -24,6 +24,20 @@ The setup script will download a starter `.env`.
 
 ### Running locally
 
+In order to simulate S3 locally and allow the repo-fetcher lambda and github-lens API to share data, we use [localstack](https://github.com/localstack/localstack). 
+
+Start `localstack` by running:
+
+```
+docker-compose up
+```
+
+You will now be able to interact with local S3 by referring to the local S3 endpoint:
+
+```
+aws --endpoint-url=http://localhost:4566 s3 ls s3://data-bucket
+```
+
 The project uses npm workspaces, and individual workspaces should have a `dev` script that can be run to execute e.g.
 ```
 npm -w packages/repo-fetcher run dev
