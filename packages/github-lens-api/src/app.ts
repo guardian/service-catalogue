@@ -66,11 +66,11 @@ export function buildApp(): Express {
 				{
 					endpoint: 'stream',
 					info: 'galaxies info about streams',
-					testlink: 'http://localhost:3232/stream',
+					testlink: 'http://localhost:3232/streams',
 				},
 				{
 					endpoint: 'teams',
-					info: 'galaxies info about teamss',
+					info: 'galaxies info about teams',
 					testlink: 'http://localhost:3232/teams',
 				},
 			]);

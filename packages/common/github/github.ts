@@ -141,8 +141,6 @@ export const getTeamlistMembersInOrg = async (
 	);
 };
 
-//Get a team
-//SingleTeamResponse
 export const getTeamBySlug = async (
 	client: Octokit,
 	teamSlug: string,
@@ -155,9 +153,6 @@ export const getTeamBySlug = async (
 	return response.data;
 };
 
-//Get a single repository
-//https://octokit.github.io/rest.js/v19#repos
-//SingleRepoResponse
 export const getInfoForRepo = async (
 	client: Octokit,
 	owner: string,
@@ -171,11 +166,11 @@ export const getInfoForRepo = async (
 	return response.data;
 };
 
-let teamCounter = 0;
-const numberOfTeams = 2;
 export const listTeamsForLocalDevelopment = async (
 	client: Octokit,
 ): Promise<TeamsResponse> => {
+	let teamCounter = 0;
+	const numberOfTeams = 2;
 	return await client.paginate(
 		client.teams.list,
 		{
@@ -192,11 +187,11 @@ export const listTeamsForLocalDevelopment = async (
 	);
 };
 
-let repoCounter = 0;
-const numberOfRepos = 2;
 export const listRepositoriesForLocalDevelopment = async (
 	client: Octokit,
 ): Promise<RepositoriesResponse> => {
+	let repoCounter = 0;
+	const numberOfRepos = 2;
 	return await client.paginate(
 		client.repos.listForOrg,
 		{
