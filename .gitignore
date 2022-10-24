@@ -7,5 +7,3 @@ dist
 /.vscode/settings.json
 .eslintcache
 .env
-test/*.json
-test/localJsonFilesCreated

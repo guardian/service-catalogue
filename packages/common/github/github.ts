@@ -2,7 +2,7 @@ import { createAppAuth } from '@octokit/auth-app';
 import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
-import type { Config, Stage } from '../config';
+import type { Config } from '../config';
 import { sleep } from '../sleep';
 
 const ThrottledOctokit = Octokit.plugin(throttling);
@@ -23,20 +23,8 @@ export type RepositoriesResponse = GetResponseDataTypeFromEndpointMethod<
 export type TeamsResponse = GetResponseDataTypeFromEndpointMethod<
 	typeof octokit.teams.list
 >;
-export type SingleTeamResponse = GetResponseDataTypeFromEndpointMethod<
-	typeof octokit.teams.getByName
->;
-export type SingleRepoResponse = GetResponseDataTypeFromEndpointMethod<
-	typeof octokit.repos.get
->;
 export type TeamRepoResponse = GetResponseDataTypeFromEndpointMethod<
 	typeof octokit.teams.listReposInOrg
->;
-export type TeamRepoResponseAuth = GetResponseDataTypeFromEndpointMethod<
-	typeof octokit.teams.listForAuthenticatedUser
->;
-export type MembersInOrgResponse = GetResponseDataTypeFromEndpointMethod<
-	typeof octokit.teams.listMembersInOrg
 >;
 export type RepositoryResponse = RepositoriesResponse[number];
 
@@ -111,136 +99,17 @@ export const listTeams = async (client: Octokit): Promise<TeamsResponse> => {
 	);
 };
 
-export const getTeamlistForAuthenticatedUser = async (
-	client: Octokit,
-	teamSlug: string,
-): Promise<TeamRepoResponseAuth> => {
-	return await client.paginate(
-		client.teams.listForAuthenticatedUser,
-		{
-			org: 'guardian',
-			team_slug: teamSlug,
-			per_page: defaultPageSize,
-		},
-		(response) => response.data,
-	);
-};
-
-export const getTeamlistMembersInOrg = async (
-	client: Octokit,
-	teamSlug: string,
-): Promise<MembersInOrgResponse> => {
-	return await client.paginate(
-		client.teams.listMembersInOrg,
-		{
-			org: 'guardian',
-			team_slug: teamSlug,
-			per_page: defaultPageSize,
-		},
-		(response) => response.data,
-	);
-};
-
-export const getTeamBySlug = async (
-	client: Octokit,
-	teamSlug: string,
-): Promise<SingleTeamResponse> => {
-	const response = await client.teams.getByName({
-		org: 'guardian',
-		team_slug: teamSlug,
-		per_page: defaultPageSize,
-	});
-	return response.data;
-};
-
-export const getInfoForRepo = async (
-	client: Octokit,
-	owner: string,
-	repo: string,
-): Promise<SingleRepoResponse> => {
-	const response = await client.repos.get({
-		org: 'guardian',
-		owner: owner,
-		repo: repo,
-	});
-	return response.data;
-};
-
-export const listTeamsForLocalDevelopment = async (
-	client: Octokit,
-): Promise<TeamsResponse> => {
-	let teamCounter = 0;
-	const numberOfTeams = 2;
-	return await client.paginate(
-		client.teams.list,
-		{
-			org: 'guardian',
-			per_page: 1,
-		},
-		(response, done) => {
-			teamCounter += response.data.length;
-			if (teamCounter >= numberOfTeams) {
-				done();
-			}
-			return response.data;
-		},
-	);
-};
-
-export const listRepositoriesForLocalDevelopment = async (
-	client: Octokit,
-): Promise<RepositoriesResponse> => {
-	let repoCounter = 0;
-	const numberOfRepos = 2;
-	return await client.paginate(
-		client.repos.listForOrg,
-		{
-			org: 'guardian',
-			per_page: 1,
-		},
-		(response, done) => {
-			repoCounter += response.data.length;
-			if (repoCounter >= numberOfRepos) {
-				done();
-			}
-			return response.data;
-		},
-	);
-};
-
 export const getReposForTeam = async (
 	client: Octokit,
-	teamSlug: string,
+	teamName: string,
 ): Promise<TeamRepoResponse> => {
 	return await client.paginate(
 		client.teams.listReposInOrg,
 		{
 			org: 'guardian',
-			team_slug: teamSlug,
+			team_slug: teamName,
 			per_page: defaultPageSize,
 		},
 		(response) => response.data,
 	);
-};
-
-//get everything after all but save to file in dir test only once on DEV
-
-// export const getTeams = (stage: Stage, client: Octokit) => {
-// 	return stage === 'DEV'
-// 		? listTeamsForLocalDevelopment(client)
-// 		: listTeams(client);
-// };
-
-export const getTeams = (stage: Stage, client: Octokit) => {
-	return listTeams(client);
-};
-
-// export const getRepos = (stage: Stage, client: Octokit) => {
-// 	return stage === 'DEV'
-// 		? listRepositoriesForLocalDevelopment(client)
-// 		: listRepositories(client);
-// };
-
-export const getRepos = (stage: Stage, client: Octokit) => {
-	return listRepositories(client);
 };

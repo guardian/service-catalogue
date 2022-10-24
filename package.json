@@ -4,8 +4,7 @@
   "description": "A lens into your GitHub organisation",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "fetch": "npm -w packages/repo-fetcher run dev",
-    "localapi": "npm -w packages/github-lens-api run dev",
+    "start": "npm -w packages/repo-fetcher run dev",
     "synth": "npm run synth --workspace=cdk",
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspace=repo-fetcher --workspace=github-lens-api",
@@ -21,7 +20,6 @@
     "aws-sdk-client-mock": "^2.0.0"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.190.0",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.3",
     "dotenv": "^16.0.1",
