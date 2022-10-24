@@ -23,6 +23,7 @@ export class GithubLens extends GuStack {
 		const app = 'github-lens';
 
 		const dataBucket = new GuS3Bucket(this, `${app}-data-bucket`, {
+			bucketName: `github-lens-data-${this.stage.toLowerCase()}`,
 			app,
 		});
 

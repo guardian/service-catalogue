@@ -865,6 +865,7 @@ Object {
     "githublensdatabucketGithublens7C07FDE7": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
+        "BucketName": "github-lens-data-infra",
         "PublicAccessBlockConfiguration": Object {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,

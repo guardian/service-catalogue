@@ -11,7 +11,8 @@ export type Config = {
 		appPrivateKey: string;
 		appInstallationId: string;
 	};
-	dataBucketName: string | undefined;
+	dataBucketName: string;
+	region: string;
 	stage: Stage;
 };
 
@@ -59,8 +60,9 @@ export const getConfig = async (): Promise<Config> => {
 			appPrivateKey: appPrivateKey,
 			appInstallationId: mandatory('GITHUB_APP_INSTALLATION_ID'),
 		},
-		dataBucketName: optional('DATA_BUCKET_NAME'),
+		dataBucketName: mandatory('DATA_BUCKET_NAME'),
 		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', stage),
+		region: optionalWithDefault('AWS_REGION', 'eu-west-1'),
 		stage,
 	};
 };
