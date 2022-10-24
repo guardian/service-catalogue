@@ -1,6 +1,5 @@
-import { join } from 'path';
 import type { Octokit } from '@octokit/rest';
-import { S3Ops } from '../../common/aws/s3';
+import { getS3Client, putObject } from '../../common/aws/s3';
 import { getConfig } from '../../common/config';
 import type {
 	RepositoriesResponse,
@@ -38,7 +37,7 @@ export const main = async (): Promise<void> => {
 	const client = getOctokit(config);
 	const teamNames = await listTeams(client);
 
-	const s3Ops = new S3Ops(config.region);
+	const s3Client = getS3Client(config.region);
 
 	console.log(`Found ${teamNames.length} github teams`);
 
@@ -53,7 +52,7 @@ export const main = async (): Promise<void> => {
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
 	);
 
-	await s3Ops.putObject(config.dataBucketName, config.dataKeyPrefix, repos);
+	await putObject(s3Client, config.dataBucketName, config.dataKeyPrefix, repos);
 
 	console.log(`Found ${repos.length} repos`);
 	console.log(`Finishing repo-fetcher`);
