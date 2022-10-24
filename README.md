@@ -8,8 +8,6 @@ The project consists of the following subprojects:
 
 - **Repo Fetcher**: A fetcher for repository metadata
 
-- **Teams Fetcher**: A fetcher for teams metadata
-
 ## Local Development
 
 If this your first time developing github-lens, you should run:
