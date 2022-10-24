@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -9,143 +8,28 @@ import (
 	"log"
 	"os"
 	"time"
+	"unicode"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
-	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
-	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/guardian/cdk-metadata/account"
+	"github.com/guardian/cdk-metadata/prism"
+	"github.com/guardian/cdk-metadata/store"
 )
 
-// Account describes an AWS account.
-type Account struct {
-	ID   string `json:"accountId"`
-	Name string `json:"accountName"`
-}
-
-// Target is an account with Config (credentials).
-type Target struct {
-	Account
-	Config aws.Config
-}
-
-// Stack is a Cloudformation stack with metadata.
-type Stack struct {
-	StackName string `json:"stackName"`
-	Metadata  string `json:"metadata"`
-	Account
-}
-
+// PrismAccount describes an AWS account.
 var bucket string = os.Getenv("BUCKET")
 
-var accounts []Account = []Account{
-	{Name: "capi", ID: "308506855511"},
-	{Name: "deployTools", ID: "095768028460"},
-}
-
-func accountForProfile(profile string, accounts []Account) (Account, error) {
+func crawl(ctx context.Context, accounts []account.Account, store store.Store, dryRun bool) error {
+	stacks := []account.Stack{}
 	for _, account := range accounts {
-		if account.Name == profile {
-			return account, nil
-		}
-	}
-
-	return Account{}, fmt.Errorf("unable to find account for profile %s", profile)
-}
-
-func targetsForAccounts(ctx context.Context, stsClient *sts.Client, accounts []Account) ([]Target, error) {
-	targets := []Target{}
-
-	for _, account := range accounts {
-		roleARN := fmt.Sprintf("arn:aws:iam::%s:role/cdk-metadata-access", account.ID)
-		provider := stscreds.NewAssumeRoleProvider(stsClient, roleARN)
-		cfg, err := config.LoadDefaultConfig(ctx, config.WithCredentialsProvider(provider))
+		resp, err := account.GetStacks()
 		if err != nil {
-			return targets, fmt.Errorf("unable to build config for role %s: %v", account.Name, err)
+			log.Printf("unable to crawl account %s: %v", account.GetAccountID(), err)
+			continue
 		}
 
-		targets = append(targets, Target{Account: account, Config: cfg})
-	}
-
-	return targets, nil
-}
-
-func targetForProfile(profile string, account Account) (Target, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithSharedConfigProfile(profile), config.WithRegion("eu-west-1"))
-	if err != nil {
-		return Target{}, fmt.Errorf("unable to build config for profile %s: %v", profile, err)
-	}
-
-	return Target{Account: account, Config: cfg}, nil
-}
-
-func crawl(ctx context.Context, accounts []Account, profile string) error {
-	dryRun := profile != "" // Print output when running locally rather than writing to S3.
-
-	var globalConfig aws.Config
-	var err error
-
-	if profile != "" {
-		globalConfig, err = config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("deployTools"), config.WithRegion("eu-west-1"))
-		check(err, "unable to load AWS config")
-	} else {
-		globalConfig, err = config.LoadDefaultConfig(ctx, config.WithRegion("eu-west-1"))
-		check(err, "unable to load AWS config")
-	}
-
-	stsClient := sts.NewFromConfig(globalConfig)
-
-	var targets []Target
-
-	switch profile {
-	case "":
-		targets, err = targetsForAccounts(ctx, stsClient, accounts)
-		check(err, "unable to get targets from roles")
-	default:
-		account, err := accountForProfile(profile, accounts)
-		check(err, "unable to match profile to account")
-
-		target, err := targetForProfile(profile, account)
-		check(err, "unable to get targets from profile")
-
-		targets = []Target{target}
-	}
-
-	stacks := []Stack{}
-	for _, target := range targets {
-		log.Printf("Scanning account: %s...", target.Account.ID)
-
-		cfnClient := cloudformation.NewFromConfig(target.Config)
-		paginator := cloudformation.NewDescribeStacksPaginator(cfnClient, &cloudformation.DescribeStacksInput{})
-
-		hasMorePages := true
-
-		for hasMorePages {
-			page, err := paginator.NextPage(ctx)
-			check(err, "unable to get Cloudformation next page for account: "+target.Account.ID)
-
-			for _, stackSummary := range page.Stacks {
-				if stackSummary.StackStatus == types.StackStatusDeleteComplete {
-					continue
-				}
-
-				stackName := stackSummary.StackName
-				input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
-				summary, err := cfnClient.GetTemplateSummary(ctx, input)
-				if err != nil {
-					log.Printf("unable to get template summary for stack %s: %v", *stackName, err)
-					continue
-				}
-
-				stacks = append(stacks, Stack{StackName: *stackName, Account: target.Account, Metadata: getString(summary.Metadata, "{}")})
-			}
-
-			hasMorePages = paginator.HasMorePages()
-		}
+		stacks = append(stacks, resp...)
 	}
 
 	out, err := json.Marshal(stacks)
@@ -156,33 +40,14 @@ func crawl(ctx context.Context, accounts []Account, profile string) error {
 		return nil
 	}
 
-	s3Client := s3.NewFromConfig(globalConfig)
 	date := time.Now().Format("2006-01-02")
-	key := fmt.Sprintf("cdk-stack-metadata-%s.json", date)
-
-	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: &bucket,
-		Key:    &key,
-		Body:   bytes.NewBuffer(out),
-	})
+	err = store.Put(bucket, fmt.Sprintf("cdk-stack-metadata-%s.json", date), out)
 	check(err, "unable to write dated object to S3")
 
-	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: &bucket,
-		Key:    aws.String("cdk-stack-metadata-latest.json"),
-		Body:   bytes.NewBuffer(out),
-	})
+	err = store.Put(bucket, "cdk-stack-metadata-latest.json", out)
 	check(err, "unable to write 'latest' object to S3")
 
 	return err
-}
-
-func getString(ptr *string, defaultValue string) string {
-	if ptr != nil {
-		return *ptr
-	}
-
-	return defaultValue
 }
 
 func check(err error, msg string) {
@@ -191,8 +56,65 @@ func check(err error, msg string) {
 	}
 }
 
-func HandleRequest(ctx context.Context, event events.CloudWatchEvent) (string, error) {
-	return "", crawl(ctx, accounts, "")
+func getAccountForProfile(profile string) (prism.Account, error) {
+	// abcDef -> abc-def (basic version).
+	snakeCase := func(s string) string {
+		out := ""
+
+		for _, rune := range s {
+			if unicode.IsUpper(rune) {
+				out += "-"
+			}
+
+			out += string(unicode.ToLower(rune))
+		}
+
+		return out
+	}
+
+	accounts, err := prism.GetAccounts()
+	if err != nil {
+		return prism.Account{}, err
+	}
+
+	for _, account := range accounts {
+		if account.Name == snakeCase(profile) {
+			return account, nil
+		}
+	}
+
+	return prism.Account{}, fmt.Errorf("unable to find account for profile: %s", profile)
+}
+
+func handleLocalRequest(profile string) {
+	prismAccount, err := getAccountForProfile(profile)
+	check(err, "unable to find prism account for profile")
+
+	acc, err := account.NewFromProfile(profile, prismAccount.ID, prismAccount.Name)
+	check(err, fmt.Sprintf("unable to build account for profile %s (note: requires VPN connection)", profile))
+
+	var localStore store.LocalStore = map[string][]byte{}
+
+	crawl(context.Background(), []account.Account{acc}, localStore, true)
+}
+
+func handleLambdaRequest(ctx context.Context, event events.CloudWatchEvent) (string, error) {
+	prismAccounts, err := prism.GetAccounts()
+	check(err, "unable to fetch accounts from Prism")
+
+	accounts := []account.Account{}
+	for _, accountMeta := range prismAccounts {
+		arn := fmt.Sprintf("arn:aws:iam::%s:role/cdk-metadata-access", accountMeta.ID)
+		acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name)
+		check(err, fmt.Sprintf("unable to build account for arn '%s'", arn))
+
+		accounts = append(accounts, acc)
+	}
+
+	s3Store, err := store.NewS3()
+	check(err, "unable to construct S3 store")
+
+	return "", crawl(ctx, accounts, s3Store, false)
 }
 
 func main() {
@@ -200,9 +122,9 @@ func main() {
 	flag.Parse()
 
 	if *profile != "" {
-		crawl(context.Background(), accounts, *profile)
+		handleLocalRequest(*profile)
 		return
 	}
 
-	lambda.Start(HandleRequest)
+	lambda.Start(handleLambdaRequest)
 }
