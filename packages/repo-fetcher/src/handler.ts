@@ -1,6 +1,6 @@
 import { join } from 'path';
 import type { Octokit } from '@octokit/rest';
-import { putItem } from '../../common/aws/s3';
+import { S3Ops } from '../../common/aws/s3';
 import { getConfig } from '../../common/config';
 import type {
 	RepositoriesResponse,
@@ -13,23 +13,12 @@ import {
 	listTeams,
 } from '../../common/github/github';
 import { configureLogging, getLogLevel } from '../../common/log/log';
-import type { Repository } from './transformations';
 import {
 	findOwnersOfRepo,
 	getAdminReposFromResponse,
 	RepoAndOwner,
 	transformRepo,
 } from './transformations';
-
-const save = (
-	dataKeyPrefix: string,
-	dataBucketName: string | undefined,
-	repos: Repository[],
-): Promise<void> => {
-	const key = join(dataKeyPrefix, 'github', 'repos.json');
-
-	return putItem(key, repos, dataBucketName);
-};
 
 const createOwnerObjects = async (
 	client: Octokit,
@@ -49,6 +38,8 @@ export const main = async (): Promise<void> => {
 	const client = getOctokit(config);
 	const teamNames = await listTeams(client);
 
+	const s3Ops = new S3Ops(config.region);
+
 	console.log(`Found ${teamNames.length} github teams`);
 
 	const reposAndOwners: RepoAndOwner[] = (
@@ -61,7 +52,8 @@ export const main = async (): Promise<void> => {
 	const repos = reposResponse.map((response) =>
 		transformRepo(response, findOwnersOfRepo(response.name, reposAndOwners)),
 	);
-	await save(config.dataKeyPrefix, config.dataBucketName, repos);
+
+	await s3Ops.putObject(config.dataBucketName, config.dataKeyPrefix, repos);
 
 	console.log(`Found ${repos.length} repos`);
 	console.log(`Finishing repo-fetcher`);
