@@ -17,7 +17,6 @@ import (
 	"github.com/guardian/cdk-metadata/store"
 )
 
-// PrismAccount describes an AWS account.
 var bucket string = os.Getenv("BUCKET")
 
 func crawl(ctx context.Context, accounts []account.Account, store store.Store, dryRun bool) error {
