@@ -55,22 +55,22 @@ func check(err error, msg string) {
 	}
 }
 
-func getAccountForProfile(profile string) (prism.Account, error) {
-	// abcDef -> abc-def (basic version).
-	snakeCase := func(s string) string {
-		out := ""
+// abcDef -> abc-def (basic version).
+func snakeCase(s string) string {
+	out := ""
 
-		for _, rune := range s {
-			if unicode.IsUpper(rune) {
-				out += "-"
-			}
-
-			out += string(unicode.ToLower(rune))
+	for _, rune := range s {
+		if unicode.IsUpper(rune) {
+			out += "-"
 		}
 
-		return out
+		out += string(unicode.ToLower(rune))
 	}
 
+	return out
+}
+
+func getAccountForProfile(profile string) (prism.Account, error) {
 	accounts, err := prism.GetAccounts()
 	if err != nil {
 		return prism.Account{}, err
