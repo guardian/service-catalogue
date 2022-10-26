@@ -103,7 +103,8 @@ func handleLambdaRequest(ctx context.Context, event events.CloudWatchEvent) (str
 
 	accounts := []account.Account{}
 	for _, accountMeta := range prismAccounts {
-		arn := fmt.Sprintf("arn:aws:iam::%s:role/cdk-metadata-access", accountMeta.ID)
+		// this role is provisioned in https://github.com/guardian/aws-account-setup
+		arn := fmt.Sprintf("arn:aws:iam::%s:role/cloudformation-read-access", accountMeta.ID)
 		acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name)
 		check(err, fmt.Sprintf("unable to build account for arn '%s'", arn))
 
