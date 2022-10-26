@@ -1,53 +1,21 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 	"unicode"
 
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/guardian/cdk-metadata/account"
 	"github.com/guardian/cdk-metadata/prism"
 	"github.com/guardian/cdk-metadata/store"
 )
 
 var bucket string = os.Getenv("BUCKET")
-
-func crawl(ctx context.Context, accounts []account.Account, store store.Store, dryRun bool) error {
-	stacks := []account.Stack{}
-	for _, account := range accounts {
-		resp, err := account.GetStacks()
-		if err != nil {
-			log.Printf("unable to crawl account %s: %v", account.GetAccountID(), err)
-			continue
-		}
-
-		stacks = append(stacks, resp...)
-	}
-
-	out, err := json.Marshal(stacks)
-	check(err, "unable to marshal stacks")
-
-	if dryRun {
-		log.Println(string(out))
-		return nil
-	}
-
-	date := time.Now().Format("2006-01-02")
-	err = store.Put(bucket, fmt.Sprintf("cdk-stack-metadata-%s.json", date), out)
-	check(err, "unable to write dated object to S3")
-
-	err = store.Put(bucket, "cdk-stack-metadata-latest.json", out)
-	check(err, "unable to write 'latest' object to S3")
-
-	return err
-}
 
 func check(err error, msg string) {
 	if err != nil {
@@ -85,46 +53,133 @@ func getAccountForProfile(profile string) (prism.Account, error) {
 	return prism.Account{}, fmt.Errorf("unable to find account for profile: %s", profile)
 }
 
-func handleLocalRequest(profile string) {
-	prismAccount, err := getAccountForProfile(profile)
-	check(err, "unable to find prism account for profile")
+type CrawlOptions struct {
+	// (A Janus) profile can be passed when running locally as an alternative to
+	// assume role.
+	Profile string
 
-	acc, err := account.NewFromProfile(profile, prismAccount.ID, prismAccount.Name)
-	check(err, fmt.Sprintf("unable to build account for profile %s (note: requires VPN connection)", profile))
+	// InMemory controls whether to use an in-memory store for data. When false
+	// (the default), S3 is used.
+	InMemory bool
 
-	var localStore store.LocalStore = map[string][]byte{}
+	// Store to write to
+	Store store.Store
 
-	crawl(context.Background(), []account.Account{acc}, localStore, true)
+	// Accounts to query
+	Accounts []account.Account
 }
 
-func handleLambdaRequest(ctx context.Context, event events.CloudWatchEvent) (string, error) {
-	prismAccounts, err := prism.GetAccounts()
-	check(err, "unable to fetch accounts from Prism")
+func crawlAccounts(opts CrawlOptions) {
+	date := time.Now().Format("2006-01-02")
+	fileForToday := fmt.Sprintf("cdk-stack-metadata-%s.json", date)
 
-	accounts := []account.Account{}
-	for _, accountMeta := range prismAccounts {
-		// this role is provisioned in https://github.com/guardian/aws-account-setup
-		arn := fmt.Sprintf("arn:aws:iam::%s:role/cloudformation-read-access", accountMeta.ID)
-		acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name)
-		check(err, fmt.Sprintf("unable to build account for arn '%s'", arn))
-
-		accounts = append(accounts, acc)
-	}
-
-	s3Store, err := store.NewS3()
-	check(err, "unable to construct S3 store")
-
-	return "", crawl(ctx, accounts, s3Store, false)
-}
-
-func main() {
-	var profile = flag.String("profile", "", "Set to use a specific profile when testing locally.")
-	flag.Parse()
-
-	if *profile != "" {
-		handleLocalRequest(*profile)
+	_, err := opts.Store.Get(bucket, fileForToday)
+	if err == nil {
+		log.Println("skipping crawl as record for today already exists. To force a re-crawl, delete today's file and redeploy.")
 		return
 	}
 
-	lambda.Start(handleLambdaRequest)
+	stacks := []account.Stack{}
+	for _, account := range opts.Accounts {
+		resp, err := account.GetStacks()
+		if err != nil {
+			log.Printf("unable to crawl account %s: %v", account.GetAccountID(), err)
+			continue
+		}
+
+		stacks = append(stacks, resp...)
+	}
+
+	out, err := json.Marshal(stacks)
+	if err != nil {
+		log.Printf("unable to marshal stacks in JSON: %v", err)
+		return
+	}
+
+	err = opts.Store.Put(bucket, fmt.Sprintf("cdk-stack-metadata-%s.json", date), out)
+	if err != nil {
+		log.Printf("unable to write dated object to S3: %v", err)
+		return
+	}
+
+	err = opts.Store.Put(bucket, "cdk-stack-metadata-latest.json", out)
+	if err != nil {
+		log.Printf("unable to write 'latest' object to S3: %v", err)
+		return
+	}
+}
+
+func schedule(ticker <-chan time.Time, f func()) {
+	println("Initial tick...")
+	f()
+
+	for range ticker {
+		println("Subsequent tick...")
+		f()
+	}
+}
+
+// 200 "OK"
+func healthcheckHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "OK")
+}
+
+func stackHandler(store store.Store) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, err := store.Get(bucket, "cdk-stack-metadata-latest.json")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "unable to read latest stack data: %v", err)
+			return
+		}
+
+		w.Header().Add("content-type", "application/json")
+		w.Write(data)
+	}
+}
+
+func main() {
+	profile := flag.String("profile", "", "Set to use a specific profile when testing locally.")
+	inMemory := flag.Bool("in-memory", false, "Set when you want to read/write to an in-memory store rather than S3")
+	flag.Parse()
+
+	var s store.Store
+	if *inMemory {
+		s = store.LocalStore(map[string][]byte{})
+	} else {
+		var err error
+		s, err = store.NewS3()
+		check(err, "unable to create S3 store")
+	}
+
+	var accounts []account.Account
+	if *profile != "" {
+		prismAccount, err := getAccountForProfile(*profile)
+		check(err, "unable to find prism account for profile")
+
+		acc, err := account.NewFromProfile(*profile, prismAccount.ID, prismAccount.Name)
+		check(err, fmt.Sprintf("unable to build account for profile %s (note: requires VPN connection)", *profile))
+
+		accounts = append(accounts, acc)
+	} else {
+		prismAccounts, err := prism.GetAccounts()
+		check(err, "unable to fetch accounts from Prism")
+
+		for _, accountMeta := range prismAccounts {
+			arn := fmt.Sprintf("arn:aws:iam::%s:role/cloudformation-read-access", accountMeta.ID)
+			acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name)
+			check(err, fmt.Sprintf("unable to build account for arn '%s'", arn))
+
+			accounts = append(accounts, acc)
+		}
+	}
+
+	opts := CrawlOptions{Profile: *profile, InMemory: *inMemory, Store: s, Accounts: accounts}
+	ticker := time.NewTicker(time.Hour * 24).C
+
+	go schedule(ticker, func() { crawlAccounts(opts) })
+
+	http.Handle("/healthcheck", http.HandlerFunc(healthcheckHandler))
+	http.Handle("/stacks", http.HandlerFunc(stackHandler(s)))
+	log.Fatal(http.ListenAndServe(":8900", nil))
 }

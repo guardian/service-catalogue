@@ -27,6 +27,10 @@ jobs:
           cache: npm
           cache-dependency-path: cdk/package-lock.json
 
+      - uses: guardian/actions-read-private-repos@v0.1.0
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
       - name: synth CDK
         run: |
           cd cdk
@@ -41,37 +45,16 @@ jobs:
 
       - run: go test .
 
-      - name: build lambda
+      - name: build binary
         run: |
-          env GOOS=linux GOARCH=amd64 go build main.go
-          zip lambda.zip main
+          env GOOS=linux GOARCH=arm64 go build -o cdk-metadata main.go
 
-      - uses: guardian/actions-riff-raff@v1
+      - uses: guardian/actions-riff-raff@v2
         with:
-          app: cdk-metadata
-          config: |
-            stacks:
-              - deploy
-            regions:
-              - eu-west-1
-            allowedStages:
-              - INFRA
-            deployments:
-              cloudformation:
-                app: cdk-metadata
-                type: cloud-formation
-                sources:
-                  -  cdk/cdk.out/CdkMetadata-INFRA.template.json
-                parameters:
-                  templatePath: CdkMetadata-INFRA.template.json
-              lambda:
-                app: cdk-metadata
-                type: aws-lambda
-                sources:
-                  - lambda.zip
-                dependencies:
-                  - cloudformation
-                parameters:
-                  bucketSsmLookup: true
-                  lookupByTags: true
-                  fileName: lambda.zip
+          projectName: deploy::cdk-metadata
+          configPath: cdk/cdk.out/riff-raff.yaml
+          contentDirectories: |
+            cdk-metadata:
+              - cdk-metadata
+            cdk.out:
+              - cdk/cdk.out

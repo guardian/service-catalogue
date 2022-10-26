@@ -1,20 +1,13 @@
 # CDK Metadata
 
-A lambda that reads Cloudformation templates across our estate, extracts
-CDK-related metadata, and writes it as JSON to S3.
+A simple EC2 service that does two things:
 
-It is expected to run daily as a cron job.
-
-Other services (Tracker) can then read the S3 object to get the data.
-
-To read across accounts, the lambda assumes a set of roles that it reads from
-Dynamodb - the same roles as Prism currently uses.
+1. Crawls Guardian AWS accounts to collect data on Cloudformation stacks
+2. Serves this data as an HTTP (JSON) API
 
 To run locally:
 
-    $ go run main.go --profile [profile]
-
-Output is written to stdout rather than S3 for local invocations.
+    $ go run main.go --profile [profile] --in-memory
 
 To test:
 

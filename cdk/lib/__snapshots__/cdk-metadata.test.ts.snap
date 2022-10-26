@@ -2,70 +2,204 @@
 
 exports[`The CdkMetadata stack matches the snapshot 1`] = `
 Object {
+  "Outputs": Object {
+    "LoadBalancerCdkmetadataDnsName": Object {
+      "Description": "DNS entry for LoadBalancerCdkmetadata",
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LoadBalancerCdkmetadata4143EB47",
+          "DNSName",
+        ],
+      },
+    },
+  },
   "Parameters": Object {
+    "AMICdkmetadata": Object {
+      "Description": "Amazon Machine Image ID for the app cdk-metadata. Use this in conjunction with AMIgo to keep AMIs up to date.",
+      "Type": "AWS::EC2::Image::Id",
+    },
+    "AnghammaradSnsArn": Object {
+      "Default": "/account/services/anghammarad.topic.arn",
+      "Description": "SSM parameter containing the ARN of the Anghammarad SNS topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "DistributionBucketName": Object {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "LoggingStreamName": Object {
+      "Default": "/account/services/logging.stream.name",
+      "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "VpcId": Object {
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
+    },
+    "cdkmetadataPrivateSubnets": Object {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
+    "cdkmetadataPublicSubnets": Object {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
   },
   "Resources": Object {
-    "databucketA7E4F76C": Object {
-      "DeletionPolicy": "Retain",
+    "AutoScalingGroupCdkmetadataASG17EDDE29": Object {
       "Properties": Object {
+        "HealthCheckGracePeriod": 120,
+        "HealthCheckType": "ELB",
+        "LaunchConfigurationName": Object {
+          "Ref": "AutoScalingGroupCdkmetadataLaunchConfigBDBB2E02",
+        },
+        "MaxSize": "2",
+        "MinSize": "1",
         "Tags": Array [
           Object {
+            "Key": "App",
+            "PropagateAtLaunch": true,
+            "Value": "cdk-metadata",
+          },
+          Object {
+            "Key": "gu:cdk:pattern-name",
+            "PropagateAtLaunch": true,
+            "Value": "GuEc2App",
+          },
+          Object {
             "Key": "gu:cdk:version",
+            "PropagateAtLaunch": true,
             "Value": "TEST",
           },
           Object {
             "Key": "gu:repo",
+            "PropagateAtLaunch": true,
             "Value": "guardian/cdk-metadata",
           },
           Object {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": Object {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          Object {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "Value": "CdkMetadata/AutoScalingGroupCdkmetadata",
+          },
+          Object {
             "Key": "Stack",
+            "PropagateAtLaunch": true,
             "Value": "deploy",
           },
           Object {
             "Key": "Stage",
+            "PropagateAtLaunch": true,
             "Value": "TEST",
+          },
+          Object {
+            "Key": "SystemdUnit",
+            "PropagateAtLaunch": true,
+            "Value": "cdk-metadata.service",
+          },
+        ],
+        "TargetGroupARNs": Array [
+          Object {
+            "Ref": "TargetGroupCdkmetadata227E6885",
+          },
+        ],
+        "VPCZoneIdentifier": Object {
+          "Ref": "cdkmetadataPrivateSubnets",
+        },
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+    },
+    "AutoScalingGroupCdkmetadataInstanceProfile275173A0": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkmetadata363D9786",
           },
         ],
       },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "Type": "AWS::IAM::InstanceProfile",
     },
-    "lambda8B5974B5": Object {
+    "AutoScalingGroupCdkmetadataLaunchConfigBDBB2E02": Object {
       "DependsOn": Array [
-        "lambdaServiceRoleDefaultPolicyBF6FA5E7",
-        "lambdaServiceRole494E4CA6",
+        "InstanceRoleCdkmetadataDefaultPolicy5DD3458D",
+        "InstanceRoleCdkmetadata363D9786",
       ],
       "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "DistributionBucketName",
+        "IamInstanceProfile": Object {
+          "Ref": "AutoScalingGroupCdkmetadataInstanceProfile275173A0",
+        },
+        "ImageId": Object {
+          "Ref": "AMICdkmetadata",
+        },
+        "InstanceType": "t4g.small",
+        "MetadataOptions": Object {
+          "HttpTokens": "required",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+              "GroupId",
+            ],
           },
-          "S3Key": "deploy/TEST/cdk-metadata/lambda.zip",
-        },
-        "Environment": Object {
-          "Variables": Object {
-            "APP": "cdk-metadata",
-            "BUCKET": Object {
-              "Ref": "databucketA7E4F76C",
-            },
-            "STACK": "deploy",
-            "STAGE": "TEST",
+          Object {
+            "Fn::GetAtt": Array [
+              "WazuhSecurityGroup",
+              "GroupId",
+            ],
+          },
+        ],
+        "UserData": Object {
+          "Fn::Base64": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "#!/bin/bash -ev
+cat << EOF > /etc/systemd/system/cdk-metadata.service
+[Unit]
+Description=CDK Metadata
+
+[Service]
+Environment=\\"BUCKET=",
+                Object {
+                  "Ref": "databucketA7E4F76C",
+                },
+                "\\"
+ExecStart=/cdk-metadata
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+aws s3 cp s3://",
+                Object {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cdk-metadata/cdk-metadata /cdk-metadata
+chmod +x /cdk-metadata
+systemctl start cdk-metadata
+",
+              ],
+            ],
           },
         },
-        "Handler": "main",
-        "MemorySize": 512,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "lambdaServiceRole494E4CA6",
-            "Arn",
-          ],
-        },
-        "Runtime": "go1.x",
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "CertificateCdkmetadataADA3D155": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "DomainName": "cloudformation.gutools.co.uk",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -88,11 +222,303 @@ Object {
             "Value": "TEST",
           },
         ],
-        "Timeout": 900,
+        "ValidationMethod": "DNS",
       },
-      "Type": "AWS::Lambda::Function",
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
     },
-    "lambdaServiceRole494E4CA6": Object {
+    "DescribeEC2PolicyFF5F9295": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeAutoScalingGroups",
+                "ec2:DescribeTags",
+                "ec2:DescribeInstances",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "describe-ec2-policy",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkmetadata363D9786",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GetDistributablePolicyCdkmetadata3F972620": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:s3:::",
+                    Object {
+                      "Ref": "DistributionBucketName",
+                    },
+                    "/deploy/TEST/cdk-metadata/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GetDistributablePolicyCdkmetadata3F972620",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkmetadata363D9786",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GuHttpsEgressSecurityGroupCdkmetadata89327F33": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-metadata",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupCdkmetadatafromCdkMetadataLoadBalancerCdkmetadataSecurityGroup4C81F33A890024AD41EF": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LoadBalancerCdkmetadataSecurityGroup015A6DB2",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuHttpsEgressSecurityGroupCdkmetadatafromCdkMetadataRestrictedIngressSecurityGroupCdkmetadata4798AB7E89009C858A2A": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "RestrictedIngressSecurityGroupCdkmetadata78719FF0",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuLogShippingPolicy981BFE5A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:kinesis:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    Object {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GuLogShippingPolicy981BFE5A",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkmetadata363D9786",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "High5xxPercentageAlarmCdkmetadata98F59281": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:aws:sns:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":",
+                Object {
+                  "Ref": "AWS::AccountId",
+                },
+                ":",
+                Object {
+                  "Ref": "AnghammaradSnsArn",
+                },
+              ],
+            ],
+          },
+        ],
+        "AlarmDescription": "cdk-metadata exceeded 1% error rate",
+        "AlarmName": "High 5XX error % from cdk-metadata in TEST",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 60,
+        "Metrics": Array [
+          Object {
+            "Expression": "100*(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "% of 5XX responses served for cdk-metadata (load balancer and instances combined)",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkmetadata4143EB47",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkmetadata4143EB47",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerCdkmetadata4143EB47",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "InstanceRoleCdkmetadata363D9786": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -100,26 +526,23 @@ Object {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "lambda.amazonaws.com",
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "ec2.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
+        "Path": "/",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -145,51 +568,181 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "lambdaServiceRoleDefaultPolicyBF6FA5E7": Object {
+    "InstanceRoleCdkmetadataDefaultPolicy5DD3458D": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
             Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudformation-read-access",
+            },
+            Object {
               "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
+                "s3:Put*",
+                "s3:Get*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "arn:",
-                      Object {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      Object {
-                        "Ref": "DistributionBucketName",
-                      },
-                    ],
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "databucketA7E4F76C",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
                   ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "arn:",
-                      Object {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      Object {
-                        "Ref": "DistributionBucketName",
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
+                ],
+              },
             },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "InstanceRoleCdkmetadataDefaultPolicy5DD3458D",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkmetadata363D9786",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ListenerCdkmetadata596977CB": Object {
+      "Properties": Object {
+        "Certificates": Array [
+          Object {
+            "CertificateArn": Object {
+              "Ref": "CertificateCdkmetadataADA3D155",
+            },
+          },
+        ],
+        "DefaultActions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "TargetGroupCdkmetadata227E6885",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": Object {
+          "Ref": "LoadBalancerCdkmetadata4143EB47",
+        },
+        "Port": 443,
+        "Protocol": "HTTPS",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "LoadBalancerCdkmetadata4143EB47": Object {
+      "Properties": Object {
+        "LoadBalancerAttributes": Array [
+          Object {
+            "Key": "deletion_protection.enabled",
+            "Value": "true",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LoadBalancerCdkmetadataSecurityGroup015A6DB2",
+              "GroupId",
+            ],
+          },
+          Object {
+            "Fn::GetAtt": Array [
+              "RestrictedIngressSecurityGroupCdkmetadata78719FF0",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": Object {
+          "Ref": "cdkmetadataPublicSubnets",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-metadata",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "LoadBalancerCdkmetadataSecurityGroup015A6DB2": Object {
+      "Properties": Object {
+        "GroupDescription": "Automatically created Security Group for ELB CdkMetadataLoadBalancerCdkmetadata69DBD65D",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-metadata",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LoadBalancerCdkmetadataSecurityGrouptoCdkMetadataGuHttpsEgressSecurityGroupCdkmetadata5D296AA2890079F635DF": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LoadBalancerCdkmetadataSecurityGroup015A6DB2",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "ParameterStoreReadCdkmetadata9BD3E67C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
             Object {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
@@ -233,94 +786,352 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": "dynamodb:Query",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    "arn:aws:dynamodb:eu-west-1:",
-                    Object {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":table/config-deploy",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cdk-metadata-access",
-            },
-            Object {
-              "Action": "s3:PutObject",
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "databucketA7E4F76C",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "lambdaServiceRoleDefaultPolicyBF6FA5E7",
+        "PolicyName": "parameter-store-read-policy",
         "Roles": Array [
           Object {
-            "Ref": "lambdaServiceRole494E4CA6",
+            "Ref": "InstanceRoleCdkmetadata363D9786",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "lambdalambdarate1day0612D482E": Object {
+    "RestrictedIngressSecurityGroupCdkmetadata78719FF0": Object {
       "Properties": Object {
-        "Description": "Run daily.",
-        "ScheduleExpression": "rate(1 day)",
-        "State": "ENABLED",
-        "Targets": Array [
+        "GroupDescription": "Allow restricted ingress from CIDR ranges",
+        "SecurityGroupIngress": Array [
           Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
-                "lambda8B5974B5",
-                "Arn",
+            "CidrIp": "77.91.248.0/21",
+            "Description": "Allow access on port 443 from 77.91.248.0/21",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-metadata",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "RestrictedIngressSecurityGroupCdkmetadatatoCdkMetadataGuHttpsEgressSecurityGroupCdkmetadata5D296AA2890022CB6A7E": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "RestrictedIngressSecurityGroupCdkmetadata78719FF0",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "SSMRunCommandPolicy244E1613": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ec2messages:AcknowledgeMessage",
+                "ec2messages:DeleteMessage",
+                "ec2messages:FailMessage",
+                "ec2messages:GetEndpoint",
+                "ec2messages:GetMessages",
+                "ec2messages:SendReply",
+                "ssm:UpdateInstanceInformation",
+                "ssm:ListInstanceAssociations",
+                "ssm:DescribeInstanceProperties",
+                "ssm:DescribeDocumentParameters",
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
               ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
-            "Id": "Target0",
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ssm-run-command-policy",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleCdkmetadata363D9786",
           },
         ],
       },
-      "Type": "AWS::Events::Rule",
+      "Type": "AWS::IAM::Policy",
     },
-    "lambdalambdarate1day0AllowEventRuleCdkMetadatalambdaB7EF866A3A79A5BC": Object {
+    "TargetGroupCdkmetadata227E6885": Object {
       "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "lambda8B5974B5",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
-            "lambdalambdarate1day0612D482E",
-            "Arn",
-          ],
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/healthcheck",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "Port": 8900,
+        "Protocol": "HTTP",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cdk-metadata",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "instance",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": Object {
+          "Ref": "VpcId",
         },
       },
-      "Type": "AWS::Lambda::Permission",
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "UnhealthyInstancesAlarmCdkmetadata344518C6": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:aws:sns:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":",
+                Object {
+                  "Ref": "AWS::AccountId",
+                },
+                ":",
+                Object {
+                  "Ref": "AnghammaradSnsArn",
+                },
+              ],
+            ],
+          },
+        ],
+        "AlarmDescription": "cdk-metadata's instances have failed healthchecks several times over the last 1 hour.
+      This typically results in the AutoScaling Group cycling instances and can lead to problems with deployment,
+      scaling or handling traffic spikes.
+
+      Check cdk-metadata's application logs or ssh onto an unhealthy instance in order to debug these problems.",
+        "AlarmName": "Unhealthy instances for cdk-metadata in TEST",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 30,
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkmetadata596977CB",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkmetadata596977CB",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerCdkmetadata596977CB",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          Object {
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "TargetGroupCdkmetadata227E6885",
+                "TargetGroupFullName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 60,
+        "MetricName": "UnHealthyHostCount",
+        "Namespace": "AWS/ApplicationELB",
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "WazuhSecurityGroup": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow outbound traffic from wazuh agent to manager",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Wazuh event logging",
+            "FromPort": 1514,
+            "IpProtocol": "tcp",
+            "ToPort": 1514,
+          },
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Wazuh agent registration",
+            "FromPort": 1515,
+            "IpProtocol": "tcp",
+            "ToPort": 1515,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "cname": Object {
+      "Properties": Object {
+        "Name": "cloudformation.gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LoadBalancerCdkmetadata4143EB47",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "TEST",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
+    "databucketA7E4F76C": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cdk-metadata",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
     },
   },
 }
