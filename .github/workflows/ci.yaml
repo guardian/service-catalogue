@@ -75,38 +75,3 @@ jobs:
                   bucketSsmLookup: true
                   lookupByTags: true
                   fileName: lambda.zip
-
-      - uses: guardian/actions-riff-raff@v1
-        with:
-          app: cdk-metadata-roles
-          projectName: deploy::cdk-metadata-roles
-          config: |
-            stacks:
-              - playground
-              - deploy
-              - composer
-              - workflow
-              - media-service
-              - content-api
-              - cms-fronts
-              - ophan
-              - frontend
-              - identity
-              - mobile
-              - targeting
-              - membership
-              - pfi
-              - security
-              - data-science
-            regions:
-              - eu-west-1
-            allowedStages:
-              - INFRA
-            deployments:
-              cloudformation:
-                app: cdk-metadata-roles
-                type: cloud-formation
-                sources:
-                  -  cdk/cdk.out/CdkMetadataAccess-INFRA.template.json
-                parameters:
-                  templatePath: CdkMetadataAccess-INFRA.template.json
