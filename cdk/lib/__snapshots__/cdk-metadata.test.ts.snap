@@ -579,8 +579,8 @@ systemctl start cdk-metadata
             },
             Object {
               "Action": Array [
-                "s3:Put*",
-                "s3:Get*",
+                "s3:PutObject",
+                "s3:GetObject",
               ],
               "Effect": "Allow",
               "Resource": Object {

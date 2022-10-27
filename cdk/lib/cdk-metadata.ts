@@ -85,7 +85,7 @@ systemctl start ${name}
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				resources: [`${bucket.bucketArn}/*`],
-				actions: ['s3:Put*', 's3:Get*'],
+				actions: ['s3:PutObject', 's3:GetObject'],
 			}),
 		);
 
