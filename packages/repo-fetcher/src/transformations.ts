@@ -35,7 +35,7 @@ const parseDateString = (
 	return new Date(dateString);
 };
 
-export const transformRepo = (
+export const asRepo = (
 	repo: RepositoryResponse,
 	owners: string[],
 ): Repository => {
@@ -59,13 +59,9 @@ export const transformRepo = (
 	};
 };
 
-export class RepoAndOwner {
+export interface RepoAndOwner {
 	teamSlug: string;
 	repoName: string;
-	constructor(teamSlug: string, repoName: string) {
-		this.teamSlug = teamSlug;
-		this.repoName = repoName;
-	}
 }
 
 export const getAdminReposFromResponse = (
