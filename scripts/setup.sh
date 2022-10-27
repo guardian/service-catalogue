@@ -2,6 +2,9 @@
 
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT_DIR=${DIR}/..
+
 STAGE=DEV
 APP=github-lens
 STACK=deploy
@@ -19,7 +22,21 @@ download_local_config () {
   fi
 }
 
+check_node_version() {
+  runningNodeVersion=$(node -v)
+  requiredNodeVersion=$(cat "$ROOT_DIR/.nvmrc")
+
+  # remove leading v
+  runningNodeVersionNumber=${runningNodeVersion//[v]/}
+
+  if [ "$runningNodeVersionNumber" != "$requiredNodeVersion" ]; then
+    echo -e "Using wrong version of Node. Required ${requiredNodeVersion}. Running ${runningNodeVersion}."
+    setup_node_env
+  fi
+}
+
 setup_node_env() {
+  echo "Attempting to switch node versions for you..."
   if command -v fnm &> /dev/null
   then
       fnm use
@@ -28,14 +45,17 @@ setup_node_env() {
     then
       echo "You are using 'nvm', 'fnm' is preferred (it's quicker)!"
       nvm use
-    else 
+    else
       echo "Please install fnm: 'brew install fnm'"
       exit 1
     fi
   fi
+}
 
+install_dependencies() {
   npm install
 }
 
 download_local_config
-setup_node_env
+check_node_version
+install_dependencies
