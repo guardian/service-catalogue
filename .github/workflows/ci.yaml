@@ -23,9 +23,9 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version-file: "cdk/.nvmrc"
+          node-version-file: "_cdk/.nvmrc"
           cache: npm
-          cache-dependency-path: cdk/package-lock.json
+          cache-dependency-path: _cdk/package-lock.json
 
       - uses: guardian/actions-read-private-repos@v0.1.0
         with:
@@ -45,16 +45,15 @@ jobs:
 
       - name: test and build
         run: |
-          cd src
           go test .
           env GOOS=linux GOARCH=arm64 go build -o cdk-metadata main.go
 
       - uses: guardian/actions-riff-raff@v2
         with:
           projectName: deploy::cdk-metadata
-          configPath: cdk/cdk.out/riff-raff.yaml
+          configPath: _cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
             cdk-metadata:
-              - src/cdk-metadata
+              - cdk-metadata
             cdk.out:
-              - cdk/cdk.out
+              - _cdk/cdk.out
