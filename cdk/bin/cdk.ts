@@ -1,6 +1,10 @@
 import 'source-map-support/register';
-import { App } from 'aws-cdk-lib';
+import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
 import { CdkMetadata } from '../lib/cdk-metadata';
 
-const app = new App();
-new CdkMetadata(app, 'CdkMetadata-INFRA', { stack: 'deploy', stage: 'INFRA' });
+const app = new GuRootExperimental();
+new CdkMetadata(app, 'CdkMetadata-INFRA', {
+	stack: 'deploy',
+	stage: 'INFRA',
+	env: { region: 'eu-west-1' },
+});
