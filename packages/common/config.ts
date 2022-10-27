@@ -1,5 +1,7 @@
 import * as dotenv from 'dotenv';
 import { decrypt } from './aws/kms';
+import { getLogLevel } from './log/log';
+import type { LogLevel } from './log/log';
 
 dotenv.config({ path: `${__dirname}/../../.env` });
 
@@ -14,6 +16,7 @@ export type Config = {
 	dataBucketName: string;
 	region: string;
 	stage: Stage;
+	logLevel: LogLevel;
 };
 
 export const mandatoryEncrypted = async (
@@ -64,5 +67,6 @@ export const getConfig = async (): Promise<Config> => {
 		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', stage),
 		region: optionalWithDefault('AWS_REGION', 'eu-west-1'),
 		stage,
+		logLevel: getLogLevel(optional('LOG_LEVEL')),
 	};
 };
