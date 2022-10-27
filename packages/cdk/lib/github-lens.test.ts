@@ -9,6 +9,7 @@ describe('The GithubLens stack', () => {
 			stack: 'deploy',
 			stage: 'INFRA',
 			domainName: 'github-lens.gutools.co.uk',
+			vpceId: 'PLACEHOLDER',
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();

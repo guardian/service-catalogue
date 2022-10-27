@@ -35,6 +35,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
+      - uses: guardian/actions-read-private-repos@v0.1.0
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
       - name: Run script/ci
         run: ./scripts/ci.sh
 

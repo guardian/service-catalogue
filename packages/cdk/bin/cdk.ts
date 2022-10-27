@@ -9,4 +9,5 @@ new GithubLens(app, 'GithubLens-INFRA', {
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
 	domainName: 'github-lens.gutools.co.uk',
+	vpceId: 'vpce-0cb20360ab01108de',
 });

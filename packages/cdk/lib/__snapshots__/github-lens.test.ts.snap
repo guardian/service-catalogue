@@ -10,7 +10,6 @@ Object {
       "GuStringParameter",
       "GuDistributionBucketParameter",
       "GuApiLambda",
-      "GuCertificate",
       "GuScheduledLambda",
       "GuLambdaErrorPercentageAlarm",
     ],
@@ -68,46 +67,25 @@ Object {
     },
   },
   "Resources": Object {
-    "CertificateGithublens25494A00": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "DomainName": "github-lens.gutools.co.uk",
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "github-lens",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/github-lens",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "INFRA",
-          },
-        ],
-        "ValidationMethod": "DNS",
-      },
-      "Type": "AWS::CertificateManager::Certificate",
-      "UpdateReplacePolicy": "Retain",
-    },
     "DNS": Object {
       "Properties": Object {
         "Name": "github-lens.gutools.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": Array [
           Object {
-            "Fn::GetAtt": Array [
-              "githublensapilambdagithublensdomainAF6EC35F",
-              "RegionalDomainName",
+            "Fn::Join": Array [
+              "",
+              Array [
+                "https://",
+                Object {
+                  "Ref": "githublensapilambdagithublensFC5CBB44",
+                },
+                "-PLACEHOLDER.execute-api.",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ".amazonaws.com",
+              ],
             ],
           },
         ],
@@ -168,6 +146,32 @@ Object {
         ],
       },
       "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ProdLogsCA1A5D7E": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 14,
+        "Tags": Array [
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
     "githublensapilambda36E7A473": Object {
@@ -599,7 +603,7 @@ Object {
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublensapilambdagithublensDeploymentF3C58D95e46845091e43c98251412ef4837752d2": Object {
+    "githublensapilambdagithublensDeploymentF3C58D95423b4ed1c982787941c175b5afa76a10": Object {
       "DependsOn": Array [
         "githublensapilambdagithublensproxyANYFD25689D",
         "githublensapilambdagithublensproxy306AC689",
@@ -618,8 +622,17 @@ Object {
         "githublensapilambdagithublensAccount21DDF10C",
       ],
       "Properties": Object {
+        "AccessLogSetting": Object {
+          "DestinationArn": Object {
+            "Fn::GetAtt": Array [
+              "ProdLogsCA1A5D7E",
+              "Arn",
+            ],
+          },
+          "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"user\\":\\"$context.identity.user\\",\\"caller\\":\\"$context.identity.caller\\",\\"requestTime\\":\\"$context.requestTime\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"resourcePath\\":\\"$context.resourcePath\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\"}",
+        },
         "DeploymentId": Object {
-          "Ref": "githublensapilambdagithublensDeploymentF3C58D95e46845091e43c98251412ef4837752d2",
+          "Ref": "githublensapilambdagithublensDeploymentF3C58D95423b4ed1c982787941c175b5afa76a10",
         },
         "RestApiId": Object {
           "Ref": "githublensapilambdagithublensFC5CBB44",
@@ -653,7 +666,32 @@ Object {
     "githublensapilambdagithublensFC5CBB44": Object {
       "Properties": Object {
         "Description": "API that proxies all requests to Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": Object {
+          "Types": Array [
+            "PRIVATE",
+          ],
+          "VpcEndpointIds": Array [
+            "PLACEHOLDER",
+          ],
+        },
         "Name": "deploy-INFRA-github-lens",
+        "Policy": Object {
+          "Statement": Array [
+            Object {
+              "Action": "execute-api:Invoke",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "aws:SourceVpce": "PLACEHOLDER",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": "*",
+              "Resource": "execute-api:/*/*/*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
         "Tags": Array [
           Object {
             "Key": "App",
@@ -678,56 +716,6 @@ Object {
         ],
       },
       "Type": "AWS::ApiGateway::RestApi",
-    },
-    "githublensapilambdagithublensdomainAF6EC35F": Object {
-      "Properties": Object {
-        "DomainName": "github-lens.gutools.co.uk",
-        "EndpointConfiguration": Object {
-          "Types": Array [
-            "REGIONAL",
-          ],
-        },
-        "RegionalCertificateArn": Object {
-          "Ref": "CertificateGithublens25494A00",
-        },
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "github-lens-api",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/github-lens",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "INFRA",
-          },
-        ],
-      },
-      "Type": "AWS::ApiGateway::DomainName",
-    },
-    "githublensapilambdagithublensdomainMapGithubLensgithublensapilambdagithublens0420DDC236C3D399": Object {
-      "Properties": Object {
-        "DomainName": Object {
-          "Ref": "githublensapilambdagithublensdomainAF6EC35F",
-        },
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
-        },
-        "Stage": Object {
-          "Ref": "githublensapilambdagithublensDeploymentStageprod05B08EE8",
-        },
-      },
-      "Type": "AWS::ApiGateway::BasePathMapping",
     },
     "githublensapilambdagithublensproxy306AC689": Object {
       "Properties": Object {
