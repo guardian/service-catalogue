@@ -33,7 +33,7 @@ jobs:
 
       - name: synth CDK
         run: |
-          cd cdk
+          cd _cdk
           npm ci
           npm test -- --passWithNoTests
           npm run lint

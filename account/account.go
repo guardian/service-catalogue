@@ -107,7 +107,12 @@ func getStacks(ctx context.Context, client *cloudformation.Client, accountName s
 				continue
 			}
 
-			stacks = append(stacks, Stack{StackName: *stackName, AccountName: accountName, AccountID: accountID, Metadata: metadataMap})
+			stacks = append(stacks, Stack{
+				StackName:   *stackName,
+				AccountName: accountName,
+				AccountID:   accountID,
+				Metadata:    metadataMap,
+			})
 		}
 
 		hasMorePages = paginator.HasMorePages()
