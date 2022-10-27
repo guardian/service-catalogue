@@ -15,10 +15,11 @@ import (
 )
 
 type Stack struct {
-	StackName   string         `json:"stackName"`
-	Metadata    map[string]any `json:"metadata"`
-	AccountID   string         `json:"accountId"`
-	AccountName string         `json:"accountName"`
+	StackName   string            `json:"stackName"`
+	Metadata    map[string]any    `json:"metadata"`
+	AccountID   string            `json:"accountId"`
+	AccountName string            `json:"accountName"`
+	Tags        map[string]string `json:"tags"`
 }
 
 type Account interface {
@@ -107,13 +108,29 @@ func getStacks(ctx context.Context, client *cloudformation.Client, accountName s
 				continue
 			}
 
-			stacks = append(stacks, Stack{StackName: *stackName, AccountName: accountName, AccountID: accountID, Metadata: metadataMap})
+			stacks = append(stacks, Stack{
+				StackName:   *stackName,
+				AccountName: accountName,
+				AccountID:   accountID,
+				Metadata:    metadataMap,
+				Tags:        tagsAsMap(stackSummary.Tags),
+			})
 		}
 
 		hasMorePages = paginator.HasMorePages()
 	}
 
 	return stacks, nil
+}
+
+func tagsAsMap(tags []types.Tag) map[string]string {
+	out := map[string]string{}
+
+	for _, tag := range tags {
+		out[*tag.Key] = *tag.Value
+	}
+
+	return out
 }
 
 func getString(ptr *string, defaultValue string) string {
