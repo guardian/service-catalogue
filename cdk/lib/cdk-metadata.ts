@@ -55,7 +55,7 @@ systemctl start ${name}
 				scope: AccessScope.RESTRICTED,
 				cidrRanges: [Peer.ipv4(GuardianPublicNetworks.London)], // TODO let's think about this - needs to be accessible by other services in the VPC.
 			},
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.NANO),
 			applicationPort: 8900,
 			monitoringConfiguration: {
 				snsTopicName:

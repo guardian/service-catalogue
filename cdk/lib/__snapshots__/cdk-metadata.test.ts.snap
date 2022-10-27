@@ -141,7 +141,7 @@ Object {
         "ImageId": Object {
           "Ref": "AMICdkmetadata",
         },
-        "InstanceType": "t4g.small",
+        "InstanceType": "t4g.nano",
         "MetadataOptions": Object {
           "HttpTokens": "required",
         },
