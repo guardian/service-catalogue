@@ -17,6 +17,10 @@ import (
 
 var bucket string = os.Getenv("BUCKET")
 
+// check is a crude way to fail fast. Only use it for errors that should halt
+// the entire app - e.g. missing configuration. For the core crawling logic we
+// should never fail but instead log the error and do our best to continue
+// crawling other stacks/accounts.
 func check(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s; %v", msg, err)
