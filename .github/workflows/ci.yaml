@@ -49,10 +49,6 @@ jobs:
           go test .
           env GOOS=linux GOARCH=arm64 go build -o cdk-metadata main.go
 
-      - name: build binary
-        run: |
-          env GOOS=linux GOARCH=arm64 go build -o cdk-metadata main.go
-
       - uses: guardian/actions-riff-raff@v2
         with:
           projectName: deploy::cdk-metadata
