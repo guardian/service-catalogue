@@ -29,11 +29,11 @@ const createOwnerObjects = async (
 };
 
 export const main = async (): Promise<void> => {
-	configureLogging(getLogLevel(process.env['LOG_LEVEL']));
+	const config = await getConfig();
+	configureLogging(getLogLevel(config.logLevel));
 
 	console.log('Starting repo-fetcher');
 
-	const config = await getConfig();
 	const client = getOctokit(config);
 	const teamNames = await listTeams(client);
 
