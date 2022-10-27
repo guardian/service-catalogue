@@ -43,10 +43,10 @@ jobs:
         with:
           go-version: "1.19"
 
-      - run: go test .
-
-      - name: build binary
+      - name: test and build
         run: |
+          cd src
+          go test .
           env GOOS=linux GOARCH=arm64 go build -o cdk-metadata main.go
 
       - uses: guardian/actions-riff-raff@v2
@@ -55,6 +55,6 @@ jobs:
           configPath: cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
             cdk-metadata:
-              - cdk-metadata
+              - src/cdk-metadata
             cdk.out:
               - cdk/cdk.out
