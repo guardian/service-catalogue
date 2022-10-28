@@ -1,3 +1,4 @@
+import type { Readable } from 'stream';
 import {
 	GetObjectCommand,
 	PutObjectCommand,
@@ -28,6 +29,15 @@ export const putObject = async <T>(
 	console.info(`Item successfully uploaded to: s3://${bucketName}/${key}`);
 };
 
+async function streamToString(stream: Readable): Promise<string> {
+	return await new Promise((resolve, reject) => {
+		const chunks: Uint8Array[] = [];
+		stream.on('data', (chunk: Uint8Array) => chunks.push(chunk));
+		stream.on('error', reject);
+		stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+	});
+}
+
 export const getObject = async <T>(
 	s3Client: S3Client,
 	bucketName: string,
@@ -39,12 +49,15 @@ export const getObject = async <T>(
 	});
 
 	const response = await s3Client.send(command);
-	const body = response.Body?.toString();
+	const bodyStream = response.Body;
 
-	if (!body) {
+	if (!bodyStream) {
 		throw new Error(`s3://${bucketName}/${key} is empty`);
 	}
 
+	const result = await streamToString(bodyStream as Readable);
+
 	console.info(`Item successfully downloaded from: s3://${bucketName}/${key}`);
-	return JSON.parse(body) as T;
+
+	return JSON.parse(result) as T;
 };
