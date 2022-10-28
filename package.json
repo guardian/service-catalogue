@@ -7,7 +7,7 @@
     "start": "npm -w packages/repo-fetcher run dev",
     "synth": "npm run synth --workspace=cdk",
     "typecheck": "npm run typecheck --workspaces",
-    "build": "npm run build --workspace=repo-fetcher --workspace=github-lens-api",
+    "build": "npm run build --workspaces --if-present",
     "lint": "eslint packages/** --ext .ts --no-error-on-unmatched-pattern"
   },
   "author": "Guardian Developers",
@@ -28,8 +28,11 @@
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   },
-  "eslintConfig": {
+	"eslintConfig": {
     "extends": "@guardian/eslint-config-typescript"
   },
+  "eslintIgnore": [
+    "packages/common/dist"
+  ],
   "prettier": "@guardian/prettier"
 }

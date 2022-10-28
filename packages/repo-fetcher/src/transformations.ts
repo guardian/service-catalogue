@@ -1,7 +1,7 @@
 import type {
 	RepositoryResponse,
 	TeamRepoResponse,
-} from '../../common/github/github';
+} from 'common/github/github';
 
 export interface Repository {
 	id: number;
