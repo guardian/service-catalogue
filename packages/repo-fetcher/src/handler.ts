@@ -40,7 +40,7 @@ export const main = async (): Promise<void> => {
 
 	console.log('Starting repo-fetcher');
 
-	const client = getOctokit(config);
+	const client = getOctokit(config.github);
 
 	const teams = await listTeams(client);
 	console.log(`Found ${teams.length} github teams`);

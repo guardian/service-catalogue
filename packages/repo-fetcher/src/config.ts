@@ -5,16 +5,13 @@ import {
 	optional,
 	optionalWithDefault,
 } from '../../common/config';
+import type { GitHubConfig } from '../../common/github/github';
 import { getLogLevel } from '../../common/log/log';
 import type { LogLevel } from '../../common/log/log';
 
 export type Config = {
 	dataKeyPrefix: string;
-	github: {
-		appId: string;
-		appPrivateKey: string;
-		appInstallationId: string;
-	};
+	github: GitHubConfig;
 	dataBucketName: string;
 	region: string;
 	stage: Stage;
