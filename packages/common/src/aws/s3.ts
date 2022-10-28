@@ -25,7 +25,7 @@ export const putObject = async <T>(
 	});
 
 	await s3Client.send(command);
-	console.log(`Item uploaded to s3 successfully to: s3://${bucketName}/${key}`);
+	console.info(`Item successfully uploaded to: s3://${bucketName}/${key}`);
 };
 
 export const getObject = async <T>(
@@ -45,5 +45,6 @@ export const getObject = async <T>(
 		throw new Error(`s3://${bucketName}/${key} is empty`);
 	}
 
+	console.info(`Item successfully downloaded from: s3://${bucketName}/${key}`);
 	return JSON.parse(body) as T;
 };
