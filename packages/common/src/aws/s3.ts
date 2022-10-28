@@ -12,24 +12,14 @@ export const putObject = async <T>(
 	key: string,
 	body: T,
 ): Promise<void> => {
-	try {
-		const command = new PutObjectCommand({
-			Bucket: bucketName,
-			Key: key,
-			Body: JSON.stringify(body),
-			ContentType: 'application/json; charset=utf-8',
-			ACL: 'private',
-		});
+	const command = new PutObjectCommand({
+		Bucket: bucketName,
+		Key: key,
+		Body: JSON.stringify(body),
+		ContentType: 'application/json; charset=utf-8',
+		ACL: 'private',
+	});
 
-		await s3Client.send(command);
-		console.log(
-			`Item uploaded to s3 successfully to: s3://${bucketName}/${key}`,
-		);
-	} catch (e) {
-		if (e instanceof Error) {
-			console.error(`Error uploading item to s3: ${e.message}`);
-		} else {
-			console.error(e);
-		}
-	}
+	await s3Client.send(command);
+	console.log(`Item uploaded to s3 successfully to: s3://${bucketName}/${key}`);
 };
