@@ -1,13 +1,13 @@
 import type { Octokit } from '@octokit/rest';
-import { getS3Client, putObject } from '../../common/aws/s3';
-import type { TeamsResponse } from '../../common/github/github';
+import { getS3Client, putObject } from 'common/aws/s3';
+import type { TeamsResponse } from 'common/github/github';
 import {
 	getOctokit,
 	getReposForTeam,
 	listRepositories,
 	listTeams,
-} from '../../common/github/github';
-import { configureLogging, getLogLevel } from '../../common/log/log';
+} from 'common/github/github';
+import { configureLogging, getLogLevel } from 'common/log/log';
 import { getConfig } from './config';
 import { asRepo, getAdminReposFromResponse } from './transformations';
 

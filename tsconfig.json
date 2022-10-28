@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2021",
     "module": "commonjs",
+    "lib": ["ES2021", "dom"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
@@ -9,6 +10,13 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
-    "typeRoots": ["./node_modules/@types"]
+    "baseUrl": ".",
+    "paths": {
+      "common": ["packages/common/src"],
+      "common/*": ["packages/common/src/*"]
+    }
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register", "dotenv/config"]
   }
 }
