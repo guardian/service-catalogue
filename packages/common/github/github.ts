@@ -2,7 +2,6 @@ import { createAppAuth } from '@octokit/auth-app';
 import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
-import type { Config } from '../config';
 import { sleep } from '../sleep';
 
 const ThrottledOctokit = Octokit.plugin(throttling);
@@ -15,6 +14,12 @@ interface Options {
 		retryCount: number;
 	};
 }
+
+export type GitHubConfig = {
+	appId: string;
+	appPrivateKey: string;
+	appInstallationId: string;
+};
 
 const octokit = new Octokit();
 export type RepositoriesResponse = GetResponseDataTypeFromEndpointMethod<
@@ -30,19 +35,17 @@ export type RepositoryResponse = RepositoriesResponse[number];
 
 let _octokit: Octokit | undefined;
 
-export const getOctokit = (config: Config): Octokit => {
+export const getOctokit = (config: GitHubConfig): Octokit => {
 	if (_octokit) {
 		return _octokit;
 	}
 
-	const credentials = config.github;
-
 	_octokit = new ThrottledOctokit({
 		authStrategy: createAppAuth,
 		auth: {
-			appId: credentials.appId,
-			privateKey: credentials.appPrivateKey,
-			installationId: credentials.appInstallationId,
+			appId: config.appId,
+			privateKey: config.appPrivateKey,
+			installationId: config.appInstallationId,
 		},
 		throttle: {
 			onRateLimit: (retryAfter: number, options: Options) => {
