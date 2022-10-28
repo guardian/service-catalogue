@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+	GetObjectCommand,
+	PutObjectCommand,
+	S3Client,
+} from '@aws-sdk/client-s3';
 
 export const getS3Client = (region: string): S3Client => {
 	return new S3Client({
@@ -22,4 +26,24 @@ export const putObject = async <T>(
 
 	await s3Client.send(command);
 	console.log(`Item uploaded to s3 successfully to: s3://${bucketName}/${key}`);
+};
+
+export const getObject = async <T>(
+	s3Client: S3Client,
+	bucketName: string,
+	key: string,
+): Promise<T> => {
+	const command = new GetObjectCommand({
+		Bucket: bucketName,
+		Key: key,
+	});
+
+	const response = await s3Client.send(command);
+	const body = response.Body?.toString();
+
+	if (!body) {
+		throw new Error(`s3://${bucketName}/${key} is empty`);
+	}
+
+	return JSON.parse(body) as T;
 };
