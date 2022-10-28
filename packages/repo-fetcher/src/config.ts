@@ -1,13 +1,13 @@
-import type { Stage } from '../../common/config';
+import type { Stage } from 'common/config';
 import {
 	mandatory,
 	mandatoryEncrypted,
 	optional,
 	optionalWithDefault,
-} from '../../common/config';
-import type { GitHubConfig } from '../../common/github/github';
-import { getLogLevel } from '../../common/log/log';
-import type { LogLevel } from '../../common/log/log';
+} from 'common/config';
+import type { GitHubConfig } from 'common/github/github';
+import { getLogLevel } from 'common/log/log';
+import type { LogLevel } from 'common/log/log';
 
 export type Config = {
 	dataKeyPrefix: string;
