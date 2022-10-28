@@ -1,6 +1,5 @@
 import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from '../../common/aws/s3';
-import { getConfig } from '../../common/config';
 import type { TeamsResponse } from '../../common/github/github';
 import {
 	getOctokit,
@@ -9,6 +8,7 @@ import {
 	listTeams,
 } from '../../common/github/github';
 import { configureLogging, getLogLevel } from '../../common/log/log';
+import { getConfig } from './config';
 import { asRepo, getAdminReposFromResponse } from './transformations';
 
 // Returns a map of repoName -> admins (a list of team slugs).

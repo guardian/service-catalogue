@@ -1,23 +1,9 @@
 import * as dotenv from 'dotenv';
 import { decrypt } from './aws/kms';
-import { getLogLevel } from './log/log';
-import type { LogLevel } from './log/log';
 
 dotenv.config({ path: `${__dirname}/../../.env` });
 
 export type Stage = 'PROD' | 'CODE' | 'DEV';
-export type Config = {
-	dataKeyPrefix: string;
-	github: {
-		appId: string;
-		appPrivateKey: string;
-		appInstallationId: string;
-	};
-	dataBucketName: string;
-	region: string;
-	stage: Stage;
-	logLevel: LogLevel;
-};
 
 export const mandatoryEncrypted = async (
 	item: string,
@@ -48,25 +34,3 @@ export const mandatory = (item: string): string => {
 export const optional = (item: string): string | undefined => process.env[item];
 export const optionalWithDefault = (item: string, _default: string): string =>
 	optional(item) ?? _default;
-
-export const getConfig = async (): Promise<Config> => {
-	const configDecryptionKeyId = mandatory('KMS_KEY_ID');
-	const appPrivateKey = await mandatoryEncrypted(
-		'GITHUB_APP_PRIVATE_KEY',
-		configDecryptionKeyId,
-	);
-	const stage = optionalWithDefault('STAGE', 'DEV') as Stage;
-
-	return {
-		github: {
-			appId: mandatory('GITHUB_APP_ID'),
-			appPrivateKey: appPrivateKey,
-			appInstallationId: mandatory('GITHUB_APP_INSTALLATION_ID'),
-		},
-		dataBucketName: mandatory('DATA_BUCKET_NAME'),
-		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', stage),
-		region: optionalWithDefault('AWS_REGION', 'eu-west-1'),
-		stage,
-		logLevel: getLogLevel(optional('LOG_LEVEL')),
-	};
-};
