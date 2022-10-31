@@ -130,7 +130,7 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 			Metadata:    metadataMap,
 			Tags:        tags,
 			DevxFeatures: Features{
-				GuardianCDKVersion:    guardianCDKVersion(tags),
+				GuardianCDKVersion:    guardianCDKVersion(tags, metadataMap),
 				GuardianDNSRecordSets: recordSetDomains,
 			},
 		}
@@ -141,9 +141,7 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 	stacks := []Stack{}
 	paginator := cloudformation.NewDescribeStacksPaginator(client, &cloudformation.DescribeStacksInput{})
 
-	hasMorePages := true
-
-	for hasMorePages {
+	for paginator.HasMorePages() {
 		page, err := paginator.NextPage(ctx)
 		if err != nil {
 			return stacks, fmt.Errorf("unable to get next page of stack info: %v", err)
@@ -176,13 +174,25 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 	return stacks, nil
 }
 
-func guardianCDKVersion(tags map[string]string) *string {
-	version, ok := tags["gu:cdk:version"]
-	if !ok {
-		return nil
+// Guardian CDK version can be in tags or metadata, though going forward
+// metadata is preferred.
+func guardianCDKVersion(tags map[string]string, metadata map[string]any) *string {
+	key := "gu:cdk:version"
+	version, ok := tags[key]
+	if ok {
+		return &version
 	}
 
-	return &version
+	metadataVersion, ok := metadata[key]
+	if ok {
+		strMetadataVersion, ok := metadataVersion.(string) // cast to string (safely) required as metadata isn't strongly typed here.
+		if ok {
+			return &(strMetadataVersion)
+		}
+
+	}
+
+	return nil
 }
 
 func getRecordSetDomains(client *cloudformation.Client, stackName string, summary *cloudformation.GetTemplateSummaryOutput) ([]string, error) {
@@ -198,11 +208,10 @@ func getRecordSetDomains(client *cloudformation.Client, stackName string, summar
 
 	recordSetIndex := slices.IndexFunc(summary.ResourceTypes, isRecordSet)
 
-	if recordSetIndex == -1 {
+	if recordSetIndex == -1 { // Go is unfortunately old school (-1 indicates not found here).
 		return []string{}, nil
 	}
 
-	// how to lookup domain - get physical ID and then query it?
 	paginator := cloudformation.NewListStackResourcesPaginator(client, &cloudformation.ListStackResourcesInput{
 		StackName: &stackName,
 	})
