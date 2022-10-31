@@ -1,4 +1,9 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import type { Readable } from 'stream';
+import {
+	GetObjectCommand,
+	PutObjectCommand,
+	S3Client,
+} from '@aws-sdk/client-s3';
 
 export const getS3Client = (region: string): S3Client => {
 	return new S3Client({
@@ -12,24 +17,47 @@ export const putObject = async <T>(
 	key: string,
 	body: T,
 ): Promise<void> => {
-	try {
-		const command = new PutObjectCommand({
-			Bucket: bucketName,
-			Key: key,
-			Body: JSON.stringify(body),
-			ContentType: 'application/json; charset=utf-8',
-			ACL: 'private',
-		});
+	const command = new PutObjectCommand({
+		Bucket: bucketName,
+		Key: key,
+		Body: JSON.stringify(body),
+		ContentType: 'application/json; charset=utf-8',
+		ACL: 'private',
+	});
 
-		await s3Client.send(command);
-		console.log(
-			`Item uploaded to s3 successfully to: s3://${bucketName}/${key}`,
-		);
-	} catch (e) {
-		if (e instanceof Error) {
-			console.error(`Error uploading item to s3: ${e.message}`);
-		} else {
-			console.error(e);
-		}
+	await s3Client.send(command);
+	console.info(`Item successfully uploaded to: s3://${bucketName}/${key}`);
+};
+
+async function streamToString(stream: Readable): Promise<string> {
+	return await new Promise((resolve, reject) => {
+		const chunks: Uint8Array[] = [];
+		stream.on('data', (chunk: Uint8Array) => chunks.push(chunk));
+		stream.on('error', reject);
+		stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+	});
+}
+
+export const getObject = async <T>(
+	s3Client: S3Client,
+	bucketName: string,
+	key: string,
+): Promise<T> => {
+	const command = new GetObjectCommand({
+		Bucket: bucketName,
+		Key: key,
+	});
+
+	const response = await s3Client.send(command);
+	const bodyStream = response.Body;
+
+	if (!bodyStream) {
+		throw new Error(`s3://${bucketName}/${key} is empty`);
 	}
+
+	const result = await streamToString(bodyStream as Readable);
+
+	console.info(`Item successfully downloaded from: s3://${bucketName}/${key}`);
+
+	return JSON.parse(result) as T;
 };
