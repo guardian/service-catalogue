@@ -4,6 +4,7 @@ import {
 	PutObjectCommand,
 	S3Client,
 } from '@aws-sdk/client-s3';
+import { sdkStreamMixin } from '@aws-sdk/util-stream-node';
 import { mockClient } from 'aws-sdk-client-mock';
 import { getObject, getS3Client, putObject } from './s3';
 
@@ -15,7 +16,7 @@ beforeEach(() => {
 
 describe('getObject', function () {
 	it('downloads and JSON parses objects stored in S3', async function () {
-		const responseBody = new Readable();
+		const responseBody = sdkStreamMixin(new Readable());
 		const expectedData = {
 			foo: 'bar',
 			bat: 'baz',

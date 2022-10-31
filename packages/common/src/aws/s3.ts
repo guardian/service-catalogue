@@ -29,15 +29,6 @@ export const putObject = async <T>(
 	console.info(`Item successfully uploaded to: s3://${bucketName}/${key}`);
 };
 
-async function streamToString(stream: Readable): Promise<string> {
-	return await new Promise((resolve, reject) => {
-		const chunks: Uint8Array[] = [];
-		stream.on('data', (chunk: Uint8Array) => chunks.push(chunk));
-		stream.on('error', reject);
-		stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
-	});
-}
-
 export const getObject = async <T>(
 	s3Client: S3Client,
 	bucketName: string,
@@ -55,7 +46,7 @@ export const getObject = async <T>(
 		throw new Error(`s3://${bucketName}/${key} is empty`);
 	}
 
-	const result = await streamToString(bodyStream as Readable);
+	const result = await bodyStream.transformToString();
 
 	console.info(`Item successfully downloaded from: s3://${bucketName}/${key}`);
 
