@@ -170,6 +170,12 @@ func main() {
 	var s store.Store
 	if *inMemory {
 		s = store.LocalStore(map[string]store.LocalRecord{})
+	} else if *profile != "" {
+		bucket, err := getBucket()
+		check(err, "missing bucket env var")
+
+		s, err = store.NewS3FromProfile(bucket, *profile)
+		check(err, "unable to create S3 store for profile")
 	} else {
 		bucket, err := getBucket()
 		check(err, "missing bucket env var")
