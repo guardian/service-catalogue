@@ -2,6 +2,36 @@
 
 exports[`The CdkMetadata stack matches the snapshot 1`] = `
 Object {
+  "Metadata": Object {
+    "gu:cdk:constructs": Array [
+      "GuDistributionBucketParameter",
+      "GuAnghammaradTopicParameter",
+      "GuEc2App",
+      "GuVpcParameter",
+      "GuSubnetListParameter",
+      "GuCertificate",
+      "GuInstanceRole",
+      "GuSSMRunCommandPolicy",
+      "GuDescribeEC2Policy",
+      "GuLoggingStreamNameParameter",
+      "GuLogShippingPolicy",
+      "GuGetDistributablePolicy",
+      "GuParameterStoreReadPolicy",
+      "GuAmiParameter",
+      "GuHttpsEgressSecurityGroup",
+      "GuAutoScalingGroup",
+      "GuWazuhAccess",
+      "GuSubnetListParameter",
+      "GuApplicationLoadBalancer",
+      "GuApplicationTargetGroup",
+      "GuHttpsApplicationListener",
+      "GuSecurityGroup",
+      "GuAlb5xxPercentageAlarm",
+      "GuUnhealthyInstancesAlarm",
+      "GuCname",
+    ],
+    "gu:cdk:version": "TEST",
+  },
   "Outputs": Object {
     "LoadBalancerCdkmetadataDnsName": Object {
       "Description": "DNS entry for LoadBalancerCdkmetadata",
