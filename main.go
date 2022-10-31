@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -11,11 +12,10 @@ import (
 	"unicode"
 
 	"github.com/guardian/cdk-metadata/account"
+	"github.com/guardian/cdk-metadata/cache"
 	"github.com/guardian/cdk-metadata/prism"
 	"github.com/guardian/cdk-metadata/store"
 )
-
-var bucket string = os.Getenv("BUCKET")
 
 // check is a crude way to fail fast. Only use it for errors that should halt
 // the entire app - e.g. missing configuration. For the core crawling logic we
@@ -71,14 +71,18 @@ type CrawlOptions struct {
 
 	// Accounts to query
 	Accounts []account.Account
+
+	// Set to true to crawl even when today's data is already present. Note,
+	// this doesn't disable caching though.
+	ForceCrawl bool
 }
 
 func crawlAccounts(opts CrawlOptions) {
 	date := time.Now().Format("2006-01-02")
 	fileForToday := fmt.Sprintf("cdk-stack-metadata-%s.json", date)
 
-	_, err := opts.Store.Get(bucket, fileForToday)
-	if err == nil && !opts.InMemory {
+	_, _, err := opts.Store.Get(fileForToday)
+	if !opts.ForceCrawl && err == nil {
 		log.Println("skipping crawl as record for today already exists. To force a re-crawl, delete today's file and redeploy.")
 		return
 	}
@@ -100,26 +104,31 @@ func crawlAccounts(opts CrawlOptions) {
 		return
 	}
 
-	err = opts.Store.Put(bucket, fmt.Sprintf("cdk-stack-metadata-%s.json", date), out)
+	err = opts.Store.Put(fmt.Sprintf("cdk-stack-metadata-%s.json", date), out)
 	if err != nil {
 		log.Printf("unable to write dated object to S3: %v", err)
 		return
 	}
 
-	err = opts.Store.Put(bucket, "cdk-stack-metadata-latest.json", out)
+	err = opts.Store.Put("cdk-stack-metadata-latest.json", out)
 	if err != nil {
 		log.Printf("unable to write 'latest' object to S3: %v", err)
 		return
 	}
 }
 
+func logDuration(fn func(), name string) {
+	log.Printf("timer - %s starting...", name)
+	start := time.Now()
+	fn()
+	log.Printf("timer - %s complete in %v.", name, time.Since(start))
+}
+
 func schedule(ticker <-chan time.Time, f func()) {
-	log.Println("Initial tick...")
-	f()
+	logDuration(f, "crawl")
 
 	for range ticker {
-		log.Println("Subsequent tick...")
-		f()
+		logDuration(f, "crawl")
 	}
 }
 
@@ -130,7 +139,7 @@ func healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 
 func stackHandler(store store.Store) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		data, err := store.Get(bucket, "cdk-stack-metadata-latest.json")
+		data, _, err := store.Get("cdk-stack-metadata-latest.json")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "unable to read latest stack data: %v", err)
@@ -142,26 +151,41 @@ func stackHandler(store store.Store) func(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func getBucket() (string, error) {
+	got, ok := os.LookupEnv("BUCKET")
+	if !ok || got == "" {
+		return "", errors.New("BUCKET env var is missing or empty")
+	}
+
+	return got, nil
+}
+
 func main() {
 	profile := flag.String("profile", "", "Set to use a specific profile when testing locally.")
 	inMemory := flag.Bool("in-memory", false, "Set when you want to read/write to an in-memory store rather than S3")
+	forceCrawl := flag.Bool("force-crawl", false, "Set when you want to force a crawl even if today's data has been set (note, the cache will still be used though where appropriate).")
+	crawlFrequency := flag.String("crawl-frequency", "24h", "Use to override e.g. for local testing. See time.ParseDuration for valid values.")
 	flag.Parse()
 
 	var s store.Store
 	if *inMemory {
-		s = store.LocalStore(map[string][]byte{})
+		s = store.LocalStore(map[string]store.LocalRecord{})
 	} else {
-		var err error
-		s, err = store.NewS3()
+		bucket, err := getBucket()
+		check(err, "missing bucket env var")
+
+		s, err = store.NewS3(bucket)
 		check(err, "unable to create S3 store")
 	}
+
+	cache := cache.New(s)
 
 	var accounts []account.Account
 	if *profile != "" {
 		prismAccount, err := getAccountForProfile(*profile)
 		check(err, "unable to find prism account for profile")
 
-		acc, err := account.NewFromProfile(*profile, prismAccount.ID, prismAccount.Name)
+		acc, err := account.NewFromProfile(*profile, prismAccount.ID, prismAccount.Name, cache)
 		check(err, fmt.Sprintf("unable to build account for profile %s (note: requires VPN connection)", *profile))
 
 		accounts = append(accounts, acc)
@@ -171,15 +195,17 @@ func main() {
 
 		for _, accountMeta := range prismAccounts {
 			arn := fmt.Sprintf("arn:aws:iam::%s:role/cloudformation-read-access", accountMeta.ID)
-			acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name)
+			acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name, cache)
 			check(err, fmt.Sprintf("unable to build account for arn '%s'", arn))
 
 			accounts = append(accounts, acc)
 		}
 	}
 
-	opts := CrawlOptions{Profile: *profile, InMemory: *inMemory, Store: s, Accounts: accounts}
-	ticker := time.NewTicker(time.Hour * 24).C
+	frequency, err := time.ParseDuration(*crawlFrequency)
+	check(err, "unable to parse crawl frequency")
+	opts := CrawlOptions{Profile: *profile, InMemory: *inMemory, Store: s, Accounts: accounts, ForceCrawl: *forceCrawl}
+	ticker := time.NewTicker(frequency).C
 
 	go schedule(ticker, func() { crawlAccounts(opts) })
 

@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/guardian/cdk-metadata/cache"
 	"golang.org/x/exp/slices"
 )
 
@@ -30,23 +31,31 @@ type Stack struct {
 	DevxFeatures Features          `json:"devxFeatures"`
 }
 
+func (s Stack) Marshal() ([]byte, error) {
+	return json.Marshal(s)
+}
+
+func (s *Stack) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, s)
+}
+
 type Account interface {
 	GetStacks() ([]Stack, error)
 	GetAccountID() string
 	GetAccountName() string
 }
 
-func NewFromProfile(profile string, ID string, name string) (AWSAccount, error) {
+func NewFromProfile(profile string, ID string, name string, cache cache.Cache) (AWSAccount, error) {
 	ctx := context.Background()
 	conf, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile(profile), config.WithRegion("eu-west-1"))
 	if err != nil {
 		return AWSAccount{}, err
 	}
 
-	return AWSAccount{Config: conf, AccountID: ID, AccountName: name}, nil
+	return AWSAccount{Config: conf, AccountID: ID, AccountName: name, Cache: cache}, nil
 }
 
-func NewFromAssumedRole(roleARN string, ID string, name string) (AWSAccount, error) {
+func NewFromAssumedRole(roleARN string, ID string, name string, cache cache.Cache) (AWSAccount, error) {
 	ctx := context.Background()
 	conf, err := config.LoadDefaultConfig(ctx, config.WithRegion("eu-west-1"))
 	if err != nil {
@@ -66,6 +75,7 @@ func NewFromAssumedRole(roleARN string, ID string, name string) (AWSAccount, err
 type AWSAccount struct {
 	Config                 aws.Config
 	AccountID, AccountName string
+	Cache                  cache.Cache
 }
 
 func (a AWSAccount) GetAccountID() string {
@@ -79,12 +89,56 @@ func (a AWSAccount) GetAccountName() string {
 func (a AWSAccount) GetStacks() ([]Stack, error) {
 	ctx := context.Background()
 	client := cloudformation.NewFromConfig(a.Config)
-	return getStacks(ctx, client, a.AccountName, a.AccountID)
+	return getStacks(ctx, client, a.Cache, a.AccountName, a.AccountID)
 }
 
-func getStacks(ctx context.Context, client *cloudformation.Client, accountName string, accountID string) ([]Stack, error) {
-	stacks := []Stack{}
+func getOrElse[A any](a *A, b A) A {
+	if a != nil {
+		return *a
+	}
 
+	return b
+}
+
+func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.Cache, accountName string, accountID string) ([]Stack, error) {
+	getStackJSON := func(stackSummary types.Stack) ([]byte, error) {
+		stackName := stackSummary.StackName
+		input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
+		summary, err := client.GetTemplateSummary(ctx, input)
+		if err != nil {
+			return nil, fmt.Errorf("unable to get template summary for stack %s: %w", *stackName, err)
+		}
+
+		metadata := getString(summary.Metadata, "{}")
+		metadataMap := map[string]any{}
+		err = json.Unmarshal([]byte(metadata), &metadataMap)
+		if err != nil {
+			return nil, fmt.Errorf("unable to get template metadata for stack '%s' and metadata '%s': %w", *stackName, metadata, err)
+		}
+
+		tags := tagsAsMap(stackSummary.Tags)
+
+		recordSetDomains, err := getRecordSetDomains(client, *stackName, summary)
+		if err != nil {
+			return nil, fmt.Errorf("unable to get record sets for stack '%s': %w", *stackName, err)
+		}
+
+		stack := Stack{
+			StackName:   *stackName,
+			AccountName: accountName,
+			AccountID:   accountID,
+			Metadata:    metadataMap,
+			Tags:        tags,
+			DevxFeatures: Features{
+				GuardianCDKVersion:    guardianCDKVersion(tags, metadataMap),
+				GuardianDNSRecordSets: recordSetDomains,
+			},
+		}
+
+		return stack.Marshal()
+	}
+
+	stacks := []Stack{}
 	paginator := cloudformation.NewDescribeStacksPaginator(client, &cloudformation.DescribeStacksInput{})
 
 	for paginator.HasMorePages() {
@@ -98,54 +152,47 @@ func getStacks(ctx context.Context, client *cloudformation.Client, accountName s
 				continue
 			}
 
-			stackName := stackSummary.StackName
-			input := &cloudformation.GetTemplateSummaryInput{StackName: stackName}
-			summary, err := client.GetTemplateSummary(ctx, input)
+			cacheKey := fmt.Sprintf("%s/%s/%s", accountID, "eu-west-1", *stackSummary.StackName)
+			modifiedAt := getOrElse(stackSummary.LastUpdatedTime, *stackSummary.CreationTime)
+
+			got, err := cache.WithCache(cacheKey, modifiedAt, func() ([]byte, error) { return getStackJSON(stackSummary) })
 			if err != nil {
-				log.Printf("unable to get template summary for stack %s: %v", *stackName, err)
+				log.Printf("error getting stack data from cache: %v", err)
 				continue
 			}
 
-			metadata := getString(summary.Metadata, "{}")
-			metadataMap := map[string]any{}
-			err = json.Unmarshal([]byte(metadata), &metadataMap)
+			var s Stack
+			err = s.Unmarshal(got)
 			if err != nil {
-				log.Printf("unable to get template metadata for stack '%s' and metadata '%s': %v", *stackName, metadata, err)
-				continue
+				log.Printf("error unmarshalling stack from cache")
 			}
 
-			recordSetDomains, err := getRecordSetDomains(client, *stackName, summary)
-			if err != nil {
-				log.Printf("unable to get record sets stack '%s': %v", *stackName, err)
-				continue
-			}
-
-			tags := tagsAsMap(stackSummary.Tags)
-
-			stacks = append(stacks, Stack{
-				StackName:   *stackName,
-				AccountName: accountName,
-				AccountID:   accountID,
-				Metadata:    metadataMap,
-				Tags:        tags,
-				DevxFeatures: Features{
-					GuardianCDKVersion:    guardianCDKVersion(tags),
-					GuardianDNSRecordSets: recordSetDomains,
-				},
-			})
+			stacks = append(stacks, s)
 		}
 	}
 
 	return stacks, nil
 }
 
-func guardianCDKVersion(tags map[string]string) *string {
-	version, ok := tags["gu:cdk:version"]
-	if !ok {
-		return nil
+// Guardian CDK version can be in tags or metadata, though going forward
+// metadata is preferred.
+func guardianCDKVersion(tags map[string]string, metadata map[string]any) *string {
+	key := "gu:cdk:version"
+	version, ok := tags[key]
+	if ok {
+		return &version
 	}
 
-	return &version
+	metadataVersion, ok := metadata[key]
+	if ok {
+		strMetadataVersion, ok := metadataVersion.(string) // cast to string (safely) required as metadata isn't strongly typed here.
+		if ok {
+			return &(strMetadataVersion)
+		}
+
+	}
+
+	return nil
 }
 
 func getRecordSetDomains(client *cloudformation.Client, stackName string, summary *cloudformation.GetTemplateSummaryOutput) ([]string, error) {
@@ -161,11 +208,10 @@ func getRecordSetDomains(client *cloudformation.Client, stackName string, summar
 
 	recordSetIndex := slices.IndexFunc(summary.ResourceTypes, isRecordSet)
 
-	if recordSetIndex == -1 {
+	if recordSetIndex == -1 { // Go is unfortunately old school (-1 indicates not found here).
 		return []string{}, nil
 	}
 
-	// how to lookup domain - get physical ID and then query it?
 	paginator := cloudformation.NewListStackResourcesPaginator(client, &cloudformation.ListStackResourcesInput{
 		StackName: &stackName,
 	})
