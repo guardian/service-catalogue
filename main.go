@@ -78,7 +78,7 @@ func crawlAccounts(opts CrawlOptions) {
 	fileForToday := fmt.Sprintf("cdk-stack-metadata-%s.json", date)
 
 	_, err := opts.Store.Get(bucket, fileForToday)
-	if err == nil {
+	if err == nil && !opts.InMemory {
 		log.Println("skipping crawl as record for today already exists. To force a re-crawl, delete today's file and redeploy.")
 		return
 	}
@@ -114,11 +114,11 @@ func crawlAccounts(opts CrawlOptions) {
 }
 
 func schedule(ticker <-chan time.Time, f func()) {
-	println("Initial tick...")
+	log.Println("Initial tick...")
 	f()
 
 	for range ticker {
-		println("Subsequent tick...")
+		log.Println("Subsequent tick...")
 		f()
 	}
 }
@@ -185,5 +185,7 @@ func main() {
 
 	http.Handle("/healthcheck", http.HandlerFunc(healthcheckHandler))
 	http.Handle("/stacks", http.HandlerFunc(stackHandler(s)))
+
+	log.Println("Server is running on http://localhost:8900...")
 	log.Fatal(http.ListenAndServe(":8900", nil))
 }

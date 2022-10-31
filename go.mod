@@ -26,4 +26,5 @@ require (
 	github.com/aws/smithy-go v1.12.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	golang.org/x/exp v0.0.0-20221026153819-32f3d567a233
 )

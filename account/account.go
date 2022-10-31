@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -12,14 +13,21 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"golang.org/x/exp/slices"
 )
 
+type Features struct {
+	GuardianCDKVersion    *string  `json:"guardianCdkVersion"`
+	GuardianDNSRecordSets []string `json:"guardianDnsRecordSets"`
+}
+
 type Stack struct {
-	StackName   string            `json:"stackName"`
-	Metadata    map[string]any    `json:"metadata"`
-	AccountID   string            `json:"accountId"`
-	AccountName string            `json:"accountName"`
-	Tags        map[string]string `json:"tags"`
+	StackName    string            `json:"stackName"`
+	Metadata     map[string]any    `json:"metadata"`
+	AccountID    string            `json:"accountId"`
+	AccountName  string            `json:"accountName"`
+	Tags         map[string]string `json:"tags"`
+	DevxFeatures Features          `json:"devxFeatures"`
 }
 
 type Account interface {
@@ -79,9 +87,7 @@ func getStacks(ctx context.Context, client *cloudformation.Client, accountName s
 
 	paginator := cloudformation.NewDescribeStacksPaginator(client, &cloudformation.DescribeStacksInput{})
 
-	hasMorePages := true
-
-	for hasMorePages {
+	for paginator.HasMorePages() {
 		page, err := paginator.NextPage(ctx)
 		if err != nil {
 			return stacks, fmt.Errorf("unable to get next page of stack info: %v", err)
@@ -108,19 +114,77 @@ func getStacks(ctx context.Context, client *cloudformation.Client, accountName s
 				continue
 			}
 
+			recordSetDomains, err := getRecordSetDomains(client, *stackName, summary)
+			if err != nil {
+				log.Printf("unable to get record sets stack '%s': %v", *stackName, err)
+				continue
+			}
+
+			tags := tagsAsMap(stackSummary.Tags)
+
 			stacks = append(stacks, Stack{
 				StackName:   *stackName,
 				AccountName: accountName,
 				AccountID:   accountID,
 				Metadata:    metadataMap,
-				Tags:        tagsAsMap(stackSummary.Tags),
+				Tags:        tags,
+				DevxFeatures: Features{
+					GuardianCDKVersion:    guardianCDKVersion(tags),
+					GuardianDNSRecordSets: recordSetDomains,
+				},
 			})
 		}
-
-		hasMorePages = paginator.HasMorePages()
 	}
 
 	return stacks, nil
+}
+
+func guardianCDKVersion(tags map[string]string) *string {
+	version, ok := tags["gu:cdk:version"]
+	if !ok {
+		return nil
+	}
+
+	return &version
+}
+
+func getRecordSetDomains(client *cloudformation.Client, stackName string, summary *cloudformation.GetTemplateSummaryOutput) ([]string, error) {
+	isRecordSet := func(s string) bool {
+		return s == "Guardian::DNS::RecordSet"
+	}
+
+	// Assumes ID of the form riffraff.gutools.co.uk|CNAME|arn:aws:cloudformation:eu-west-1:...:stack/riff-raff-PROD/...|Cnam
+	getDomain := func(physicalResourceID string) string {
+		parts := strings.Split(physicalResourceID, "|")
+		return parts[0]
+	}
+
+	recordSetIndex := slices.IndexFunc(summary.ResourceTypes, isRecordSet)
+
+	if recordSetIndex == -1 {
+		return []string{}, nil
+	}
+
+	// how to lookup domain - get physical ID and then query it?
+	paginator := cloudformation.NewListStackResourcesPaginator(client, &cloudformation.ListStackResourcesInput{
+		StackName: &stackName,
+	})
+
+	domains := []string{}
+	for paginator.HasMorePages() {
+		page, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return domains, fmt.Errorf("unable to get next page of stack resources for stack %s: %v", stackName, err)
+		}
+
+		for _, resource := range page.StackResourceSummaries {
+			if isRecordSet(*resource.ResourceType) {
+				domains = append(domains, getDomain(*resource.PhysicalResourceId))
+			}
+		}
+	}
+
+	return domains, nil
 }
 
 func tagsAsMap(tags []types.Tag) map[string]string {
