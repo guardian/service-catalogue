@@ -1111,6 +1111,14 @@ systemctl start cdk-metadata
     "databucketA7E4F76C": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "ExpirationInDays": 30,
+              "Status": "Enabled",
+            },
+          ],
+        },
         "Tags": Array [
           Object {
             "Key": "gu:cdk:version",

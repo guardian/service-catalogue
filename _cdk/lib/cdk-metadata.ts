@@ -23,7 +23,10 @@ export class CdkMetadata extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
-		const bucket = new Bucket(this, 'data-bucket');
+		const bucket = new Bucket(this, 'data-bucket', {
+			lifecycleRules: [{ expiration: Duration.days(30) }],
+		});
+
 		const name = 'cdk-metadata';
 		const domainName = `cloudformation.gutools.co.uk`;
 		const keyPrefix = `${this.stack}/${this.stage}/${name}`;
