@@ -1,6 +1,5 @@
 import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
-import type { TeamsResponse } from 'common/github/github';
 import {
 	getOctokit,
 	getReposForTeam,
@@ -14,13 +13,13 @@ import { asRepo, getAdminReposFromResponse } from './transformations';
 // Returns a map of repoName -> admins (a list of team slugs).
 const teamRepositories = async (
 	client: Octokit,
-	teams: TeamsResponse,
+	teamNames: string[],
 ): Promise<Record<string, string[] | undefined>> => {
-	const teamRepositories = teams.map(async (team) => {
-		const teamRepos = await getReposForTeam(client, team.slug);
+	const teamRepositories = teamNames.map(async (teamName) => {
+		const teamRepos = await getReposForTeam(client, teamName);
 		const adminRepos: string[] = getAdminReposFromResponse(teamRepos);
 		return adminRepos.map((repoName) => ({
-			teamSlug: team.slug,
+			teamSlug: teamName,
 			repoName,
 		}));
 	});
@@ -34,6 +33,18 @@ const teamRepositories = async (
 	}, {});
 };
 
+async function getTeamNames(
+	client: Octokit,
+	teamName?: string,
+): Promise<string[]> {
+	if (teamName) {
+		return Promise.resolve([teamName]);
+	}
+
+	const allTeams = await listTeams(client);
+	return allTeams.map((_) => _.slug);
+}
+
 export const main = async (): Promise<void> => {
 	const config = await getConfig();
 	configureLogging(getLogLevel(config.logLevel));
@@ -42,13 +53,13 @@ export const main = async (): Promise<void> => {
 
 	const client = getOctokit(config.github);
 
-	const teams = await listTeams(client);
-	console.log(`Found ${teams.length} github teams`);
+	const teamNames = await getTeamNames(client, config.github.teamToFetch);
+	console.log(`Found ${teamNames.length} github teams`);
 
 	const repositories = await listRepositories(client);
 	console.log(`Found ${repositories.length} github repos`);
 
-	const repositoriesToAdmins = await teamRepositories(client, teams);
+	const repositoriesToAdmins = await teamRepositories(client, teamNames);
 
 	const repos = repositories.map((repository) =>
 		asRepo(repository, repositoriesToAdmins[repository.name] ?? []),
