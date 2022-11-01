@@ -1,3 +1,4 @@
+import path from 'path';
 import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
 import {
@@ -66,7 +67,9 @@ export const main = async (): Promise<void> => {
 	);
 
 	const s3Client = getS3Client(config.region);
-	await putObject(s3Client, config.dataBucketName, config.dataKeyPrefix, repos);
+	const repoFileLocation = path.join(config.dataKeyPrefix, 'repos.json');
+
+	await putObject(s3Client, config.dataBucketName, repoFileLocation, repos);
 
 	console.log(`Finishing repo-fetcher`);
 };

@@ -1,13 +1,13 @@
 import serverlessExpress from '@vendia/serverless-express';
 import { configureLogging, getLogLevel } from 'common/log/log';
-import { config as dotEnvConfig } from 'dotenv';
 import { buildApp } from './app';
+import { getConfig } from './config';
 
-configureLogging(getLogLevel(process.env['LOG_LEVEL']));
+const config = getConfig();
 
-dotEnvConfig();
+configureLogging(config.logLevel);
 
-const app = buildApp();
+const app = buildApp(config);
 
 if (process.env.LOCAL === 'true') {
 	const PORT = 3232;
