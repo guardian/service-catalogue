@@ -31,6 +31,7 @@ export const getConfig = async (): Promise<Config> => {
 			appId: mandatory('GITHUB_APP_ID'),
 			appPrivateKey: appPrivateKey,
 			appInstallationId: mandatory('GITHUB_APP_INSTALLATION_ID'),
+			teamToFetch: optional('GITHUB_TEAM'),
 		},
 		dataBucketName: mandatory('DATA_BUCKET_NAME'),
 		dataKeyPrefix: optionalWithDefault('DATA_KEY_PREFIX', stage),

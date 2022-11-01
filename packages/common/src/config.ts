@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { decrypt } from './aws/kms';
 
-dotenv.config({ path: `${__dirname}/../../.env` });
+dotenv.config({ path: `${__dirname}/../../../.env` });
 
 export type Stage = 'PROD' | 'CODE' | 'DEV';
 

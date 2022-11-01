@@ -1,6 +1,5 @@
 import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
-import type { TeamsResponse } from 'common/github/github';
 import {
 	getOctokit,
 	getReposForTeam,

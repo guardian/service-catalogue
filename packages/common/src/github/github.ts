@@ -19,6 +19,7 @@ export type GitHubConfig = {
 	appId: string;
 	appPrivateKey: string;
 	appInstallationId: string;
+	teamToFetch?: string;
 };
 
 const octokit = new Octokit();
