@@ -1,5 +1,5 @@
 import serverlessExpress from '@vendia/serverless-express';
-import { configureLogging, getLogLevel } from 'common/log/log';
+import { configureLogging } from 'common/log/log';
 import { buildApp } from './app';
 import { getConfig } from './config';
 
