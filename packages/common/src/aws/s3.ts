@@ -1,4 +1,3 @@
-import type { Readable } from 'stream';
 import {
 	GetObjectCommand,
 	PutObjectCommand,
