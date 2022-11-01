@@ -28,9 +28,13 @@ export function buildApp(config: Config): Express {
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const repoFileLocation = path.join(config.dataKeyPrefix, 'repos.json');
-			await getObject(s3Client, config.dataBucketName, repoFileLocation);
+			const data = await getObject(
+				s3Client,
+				config.dataBucketName,
+				repoFileLocation,
+			);
 
-			res.status(200).json({});
+			res.status(200).json(data);
 		}),
 	);
 
