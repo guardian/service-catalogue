@@ -6,7 +6,7 @@
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
     "prebuild": "rm -rf dist",
     "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
-    "dev": "LOCAL=true ts-node-dev --respawn --transpile-only src/handler.ts",
+    "dev": "LOCAL=true ts-node ./src/handler",
     "start": "npm run dev",
     "typecheck": "tsc -noEmit"
   },
