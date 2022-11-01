@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "API that exposes a snapshot of your GitHub organisation",
   "scripts": {
-    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
+    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects github-lens-api",
     "prebuild": "rm -rf dist",
     "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
     "dev": "LOCAL=true ts-node ./src/handler",
