@@ -6,6 +6,10 @@ const generateProject = (name) => {
 		},
 		testMatch: [`<rootDir>/packages/${name}/**/*.test.ts`],
 		setupFilesAfterEnv: [`./packages/${name}/jest.setup.js`],
+		moduleNameMapper: {
+			'^common$': '<rootDir>/packages/common/src',
+			'^common/(.*)$': '<rootDir>/packages/common/src/$1',
+		},
 	};
 };
 
