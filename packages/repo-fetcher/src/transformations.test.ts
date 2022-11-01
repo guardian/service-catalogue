@@ -1,6 +1,6 @@
-import type { RepositoryResponse } from 'common/github/github';
+import type { Repository, RepositoryResponse } from 'common/github/github';
 import { mockRepo } from './mockRepo';
-import type { RepoAndOwner, Repository } from './transformations';
+import type { RepoAndOwner } from './transformations';
 import { asRepo, findOwnersOfRepo } from './transformations';
 
 describe('repository owners', function () {
