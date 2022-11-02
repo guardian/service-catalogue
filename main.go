@@ -11,6 +11,8 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/gorilla/mux"
+
 	"github.com/guardian/cdk-metadata/account"
 	"github.com/guardian/cdk-metadata/cache"
 	"github.com/guardian/cdk-metadata/prism"
@@ -55,6 +57,17 @@ func getAccountForProfile(profile string) (prism.Account, error) {
 	}
 
 	return prism.Account{}, fmt.Errorf("unable to find account for profile: %s", profile)
+}
+
+func gorillaWalkFn(allRoutes *[]string) mux.WalkFunc {
+	return func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		path, err := route.GetPathTemplate()
+		if err != nil {
+			return err
+		}
+		*allRoutes = append(*allRoutes, path)
+		return err
+	}
 }
 
 type CrawlOptions struct {
@@ -132,6 +145,19 @@ func schedule(ticker <-chan time.Time, f func()) {
 	}
 }
 
+func rootRequestHandler(allRoutes []string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		allRoutesJson, err := json.Marshal(allRoutes)
+		if err == nil {
+			w.Header().Add("content-type", "application/json")
+			fmt.Fprintln(w, string(allRoutesJson))
+
+		} else {
+			fmt.Fprintln(w, "no routes found")
+		}
+	}
+}
+
 // 200 "OK"
 func healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "OK")
@@ -165,6 +191,7 @@ func main() {
 	inMemory := flag.Bool("in-memory", false, "Set when you want to read/write to an in-memory store rather than S3")
 	forceCrawl := flag.Bool("force-crawl", false, "Set when you want to force a crawl even if today's data has been set (note, the cache will still be used though where appropriate).")
 	crawlFrequency := flag.String("crawl-frequency", "24h", "Use to override e.g. for local testing. See time.ParseDuration for valid values.")
+	doCrawl := flag.Bool("do-crawl", false, "Do not crawl.")
 	flag.Parse()
 
 	var s store.Store
@@ -213,10 +240,20 @@ func main() {
 	opts := CrawlOptions{Profile: *profile, InMemory: *inMemory, Store: s, Accounts: accounts, ForceCrawl: *forceCrawl}
 	ticker := time.NewTicker(frequency).C
 
-	go schedule(ticker, func() { crawlAccounts(opts) })
+	if *doCrawl {
+		go schedule(ticker, func() { crawlAccounts(opts) })
+	}
 
-	http.Handle("/healthcheck", http.HandlerFunc(healthcheckHandler))
-	http.Handle("/stacks", http.HandlerFunc(stackHandler(s)))
+	routerGorillaMux := mux.NewRouter()
+	routerGorillaMux.HandleFunc("/healthcheck", healthcheckHandler)
+	routerGorillaMux.HandleFunc("/stacks", stackHandler(s))
+
+	//gather all routes already defined
+	allRoutes := []string{}
+	err = routerGorillaMux.Walk(gorillaWalkFn(&allRoutes))
+	routerGorillaMux.HandleFunc("/", rootRequestHandler(allRoutes))
+
+	http.Handle("/", routerGorillaMux)
 
 	log.Println("Server is running on http://localhost:8900...")
 	log.Fatal(http.ListenAndServe(":8900", nil))

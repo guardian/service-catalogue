@@ -7,7 +7,7 @@ A simple EC2 service that does two things:
 
 To run locally:
 
-    $ go run main.go --profile [profile] --in-memory
+    $ go run main.go --profile [profile] --in-memory --do-crawl
 
 To test:
 
