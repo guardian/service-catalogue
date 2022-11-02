@@ -69,7 +69,7 @@ func NewFromAssumedRole(roleARN string, ID string, name string, cache cache.Cach
 		return AWSAccount{}, err
 	}
 
-	return AWSAccount{Config: assumedRoleConf, AccountID: ID, AccountName: name}, nil
+	return AWSAccount{Config: assumedRoleConf, AccountID: ID, AccountName: name, Cache: cache}, nil
 }
 
 type AWSAccount struct {
