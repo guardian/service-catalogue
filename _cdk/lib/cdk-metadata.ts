@@ -87,8 +87,8 @@ systemctl start ${name}
 		ec2.autoScalingGroup.addToRolePolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,
-				resources: [`${bucket.bucketArn}/*`],
-				actions: ['s3:PutObject', 's3:GetObject'],
+				resources: [`${bucket.bucketArn}`, `${bucket.bucketArn}/*`],
+				actions: ['s3:PutObject', 's3:GetObject', 's3:ListBucket'],
 			}),
 		);
 

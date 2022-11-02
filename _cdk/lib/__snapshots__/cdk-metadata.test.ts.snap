@@ -611,22 +611,31 @@ systemctl start cdk-metadata
               "Action": Array [
                 "s3:PutObject",
                 "s3:GetObject",
+                "s3:ListBucket",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "databucketA7E4F76C",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "databucketA7E4F76C",
+                    "Arn",
                   ],
-                ],
-              },
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "databucketA7E4F76C",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
