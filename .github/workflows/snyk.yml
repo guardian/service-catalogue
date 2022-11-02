@@ -12,8 +12,7 @@ jobs:
       DEBUG: true
       ORG: guardian-devtools
       SKIP_NODE: false
-      NODE_VERSION_FILE: ./cdk/.nvmrc
-      
-      
+      NODE_VERSION_FILE: ./_cdk/.nvmrc
+
     secrets:
-       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
