@@ -11,6 +11,8 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/gorilla/mux"
+
 	"github.com/guardian/cdk-metadata/account"
 	"github.com/guardian/cdk-metadata/cache"
 	"github.com/guardian/cdk-metadata/prism"
@@ -55,6 +57,23 @@ func getAccountForProfile(profile string) (prism.Account, error) {
 	}
 
 	return prism.Account{}, fmt.Errorf("unable to find account for profile: %s", profile)
+}
+
+func gorillaWalkFn(allRoutes *[]string) mux.WalkFunc {
+	return func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		path, err := route.GetPathTemplate()
+		if err != nil {
+			return err
+		}
+		*allRoutes = append(*allRoutes, path)
+		return err
+	}
+}
+
+func getRoutes(router *mux.Router) ([]string, error) {
+	var allRoutes []string
+	err := router.Walk(gorillaWalkFn(&allRoutes))
+	return allRoutes, err
 }
 
 type CrawlOptions struct {
@@ -132,9 +151,22 @@ func schedule(ticker <-chan time.Time, f func()) {
 	}
 }
 
+func rootHandler(allRoutes []string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		allRoutesJson, err := json.Marshal(allRoutes)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "unable to marshal routes: %v", err)
+			return
+		}
+		w.Header().Add("content-type", "application/json")
+		fmt.Fprintln(w, string(allRoutesJson))
+	}
+}
+
 // 200 "OK"
-func healthcheckHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "OK")
+func healthcheckHandler(w http.ResponseWriter, _ *http.Request) {
+	_, _ = fmt.Fprintln(w, "OK")
 }
 
 func stackHandler(store store.Store) func(w http.ResponseWriter, r *http.Request) {
@@ -163,8 +195,9 @@ func getBucket() (string, error) {
 func main() {
 	profile := flag.String("profile", "", "Set to use a specific profile when testing locally.")
 	inMemory := flag.Bool("in-memory", false, "Set when you want to read/write to an in-memory store rather than S3")
-	forceCrawl := flag.Bool("force-crawl", false, "Set when you want to force a crawl even if today's data has been set (note, the cache will still be used though where appropriate).")
+	forceCrawl := flag.Bool("force-crawl", false, "Set when you want to force a crawl even if today's data has been set (note, the serviceCache will still be used though where appropriate).")
 	crawlFrequency := flag.String("crawl-frequency", "24h", "Use to override e.g. for local testing. See time.ParseDuration for valid values.")
+	noCrawl := flag.Bool("no-crawl", false, "Do not crawl.")
 	flag.Parse()
 
 	var s store.Store
@@ -184,14 +217,14 @@ func main() {
 		check(err, "unable to create S3 store")
 	}
 
-	cache := cache.New(s)
+	serviceCache := cache.New(s)
 
 	var accounts []account.Account
 	if *profile != "" {
 		prismAccount, err := getAccountForProfile(*profile)
 		check(err, "unable to find prism account for profile")
 
-		acc, err := account.NewFromProfile(*profile, prismAccount.ID, prismAccount.Name, cache)
+		acc, err := account.NewFromProfile(*profile, prismAccount.ID, prismAccount.Name, serviceCache)
 		check(err, fmt.Sprintf("unable to build account for profile %s (note: requires VPN connection)", *profile))
 
 		accounts = append(accounts, acc)
@@ -201,7 +234,7 @@ func main() {
 
 		for _, accountMeta := range prismAccounts {
 			arn := fmt.Sprintf("arn:aws:iam::%s:role/cloudformation-read-access", accountMeta.ID)
-			acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name, cache)
+			acc, err := account.NewFromAssumedRole(arn, accountMeta.ID, accountMeta.Name, serviceCache)
 			check(err, fmt.Sprintf("unable to build account for arn '%s'", arn))
 
 			accounts = append(accounts, acc)
@@ -213,10 +246,21 @@ func main() {
 	opts := CrawlOptions{Profile: *profile, InMemory: *inMemory, Store: s, Accounts: accounts, ForceCrawl: *forceCrawl}
 	ticker := time.NewTicker(frequency).C
 
-	go schedule(ticker, func() { crawlAccounts(opts) })
+	if !*noCrawl {
+		go schedule(ticker, func() { crawlAccounts(opts) })
+	}
 
-	http.Handle("/healthcheck", http.HandlerFunc(healthcheckHandler))
-	http.Handle("/stacks", http.HandlerFunc(stackHandler(s)))
+	router := mux.NewRouter()
+	router.HandleFunc("/healthcheck", healthcheckHandler)
+	router.HandleFunc("/stacks", stackHandler(s))
+
+	//gather all routes already defined
+	allRoutes, err := getRoutes(router)
+	check(err, "unable to get routes")
+
+	router.HandleFunc("/", rootHandler(allRoutes))
+
+	http.Handle("/", router)
 
 	log.Println("Server is running on http://localhost:8900...")
 	log.Fatal(http.ListenAndServe(":8900", nil))

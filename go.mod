@@ -11,6 +11,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.13
 )
 
+require github.com/gorilla/mux v1.8.0
+
 require (
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.4 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.12 // indirect
