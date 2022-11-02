@@ -138,7 +138,7 @@ export class GithubLens extends GuStack {
 			ttl: Duration.days(1),
 			domainName: props.domainName,
 			// See: https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-private-api-test-invoke-url.html#apigateway-private-api-public-dns.
-			resourceRecord: `https://${apiLambda.api.restApiId}-${props.vpceId}.execute-api.${this.region}.amazonaws.com`,
+			resourceRecord: `${apiLambda.api.restApiId}-${props.vpceId}.execute-api.${this.region}.amazonaws.com`,
 		});
 
 		const scheduledLambda = new GuScheduledLambda(

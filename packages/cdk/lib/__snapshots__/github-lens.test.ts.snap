@@ -76,7 +76,6 @@ Object {
             "Fn::Join": Array [
               "",
               Array [
-                "https://",
                 Object {
                   "Ref": "githublensapilambdagithublensFC5CBB44",
                 },
