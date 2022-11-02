@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -14,7 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/guardian/cdk-metadata/cache"
-	"golang.org/x/exp/slices"
 )
 
 type Features struct {
@@ -116,9 +114,11 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 			return nil, fmt.Errorf("unable to get template metadata for stack '%s' and metadata '%s': %w", *stackName, metadata, err)
 		}
 
+		// Get tags
 		tags := tagsAsMap(stackSummary.Tags)
 
-		recordSetDomains, err := getRecordSetDomains(client, *stackName, summary)
+		// Get domains
+		domains, err := getRecordSetDomains(client, summary, stackName)
 		if err != nil {
 			return nil, fmt.Errorf("unable to get record sets for stack '%s': %w", *stackName, err)
 		}
@@ -131,7 +131,7 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 			Tags:        tags,
 			DevxFeatures: Features{
 				GuardianCDKVersion:    guardianCDKVersion(tags, metadataMap),
-				GuardianDNSRecordSets: recordSetDomains,
+				GuardianDNSRecordSets: domains,
 			},
 		}
 
@@ -193,44 +193,6 @@ func guardianCDKVersion(tags map[string]string, metadata map[string]any) *string
 	}
 
 	return nil
-}
-
-func getRecordSetDomains(client *cloudformation.Client, stackName string, summary *cloudformation.GetTemplateSummaryOutput) ([]string, error) {
-	isRecordSet := func(s string) bool {
-		return s == "Guardian::DNS::RecordSet"
-	}
-
-	// Assumes ID of the form riffraff.gutools.co.uk|CNAME|arn:aws:cloudformation:eu-west-1:...:stack/riff-raff-PROD/...|Cnam
-	getDomain := func(physicalResourceID string) string {
-		parts := strings.Split(physicalResourceID, "|")
-		return parts[0]
-	}
-
-	recordSetIndex := slices.IndexFunc(summary.ResourceTypes, isRecordSet)
-
-	if recordSetIndex == -1 { // Go is unfortunately old school (-1 indicates not found here).
-		return []string{}, nil
-	}
-
-	paginator := cloudformation.NewListStackResourcesPaginator(client, &cloudformation.ListStackResourcesInput{
-		StackName: &stackName,
-	})
-
-	domains := []string{}
-	for paginator.HasMorePages() {
-		page, err := paginator.NextPage(context.Background())
-		if err != nil {
-			return domains, fmt.Errorf("unable to get next page of stack resources for stack %s: %v", stackName, err)
-		}
-
-		for _, resource := range page.StackResourceSummaries {
-			if isRecordSet(*resource.ResourceType) {
-				domains = append(domains, getDomain(*resource.PhysicalResourceId))
-			}
-		}
-	}
-
-	return domains, nil
 }
 
 func tagsAsMap(tags []types.Tag) map[string]string {
