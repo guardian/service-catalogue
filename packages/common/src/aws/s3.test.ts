@@ -17,22 +17,29 @@ beforeEach(() => {
 describe('getObject', function () {
 	it('downloads and JSON parses objects stored in S3', async function () {
 		const responseBody = sdkStreamMixin(new Readable());
-		const expectedData = {
+		const expectedDate = new Date('01/01/2020');
+
+		const expectedPayload = {
 			foo: 'bar',
 			bat: 'baz',
 		};
+		const expectedRetrievedObject = {
+			payload: expectedPayload,
+			lastModified: expectedDate,
+		};
 
-		responseBody.push(JSON.stringify(expectedData));
+		responseBody.push(JSON.stringify(expectedPayload));
 		responseBody.push(null);
 
 		s3Mock.on(GetObjectCommand).resolves({
 			Body: responseBody,
+			LastModified: expectedDate,
 		});
 
 		const s3Client = getS3Client('eu-west-1');
-		const actualData = await getObject(s3Client, 'bucket', 'key');
+		const retrievedObject = await getObject(s3Client, 'bucket', 'key');
 
-		expect(expectedData).toStrictEqual(actualData);
+		expect(expectedRetrievedObject).toStrictEqual(retrievedObject);
 	});
 });
 

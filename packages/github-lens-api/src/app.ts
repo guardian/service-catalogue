@@ -1,11 +1,14 @@
 import { json as jsonBodyParser } from 'body-parser';
+import type { RetrievedObject } from 'common/aws/s3';
 import type { Repository } from 'common/github/github';
 import cors from 'cors';
 import express from 'express';
 import type { Express } from 'express';
 import asyncHandler from 'express-async-handler';
 
-export function buildApp(repoData: Promise<Repository[]>): Express {
+export function buildApp(
+	repoData: Promise<RetrievedObject<Repository[]>>,
+): Express {
 	const app = express();
 
 	app.use(jsonBodyParser());
