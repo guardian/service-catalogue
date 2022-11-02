@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access -- For body access which is always any */
+import type { Repository } from 'common/github/github';
 import type { Express } from 'express';
 import request from 'supertest';
 import { buildApp } from './app';
@@ -7,7 +8,8 @@ describe('github-lens api lambda', () => {
 	let app: Express;
 
 	beforeEach(() => {
-		app = buildApp();
+		const repoData = Promise.resolve<Repository[]>([]);
+		app = buildApp(repoData);
 	});
 
 	describe('GET /healthcheck', () => {
