@@ -135,7 +135,7 @@ export class GithubLens extends GuStack {
 
 		new GuCname(this, 'DNS', {
 			app: app,
-			ttl: Duration.days(1),
+			ttl: Duration.hours(1),
 			domainName: props.domainName,
 			// See: https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-private-api-test-invoke-url.html#apigateway-private-api-public-dns.
 			resourceRecord: `${apiLambda.api.restApiId}-${props.vpceId}.execute-api.${this.region}.amazonaws.com`,

@@ -89,7 +89,7 @@ Object {
           },
         ],
         "Stage": "INFRA",
-        "TTL": 86400,
+        "TTL": 3600,
       },
       "Type": "Guardian::DNS::RecordSet",
     },
