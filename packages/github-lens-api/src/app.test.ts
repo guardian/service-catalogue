@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access -- For body access which is always any */
+import type { RetrievedObject } from 'common/aws/s3';
 import type { Repository } from 'common/github/github';
 import type { Express } from 'express';
 import request from 'supertest';
@@ -8,7 +9,9 @@ describe('github-lens api lambda', () => {
 	let app: Express;
 
 	beforeEach(() => {
-		const repoData = Promise.resolve<Repository[]>([]);
+		const repoData = Promise.resolve<RetrievedObject<Repository[]>>({
+			payload: [],
+		});
 		app = buildApp(repoData);
 	});
 

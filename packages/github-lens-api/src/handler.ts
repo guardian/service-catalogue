@@ -15,7 +15,7 @@ const repoFileLocation = path.join(config.dataKeyPrefix, 'repos.json');
 
 // Optimise static initialisation by creating promise to load repoData up front:
 // https://docs.aws.amazon.com/lambda/latest/operatorguide/static-initialization.html
-const repoData: Promise<Repository[]> = getObject<Repository[]>(
+const repoData = getObject<Repository[]>(
 	s3Client,
 	config.dataBucketName,
 	repoFileLocation,

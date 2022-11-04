@@ -28,11 +28,16 @@ export const putObject = async <T>(
 	console.info(`Item successfully uploaded to: s3://${bucketName}/${key}`);
 };
 
+export interface RetrievedObject<T> {
+	payload: T;
+	lastModified?: Date;
+}
+
 export const getObject = async <T>(
 	s3Client: S3Client,
 	bucketName: string,
 	key: string,
-): Promise<T> => {
+): Promise<RetrievedObject<T>> => {
 	const command = new GetObjectCommand({
 		Bucket: bucketName,
 		Key: key,
@@ -40,6 +45,7 @@ export const getObject = async <T>(
 
 	const response = await s3Client.send(command);
 	const bodyStream = response.Body;
+	const lastModified = response.LastModified;
 
 	if (!bodyStream) {
 		throw new Error(`s3://${bucketName}/${key} is empty`);
@@ -49,5 +55,10 @@ export const getObject = async <T>(
 
 	console.info(`Item successfully downloaded from: s3://${bucketName}/${key}`);
 
-	return JSON.parse(result) as T;
+	const payload = JSON.parse(result) as T;
+
+	return {
+		payload,
+		lastModified,
+	};
 };
