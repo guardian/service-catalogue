@@ -153,7 +153,13 @@ func schedule(ticker <-chan time.Time, f func()) {
 
 func rootHandler(allRoutes []string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		allRoutesJson, err := json.Marshal(allRoutes)
+		// prepend host
+		absoluteRoutes := []string{}
+		for _, path := range allRoutes {
+			absoluteRoutes = append(absoluteRoutes, fmt.Sprintf("http://%s%s", r.Host, path))
+		}
+
+		allRoutesJson, err := json.Marshal(absoluteRoutes)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "unable to marshal routes: %v", err)
