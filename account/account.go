@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -21,12 +22,14 @@ type Features struct {
 }
 
 type Stack struct {
-	StackName    string            `json:"stackName"`
-	Metadata     map[string]any    `json:"metadata"`
-	AccountID    string            `json:"accountId"`
-	AccountName  string            `json:"accountName"`
-	Tags         map[string]string `json:"tags"`
-	DevxFeatures Features          `json:"devxFeatures"`
+	StackName       string            `json:"stackName"`
+	Metadata        map[string]any    `json:"metadata"`
+	AccountID       string            `json:"accountId"`
+	AccountName     string            `json:"accountName"`
+	CreatedTime     *time.Time        `json:"createdTime"`
+	LastUpdatedTime *time.Time        `json:"lastUpdatedTime"`
+	Tags            map[string]string `json:"tags"`
+	DevxFeatures    Features          `json:"devxFeatures"`
 }
 
 func (s Stack) Marshal() ([]byte, error) {
@@ -124,11 +127,13 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 		}
 
 		stack := Stack{
-			StackName:   *stackName,
-			AccountName: accountName,
-			AccountID:   accountID,
-			Metadata:    metadataMap,
-			Tags:        tags,
+			StackName:       *stackName,
+			AccountName:     accountName,
+			AccountID:       accountID,
+			Metadata:        metadataMap,
+			CreatedTime:     stackSummary.CreationTime,
+			LastUpdatedTime: stackSummary.LastUpdatedTime,
+			Tags:            tags,
 			DevxFeatures: Features{
 				GuardianCDKVersion:    guardianCDKVersion(tags, metadataMap),
 				GuardianDNSRecordSets: domains,
