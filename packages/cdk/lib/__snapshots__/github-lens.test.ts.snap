@@ -220,7 +220,8 @@ Environment=\\"DATA_BUCKET_NAME=",
                 },
                 "\\"
 Environment=\\"PORT=8900\\"
-ExecStart=/usr/bin/node /github-lens-api
+Environment=\\"STAGE=INFRA\\"
+ExecStart=/usr/bin/node /handler.js
 
 [Install]
 WantedBy=multi-user.target
@@ -232,7 +233,7 @@ aws s3 cp s3://",
                 },
                 "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip
 unzip github-lens-api.zip
-chmod +x /github-lens-api
+chmod +x /handler.js
 systemctl start github-lens-api
 ",
               ],

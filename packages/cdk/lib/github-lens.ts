@@ -90,6 +90,7 @@ export class GithubLens extends GuStack {
 			GuDistributionBucketParameter.getInstance(this).valueAsString;
 
 		const applicationPort = 8900;
+		const handler = 'handler.js';
 
 		const userData = `#!/bin/bash -ev
 cat << EOF > /etc/systemd/system/${apiApp}.service
@@ -99,7 +100,8 @@ Description=Github Lens API
 [Service]
 Environment="DATA_BUCKET_NAME=${dataBucket.bucketName}"
 Environment="PORT=${applicationPort}"
-ExecStart=/usr/bin/node /${apiApp}
+Environment="STAGE=${props.stage}"
+ExecStart=/usr/bin/node /${handler}
 
 [Install]
 WantedBy=multi-user.target
@@ -107,7 +109,7 @@ EOF
 
 aws s3 cp s3://${distBucket}/${keyPrefix}/${apiApp}.zip ${apiApp}.zip
 unzip ${apiApp}.zip
-chmod +x /${apiApp}
+chmod +x /${handler}
 systemctl start ${apiApp}
 `;
 
