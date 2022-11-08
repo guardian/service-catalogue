@@ -13,10 +13,10 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/guardian/cdk-metadata/account"
-	"github.com/guardian/cdk-metadata/cache"
-	"github.com/guardian/cdk-metadata/prism"
-	"github.com/guardian/cdk-metadata/store"
+	"github.com/guardian/cloudformation-lens/account"
+	"github.com/guardian/cloudformation-lens/cache"
+	"github.com/guardian/cloudformation-lens/prism"
+	"github.com/guardian/cloudformation-lens/store"
 )
 
 // check is a crude way to fail fast. Only use it for errors that should halt
@@ -98,7 +98,7 @@ type CrawlOptions struct {
 
 func crawlAccounts(opts CrawlOptions) {
 	date := time.Now().Format("2006-01-02")
-	fileForToday := fmt.Sprintf("cdk-stack-metadata-%s.json", date)
+	fileForToday := fmt.Sprintf("data-%s.json", date)
 
 	_, _, err := opts.Store.Get(fileForToday)
 	if !opts.ForceCrawl && err == nil {
@@ -123,13 +123,13 @@ func crawlAccounts(opts CrawlOptions) {
 		return
 	}
 
-	err = opts.Store.Put(fmt.Sprintf("cdk-stack-metadata-%s.json", date), out)
+	err = opts.Store.Put(fmt.Sprintf("data-%s.json", date), out)
 	if err != nil {
 		log.Printf("unable to write dated object to S3: %v", err)
 		return
 	}
 
-	err = opts.Store.Put("cdk-stack-metadata-latest.json", out)
+	err = opts.Store.Put("data-latest.json", out)
 	if err != nil {
 		log.Printf("unable to write 'latest' object to S3: %v", err)
 		return
@@ -177,7 +177,7 @@ func healthcheckHandler(w http.ResponseWriter, _ *http.Request) {
 
 func stackHandler(store store.Store) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		data, _, err := store.Get("cdk-stack-metadata-latest.json")
+		data, _, err := store.Get("data-latest.json")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "unable to read latest stack data: %v", err)
@@ -201,7 +201,7 @@ func getBucket() (string, error) {
 func main() {
 	profile := flag.String("profile", "", "Set to use a specific profile when testing locally.")
 	inMemory := flag.Bool("in-memory", false, "Set when you want to read/write to an in-memory store rather than S3")
-	forceCrawl := flag.Bool("force-crawl", false, "Set when you want to force a crawl even if today's data has been set (note, the serviceCache will still be used though where appropriate).")
+	forceCrawl := flag.Bool("force-crawl", false, "Set when you want to force a crawl even if today's data has been set (note, the serviceCache will still be used though where appropriate). This flag is ignored when '-in-memory' is set.")
 	crawlFrequency := flag.String("crawl-frequency", "24h", "Use to override e.g. for local testing. See time.ParseDuration for valid values.")
 	noCrawl := flag.Bool("no-crawl", false, "Do not crawl.")
 	flag.Parse()

@@ -1,4 +1,4 @@
-module github.com/guardian/cdk-metadata
+module github.com/guardian/cloudformation-lens
 
 go 1.18
 

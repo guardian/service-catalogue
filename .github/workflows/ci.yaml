@@ -1,10 +1,15 @@
 name: test
+
 on:
   pull_request:
   workflow_dispatch:
   push:
     branches:
       - main
+
+env:
+  APP: cloudformation-lens # Should match the CDK 'app'
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -46,14 +51,14 @@ jobs:
       - name: test and build
         run: |
           go test .
-          env GOOS=linux GOARCH=arm64 go build -o cdk-metadata main.go
+          env GOOS=linux GOARCH=arm64 go build -o $APP main.go
 
       - uses: guardian/actions-riff-raff@v2
         with:
-          projectName: deploy::cdk-metadata
+          projectName: deploy::${{ env.APP }}
           configPath: _cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
-            cdk-metadata:
-              - cdk-metadata
+            ${{ env.APP }}:
+              - ${{ env.APP }}
             cdk.out:
               - _cdk/cdk.out

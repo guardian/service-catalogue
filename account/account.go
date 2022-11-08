@@ -13,7 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/guardian/cdk-metadata/cache"
+	"github.com/guardian/cloudformation-lens/cache"
 )
 
 type Features struct {
