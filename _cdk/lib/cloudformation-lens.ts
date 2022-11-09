@@ -19,7 +19,7 @@ import {
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 
-export class CdkMetadata extends GuStack {
+export class CloudFormationLens extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
@@ -27,8 +27,8 @@ export class CdkMetadata extends GuStack {
 			lifecycleRules: [{ expiration: Duration.days(30) }],
 		});
 
-		const name = 'cdk-metadata';
-		const domainName = `cloudformation.gutools.co.uk`;
+		const name = 'cloudformation-lens';
+		const domainName = `${name}.gutools.co.uk`;
 		const keyPrefix = `${this.stack}/${this.stage}/${name}`;
 
 		const distBucket =

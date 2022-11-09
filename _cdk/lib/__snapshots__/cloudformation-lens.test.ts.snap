@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The CdkMetadata stack matches the snapshot 1`] = `
+exports[`The CloudFormation Lens stack matches the snapshot 1`] = `
 Object {
   "Metadata": Object {
     "gu:cdk:constructs": Array [
@@ -33,19 +33,19 @@ Object {
     "gu:cdk:version": "TEST",
   },
   "Outputs": Object {
-    "LoadBalancerCdkmetadataDnsName": Object {
-      "Description": "DNS entry for LoadBalancerCdkmetadata",
+    "LoadBalancerCloudformationlensDnsName": Object {
+      "Description": "DNS entry for LoadBalancerCloudformationlens",
       "Value": Object {
         "Fn::GetAtt": Array [
-          "LoadBalancerCdkmetadata4143EB47",
+          "LoadBalancerCloudformationlens45065A19",
           "DNSName",
         ],
       },
     },
   },
   "Parameters": Object {
-    "AMICdkmetadata": Object {
-      "Description": "Amazon Machine Image ID for the app cdk-metadata. Use this in conjunction with AMIgo to keep AMIs up to date.",
+    "AMICloudformationlens": Object {
+      "Description": "Amazon Machine Image ID for the app cloudformation-lens. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
     },
     "AnghammaradSnsArn": Object {
@@ -68,24 +68,24 @@ Object {
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "cdkmetadataPrivateSubnets": Object {
+    "cloudformationlensPrivateSubnets": Object {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "cdkmetadataPublicSubnets": Object {
+    "cloudformationlensPublicSubnets": Object {
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
   "Resources": Object {
-    "AutoScalingGroupCdkmetadataASG17EDDE29": Object {
+    "AutoScalingGroupCloudformationlensASGDA76A8B5": Object {
       "Properties": Object {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
         "LaunchConfigurationName": Object {
-          "Ref": "AutoScalingGroupCdkmetadataLaunchConfigBDBB2E02",
+          "Ref": "AutoScalingGroupCloudformationlensLaunchConfig82219E2C",
         },
         "MaxSize": "2",
         "MinSize": "1",
@@ -93,7 +93,7 @@ Object {
           Object {
             "Key": "App",
             "PropagateAtLaunch": true,
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:pattern-name",
@@ -120,7 +120,7 @@ Object {
           Object {
             "Key": "Name",
             "PropagateAtLaunch": true,
-            "Value": "CdkMetadata/AutoScalingGroupCdkmetadata",
+            "Value": "CloudFormationLens/AutoScalingGroupCloudformationlens",
           },
           Object {
             "Key": "Stack",
@@ -135,41 +135,41 @@ Object {
           Object {
             "Key": "SystemdUnit",
             "PropagateAtLaunch": true,
-            "Value": "cdk-metadata.service",
+            "Value": "cloudformation-lens.service",
           },
         ],
         "TargetGroupARNs": Array [
           Object {
-            "Ref": "TargetGroupCdkmetadata227E6885",
+            "Ref": "TargetGroupCloudformationlensAB0868BD",
           },
         ],
         "VPCZoneIdentifier": Object {
-          "Ref": "cdkmetadataPrivateSubnets",
+          "Ref": "cloudformationlensPrivateSubnets",
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
-    "AutoScalingGroupCdkmetadataInstanceProfile275173A0": Object {
+    "AutoScalingGroupCloudformationlensInstanceProfile4261FC07": Object {
       "Properties": Object {
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::InstanceProfile",
     },
-    "AutoScalingGroupCdkmetadataLaunchConfigBDBB2E02": Object {
+    "AutoScalingGroupCloudformationlensLaunchConfig82219E2C": Object {
       "DependsOn": Array [
-        "InstanceRoleCdkmetadataDefaultPolicy5DD3458D",
-        "InstanceRoleCdkmetadata363D9786",
+        "InstanceRoleCloudformationlensDefaultPolicy5FCE5D0D",
+        "InstanceRoleCloudformationlensBF921D31",
       ],
       "Properties": Object {
         "IamInstanceProfile": Object {
-          "Ref": "AutoScalingGroupCdkmetadataInstanceProfile275173A0",
+          "Ref": "AutoScalingGroupCloudformationlensInstanceProfile4261FC07",
         },
         "ImageId": Object {
-          "Ref": "AMICdkmetadata",
+          "Ref": "AMICloudformationlens",
         },
         "InstanceType": "t4g.nano",
         "MetadataOptions": Object {
@@ -178,7 +178,7 @@ Object {
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+              "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
               "GroupId",
             ],
           },
@@ -195,7 +195,7 @@ Object {
               "",
               Array [
                 "#!/bin/bash -ev
-cat << EOF > /etc/systemd/system/cdk-metadata.service
+cat << EOF > /etc/systemd/system/cloudformation-lens.service
 [Unit]
 Description=CDK Metadata
 
@@ -205,7 +205,7 @@ Environment=\\"BUCKET=",
                   "Ref": "databucketA7E4F76C",
                 },
                 "\\"
-ExecStart=/cdk-metadata
+ExecStart=/cloudformation-lens
 
 [Install]
 WantedBy=multi-user.target
@@ -215,9 +215,9 @@ aws s3 cp s3://",
                 Object {
                   "Ref": "DistributionBucketName",
                 },
-                "/deploy/TEST/cdk-metadata/cdk-metadata /cdk-metadata
-chmod +x /cdk-metadata
-systemctl start cdk-metadata
+                "/deploy/TEST/cloudformation-lens/cloudformation-lens /cloudformation-lens
+chmod +x /cloudformation-lens
+systemctl start cloudformation-lens
 ",
               ],
             ],
@@ -226,14 +226,14 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
-    "CertificateCdkmetadataADA3D155": Object {
+    "CertificateCloudformationlens470553BA": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
-        "DomainName": "cloudformation.gutools.co.uk",
+        "DomainName": "cloudformation-lens.gutools.co.uk",
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -277,13 +277,13 @@ systemctl start cdk-metadata
         "PolicyName": "describe-ec2-policy",
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GetDistributablePolicyCdkmetadata3F972620": Object {
+    "GetDistributablePolicyCloudformationlens44E49028": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -298,7 +298,7 @@ systemctl start cdk-metadata
                     Object {
                       "Ref": "DistributionBucketName",
                     },
-                    "/deploy/TEST/cdk-metadata/*",
+                    "/deploy/TEST/cloudformation-lens/*",
                   ],
                 ],
               },
@@ -306,16 +306,16 @@ systemctl start cdk-metadata
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "GetDistributablePolicyCdkmetadata3F972620",
+        "PolicyName": "GetDistributablePolicyCloudformationlens44E49028",
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GuHttpsEgressSecurityGroupCdkmetadata89327F33": Object {
+    "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7": Object {
       "Properties": Object {
         "GroupDescription": "Allow all outbound HTTPS traffic",
         "SecurityGroupEgress": Array [
@@ -330,7 +330,7 @@ systemctl start cdk-metadata
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -355,20 +355,20 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "GuHttpsEgressSecurityGroupCdkmetadatafromCdkMetadataLoadBalancerCdkmetadataSecurityGroup4C81F33A890024AD41EF": Object {
+    "GuHttpsEgressSecurityGroupCloudformationlensfromCloudFormationLensLoadBalancerCloudformationlensSecurityGroup432308D38900BA6D99FC": Object {
       "Properties": Object {
         "Description": "Load balancer to target",
         "FromPort": 8900,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
             "GroupId",
           ],
         },
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "LoadBalancerCdkmetadataSecurityGroup015A6DB2",
+            "LoadBalancerCloudformationlensSecurityGroup43E2BD8C",
             "GroupId",
           ],
         },
@@ -376,20 +376,20 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "GuHttpsEgressSecurityGroupCdkmetadatafromCdkMetadataRestrictedIngressSecurityGroupCdkmetadata4798AB7E89009C858A2A": Object {
+    "GuHttpsEgressSecurityGroupCloudformationlensfromCloudFormationLensRestrictedIngressSecurityGroupCloudformationlens43D1D3C98900C57F276B": Object {
       "Properties": Object {
         "Description": "Load balancer to target",
         "FromPort": 8900,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
             "GroupId",
           ],
         },
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "RestrictedIngressSecurityGroupCdkmetadata78719FF0",
+            "RestrictedIngressSecurityGroupCloudformationlens38AB35D2",
             "GroupId",
           ],
         },
@@ -433,13 +433,13 @@ systemctl start cdk-metadata
         "PolicyName": "GuLogShippingPolicy981BFE5A",
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "High5xxPercentageAlarmCdkmetadata98F59281": Object {
+    "High5xxPercentageAlarmCloudformationlensDF9C5968": Object {
       "Properties": Object {
         "ActionsEnabled": true,
         "AlarmActions": Array [
@@ -463,15 +463,15 @@ systemctl start cdk-metadata
             ],
           },
         ],
-        "AlarmDescription": "cdk-metadata exceeded 1% error rate",
-        "AlarmName": "High 5XX error % from cdk-metadata in TEST",
+        "AlarmDescription": "cloudformation-lens exceeded 1% error rate",
+        "AlarmName": "High 5XX error % from cloudformation-lens in TEST",
         "ComparisonOperator": "GreaterThanThreshold",
         "EvaluationPeriods": 60,
         "Metrics": Array [
           Object {
             "Expression": "100*(m1+m2)/m3",
             "Id": "expr_1",
-            "Label": "% of 5XX responses served for cdk-metadata (load balancer and instances combined)",
+            "Label": "% of 5XX responses served for cloudformation-lens (load balancer and instances combined)",
           },
           Object {
             "Id": "m1",
@@ -482,7 +482,7 @@ systemctl start cdk-metadata
                     "Name": "LoadBalancer",
                     "Value": Object {
                       "Fn::GetAtt": Array [
-                        "LoadBalancerCdkmetadata4143EB47",
+                        "LoadBalancerCloudformationlens45065A19",
                         "LoadBalancerFullName",
                       ],
                     },
@@ -505,7 +505,7 @@ systemctl start cdk-metadata
                     "Name": "LoadBalancer",
                     "Value": Object {
                       "Fn::GetAtt": Array [
-                        "LoadBalancerCdkmetadata4143EB47",
+                        "LoadBalancerCloudformationlens45065A19",
                         "LoadBalancerFullName",
                       ],
                     },
@@ -528,7 +528,7 @@ systemctl start cdk-metadata
                     "Name": "LoadBalancer",
                     "Value": Object {
                       "Fn::GetAtt": Array [
-                        "LoadBalancerCdkmetadata4143EB47",
+                        "LoadBalancerCloudformationlens45065A19",
                         "LoadBalancerFullName",
                       ],
                     },
@@ -548,7 +548,7 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "InstanceRoleCdkmetadata363D9786": Object {
+    "InstanceRoleCloudformationlensBF921D31": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -576,7 +576,7 @@ systemctl start cdk-metadata
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -598,7 +598,7 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::IAM::Role",
     },
-    "InstanceRoleCdkmetadataDefaultPolicy5DD3458D": Object {
+    "InstanceRoleCloudformationlensDefaultPolicy5FCE5D0D": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -640,41 +640,41 @@ systemctl start cdk-metadata
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "InstanceRoleCdkmetadataDefaultPolicy5DD3458D",
+        "PolicyName": "InstanceRoleCloudformationlensDefaultPolicy5FCE5D0D",
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "ListenerCdkmetadata596977CB": Object {
+    "ListenerCloudformationlens664D2766": Object {
       "Properties": Object {
         "Certificates": Array [
           Object {
             "CertificateArn": Object {
-              "Ref": "CertificateCdkmetadataADA3D155",
+              "Ref": "CertificateCloudformationlens470553BA",
             },
           },
         ],
         "DefaultActions": Array [
           Object {
             "TargetGroupArn": Object {
-              "Ref": "TargetGroupCdkmetadata227E6885",
+              "Ref": "TargetGroupCloudformationlensAB0868BD",
             },
             "Type": "forward",
           },
         ],
         "LoadBalancerArn": Object {
-          "Ref": "LoadBalancerCdkmetadata4143EB47",
+          "Ref": "LoadBalancerCloudformationlens45065A19",
         },
         "Port": 443,
         "Protocol": "HTTPS",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerCdkmetadata4143EB47": Object {
+    "LoadBalancerCloudformationlens45065A19": Object {
       "Properties": Object {
         "LoadBalancerAttributes": Array [
           Object {
@@ -686,24 +686,24 @@ systemctl start cdk-metadata
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
-              "LoadBalancerCdkmetadataSecurityGroup015A6DB2",
+              "LoadBalancerCloudformationlensSecurityGroup43E2BD8C",
               "GroupId",
             ],
           },
           Object {
             "Fn::GetAtt": Array [
-              "RestrictedIngressSecurityGroupCdkmetadata78719FF0",
+              "RestrictedIngressSecurityGroupCloudformationlens38AB35D2",
               "GroupId",
             ],
           },
         ],
         "Subnets": Object {
-          "Ref": "cdkmetadataPublicSubnets",
+          "Ref": "cloudformationlensPublicSubnets",
         },
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -726,13 +726,13 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
-    "LoadBalancerCdkmetadataSecurityGroup015A6DB2": Object {
+    "LoadBalancerCloudformationlensSecurityGroup43E2BD8C": Object {
       "Properties": Object {
-        "GroupDescription": "Automatically created Security Group for ELB CdkMetadataLoadBalancerCdkmetadata69DBD65D",
+        "GroupDescription": "Automatically created Security Group for ELB CloudFormationLensLoadBalancerCloudformationlens84A8B6FA",
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -757,19 +757,19 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerCdkmetadataSecurityGrouptoCdkMetadataGuHttpsEgressSecurityGroupCdkmetadata5D296AA2890079F635DF": Object {
+    "LoadBalancerCloudformationlensSecurityGrouptoCloudFormationLensGuHttpsEgressSecurityGroupCloudformationlensC4327E3E890071AAF7F1": Object {
       "Properties": Object {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
             "GroupId",
           ],
         },
         "FromPort": 8900,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "LoadBalancerCdkmetadataSecurityGroup015A6DB2",
+            "LoadBalancerCloudformationlensSecurityGroup43E2BD8C",
             "GroupId",
           ],
         },
@@ -778,7 +778,7 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "ParameterStoreReadCdkmetadata9BD3E67C": Object {
+    "ParameterStoreReadCloudformationlens90128DF1": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -797,7 +797,7 @@ systemctl start cdk-metadata
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cdk-metadata",
+                    ":parameter/TEST/deploy/cloudformation-lens",
                   ],
                 ],
               },
@@ -820,7 +820,7 @@ systemctl start cdk-metadata
                     Object {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cdk-metadata/*",
+                    ":parameter/TEST/deploy/cloudformation-lens/*",
                   ],
                 ],
               },
@@ -831,13 +831,13 @@ systemctl start cdk-metadata
         "PolicyName": "parameter-store-read-policy",
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "RestrictedIngressSecurityGroupCdkmetadata78719FF0": Object {
+    "RestrictedIngressSecurityGroupCloudformationlens38AB35D2": Object {
       "Properties": Object {
         "GroupDescription": "Allow restricted ingress from CIDR ranges",
         "SecurityGroupIngress": Array [
@@ -852,7 +852,7 @@ systemctl start cdk-metadata
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -877,19 +877,19 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "RestrictedIngressSecurityGroupCdkmetadatatoCdkMetadataGuHttpsEgressSecurityGroupCdkmetadata5D296AA2890022CB6A7E": Object {
+    "RestrictedIngressSecurityGroupCloudformationlenstoCloudFormationLensGuHttpsEgressSecurityGroupCloudformationlensC4327E3E8900C6A0C83F": Object {
       "Properties": Object {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": Object {
           "Fn::GetAtt": Array [
-            "GuHttpsEgressSecurityGroupCdkmetadata89327F33",
+            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
             "GroupId",
           ],
         },
         "FromPort": 8900,
         "GroupId": Object {
           "Fn::GetAtt": Array [
-            "RestrictedIngressSecurityGroupCdkmetadata78719FF0",
+            "RestrictedIngressSecurityGroupCloudformationlens38AB35D2",
             "GroupId",
           ],
         },
@@ -928,13 +928,13 @@ systemctl start cdk-metadata
         "PolicyName": "ssm-run-command-policy",
         "Roles": Array [
           Object {
-            "Ref": "InstanceRoleCdkmetadata363D9786",
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TargetGroupCdkmetadata227E6885": Object {
+    "TargetGroupCloudformationlensAB0868BD": Object {
       "Properties": Object {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
@@ -946,7 +946,7 @@ systemctl start cdk-metadata
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "cdk-metadata",
+            "Value": "cloudformation-lens",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -983,7 +983,7 @@ systemctl start cdk-metadata
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "UnhealthyInstancesAlarmCdkmetadata344518C6": Object {
+    "UnhealthyInstancesAlarmCloudformationlens2BC17DBA": Object {
       "Properties": Object {
         "ActionsEnabled": true,
         "AlarmActions": Array [
@@ -1007,12 +1007,12 @@ systemctl start cdk-metadata
             ],
           },
         ],
-        "AlarmDescription": "cdk-metadata's instances have failed healthchecks several times over the last 1 hour.
+        "AlarmDescription": "cloudformation-lens's instances have failed healthchecks several times over the last 1 hour.
       This typically results in the AutoScaling Group cycling instances and can lead to problems with deployment,
       scaling or handling traffic spikes.
 
-      Check cdk-metadata's application logs or ssh onto an unhealthy instance in order to debug these problems.",
-        "AlarmName": "Unhealthy instances for cdk-metadata in TEST",
+      Check cloudformation-lens's application logs or ssh onto an unhealthy instance in order to debug these problems.",
+        "AlarmName": "Unhealthy instances for cloudformation-lens in TEST",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "DatapointsToAlarm": 30,
         "Dimensions": Array [
@@ -1029,7 +1029,7 @@ systemctl start cdk-metadata
                         "Fn::Split": Array [
                           "/",
                           Object {
-                            "Ref": "ListenerCdkmetadata596977CB",
+                            "Ref": "ListenerCloudformationlens664D2766",
                           },
                         ],
                       },
@@ -1043,7 +1043,7 @@ systemctl start cdk-metadata
                         "Fn::Split": Array [
                           "/",
                           Object {
-                            "Ref": "ListenerCdkmetadata596977CB",
+                            "Ref": "ListenerCloudformationlens664D2766",
                           },
                         ],
                       },
@@ -1057,7 +1057,7 @@ systemctl start cdk-metadata
                         "Fn::Split": Array [
                           "/",
                           Object {
-                            "Ref": "ListenerCdkmetadata596977CB",
+                            "Ref": "ListenerCloudformationlens664D2766",
                           },
                         ],
                       },
@@ -1071,7 +1071,7 @@ systemctl start cdk-metadata
             "Name": "TargetGroup",
             "Value": Object {
               "Fn::GetAtt": Array [
-                "TargetGroupCdkmetadata227E6885",
+                "TargetGroupCloudformationlensAB0868BD",
                 "TargetGroupFullName",
               ],
             },
@@ -1132,12 +1132,12 @@ systemctl start cdk-metadata
     },
     "cname": Object {
       "Properties": Object {
-        "Name": "cloudformation.gutools.co.uk",
+        "Name": "cloudformation-lens.gutools.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": Array [
           Object {
             "Fn::GetAtt": Array [
-              "LoadBalancerCdkmetadata4143EB47",
+              "LoadBalancerCloudformationlens45065A19",
               "DNSName",
             ],
           },

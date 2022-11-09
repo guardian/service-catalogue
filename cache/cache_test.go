@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/guardian/cdk-metadata/store"
+	"github.com/guardian/cloudformation-lens/store"
 )
 
 func TestCacheEmpty(t *testing.T) {

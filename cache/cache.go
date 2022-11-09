@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/guardian/cdk-metadata/store"
+	"github.com/guardian/cloudformation-lens/store"
 )
 
 type Cache interface {

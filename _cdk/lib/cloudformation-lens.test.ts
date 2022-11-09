@@ -1,11 +1,11 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { CdkMetadata } from './cdk-metadata';
+import { CloudFormationLens } from './cloudformation-lens';
 
-describe('The CdkMetadata stack', () => {
+describe('The CloudFormation Lens stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App();
-		const stack = new CdkMetadata(app, 'CdkMetadata', {
+		const stack = new CloudFormationLens(app, 'CloudFormationLens', {
 			stack: 'deploy',
 			stage: 'TEST',
 		});
