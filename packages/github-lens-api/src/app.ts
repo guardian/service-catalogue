@@ -22,6 +22,8 @@ export function buildApp(
 		}),
 	);
 
+	//handle all invalid routes by showing all available routes
+	router.get('*', getDescribeRouterHandler(router));
 	router.get('/', getDescribeRouterHandler(router));
 
 	router.get('/healthcheck', (req: express.Request, res: express.Response) => {
