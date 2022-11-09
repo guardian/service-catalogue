@@ -9,46 +9,67 @@ Object {
       "GuStringParameter",
       "GuStringParameter",
       "GuDistributionBucketParameter",
-      "GuApiLambda",
+      "GuAnghammaradTopicParameter",
+      "GuVpcParameter",
+      "GuSubnetListParameter",
       "GuCertificate",
+      "GuInstanceRole",
+      "GuSSMRunCommandPolicy",
+      "GuDescribeEC2Policy",
+      "GuLoggingStreamNameParameter",
+      "GuLogShippingPolicy",
+      "GuGetDistributablePolicy",
+      "GuParameterStoreReadPolicy",
+      "GuAmiParameter",
+      "GuHttpsEgressSecurityGroup",
+      "GuAutoScalingGroup",
+      "GuWazuhAccess",
+      "GuApplicationLoadBalancer",
+      "GuApplicationTargetGroup",
+      "GuHttpsApplicationListener",
+      "GuSecurityGroup",
+      "GuAlb5xxPercentageAlarm",
+      "GuUnhealthyInstancesAlarm",
       "GuScheduledLambda",
       "GuLambdaErrorPercentageAlarm",
     ],
     "gu:cdk:version": "TEST",
   },
   "Outputs": Object {
-    "githublensapilambdagithublensEndpoint0EC1FBE3": Object {
+    "LoadBalancerGithublensapiDnsName": Object {
+      "Description": "DNS entry for LoadBalancerGithublensapi",
       "Value": Object {
-        "Fn::Join": Array [
-          "",
-          Array [
-            "https://",
-            Object {
-              "Ref": "githublensapilambdagithublensFC5CBB44",
-            },
-            ".execute-api.",
-            Object {
-              "Ref": "AWS::Region",
-            },
-            ".",
-            Object {
-              "Ref": "AWS::URLSuffix",
-            },
-            "/",
-            Object {
-              "Ref": "githublensapilambdagithublensDeploymentStageprod05B08EE8",
-            },
-            "/",
-          ],
+        "Fn::GetAtt": Array [
+          "LoadBalancerGithublensapi0DC349AD",
+          "DNSName",
         ],
       },
     },
   },
   "Parameters": Object {
+    "AMIGithublensapi": Object {
+      "Description": "Amazon Machine Image ID for the app github-lens-api. Use this in conjunction with AMIgo to keep AMIs up to date.",
+      "Type": "AWS::EC2::Image::Id",
+    },
+    "AnghammaradSnsArn": Object {
+      "Default": "/account/services/anghammarad.topic.arn",
+      "Description": "SSM parameter containing the ARN of the Anghammarad SNS topic",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "DistributionBucketName": Object {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "LoggingStreamName": Object {
+      "Default": "/account/services/logging.stream.name",
+      "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "VpcId": Object {
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
     "githubappid": Object {
       "Default": "/INFRA/deploy/github-lens/github-app-id",
@@ -60,6 +81,11 @@ Object {
       "Description": "(From SSM) The GitHub installation ID of the app used to authenticate github-lens in the Guardian org",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "githublensapiPrivateSubnets": Object {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
     "githubprivatekey": Object {
       "Default": "/INFRA/deploy/github-lens/github-private-key",
       "Description": "(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org",
@@ -68,14 +94,163 @@ Object {
     },
   },
   "Resources": Object {
-    "CertificateGithublens25494A00": Object {
+    "AutoScalingGroupGithublensapiASG9A8AE08B": Object {
+      "Properties": Object {
+        "HealthCheckGracePeriod": 120,
+        "HealthCheckType": "ELB",
+        "LaunchConfigurationName": Object {
+          "Ref": "AutoScalingGroupGithublensapiLaunchConfigED794D0D",
+        },
+        "MaxSize": "2",
+        "MinSize": "1",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "PropagateAtLaunch": true,
+            "Value": "github-lens-api",
+          },
+          Object {
+            "Key": "gu:cdk:pattern-name",
+            "PropagateAtLaunch": true,
+            "Value": "GuEc2App",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "PropagateAtLaunch": true,
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "PropagateAtLaunch": true,
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": Object {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          Object {
+            "Key": "Name",
+            "PropagateAtLaunch": true,
+            "Value": "GithubLens/AutoScalingGroupGithublensapi",
+          },
+          Object {
+            "Key": "Stack",
+            "PropagateAtLaunch": true,
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "PropagateAtLaunch": true,
+            "Value": "INFRA",
+          },
+          Object {
+            "Key": "SystemdUnit",
+            "PropagateAtLaunch": true,
+            "Value": "github-lens-api.service",
+          },
+        ],
+        "TargetGroupARNs": Array [
+          Object {
+            "Ref": "TargetGroupGithublensapi08E11958",
+          },
+        ],
+        "VPCZoneIdentifier": Object {
+          "Ref": "githublensapiPrivateSubnets",
+        },
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+    },
+    "AutoScalingGroupGithublensapiInstanceProfile02115151": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleGithublensapi15815617",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "AutoScalingGroupGithublensapiLaunchConfigED794D0D": Object {
+      "DependsOn": Array [
+        "InstanceRoleGithublensapiDefaultPolicy0C5E588B",
+        "InstanceRoleGithublensapi15815617",
+      ],
+      "Properties": Object {
+        "IamInstanceProfile": Object {
+          "Ref": "AutoScalingGroupGithublensapiInstanceProfile02115151",
+        },
+        "ImageId": Object {
+          "Ref": "AMIGithublensapi",
+        },
+        "InstanceType": "t4g.nano",
+        "MetadataOptions": Object {
+          "HttpTokens": "required",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+              "GroupId",
+            ],
+          },
+          Object {
+            "Fn::GetAtt": Array [
+              "WazuhSecurityGroup",
+              "GroupId",
+            ],
+          },
+        ],
+        "UserData": Object {
+          "Fn::Base64": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "#!/bin/bash -ev
+cat << EOF > /etc/systemd/system/github-lens-api.service
+[Unit]
+Description=Github Lens API
+
+[Service]
+Environment=\\"DATA_BUCKET_NAME=",
+                Object {
+                  "Ref": "githublensdatabucketGithublens7C07FDE7",
+                },
+                "\\"
+Environment=\\"PORT=8900\\"
+Environment=\\"STAGE=INFRA\\"
+ExecStart=/usr/bin/node /handler.js
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+aws s3 cp s3://",
+                Object {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip
+unzip github-lens-api.zip
+chmod +x /handler.js
+systemctl start github-lens-api
+",
+              ],
+            ],
+          },
+        },
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "CertificateGithublensapi4318D111": Object {
       "DeletionPolicy": "Retain",
       "Properties": Object {
         "DomainName": "github-lens.gutools.co.uk",
         "Tags": Array [
           Object {
             "Key": "App",
-            "Value": "github-lens",
+            "Value": "github-lens-api",
           },
           Object {
             "Key": "gu:cdk:version",
@@ -106,15 +281,306 @@ Object {
         "ResourceRecords": Array [
           Object {
             "Fn::GetAtt": Array [
-              "githublensapilambdagithublensdomainAF6EC35F",
-              "RegionalDomainName",
+              "LoadBalancerGithublensapi0DC349AD",
+              "DNSName",
             ],
           },
         ],
         "Stage": "INFRA",
-        "TTL": 86400,
+        "TTL": 3600,
       },
       "Type": "Guardian::DNS::RecordSet",
+    },
+    "DescribeEC2PolicyFF5F9295": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeAutoScalingGroups",
+                "ec2:DescribeTags",
+                "ec2:DescribeInstances",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "describe-ec2-policy",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleGithublensapi15815617",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GetDistributablePolicyGithublensapiC633BD13": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:s3:::",
+                    Object {
+                      "Ref": "DistributionBucketName",
+                    },
+                    "/deploy/INFRA/github-lens-api/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GetDistributablePolicyGithublensapiC633BD13",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleGithublensapi15815617",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GuHttpsEgressSecurityGroupGithublensapi4002F148": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow all outbound HTTPS traffic",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound HTTPS traffic",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens-api",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GuHttpsEgressSecurityGroupGithublensapifromGithubLensInternalIngressSecurityGroupGithublensapiD4073FAD8900A4E48325": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuHttpsEgressSecurityGroupGithublensapifromGithubLensLoadBalancerGithublensapiSecurityGroup2BC6E5BA89001B58638F": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "GuLogShippingPolicy981BFE5A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:kinesis:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    Object {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GuLogShippingPolicy981BFE5A",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleGithublensapi15815617",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "High5xxPercentageAlarmGithublensapiC50B1CF6": Object {
+      "Properties": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:aws:sns:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":",
+                Object {
+                  "Ref": "AWS::AccountId",
+                },
+                ":",
+                Object {
+                  "Ref": "AnghammaradSnsArn",
+                },
+              ],
+            ],
+          },
+        ],
+        "AlarmDescription": "github-lens-api exceeded 1% error rate",
+        "AlarmName": "High 5XX error % from github-lens-api in INFRA",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 60,
+        "Metrics": Array [
+          Object {
+            "Expression": "100*(m1+m2)/m3",
+            "Id": "expr_1",
+            "Label": "% of 5XX responses served for github-lens-api (load balancer and instances combined)",
+          },
+          Object {
+            "Id": "m1",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerGithublensapi0DC349AD",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_ELB_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m2",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerGithublensapi0DC349AD",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "HTTPCode_Target_5XX_Count",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          Object {
+            "Id": "m3",
+            "MetricStat": Object {
+              "Metric": Object {
+                "Dimensions": Array [
+                  Object {
+                    "Name": "LoadBalancer",
+                    "Value": Object {
+                      "Fn::GetAtt": Array [
+                        "LoadBalancerGithublensapi0DC349AD",
+                        "LoadBalancerFullName",
+                      ],
+                    },
+                  },
+                ],
+                "MetricName": "RequestCount",
+                "Namespace": "AWS/ApplicationELB",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
     },
     "INFRAdeploygithublens2B0B3293": Object {
       "DeletionPolicy": "Retain",
@@ -170,34 +636,31 @@ Object {
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "githublensapilambda36E7A473": Object {
-      "DependsOn": Array [
-        "githublensapilambdaServiceRoleDefaultPolicy820F4AC4",
-        "githublensapilambdaServiceRoleF54068AC",
-      ],
+    "InstanceRoleGithublensapi15815617": Object {
       "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "DistributionBucketName",
-          },
-          "S3Key": "deploy/INFRA/github-lens-api/github-lens-api.zip",
-        },
-        "Environment": Object {
-          "Variables": Object {
-            "APP": "github-lens-api",
-            "STACK": "deploy",
-            "STAGE": "INFRA",
-          },
-        },
-        "Handler": "handler.main",
-        "MemorySize": 512,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambdaServiceRoleF54068AC",
-            "Arn",
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "ec2.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
           ],
+          "Version": "2012-10-17",
         },
-        "Runtime": "nodejs16.x",
+        "Path": "/",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -220,11 +683,10 @@ Object {
             "Value": "INFRA",
           },
         ],
-        "Timeout": 30,
       },
-      "Type": "AWS::Lambda::Function",
+      "Type": "AWS::IAM::Role",
     },
-    "githublensapilambdaServiceRoleDefaultPolicy820F4AC4": Object {
+    "InstanceRoleGithublensapiDefaultPolicy0C5E588B": Object {
       "Properties": Object {
         "PolicyDocument": Object {
           "Statement": Array [
@@ -237,38 +699,233 @@ Object {
               "Effect": "Allow",
               "Resource": Array [
                 Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      "arn:",
-                      Object {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      Object {
-                        "Ref": "DistributionBucketName",
-                      },
-                    ],
+                  "Fn::GetAtt": Array [
+                    "githublensdatabucketGithublens7C07FDE7",
+                    "Arn",
                   ],
                 },
                 Object {
                   "Fn::Join": Array [
                     "",
                     Array [
-                      "arn:",
                       Object {
-                        "Ref": "AWS::Partition",
+                        "Fn::GetAtt": Array [
+                          "githublensdatabucketGithublens7C07FDE7",
+                          "Arn",
+                        ],
                       },
-                      ":s3:::",
-                      Object {
-                        "Ref": "DistributionBucketName",
-                      },
-                      "/deploy/INFRA/github-lens-api/github-lens-api.zip",
+                      "/*",
                     ],
                   ],
                 },
               ],
             },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "InstanceRoleGithublensapiDefaultPolicy0C5E588B",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleGithublensapi15815617",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "InternalIngressSecurityGroupGithublensapi2BEE9DF4": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow restricted ingress from CIDR ranges",
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "10.0.0.0/8",
+            "Description": "Allow access on port 443 from 10.0.0.0/8",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens-api",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "InternalIngressSecurityGroupGithublensapitoGithubLensGuHttpsEgressSecurityGroupGithublensapi786E594E890018881CD2": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "ListenerGithublensapiCF255DF8": Object {
+      "Properties": Object {
+        "Certificates": Array [
+          Object {
+            "CertificateArn": Object {
+              "Ref": "CertificateGithublensapi4318D111",
+            },
+          },
+        ],
+        "DefaultActions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "TargetGroupGithublensapi08E11958",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": Object {
+          "Ref": "LoadBalancerGithublensapi0DC349AD",
+        },
+        "Port": 443,
+        "Protocol": "HTTPS",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "LoadBalancerGithublensapi0DC349AD": Object {
+      "Properties": Object {
+        "LoadBalancerAttributes": Array [
+          Object {
+            "Key": "deletion_protection.enabled",
+            "Value": "true",
+          },
+        ],
+        "Scheme": "internal",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
+              "GroupId",
+            ],
+          },
+          Object {
+            "Fn::GetAtt": Array [
+              "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": Object {
+          "Ref": "githublensapiPrivateSubnets",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens-api",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "LoadBalancerGithublensapiSecurityGroup3BAB53B9": Object {
+      "Properties": Object {
+        "GroupDescription": "Automatically created Security Group for ELB GithubLensLoadBalancerGithublensapiB907D9D7",
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "github-lens-api",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LoadBalancerGithublensapiSecurityGrouptoGithubLensGuHttpsEgressSecurityGroupGithublensapi786E594E8900799CA36D": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "ParameterStoreReadGithublensapi77C298FE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
             Object {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
@@ -312,76 +969,63 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "githublensdatabucketGithublens7C07FDE7",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "githublensdatabucketGithublens7C07FDE7",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "githublensapilambdaServiceRoleDefaultPolicy820F4AC4",
+        "PolicyName": "parameter-store-read-policy",
         "Roles": Array [
           Object {
-            "Ref": "githublensapilambdaServiceRoleF54068AC",
+            "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "githublensapilambdaServiceRoleF54068AC": Object {
+    "SSMRunCommandPolicy244E1613": Object {
       "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
+        "PolicyDocument": Object {
           "Statement": Array [
             Object {
-              "Action": "sts:AssumeRole",
+              "Action": Array [
+                "ec2messages:AcknowledgeMessage",
+                "ec2messages:DeleteMessage",
+                "ec2messages:FailMessage",
+                "ec2messages:GetEndpoint",
+                "ec2messages:GetMessages",
+                "ec2messages:SendReply",
+                "ssm:UpdateInstanceInformation",
+                "ssm:ListInstanceAssociations",
+                "ssm:DescribeInstanceProperties",
+                "ssm:DescribeDocumentParameters",
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
               "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
+              "Resource": "*",
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
+        "PolicyName": "ssm-run-command-policy",
+        "Roles": Array [
           Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
+            "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TargetGroupGithublensapi08E11958": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckPath": "/healthcheck",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "Port": 8900,
+        "Protocol": "HTTP",
         "Tags": Array [
           Object {
             "Key": "App",
@@ -404,180 +1048,148 @@ Object {
             "Value": "INFRA",
           },
         ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "githublensapilambdagithublensANYApiPermissionGithubLensgithublensapilambdagithublens0420DDC2ANYB62AF5D7": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambda36E7A473",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "githublensapilambdagithublensFC5CBB44",
-              },
-              "/",
-              Object {
-                "Ref": "githublensapilambdagithublensDeploymentStageprod05B08EE8",
-              },
-              "/*/",
-            ],
-          ],
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "instance",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": Object {
+          "Ref": "VpcId",
         },
       },
-      "Type": "AWS::Lambda::Permission",
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "githublensapilambdagithublensANYApiPermissionTestGithubLensgithublensapilambdagithublens0420DDC2ANY533CF39F": Object {
+    "UnhealthyInstancesAlarmGithublensapiD49343E9": Object {
       "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambda36E7A473",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "githublensapilambdagithublensFC5CBB44",
-              },
-              "/test-invoke-stage/*/",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "githublensapilambdagithublensANYBF21F34E": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "ANY",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": Object {
+        "ActionsEnabled": true,
+        "AlarmActions": Array [
+          Object {
             "Fn::Join": Array [
               "",
               Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:",
+                "arn:aws:sns:",
                 Object {
                   "Ref": "AWS::Region",
                 },
-                ":lambda:path/2015-03-31/functions/",
+                ":",
                 Object {
-                  "Fn::GetAtt": Array [
-                    "githublensapilambda36E7A473",
-                    "Arn",
-                  ],
+                  "Ref": "AWS::AccountId",
                 },
-                "/invocations",
+                ":",
+                Object {
+                  "Ref": "AnghammaradSnsArn",
+                },
               ],
             ],
           },
-        },
-        "ResourceId": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambdagithublensFC5CBB44",
-            "RootResourceId",
-          ],
-        },
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "githublensapilambdagithublensAccount21DDF10C": Object {
-      "DeletionPolicy": "Retain",
-      "DependsOn": Array [
-        "githublensapilambdagithublensFC5CBB44",
-      ],
-      "Properties": Object {
-        "CloudWatchRoleArn": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambdagithublensCloudWatchRoleEDAD16A1",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::ApiGateway::Account",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "githublensapilambdagithublensCloudWatchRoleEDAD16A1": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "apigateway.amazonaws.com",
-              },
+        ],
+        "AlarmDescription": "github-lens-api's instances have failed healthchecks several times over the last 1 hour.
+      This typically results in the AutoScaling Group cycling instances and can lead to problems with deployment,
+      scaling or handling traffic spikes.
+
+      Check github-lens-api's application logs or ssh onto an unhealthy instance in order to debug these problems.",
+        "AlarmName": "Unhealthy instances for github-lens-api in INFRA",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 30,
+        "Dimensions": Array [
+          Object {
+            "Name": "LoadBalancer",
+            "Value": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerGithublensapiCF255DF8",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerGithublensapiCF255DF8",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "ListenerGithublensapiCF255DF8",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              ],
             },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
+          },
           Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+            "Name": "TargetGroup",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "TargetGroupGithublensapi08E11958",
+                "TargetGroupFullName",
               ],
-            ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 60,
+        "MetricName": "UnHealthyHostCount",
+        "Namespace": "AWS/ApplicationELB",
+        "Period": 60,
+        "Statistic": "Maximum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "WazuhSecurityGroup": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow outbound traffic from wazuh agent to manager",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Wazuh event logging",
+            "FromPort": 1514,
+            "IpProtocol": "tcp",
+            "ToPort": 1514,
+          },
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Wazuh agent registration",
+            "FromPort": 1515,
+            "IpProtocol": "tcp",
+            "ToPort": 1515,
           },
         ],
         "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "github-lens-api",
-          },
           Object {
             "Key": "gu:cdk:version",
             "Value": "TEST",
@@ -595,272 +1207,11 @@ Object {
             "Value": "INFRA",
           },
         ],
-      },
-      "Type": "AWS::IAM::Role",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "githublensapilambdagithublensDeploymentF3C58D95e46845091e43c98251412ef4837752d2": Object {
-      "DependsOn": Array [
-        "githublensapilambdagithublensproxyANYFD25689D",
-        "githublensapilambdagithublensproxy306AC689",
-        "githublensapilambdagithublensANYBF21F34E",
-      ],
-      "Properties": Object {
-        "Description": "API that proxies all requests to Lambda",
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
+        "VpcId": Object {
+          "Ref": "VpcId",
         },
       },
-      "Type": "AWS::ApiGateway::Deployment",
-    },
-    "githublensapilambdagithublensDeploymentStageprod05B08EE8": Object {
-      "DependsOn": Array [
-        "githublensapilambdagithublensAccount21DDF10C",
-      ],
-      "Properties": Object {
-        "DeploymentId": Object {
-          "Ref": "githublensapilambdagithublensDeploymentF3C58D95e46845091e43c98251412ef4837752d2",
-        },
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
-        },
-        "StageName": "prod",
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "github-lens-api",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/github-lens",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "INFRA",
-          },
-        ],
-      },
-      "Type": "AWS::ApiGateway::Stage",
-    },
-    "githublensapilambdagithublensFC5CBB44": Object {
-      "Properties": Object {
-        "Description": "API that proxies all requests to Lambda",
-        "Name": "deploy-INFRA-github-lens",
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "github-lens-api",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/github-lens",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "INFRA",
-          },
-        ],
-      },
-      "Type": "AWS::ApiGateway::RestApi",
-    },
-    "githublensapilambdagithublensdomainAF6EC35F": Object {
-      "Properties": Object {
-        "DomainName": "github-lens.gutools.co.uk",
-        "EndpointConfiguration": Object {
-          "Types": Array [
-            "REGIONAL",
-          ],
-        },
-        "RegionalCertificateArn": Object {
-          "Ref": "CertificateGithublens25494A00",
-        },
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "github-lens-api",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/github-lens",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "INFRA",
-          },
-        ],
-      },
-      "Type": "AWS::ApiGateway::DomainName",
-    },
-    "githublensapilambdagithublensdomainMapGithubLensgithublensapilambdagithublens0420DDC236C3D399": Object {
-      "Properties": Object {
-        "DomainName": Object {
-          "Ref": "githublensapilambdagithublensdomainAF6EC35F",
-        },
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
-        },
-        "Stage": Object {
-          "Ref": "githublensapilambdagithublensDeploymentStageprod05B08EE8",
-        },
-      },
-      "Type": "AWS::ApiGateway::BasePathMapping",
-    },
-    "githublensapilambdagithublensproxy306AC689": Object {
-      "Properties": Object {
-        "ParentId": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambdagithublensFC5CBB44",
-            "RootResourceId",
-          ],
-        },
-        "PathPart": "{proxy+}",
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
-        },
-      },
-      "Type": "AWS::ApiGateway::Resource",
-    },
-    "githublensapilambdagithublensproxyANYApiPermissionGithubLensgithublensapilambdagithublens0420DDC2ANYproxy5F7EDF45": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambda36E7A473",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "githublensapilambdagithublensFC5CBB44",
-              },
-              "/",
-              Object {
-                "Ref": "githublensapilambdagithublensDeploymentStageprod05B08EE8",
-              },
-              "/*/*",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "githublensapilambdagithublensproxyANYApiPermissionTestGithubLensgithublensapilambdagithublens0420DDC2ANYproxyA6234A4F": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "githublensapilambda36E7A473",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:",
-              Object {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "githublensapilambdagithublensFC5CBB44",
-              },
-              "/test-invoke-stage/*/*",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "githublensapilambdagithublensproxyANYFD25689D": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "ANY",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:",
-                Object {
-                  "Ref": "AWS::Region",
-                },
-                ":lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
-                    "githublensapilambda36E7A473",
-                    "Arn",
-                  ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": Object {
-          "Ref": "githublensapilambdagithublensproxy306AC689",
-        },
-        "RestApiId": Object {
-          "Ref": "githublensapilambdagithublensFC5CBB44",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "githublensdatabucketGithublens7C07FDE7": Object {
       "DeletionPolicy": "Retain",

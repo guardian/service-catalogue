@@ -1,12 +1,23 @@
-import { GuApiLambda, GuScheduledLambda } from '@guardian/cdk';
-import { GuCertificate } from '@guardian/cdk/lib/constructs/acm';
-import type { NoMonitoring } from '@guardian/cdk/lib/constructs/cloudwatch';
-import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
+import { AccessScope } from '@guardian/cdk/lib/constants';
+import {
+	GuAnghammaradTopicParameter,
+	GuDistributionBucketParameter,
+	GuStack,
+	GuStringParameter,
+} from '@guardian/cdk/lib/constructs/core';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import type { App } from 'aws-cdk-lib';
+import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app';
+import { GuScheduledLambda } from '@guardian/cdk/lib/patterns/scheduled-lambda';
 import { Duration } from 'aws-cdk-lib';
+import type { App } from 'aws-cdk-lib';
+import {
+	InstanceClass,
+	InstanceSize,
+	InstanceType,
+	Peer,
+} from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Key } from 'aws-cdk-lib/aws-kms';
@@ -21,11 +32,17 @@ export class GithubLens extends GuStack {
 		super(scope, id, props);
 
 		const app = 'github-lens';
+		const repoFetcherApp = 'repo-fetcher';
+		const apiApp = 'github-lens-api';
+
+		// S3 bucket to store the aggregated and transformed Github data.
 
 		const dataBucket = new GuS3Bucket(this, `${app}-data-bucket`, {
 			bucketName: `github-lens-data-${this.stage.toLowerCase()}`,
 			app,
 		});
+
+		// Some parameters and encryption keys
 
 		const kmsKeyAlias = `${this.stage}/${this.stack}/${app}`;
 		const kmsKey = new Key(this, kmsKeyAlias, {
@@ -39,8 +56,6 @@ export class GithubLens extends GuStack {
 		});
 
 		const paramPathBase = `/${this.stage}/${this.stack}/${app}`;
-		const repoFetcherApp = 'repo-fetcher';
-		const apiApp = 'github-lens-api';
 
 		const githubAppId = new GuStringParameter(this, 'github-app-id', {
 			default: `${paramPathBase}/github-app-id`,
@@ -68,34 +83,68 @@ export class GithubLens extends GuStack {
 			fromSSM: true,
 		});
 
-		const noMonitoring: NoMonitoring = { noMonitoring: true };
+		// The API EC2 app...
 
-		const apiLambda = new GuApiLambda(this, `${apiApp}-lambda`, {
-			fileName: `${apiApp}.zip`,
-			handler: 'handler.main',
-			runtime: Runtime.NODEJS_16_X,
-			monitoringConfiguration: noMonitoring,
+		const keyPrefix = `${this.stack}/${this.stage}/${apiApp}`;
+		const distBucket =
+			GuDistributionBucketParameter.getInstance(this).valueAsString;
+
+		const applicationPort = 8900;
+		const handler = 'handler.js';
+
+		const userData = `#!/bin/bash -ev
+cat << EOF > /etc/systemd/system/${apiApp}.service
+[Unit]
+Description=Github Lens API
+
+[Service]
+Environment="DATA_BUCKET_NAME=${dataBucket.bucketName}"
+Environment="PORT=${applicationPort}"
+Environment="STAGE=${props.stage}"
+ExecStart=/usr/bin/node /${handler}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+aws s3 cp s3://${distBucket}/${keyPrefix}/${apiApp}.zip ${apiApp}.zip
+unzip ${apiApp}.zip
+chmod +x /${handler}
+systemctl start ${apiApp}
+`;
+
+		const ec2 = new GuEc2App(this, {
 			app: apiApp,
-			api: {
-				id: 'github-lens',
-				description: 'API that proxies all requests to Lambda',
+			access: {
+				scope: AccessScope.INTERNAL,
+				cidrRanges: [Peer.ipv4('10.0.0.0/8')], // VPC and other private Guardian IPs
 			},
-		});
-
-		const domain = apiLambda.api.addDomainName('domain', {
-			domainName: props.domainName,
-			certificate: new GuCertificate(this, {
-				app: app,
-				domainName: props.domainName,
-			}),
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.NANO),
+			applicationPort,
+			monitoringConfiguration: {
+				snsTopicName:
+					GuAnghammaradTopicParameter.getInstance(this).valueAsString,
+				unhealthyInstancesAlarm: true,
+				http5xxAlarm: {
+					tolerated5xxPercentage: 1,
+					numberOfMinutesAboveThresholdBeforeAlarm: 60,
+				},
+			},
+			certificateProps: { domainName: props.domainName },
+			scaling: { minimumInstances: 1, maximumInstances: 2 },
+			userData: userData,
+			imageRecipe: 'arm64-focal-node16-devx',
+			applicationLogging: { enabled: true },
 		});
 
 		new GuCname(this, 'DNS', {
-			app: app,
-			ttl: Duration.days(1),
+			app: apiApp,
 			domainName: props.domainName,
-			resourceRecord: domain.domainNameAliasDomainName,
+			resourceRecord: ec2.loadBalancer.loadBalancerDnsName,
+			ttl: Duration.hours(1),
 		});
+
+		// The scheduled lambda...
 
 		const scheduledLambda = new GuScheduledLambda(
 			this,
@@ -124,7 +173,7 @@ export class GithubLens extends GuStack {
 			},
 		);
 
-		dataBucket.grantRead(apiLambda);
+		dataBucket.grantRead(ec2.autoScalingGroup);
 		dataBucket.grantReadWrite(scheduledLambda);
 	}
 }
