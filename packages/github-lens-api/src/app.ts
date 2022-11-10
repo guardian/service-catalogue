@@ -35,6 +35,9 @@ export function buildApp(
 		}),
 	);
 
+	//handle all invalid routes by showing all available routes
+	router.get('*', getDescribeRouterHandler(router));
+
 	app.use('/', router);
 
 	return app;

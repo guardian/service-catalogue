@@ -19,7 +19,10 @@ export const getDescribeRouterHandler = (router: Router) => {
 		const urlProtocol = req.protocol + '://';
 		const urlHost = req.get('host') ?? 'localhost:3232';
 		const stack = router.stack
-			.filter((layer: RouterLayer) => layer.route != undefined)
+			.filter(
+				(layer: RouterLayer) =>
+					layer.route != undefined && layer.route.path !== '*',
+			)
 			.map((layer: RouterLayer) => {
 				const path = layer.route?.path ?? '';
 				return {
