@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src/**/*", "../common/src/expressRoutes.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
 	"references": [{ "path": "../common" }]
 }
