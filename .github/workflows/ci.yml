@@ -52,6 +52,8 @@ jobs:
               - packages/repo-fetcher/dist/repo-fetcher.zip
             github-lens-api:
               - packages/github-lens-api/dist/github-lens-api.zip
+            services-api:
+              - packages/services-api/dist/services-api.zip
 
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
