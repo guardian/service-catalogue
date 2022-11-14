@@ -22,8 +22,6 @@ export function buildApp(
 		}),
 	);
 
-	router.get('/', getDescribeRouterHandler(router));
-
 	router.get('/healthcheck', (req: express.Request, res: express.Response) => {
 		res.status(200).json({ status: 'OK', stage: 'INFRA' });
 	});
