@@ -31,6 +31,6 @@ export const getDescribeRouterHandler = (router: Router) => {
 				};
 			});
 
-		res.status(200).json(stack);
+		res.status(404).json(stack);
 	};
 };
