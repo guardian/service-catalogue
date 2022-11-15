@@ -1,6 +1,6 @@
 import { json as jsonBodyParser } from 'body-parser';
 import type { RetrievedObject } from 'common/aws/s3';
-import type { Repository } from 'common/github/github';
+import type { Repository } from 'common/model/repository';
 import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
@@ -30,6 +30,20 @@ export function buildApp(
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			res.status(200).json(await repoData);
+		}),
+	);
+
+	router.get(
+		'/reposByName/:name',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const repoDataJson = await repoData;
+			const searchForName = req.params.name;
+			const jsonResponse = repoDataJson.payload.filter((item) =>
+				item.name.includes(searchForName),
+			);
+			//res.send(searchForName);
+
+			res.status(200).json(jsonResponse);
 		}),
 	);
 

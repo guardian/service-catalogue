@@ -1,8 +1,8 @@
 import type {
-	Repository,
 	RepositoryResponse,
 	TeamRepoResponse,
 } from 'common/github/github';
+import type { Repository } from 'common/model/repository';
 
 const parseDateString = (
 	dateString: string | null | undefined,
