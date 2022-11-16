@@ -51,7 +51,6 @@ export const main = async (): Promise<void> => {
 	configureLogging(getLogLevel(config.logLevel));
 
 	console.log('Starting repo-fetcher');
-
 	const client = getOctokit(config.github);
 
 	const teamNames = await getTeamNames(client, config.github.teamToFetch);
@@ -67,9 +66,11 @@ export const main = async (): Promise<void> => {
 	);
 
 	const s3Client = getS3Client(config.region);
-	const repoFileLocation = path.join(config.dataKeyPrefix, 'repos.json');
+	// const repoFileLocation = path.join(config.dataKeyPrefix, 'repos.json');
+	// await putObject(s3Client, config.dataBucketName, repoFileLocation, repos);
 
-	await putObject(s3Client, config.dataBucketName, repoFileLocation, repos);
+	const teamFileLocation = path.join(config.dataKeyPrefix, 'teams.json');
+	await putObject(s3Client, config.dataBucketName, teamFileLocation, teamNames);
 
 	console.log(`Finishing repo-fetcher`);
 };

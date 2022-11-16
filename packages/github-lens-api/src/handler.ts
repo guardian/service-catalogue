@@ -1,7 +1,8 @@
 import path from 'path';
 import { getObject, getS3Client } from 'common/aws/s3';
-import type { Repository } from 'common/github/github';
 import { configureLogging } from 'common/log/log';
+import type { Repository } from 'common/model/repository';
+import type { Team } from 'common/model/team';
 import { buildApp } from './app';
 import { getConfig } from './config';
 
@@ -20,7 +21,14 @@ const repoData = getObject<Repository[]>(
 	repoFileLocation,
 );
 
-const app = buildApp(repoData);
+const teamFileLocation = path.join(config.dataKeyPrefix, 'teams.json');
+const teamData = getObject<Team[]>(
+	s3Client,
+	config.dataBucketName,
+	teamFileLocation,
+);
+
+const app = buildApp(repoData, teamData);
 
 const PORT = process.env.PORT ?? '3232';
 app.listen(PORT, () => {
