@@ -29,21 +29,32 @@ export function buildApp(
 	router.get(
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			res.status(200).json(await repoData);
+			const reposData = await repoData;
+			// if (typeof req.query.name !== 'undefined') {
+			// 	const jsonResponse = reposData.payload.filter((item) =>
+			// 		item.name.includes(req.params.name),
+			// 	);
+			// 	res.status(200).json(jsonResponse);
+			// } else {
+			res.status(200).json(reposData);
+			// }
 		}),
 	);
 
 	router.get(
-		'/reposByName/:name',
+		'/repos/:name',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			const repoDataJson = await repoData;
-			const searchForName = req.params.name;
-			const jsonResponse = repoDataJson.payload.filter((item) =>
-				item.name.includes(searchForName),
+			const reposData = await repoData;
+			const jsonResponse = reposData.payload.filter(
+				(item) => item.name === req.params.name,
 			);
-			//res.send(searchForName);
-
-			res.status(200).json(jsonResponse);
+			if (jsonResponse.length !== 0) {
+				res.status(200).json(jsonResponse);
+			} else {
+				res
+					.status(200)
+					.json({ repoName: req.params.name, info: 'Repo not found' });
+			}
 		}),
 	);
 
