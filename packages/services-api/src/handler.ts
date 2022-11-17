@@ -1,6 +1,8 @@
 import { buildApp } from './app';
+import { getConfig } from './config';
 
-const app = buildApp();
+const config = getConfig();
+const app = buildApp(config);
 
 const PORT = process.env.PORT ?? '3233';
 app.listen(PORT, () => {

@@ -2,6 +2,7 @@
   "name": "cdk",
   "version": "1.0.0",
   "scripts": {
+    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
     "typecheck": "tsc -noEmit",
     "cdk": "cdk",
     "synth": "cdk synth --path-metadata false --version-reporting false"

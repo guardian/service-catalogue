@@ -65,6 +65,11 @@ Object {
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
+    "galaxiesbucketname": Object {
+      "Default": "/INFRA/deploy/services-api/galaxies-bucket-name",
+      "Description": "Bucket name for Galaxies data.",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "servicesapiPrivateSubnets": Object {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
@@ -153,6 +158,7 @@ Object {
     },
     "AutoScalingGroupServicesapiLaunchConfigCE2ECB8E": Object {
       "DependsOn": Array [
+        "InstanceRoleServicesapiDefaultPolicyCC9CBC9F",
         "InstanceRoleServicesapi62D8A4C9",
       ],
       "Properties": Object {
@@ -193,6 +199,11 @@ Description=Github Lens API
 [Service]
 Environment=\\"PORT=8900\\"
 Environment=\\"STAGE=INFRA\\"
+Environment=\\"GALAXIES_BUCKET_NAME=",
+                Object {
+                  "Ref": "galaxiesbucketname",
+                },
+                "\\"
 ExecStart=/usr/bin/node /handler.js
 
 [Install]
@@ -603,6 +614,63 @@ systemctl start services-api
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "InstanceRoleServicesapiDefaultPolicyCC9CBC9F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "galaxiesbucketname",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "galaxiesbucketname",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "InstanceRoleServicesapiDefaultPolicyCC9CBC9F",
+        "Roles": Array [
+          Object {
+            "Ref": "InstanceRoleServicesapi62D8A4C9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "InternalIngressSecurityGroupServicesapi63B228EB": Object {
       "Properties": Object {
