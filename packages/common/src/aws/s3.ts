@@ -3,10 +3,18 @@ import {
 	PutObjectCommand,
 	S3Client,
 } from '@aws-sdk/client-s3';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export const getS3Client = (region: string): S3Client => {
 	return new S3Client({
 		region,
+	});
+};
+
+export const getLocalS3Client = (region: string, profile: string): S3Client => {
+	return new S3Client({
+		region,
+		credentials: fromIni({ profile: profile }),
 	});
 };
 

@@ -7,7 +7,7 @@ import {
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app';
-import { Duration } from 'aws-cdk-lib';
+import { CfnParameter, Duration } from 'aws-cdk-lib';
 import type { App } from 'aws-cdk-lib';
 import {
 	InstanceClass,
@@ -15,6 +15,7 @@ import {
 	InstanceType,
 	Peer,
 } from 'aws-cdk-lib/aws-ec2';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 
 interface ServicesApiProps extends GuStackProps {
 	domainName: string;
@@ -29,6 +30,19 @@ export class ServicesApi extends GuStack {
 		const distBucket =
 			GuDistributionBucketParameter.getInstance(this).valueAsString;
 
+		// Access to the temp Galaxies bucket until we can hit the API directly.
+		const galaxiesBucketParam = new CfnParameter(this, 'galaxies-bucket-name', {
+			description: 'Bucket name for Galaxies data.',
+			default: `/${this.stage}/${this.stack}/${app}/galaxies-bucket-name`,
+			type: 'AWS::SSM::Parameter::Value<String>',
+		});
+
+		const galaxiesBucket = Bucket.fromBucketName(
+			this,
+			'galaxies-bucket',
+			galaxiesBucketParam.valueAsString,
+		);
+
 		const applicationPort = 8900;
 		const handler = 'handler.js';
 
@@ -40,6 +54,7 @@ Description=Github Lens API
 [Service]
 Environment="PORT=${applicationPort}"
 Environment="STAGE=${props.stage}"
+Environment="GALAXIES_BUCKET_NAME=${galaxiesBucketParam.valueAsString}"
 ExecStart=/usr/bin/node /${handler}
 
 [Install]
@@ -75,6 +90,8 @@ systemctl start ${app}
 			imageRecipe: 'arm64-focal-node16-devx',
 			applicationLogging: { enabled: true },
 		});
+
+		galaxiesBucket.grantRead(ec2.autoScalingGroup);
 
 		new GuCname(this, 'DNS', {
 			app,
