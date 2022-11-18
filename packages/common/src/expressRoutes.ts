@@ -25,9 +25,26 @@ export const getDescribeRouterHandler = (router: Router) => {
 			)
 			.map((layer: RouterLayer) => {
 				const path = layer.route?.path ?? '';
+				let info = '';
+				switch (path) {
+					case '/healthcheck':
+						info = 'Display healthcheck';
+						break;
+					case '/repos':
+						info =
+							'Show all repos, or when ?name=searchString is given search for searchString';
+						break;
+					case '/repos/:name':
+						info = 'Show repo with the provided name, if it exists';
+						break;
+					default:
+						info = 'No path info supplied';
+						break;
+				}
 				return {
 					path: urlProtocol + urlHost + path,
 					methods: layer.route?.stack.map((innerStack) => innerStack.method),
+					info: info,
 				};
 			});
 

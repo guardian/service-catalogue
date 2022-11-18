@@ -1,6 +1,6 @@
 import { json as jsonBodyParser } from 'body-parser';
 import type { RetrievedObject } from 'common/aws/s3';
-import type { Repository } from 'common/github/github';
+import type { Repository } from 'common/model/repository';
 import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
@@ -29,7 +29,34 @@ export function buildApp(
 	router.get(
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			res.status(200).json(await repoData);
+			const reposData = await repoData;
+			if (typeof req.query.name !== 'undefined') {
+				const jsonResponse = reposData.payload.filter(
+					(
+						item, //item.name.includes(req.query.name),
+					) => item.name.includes('riff'),
+				);
+				res.status(200).json(jsonResponse);
+			} else {
+				res.status(200).json(reposData);
+			}
+		}),
+	);
+
+	router.get(
+		'/repos/:name',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const reposData = await repoData;
+			const jsonResponse = reposData.payload.filter(
+				(item) => item.name === req.params.name,
+			);
+			if (jsonResponse.length !== 0) {
+				res.status(200).json(jsonResponse);
+			} else {
+				res
+					.status(200)
+					.json({ repoName: req.params.name, info: 'Repo not found' });
+			}
 		}),
 	);
 
