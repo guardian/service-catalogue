@@ -30,14 +30,16 @@ export function buildApp(
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const reposData = await repoData;
-			// if (typeof req.query.name !== 'undefined') {
-			// 	const jsonResponse = reposData.payload.filter((item) =>
-			// 		item.name.includes(req.params.name),
-			// 	);
-			// 	res.status(200).json(jsonResponse);
-			// } else {
-			res.status(200).json(reposData);
-			// }
+			if (typeof req.query.name !== 'undefined') {
+				const jsonResponse = reposData.payload.filter(
+					(
+						item, //item.name.includes(req.query.name),
+					) => item.name.includes('riff'),
+				);
+				res.status(200).json(jsonResponse);
+			} else {
+				res.status(200).json(reposData);
+			}
 		}),
 	);
 
