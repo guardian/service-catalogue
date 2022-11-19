@@ -9,7 +9,7 @@
     "typecheck": "tsc -noEmit"
   },
   "devDependencies": {
-    "esbuild": "^0.14.53"
+    "esbuild": "^0.15.13"
   },
   "dependencies": {
     "@aws-sdk/client-kms": "^3.169.0",
