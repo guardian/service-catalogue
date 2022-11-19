@@ -12,6 +12,6 @@ jobs:
     with:
       DEBUG: true
       ORG: guardian-devtools
-      SKIP_NODE: true
+      SKIP_NODE: false
     secrets:
        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
