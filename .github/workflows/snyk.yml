@@ -13,6 +13,6 @@ jobs:
       DEBUG: true
       ORG: guardian-devtools
       SKIP_NODE: false
-      NODE_PACKAGE_JSON_FILES_MISSING_LOCK: packages/cdk/package.json packages/github-lens-api/package.json packages/common/package.json packages/repo-fetcher/package.json packages/services-api/package.json
+      EXCLUDE: packages
     secrets:
        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
