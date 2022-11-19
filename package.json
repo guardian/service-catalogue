@@ -19,7 +19,7 @@
     "@guardian/eslint-config-typescript": "^1.0.2",
     "@guardian/prettier": "^2.0.0",
     "aws-sdk-client-mock": "^2.0.0",
-    "esbuild": "^0.14.53"
+    "esbuild": "^0.15.13"
   },
   "dependencies": {
     "@types/jest": "^28.1.6",
