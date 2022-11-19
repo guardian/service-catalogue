@@ -16,3 +16,10 @@ export interface Repository {
 	default_branch: string | undefined;
 	owners: string[];
 }
+
+export interface Team {
+	id: number;
+	name: string;
+	slug: string;
+	repos: Repository[];
+}

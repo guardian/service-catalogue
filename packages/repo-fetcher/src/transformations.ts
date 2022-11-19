@@ -19,7 +19,7 @@ const parseDateString = (
 
 export const asRepo = (
 	repo: RepositoryResponse,
-	owners: string[],
+	owners?: string[],
 ): Repository => {
 	return {
 		id: repo.id,
@@ -37,7 +37,7 @@ export const asRepo = (
 		is_template: repo.is_template,
 		topics: repo.topics,
 		default_branch: repo.default_branch,
-		owners: owners,
+		owners: owners ? owners : [],
 	};
 };
 
