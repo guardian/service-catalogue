@@ -1,5 +1,5 @@
 import type { Repository, Stack } from './services';
-import { groupStacksByStage, ownersForStack } from './services';
+import { groupByService, ownersForStack } from './services';
 
 describe('services', () => {
 	it('should group stacks by stage', () => {
@@ -24,7 +24,7 @@ describe('services', () => {
 		const c = clone(a);
 		c.accountId = 'account234';
 
-		const got = groupStacksByStage([a, b, c]);
+		const got = groupByService([a, b, c]);
 		const want = [[a, b], [c]];
 
 		expect(got).toEqual(want);

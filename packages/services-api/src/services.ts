@@ -73,7 +73,7 @@ export class LensServicesApi implements ServicesApi {
 		const reposResp = await fetch(`${this.githubLensUrl}/repos`);
 		const repos = (await reposResp.json()) as LensResponse<Repository[]>;
 
-		const services: Service[] = groupStacksByStage(stacks).map((stacks) => {
+		const services: Service[] = groupByService(stacks).map((stacks) => {
 			return {
 				stacks: stacks,
 				githubOwners: stacks.flatMap((stack) =>
@@ -102,7 +102,9 @@ export const ownersForStack = (repos: Repository[], stack: Stack): string[] => {
 	return owners ?? [];
 };
 
-export const groupStacksByStage = (stacks: Stack[]): Stack[][] => {
+// Group stacks by service. Initially this means grouping stacks that share app,
+// stack, and accountId, but have a different stage tag.
+export const groupByService = (stacks: Stack[]): Stack[][] => {
 	const groups: Map<string, Stack[]> = new Map();
 
 	stacks.forEach((stack) => {
