@@ -1,6 +1,8 @@
 import type { Repository, Stack } from './services';
 import { groupByService, ownersForStack } from './services';
 
+const now = new Date().toISOString();
+
 describe('services', () => {
 	it('should group stacks by stage', () => {
 		const a: Stack = {
@@ -8,8 +10,8 @@ describe('services', () => {
 			metadata: {},
 			accountId: 'account123',
 			accountName: 'deploy',
-			createdTime: new Date(),
-			lastUpdatedTime: new Date(),
+			createdTime: now,
+			lastUpdatedTime: now,
 			tags: {
 				App: 'foo',
 				Stack: 'deploy',
@@ -36,8 +38,8 @@ describe('services', () => {
 			metadata: {},
 			accountId: 'account123',
 			accountName: 'deploy',
-			createdTime: new Date(),
-			lastUpdatedTime: new Date(),
+			createdTime: now,
+			lastUpdatedTime: now,
 			tags: {
 				App: 'foo',
 				Stack: 'deploy',
@@ -53,8 +55,8 @@ describe('services', () => {
 			full_name: 'guardian/foo',
 			private: true,
 			description: null,
-			created_at: new Date(),
-			updated_at: new Date(),
+			created_at: now,
+			updated_at: now,
 			pushed_at: null,
 			size: 305,
 			language: 'Go',

@@ -12,7 +12,7 @@ export const getConfig = (): Config => {
 	return {
 		stage: optionalWithDefault('STAGE', 'DEV') as Stage,
 		galaxiesTmpBucket: mandatory('GALAXIES_BUCKET_NAME'),
-		cloudformationLensUrl: mandatory('CLOUDFORMATION_LENS_URL'),
-		githubLensUrl: mandatory('GITHUB_LENS_URL'),
+		cloudformationLensUrl: 'https://cloudformation-lens.gutools.co.uk',
+		githubLensUrl: 'https://github-lens.gutools.co.uk',
 	};
 };

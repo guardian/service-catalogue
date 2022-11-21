@@ -5,16 +5,17 @@ export type LensResponse<A> = {
 	lastModified: string;
 };
 
-// TODO move into common and share with repo-fetcher.
+// TODO move into common and share with repo-fetcher. Though note questions over
+// (de)serialising date fields.
 export interface Repository {
 	id: number;
 	name: string;
 	full_name: string;
 	private: boolean;
 	description: string | null;
-	created_at: Date | null;
-	updated_at: Date | null;
-	pushed_at: Date | null;
+	created_at: string | null;
+	updated_at: string | null;
+	pushed_at: string | null;
 	size: number | undefined;
 	language: string | null | undefined;
 	archived: boolean | undefined;
@@ -32,8 +33,8 @@ export interface Stack {
 	metadata: Record<string, unknown>;
 	accountId: string;
 	accountName: string;
-	createdTime: Date;
-	lastUpdatedTime: Date;
+	createdTime: string;
+	lastUpdatedTime: string;
 	tags: Record<string, string | undefined>;
 	devxFeatures: Record<string, string | undefined>;
 }

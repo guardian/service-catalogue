@@ -43,23 +43,6 @@ export class ServicesApi extends GuStack {
 			galaxiesBucketParam.valueAsString,
 		);
 
-		const cloudformationLensUrlParam = new CfnParameter(
-			this,
-			'cloudformation-lens-url',
-			{
-				description:
-					'Cloudformation Lens URL including protocol but not trailing slash.',
-				default: `/${this.stage}/${this.stack}/${app}/cloudformation-lens-url`,
-				type: 'AWS::SSM::Parameter::Value<String>',
-			},
-		);
-
-		const githubLensUrlParam = new CfnParameter(this, 'github-lens-url', {
-			description: 'Github Lens URL including protocol but not trailing slash.',
-			default: `/${this.stage}/${this.stack}/${app}/github-lens-url`,
-			type: 'AWS::SSM::Parameter::Value<String>',
-		});
-
 		const applicationPort = 8900;
 		const handler = 'handler.js';
 
@@ -72,8 +55,6 @@ Description=Github Lens API
 Environment="PORT=${applicationPort}"
 Environment="STAGE=${props.stage}"
 Environment="GALAXIES_BUCKET_NAME=${galaxiesBucketParam.valueAsString}"
-Environment="CLOUDFORMATION_LENS_URL=${cloudformationLensUrlParam.valueAsString}"
-Environment="GITHUB_LENS_URL=${githubLensUrlParam.valueAsString}"
 ExecStart=/usr/bin/node /${handler}
 
 [Install]
