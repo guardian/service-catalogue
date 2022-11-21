@@ -3,7 +3,7 @@
     "target": "ES2021",
     "module": "commonjs",
     "lib": ["ES2021", "dom"],
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
