@@ -5,6 +5,10 @@ export type LensResponse<A> = {
 	lastModified: string;
 };
 
+// TODO date fields are currently modelled as strings. This is fine for now as
+// we are just passing them through, but it might be worth converting to Date
+// types if/when we introduce date logic - for example, filtering by date range.
+
 // TODO move into common and share with repo-fetcher. Though note questions over
 // (de)serialising date fields.
 export interface Repository {
@@ -25,8 +29,6 @@ export interface Repository {
 	default_branch: string | undefined;
 	owners: string[];
 }
-
-// Services combines data from Cloudformation Lens and Github Lens.
 
 export interface Stack {
 	stackName: string;
