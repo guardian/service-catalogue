@@ -6,7 +6,14 @@ import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { getDescribeRouterHandler } from '../../common/src/expressRoutes';
 import type { Config } from './config';
+import type { GalaxyTeam } from './galaxies';
 import { S3GalaxiesApi } from './galaxies';
+import type { Service } from './services';
+import { LensServicesApi } from './services';
+
+interface TeamResponse extends GalaxyTeam {
+	services: Service[];
+}
 
 export function buildApp(config: Config): Express {
 	const app = express();
@@ -34,13 +41,27 @@ export function buildApp(config: Config): Express {
 	// but we can improve this later!
 	const galaxiesApi = new S3GalaxiesApi(client, config.galaxiesTmpBucket);
 
+	const servicesApi = new LensServicesApi(
+		config.cloudformationLensUrl,
+		config.githubLensUrl,
+	);
+
 	// TODO include Cloudformation stacks for each team to get to MVP!
 
 	router.get(
 		'/teams',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const teams = await galaxiesApi.getTeams();
-			res.status(200).json(teams);
+			const services = await servicesApi.list();
+			const teamsWithServices = teams.map((team) => {
+				const teamServices = services.filter((service) =>
+					service.githubOwners.includes(team.primaryGithubTeam),
+				);
+
+				return { ...team, services: teamServices };
+			});
+
+			res.status(200).json(teamsWithServices);
 		}),
 	);
 
@@ -48,7 +69,10 @@ export function buildApp(config: Config): Express {
 		'/teams/:id',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const team = await galaxiesApi.getTeam(req.params.id);
-			res.status(200).json(team);
+			const services = await servicesApi.forGithubOwner(team.primaryGithubTeam);
+
+			const resp: TeamResponse = { ...team, services };
+			res.status(200).json(resp);
 		}),
 	);
 

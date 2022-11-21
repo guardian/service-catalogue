@@ -65,9 +65,19 @@ Object {
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
+    "cloudformationlensurl": Object {
+      "Default": "/INFRA/deploy/services-api/cloudformation-lens-url",
+      "Description": "Cloudformation Lens URL including protocol but not trailing slash.",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "galaxiesbucketname": Object {
       "Default": "/INFRA/deploy/services-api/galaxies-bucket-name",
       "Description": "Bucket name for Galaxies data.",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "githublensurl": Object {
+      "Default": "/INFRA/deploy/services-api/github-lens-url",
+      "Description": "Github Lens URL including protocol but not trailing slash.",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "servicesapiPrivateSubnets": Object {
@@ -202,6 +212,16 @@ Environment=\\"STAGE=INFRA\\"
 Environment=\\"GALAXIES_BUCKET_NAME=",
                 Object {
                   "Ref": "galaxiesbucketname",
+                },
+                "\\"
+Environment=\\"CLOUDFORMATION_LENS_URL=",
+                Object {
+                  "Ref": "cloudformationlensurl",
+                },
+                "\\"
+Environment=\\"GITHUB_LENS_URL=",
+                Object {
+                  "Ref": "githublensurl",
                 },
                 "\\"
 ExecStart=/usr/bin/node /handler.js
