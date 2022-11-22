@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`The GithubLens stack matches the snapshot 1`] = `
-Object {
-  "Metadata": Object {
-    "gu:cdk:constructs": Array [
+{
+  "Metadata": {
+    "gu:cdk:constructs": [
       "GuS3Bucket",
       "GuStringParameter",
       "GuStringParameter",
@@ -35,192 +35,192 @@ Object {
     ],
     "gu:cdk:version": "TEST",
   },
-  "Outputs": Object {
-    "LoadBalancerGithublensapiDnsName": Object {
+  "Outputs": {
+    "LoadBalancerGithublensapiDnsName": {
       "Description": "DNS entry for LoadBalancerGithublensapi",
-      "Value": Object {
-        "Fn::GetAtt": Array [
+      "Value": {
+        "Fn::GetAtt": [
           "LoadBalancerGithublensapi0DC349AD",
           "DNSName",
         ],
       },
     },
   },
-  "Parameters": Object {
-    "AMIGithublensapi": Object {
+  "Parameters": {
+    "AMIGithublensapi": {
       "Description": "Amazon Machine Image ID for the app github-lens-api. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
     },
-    "AnghammaradSnsArn": Object {
+    "AnghammaradSnsArn": {
       "Default": "/account/services/anghammarad.topic.arn",
       "Description": "SSM parameter containing the ARN of the Anghammarad SNS topic",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "DistributionBucketName": Object {
+    "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "LoggingStreamName": Object {
+    "LoggingStreamName": {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "VpcId": Object {
+    "VpcId": {
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "githubappid": Object {
+    "githubappid": {
       "Default": "/INFRA/deploy/github-lens/github-app-id",
       "Description": "(From SSM) The GitHub app ID of the app used to authenticate github-lens",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "githubinstallationid": Object {
+    "githubinstallationid": {
       "Default": "/INFRA/deploy/github-lens/github-installation-id",
       "Description": "(From SSM) The GitHub installation ID of the app used to authenticate github-lens in the Guardian org",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "githublensapiPrivateSubnets": Object {
+    "githublensapiPrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "githubprivatekey": Object {
+    "githubprivatekey": {
       "Default": "/INFRA/deploy/github-lens/github-private-key",
       "Description": "(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org",
       "NoEcho": true,
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
-  "Resources": Object {
-    "AutoScalingGroupGithublensapiASG9A8AE08B": Object {
-      "Properties": Object {
+  "Resources": {
+    "AutoScalingGroupGithublensapiASG9A8AE08B": {
+      "Properties": {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "LaunchConfigurationName": Object {
+        "LaunchConfigurationName": {
           "Ref": "AutoScalingGroupGithublensapiLaunchConfigED794D0D",
         },
         "MaxSize": "2",
         "MinSize": "1",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "PropagateAtLaunch": true,
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:pattern-name",
             "PropagateAtLaunch": true,
             "Value": "GuEc2App",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "PropagateAtLaunch": true,
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "LogKinesisStreamName",
             "PropagateAtLaunch": true,
-            "Value": Object {
+            "Value": {
               "Ref": "LoggingStreamName",
             },
           },
-          Object {
+          {
             "Key": "Name",
             "PropagateAtLaunch": true,
             "Value": "GithubLens/AutoScalingGroupGithublensapi",
           },
-          Object {
+          {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "PropagateAtLaunch": true,
             "Value": "INFRA",
           },
-          Object {
+          {
             "Key": "SystemdUnit",
             "PropagateAtLaunch": true,
             "Value": "github-lens-api.service",
           },
         ],
-        "TargetGroupARNs": Array [
-          Object {
+        "TargetGroupARNs": [
+          {
             "Ref": "TargetGroupGithublensapi08E11958",
           },
         ],
-        "VPCZoneIdentifier": Object {
+        "VPCZoneIdentifier": {
           "Ref": "githublensapiPrivateSubnets",
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
-    "AutoScalingGroupGithublensapiInstanceProfile02115151": Object {
-      "Properties": Object {
-        "Roles": Array [
-          Object {
+    "AutoScalingGroupGithublensapiInstanceProfile02115151": {
+      "Properties": {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::InstanceProfile",
     },
-    "AutoScalingGroupGithublensapiLaunchConfigED794D0D": Object {
-      "DependsOn": Array [
+    "AutoScalingGroupGithublensapiLaunchConfigED794D0D": {
+      "DependsOn": [
         "InstanceRoleGithublensapiDefaultPolicy0C5E588B",
         "InstanceRoleGithublensapi15815617",
       ],
-      "Properties": Object {
-        "IamInstanceProfile": Object {
+      "Properties": {
+        "IamInstanceProfile": {
           "Ref": "AutoScalingGroupGithublensapiInstanceProfile02115151",
         },
-        "ImageId": Object {
+        "ImageId": {
           "Ref": "AMIGithublensapi",
         },
         "InstanceType": "t4g.nano",
-        "MetadataOptions": Object {
+        "MetadataOptions": {
           "HttpTokens": "required",
         },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
               "GuHttpsEgressSecurityGroupGithublensapi4002F148",
               "GroupId",
             ],
           },
-          Object {
-            "Fn::GetAtt": Array [
+          {
+            "Fn::GetAtt": [
               "WazuhSecurityGroup",
               "GroupId",
             ],
           },
         ],
-        "UserData": Object {
-          "Fn::Base64": Object {
-            "Fn::Join": Array [
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "#!/bin/bash -ev
 cat << EOF > /etc/systemd/system/github-lens-api.service
 [Unit]
 Description=Github Lens API
 
 [Service]
-Environment=\\"DATA_BUCKET_NAME=",
-                Object {
+Environment="DATA_BUCKET_NAME=",
+                {
                   "Ref": "githublensdatabucketGithublens7C07FDE7",
                 },
-                "\\"
-Environment=\\"PORT=8900\\"
-Environment=\\"STAGE=INFRA\\"
+                ""
+Environment="PORT=8900"
+Environment="STAGE=INFRA"
 ExecStart=/usr/bin/node /handler.js
 
 [Install]
@@ -228,7 +228,7 @@ WantedBy=multi-user.target
 EOF
 
 aws s3 cp s3://",
-                Object {
+                {
                   "Ref": "DistributionBucketName",
                 },
                 "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip
@@ -243,28 +243,28 @@ systemctl start github-lens-api
       },
       "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
-    "CertificateGithublensapi4318D111": Object {
+    "CertificateGithublensapi4318D111": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "DomainName": "github-lens.gutools.co.uk",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -274,13 +274,13 @@ systemctl start github-lens-api
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "DNS": Object {
-      "Properties": Object {
+    "DNS": {
+      "Properties": {
         "Name": "github-lens.gutools.co.uk",
         "RecordType": "CNAME",
-        "ResourceRecords": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
               "LoadBalancerGithublensapi0DC349AD",
               "DNSName",
             ],
@@ -291,12 +291,12 @@ systemctl start github-lens-api
       },
       "Type": "Guardian::DNS::RecordSet",
     },
-    "DescribeEC2PolicyFF5F9295": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "DescribeEC2PolicyFF5F9295": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "autoscaling:DescribeAutoScalingInstances",
                 "autoscaling:DescribeAutoScalingGroups",
                 "ec2:DescribeTags",
@@ -309,27 +309,27 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "describe-ec2-policy",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GetDistributablePolicyGithublensapiC633BD13": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "GetDistributablePolicyGithublensapiC633BD13": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:s3:::",
-                    Object {
+                    {
                       "Ref": "DistributionBucketName",
                     },
                     "/deploy/INFRA/github-lens-api/*",
@@ -341,19 +341,19 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "GetDistributablePolicyGithublensapiC633BD13",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GuHttpsEgressSecurityGroupGithublensapi4002F148": Object {
-      "Properties": Object {
+    "GuHttpsEgressSecurityGroupGithublensapi4002F148": {
+      "Properties": {
         "GroupDescription": "Allow all outbound HTTPS traffic",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Allow all outbound HTTPS traffic",
             "FromPort": 443,
@@ -361,47 +361,47 @@ systemctl start github-lens-api
             "ToPort": 443,
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "GuHttpsEgressSecurityGroupGithublensapifromGithubLensInternalIngressSecurityGroupGithublensapiD4073FAD8900A4E48325": Object {
-      "Properties": Object {
+    "GuHttpsEgressSecurityGroupGithublensapifromGithubLensInternalIngressSecurityGroupGithublensapiD4073FAD8900A4E48325": {
+      "Properties": {
         "Description": "Load balancer to target",
         "FromPort": 8900,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
+        "GroupId": {
+          "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupGithublensapi4002F148",
             "GroupId",
           ],
         },
         "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
             "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
             "GroupId",
           ],
@@ -410,19 +410,19 @@ systemctl start github-lens-api
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "GuHttpsEgressSecurityGroupGithublensapifromGithubLensLoadBalancerGithublensapiSecurityGroup2BC6E5BA89001B58638F": Object {
-      "Properties": Object {
+    "GuHttpsEgressSecurityGroupGithublensapifromGithubLensLoadBalancerGithublensapiSecurityGroup2BC6E5BA89001B58638F": {
+      "Properties": {
         "Description": "Load balancer to target",
         "FromPort": 8900,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
+        "GroupId": {
+          "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupGithublensapi4002F148",
             "GroupId",
           ],
         },
         "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
             "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
             "GroupId",
           ],
@@ -431,30 +431,30 @@ systemctl start github-lens-api
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "GuLogShippingPolicy981BFE5A": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "GuLogShippingPolicy981BFE5A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "kinesis:Describe*",
                 "kinesis:Put*",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:kinesis:",
-                    Object {
+                    {
                       "Ref": "AWS::Region",
                     },
                     ":",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":stream/",
-                    Object {
+                    {
                       "Ref": "LoggingStreamName",
                     },
                   ],
@@ -465,32 +465,32 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "GuLogShippingPolicy981BFE5A",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "High5xxPercentageAlarmGithublensapiC50B1CF6": Object {
-      "Properties": Object {
+    "High5xxPercentageAlarmGithublensapiC50B1CF6": {
+      "Properties": {
         "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Fn::Join": Array [
+        "AlarmActions": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:aws:sns:",
-                Object {
+                {
                   "Ref": "AWS::Region",
                 },
                 ":",
-                Object {
+                {
                   "Ref": "AWS::AccountId",
                 },
                 ":",
-                Object {
+                {
                   "Ref": "AnghammaradSnsArn",
                 },
               ],
@@ -501,21 +501,21 @@ systemctl start github-lens-api
         "AlarmName": "High 5XX error % from github-lens-api in INFRA",
         "ComparisonOperator": "GreaterThanThreshold",
         "EvaluationPeriods": 60,
-        "Metrics": Array [
-          Object {
+        "Metrics": [
+          {
             "Expression": "100*(m1+m2)/m3",
             "Id": "expr_1",
             "Label": "% of 5XX responses served for github-lens-api (load balancer and instances combined)",
           },
-          Object {
+          {
             "Id": "m1",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
                     "Name": "LoadBalancer",
-                    "Value": Object {
-                      "Fn::GetAtt": Array [
+                    "Value": {
+                      "Fn::GetAtt": [
                         "LoadBalancerGithublensapi0DC349AD",
                         "LoadBalancerFullName",
                       ],
@@ -530,15 +530,15 @@ systemctl start github-lens-api
             },
             "ReturnData": false,
           },
-          Object {
+          {
             "Id": "m2",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
                     "Name": "LoadBalancer",
-                    "Value": Object {
-                      "Fn::GetAtt": Array [
+                    "Value": {
+                      "Fn::GetAtt": [
                         "LoadBalancerGithublensapi0DC349AD",
                         "LoadBalancerFullName",
                       ],
@@ -553,15 +553,15 @@ systemctl start github-lens-api
             },
             "ReturnData": false,
           },
-          Object {
+          {
             "Id": "m3",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
                     "Name": "LoadBalancer",
-                    "Value": Object {
-                      "Fn::GetAtt": Array [
+                    "Value": {
+                      "Fn::GetAtt": [
                         "LoadBalancerGithublensapi0DC349AD",
                         "LoadBalancerFullName",
                       ],
@@ -582,26 +582,26 @@ systemctl start github-lens-api
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "INFRAdeploygithublens2B0B3293": Object {
+    "INFRAdeploygithublens2B0B3293": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "EnableKeyRotation": true,
-        "KeyPolicy": Object {
-          "Statement": Array [
-            Object {
+        "KeyPolicy": {
+          "Statement": [
+            {
               "Action": "kms:*",
               "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":iam::",
-                      Object {
+                      {
                         "Ref": "AWS::AccountId",
                       },
                       ":root",
@@ -614,20 +614,20 @@ systemctl start github-lens-api
           ],
           "Version": "2012-10-17",
         },
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -636,20 +636,20 @@ systemctl start github-lens-api
       "Type": "AWS::KMS::Key",
       "UpdateReplacePolicy": "Retain",
     },
-    "InstanceRoleGithublensapi15815617": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "InstanceRoleGithublensapi15815617": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
-                "Service": Object {
-                  "Fn::Join": Array [
+              "Principal": {
+                "Service": {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "ec2.",
-                      Object {
+                      {
                         "Ref": "AWS::URLSuffix",
                       },
                     ],
@@ -661,24 +661,24 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "Path": "/",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -686,30 +686,30 @@ systemctl start github-lens-api
       },
       "Type": "AWS::IAM::Role",
     },
-    "InstanceRoleGithublensapiDefaultPolicy0C5E588B": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "InstanceRoleGithublensapiDefaultPolicy0C5E588B": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "githublensdatabucketGithublens7C07FDE7",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "githublensdatabucketGithublens7C07FDE7",
                           "Arn",
                         ],
@@ -724,19 +724,19 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "InstanceRoleGithublensapiDefaultPolicy0C5E588B",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "InternalIngressSecurityGroupGithublensapi2BEE9DF4": Object {
-      "Properties": Object {
+    "InternalIngressSecurityGroupGithublensapi2BEE9DF4": {
+      "Properties": {
         "GroupDescription": "Allow restricted ingress from CIDR ranges",
-        "SecurityGroupIngress": Array [
-          Object {
+        "SecurityGroupIngress": [
+          {
             "CidrIp": "10.0.0.0/8",
             "Description": "Allow access on port 443 from 10.0.0.0/8",
             "FromPort": 443,
@@ -744,46 +744,46 @@ systemctl start github-lens-api
             "ToPort": 443,
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "InternalIngressSecurityGroupGithublensapitoGithubLensGuHttpsEgressSecurityGroupGithublensapi786E594E890018881CD2": Object {
-      "Properties": Object {
+    "InternalIngressSecurityGroupGithublensapitoGithubLensGuHttpsEgressSecurityGroupGithublensapi786E594E890018881CD2": {
+      "Properties": {
         "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupGithublensapi4002F148",
             "GroupId",
           ],
         },
         "FromPort": 8900,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
+        "GroupId": {
+          "Fn::GetAtt": [
             "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
             "GroupId",
           ],
@@ -793,24 +793,24 @@ systemctl start github-lens-api
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "ListenerGithublensapiCF255DF8": Object {
-      "Properties": Object {
-        "Certificates": Array [
-          Object {
-            "CertificateArn": Object {
+    "ListenerGithublensapiCF255DF8": {
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
               "Ref": "CertificateGithublensapi4318D111",
             },
           },
         ],
-        "DefaultActions": Array [
-          Object {
-            "TargetGroupArn": Object {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
               "Ref": "TargetGroupGithublensapi08E11958",
             },
             "Type": "forward",
           },
         ],
-        "LoadBalancerArn": Object {
+        "LoadBalancerArn": {
           "Ref": "LoadBalancerGithublensapi0DC349AD",
         },
         "Port": 443,
@@ -818,50 +818,50 @@ systemctl start github-lens-api
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
-    "LoadBalancerGithublensapi0DC349AD": Object {
-      "Properties": Object {
-        "LoadBalancerAttributes": Array [
-          Object {
+    "LoadBalancerGithublensapi0DC349AD": {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
             "Key": "deletion_protection.enabled",
             "Value": "true",
           },
         ],
         "Scheme": "internal",
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
               "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
               "GroupId",
             ],
           },
-          Object {
-            "Fn::GetAtt": Array [
+          {
+            "Fn::GetAtt": [
               "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
               "GroupId",
             ],
           },
         ],
-        "Subnets": Object {
+        "Subnets": {
           "Ref": "githublensapiPrivateSubnets",
         },
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -870,49 +870,49 @@ systemctl start github-lens-api
       },
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
     },
-    "LoadBalancerGithublensapiSecurityGroup3BAB53B9": Object {
-      "Properties": Object {
+    "LoadBalancerGithublensapiSecurityGroup3BAB53B9": {
+      "Properties": {
         "GroupDescription": "Automatically created Security Group for ELB GithubLensLoadBalancerGithublensapiB907D9D7",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "LoadBalancerGithublensapiSecurityGrouptoGithubLensGuHttpsEgressSecurityGroupGithublensapi786E594E8900799CA36D": Object {
-      "Properties": Object {
+    "LoadBalancerGithublensapiSecurityGrouptoGithubLensGuHttpsEgressSecurityGroupGithublensapi786E594E8900799CA36D": {
+      "Properties": {
         "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupGithublensapi4002F148",
             "GroupId",
           ],
         },
         "FromPort": 8900,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
+        "GroupId": {
+          "Fn::GetAtt": [
             "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
             "GroupId",
           ],
@@ -922,23 +922,23 @@ systemctl start github-lens-api
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "ParameterStoreReadGithublensapi77C298FE": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "ParameterStoreReadGithublensapi77C298FE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:",
-                    Object {
+                    {
                       "Ref": "AWS::Region",
                     },
                     ":",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/INFRA/deploy/github-lens-api",
@@ -946,22 +946,22 @@ systemctl start github-lens-api
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssm:GetParameters",
                 "ssm:GetParameter",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:",
-                    Object {
+                    {
                       "Ref": "AWS::Region",
                     },
                     ":",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/INFRA/deploy/github-lens-api/*",
@@ -973,20 +973,20 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "parameter-store-read-policy",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "SSMRunCommandPolicy244E1613": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "SSMRunCommandPolicy244E1613": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "ec2messages:AcknowledgeMessage",
                 "ec2messages:DeleteMessage",
                 "ec2messages:FailMessage",
@@ -1009,16 +1009,16 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "ssm-run-command-policy",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "InstanceRoleGithublensapi15815617",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "TargetGroupGithublensapi08E11958": Object {
-      "Properties": Object {
+    "TargetGroupGithublensapi08E11958": {
+      "Properties": {
         "HealthCheckIntervalSeconds": 10,
         "HealthCheckPath": "/healthcheck",
         "HealthCheckProtocol": "HTTP",
@@ -1026,64 +1026,64 @@ systemctl start github-lens-api
         "HealthyThresholdCount": 5,
         "Port": 8900,
         "Protocol": "HTTP",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens-api",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
         ],
-        "TargetGroupAttributes": Array [
-          Object {
+        "TargetGroupAttributes": [
+          {
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "30",
           },
-          Object {
+          {
             "Key": "stickiness.enabled",
             "Value": "false",
           },
         ],
         "TargetType": "instance",
         "UnhealthyThresholdCount": 2,
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
-    "UnhealthyInstancesAlarmGithublensapiD49343E9": Object {
-      "Properties": Object {
+    "UnhealthyInstancesAlarmGithublensapiD49343E9": {
+      "Properties": {
         "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Fn::Join": Array [
+        "AlarmActions": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:aws:sns:",
-                Object {
+                {
                   "Ref": "AWS::Region",
                 },
                 ":",
-                Object {
+                {
                   "Ref": "AWS::AccountId",
                 },
                 ":",
-                Object {
+                {
                   "Ref": "AnghammaradSnsArn",
                 },
               ],
@@ -1098,20 +1098,20 @@ systemctl start github-lens-api
         "AlarmName": "Unhealthy instances for github-lens-api in INFRA",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "DatapointsToAlarm": 30,
-        "Dimensions": Array [
-          Object {
+        "Dimensions": [
+          {
             "Name": "LoadBalancer",
-            "Value": Object {
-              "Fn::Join": Array [
+            "Value": {
+              "Fn::Join": [
                 "",
-                Array [
-                  Object {
-                    "Fn::Select": Array [
+                [
+                  {
+                    "Fn::Select": [
                       1,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           "/",
-                          Object {
+                          {
                             "Ref": "ListenerGithublensapiCF255DF8",
                           },
                         ],
@@ -1119,13 +1119,13 @@ systemctl start github-lens-api
                     ],
                   },
                   "/",
-                  Object {
-                    "Fn::Select": Array [
+                  {
+                    "Fn::Select": [
                       2,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           "/",
-                          Object {
+                          {
                             "Ref": "ListenerGithublensapiCF255DF8",
                           },
                         ],
@@ -1133,13 +1133,13 @@ systemctl start github-lens-api
                     ],
                   },
                   "/",
-                  Object {
-                    "Fn::Select": Array [
+                  {
+                    "Fn::Select": [
                       3,
-                      Object {
-                        "Fn::Split": Array [
+                      {
+                        "Fn::Split": [
                           "/",
-                          Object {
+                          {
                             "Ref": "ListenerGithublensapiCF255DF8",
                           },
                         ],
@@ -1150,10 +1150,10 @@ systemctl start github-lens-api
               ],
             },
           },
-          Object {
+          {
             "Name": "TargetGroup",
-            "Value": Object {
-              "Fn::GetAtt": Array [
+            "Value": {
+              "Fn::GetAtt": [
                 "TargetGroupGithublensapi08E11958",
                 "TargetGroupFullName",
               ],
@@ -1170,18 +1170,18 @@ systemctl start github-lens-api
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "WazuhSecurityGroup": Object {
-      "Properties": Object {
+    "WazuhSecurityGroup": {
+      "Properties": {
         "GroupDescription": "Allow outbound traffic from wazuh agent to manager",
-        "SecurityGroupEgress": Array [
-          Object {
+        "SecurityGroupEgress": [
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Wazuh event logging",
             "FromPort": 1514,
             "IpProtocol": "tcp",
             "ToPort": 1514,
           },
-          Object {
+          {
             "CidrIp": "0.0.0.0/0",
             "Description": "Wazuh agent registration",
             "FromPort": 1515,
@@ -1189,58 +1189,58 @@ systemctl start github-lens-api
             "ToPort": 1515,
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
         ],
-        "VpcId": Object {
+        "VpcId": {
           "Ref": "VpcId",
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "githublensdatabucketGithublens7C07FDE7": Object {
+    "githublensdatabucketGithublens7C07FDE7": {
       "DeletionPolicy": "Retain",
-      "Properties": Object {
+      "Properties": {
         "BucketName": "github-lens-data-infra",
-        "PublicAccessBlockConfiguration": Object {
+        "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
           "IgnorePublicAcls": true,
           "RestrictPublicBuckets": true,
         },
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "github-lens",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -1249,34 +1249,34 @@ systemctl start github-lens-api
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "repofetcherlambda3F53E41B": Object {
-      "DependsOn": Array [
+    "repofetcherlambda3F53E41B": {
+      "DependsOn": [
         "repofetcherlambdaServiceRoleDefaultPolicy50E545F9",
         "repofetcherlambdaServiceRole28143926",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
           "S3Key": "deploy/INFRA/repo-fetcher/repo-fetcher.zip",
         },
-        "Environment": Object {
-          "Variables": Object {
+        "Environment": {
+          "Variables": {
             "APP": "repo-fetcher",
-            "DATA_BUCKET_NAME": Object {
+            "DATA_BUCKET_NAME": {
               "Ref": "githublensdatabucketGithublens7C07FDE7",
             },
-            "GITHUB_APP_ID": Object {
+            "GITHUB_APP_ID": {
               "Ref": "githubappid",
             },
-            "GITHUB_APP_INSTALLATION_ID": Object {
+            "GITHUB_APP_INSTALLATION_ID": {
               "Ref": "githubinstallationid",
             },
-            "GITHUB_APP_PRIVATE_KEY": Object {
+            "GITHUB_APP_PRIVATE_KEY": {
               "Ref": "githubprivatekey",
             },
-            "KMS_KEY_ID": Object {
+            "KMS_KEY_ID": {
               "Ref": "INFRAdeploygithublens2B0B3293",
             },
             "STACK": "deploy",
@@ -1285,31 +1285,31 @@ systemctl start github-lens-api
         },
         "Handler": "handler.main",
         "MemorySize": 512,
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "repofetcherlambdaServiceRole28143926",
             "Arn",
           ],
         },
         "Runtime": "nodejs16.x",
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "repo-fetcher",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -1318,20 +1318,20 @@ systemctl start github-lens-api
       },
       "Type": "AWS::Lambda::Function",
     },
-    "repofetcherlambdaErrorPercentageAlarmForLambda25B92F1F": Object {
-      "Properties": Object {
+    "repofetcherlambdaErrorPercentageAlarmForLambda25B92F1F": {
+      "Properties": {
         "ActionsEnabled": true,
-        "AlarmActions": Array [
-          Object {
-            "Fn::Join": Array [
+        "AlarmActions": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:aws:sns:",
-                Object {
+                {
                   "Ref": "AWS::Region",
                 },
                 ":",
-                Object {
+                {
                   "Ref": "AWS::AccountId",
                 },
                 ":devx-alerts",
@@ -1339,23 +1339,23 @@ systemctl start github-lens-api
             ],
           },
         ],
-        "AlarmDescription": Object {
-          "Fn::Join": Array [
+        "AlarmDescription": {
+          "Fn::Join": [
             "",
-            Array [
-              Object {
+            [
+              {
                 "Ref": "repofetcherlambda3F53E41B",
               },
               " exceeded 0% error rate",
             ],
           ],
         },
-        "AlarmName": Object {
-          "Fn::Join": Array [
+        "AlarmName": {
+          "Fn::Join": [
             "",
-            Array [
+            [
               "High error % from ",
-              Object {
+              {
                 "Ref": "repofetcherlambda3F53E41B",
               },
               " lambda in INFRA",
@@ -1364,30 +1364,30 @@ systemctl start github-lens-api
         },
         "ComparisonOperator": "GreaterThanThreshold",
         "EvaluationPeriods": 1,
-        "Metrics": Array [
-          Object {
+        "Metrics": [
+          {
             "Expression": "100*m1/m2",
             "Id": "expr_1",
-            "Label": Object {
-              "Fn::Join": Array [
+            "Label": {
+              "Fn::Join": [
                 "",
-                Array [
+                [
                   "Error % of ",
-                  Object {
+                  {
                     "Ref": "repofetcherlambda3F53E41B",
                   },
                 ],
               ],
             },
           },
-          Object {
+          {
             "Id": "m1",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
                     "Name": "FunctionName",
-                    "Value": Object {
+                    "Value": {
                       "Ref": "repofetcherlambda3F53E41B",
                     },
                   },
@@ -1400,14 +1400,14 @@ systemctl start github-lens-api
             },
             "ReturnData": false,
           },
-          Object {
+          {
             "Id": "m2",
-            "MetricStat": Object {
-              "Metric": Object {
-                "Dimensions": Array [
-                  Object {
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
                     "Name": "FunctionName",
-                    "Value": Object {
+                    "Value": {
                       "Ref": "repofetcherlambda3F53E41B",
                     },
                   },
@@ -1426,27 +1426,27 @@ systemctl start github-lens-api
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "repofetcherlambdaServiceRole28143926": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "repofetcherlambdaServiceRole28143926": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
               "",
-              Array [
+              [
                 "arn:",
-                Object {
+                {
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
@@ -1454,24 +1454,24 @@ systemctl start github-lens-api
             ],
           },
         ],
-        "Tags": Array [
-          Object {
+        "Tags": [
+          {
             "Key": "App",
             "Value": "repo-fetcher",
           },
-          Object {
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
-          Object {
+          {
             "Key": "gu:repo",
             "Value": "guardian/github-lens",
           },
-          Object {
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
-          Object {
+          {
             "Key": "Stage",
             "Value": "INFRA",
           },
@@ -1479,53 +1479,53 @@ systemctl start github-lens-api
       },
       "Type": "AWS::IAM::Role",
     },
-    "repofetcherlambdaServiceRoleDefaultPolicy50E545F9": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "repofetcherlambdaServiceRoleDefaultPolicy50E545F9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
+              "Resource": {
+                "Fn::GetAtt": [
                   "INFRAdeploygithublens2B0B3293",
                   "Arn",
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::Join": Array [
+              "Resource": [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":s3:::",
-                      Object {
+                      {
                         "Ref": "DistributionBucketName",
                       },
                     ],
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
+                    [
                       "arn:",
-                      Object {
+                      {
                         "Ref": "AWS::Partition",
                       },
                       ":s3:::",
-                      Object {
+                      {
                         "Ref": "DistributionBucketName",
                       },
                       "/deploy/INFRA/repo-fetcher/repo-fetcher.zip",
@@ -1534,19 +1534,19 @@ systemctl start github-lens-api
                 },
               ],
             },
-            Object {
+            {
               "Action": "ssm:GetParametersByPath",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:",
-                    Object {
+                    {
                       "Ref": "AWS::Region",
                     },
                     ":",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/INFRA/deploy/repo-fetcher",
@@ -1554,22 +1554,22 @@ systemctl start github-lens-api
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "ssm:GetParameters",
                 "ssm:GetParameter",
               ],
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:ssm:",
-                    Object {
+                    {
                       "Ref": "AWS::Region",
                     },
                     ":",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/INFRA/deploy/repo-fetcher/*",
@@ -1577,8 +1577,8 @@ systemctl start github-lens-api
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
@@ -1591,19 +1591,19 @@ systemctl start github-lens-api
                 "s3:Abort*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
                     "githublensdatabucketGithublens7C07FDE7",
                     "Arn",
                   ],
                 },
-                Object {
-                  "Fn::Join": Array [
+                {
+                  "Fn::Join": [
                     "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
+                    [
+                      {
+                        "Fn::GetAtt": [
                           "githublensdatabucketGithublens7C07FDE7",
                           "Arn",
                         ],
@@ -1618,26 +1618,26 @@ systemctl start github-lens-api
           "Version": "2012-10-17",
         },
         "PolicyName": "repofetcherlambdaServiceRoleDefaultPolicy50E545F9",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "repofetcherlambdaServiceRole28143926",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repofetcherlambdarepofetcherlambdacron080AllowEventRuleGithubLensrepofetcherlambda584DB7587F4F78A1": Object {
-      "Properties": Object {
+    "repofetcherlambdarepofetcherlambdacron080AllowEventRuleGithubLensrepofetcherlambda584DB7587F4F78A1": {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
+        "FunctionName": {
+          "Fn::GetAtt": [
             "repofetcherlambda3F53E41B",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::GetAtt": Array [
+        "SourceArn": {
+          "Fn::GetAtt": [
             "repofetcherlambdarepofetcherlambdacron080B8E1215D",
             "Arn",
           ],
@@ -1645,14 +1645,14 @@ systemctl start github-lens-api
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "repofetcherlambdarepofetcherlambdacron080B8E1215D": Object {
-      "Properties": Object {
+    "repofetcherlambdarepofetcherlambdacron080B8E1215D": {
+      "Properties": {
         "ScheduleExpression": "cron(0 8 * * ? *)",
         "State": "ENABLED",
-        "Targets": Array [
-          Object {
-            "Arn": Object {
-              "Fn::GetAtt": Array [
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
                 "repofetcherlambda3F53E41B",
                 "Arn",
               ],
