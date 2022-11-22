@@ -55,7 +55,7 @@ systemctl start ${name}
 		const ec2 = new GuEc2App(this, {
 			app: name,
 			access: {
-				scope: AccessScope.RESTRICTED,
+				scope: AccessScope.INTERNAL,
 				cidrRanges: [Peer.ipv4('10.0.0.0/8')], // VPC and other private Guardian IPs
 			},
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.NANO),

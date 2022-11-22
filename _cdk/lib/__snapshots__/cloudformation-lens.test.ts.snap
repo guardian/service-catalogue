@@ -21,7 +21,6 @@ Object {
       "GuHttpsEgressSecurityGroup",
       "GuAutoScalingGroup",
       "GuWazuhAccess",
-      "GuSubnetListParameter",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
@@ -71,11 +70,6 @@ Object {
     "cloudformationlensPrivateSubnets": Object {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
-      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
-    },
-    "cloudformationlensPublicSubnets": Object {
-      "Default": "/account/vpc/primary/subnets/public",
-      "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
@@ -355,6 +349,27 @@ systemctl start cloudformation-lens
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "GuHttpsEgressSecurityGroupCloudformationlensfromCloudFormationLensInternalIngressSecurityGroupCloudformationlensA274C08789008AE352B8": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "InternalIngressSecurityGroupCloudformationlens0AC9589A",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "GuHttpsEgressSecurityGroupCloudformationlensfromCloudFormationLensLoadBalancerCloudformationlensSecurityGroup432308D38900BA6D99FC": Object {
       "Properties": Object {
         "Description": "Load balancer to target",
@@ -369,27 +384,6 @@ systemctl start cloudformation-lens
         "SourceSecurityGroupId": Object {
           "Fn::GetAtt": Array [
             "LoadBalancerCloudformationlensSecurityGroup43E2BD8C",
-            "GroupId",
-          ],
-        },
-        "ToPort": 8900,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
-    "GuHttpsEgressSecurityGroupCloudformationlensfromCloudFormationLensRestrictedIngressSecurityGroupCloudformationlens43D1D3C98900C57F276B": Object {
-      "Properties": Object {
-        "Description": "Load balancer to target",
-        "FromPort": 8900,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "RestrictedIngressSecurityGroupCloudformationlens38AB35D2",
             "GroupId",
           ],
         },
@@ -649,6 +643,67 @@ systemctl start cloudformation-lens
       },
       "Type": "AWS::IAM::Policy",
     },
+    "InternalIngressSecurityGroupCloudformationlens0AC9589A": Object {
+      "Properties": Object {
+        "GroupDescription": "Allow restricted ingress from CIDR ranges",
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "10.0.0.0/8",
+            "Description": "Allow access on port 443 from 10.0.0.0/8",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "App",
+            "Value": "cloudformation-lens",
+          },
+          Object {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          Object {
+            "Key": "gu:repo",
+            "Value": "guardian/cloudformation-lens",
+          },
+          Object {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          Object {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "InternalIngressSecurityGroupCloudformationlenstoCloudFormationLensGuHttpsEgressSecurityGroupCloudformationlensC4327E3E89004E35123F": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "InternalIngressSecurityGroupCloudformationlens0AC9589A",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ListenerCloudformationlens664D2766": Object {
       "Properties": Object {
         "Certificates": Array [
@@ -682,7 +737,7 @@ systemctl start cloudformation-lens
             "Value": "true",
           },
         ],
-        "Scheme": "internet-facing",
+        "Scheme": "internal",
         "SecurityGroups": Array [
           Object {
             "Fn::GetAtt": Array [
@@ -692,13 +747,13 @@ systemctl start cloudformation-lens
           },
           Object {
             "Fn::GetAtt": Array [
-              "RestrictedIngressSecurityGroupCloudformationlens38AB35D2",
+              "InternalIngressSecurityGroupCloudformationlens0AC9589A",
               "GroupId",
             ],
           },
         ],
         "Subnets": Object {
-          "Ref": "cloudformationlensPublicSubnets",
+          "Ref": "cloudformationlensPrivateSubnets",
         },
         "Tags": Array [
           Object {
@@ -836,67 +891,6 @@ systemctl start cloudformation-lens
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "RestrictedIngressSecurityGroupCloudformationlens38AB35D2": Object {
-      "Properties": Object {
-        "GroupDescription": "Allow restricted ingress from CIDR ranges",
-        "SecurityGroupIngress": Array [
-          Object {
-            "CidrIp": "10.0.0.0/8",
-            "Description": "Allow access on port 443 from 10.0.0.0/8",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "App",
-            "Value": "cloudformation-lens",
-          },
-          Object {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          Object {
-            "Key": "gu:repo",
-            "Value": "guardian/cloudformation-lens",
-          },
-          Object {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          Object {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "RestrictedIngressSecurityGroupCloudformationlenstoCloudFormationLensGuHttpsEgressSecurityGroupCloudformationlensC4327E3E8900C6A0C83F": Object {
-      "Properties": Object {
-        "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
-            "GroupId",
-          ],
-        },
-        "FromPort": 8900,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "RestrictedIngressSecurityGroupCloudformationlens38AB35D2",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 8900,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
     },
     "SSMRunCommandPolicy244E1613": Object {
       "Properties": Object {
