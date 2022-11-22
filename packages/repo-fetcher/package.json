@@ -8,9 +8,6 @@
     "dev": "ts-node ./src/handler",
     "typecheck": "tsc -noEmit"
   },
-  "devDependencies": {
-    "esbuild": "^0.15.13"
-  },
   "dependencies": {
     "@aws-sdk/client-kms": "^3.169.0",
     "@aws-sdk/client-s3": "^3.169.0",
