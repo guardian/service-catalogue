@@ -56,7 +56,7 @@ systemctl start ${name}
 			app: name,
 			access: {
 				scope: AccessScope.RESTRICTED,
-				cidrRanges: [Peer.ipv4(GuardianPublicNetworks.London)], // TODO let's think about this - needs to be accessible by other services in the VPC.
+				cidrRanges: [Peer.ipv4('10.0.0.0/8')], // VPC and other private Guardian IPs
 			},
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.NANO),
 			applicationPort: 8900,

@@ -842,8 +842,8 @@ systemctl start cloudformation-lens
         "GroupDescription": "Allow restricted ingress from CIDR ranges",
         "SecurityGroupIngress": Array [
           Object {
-            "CidrIp": "77.91.248.0/21",
-            "Description": "Allow access on port 443 from 77.91.248.0/21",
+            "CidrIp": "10.0.0.0/8",
+            "Description": "Allow access on port 443 from 10.0.0.0/8",
             "FromPort": 443,
             "IpProtocol": "tcp",
             "ToPort": 443,
