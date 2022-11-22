@@ -2,7 +2,7 @@ import type { S3Client } from '@aws-sdk/client-s3';
 import { getObject } from '../../common/src/aws/s3';
 
 // GalaxyPerson is a person record from Galaxies.
-interface GalaxyPerson {
+export interface GalaxyPerson {
 	name: string;
 	emailId: string;
 	role: string;
@@ -11,7 +11,7 @@ interface GalaxyPerson {
 	githubUsername: string; // Note, this doesn't (yet) exist in actual Galaxies.
 }
 
-interface GalaxyTeam {
+export interface GalaxyTeam {
 	teamName: string;
 	teamDescription: string;
 	teamContactEmail: string;
@@ -20,7 +20,7 @@ interface GalaxyTeam {
 	primaryGithubTeam: string; // Note, this doesn't (yet) exist in actual Galaxies.
 }
 
-interface GalaxiesApi {
+export interface GalaxiesApi {
 	getPeople(): Promise<GalaxyPerson[]>;
 	getTeams(): Promise<GalaxyTeam[]>;
 	getTeam(teamId: string): Promise<GalaxyTeam>;
