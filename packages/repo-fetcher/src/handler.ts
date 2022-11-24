@@ -1,5 +1,4 @@
 import path from 'path';
-import { S3Client } from '@aws-sdk/client-s3';
 import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
 import {
