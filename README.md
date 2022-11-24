@@ -24,9 +24,9 @@ We want to be able to answer the following questions:
 
 The project consists of the following sub-projects:
 
-- **GitHub Lens API**: A simple API to expose the cached GitHub data we have already fetched.
-- **GitHub Data Fetcher**: A simple API to expose the cached GitHub data we have already fetched.
-- **GitHub Services API**: The service API itself, combining data from the other services in this repository
+- [**GitHub Lens API**](packages/github-lens-api/README.md): A simple API to expose the cached GitHub data we have already fetched.
+- [**GitHub Data Fetcher**](packages/github-data-fetcher/README.md): A scheduled lambda to retrieve data from GitHub to serve in the Lens API.
+- [**GitHub Services API**](packages/services-api/README.md): The service API itself, combining data from the other services in this repository.
 
 ## Local Development
 
