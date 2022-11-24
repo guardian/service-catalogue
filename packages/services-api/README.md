@@ -13,8 +13,11 @@ curl https://services.gutools.co.uk/teams | \
   jq ".[] | select(.id | contains(\"security\")) | .services[].stacks[] | .stackName + \", \" + (.devxFeatures[\"guardianCdkVersion\"] | tostring)"
 ```
 
-This service consumes the data provided by the [github-lens-api](../github-lens-api/README.md), [cloudformation-lens](../cloudformation-lens/README.md)
-[galaxies.gutools.co.uk](https://galaxies.gutools.co.uk/), and eventually others to answer the questions above.
+This service consumes the data provided by:
+- [github-lens-api](../github-lens-api/README.md)
+- [cloudformation-lens](../cloudformation-lens/README.md)
+- [galaxies.gutools.co.uk](https://galaxies.gutools.co.uk/)
+- ... and eventually others
 
 The API provides the following endpoints:
 
