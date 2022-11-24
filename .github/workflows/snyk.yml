@@ -6,6 +6,7 @@ on:
       - main
   workflow_dispatch:
 
+
 jobs:
   security:
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
@@ -15,4 +16,4 @@ jobs:
       SKIP_NODE: false
       EXCLUDE: packages
     secrets:
-       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

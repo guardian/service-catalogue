@@ -1,0 +1,64 @@
+name: test
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  APP: cloudformation-lens # Should match the CDK 'app'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "_cdk/.nvmrc"
+          cache: npm
+          cache-dependency-path: _cdk/package-lock.json
+
+      - uses: guardian/actions-read-private-repos@v0.1.0
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
+      - name: synth CDK
+        run: |
+          cd _cdk
+          npm ci
+          npm test -- --passWithNoTests
+          npm run lint
+          npm run synth
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - name: test and build
+        run: |
+          go test .
+          env GOOS=linux GOARCH=arm64 go build -o $APP main.go
+
+      - uses: guardian/actions-riff-raff@v2
+        with:
+          projectName: deploy::${{ env.APP }}
+          configPath: _cdk/cdk.out/riff-raff.yaml
+          contentDirectories: |
+            ${{ env.APP }}:
+              - ${{ env.APP }}
+            cdk.out:
+              - _cdk/cdk.out
