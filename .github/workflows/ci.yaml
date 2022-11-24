@@ -51,7 +51,7 @@ jobs:
       - name: test and build
         run: |
           go test .
-          env GOOS=linux GOARCH=arm64 go build -o $APP main.go
+          env GOOS=linux GOARCH=arm64 go build -o cloudformation-lens main.go
 
       - uses: guardian/actions-riff-raff@v2
         with:

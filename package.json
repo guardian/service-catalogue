@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "A lens into your GitHub organisation",
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "jest --detectOpenHandles && npm -w packages/cloudformation-lens run test",
+    "dev-cloudformation-lens": "npm -w packages/cloudformation-lens run dev",
     "dev-repo-fetcher": "npm -w packages/repo-fetcher run dev",
     "dev-api": "npm -w packages/github-lens-api run dev",
     "synth": "npm run synth --workspace=cdk",

@@ -35,6 +35,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
       - name: Run script/ci
         run: ./scripts/ci.sh
 
@@ -54,6 +58,8 @@ jobs:
               - packages/github-lens-api/dist/github-lens-api.zip
             services-api:
               - packages/services-api/dist/services-api.zip
+            cloudformation-lens:
+              - packages/cloudformation-lens/cloudformation-lens
 
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
