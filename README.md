@@ -1,4 +1,4 @@
-# The Guardian Product & Engineering Service Catalogue
+# The Product & Engineering Service Catalogue
 
 A web service that provides an overview of (AWS) services and related metadata. Unlike Prism, this will primarily be targeted at humans rather than machines and Cloudformation stacks will be used as the 'service' unit.
 
