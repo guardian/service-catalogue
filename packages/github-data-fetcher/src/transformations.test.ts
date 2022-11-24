@@ -1,5 +1,5 @@
 import type { RepositoryResponse } from 'common/github/github';
-import type { Repository } from 'common/model/repository';
+import type { Repository } from 'common/model/github';
 import { mockRepo } from './mockRepo';
 import type { RepoAndOwner } from './transformations';
 import { asRepo, findOwnersOfRepo } from './transformations';

@@ -1,6 +1,6 @@
 import { json as jsonBodyParser } from 'body-parser';
 import type { RetrievedObject } from 'common/aws/s3';
-import type { Repository, Team } from 'common/model/repository';
+import type { Repository, Team } from 'common/model/github';
 import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
@@ -81,7 +81,7 @@ export function buildApp(
 			} else {
 				res
 					.status(200)
-					.json({ repoName: req.params.name, info: 'Repo not found' });
+					.json({ repoName: req.params.name, info: 'Team not found' });
 			}
 		}),
 	);
