@@ -7,7 +7,6 @@ import {
 } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app';
-import { GuardianPublicNetworks } from '@guardian/private-infrastructure-config';
 import { Duration } from 'aws-cdk-lib';
 import type { App } from 'aws-cdk-lib';
 import {
