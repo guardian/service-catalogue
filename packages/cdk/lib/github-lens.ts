@@ -32,7 +32,7 @@ export class GithubLens extends GuStack {
 		super(scope, id, props);
 
 		const app = 'github-lens';
-		const repoFetcherApp = 'repo-fetcher';
+		const dataFetcherApp = 'github-data-fetcher';
 		const apiApp = 'github-lens-api';
 
 		// S3 bucket to store the aggregated and transformed Github data.
@@ -148,13 +148,13 @@ systemctl start ${apiApp}
 
 		const scheduledLambda = new GuScheduledLambda(
 			this,
-			`${repoFetcherApp}-lambda`,
+			`${dataFetcherApp}-lambda`,
 			{
-				app: repoFetcherApp,
+				app: dataFetcherApp,
 				runtime: Runtime.NODEJS_16_X,
 				memorySize: 512,
 				handler: 'handler.main',
-				fileName: `${repoFetcherApp}.zip`,
+				fileName: `${dataFetcherApp}.zip`,
 				monitoringConfiguration: {
 					toleratedErrorPercentage: 0,
 					snsTopicName: 'devx-alerts',

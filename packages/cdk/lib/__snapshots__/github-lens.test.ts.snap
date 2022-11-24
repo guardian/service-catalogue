@@ -1213,57 +1213,21 @@ systemctl start github-lens-api
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "githublensdatabucketGithublens7C07FDE7": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketName": "github-lens-data-infra",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "github-lens",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/github-lens",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "INFRA",
-          },
-        ],
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "repofetcherlambda3F53E41B": {
+    "githubdatafetcherlambda94945EFA": {
       "DependsOn": [
-        "repofetcherlambdaServiceRoleDefaultPolicy50E545F9",
-        "repofetcherlambdaServiceRole28143926",
+        "githubdatafetcherlambdaServiceRoleDefaultPolicy5674D0A7",
+        "githubdatafetcherlambdaServiceRole7DA5959D",
       ],
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/INFRA/repo-fetcher/repo-fetcher.zip",
+          "S3Key": "deploy/INFRA/github-data-fetcher/github-data-fetcher.zip",
         },
         "Environment": {
           "Variables": {
-            "APP": "repo-fetcher",
+            "APP": "github-data-fetcher",
             "DATA_BUCKET_NAME": {
               "Ref": "githublensdatabucketGithublens7C07FDE7",
             },
@@ -1287,7 +1251,7 @@ systemctl start github-lens-api
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
-            "repofetcherlambdaServiceRole28143926",
+            "githubdatafetcherlambdaServiceRole7DA5959D",
             "Arn",
           ],
         },
@@ -1295,7 +1259,7 @@ systemctl start github-lens-api
         "Tags": [
           {
             "Key": "App",
-            "Value": "repo-fetcher",
+            "Value": "github-data-fetcher",
           },
           {
             "Key": "gu:cdk:version",
@@ -1318,7 +1282,7 @@ systemctl start github-lens-api
       },
       "Type": "AWS::Lambda::Function",
     },
-    "repofetcherlambdaErrorPercentageAlarmForLambda25B92F1F": {
+    "githubdatafetcherlambdaErrorPercentageAlarmForLambda0B647163": {
       "Properties": {
         "ActionsEnabled": true,
         "AlarmActions": [
@@ -1344,7 +1308,7 @@ systemctl start github-lens-api
             "",
             [
               {
-                "Ref": "repofetcherlambda3F53E41B",
+                "Ref": "githubdatafetcherlambda94945EFA",
               },
               " exceeded 0% error rate",
             ],
@@ -1356,7 +1320,7 @@ systemctl start github-lens-api
             [
               "High error % from ",
               {
-                "Ref": "repofetcherlambda3F53E41B",
+                "Ref": "githubdatafetcherlambda94945EFA",
               },
               " lambda in INFRA",
             ],
@@ -1374,7 +1338,7 @@ systemctl start github-lens-api
                 [
                   "Error % of ",
                   {
-                    "Ref": "repofetcherlambda3F53E41B",
+                    "Ref": "githubdatafetcherlambda94945EFA",
                   },
                 ],
               ],
@@ -1388,7 +1352,7 @@ systemctl start github-lens-api
                   {
                     "Name": "FunctionName",
                     "Value": {
-                      "Ref": "repofetcherlambda3F53E41B",
+                      "Ref": "githubdatafetcherlambda94945EFA",
                     },
                   },
                 ],
@@ -1408,7 +1372,7 @@ systemctl start github-lens-api
                   {
                     "Name": "FunctionName",
                     "Value": {
-                      "Ref": "repofetcherlambda3F53E41B",
+                      "Ref": "githubdatafetcherlambda94945EFA",
                     },
                   },
                 ],
@@ -1426,7 +1390,7 @@ systemctl start github-lens-api
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "repofetcherlambdaServiceRole28143926": {
+    "githubdatafetcherlambdaServiceRole7DA5959D": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1457,7 +1421,7 @@ systemctl start github-lens-api
         "Tags": [
           {
             "Key": "App",
-            "Value": "repo-fetcher",
+            "Value": "github-data-fetcher",
           },
           {
             "Key": "gu:cdk:version",
@@ -1479,7 +1443,7 @@ systemctl start github-lens-api
       },
       "Type": "AWS::IAM::Role",
     },
-    "repofetcherlambdaServiceRoleDefaultPolicy50E545F9": {
+    "githubdatafetcherlambdaServiceRoleDefaultPolicy5674D0A7": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1528,7 +1492,7 @@ systemctl start github-lens-api
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/INFRA/repo-fetcher/repo-fetcher.zip",
+                      "/deploy/INFRA/github-data-fetcher/github-data-fetcher.zip",
                     ],
                   ],
                 },
@@ -1549,7 +1513,7 @@ systemctl start github-lens-api
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/INFRA/deploy/repo-fetcher",
+                    ":parameter/INFRA/deploy/github-data-fetcher",
                   ],
                 ],
               },
@@ -1572,7 +1536,7 @@ systemctl start github-lens-api
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/INFRA/deploy/repo-fetcher/*",
+                    ":parameter/INFRA/deploy/github-data-fetcher/*",
                   ],
                 ],
               },
@@ -1617,35 +1581,35 @@ systemctl start github-lens-api
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "repofetcherlambdaServiceRoleDefaultPolicy50E545F9",
+        "PolicyName": "githubdatafetcherlambdaServiceRoleDefaultPolicy5674D0A7",
         "Roles": [
           {
-            "Ref": "repofetcherlambdaServiceRole28143926",
+            "Ref": "githubdatafetcherlambdaServiceRole7DA5959D",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repofetcherlambdarepofetcherlambdacron080AllowEventRuleGithubLensrepofetcherlambda584DB7587F4F78A1": {
+    "githubdatafetcherlambdagithubdatafetcherlambdacron080AllowEventRuleGithubLensgithubdatafetcherlambdaE2220E44970E0DB1": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
-            "repofetcherlambda3F53E41B",
+            "githubdatafetcherlambda94945EFA",
             "Arn",
           ],
         },
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repofetcherlambdarepofetcherlambdacron080B8E1215D",
+            "githubdatafetcherlambdagithubdatafetcherlambdacron080DB012BEB",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "repofetcherlambdarepofetcherlambdacron080B8E1215D": {
+    "githubdatafetcherlambdagithubdatafetcherlambdacron080DB012BEB": {
       "Properties": {
         "ScheduleExpression": "cron(0 8 * * ? *)",
         "State": "ENABLED",
@@ -1653,7 +1617,7 @@ systemctl start github-lens-api
           {
             "Arn": {
               "Fn::GetAtt": [
-                "repofetcherlambda3F53E41B",
+                "githubdatafetcherlambda94945EFA",
                 "Arn",
               ],
             },
@@ -1662,6 +1626,42 @@ systemctl start github-lens-api
         ],
       },
       "Type": "AWS::Events::Rule",
+    },
+    "githublensdatabucketGithublens7C07FDE7": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketName": "github-lens-data-infra",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "github-lens",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/github-lens",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
     },
   },
 }
