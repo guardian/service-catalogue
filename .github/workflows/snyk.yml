@@ -14,6 +14,6 @@ jobs:
       DEBUG: true
       ORG: guardian-devtools
       SKIP_NODE: false
-      EXCLUDE: packages
+      EXCLUDE: cdk,common,github-data-fetcher,github-lens-api,services-api
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
