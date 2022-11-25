@@ -87,7 +87,32 @@ export function buildApp(
 	);
 
 	//handle all invalid routes by showing all available routes
-	router.get('*', getDescribeRouterHandler(router));
+	router.get('*', getDescribeRouterHandler(router, (path: string) => {
+		let info = '';
+		switch (path) {
+			case '/healthcheck':
+				info = 'Display healthcheck';
+				break;
+			case '/repos':
+				info =
+					'Show all repos, with their team owners';
+				break;
+			case '/repos/:name':
+				info = 'Show repo and its team owners, if it exists';
+				break;
+			case '/teams':
+				info =
+					'Show all teams, with the repositories they own';
+				break;
+			case '/teams/:name':
+				info = 'Show team and the repositories it owns, if it exists';
+				break;
+			default:
+				info = 'No path info supplied';
+				break;
+		}
+		return info;
+	}));
 
 	app.use('/', router);
 
