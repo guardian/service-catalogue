@@ -105,7 +105,7 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
           {
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "LogKinesisStreamName",
@@ -241,7 +241,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -355,7 +355,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -601,7 +601,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -695,7 +695,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -795,7 +795,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -824,7 +824,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -977,7 +977,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -1136,7 +1136,7 @@ systemctl start services-api
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
