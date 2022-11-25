@@ -1,5 +1,6 @@
 import 'source-map-support/register';
 import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
+import { CloudFormationLens } from '../lib/cloudformation-lens';
 import { GithubLens } from '../lib/github-lens';
 import { ServicesApi } from '../lib/services-api';
 
@@ -17,4 +18,10 @@ new ServicesApi(app, 'ServicesApi-INFRA', {
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
 	domainName: 'services.gutools.co.uk',
+});
+
+new CloudFormationLens(app, 'CloudformationLens-INFRA', {
+	stack: 'deploy',
+	stage: 'INFRA',
+	env: { region: 'eu-west-1' },
 });
