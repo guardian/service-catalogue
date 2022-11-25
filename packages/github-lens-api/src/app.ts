@@ -99,7 +99,7 @@ export function buildApp(
 				break;
 			case '/repos':
 				info =
-					'Show all repos, with their team owners, optional search by name with ?name=searchString';
+					'Show all repos, with their team owners, optionally search by name with ?name=^repo-name-regex.*';
 				break;
 			case '/repos/:name':
 				info = 'Show repo and its team owners, if it exists';
