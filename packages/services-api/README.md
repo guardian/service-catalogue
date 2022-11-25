@@ -24,32 +24,32 @@ The API provides the following endpoints:
 ```
 [
   {
-    "path": "http://services.gutools.co.uk/healthcheck",
+    "path": "http://localhost:3233/healthcheck",
     "methods": [
       "get"
     ],
     "info": "Display healthcheck"
   },
   {
-    "path": "http://services.gutools.co.uk/teams",
+    "path": "http://localhost:3233/teams",
+    "methods": [
+      "get"
+    ],
+    "info": "Show all P&E teams, with the services they own"
+  },
+  {
+    "path": "http://localhost:3233/teams/:id",
     "methods": [
       "get"
     ],
     "info": "No path info supplied"
   },
   {
-    "path": "http://services.gutools.co.uk/teams/:id",
+    "path": "http://localhost:3233/people",
     "methods": [
       "get"
     ],
-    "info": "No path info supplied"
-  },
-  {
-    "path": "http://services.gutools.co.uk/people",
-    "methods": [
-      "get"
-    ],
-    "info": "No path info supplied"
+    "info": "Show all P&E people, with their role & GitHub username"
   }
 ]
 ```
