@@ -100,7 +100,7 @@ exports[`The CloudFormation Lens stack matches the snapshot 1`] = `
           {
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "LogKinesisStreamName",
@@ -233,7 +233,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -330,7 +330,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -576,7 +576,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -664,7 +664,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -764,7 +764,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -793,7 +793,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -946,7 +946,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -1105,7 +1105,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
@@ -1157,7 +1157,7 @@ systemctl start cloudformation-lens
           },
           {
             "Key": "gu:repo",
-            "Value": "guardian/github-lens",
+            "Value": "guardian/service-catalogue",
           },
           {
             "Key": "Stack",
