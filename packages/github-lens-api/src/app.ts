@@ -32,13 +32,17 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const reposData = await repoData;
 			if (typeof req.query.name !== 'undefined') {
-				const jsonResponse = reposData.payload.filter(
-					(
-						item, //item.name.includes(req.query.name),
-					) => item.name.includes('riff'),
+				const searchString:string = req.query.name.toString()
+				const jsonResponse = reposData.payload.filter((item) =>
+					item.name.match(searchString),
 				);
-				res.status(200).json(jsonResponse);
-			} else {
+				if (jsonResponse.length !== 0) {
+					res.status(200).json(jsonResponse);
+				} else {
+					res
+						.status(200)
+						.json({ searchString: searchString, info: 'no results found in repos' });
+				}			} else {
 				res.status(200).json(reposData);
 			}
 		}),
@@ -95,7 +99,7 @@ export function buildApp(
 				break;
 			case '/repos':
 				info =
-					'Show all repos, with their team owners';
+					'Show all repos, with their team owners, optionally search by name with ?name=^repo-name-regex.*';
 				break;
 			case '/repos/:name':
 				info = 'Show repo and its team owners, if it exists';
