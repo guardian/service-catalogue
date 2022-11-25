@@ -35,14 +35,14 @@ export const getDescribeRouterHandler = (router: Router) => {
 							'Show all repos, with their team owners';
 						break;
 					case '/repos/:name':
-						info = 'Show repo with the provided name, if it exists';
+						info = 'Show repo and its team owners, if it exists';
 						break;
 					case '/teams':
 						info =
 							'Show all teams, with the repositories they own';
 						break;
 					case '/teams/:name':
-						info = 'Show team with the provided name, if it exists';
+						info = 'Show team and the repositories it owns, if it exists';
 						break;
 					default:
 						info = 'No path info supplied';
