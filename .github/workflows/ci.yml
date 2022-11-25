@@ -47,7 +47,7 @@ jobs:
         with:
           app: service-catalogue
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
-          projectName: deploy::github-lens
+          projectName: deploy::service-catalogue
           configPath: packages/cdk/cdk.out/riff-raff.yaml
           contentDirectories: |
             cdk.out:
