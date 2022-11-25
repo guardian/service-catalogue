@@ -26,6 +26,9 @@ const octokit = new Octokit();
 export type RepositoriesResponse = GetResponseDataTypeFromEndpointMethod<
 	typeof octokit.repos.listForOrg
 >;
+export type GetTeamByNameResponse = GetResponseDataTypeFromEndpointMethod<
+	typeof octokit.teams.getByName
+>;
 export type TeamsResponse = GetResponseDataTypeFromEndpointMethod<
 	typeof octokit.teams.list
 >;
@@ -90,6 +93,18 @@ export const listRepositories = async (
 		},
 		(response) => response.data,
 	);
+};
+
+export const getTeam = async (
+	client: Octokit,
+	teamName: string,
+): Promise<GetTeamByNameResponse> => {
+	const getTeamResponse = await client.teams.getByName({
+		org: 'guardian',
+		team_slug: teamName,
+	});
+
+	return getTeamResponse.data;
 };
 
 export const listTeams = async (client: Octokit): Promise<TeamsResponse> => {

@@ -19,7 +19,7 @@ module.exports = {
 	projects: [
 		'cdk',
 		'github-lens-api',
-		'repo-fetcher',
+		'github-data-fetcher',
 		'common',
 		'services-api',
 	].map(generateProject),

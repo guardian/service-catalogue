@@ -1,6 +1,6 @@
 import { json as jsonBodyParser } from 'body-parser';
 import type { RetrievedObject } from 'common/aws/s3';
-import type { Repository } from 'common/model/repository';
+import type { Repository, Team } from 'common/model/github';
 import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
@@ -9,6 +9,7 @@ import { getDescribeRouterHandler } from '../../common/src/expressRoutes';
 
 export function buildApp(
 	repoData: Promise<RetrievedObject<Repository[]>>,
+	teamData: Promise<RetrievedObject<Team[]>>,
 ): Express {
 	const app = express();
 	const router = Router();
@@ -60,8 +61,58 @@ export function buildApp(
 		}),
 	);
 
+	router.get(
+		'/teams',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const teamsData = await teamData;
+			res.status(200).json(teamsData);
+		}),
+	);
+
+	router.get(
+		'/teams/:name',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const teamsData = await teamData;
+			const jsonResponse = teamsData.payload.filter(
+				(item) => item.slug === req.params.name,
+			);
+			if (jsonResponse.length !== 0) {
+				res.status(200).json(jsonResponse);
+			} else {
+				res
+					.status(200)
+					.json({ repoName: req.params.name, info: 'Team not found' });
+			}
+		}),
+	);
+
 	//handle all invalid routes by showing all available routes
-	router.get('*', getDescribeRouterHandler(router));
+	router.get('*', getDescribeRouterHandler(router, (path: string) => {
+		let info = '';
+		switch (path) {
+			case '/healthcheck':
+				info = 'Display healthcheck';
+				break;
+			case '/repos':
+				info =
+					'Show all repos, with their team owners';
+				break;
+			case '/repos/:name':
+				info = 'Show repo and its team owners, if it exists';
+				break;
+			case '/teams':
+				info =
+					'Show all teams, with the repositories they own';
+				break;
+			case '/teams/:name':
+				info = 'Show team and the repositories it owns, if it exists';
+				break;
+			default:
+				info = 'No path info supplied';
+				break;
+		}
+		return info;
+	}));
 
 	app.use('/', router);
 
