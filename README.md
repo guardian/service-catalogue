@@ -22,9 +22,17 @@ The setup script will download a starter `.env`.
 
 ### Running locally
 
-The project uses npm workspaces, and individual workspaces should have a `dev` script that can be run to execute e.g.
+You can run the following commands to start the various services locally:
+
 ```
-npm -w packages/repo-fetcher run dev
+# Run github-data-fetcher lambda
+npm run dev-github-data-fetcher
+
+# Run github-lens-api
+npm run dev-github-lens-api
+
+# Run services-api
+npm run dev-services-api
 ```
 
 ### Testing

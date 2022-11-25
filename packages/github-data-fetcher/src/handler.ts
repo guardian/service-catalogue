@@ -105,7 +105,7 @@ export const main = async (): Promise<void> => {
 	const config = await getConfig();
 	configureLogging(getLogLevel(config.logLevel));
 
-	console.log('Starting repo-fetcher');
+	console.log('Starting github-data-fetcher');
 
 	const githubClient = getOctokit(config.github);
 	const s3Client = getS3Client(config.region);
@@ -123,7 +123,7 @@ export const main = async (): Promise<void> => {
 	await saveObject('repos', teamsAndRepos.repos);
 	await saveObject('teams', teamsAndRepos.teams);
 
-	console.log(`Finishing repo-fetcher`);
+	console.log(`Finishing github-data-fetcher`);
 };
 
 if (require.main === module) {

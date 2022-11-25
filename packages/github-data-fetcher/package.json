@@ -1,9 +1,9 @@
 {
-  "name": "repo-fetcher",
+  "name": "github-data-fetcher",
   "version": "0.0.1",
   "description": "A fetcher for repository metadata in your GitHub organisation",
   "scripts": {
-    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repo-fetcher",
+    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects github-data-fetcher",
     "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
     "dev": "ts-node ./src/handler",
     "typecheck": "tsc -noEmit"

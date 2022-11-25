@@ -9,7 +9,7 @@ export type LensResponse<A> = {
 // we are just passing them through, but it might be worth converting to Date
 // types if/when we introduce date logic - for example, filtering by date range.
 
-// TODO move into common and share with repo-fetcher. Though note questions over
+// TODO move into common and share with github-data-fetcher. Though note questions over
 // (de)serialising date fields.
 export interface Repository {
 	id: number;
