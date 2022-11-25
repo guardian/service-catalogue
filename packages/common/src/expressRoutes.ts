@@ -14,7 +14,7 @@ interface RouterLayer {
 	route: InnerRoute | undefined;
 }
 
-export const getDescribeRouterHandler = (router: Router) => {
+export const getDescribeRouterHandler = (router: Router, describeRoutes: (path: string) => string) => {
 	return (req: express.Request, res: express.Response) => {
 		const urlProtocol = req.protocol + '://';
 		const urlHost = req.get('host') ?? 'localhost:3232';
@@ -25,22 +25,8 @@ export const getDescribeRouterHandler = (router: Router) => {
 			)
 			.map((layer: RouterLayer) => {
 				const path = layer.route?.path ?? '';
-				let info = '';
-				switch (path) {
-					case '/healthcheck':
-						info = 'Display healthcheck';
-						break;
-					case '/repos':
-						info =
-							'Show all repos, or when ?name=searchString is given search for searchString';
-						break;
-					case '/repos/:name':
-						info = 'Show repo with the provided name, if it exists';
-						break;
-					default:
-						info = 'No path info supplied';
-						break;
-				}
+				const info = describeRoutes(path);
+				
 				return {
 					path: urlProtocol + urlHost + path,
 					methods: layer.route?.stack.map((innerStack) => innerStack.method),

@@ -85,7 +85,29 @@ export function buildApp(config: Config): Express {
 	);
 
 	//handle all invalid routes by showing all available routes
-	router.get('*', getDescribeRouterHandler(router));
+	router.get('*', getDescribeRouterHandler(router, (path: string) => {
+		let info = '';
+		switch (path) {
+			case '/healthcheck':
+				info = 'Display healthcheck';
+				break;
+			case '/teams':
+				info =
+					'Show all P&E teams, with the services they own';
+				break;
+			case '/teams/:name':
+				info = 'Show team and the services it owns, if it exists';
+				break;
+			case '/people':
+				info =
+					'Show all P&E people, with their role & GitHub username';
+				break;
+			default:
+				info = 'No path info supplied';
+				break;
+		}
+		return info;
+	}));
 
 	app.use('/', router);
 

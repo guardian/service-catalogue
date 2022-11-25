@@ -1,7 +1,7 @@
 import path from 'path';
 import { getObject, getS3Client } from 'common/aws/s3';
 import { configureLogging } from 'common/log/log';
-import type { Repository, Team } from 'common/model/repository';
+import type { Repository, Team } from 'common/model/github';
 import { buildApp } from './app';
 import { getConfig } from './config';
 

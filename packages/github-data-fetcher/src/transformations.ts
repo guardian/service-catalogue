@@ -2,7 +2,7 @@ import type {
 	RepositoryResponse,
 	TeamRepoResponse,
 } from 'common/github/github';
-import type { Repository } from 'common/model/repository';
+import type { Repository } from 'common/model/github';
 
 const parseDateString = (
 	dateString: string | null | undefined,

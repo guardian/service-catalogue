@@ -9,7 +9,7 @@ import {
 	listTeams,
 } from 'common/github/github';
 import { configureLogging, getLogLevel } from 'common/log/log';
-import type { Repository, Team } from 'common/model/repository';
+import type { Repository, Team } from 'common/model/github';
 import { getConfig } from './config';
 import { asRepo, getAdminReposFromResponse } from './transformations';
 
