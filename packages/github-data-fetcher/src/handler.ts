@@ -5,13 +5,14 @@ import {
 	getOctokit,
 	getReposForTeam,
 	getTeam,
+	listMembers,
 	listRepositories,
 	listTeams,
 } from 'common/github/github';
 import { configureLogging, getLogLevel } from 'common/log/log';
-import type { Repository, Team } from 'common/model/github';
+import type { Member, Repository, Team } from 'common/model/github';
 import { getConfig } from './config';
-import { asRepo, getAdminReposFromResponse } from './transformations';
+import { asMember, asRepo, getAdminReposFromResponse } from './transformations';
 
 // Returns a map of repoName -> admins (a list of team slugs).
 const teamRepositories = async (
@@ -39,9 +40,10 @@ const teamRepositories = async (
 export interface TeamsAndRepositories {
 	teams: Team[];
 	repos: Repository[];
+	members: Member[];
 }
 
-async function getTeamsAndRepositories(
+async function getGHData(
 	client: Octokit,
 	teamName?: string,
 ): Promise<TeamsAndRepositories> {
@@ -52,8 +54,14 @@ async function getTeamsAndRepositories(
 	console.log(`Found ${teams.length} github teams`);
 
 	const repositories = await listRepositories(client);
-
 	console.log(`Found ${repositories.length} github repos`);
+
+	const members = await listMembers(client);
+	console.log(`Found ${members.length} organisation members`);
+
+	const membersOutput = members.map((member) =>
+		asMember(member),
+	);
 
 	const repositoriesToAdmins = await teamRepositories(
 		client,
@@ -98,6 +106,7 @@ async function getTeamsAndRepositories(
 	return {
 		teams: teamsOutput,
 		repos: repositoriesOutput,
+		members: membersOutput,
 	};
 }
 
@@ -110,7 +119,7 @@ export const main = async (): Promise<void> => {
 	const githubClient = getOctokit(config.github);
 	const s3Client = getS3Client(config.region);
 
-	const teamsAndRepos = await getTeamsAndRepositories(
+	const ghData = await getGHData(
 		githubClient,
 		config.github.teamToFetch,
 	);
@@ -120,8 +129,9 @@ export const main = async (): Promise<void> => {
 		await putObject(s3Client, config.dataBucketName, repoFileLocation, data);
 	};
 
-	await saveObject('repos', teamsAndRepos.repos);
-	await saveObject('teams', teamsAndRepos.teams);
+	await saveObject('repos', ghData.repos);
+	await saveObject('teams', ghData.teams);
+	await saveObject('members', ghData.members);
 
 	console.log(`Finishing github-data-fetcher`);
 };

@@ -1,8 +1,9 @@
 import type {
+	MemberResponse,
 	RepositoryResponse,
 	TeamRepoResponse,
 } from 'common/github/github';
-import type { Repository } from 'common/model/github';
+import type { Member, Repository } from 'common/model/github';
 
 const parseDateString = (
 	dateString: string | null | undefined,
@@ -16,6 +17,22 @@ const parseDateString = (
 	}
 	return new Date(dateString);
 };
+
+export const asMember = (
+	member: MemberResponse
+): Member => {
+	
+	const definedEmail: string = member.email ?? '';
+	const isGuardianEmail = definedEmail.includes('@guardian.co.uk') || definedEmail.includes('@theguardian.com');
+	
+	return {
+		id: member.id,
+		name: member.name ?? undefined,
+		login: member.login,
+		// Do not record a personal email address
+		email: isGuardianEmail ? definedEmail : undefined
+	};
+}
 
 export const asRepo = (
 	repo: RepositoryResponse,
