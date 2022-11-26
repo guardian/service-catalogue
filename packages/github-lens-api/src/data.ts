@@ -5,33 +5,29 @@ import { getObject  } from 'common/aws/s3';
 import type { Member, Repository, Team } from 'common/model/github';
 
 export interface GitHubData {
-	teams: RetrievedObject<Team[]>;
-	repos: RetrievedObject<Repository[]>;
-	members: RetrievedObject<Member[]>;
+	teams?: RetrievedObject<Team[]>;
+	repos?: RetrievedObject<Repository[]>;
+	members?: RetrievedObject<Member[]>;
 }
 
 export const retrieveData = async (s3Client: S3Client, dataBucketName: string, dataKeyPrefix: string): Promise<GitHubData> => {
-	const repoFileLocation = path.join(dataKeyPrefix, 'repos.json');
-	const teamFileLocation = path.join(dataKeyPrefix, 'teams.json');
-	const memberFileLocation = path.join(dataKeyPrefix, 'members.json');
-	
-	const repos = await getObject<Repository[]>(
-		s3Client,
-		dataBucketName,
-		repoFileLocation,
-	);
-	
-	const teams = await getObject<Team[]>(
-		s3Client,
-		dataBucketName,
-		teamFileLocation,
-	);
+	const getRetrievedData = async <T>(objectName: string) => {
+		const fileLocation = path.join(dataKeyPrefix, `${objectName}.json`);
+		return await getObject<T>(
+			s3Client,
+			dataBucketName,
+			fileLocation,
+		).catch((error) => {
+			const message = error instanceof Error ? error.message : String(error);
+			console.error(message);
 
-	const members = await getObject<Member[]>(
-		s3Client,
-		dataBucketName,
-		memberFileLocation,
-	);
+			return Promise.resolve(undefined);
+		})
+	}
 
-	return { teams, repos, members }
+	return {
+		repos: await getRetrievedData<Repository[]>('repos'),
+		teams: await getRetrievedData<Team[]>('teams'),
+		members: await getRetrievedData<Member[]>('members'),
+	}
 }

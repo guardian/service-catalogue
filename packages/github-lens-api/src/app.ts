@@ -29,6 +29,11 @@ export function buildApp(
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const reposData = (await ghData).repos;
+			if (reposData === undefined) {
+				res.status(500).json({ error: 'Unable to retrieve repository data!'});
+				return;
+			}
+
 			if (typeof req.query.name !== 'undefined') {
 				const searchString:string = req.query.name.toString()
 				const jsonResponse = reposData.payload.filter((item) =>
@@ -50,6 +55,11 @@ export function buildApp(
 		'/repos/:name',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const reposData = (await ghData).repos;
+			if (reposData === undefined) {
+				res.status(500).json({ error: 'Unable to retrieve repository data!'});
+				return;
+			}
+
 			const jsonResponse = reposData.payload.filter(
 				(item) => item.name === req.params.name,
 			);
@@ -67,6 +77,11 @@ export function buildApp(
 		'/teams',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const teamsData = (await ghData).teams;
+			if (teamsData === undefined) {
+				res.status(500).json({ error: 'Unable to retrieve teams data!'});
+				return;
+			}
+
 			res.status(200).json(teamsData);
 		}),
 	);
@@ -75,6 +90,11 @@ export function buildApp(
 		'/teams/:slug',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const teamsData = (await ghData).teams;
+			if (teamsData === undefined) {
+				res.status(500).json({ error: 'Unable to retrieve teams data!'});
+				return;
+			}
+
 			const jsonResponse = teamsData.payload.filter(
 				(item) => item.slug === req.params.name,
 			);
@@ -92,6 +112,11 @@ export function buildApp(
 		'/members',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const membersData = (await ghData).members;
+			if (membersData === undefined) {
+				res.status(500).json({ error: 'Unable to retrieve members data!'});
+				return;
+			}
+
 			res.status(200).json(membersData);
 		}),
 	);
@@ -100,6 +125,11 @@ export function buildApp(
 		'/members/:login',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const membersData = (await ghData).members;
+			if (membersData === undefined) {
+				res.status(500).json({ error: 'Unable to retrieve members data!'});
+				return;
+			}
+
 			const jsonResponse = membersData.payload.filter(
 				(item) => item.login === req.params.login,
 			);
