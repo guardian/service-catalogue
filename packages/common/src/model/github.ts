@@ -26,7 +26,7 @@ export interface Team {
 
 export interface Member {
     name: string | undefined;
-    email: string | undefined;
     login: string;
     id: number;
+	teams: string[];
 }

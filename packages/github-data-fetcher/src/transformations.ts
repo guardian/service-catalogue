@@ -19,18 +19,14 @@ const parseDateString = (
 };
 
 export const asMember = (
-	member: MemberResponse
+	member: MemberResponse,
+	teams: string []
 ): Member => {
-	
-	const definedEmail: string = member.email ?? '';
-	const isGuardianEmail = definedEmail.includes('@guardian.co.uk') || definedEmail.includes('@theguardian.com');
-	
 	return {
 		id: member.id,
 		name: member.name ?? undefined,
 		login: member.login,
-		// Do not record a personal email address
-		email: isGuardianEmail ? definedEmail : undefined
+		teams
 	};
 }
 
