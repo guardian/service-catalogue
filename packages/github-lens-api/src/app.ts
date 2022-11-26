@@ -1,15 +1,13 @@
 import { json as jsonBodyParser } from 'body-parser';
-import type { RetrievedObject } from 'common/aws/s3';
-import type { Repository, Team } from 'common/model/github';
 import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { getDescribeRouterHandler } from '../../common/src/expressRoutes';
+import type { GitHubData } from './data'
 
 export function buildApp(
-	repoData: Promise<RetrievedObject<Repository[]>>,
-	teamData: Promise<RetrievedObject<Team[]>>,
+	ghData: Promise<GitHubData>,
 ): Express {
 	const app = express();
 	const router = Router();
@@ -30,7 +28,7 @@ export function buildApp(
 	router.get(
 		'/repos',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			const reposData = await repoData;
+			const reposData = (await ghData).repos;
 			if (typeof req.query.name !== 'undefined') {
 				const searchString:string = req.query.name.toString()
 				const jsonResponse = reposData.payload.filter((item) =>
@@ -51,7 +49,7 @@ export function buildApp(
 	router.get(
 		'/repos/:name',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			const reposData = await repoData;
+			const reposData = (await ghData).repos;
 			const jsonResponse = reposData.payload.filter(
 				(item) => item.name === req.params.name,
 			);
@@ -60,7 +58,7 @@ export function buildApp(
 			} else {
 				res
 					.status(200)
-					.json({ repoName: req.params.name, info: 'Repo not found' });
+					.json({ repoName: req.params.name, info: 'Repository not found' });
 			}
 		}),
 	);
@@ -68,15 +66,15 @@ export function buildApp(
 	router.get(
 		'/teams',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			const teamsData = await teamData;
+			const teamsData = (await ghData).teams;
 			res.status(200).json(teamsData);
 		}),
 	);
 
 	router.get(
-		'/teams/:name',
+		'/teams/:slug',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			const teamsData = await teamData;
+			const teamsData = (await ghData).teams;
 			const jsonResponse = teamsData.payload.filter(
 				(item) => item.slug === req.params.name,
 			);
@@ -85,7 +83,32 @@ export function buildApp(
 			} else {
 				res
 					.status(200)
-					.json({ repoName: req.params.name, info: 'Team not found' });
+					.json({ teamSlug: req.params.slug, info: 'Team not found' });
+			}
+		}),
+	);
+
+	router.get(
+		'/members',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const membersData = (await ghData).members;
+			res.status(200).json(membersData);
+		}),
+	);
+
+	router.get(
+		'/members/:login',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const membersData = (await ghData).members;
+			const jsonResponse = membersData.payload.filter(
+				(item) => item.login === req.params.login,
+			);
+			if (jsonResponse.length !== 0) {
+				res.status(200).json(jsonResponse);
+			} else {
+				res
+					.status(200)
+					.json({ memberLogin: req.params.login, info: 'Member not found' });
 			}
 		}),
 	);
@@ -108,8 +131,15 @@ export function buildApp(
 				info =
 					'Show all teams, with the repositories they own';
 				break;
-			case '/teams/:name':
+			case '/teams/:slug':
 				info = 'Show team and the repositories it owns, if it exists';
+				break;
+			case '/members':
+				info =
+					'Show member, with the teams they are in';
+				break;
+			case '/members/:login':
+				info = 'Show member and the teams they are in, if it exists';
 				break;
 			default:
 				info = 'No path info supplied';
