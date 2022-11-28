@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@guardian/cdk": "47.3.3",
-    "aws-cdk": "2.39.1",
+    "aws-cdk": "2.52.0",
     "aws-cdk-lib": "2.39.1",
     "constructs": "10.1.160",
     "source-map-support": "^0.5.21"
