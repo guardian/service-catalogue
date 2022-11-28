@@ -68,11 +68,17 @@ export function buildApp(config: Config): Express {
 	router.get(
 		'/teams/:id',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-			const team = await galaxiesApi.getTeam(req.params.id);
-			const services = await servicesApi.forGithubOwner(team.primaryGithubTeam);
-
-			const resp: TeamResponse = { ...team, services };
-			res.status(200).json(resp);
+			try
+			{
+				const team = await galaxiesApi.getTeam(req.params.id)
+				const services = await servicesApi.forGithubOwner(team.primaryGithubTeam);
+				const resp: TeamResponse = { ...team, services };
+				res.status(200).json(resp);
+			}
+			catch (e)
+			{
+				res.status(404).json({ searchString: req.params.id, error: 'Error when searching for team'});
+			}
 		}),
 	);
 
