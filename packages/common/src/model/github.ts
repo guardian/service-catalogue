@@ -23,3 +23,10 @@ export interface Team {
 	slug: string;
 	repos: Repository[];
 }
+
+export interface Member {
+	name: string | undefined;
+	login: string;
+	id: number;
+	teams: string[];
+}

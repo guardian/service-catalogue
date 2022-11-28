@@ -1,21 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access -- For body access which is always any */
-import type { RetrievedObject } from 'common/aws/s3';
-import type { Repository, Team } from 'common/model/github';
 import type { Express } from 'express';
 import request from 'supertest';
 import { buildApp } from './app';
+import type { GitHubData } from './data';
 
 describe('github-lens api lambda', () => {
 	let app: Express;
 
 	beforeEach(() => {
-		const repoData = Promise.resolve<RetrievedObject<Repository[]>>({
-			payload: [],
-		});
-		const teamData = Promise.resolve<RetrievedObject<Team[]>>({
-			payload: [],
-		});
-		app = buildApp(repoData, teamData);
+		const ghData = Promise.resolve<GitHubData>({
+			teams: {
+				payload: [],
+			},
+			members: {
+				payload: [],
+			},
+			repos: {
+				payload: [],
+			}
+		})
+		app = buildApp(ghData);
 	});
 
 	describe('GET /healthcheck', () => {

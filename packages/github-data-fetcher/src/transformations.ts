@@ -1,8 +1,9 @@
 import type {
+	MemberResponse,
 	RepositoryResponse,
 	TeamRepoResponse,
 } from 'common/github/github';
-import type { Repository } from 'common/model/github';
+import type { Member, Repository } from 'common/model/github';
 
 const parseDateString = (
 	dateString: string | null | undefined,
@@ -16,6 +17,18 @@ const parseDateString = (
 	}
 	return new Date(dateString);
 };
+
+export const asMember = (
+	member: MemberResponse,
+	teams: string []
+): Member => {
+	return {
+		id: member.id,
+		name: member.name ?? undefined,
+		login: member.login,
+		teams
+	};
+}
 
 export const asRepo = (
 	repo: RepositoryResponse,
