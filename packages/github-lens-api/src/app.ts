@@ -96,7 +96,7 @@ export function buildApp(
 			}
 
 			const jsonResponse = teamsData.payload.filter(
-				(item) => item.slug === req.params.name,
+				(item) => item.slug === req.params.slug,
 			);
 			if (jsonResponse.length !== 0) {
 				res.status(200).json(jsonResponse);
