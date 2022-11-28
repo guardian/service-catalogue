@@ -1,8 +1,7 @@
 import { json as jsonBodyParser } from 'body-parser';
 import cors from 'cors';
 import type { Express } from 'express';
-import express, { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import express, { Router } from 'express';import asyncHandler from 'express-async-handler';
 import { getRouteDescriptions } from './controller/describe';
 import { getHealthCheckHandler } from './controller/healthcheck';
 import { getMembers, getMembersByLogin } from './controller/members';
@@ -40,14 +39,36 @@ export function buildApp(ghData: Promise<GitHubData>): Express {
 	router.get(
 		'/repos/:name',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
+<<<<<<< HEAD
 			const reposData = (await ghData).repos;
 			if (reposData === undefined) {
 				res.status(500).json({ error: 'Unable to retrieve repository data!' });
 				return;
 			}
 			getRepoByName(req, res, reposData);
+=======
+			const reposData=await getReposData(res, ghData);
+			if (reposData !== undefined) getRepoByName(req, res, reposData);
+>>>>>>> aab26c0 (add archived repos endpoints)
 		}),
 	);
+
+	router.get(
+		'/archivedRepos',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const reposData=await getReposData(res, ghData);
+			if (reposData !== undefined) getArchivedRepos(req, res, reposData);
+		}),
+	);
+
+	router.get(
+		'/archivedReposNamesOnly',
+		asyncHandler(async (req: express.Request, res: express.Response) => {
+			const reposData=await getReposData(res, ghData);
+			if (reposData !== undefined) getArchivedReposNamesOnly(req, res, reposData);
+		}),
+	);
+
 
 	router.get(
 		'/teams',
