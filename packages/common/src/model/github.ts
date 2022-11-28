@@ -25,8 +25,8 @@ export interface Team {
 }
 
 export interface Member {
-    name: string | undefined;
-    login: string;
-    id: number;
+	name: string | undefined;
+	login: string;
+	id: number;
 	teams: string[];
 }
