@@ -35,7 +35,7 @@ export function buildApp(
 			}
 
 			if (typeof req.query.name !== 'undefined') {
-				const searchString:string = req.query.name.toString()
+				const searchString: string = req.query.name.toString()
 				const jsonResponse = reposData.payload.filter((item) =>
 					item.name.match(searchString),
 				);
@@ -45,7 +45,8 @@ export function buildApp(
 					res
 						.status(200)
 						.json({ searchString: searchString, info: 'no results found in repos' });
-				}			} else {
+				}			
+			} else {
 				res.status(200).json(reposData);
 			}
 		}),
@@ -60,10 +61,10 @@ export function buildApp(
 				return;
 			}
 
-			const jsonResponse = reposData.payload.filter(
+			const jsonResponse = reposData.payload.find(
 				(item) => item.name === req.params.name,
 			);
-			if (jsonResponse.length !== 0) {
+			if (jsonResponse !== undefined) {
 				res.status(200).json(jsonResponse);
 			} else {
 				res
@@ -95,10 +96,10 @@ export function buildApp(
 				return;
 			}
 
-			const jsonResponse = teamsData.payload.filter(
+			const jsonResponse = teamsData.payload.find(
 				(item) => item.slug === req.params.slug,
 			);
-			if (jsonResponse.length !== 0) {
+			if (jsonResponse !== undefined) {
 				res.status(200).json(jsonResponse);
 			} else {
 				res
@@ -130,10 +131,10 @@ export function buildApp(
 				return;
 			}
 
-			const jsonResponse = membersData.payload.filter(
+			const jsonResponse = membersData.payload.find(
 				(item) => item.login === req.params.login,
 			);
-			if (jsonResponse.length !== 0) {
+			if (jsonResponse !== undefined) {
 				res.status(200).json(jsonResponse);
 			} else {
 				res
