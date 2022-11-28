@@ -14,7 +14,7 @@ export const getTeamBySlug = (req: express.Request, res: express.Response, teams
         res.status(200).json(jsonResponse);
     } else {
         res
-            .status(200)
+            .status(404)
             .json({ teamSlug: req.params.slug, info: 'Team not found' });
     }
 }

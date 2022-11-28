@@ -27,7 +27,7 @@ export const getRepoByName = (req: express.Request, res: express.Response, repos
         return res.status(200).json(jsonResponse);
     } else {
         return res
-            .status(200)
+            .status(404)
             .json({ repoName: req.params.name, info: 'Repository not found' });
     }
 }

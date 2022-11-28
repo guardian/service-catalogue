@@ -5,7 +5,7 @@ import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import {getRouteDescriptions} from "./controller/DescribeApiController";
 import {getHealthCheckHandler} from "./controller/HealthCheckController";
-import {getAllMembers, getRepoByLogin} from "./controller/MembersController";
+import {getMembers, getMembersByLogin} from "./controller/MembersController";
 import {getAllRepos, getRepoByName} from "./controller/ReposController";
 import {getTeamBySlug} from "./controller/TeamsController";
 import type { GitHubData } from './data'
@@ -25,7 +25,7 @@ export function buildApp(
 		}),
 	);
 
-	router.get('/healthcheck', getHealthCheckHandler(router));
+	router.get('/healthcheck', getHealthCheckHandler());
 
 	router.get(
 		'/repos',
@@ -83,7 +83,7 @@ export function buildApp(
 				res.status(500).json({ error: 'Unable to retrieve members data!'});
 				return;
 			}
-			getAllMembers(req, res, membersData)
+			getMembers(req, res, membersData)
 		}),
 	);
 
@@ -95,7 +95,7 @@ export function buildApp(
 				res.status(500).json({ error: 'Unable to retrieve members data!'});
 				return;
 			}
-			getRepoByLogin(req, res, membersData)
+			getMembersByLogin(req, res, membersData)
 		}),
 	);
 

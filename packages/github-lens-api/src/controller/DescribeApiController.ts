@@ -1,19 +1,5 @@
 import {getDescribeRouterHandler} from "common/expressRoutes";
 import type { Router } from 'express';
-import type express from 'express';
-
-interface InnerLayer {
-    method: string;
-}
-
-interface InnerRoute {
-    path: string;
-    stack: InnerLayer[];
-}
-
-interface RouterLayer {
-    route: InnerRoute | undefined;
-}
 
 function describeRoutes(path: string) {
     let info = '';
