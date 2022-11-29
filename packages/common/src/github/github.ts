@@ -166,3 +166,40 @@ export const getReposForTeam = async (
 		(response) => response.data,
 	);
 };
+
+export async function getLanguagesForRepositories(
+	client: Octokit,
+	repositories: RepositoriesResponse,
+): Promise<Record<string, string[]>> {
+	const data = await Promise.all(
+		repositories.map(async ({ name }) => {
+			const languages = await getRepositoryLanguages(client, name);
+			return {
+				repository: name,
+				languages,
+			};
+		}),
+	);
+
+	return data.reduce((acc, { repository, languages }) => {
+		return {
+			...acc,
+			[repository]: languages,
+		};
+	}, {});
+}
+
+async function getRepositoryLanguages(
+	client: Octokit,
+	repositoryName: string,
+): Promise<string[]> {
+	const response = await client.repos.listLanguages({
+		owner: 'guardian',
+		repo: repositoryName,
+	});
+	const languages = Object.keys(response.data);
+	console.log(
+		`Repository ${repositoryName} uses languages: ${languages.join(', ')}`,
+	);
+	return languages;
+}

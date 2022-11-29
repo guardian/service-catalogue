@@ -25,8 +25,9 @@ describe('repository owners', function () {
 describe('repository objects', function () {
 	it('should combine a RepositoryResponse with a list of owners', function () {
 		const owners = ['team3', 'team4'];
+		const languages = ['Scala', 'Go'];
 		const repo: RepositoryResponse = mockRepo;
-		const finalRepoObject: Repository = asRepo(repo, owners);
+		const finalRepoObject: Repository = asRepo(repo, owners, languages);
 
 		expect(finalRepoObject.owners).toStrictEqual(['team3', 'team4']);
 		expect(finalRepoObject.name).toStrictEqual('repo-name');

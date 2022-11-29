@@ -2,6 +2,7 @@ import path from 'path';
 import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
 import {
+	getLanguagesForRepositories,
 	getOctokit,
 	getReposForTeam,
 	getTeam,
@@ -95,11 +96,20 @@ async function getGHData(
 		asMember(member, membersOfTeams[member.login] ?? []),
 	);
 
+	const repositoryLanguages = await getLanguagesForRepositories(
+		client,
+		repositories,
+	);
+
 	// Join repositories to teams
 	const repositoriesToAdmins = await teamRepositories(client, teamSlugs);
-	const repositoriesOutput = repositories.map((repository) =>
-		asRepo(repository, repositoriesToAdmins[repository.name] ?? []),
-	);
+	const repositoriesOutput = repositories.map((repository) => {
+		return asRepo(
+			repository,
+			repositoriesToAdmins[repository.name] ?? [],
+			repositoryLanguages[repository.name],
+		);
+	});
 
 	const teamsMap = repositories.reduce<
 		Record<string, Repository[] | undefined>
@@ -108,6 +118,7 @@ async function getGHData(
 		const repo = asRepo(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
+			repositoryLanguages[repository.name],
 		);
 
 		adminTeamSlugs.forEach((adminSlug: string) => {

@@ -8,7 +8,7 @@ export interface Repository {
 	updated_at: Date | null;
 	pushed_at: Date | null;
 	size: number | undefined;
-	language: string | null | undefined;
+	languages: string[];
 	archived: boolean | undefined;
 	open_issues_count: number | undefined;
 	is_template: boolean | undefined;
