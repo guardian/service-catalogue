@@ -17,8 +17,8 @@ describe('github-lens api lambda', () => {
 			},
 			repos: {
 				payload: [],
-			}
-		})
+			},
+		});
 		app = buildApp(ghData);
 	});
 

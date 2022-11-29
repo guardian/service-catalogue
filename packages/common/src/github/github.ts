@@ -38,7 +38,7 @@ export type OrgMembersResponse = GetResponseDataTypeFromEndpointMethod<
 export type TeamMembersResponse = GetResponseDataTypeFromEndpointMethod<
 	typeof octokit.teams.listMembersInOrg
 >;
-export type MemberResponse = OrgMembersResponse[number]
+export type MemberResponse = OrgMembersResponse[number];
 export type TeamRepoResponse = GetResponseDataTypeFromEndpointMethod<
 	typeof octokit.teams.listReposInOrg
 >;
@@ -126,7 +126,7 @@ export const listTeams = async (client: Octokit): Promise<TeamsResponse> => {
 };
 
 export const listTeamMembers = async (
-	client: Octokit, 
+	client: Octokit,
 	teamName: string,
 ): Promise<TeamMembersResponse> => {
 	return await client.paginate(
@@ -139,7 +139,9 @@ export const listTeamMembers = async (
 	);
 };
 
-export const listMembers = async (client: Octokit): Promise<OrgMembersResponse> => {
+export const listMembers = async (
+	client: Octokit,
+): Promise<OrgMembersResponse> => {
 	return await client.paginate(
 		client.orgs.listMembers,
 		{

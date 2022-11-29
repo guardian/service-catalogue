@@ -47,17 +47,20 @@ const teamMembers = async (
 		const teamMembers = await listTeamMembers(client, teamSlug);
 		return teamMembers.map((member) => ({
 			login: member.login,
-			teamSlug
+			teamSlug,
 		}));
 	});
 
 	const flattened = (await Promise.all(memberTeams)).flat();
 
-	return flattened.reduce<Record<string, string[] | undefined>>((acc, member) => {
-		const existing = acc[member.login] ?? [];
-		acc[member.login] = existing.concat(member.teamSlug);
-		return acc;
-	}, {});
+	return flattened.reduce<Record<string, string[] | undefined>>(
+		(acc, member) => {
+			const existing = acc[member.login] ?? [];
+			acc[member.login] = existing.concat(member.teamSlug);
+			return acc;
+		},
+		{},
+	);
 };
 
 export interface TeamsAndRepositories {
@@ -84,7 +87,7 @@ async function getGHData(
 	const members = await listMembers(client);
 	console.log(`Found ${members.length} organisation members`);
 
-	const teamSlugs = teams.map((_) => _.slug)
+	const teamSlugs = teams.map((_) => _.slug);
 
 	// Join members to teams
 	const membersOfTeams = await teamMembers(client, teamSlugs);
@@ -145,10 +148,7 @@ export const main = async (): Promise<void> => {
 	const githubClient = getOctokit(config.github);
 	const s3Client = getS3Client(config.region);
 
-	const ghData = await getGHData(
-		githubClient,
-		config.github.teamToFetch,
-	);
+	const ghData = await getGHData(githubClient, config.github.teamToFetch);
 
 	const saveObject = async <T>(name: string, data: T) => {
 		const repoFileLocation = path.join(config.dataKeyPrefix, `${name}.json`);
