@@ -18,17 +18,14 @@ const parseDateString = (
 	return new Date(dateString);
 };
 
-export const asMember = (
-	member: MemberResponse,
-	teams: string []
-): Member => {
+export const asMember = (member: MemberResponse, teams: string[]): Member => {
 	return {
 		id: member.id,
 		name: member.name ?? undefined,
 		login: member.login,
-		teams
+		teams,
 	};
-}
+};
 
 export const asRepo = (
 	repo: RepositoryResponse,

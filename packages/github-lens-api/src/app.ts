@@ -3,16 +3,14 @@ import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import {getRouteDescriptions} from "./controller/DescribeApiController";
-import {getHealthCheckHandler} from "./controller/HealthCheckController";
-import {getMembers, getMembersByLogin} from "./controller/MembersController";
-import {getAllRepos, getRepoByName} from "./controller/ReposController";
-import {getTeamBySlug} from "./controller/TeamsController";
-import type { GitHubData } from './data'
+import { getRouteDescriptions } from './controller/DescribeApiController';
+import { getHealthCheckHandler } from './controller/HealthCheckController';
+import { getMembers, getMembersByLogin } from './controller/MembersController';
+import { getAllRepos, getRepoByName } from './controller/ReposController';
+import { getTeamBySlug } from './controller/TeamsController';
+import type { GitHubData } from './data';
 
-export function buildApp(
-	ghData: Promise<GitHubData>,
-): Express {
+export function buildApp(ghData: Promise<GitHubData>): Express {
 	const app = express();
 	const router = Router();
 
@@ -32,10 +30,10 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const reposData = (await ghData).repos;
 			if (reposData === undefined) {
-				res.status(500).json({ error: 'Unable to retrieve repository data!'});
+				res.status(500).json({ error: 'Unable to retrieve repository data!' });
 				return;
 			}
-				getAllRepos(req, res, reposData);
+			getAllRepos(req, res, reposData);
 		}),
 	);
 
@@ -44,10 +42,10 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const reposData = (await ghData).repos;
 			if (reposData === undefined) {
-				res.status(500).json({ error: 'Unable to retrieve repository data!'});
+				res.status(500).json({ error: 'Unable to retrieve repository data!' });
 				return;
 			}
-				getRepoByName(req, res, reposData);
+			getRepoByName(req, res, reposData);
 		}),
 	);
 
@@ -56,7 +54,7 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const teamsData = (await ghData).teams;
 			if (teamsData === undefined) {
-				res.status(500).json({ error: 'Unable to retrieve teams data!'});
+				res.status(500).json({ error: 'Unable to retrieve teams data!' });
 				return;
 			}
 			res.status(200).json(teamsData);
@@ -68,10 +66,10 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const teamsData = (await ghData).teams;
 			if (teamsData === undefined) {
-				res.status(500).json({ error: 'Unable to retrieve teams data!'});
+				res.status(500).json({ error: 'Unable to retrieve teams data!' });
 				return;
 			}
-			getTeamBySlug(req, res, teamsData)
+			getTeamBySlug(req, res, teamsData);
 		}),
 	);
 
@@ -80,10 +78,10 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const membersData = (await ghData).members;
 			if (membersData === undefined) {
-				res.status(500).json({ error: 'Unable to retrieve members data!'});
+				res.status(500).json({ error: 'Unable to retrieve members data!' });
 				return;
 			}
-			getMembers(req, res, membersData)
+			getMembers(req, res, membersData);
 		}),
 	);
 
@@ -92,10 +90,10 @@ export function buildApp(
 		asyncHandler(async (req: express.Request, res: express.Response) => {
 			const membersData = (await ghData).members;
 			if (membersData === undefined) {
-				res.status(500).json({ error: 'Unable to retrieve members data!'});
+				res.status(500).json({ error: 'Unable to retrieve members data!' });
 				return;
 			}
-			getMembersByLogin(req, res, membersData)
+			getMembersByLogin(req, res, membersData);
 		}),
 	);
 

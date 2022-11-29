@@ -21,7 +21,8 @@
     "@guardian/eslint-config-typescript": "^2.0.0",
     "@guardian/prettier": "^2.1.5",
     "aws-sdk-client-mock": "^2.0.0",
-    "esbuild": "^0.15.16"
+    "esbuild": "^0.15.16",
+    "eslint-plugin-prettier": "^4.2.1"
   },
   "dependencies": {
     "@types/jest": "^29.2.3",
@@ -33,7 +34,11 @@
     "typescript": "^4.9.3"
   },
   "eslintConfig": {
-    "extends": "@guardian/eslint-config-typescript"
+    "extends": "@guardian/eslint-config-typescript",
+    "plugins": ["prettier"],
+    "rules": {
+      "prettier/prettier": "error"
+    }
   },
   "eslintIgnore": [
     "packages/common/dist"
