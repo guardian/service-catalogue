@@ -12,6 +12,8 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
       "GuAnghammaradTopicParameter",
       "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
       "GuSSMRunCommandPolicy",
@@ -30,6 +32,7 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
       "GuSecurityGroup",
       "GuAlb5xxPercentageAlarm",
       "GuUnhealthyInstancesAlarm",
+      "GuCname",
       "GuScheduledLambda",
       "GuLambdaErrorPercentageAlarm",
     ],
@@ -86,6 +89,11 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
+    "githublensapiPublicSubnets": {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
     "githubprivatekey": {
       "Default": "/INFRA/deploy/github-lens/github-private-key",
       "Description": "(From SSM) (KMS encrypted) The private key of the app used to authenticate github-lens in the Guardian org",
@@ -108,11 +116,6 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
             "Key": "App",
             "PropagateAtLaunch": true,
             "Value": "github-lens-api",
-          },
-          {
-            "Key": "gu:cdk:pattern-name",
-            "PropagateAtLaunch": true,
-            "Value": "GuEc2App",
           },
           {
             "Key": "gu:cdk:version",
@@ -259,6 +262,10 @@ systemctl start github-lens-api
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GithubLens/CertificateGithublensapi",
           },
           {
             "Key": "Stack",
@@ -644,17 +651,7 @@ systemctl start github-lens-api
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "ec2.",
-                      {
-                        "Ref": "AWS::URLSuffix",
-                      },
-                    ],
-                  ],
-                },
+                "Service": "ec2.amazonaws.com",
               },
             },
           ],

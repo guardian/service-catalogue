@@ -8,6 +8,8 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
       "GuAnghammaradTopicParameter",
       "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuSubnetListParameter",
+      "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
       "GuSSMRunCommandPolicy",
@@ -26,6 +28,7 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
       "GuSecurityGroup",
       "GuAlb5xxPercentageAlarm",
       "GuUnhealthyInstancesAlarm",
+      "GuCname",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -75,6 +78,11 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
+    "servicesapiPublicSubnets": {
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
   },
   "Resources": {
     "AutoScalingGroupServicesapiASG8320B34D": {
@@ -91,11 +99,6 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
             "Key": "App",
             "PropagateAtLaunch": true,
             "Value": "services-api",
-          },
-          {
-            "Key": "gu:cdk:pattern-name",
-            "PropagateAtLaunch": true,
-            "Value": "GuEc2App",
           },
           {
             "Key": "gu:cdk:version",
@@ -242,6 +245,10 @@ systemctl start services-api
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "ServicesApi/CertificateServicesapi",
           },
           {
             "Key": "Stack",
@@ -573,17 +580,7 @@ systemctl start services-api
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "ec2.",
-                      {
-                        "Ref": "AWS::URLSuffix",
-                      },
-                    ],
-                  ],
-                },
+                "Service": "ec2.amazonaws.com",
               },
             },
           ],
