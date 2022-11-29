@@ -3,11 +3,11 @@ import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import {getRouteDescriptions} from "./controller/DescribeApiController";
-import {getHealthCheckHandler} from "./controller/HealthCheckController";
-import {getMembers, getMembersByLogin} from "./controller/MembersController";
-import {getAllRepos, getRepoByName} from "./controller/ReposController";
-import {getTeamBySlug} from "./controller/TeamsController";
+import {getRouteDescriptions} from "./controller/describe";
+import {getHealthCheckHandler} from "./controller/healthcheck";
+import {getMembers, getMembersByLogin} from "./controller/members";
+import {getAllRepos, getRepoByName} from "./controller/repos";
+import {getTeamBySlug} from "./controller/teams";
 import type { GitHubData } from './data'
 
 export function buildApp(
