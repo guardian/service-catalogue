@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter.ISO_DATE_TIME
 import java.time.temporal.ChronoUnit
 import scala.util.{Failure, Success, Try}
 
+//This case class should always contain a subset of fields from packages/common/src/model/github.ts
 case class Repository(
                        name: String,
                        `private`: Boolean,

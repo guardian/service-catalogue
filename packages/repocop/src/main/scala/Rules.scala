@@ -11,7 +11,7 @@ object Rules {
       statement = _.owners.nonEmpty,
       violationMessage = "Requires a valid team set as an owner",
       ruleJustification = singleLineStrippedString(
-        """Repositories are generally required to have a team owner for smoother handover in case someone leaves or
+        """Repositories are required to have a team owner for smoother handover in case someone leaves or
           | moves to another team. When somebody leaves the org, any individual access they had to a repository is
           |maintained, so there is a security case for this rule as well as a maintainability one."""
       )
@@ -26,7 +26,7 @@ object Rules {
       )
     )
 
-    case defaultIsMain extends RepoRule(
+    case defaultBranchIsMain extends RepoRule(
       statement = _.default_branch == "main",
       violationMessage = "Default branch should be main",
       ruleJustification = singleLineStrippedString(
