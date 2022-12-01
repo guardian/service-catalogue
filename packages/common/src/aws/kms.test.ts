@@ -22,14 +22,4 @@ describe('decrypt', function () {
 
 		expect(actualOutput).toBe(expectedOutput);
 	});
-
-	it('returns undefined if the decrypt operation fails', async function () {
-		const expectedOutput = 'plaintext';
-
-		kmsMock.on(DecryptCommand).rejects();
-
-		const actualOutput = await decrypt('keyId', expectedOutput);
-
-		expect(actualOutput).toBe(undefined);
-	});
 });

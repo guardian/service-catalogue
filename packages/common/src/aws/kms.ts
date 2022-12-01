@@ -8,7 +8,7 @@ const kmsClient = new KMSClient({
 export const decrypt = async (
 	cipherText: string,
 	keyId: string,
-): Promise<string | undefined> => {
+): Promise<string> => {
 	const decryptCommand = new DecryptCommand({
 		CiphertextBlob: Buffer.from(cipherText, 'base64'),
 		KeyId: keyId,
@@ -18,14 +18,18 @@ export const decrypt = async (
 		const { Plaintext } = await kmsClient.send(decryptCommand);
 		console.log('Decrypt command sent successfully');
 
-		if (Plaintext) {
-			console.log('Ciphertext successfully decrypted');
-			const plaintextString = Buffer.from(Plaintext).toString();
-			return plaintextString;
-		} else {
-			console.error('Plaintext is missing from DecryptCommandOutput!');
+		if (!Plaintext) {
+			// should not happen, AWS's types are just a bit odd
+			const message = 'Plaintext is missing from DecryptCommandOutput!';
+			console.error(message);
+			return message;
 		}
+
+		console.log('Ciphertext successfully decrypted');
+		return Buffer.from(Plaintext).toString();
 	} catch (e) {
-		console.error(`Decryption failed: ${(e as Error).message}`);
+		const message = `Decryption failed: ${(e as Error).message}`;
+		console.error(message);
+		throw new Error(message);
 	}
 };

@@ -68,7 +68,7 @@ export class S3GalaxiesApi implements GalaxiesApi {
 		// Add the (for now) missing fields.
 		return people.map((person) => ({
 			...person,
-			githubUsername: peopleMapping[person.emailId],
+			githubUsername: peopleMapping[person.emailId] ?? 'unknown',
 		}));
 	}
 
@@ -89,12 +89,14 @@ export class S3GalaxiesApi implements GalaxiesApi {
 
 		const teamsMapping = mappingResp.payload;
 
-		// Add the (for now) missing fields.
-		return Object.keys(teams).map((teamId) => {
+		return Object.entries(teams).map(([id, team]) => {
 			return {
-				...teams[teamId],
-				id: teamId,
-				primaryGithubTeam: teamsMapping[teamId],
+				...team,
+
+				// Note, this doesn't (yet) exist in actual Galaxies.
+				// Add them (for now).
+				id,
+				primaryGithubTeam: teamsMapping[id] ?? 'unknown',
 			};
 		});
 	}

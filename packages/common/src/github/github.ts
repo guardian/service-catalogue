@@ -69,6 +69,8 @@ export const getOctokit = (config: GitHubConfig): Octokit => {
 					console.log(`Retrying after ${retryAfter} seconds!`);
 					return true;
 				}
+
+				return false;
 			},
 			onAbuseLimit: async (retryAfter: number, options: Options) => {
 				// does not retry, only logs a warning
@@ -82,6 +84,8 @@ export const getOctokit = (config: GitHubConfig): Octokit => {
 					await sleep(60000);
 					return true;
 				}
+
+				return false;
 			},
 		},
 	});

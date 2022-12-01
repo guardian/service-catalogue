@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { Readable } from 'stream';
 import {
 	GetObjectCommand,
@@ -57,6 +58,9 @@ describe('putObject', function () {
 
 		const s3PutObjectStub = s3Mock.commandCalls(PutObjectCommand);
 
+		assert(s3PutObjectStub.length > 0);
+
+		// @ts-expect-error -- length asserted above
 		expect(s3PutObjectStub[0].args[0].input).toEqual({
 			Bucket: 'bucket',
 			Key: 'key',

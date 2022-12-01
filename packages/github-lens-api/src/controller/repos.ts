@@ -7,21 +7,21 @@ export const getAllRepos = (
 	res: express.Response,
 	reposData: RetrievedObject<Repository[]>,
 ) => {
-	if (typeof req.query.name !== 'undefined') {
-		const searchString: string = req.query.name.toString();
-		const jsonResponse = reposData.payload.filter((item) =>
-			item.name.match(searchString),
-		);
-		if (jsonResponse.length !== 0) {
-			res.status(200).json(jsonResponse);
-		} else {
-			return res.status(200).json({
-				searchString: searchString,
-				info: 'no results found in repos',
-			});
-		}
-	} else {
+	if (typeof req.query.name === 'undefined') {
 		return res.status(200).json(reposData);
+	}
+
+	const searchString: string = req.query.name.toString();
+	const jsonResponse = reposData.payload.filter((item) =>
+		item.name.match(searchString),
+	);
+	if (jsonResponse.length !== 0) {
+		return res.status(200).json(jsonResponse);
+	} else {
+		return res.status(200).json({
+			searchString: searchString,
+			info: 'no results found in repos',
+		});
 	}
 };
 
