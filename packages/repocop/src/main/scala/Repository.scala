@@ -8,8 +8,6 @@ import scala.util.{Failure, Success, Try}
 //This case class should always contain a subset of fields from packages/common/src/model/github.ts
 case class Repository(
                        name: String,
-                       `private`: Boolean,
-                       description: String,
                        created_at: String,
                        updated_at: String,
                        pushed_at: String,
@@ -28,7 +26,9 @@ case class Repository(
   private val midnightYesterday: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(1)
 
   val updateRequired: Boolean= dateOfLastChange match
-    case Failure(e) => true
-    case Success(latestUpate) => latestUpate isAfter midnightYesterday
+    case Failure(e) =>
+      println(s"Failed to parse timestamps for $name")
+      true
+    case Success(latestUpdate) => latestUpdate isAfter midnightYesterday
 
 }

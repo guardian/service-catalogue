@@ -15,8 +15,6 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
 
   val updatedToday = Repository(
     name = "name",
-    `private` = false,
-    description = "a short description",
     created_at = beforeTheCutoff,
     updated_at = today,
     pushed_at = beforeTheCutoff,
@@ -40,7 +38,6 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
 
   "A repository that has not changed since yesterday" should "not require any updates to be sent" in{
     val oldRepo = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = beforeTheCutoff)
-
     oldRepo.updateRequired shouldBe false
   }
 
@@ -50,7 +47,4 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
     unclearDate.updateRequired shouldBe true
     allUnclearDates.updateRequired shouldBe true
   }
-
-
-
 }
