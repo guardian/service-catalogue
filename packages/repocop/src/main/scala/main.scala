@@ -1,0 +1,24 @@
+package com.gu.repocop
+
+import com.gu.repocop.{MarkdownHelpers, Repository, Rules}
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_DATE_TIME
+import com.gu.repocop.MarkdownHelpers.createPage
+
+import java.io.*
+@main
+def main(): Unit = {
+
+  //need to filter out archived repos immediately
+  println("hi")
+}
+
+@main
+//Use runMain markdown to generate the human readable rule doc
+def markdown():Unit = {
+  val bw = new BufferedWriter(new FileWriter(new File("RepoRules.md")))
+  bw.write(createPage(Rules.RepoRule.values.toList))
+  println("Created rule markdown file")
+  bw.close()
+}
