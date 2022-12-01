@@ -19,6 +19,7 @@ import (
 type Features struct {
 	GuardianCDKVersion    *string  `json:"guardianCdkVersion"`
 	GuardianDNSRecordSets []string `json:"guardianDnsRecordSets"`
+	GuardianBuildTool     *string  `json:"guardianBuildTool"`
 }
 
 type Stack struct {
@@ -137,6 +138,7 @@ func getStacks(ctx context.Context, client *cloudformation.Client, cache cache.C
 			DevxFeatures: Features{
 				GuardianCDKVersion:    guardianCDKVersion(tags, metadataMap),
 				GuardianDNSRecordSets: domains,
+				GuardianBuildTool:     guardianBuildTool(tags),
 			},
 		}
 
@@ -198,6 +200,16 @@ func guardianCDKVersion(tags map[string]string, metadata map[string]any) *string
 	}
 
 	return nil
+}
+
+func guardianBuildTool(tags map[string]string) *string {
+	key := "gu:build-tool"
+	tool, ok := tags[key]
+	if !ok {
+		return nil
+	}
+
+	return &tool
 }
 
 func tagsAsMap(tags []types.Tag) map[string]string {
