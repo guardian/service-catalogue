@@ -10,8 +10,13 @@ import java.io.*
 @main
 def main(): Unit = {
 
-  //need to filter out archived repos immediately
-  println("hi")
+  /*
+   * Filter out archived repos
+   * Group repos by team
+   * Apply rules
+   * Send notifications as required
+   */
+
 }
 
 @main

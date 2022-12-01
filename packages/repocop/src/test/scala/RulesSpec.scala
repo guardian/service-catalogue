@@ -11,7 +11,7 @@ import scala.util.Try
 class RulesSpec extends AnyFlatSpec with Matchers {
   val timestamp: String = "2022-05-09T13:42:50.000Z"
   val basicRepo = Repository(name = "name",
-    Private = false,
+    `private` = false,
     description = "a short description",
     created_at = timestamp,
     updated_at = timestamp,

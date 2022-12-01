@@ -31,7 +31,7 @@ object Rules {
       violationMessage = "Default branch should be main",
       ruleJustification = singleLineStrippedString(
         """Github's default for the head branch is now main. Many workflow tools rely on this assumption, and it is
-          | generally considered to be a more inclusive choice of language."""
+          | considered to be a more inclusive choice of language."""
       )
     )
   end RepoRule

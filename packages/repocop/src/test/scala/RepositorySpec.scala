@@ -15,7 +15,7 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
 
   val updatedToday = Repository(
     name = "name",
-    Private = false,
+    `private` = false,
     description = "a short description",
     created_at = beforeTheCutoff,
     updated_at = today,

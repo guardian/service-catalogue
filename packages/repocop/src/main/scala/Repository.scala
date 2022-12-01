@@ -7,7 +7,7 @@ import scala.util.{Failure, Success, Try}
 
 case class Repository(
                        name: String,
-                       Private: Boolean,
+                       `private`: Boolean,
                        description: String,
                        created_at: String,
                        updated_at: String,
