@@ -13,7 +13,7 @@ object Rules {
       ruleJustification = singleLineStrippedString(
         """
           |Repositories are generally required to have a team owner for smoother handover in case someone leaves or
-          |moves to another team. When somebody leaves the org, any individual access they had to a repository is
+          | moves to another team. When somebody leaves the org, any individual access they had to a repository is
           |maintained, so there is a security case for this rule as well as a maintainability one.
           |"""
       )
@@ -28,7 +28,7 @@ object Rules {
       ruleJustification = singleLineStrippedString(
         """
           |Currently, we mandate that production P+E repos need to be reliably integrated with Snyk. In order to work
-          |out which projects contain production code, we ask that all choose from a list of status tags
+          | out which projects contain production code, we ask that all choose from a list of status tags
           |"""
       )
     )
@@ -39,7 +39,7 @@ object Rules {
       ruleJustification = singleLineStrippedString(
         """
           |Github's default for the head branch is now main. Many workflow tools rely on this assumption, and it is
-          |generally considered to be a more inclusive choice of language.
+          | generally considered to be a more inclusive choice of language.
           |"""
       )
     )
