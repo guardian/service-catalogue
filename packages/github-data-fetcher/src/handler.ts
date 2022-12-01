@@ -107,7 +107,7 @@ async function getGHData(
 		return asRepo(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
-			repositoryLanguages[repository.name],
+			repositoryLanguages[repository.name] ?? [],
 		);
 	});
 
@@ -118,7 +118,7 @@ async function getGHData(
 		const repo = asRepo(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
-			repositoryLanguages[repository.name],
+			repositoryLanguages[repository.name] ?? [],
 		);
 
 		adminTeamSlugs.forEach((adminSlug: string) => {

@@ -20,6 +20,7 @@
   "devDependencies": {
     "@guardian/eslint-config-typescript": "^2.0.0",
     "@guardian/prettier": "^2.1.5",
+    "@guardian/tsconfig": "^0.2.0",
     "aws-sdk-client-mock": "^2.0.0",
     "esbuild": "^0.15.16",
     "eslint-plugin-prettier": "^4.2.1"
@@ -35,7 +36,9 @@
   },
   "eslintConfig": {
     "extends": "@guardian/eslint-config-typescript",
-    "plugins": ["prettier"],
+    "plugins": [
+      "prettier"
+    ],
     "rules": {
       "prettier/prettier": "error"
     }
