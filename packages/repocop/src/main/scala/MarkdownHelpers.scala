@@ -3,21 +3,7 @@ package com.gu.repocop
 import Rules.RepoRule
 object MarkdownHelpers {
 
-
-
-  def generateMarkdownTable(rules: List[Rules.RepoRule]): String = {
-    val repoRules: List[(String, (String, String))]= rules.map(_.toString).zip(rules.map(r => (r.violationMessage, r.ruleJustification)))
-    def flattenTuple(nested: (String, (String, String))): (String, String, String) = {
-      nested match
-        case (x, (y, z)) => (x, y, z)
-    }
-    def tupleToTable(t: (String, String, String)) = s"| ${t._1} | ${t._2} | ${t._3} |\n"
-    val tableHeader = "| Rule Name | Violation Message | Rule Justification |\n|---|---|---|\n"
-    val tableContent = repoRules.map(flattenTuple).map(tupleToTable).reduce(_+_)
-    tableHeader + tableContent
-  }
-
-  def createPage(rules: List[Rules.RepoRule]) = {
+  def createPage(rules: List[Rules.RepoRule]): String = {
     val preamble: String =
       """
         |## Repo Rules
@@ -28,8 +14,19 @@ object MarkdownHelpers {
 
     preamble + generateMarkdownTable(rules)
   }
+  private def generateMarkdownTable(rules: List[Rules.RepoRule]): String = {
+    val repoRules: List[(String, (String, String))]= rules.map(_.toString).zip(rules.map(r => (r.violationMessage, r.ruleJustification)))
+    val tableHeader = "| Rule Name | Violation Message | Rule Justification |\n|---|---|---|\n"
+    val tableContent = repoRules.map(flattenTuple).map(tupleToTable).reduce(_+_)
+    tableHeader + tableContent
+  }
 
+  private def flattenTuple(nested: (String, (String, String))): (String, String, String) = {
+    nested match
+      case (x, (y, z)) => (x, y, z)
+  }
 
+  private def tupleToTable(t: (String, String, String)) = s"| ${t._1} | ${t._2} | ${t._3} |\n"
 
 }
 
