@@ -2,16 +2,20 @@ package com.gu.repocop
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import Rules.RepoRule.{hasValidTopic, hasOwner}
+import Rules.RepoRule.{hasOwner, hasValidTopic}
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_DATE_TIME
+import scala.util.Try
 
 class RulesSpec extends AnyFlatSpec with Matchers {
-
+  val timestamp: String = "2022-05-09T13:42:50.000Z"
   val basicRepo = Repository(name = "name",
     Private = false,
     description = "a short description",
-    created_at = "2022-05-09T13:42:50.000Z",
-    updated_at = "2022-05-09T13:42:50.000Z",
-    pushed_at = "2022-05-09T13:42:50.000Z",
+    created_at = timestamp,
+    updated_at = timestamp,
+    pushed_at = timestamp,
     languages = List("Scala, TypeScript"),
     archived = false,
     topics = List("topic1", "topic2"),
