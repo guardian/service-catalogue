@@ -10,12 +10,13 @@ object Rules {
     case hasOwner extends RepoRule(
       statement = _.owners.nonEmpty,
       violationMessage = "Requires a valid team set as an owner",
-      ruleJustification =
+      ruleJustification = singleLineStrippedString(
         """
           |Repositories are generally required to have a team owner for smoother handover in case someone leaves or
           |moves to another team. When somebody leaves the org, any individual access they had to a repository is
           |maintained, so there is a security case for this rule as well as a maintainability one.
-          |""".stripMargin
+          |"""
+      )
     )
 
     case hasValidTopic extends RepoRule(
