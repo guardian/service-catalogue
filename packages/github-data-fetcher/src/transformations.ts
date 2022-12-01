@@ -29,7 +29,8 @@ export const asMember = (member: MemberResponse, teams: string[]): Member => {
 
 export const asRepo = (
 	repo: RepositoryResponse,
-	owners?: string[],
+	owners: string[],
+	languages: string[],
 ): Repository => {
 	return {
 		id: repo.id,
@@ -41,13 +42,13 @@ export const asRepo = (
 		updated_at: parseDateString(repo.updated_at),
 		pushed_at: parseDateString(repo.pushed_at),
 		size: repo.size,
-		language: repo.language,
 		archived: repo.archived,
 		open_issues_count: repo.open_issues_count,
 		is_template: repo.is_template,
 		topics: repo.topics,
 		default_branch: repo.default_branch,
-		owners: owners ? owners : [],
+		owners,
+		languages,
 	};
 };
 
