@@ -11,25 +11,18 @@ object Rules {
       statement = _.owners.nonEmpty,
       violationMessage = "Requires a valid team set as an owner",
       ruleJustification = singleLineStrippedString(
-        """
-          |Repositories are generally required to have a team owner for smoother handover in case someone leaves or
+        """Repositories are generally required to have a team owner for smoother handover in case someone leaves or
           | moves to another team. When somebody leaves the org, any individual access they had to a repository is
-          |maintained, so there is a security case for this rule as well as a maintainability one.
-          |"""
+          |maintained, so there is a security case for this rule as well as a maintainability one."""
       )
     )
 
     case hasValidTopic extends RepoRule(
       statement = repoContainsProductionStatus,
-      violationMessage = singleLineStrippedString(
-        """
-          |Valid production status topic required"""
-      ),
+      violationMessage = "Valid production status topic required",
       ruleJustification = singleLineStrippedString(
-        """
-          |Currently, we mandate that production P+E repos need to be reliably integrated with Snyk. In order to work
-          | out which projects contain production code, we ask that all choose from a list of status tags
-          |"""
+        """Currently, we mandate that production P+E repos need to be reliably integrated with Snyk. In order to work
+          | out which projects contain production code, we ask that all choose from a list of status tags"""
       )
     )
 
@@ -37,10 +30,8 @@ object Rules {
       statement = _.default_branch == "main",
       violationMessage = "Default branch should be main",
       ruleJustification = singleLineStrippedString(
-        """
-          |Github's default for the head branch is now main. Many workflow tools rely on this assumption, and it is
-          | generally considered to be a more inclusive choice of language.
-          |"""
+        """Github's default for the head branch is now main. Many workflow tools rely on this assumption, and it is
+          | generally considered to be a more inclusive choice of language."""
       )
     )
   end RepoRule
