@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import axios from 'axios';
 
 export type LensResponse<A> = {
 	payload: A;
@@ -70,11 +70,15 @@ export class LensServicesApi implements ServicesApi {
 	}
 
 	async list(): Promise<Service[]> {
-		const stacksResp = await fetch(`${this.cloudformationLensUrl}/stacks`);
-		const stacks = (await stacksResp.json()) as Stack[];
+		const stacksResp = await axios.get<Stack[]>(
+			`${this.cloudformationLensUrl}/stacks`,
+		);
+		const stacks = stacksResp.data;
 
-		const reposResp = await fetch(`${this.githubLensUrl}/repos`);
-		const repos = (await reposResp.json()) as LensResponse<Repository[]>;
+		const reposResp = await axios.get<LensResponse<Repository[]>>(
+			`${this.githubLensUrl}/repos`,
+		);
+		const repos = reposResp.data;
 
 		const services: Service[] = groupByService(stacks).map((stacks) => {
 			return {
