@@ -3,6 +3,7 @@ import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/ro
 import { CloudFormationLens } from '../lib/cloudformation-lens.js';
 import { GithubLens } from '../lib/github-lens.js';
 import { ServicesApi } from '../lib/services-api.js';
+import {Repocop} from "../lib/repocop.js";
 
 const app = new GuRootExperimental();
 
@@ -25,3 +26,9 @@ new CloudFormationLens(app, 'CloudformationLens-INFRA', {
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
 });
+
+new Repocop(app, "Repocop-INFRA", {
+	stack: 'deploy',
+	stage: 'INFRA',
+	env: { region: 'eu-west-1' },
+})
