@@ -25,10 +25,10 @@ case class Repository(
 
   private val midnightYesterday: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(1)
 
-  val updateRequired: Boolean= dateOfLastChange match
-    case Failure(e) =>
+  val rerunRepocop: Boolean=  dateOfLastChange match
+    case Failure(e) => //if we can't fetch the dates, rerun anyway unless repo has been archived
       println(s"Failed to parse timestamps for $name")
-      true
-    case Success(latestUpdate) => latestUpdate isAfter midnightYesterday
+      !archived
+    case Success(latestUpdate) => latestUpdate.isAfter(midnightYesterday) & !archived
 
 }
