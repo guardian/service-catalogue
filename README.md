@@ -46,7 +46,7 @@ You can run the following commands to start the various services locally:
 
 ```
 # Run github-data-fetcher lambda
-npm run dev-github-data-fetcher
+npm run dev-data-fetcher
 
 # Run github-lens-api
 npm run dev-github-lens-api
