@@ -27,7 +27,6 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
     owners= List("team1"))
 
   "A repository that has had any kind of change since yesterday" should "require an update to be sent" in {
-
     val updatedYesterday = updatedToday.copy(created_at = beforeTheCutoff, updated_at = yesterday, pushed_at = beforeTheCutoff)
     val createdYesterday = updatedToday.copy(created_at = yesterday, updated_at = yesterday, pushed_at = yesterday)
     val pushedYesterday = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = yesterday)
@@ -47,6 +46,7 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
   "A repository with any unparseable date" should "update anyway" in {
     val unclearDate = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = "asdfghjkl")
     val allUnclearDates = unclearDate.copy(created_at = "qwertyuiop", updated_at = "zxcvbnm")
+    
     unclearDate.updateRequired shouldBe true
     allUnclearDates.updateRequired shouldBe true
   }
