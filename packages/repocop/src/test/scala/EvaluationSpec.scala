@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 class EvaluationSpec extends AnyFlatSpec with Matchers {
 
   val today: String = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).toString
-  val pushedAt: String = s"${'"'}pushed_at${'"'}: ${'"'}${today}${'"'},"
+  val pushedToday: String = s"${'"'}pushed_at${'"'}: ${'"'}${today}${'"'},"
 
   val repotext: String =
     """{
@@ -22,7 +22,7 @@ class EvaluationSpec extends AnyFlatSpec with Matchers {
       |      "private": false,
       |      "description": "A repo",
       |      "created_at": "2010-06-22T14:21:52.000Z",
-      |      "updated_at": "2022-05-09T13:42:50.000Z", """.stripMargin + pushedAt +
+      |      "updated_at": "2022-05-09T13:42:50.000Z", """.stripMargin + pushedToday +
       """
         |      "size": 92,
         |      "archived": false,
@@ -80,6 +80,11 @@ class EvaluationSpec extends AnyFlatSpec with Matchers {
     val notJson = "beep boop"
     step1Failure(notJson).isLeft & step1And2Failure(notJson).isLeft shouldBe true
     step1Failure(notJson) shouldEqual step1And2Failure(notJson)
+  }
+  "Rule evaluation" should "only happen if a repository was changed in the last day" in {
+    val actual = evaluateFromResponse(repotext).getOrElse(List())
+    actual.length shouldBe 1
+    actual.head.name shouldBe "repo1"
   }
 
 
