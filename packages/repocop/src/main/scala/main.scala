@@ -20,7 +20,8 @@ def main(): Unit = {
 }
 
 @main
-//Use runMain markdown to generate the human readable rule doc
+// To generate the human readable rule doc run:
+// sbt "runMain com.gu.repocop.markdown"
 def markdown():Unit = {
   val bw = new BufferedWriter(new FileWriter(new File("RepoRules.md")))
   bw.write(createPage(Rules.RepoRule.values.toList))
