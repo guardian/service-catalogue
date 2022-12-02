@@ -4,7 +4,7 @@
   "description": "A cop, for repos",
   "scripts": {
     "test": "sbt test",
-    "build": "echo \"Not implemented!\"",
+    "build": "sbt clean assembly",
     "dev": "echo \"Not implemented!\"",
     "start": "echo \"Not implemented!\"",
     "lint": "echo \"Not implemented!\"",
