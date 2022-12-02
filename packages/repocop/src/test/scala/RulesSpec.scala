@@ -2,7 +2,7 @@ package com.gu.repocop
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import Rules.RepoRule.{hasOwner, hasValidTopic}
+import Rules.RepoRule._
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_DATE_TIME
@@ -43,6 +43,14 @@ class RulesSpec extends AnyFlatSpec with Matchers {
     hasValidTopic.evaluate(noValidTopicRepo) shouldBe false
     hasValidTopic.evaluate(validTopicRepo) shouldBe true
     hasValidTopic.evaluate(multipleValidTopicRepo) shouldBe true
+  }
+
+  it should "flag if a repository that does not have main as the default branch" in {
+    val nonMainRepo = basicRepo.copy(default_branch = "master")
+    val mainRepo = basicRepo.copy(default_branch = "main")
+
+    defaultBranchIsMain.evaluate(nonMainRepo) shouldBe false
+    defaultBranchIsMain.evaluate(mainRepo) shouldBe true
   }
 
 }
