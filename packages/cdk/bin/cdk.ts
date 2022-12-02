@@ -2,8 +2,8 @@ import 'source-map-support/register.js';
 import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root.js';
 import { CloudFormationLens } from '../lib/cloudformation-lens.js';
 import { GithubLens } from '../lib/github-lens.js';
+import { Repocop } from '../lib/repocop.js';
 import { ServicesApi } from '../lib/services-api.js';
-import {Repocop} from "../lib/repocop.js";
 
 const app = new GuRootExperimental();
 
@@ -27,8 +27,8 @@ new CloudFormationLens(app, 'CloudformationLens-INFRA', {
 	env: { region: 'eu-west-1' },
 });
 
-new Repocop(app, "Repocop-INFRA", {
+new Repocop(app, 'Repocop-INFRA', {
 	stack: 'deploy',
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
-})
+});
