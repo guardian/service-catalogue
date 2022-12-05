@@ -15,8 +15,6 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
 
   val updatedToday = Repository(
     name = "name",
-    `private` = false,
-    description = "a short description",
     created_at = beforeTheCutoff,
     updated_at = today,
     pushed_at = beforeTheCutoff,
@@ -31,26 +29,21 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
     val createdYesterday = updatedToday.copy(created_at = yesterday, updated_at = yesterday, pushed_at = yesterday)
     val pushedYesterday = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = yesterday)
 
-    updatedToday.updateRequired shouldBe true
-    updatedYesterday.updateRequired shouldBe true
-    createdYesterday.updateRequired shouldBe true
-    pushedYesterday.updateRequired shouldBe true
+    updatedToday.rerunRepocop shouldBe true
+    updatedYesterday.rerunRepocop shouldBe true
+    createdYesterday.rerunRepocop shouldBe true
+    pushedYesterday.rerunRepocop shouldBe true
   }
 
   "A repository that has not changed since yesterday" should "not require any updates to be sent" in{
     val oldRepo = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = beforeTheCutoff)
-
-    oldRepo.updateRequired shouldBe false
+    oldRepo.rerunRepocop shouldBe false
   }
 
   "A repository with any unparseable date" should "update anyway" in {
     val unclearDate = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = "asdfghjkl")
     val allUnclearDates = unclearDate.copy(created_at = "qwertyuiop", updated_at = "zxcvbnm")
-    
-    unclearDate.updateRequired shouldBe true
-    allUnclearDates.updateRequired shouldBe true
+    unclearDate.rerunRepocop shouldBe true
+    allUnclearDates.rerunRepocop shouldBe true
   }
-
-
-
 }
