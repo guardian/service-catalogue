@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@aws-sdk/credential-providers": "^3.218.0",
-    "axios": "^1.2.0",
+    "axios": "^1.2.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
