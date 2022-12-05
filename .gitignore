@@ -28,7 +28,20 @@ go.work
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
+# Project-specific stuff
+packages/repocop/.idea/*
+packages/repocop/.bsp/*
+
 # User-specific stuff
+.idea/.gitignore
+.idea/misc.xml
+.idea/modules.xml
+.idea/scala_settings.xml
+.idea/service-catalogue.iml
+.idea/vcs.xml
+.idea/codeStyles/*
+.idea/inspectionProfiles/*
+
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
