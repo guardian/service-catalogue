@@ -5,7 +5,7 @@ import { Repocop } from './repocop';
 describe('The Repocop stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App();
-		const stack = new Repocop(app, 'GithubLens', {
+		const stack = new Repocop(app, 'Repocop', {
 			stack: 'deploy',
 			stage: 'INFRA',
 		});
