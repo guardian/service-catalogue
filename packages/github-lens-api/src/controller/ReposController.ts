@@ -2,59 +2,39 @@ import type {RetrievedObject} from "common/aws/s3";
 import type {Repository} from "common/model/github";
 import type express from "express";
 
+interface Filter {
+    paramName: string;
+    fn: (r: Repository, paramValue: string) => boolean;
+}
+
 export const getAllRepos = (req: express.Request, res: express.Response, reposData: RetrievedObject<Repository[]>) => {
-    if (typeof req.query.name !== 'undefined') {
-        const searchString:string = req.query.name.toString()
-        const jsonResponse = reposData.payload.filter((item) =>
-            item.name.match(searchString),
-        );
-        if (jsonResponse.length !== 0) {
-            res.status(200).json(jsonResponse);
-        } else {
-            return res
-                .status(200)
-                .json({ searchString: searchString, info: 'no results found in repos' });
-        }			} else {
-        return res.status(200).json(reposData);
-    }
+    const filters: Filter[] = [
+        { paramName: 'name', fn: (repo: Repository, paramValue: string) => !!repo.name.match(paramValue)},
+        { paramName: 'isArchived', fn: (repo: Repository) => repo.archived ?? false}
+    ]
+
+    const repos = reposData.payload.filter(repo => {
+        return filters.every(filter => {
+            const paramValue = req.query[filter.paramName];
+            if (paramValue === undefined) return true; // ignore filter fn if param unset
+            return filter.fn(repo, paramValue.toString())
+        })
+    })
+    
+    res.status(200).json({ ...reposData, payload: repos});
 }
 
 export const getRepoByName = (req: express.Request, res: express.Response, reposData: RetrievedObject<Repository[]>) => {
-    const jsonResponse = reposData.payload.filter(
+    const repo = reposData.payload.find(
         (item) => item.name === req.params.name,
     );
-    if (jsonResponse.length !== 0) {
-        return res.status(200).json(jsonResponse);
-    } else {
-        return res
-            .status(404)
-            .json({ repoName: req.params.name, info: 'Repository not found' });
+    
+    if (repo) {
+        return res.status(200).json({ ...reposData, payload: repo});
     }
-}
 
-export const getArchivedRepos = (req: express.Request, res: express.Response, reposData: RetrievedObject<Repository[]>) => {
-    const jsonResponse = reposData.payload.filter(
-        (item) => item.archived === true,
-    );
-    if (jsonResponse.length !== 0) {
-        return res.status(200).json(jsonResponse);
-    } else {
-        return res
-            .status(200)
-            .json({ repoName: req.params.name, info: 'no repos found' });
-    }
-}
-
-export const getArchivedReposNamesOnly = (req: express.Request, res: express.Response, reposData: RetrievedObject<Repository[]>) => {
-    const jsonResponse = reposData.payload.filter(
-        (item) => item.archived === true,
-    ).map(item => item.name);
-    if (jsonResponse.length !== 0) {
-        return res.status(200).json(jsonResponse);
-    } else {
-        return res
-            .status(200)
-            .json({ repoName: req.params.name, info: 'no repos found' });
-    }
+    return res
+        .status(404)
+        .json({ repoName: req.params.name, info: 'Repository not found' });
 }
 
