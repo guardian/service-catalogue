@@ -34,13 +34,18 @@ object Rules {
     )
   end RepoRule
 
+  def evaluateReposForTeam(repos: List[Repository], teamSlug: String): List[EvaluatedRepo] = {
+    val teamRepos: List[Repository] = repos.filter { r => r.rerunRepocop & r.owners.contains(teamSlug) }
+    evaluateRulesForRepos(teamRepos)
+  }
+
   def evaluateRulesForRepo(repository: Repository): Map[String, Boolean] = {
     val ruleNames: List[String] = Rules.RepoRule.values.map(_.toString).toList
     val ruleBools: List[Boolean] = Rules.RepoRule.values.map(_.evaluate(repository)).toList
     ruleNames.zip(ruleBools).toMap
   }
 
-  def evaluateRulesForAllRepos(repos: List[Repository]): List[EvaluatedRepo] = {
+  def evaluateRulesForRepos(repos: List[Repository]): List[EvaluatedRepo] = {
     repos.map(repo => EvaluatedRepo(repo.name, evaluateRulesForRepo(repo)))
   }
 

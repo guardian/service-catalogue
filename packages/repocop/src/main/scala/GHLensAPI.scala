@@ -1,21 +1,23 @@
 package com.gu.repocop
 
-import Rules.evaluateRulesForAllRepos
-
-import io.circe.{Decoder, Encoder, Error, Json}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.parser.parse
+import io.circe.{Decoder, Encoder, Error, Json}
+import requests.Response
 
-object Evaluation {
+import scala.util.{Failure, Success, Try}
 
-  def evaluateFromResponse(requestText: String): Either[Error, List[EvaluatedRepo]] = {
-    val parsingResult: Either[Error, List[Repository]] = extractRepoListsFromText(requestText)
+object GHLensAPI {
 
-    parsingResult.map { repoList =>
-      val opsRepos: List[Repository] = repoList.filter { r => r.rerunRepocop & r.owners.contains("devx-operations") }
-      evaluateRulesForAllRepos(opsRepos)
+  def getRepos: Either[Throwable, List[Repository]] = request.map { response =>
+    if (response.is2xx) {
+      extractRepoListsFromText(response.text())
+    } else {
+      val msg = "Non 2xx status code from github lens"
+      println(msg)
+      Left(new Exception(msg))
     }
-  }
+  }.joinRight
 
   def extractRepoListsFromText(requestText: String): Either[Error, List[Repository]] = {
     implicit val decoder: Decoder[Repository] = deriveDecoder[Repository]
@@ -30,4 +32,8 @@ object Evaluation {
       } yield json.as[List[Repository]]).joinRight
     parsingResult
   }
+
+  private def request: Either[Throwable, Response] = Try(requests.get("https://github-lens.gutools.co.uk/repos", connectTimeout = 1000, readTimeout = 1000)).toEither
+
+
 }

@@ -1,13 +1,13 @@
 package com.gu.repocop
 
-import com.gu.repocop.Evaluation._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import GHLensAPI.extractRepoListsFromText
 
-class EvaluationSpec extends AnyFlatSpec with Matchers {
+class GHLensAPISpec extends AnyFlatSpec with Matchers {
 
   val today: String = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).toString
   val pushedToday: String = s"${'"'}pushed_at${'"'}: ${'"'}${today}${'"'},"
@@ -71,21 +71,7 @@ class EvaluationSpec extends AnyFlatSpec with Matchers {
   "A malformed API response" should "fail gracefully" in {
     extractRepoListsFromText(partialJson).isLeft shouldBe true
   }
-  it should "return the same error no matter where we are in the code, given we failed at the same point" in {
-    def step1Failure(s: String) = extractRepoListsFromText(s)
-    def step1And2Failure(s: String) = evaluateFromResponse(s)
-    step1Failure(partialJson).isLeft & step1And2Failure(partialJson).isLeft shouldBe true
-    step1Failure(partialJson) shouldEqual step1And2Failure(partialJson)
 
-    val notJson = "beep boop"
-    step1Failure(notJson).isLeft & step1And2Failure(notJson).isLeft shouldBe true
-    step1Failure(notJson) shouldEqual step1And2Failure(notJson)
-  }
-  "Rule evaluation" should "only happen if a repository was changed in the last day" in {
-    val actual = evaluateFromResponse(repotext).getOrElse(List())
-    actual.length shouldBe 1
-    actual.head.name shouldBe "repo1"
-  }
 
 
 }
