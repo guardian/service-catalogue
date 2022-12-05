@@ -351,7 +351,7 @@ exports[`The Repocop stack matches the snapshot 1`] = `
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoplambdarepocoplambdacron080AllowEventRuleGithubLensrepocoplambda6A711F8052BB5B42": {
+    "repocoplambdarepocoplambdacron080AllowEventRuleRepocoprepocoplambdaD20097B3E7516549": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
