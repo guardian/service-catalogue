@@ -1,6 +1,6 @@
-import type { GuStackProps } from '@guardian/cdk/lib/constructs/core/index.js';
-import { GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
-import { GuScheduledLambda } from '@guardian/cdk/lib/patterns/scheduled-lambda.js';
+import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuScheduledLambda } from '@guardian/cdk/lib/patterns/scheduled-lambda';
 import type { App } from 'aws-cdk-lib';
 import { Duration } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-events';

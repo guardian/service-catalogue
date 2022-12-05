@@ -1,9 +1,9 @@
-import 'source-map-support/register.js';
-import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root.js';
-import { CloudFormationLens } from '../lib/cloudformation-lens.js';
-import { GithubLens } from '../lib/github-lens.js';
-import { Repocop } from '../lib/repocop.js';
-import { ServicesApi } from '../lib/services-api.js';
+import 'source-map-support/register';
+import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
+import { CloudFormationLens } from '../lib/cloudformation-lens';
+import { GithubLens } from '../lib/github-lens';
+import { Repocop } from '../lib/repocop';
+import { ServicesApi } from '../lib/services-api';
 
 const app = new GuRootExperimental();
 
