@@ -1,15 +1,15 @@
-import { AccessScope } from '@guardian/cdk/lib/constants/index.js';
+import { AccessScope } from '@guardian/cdk/lib/constants';
 import {
 	GuAnghammaradTopicParameter,
 	GuDistributionBucketParameter,
 	GuStack,
 	GuStringParameter,
-} from '@guardian/cdk/lib/constructs/core/index.js';
-import type { GuStackProps } from '@guardian/cdk/lib/constructs/core/index.js';
-import { GuCname } from '@guardian/cdk/lib/constructs/dns/index.js';
-import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3/index.js';
-import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app/index.js';
-import { GuScheduledLambda } from '@guardian/cdk/lib/patterns/scheduled-lambda.js';
+} from '@guardian/cdk/lib/constructs/core';
+import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
+import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app';
+import { GuScheduledLambda } from '@guardian/cdk/lib/patterns/scheduled-lambda';
 import { Duration } from 'aws-cdk-lib';
 import type { App } from 'aws-cdk-lib';
 import {
