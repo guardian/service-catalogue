@@ -16,7 +16,7 @@ We want to be able to answer the following questions:
   - Which repo do services come from?
   - What is my service reliability? (time since last incident)
 
-- For the Developer Experience steam:
+- For the Developer Experience stream:
   - What proportion of all services follow best practice/use tooling?
   - What kinds of technologies are different streams using?
   - What services are costing us the most money?
