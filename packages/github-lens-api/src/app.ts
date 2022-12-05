@@ -40,17 +40,12 @@ export function buildApp(ghData: Promise<GitHubData>): Express {
 	router.get(
 		'/repos/:name',
 		asyncHandler(async (req: express.Request, res: express.Response) => {
-<<<<<<< HEAD
 			const reposData = (await ghData).repos;
 			if (reposData === undefined) {
 				res.status(500).json({ error: 'Unable to retrieve repository data!' });
 				return;
 			}
 			getRepoByName(req, res, reposData);
-=======
-			const reposData=await getReposData(res, ghData);
-			if (reposData !== undefined) getRepoByName(req, res, reposData);
->>>>>>> aab26c0 (add archived repos endpoints)
 		}),
 	);
 
