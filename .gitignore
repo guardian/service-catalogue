@@ -335,3 +335,4 @@ dist
 ### Custom ###
 # Ignore zipped buildg artifacts
 *.zip
+target

@@ -1,0 +1,13 @@
+{
+  "name": "repocop",
+  "version": "0.0.1",
+  "description": "A cop, for repos",
+  "scripts": {
+    "test": "sbt test",
+    "build": "sbt clean assembly",
+    "dev": "echo \"Not implemented!\"",
+    "start": "echo \"Not implemented!\"",
+    "lint": "echo \"Not implemented!\"",
+    "typecheck": "echo \"Not implemented!\""
+  }
+}

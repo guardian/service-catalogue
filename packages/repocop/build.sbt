@@ -16,3 +16,6 @@ libraryDependencies ++= Seq(
   "com.lihaoyi" %% "requests" % "0.7.1",
   "org.scalatest" %% "scalatest" % "3.2.14" % Test
 )
+
+val jarName = "repocop.jar"
+assembly / assemblyJarName := jarName

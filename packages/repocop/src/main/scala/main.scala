@@ -13,7 +13,7 @@ def main(): Unit = {
 }
 
 @main
-//Use runMain markdown to generate the human readable rule doc
+//Use sbt "runMain com.gu.repocop.markdown" to generate the human readable rule doc
 def markdown(): Unit = {
   val bw = new BufferedWriter(new FileWriter(new File("RepoRules.md")))
   bw.write(createPage(Rules.RepoRule.values.toList))

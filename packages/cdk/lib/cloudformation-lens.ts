@@ -1,12 +1,12 @@
-import { AccessScope } from '@guardian/cdk/lib/constants/index.js';
-import type { GuStackProps } from '@guardian/cdk/lib/constructs/core/index.js';
+import { AccessScope } from '@guardian/cdk/lib/constants';
+import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuAnghammaradTopicParameter,
 	GuDistributionBucketParameter,
 	GuStack,
-} from '@guardian/cdk/lib/constructs/core/index.js';
-import { GuCname } from '@guardian/cdk/lib/constructs/dns/index.js';
-import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app/index.js';
+} from '@guardian/cdk/lib/constructs/core';
+import { GuCname } from '@guardian/cdk/lib/constructs/dns';
+import { GuEc2App } from '@guardian/cdk/lib/patterns/ec2-app';
 import { Duration } from 'aws-cdk-lib';
 import type { App } from 'aws-cdk-lib';
 import {

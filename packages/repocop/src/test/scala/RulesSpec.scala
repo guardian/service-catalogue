@@ -48,11 +48,12 @@ class RulesSpec extends AnyFlatSpec with Matchers {
     hasValidTopic.evaluate(multipleValidTopicRepo) shouldBe true
   }
 
-  it should "flag whether a repository has its default branch set to main or not" in {
-    val defaultMainRepo = basicRepo
-    val defaultMasterRepo = basicRepo.copy(default_branch = "master")
-    defaultBranchIsMain.evaluate(defaultMainRepo) shouldBe true
-    defaultBranchIsMain.evaluate(defaultMasterRepo) shouldBe false
+  it should "flag if a repository that does not have main as the default branch" in {
+    val nonMainRepo = basicRepo.copy(default_branch = "master")
+    val mainRepo = basicRepo.copy(default_branch = "main")
+
+    defaultBranchIsMain.evaluate(nonMainRepo) shouldBe false
+    defaultBranchIsMain.evaluate(mainRepo) shouldBe true
   }
 
   "Evaluating all of the rules in a repo" should "produce all required flags with the relevant results" in {
