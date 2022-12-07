@@ -1587,7 +1587,7 @@ systemctl start github-lens-api
       },
       "Type": "AWS::IAM::Policy",
     },
-    "githubdatafetcherlambdagithubdatafetcherlambdacron080AllowEventRuleGithubLensgithubdatafetcherlambdaE2220E44970E0DB1": {
+    "githubdatafetcherlambdagithubdatafetcherlambdacron070AllowEventRuleGithubLensgithubdatafetcherlambdaE2220E443EEB0D75": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -1599,16 +1599,16 @@ systemctl start github-lens-api
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "githubdatafetcherlambdagithubdatafetcherlambdacron080DB012BEB",
+            "githubdatafetcherlambdagithubdatafetcherlambdacron070E752734E",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "githubdatafetcherlambdagithubdatafetcherlambdacron080DB012BEB": {
+    "githubdatafetcherlambdagithubdatafetcherlambdacron070E752734E": {
       "Properties": {
-        "ScheduleExpression": "cron(0 8 * * ? *)",
+        "ScheduleExpression": "cron(0 7 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {

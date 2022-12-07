@@ -159,7 +159,7 @@ systemctl start ${apiApp}
 					toleratedErrorPercentage: 0,
 					snsTopicName: 'devx-alerts',
 				},
-				rules: [{ schedule: Schedule.cron({ minute: '0', hour: '8' }) }],
+				rules: [{ schedule: Schedule.cron({ minute: '0', hour: '7' }) }],
 				timeout: Duration.seconds(300),
 				environment: {
 					STAGE: this.stage,
