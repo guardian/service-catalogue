@@ -14,7 +14,7 @@ export class Repocop extends GuStack {
 			app: repoCopApp,
 			runtime: Runtime.JAVA_11,
 			memorySize: 512,
-			handler: 'com.gu.repocop.main.main',
+			handler: 'com.gu.repocop.Handler::handler',
 			fileName: `${repoCopApp}.jar`,
 			monitoringConfiguration: {
 				toleratedErrorPercentage: 0,

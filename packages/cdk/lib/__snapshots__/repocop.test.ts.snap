@@ -37,7 +37,7 @@ exports[`The Repocop stack matches the snapshot 1`] = `
             "STAGE": "INFRA",
           },
         },
-        "Handler": "com.gu.repocop.main.main",
+        "Handler": "com.gu.repocop.Handler::handler",
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
