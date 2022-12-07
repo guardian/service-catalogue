@@ -33,7 +33,7 @@ object GHLensAPI {
     parsingResult
   }
 
-  private def request: Either[Throwable, Response] = Try(requests.get("https://github-lens.gutools.co.uk/repos", connectTimeout = 1000, readTimeout = 1000)).toEither
+  private def request: Either[Throwable, Response] = Try(requests.get("https://github-lens.gutools.co.uk/repos", connectTimeout = 10000, readTimeout = 10000)).toEither
 
 
 }
