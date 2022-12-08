@@ -4,6 +4,8 @@ exports[`The Repocop stack matches the snapshot 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
+      "GuVpcParameter",
+      "GuSubnetListParameter",
       "GuDistributionBucketParameter",
       "GuScheduledLambda",
       "GuLambdaErrorPercentageAlarm",
@@ -15,6 +17,16 @@ exports[`The Repocop stack matches the snapshot 1`] = `
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "VpcId": {
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
+    },
+    "repocopPrivateSubnets": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
   "Resources": {
@@ -37,7 +49,7 @@ exports[`The Repocop stack matches the snapshot 1`] = `
             "STAGE": "INFRA",
           },
         },
-        "Handler": "com.gu.repocop.main.main",
+        "Handler": "com.gu.repocop.Handler::handler",
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
@@ -69,6 +81,19 @@ exports[`The Repocop stack matches the snapshot 1`] = `
           },
         ],
         "Timeout": 300,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "repocoplambdaSecurityGroupF34437C3",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "repocopPrivateSubnets",
+          },
+        },
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -180,6 +205,44 @@ exports[`The Repocop stack matches the snapshot 1`] = `
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
+    "repocoplambdaSecurityGroupF34437C3": {
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function RepocoprepocoplambdaD20097B3",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "repocop",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "INFRA",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
     "repocoplambdaServiceRole65643A09": {
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -204,6 +267,18 @@ exports[`The Repocop stack matches the snapshot 1`] = `
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
               ],
             ],
           },
