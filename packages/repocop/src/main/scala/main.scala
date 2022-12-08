@@ -7,13 +7,14 @@ import scala.concurrent.{ Future, ExecutionContext }
 import ExecutionContext.Implicits.global
 
 @main
-def main(): Unit = {
-  val repos: Either[Throwable, List[Repository]] = GHLensAPI.getRepos
-  repos.map(Rules.evaluateReposForTeam(_, "devx-operations")).map(_.foreach(println))
+def main(): String = {
+  val result: Either[Throwable, List[EvaluatedRepo]] = GHLensAPI.getRepos.map(Rules.evaluateReposForTeam(_, "devx-operations"))
+  result match
+    case Left(e) => e.getMessage
+    case Right(repos) => s"evaluated ${repos.length.toString} repos"
 }
 
 @main
-//Use sbt "runMain com.gu.repocop.markdown" to generate the human readable rule doc
 def markdown(): Unit = {
   val bw = new BufferedWriter(new FileWriter(new File("RepoRules.md")))
   bw.write(createPage(Rules.RepoRule.values.toList))
