@@ -64,24 +64,24 @@ class RulesSpec extends AnyFlatSpec with Matchers {
     evaluateRulesForRepos(List(basicRepo)).head.name shouldEqual "name"
   }
 
-//  "Rule evaluation" should "only happen if a repository was changed in the last day" in {
-//    val repos: List[Repository] = List(basicRepo.copy(updated_at = today), basicRepo.copy(name = "name2"))
-//    val actual = evaluateReposForTeam(repos, "team1")
-//    actual.length shouldBe 1
-//  }
-//
-//  it should "only take place if the repo is owned by the specified team" in {
-//    val devx = List("devx-operations")
-//    val devxAndOthers = List("devx-operations", "some-other-team")
-//
-//    val actual = evaluateReposForTeam(
-//      repos = List(
-//        todayRepo.copy(owners = devx),
-//        todayRepo.copy(owners = devxAndOthers),
-//        todayRepo
-//      ),
-//      teamSlug = "devx-operations")
-//    actual.length shouldBe 2
-//  }
+  "Rule evaluation" should "only happen if a repository was changed in the last day" in {
+    val repos: List[Repository] = List(basicRepo.copy(updated_at = today), basicRepo.copy(name = "name2"))
+    val actual = evaluateReposForTeam(repos, "team1")
+    actual.length shouldBe 1
+  }
+
+  it should "only take place if the repo is owned by the specified team" in {
+    val devx = List("devx-operations")
+    val devxAndOthers = List("devx-operations", "some-other-team")
+
+    val actual = evaluateReposForTeam(
+      repos = List(
+        todayRepo.copy(owners = devx),
+        todayRepo.copy(owners = devxAndOthers),
+        todayRepo
+      ),
+      teamSlug = "devx-operations")
+    actual.length shouldBe 2
+  }
 
 }

@@ -9,9 +9,11 @@ import ExecutionContext.Implicits.global
 @main
 def main(): String = {
   val result: Either[Throwable, List[EvaluatedRepo]] = GHLensAPI.getRepos.map(Rules.evaluateReposForTeam(_, "devx-operations"))
-  result match
+  val output = result match
     case Left(e) => e.getMessage
     case Right(repos) => s"evaluated ${repos.length.toString} repos"
+  println(output)
+  output
 }
 
 @main
