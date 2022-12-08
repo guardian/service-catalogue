@@ -24,7 +24,7 @@ export const getAllRepos = (
 		},
 	];
 
-	const repos = reposData.payload.filter((repo) => {
+	const repo = reposData.payload.filter((repo) => {
 		return filters.every((filter) => {
 			const paramValue = req.query[filter.paramName];
 			if (paramValue === undefined) return true; // ignore filter fn if param unset
@@ -32,7 +32,7 @@ export const getAllRepos = (
 		});
 	});
 
-	res.status(200).json({ ...reposData, payload: repos });
+	res.status(200).json({ ...reposData, payload: repo });
 };
 
 export const getRepoByName = (

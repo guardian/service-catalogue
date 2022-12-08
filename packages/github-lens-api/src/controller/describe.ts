@@ -3,7 +3,7 @@ import type { Router } from 'express';
 
 function describeRoutes(path: string): string {
 	const infoByRoute: Record<string, string> = {
-		'/heathcheck': 'Display healthcheck',
+		'/healthcheck': 'Display healthcheck',
 		'/repos':
 			'Show all repos, with their team owners, optionally search by name with ?name=^repo-name-regex.* and filter for ?isArchived',
 		'/repos/:name': 'Show repo and its team owners, if it exists',

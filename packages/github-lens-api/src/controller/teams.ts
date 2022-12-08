@@ -15,11 +15,11 @@ export const getTeamBySlug = (
 	res: express.Response,
 	teamsData: RetrievedObject<Team[]>,
 ) => {
-	const jsonResponse = teamsData.payload.filter(
+	const team = teamsData.payload.filter(
 		(item) => item.slug === req.params.slug,
 	);
-	if (jsonResponse.length !== 0) {
-		res.status(200).json(jsonResponse);
+	if (team.length !== 0) {
+		res.status(200).json({ ...teamsData, payload: team[0] });
 	} else {
 		res.status(404).json({ teamSlug: req.params.slug, info: 'Team not found' });
 	}
