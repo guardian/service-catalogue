@@ -66,7 +66,7 @@ export const getObject = async <T>(
 	const payload = JSON.parse(result) as T;
 
 	return {
-		payload,
 		lastModified,
+		payload,
 	};
 };

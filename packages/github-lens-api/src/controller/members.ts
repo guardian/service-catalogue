@@ -15,11 +15,11 @@ export const getMembersByLogin = (
 	res: express.Response,
 	membersData: RetrievedObject<Member[]>,
 ) => {
-	const jsonResponse = membersData.payload.filter(
+	const member = membersData.payload.find(
 		(item) => item.login === req.params.login,
 	);
-	if (jsonResponse.length !== 0) {
-		res.status(200).json(jsonResponse);
+	if (member) {
+		res.status(200).json({ ...membersData, payload: member });
 	} else {
 		res
 			.status(404)
