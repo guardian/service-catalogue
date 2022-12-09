@@ -28,7 +28,7 @@ object GHLensAPI {
 
     val parsingResult: Either[Error, List[Repository]] =
       (for {
-        json <- payload;
+        json <- payload
       } yield json.as[List[Repository]]).joinRight
     parsingResult
   }
