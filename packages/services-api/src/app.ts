@@ -1,10 +1,10 @@
 import { json as jsonBodyParser } from 'body-parser';
 import { getLocalS3Client, getS3Client } from 'common/aws/s3';
+import { getDescribeRouterHandler } from 'common/expressRoutes';
 import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import { getDescribeRouterHandler } from '../../common/src/expressRoutes';
 import type { Config } from './config';
 import type { GalaxyTeam } from './galaxies';
 import { S3GalaxiesApi } from './galaxies';
