@@ -4,8 +4,9 @@ import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import { getDescribeRouterHandler } from '../../common/src/expressRoutes';
 import type { Config } from './config';
+import { getRouteDescriptions } from './controller/describe';
+import { getHealthCheckHandler } from './controller/healthcheck';
 import type { GalaxyTeam } from './galaxies';
 import { S3GalaxiesApi } from './galaxies';
 import type { Service } from './services';
@@ -28,9 +29,7 @@ export function buildApp(config: Config): Express {
 		}),
 	);
 
-	router.get('/healthcheck', (req: express.Request, res: express.Response) => {
-		res.status(200).json({ status: 'OK', stage: 'INFRA' });
-	});
+	router.get('/healthcheck', getHealthCheckHandler());
 
 	const client =
 		config.stage !== 'DEV'
@@ -89,30 +88,7 @@ export function buildApp(config: Config): Express {
 	);
 
 	//handle all invalid routes by showing all available routes
-	router.get(
-		'*',
-		getDescribeRouterHandler(router, (path: string) => {
-			let info = '';
-			switch (path) {
-				case '/healthcheck':
-					info = 'Display healthcheck';
-					break;
-				case '/teams':
-					info = 'Show all P&E teams, with the services they own';
-					break;
-				case '/teams/:name':
-					info = 'Show team and the services it owns, if it exists';
-					break;
-				case '/people':
-					info = 'Show all P&E people, with their role & GitHub username';
-					break;
-				default:
-					info = 'No path info supplied';
-					break;
-			}
-			return info;
-		}),
-	);
+	router.get('*', getRouteDescriptions(router));
 
 	app.use('/', router);
 
