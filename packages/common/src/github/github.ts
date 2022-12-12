@@ -171,6 +171,21 @@ export const getReposForTeam = async (
 	);
 };
 
+export async function listRepoCommits(
+	client: Octokit,
+	repositoryName: string,
+): Promise<string[]> {
+	const response = await client.repos.listCommitCommentsForRepo({
+		owner: 'guardian',
+		repo: repositoryName,
+	});
+	const commits = Object.keys(response.data);
+	console.log(
+		`Repository ${repositoryName} uses languages: ${commits.join(', ')}`,
+	);
+	return commits;
+}
+
 export async function getLanguagesForRepositories(
 	client: Octokit,
 	repositories: RepositoriesResponse,
