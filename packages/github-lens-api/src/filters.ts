@@ -1,10 +1,28 @@
-import type { Repository } from 'common/model/github';
+import type { Repository, Team } from 'common/model/github';
 import type express from 'express';
+import { engineeringTeamSlugs, validTeamSlugs } from './validGithubTeams';
 
-export interface RepoFilter {
+interface TFilter<T> {
 	paramName: string;
-	fn: (r: Repository, paramValue: string) => boolean;
+	fn: (r: T, paramValue: string) => boolean;
 }
+
+const filterT = <T>(
+	req: express.Request,
+	t: T[],
+	filters: Array<TFilter<T>>,
+): T[] => {
+	return t.filter((t) => {
+		return filters.every((filter) => {
+			const paramValue = req.query[filter.paramName];
+			if (paramValue === undefined) return true; // ignore filter fn if param unset
+			return filter.fn(t, paramValue.toString());
+		});
+	});
+};
+
+export type TeamFilter = TFilter<Team>;
+export type RepoFilter = TFilter<Repository>;
 
 export const repoFilters: RepoFilter[] = [
 	{
@@ -25,28 +43,25 @@ export const repoFilters: RepoFilter[] = [
 	},
 ];
 
+export const teamFilters: TeamFilter[] = [
+	{
+		paramName: 'teamName',
+		fn: (team: Team, paramValue: string) => !!team.name.match(paramValue),
+	},
+	{
+		paramName: 'teamIsEngineering',
+		fn: (team: Team) => engineeringTeamSlugs.includes(team.slug),
+	},
+	{
+		paramName: 'teamIsValid',
+		fn: (team: Team) => validTeamSlugs.includes(team.slug),
+	},
+];
+
 export const filterRepos = (
 	req: express.Request,
 	repos: Repository[],
-): Repository[] => {
-	return repos.filter((repo) => {
-		return repoFilters.every((filter) => {
-			const paramValue = req.query[filter.paramName];
-			if (paramValue === undefined) return true; // ignore filter fn if param unset
-			return filter.fn(repo, paramValue.toString());
-		});
-	});
-};
+): Repository[] => filterT(req, repos, repoFilters);
 
-// TODO: If we add further filters, suggest this format
-// export interface TeamFilter {
-// 	paramName: string;
-// 	fn: (r: Team, paramValue: string) => boolean;
-// }
-
-// export const teamFilters: TeamFilter[] = [
-// 	{
-// 		paramName: 'teamName',
-// 		fn: (team: Team, paramValue: string) => true,
-// 	},
-// ];
+export const filterTeams = (req: express.Request, teams: Team[]): Team[] =>
+	filterT(req, teams, teamFilters);

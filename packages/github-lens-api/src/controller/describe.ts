@@ -8,9 +8,9 @@ function describeRoutes(path: string): string {
 			'Show all repos, with their team owners, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?repoNotOwned',
 		'/repos/:name': 'Show repo and its team owners, if it exists',
 		'/teams':
-			'Show all teams, with the repositories they own, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived',
+			'Show all teams, with the repositories they own, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?teamIsEngineering, ?teamIsValid',
 		'/teams/:slug':
-			'Show team with info, if it exists, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived',
+			'Show team with info, if it exists, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?teamIsEngineering, ?teamIsValid',
 		'/members': 'Show member, with the teams they are in',
 		'/members/:login': 'Show member and the teams they are in, if it exists',
 	};
