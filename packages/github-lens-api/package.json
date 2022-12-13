@@ -5,7 +5,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects github-lens-api",
     "prebuild": "rm -rf dist",
-    "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18 --external:aws-sdk",
+    "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18",
     "dev": "DOTENV_CONFIG_PATH=../../.env ts-node ./src/handler.ts",
     "start": "npm run dev",
     "typecheck": "tsc -noEmit"
