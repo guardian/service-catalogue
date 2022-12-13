@@ -5,7 +5,7 @@ function describeRoutes(path: string): string {
 	const infoByRoute: Record<string, string> = {
 		'/healthcheck': 'Display healthcheck',
 		'/repos':
-			'Show all repos, with their team owners, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived',
+			'Show all repos, with their team owners, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?repoNotOwned',
 		'/repos/:name': 'Show repo and its team owners, if it exists',
 		'/teams':
 			'Show all teams, with the repositories they own, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived',

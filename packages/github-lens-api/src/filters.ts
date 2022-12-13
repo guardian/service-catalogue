@@ -12,6 +12,10 @@ export const repoFilters: RepoFilter[] = [
 		fn: (repo: Repository, paramValue: string) => !!repo.name.match(paramValue),
 	},
 	{
+		paramName: 'repoNotOwned',
+		fn: (repo: Repository) => repo.owners.length === 0,
+	},
+	{
 		paramName: 'repoIsArchived',
 		fn: (repo: Repository) => repo.archived ?? false,
 	},
