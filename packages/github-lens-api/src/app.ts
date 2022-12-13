@@ -7,7 +7,7 @@ import { getRouteDescriptions } from './controller/describe';
 import { getHealthCheckHandler } from './controller/healthcheck';
 import { getMembers, getMembersByLogin } from './controller/members';
 import { getAllRepos, getRepoByName } from './controller/repos';
-import { getTeamBySlug } from './controller/teams';
+import { getAllTeams, getTeamBySlug } from './controller/teams';
 import type { GitHubData } from './data';
 
 export function buildApp(ghData: Promise<GitHubData>): Express {
@@ -57,7 +57,7 @@ export function buildApp(ghData: Promise<GitHubData>): Express {
 				res.status(500).json({ error: 'Unable to retrieve teams data!' });
 				return;
 			}
-			res.status(200).json(teamsData);
+			getAllTeams(req, res, teamsData);
 		}),
 	);
 
