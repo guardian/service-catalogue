@@ -4,7 +4,7 @@
   "description": "A fetcher for repository metadata in your GitHub organisation",
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects github-data-fetcher",
-    "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18 --external:aws-sdk",
+    "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18 --external:@aws-sdk",
     "dev": "DOTENV_CONFIG_PATH=../../.env ts-node ./src/handler.ts",
     "typecheck": "tsc -noEmit"
   },
