@@ -6,8 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 
-class RepositorySpec extends AnyFlatSpec with Matchers{
-
+class RepositorySpec extends AnyFlatSpec with Matchers {
   val todayTimestamp = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
   val today = todayTimestamp.toString
   val yesterday = todayTimestamp.minusDays(1).toString
@@ -22,12 +21,25 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
     archived = false,
     topics = List("topic1", "topic2"),
     default_branch = "main",
-    owners= List("team1"))
+    owners = List("team1")
+  )
 
   "A repository that has had any kind of change since yesterday" should "require an update to be sent" in {
-    val updatedYesterday = updatedToday.copy(created_at = beforeTheCutoff, updated_at = yesterday, pushed_at = beforeTheCutoff)
-    val createdYesterday = updatedToday.copy(created_at = yesterday, updated_at = yesterday, pushed_at = yesterday)
-    val pushedYesterday = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = yesterday)
+    val updatedYesterday = updatedToday.copy(
+      created_at = beforeTheCutoff,
+      updated_at = yesterday,
+      pushed_at = beforeTheCutoff
+    )
+    val createdYesterday = updatedToday.copy(
+      created_at = yesterday,
+      updated_at = yesterday,
+      pushed_at = yesterday
+    )
+    val pushedYesterday = updatedToday.copy(
+      created_at = beforeTheCutoff,
+      updated_at = beforeTheCutoff,
+      pushed_at = yesterday
+    )
 
     updatedToday.rerunRepocop shouldBe true
     updatedYesterday.rerunRepocop shouldBe true
@@ -35,14 +47,23 @@ class RepositorySpec extends AnyFlatSpec with Matchers{
     pushedYesterday.rerunRepocop shouldBe true
   }
 
-  "A repository that has not changed since yesterday" should "not require any updates to be sent" in{
-    val oldRepo = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = beforeTheCutoff)
+  "A repository that has not changed since yesterday" should "not require any updates to be sent" in {
+    val oldRepo = updatedToday.copy(
+      created_at = beforeTheCutoff,
+      updated_at = beforeTheCutoff,
+      pushed_at = beforeTheCutoff
+    )
     oldRepo.rerunRepocop shouldBe false
   }
 
   "A repository with any unparseable date" should "update anyway" in {
-    val unclearDate = updatedToday.copy(created_at = beforeTheCutoff, updated_at = beforeTheCutoff, pushed_at = "asdfghjkl")
-    val allUnclearDates = unclearDate.copy(created_at = "qwertyuiop", updated_at = "zxcvbnm")
+    val unclearDate = updatedToday.copy(
+      created_at = beforeTheCutoff,
+      updated_at = beforeTheCutoff,
+      pushed_at = "asdfghjkl"
+    )
+    val allUnclearDates =
+      unclearDate.copy(created_at = "qwertyuiop", updated_at = "zxcvbnm")
     unclearDate.rerunRepocop shouldBe true
     allUnclearDates.rerunRepocop shouldBe true
   }

@@ -9,7 +9,8 @@ import GHLensAPI.extractRepoListsFromText
 
 class GHLensAPISpec extends AnyFlatSpec with Matchers {
 
-  val today: String = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).toString
+  val today: String =
+    LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).toString
   val pushedToday: String = s"${'"'}pushed_at${'"'}: ${'"'}${today}${'"'},"
 
   val repotext: String =
@@ -71,7 +72,4 @@ class GHLensAPISpec extends AnyFlatSpec with Matchers {
   "A malformed API response" should "fail gracefully" in {
     extractRepoListsFromText(partialJson).isLeft shouldBe true
   }
-
-
-
 }

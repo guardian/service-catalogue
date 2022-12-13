@@ -11,10 +11,11 @@ class MarkdownSpec extends AnyFlatSpec with Matchers {
 
     val filename = "RepoRules.md"
     val source = Source.fromFile(filename)
-    val fileContent: String = source.getLines().toList.mkString("\n")+"\n"
+    val fileContent: String = source.getLines().toList.mkString("\n") + "\n"
     source.close()
 
-    MarkdownHelpers.createPage(Rules.RepoRule.values.toList) shouldEqual fileContent
+    MarkdownHelpers.createPage(
+      Rules.RepoRule.values.toList
+    ) shouldEqual fileContent
   }
-
 }
