@@ -19,12 +19,15 @@ object GHLensAPI {
     }
   }.joinRight
 
-  def extractRepoListsFromText(requestText: String): Either[Error, List[Repository]] = {
+  def extractRepoListsFromText(
+      requestText: String
+  ): Either[Error, List[Repository]] = {
     implicit val decoder: Decoder[Repository] = deriveDecoder[Repository]
     implicit val encoder: Encoder[Repository] = deriveEncoder[Repository]
 
     val parsed: Either[Error, Json] = parse(requestText)
-    val payload: Either[Error, Json] = parsed.map(_.hcursor.get[Json]("payload")).joinRight
+    val payload: Either[Error, Json] =
+      parsed.map(_.hcursor.get[Json]("payload")).joinRight
 
     val parsingResult: Either[Error, List[Repository]] =
       (for {
@@ -33,7 +36,11 @@ object GHLensAPI {
     parsingResult
   }
 
-  private def request: Either[Throwable, Response] = Try(requests.get("https://github-lens.gutools.co.uk/repos", connectTimeout = 3000, readTimeout = 3000)).toEither
-
-
+  private def request: Either[Throwable, Response] = Try(
+    requests.get(
+      "https://github-lens.gutools.co.uk/repos",
+      connectTimeout = 3000,
+      readTimeout = 3000
+    )
+  ).toEither
 }
