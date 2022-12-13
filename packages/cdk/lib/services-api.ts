@@ -87,7 +87,7 @@ systemctl start ${app}
 			certificateProps: { domainName: props.domainName },
 			scaling: { minimumInstances: 1, maximumInstances: 2 },
 			userData: userData,
-			imageRecipe: 'arm64-focal-node16-devx',
+			imageRecipe: 'arm64-focal-node18-devx',
 			applicationLogging: { enabled: true },
 		});
 
