@@ -33,14 +33,14 @@ export const repoFilters: RepoFilter[] = [
 		paramName: 'repoIsOwned',
 		fn: (repo: Repository, paramValue: string) => {
 			const repoIsOwned = repo.owners.length !== 0;
-			return paramValue === 'true' ? repoIsOwned : !repoIsOwned;
+			return paramValue === 'false' ? !repoIsOwned : repoIsOwned;
 		},
 	},
 	{
 		paramName: 'repoIsArchived',
 		fn: (repo: Repository, paramValue: string) => {
 			const repoIsArchived = repo.archived ?? false;
-			return paramValue === 'true' ? repoIsArchived : !repoIsArchived;
+			return paramValue === 'false' ? !repoIsArchived : repoIsArchived;
 		},
 	},
 ];
@@ -54,14 +54,14 @@ export const teamFilters: TeamFilter[] = [
 		paramName: 'teamIsEngineering',
 		fn: (team: Team, paramValue: string) => {
 			const teamIsEngineering = engineeringTeamSlugs.includes(team.slug);
-			return paramValue === 'true' ? teamIsEngineering : !teamIsEngineering;
+			return paramValue === 'false' ? !teamIsEngineering : teamIsEngineering;
 		},
 	},
 	{
 		paramName: 'teamIsValid',
 		fn: (team: Team, paramValue: string) => {
 			const teamIsValid = validTeamSlugs.includes(team.slug);
-			return paramValue === 'true' ? teamIsValid : !teamIsValid;
+			return paramValue === 'false' ? !teamIsValid : teamIsValid;
 		},
 	},
 ];
