@@ -1,7 +1,7 @@
 import type { RetrievedObject } from 'common/aws/s3';
 import type { Team } from 'common/model/github';
 import type express from 'express';
-import { filterRepos } from '../filters';
+import { filterRepos, filterTeams } from '../filters';
 
 export const getAllTeams = (
 	req: express.Request,
@@ -12,7 +12,10 @@ export const getAllTeams = (
 		return { ...team, repos: filterRepos(req, team.repos) };
 	});
 
-	const filteredTeamsData = { ...teamsData, payload: filteredTeams };
+	const filteredTeamsData = {
+		...teamsData,
+		payload: filterTeams(req, filteredTeams),
+	};
 
 	res.status(200).json(filteredTeamsData);
 };

@@ -64,3 +64,14 @@ export const validGithubTeams = [
 	{ name: 'it-australia', engineering: false },
 	{ name: 'glabs-au', engineering: false },
 ];
+
+export const engineeringTeamSlugs = validGithubTeams
+	.filter((team) => team.engineering)
+	.map((team) => {
+		const { name } = team;
+		return name;
+	});
+
+export const validTeamSlugs = validGithubTeams.map((team) => {
+	return team.name;
+});
