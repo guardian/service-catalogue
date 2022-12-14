@@ -5,12 +5,12 @@ function describeRoutes(path: string): string {
 	const infoByRoute: Record<string, string> = {
 		'/healthcheck': 'Display healthcheck',
 		'/repos':
-			'Show all repos, with their team owners, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?repoNotOwned',
+			'Show all repos, with their team owners, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived=true|false, ?repoIsOwned=true|false',
 		'/repos/:name': 'Show repo and its team owners, if it exists',
 		'/teams':
-			'Show all teams, with the repositories they own, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?teamIsEngineering, ?teamIsValid',
+			'Show all teams, with the repositories they own, optionally filter repositories ?repoName=^repo-name-regex.*, ?teamName=^repo-name-regex.*, ?repoIsArchived=true|false, ?repoIsOwned=true|false ?teamIsEngineering=true|false, ?teamIsValid=true|false',
 		'/teams/:slug':
-			'Show team with info, if it exists, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoIsArchived, ?repoIsNotArchived, ?teamIsEngineering, ?teamIsValid',
+			'Show team with info, if it exists, optionally filter repositories ?repoName=^repo-name-regex.*, ?repoName=^repo-name-regex.*, ?teamName=^repo-name-regex.*, ?repoIsArchived=true|false, ?repoIsOwned=true|false ?teamIsEngineering=true|false, ?teamIsValid=true|false',
 		'/members': 'Show member, with the teams they are in',
 		'/members/:login': 'Show member and the teams they are in, if it exists',
 	};
