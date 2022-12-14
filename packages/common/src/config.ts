@@ -3,7 +3,7 @@ import { decrypt } from './aws/kms';
 
 dotenv.config({ path: `${__dirname}/../../../.env` });
 
-export type Stage = 'PROD' | 'CODE' | 'DEV';
+export type Stage = `INFRA` | 'DEV';
 
 export const mandatoryEncrypted = async (
 	item: string,
