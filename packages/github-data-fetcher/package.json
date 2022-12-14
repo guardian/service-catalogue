@@ -5,7 +5,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects github-data-fetcher",
     "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node16 --external:aws-sdk",
-    "dev": "ts-node ./src/handler",
+    "dev": "DOTENV_CONFIG_PATH=../../.env ts-node ./src/handler.ts",
     "typecheck": "tsc -noEmit"
   },
   "dependencies": {
@@ -14,7 +14,6 @@
     "@octokit/auth-app": "^4.0.4",
     "@octokit/core": "^4.0.4",
     "@octokit/plugin-throttling": "^4.3.2",
-    "@octokit/rest": "^19.0.3",
-    "dotenv": "^16.0.1"
+    "@octokit/rest": "^19.0.3"
   }
 }

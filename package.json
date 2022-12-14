@@ -22,13 +22,13 @@
     "@guardian/prettier": "^2.1.5",
     "@guardian/tsconfig": "^0.2.0",
     "aws-sdk-client-mock": "^2.0.0",
+    "dotenv": "^16.0.1",
     "esbuild": "^0.15.16",
     "eslint-plugin-prettier": "^4.2.1"
   },
   "dependencies": {
     "@types/jest": "^29.2.3",
     "@types/node": "^18.11.11",
-    "dotenv": "^16.0.1",
     "jest": "^29.3.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",

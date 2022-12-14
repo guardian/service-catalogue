@@ -1,7 +1,4 @@
-import * as dotenv from 'dotenv';
 import { decrypt } from './aws/kms';
-
-dotenv.config({ path: `${__dirname}/../../../.env` });
 
 export type Stage = `INFRA` | 'DEV';
 
