@@ -202,7 +202,7 @@ async function getRepositoryLanguages(
 		repo: repositoryName,
 	});
 	const languages = Object.keys(response.data);
-	console.log(
+	console.debug(
 		`Repository ${repositoryName} uses languages: ${languages.join(', ')}`,
 	);
 	return languages;
