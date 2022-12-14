@@ -65,3 +65,13 @@ To run all the tests, `npm run test`. To run tests under a particular path, `npm
   This repository defines a service as something provisioned in AWS defined using Infrastructure as Code (IaC) (AWS CloudFormation).
   Those resources provisioned outside IaC are not reported against. In the future, we should collect this data to help us answer questions such as:
   - How can I completely recreate my service in a different region from scratch?
+  
+- Multiple repositories
+
+  If a service defines its application code in one repository, and infrastructure in another, 
+  the Service Catalogue APIs will _not_ offer an aggregated view.
+  It will treat the repositories as independant entities.
+  
+  The ultimate solution here is for teams to migrate to a single repository, as:
+    - Multiple repositories means at least one of them is manually deployed
+    - With a single repository, Riff-Raff can be used to continuously deploy all aspects of the service
