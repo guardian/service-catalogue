@@ -11,20 +11,7 @@ STACK=deploy
 
 setup_git_hook() {
   echo "Setting up repocop pre-commit hook"
-  printf '#!/bin/sh
-
-
-REPOCOP_CHANGES=$(git status --short packages/repocop/)
-if [[ -n "$REPOCOP_CHANGES" ]]
-then
-    printf "RepoCop changes detected"
-    printf "\n\nRunning markdown snapshot test. If this fails, regenerate the markdown file, stage the changes, and commit again"
-    printf "\nIt can take several seconds for sbt to start up. Sit tight...\n\n"
-    (cd packages/repocop && sbt "testOnly *MarkdownSpec")
-else
-    echo "No repocop changes detected, skipping git hook"
-fi
-' > "${ROOT_DIR}/.git/hooks/pre-commit"
+  cp "${ROOT_DIR}/scripts/pre-commit" "${ROOT_DIR}/.git/hooks/pre-commit"
 
 chmod +x "${ROOT_DIR}/.git/hooks/pre-commit"
 }
