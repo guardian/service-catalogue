@@ -3,8 +3,10 @@ import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
 import {
 	getLanguagesForRepositories,
+	getLastCommitForRepositories,
 	getOctokit,
 	getReposForTeam,
+	getRepositoryLastCommit,
 	getTeam,
 	listMembers,
 	listRepositories,
@@ -81,7 +83,8 @@ async function getGHData(
 	console.log(`Found ${teams.length} github teams`);
 
 	// Get all repositories
-	const repositories = await listRepositories(client);
+	let repositories = await listRepositories(client);
+
 	console.log(`Found ${repositories.length} github repos`);
 
 	// Get all organisation members
@@ -95,11 +98,19 @@ async function getGHData(
 	const membersOutput = members.map((member) =>
 		asMember(member, membersOfTeams[member.login] ?? []),
 	);
+	console.log('Join members to teams');
 
 	const repositoryLanguages = await getLanguagesForRepositories(
 		client,
 		repositories,
 	);
+	console.log('Get repo languages');
+
+	const repositoryLastCommit = await getLastCommitForRepositories(
+		client,
+		repositories,
+	);
+	console.log('Get last commits for repos');
 
 	// Join repositories to teams
 	const repositoriesToAdmins = await teamRepositories(client, teamSlugs);
@@ -108,8 +119,10 @@ async function getGHData(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
 			repositoryLanguages[repository.name] ?? [],
+			repositoryLastCommit[repository.name] ?? [],
 		);
 	});
+	console.log('Join repositories to teams');
 
 	const teamsMap = repositories.reduce<
 		Record<string, Repository[] | undefined>
@@ -119,6 +132,7 @@ async function getGHData(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
 			repositoryLanguages[repository.name] ?? [],
+			repositoryLastCommit[repository.name] ?? [],
 		);
 
 		adminTeamSlugs.forEach((adminSlug: string) => {
@@ -159,7 +173,16 @@ export const main = async (): Promise<void> => {
 	const githubClient = getOctokit(config.github);
 	const s3Client = getS3Client(config.region);
 
+	const lastCommitRiffRaff = getRepositoryLastCommit(githubClient, 'riff-raff');
+	console.log(lastCommitRiffRaff);
+
 	const ghData = await getGHData(githubClient, config.github.teamToFetch);
+
+	const lastCommit = getRepositoryLastCommit(
+		githubClient,
+		'test-interactive-repo',
+	);
+	console.log(lastCommit);
 
 	const saveObject = async <T>(name: string, data: T) => {
 		const repoFileLocation = path.join(config.dataKeyPrefix, `${name}.json`);

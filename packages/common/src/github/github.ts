@@ -207,3 +207,62 @@ async function getRepositoryLanguages(
 	);
 	return languages;
 }
+
+export async function getLastCommitForRepositories(
+	client: Octokit,
+	repositories: RepositoriesResponse,
+): Promise<Record<string, string[]>> {
+	const data = await Promise.all(
+		repositories.map(async ({ name }) => {
+			const lastCommits = await getRepositoryLastCommit(client, name);
+			return {
+				repository: name,
+				lastCommits,
+			};
+		}),
+	);
+
+	return data.reduce((acc, { repository, lastCommits }) => {
+		return {
+			...acc,
+			[repository]: lastCommits,
+		};
+	}, {});
+}
+
+export async function getRepositoryLastCommit(
+	client: Octokit,
+	repositoryName: string,
+): Promise<any> {
+	let message: string = '';
+	let author: string = '';
+	let time: string = '';
+	try {
+		const lastCommit = await client.request(
+			`GET /repos/{owner}/{repo}/commits`,
+			{
+				owner: 'guardian',
+				repo: repositoryName,
+				per_page: 1,
+			},
+		);
+		if (lastCommit.data['0']) {
+			message = lastCommit.data['0'].commit?.message
+				? lastCommit.data['0'].commit?.message
+				: '';
+			author = lastCommit.data['0'].commit?.author?.name
+				? lastCommit.data['0'].commit?.author?.name
+				: '';
+			time = lastCommit.data['0'].commit?.author?.date
+				? lastCommit.data['0'].commit?.author?.date
+				: '';
+		}
+	} catch {
+		console.log('Repository ' + repositoryName + ' has no commits');
+	}
+	return {
+		message: message,
+		author: author,
+		time: time,
+	};
+}

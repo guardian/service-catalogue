@@ -15,6 +15,7 @@ export interface Repository {
 	topics: string[] | undefined;
 	default_branch: string | undefined;
 	owners: string[];
+	lastCommit: string[];
 }
 
 export interface Team {

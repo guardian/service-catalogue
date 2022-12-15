@@ -31,6 +31,7 @@ export const asRepo = (
 	repo: RepositoryResponse,
 	owners: string[],
 	languages: string[],
+	lastCommit: string[],
 ): Repository => {
 	return {
 		id: repo.id,
@@ -49,6 +50,7 @@ export const asRepo = (
 		default_branch: repo.default_branch,
 		owners,
 		languages,
+		lastCommit,
 	};
 };
 
