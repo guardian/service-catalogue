@@ -1,0 +1,21 @@
+#!/bin/zsh
+
+MSG='
+RepoCop changes detected"
+
+Running markdown snapshot test. If this fails, regenerate the markdown file, stage the changes, and commit again
+Run
+    sbt "runMain com.gu.repocop.markdown"
+from the repocop root.
+It can take several seconds for sbt to start up. Sit tight...
+'
+
+REPOCOP_CHANGES=$(git status --short packages/repocop/)
+if [[ -n "$REPOCOP_CHANGES" ]]
+then
+    # shellcheck disable=SC2090
+    echo "${MSG}"
+    (cd packages/repocop && sbt "testOnly *MarkdownSpec")
+else
+    echo "No repocop changes detected, skipping git hook"
+fi
