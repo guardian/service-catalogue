@@ -3,6 +3,7 @@ import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
 import { sleep } from '../sleep';
+import { Commit } from 'common/model/github';
 
 const ThrottledOctokit = Octokit.plugin(throttling);
 const defaultPageSize = 100;
@@ -211,7 +212,7 @@ async function getRepositoryLanguages(
 export async function getLastCommitForRepositories(
 	client: Octokit,
 	repositories: RepositoriesResponse,
-): Promise<Record<string, string[]>> {
+): Promise<Record<string, Commit | undefined>> {
 	const data = await Promise.all(
 		repositories.map(async ({ name }) => {
 			const lastCommits = await getRepositoryLastCommit(client, name);
@@ -230,39 +231,28 @@ export async function getLastCommitForRepositories(
 	}, {});
 }
 
-export async function getRepositoryLastCommit(
+async function getRepositoryLastCommit(
 	client: Octokit,
 	repositoryName: string,
-): Promise<any> {
-	let message: string = '';
-	let author: string = '';
-	let time: string = '';
+): Promise<Commit | undefined> {
 	try {
-		const lastCommit = await client.request(
-			`GET /repos/{owner}/{repo}/commits`,
-			{
-				owner: 'guardian',
-				repo: repositoryName,
-				per_page: 1,
-			},
-		);
-		if (lastCommit.data['0']) {
-			message = lastCommit.data['0'].commit?.message
-				? lastCommit.data['0'].commit?.message
-				: '';
-			author = lastCommit.data['0'].commit?.author?.name
-				? lastCommit.data['0'].commit?.author?.name
-				: '';
-			time = lastCommit.data['0'].commit?.author?.date
-				? lastCommit.data['0'].commit?.author?.date
-				: '';
+		let response = await client.request(`GET /repos/{owner}/{repo}/commits`, {
+			owner: 'guardian',
+			repo: repositoryName,
+			per_page: 1,
+		});
+		const lastCommit = response.data['0'];
+		if (lastCommit) {
+			return {
+				message: lastCommit.commit.message,
+				author: lastCommit.commit.author?.name,
+				date: lastCommit.commit.author?.date,
+				sha: lastCommit.sha,
+			};
 		}
+		return undefined;
 	} catch {
 		console.log('Repository ' + repositoryName + ' has no commits');
+		return undefined;
 	}
-	return {
-		message: message,
-		author: author,
-		time: time,
-	};
 }

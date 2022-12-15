@@ -15,7 +15,7 @@ export interface Repository {
 	topics: string[] | undefined;
 	default_branch: string | undefined;
 	owners: string[];
-	lastCommit: string[];
+	lastCommit?: Commit;
 }
 
 export interface Team {
@@ -23,6 +23,13 @@ export interface Team {
 	name: string;
 	slug: string;
 	repos: Repository[];
+}
+
+export interface Commit {
+	message: string;
+	author?: string;
+	date?: string;
+	sha?: string;
 }
 
 export interface Member {
