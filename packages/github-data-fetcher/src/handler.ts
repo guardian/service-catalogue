@@ -82,7 +82,7 @@ async function getGHData(
 	console.log(`Found ${teams.length} github teams`);
 
 	// Get all repositories
-	let repositories = await listRepositories(client);
+	const repositories = await listRepositories(client);
 
 	//TODO implement better way to test on dev
 	//repositories = repositories.slice(0, 10);

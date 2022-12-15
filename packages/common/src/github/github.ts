@@ -2,8 +2,8 @@ import { createAppAuth } from '@octokit/auth-app';
 import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
+import type { Commit } from 'common/model/github';
 import { sleep } from '../sleep';
-import { Commit } from 'common/model/github';
 
 const ThrottledOctokit = Octokit.plugin(throttling);
 const defaultPageSize = 100;
@@ -236,7 +236,7 @@ async function getRepositoryLastCommit(
 	repositoryName: string,
 ): Promise<Commit | undefined> {
 	try {
-		let response = await client.request(`GET /repos/{owner}/{repo}/commits`, {
+		const response = await client.request(`GET /repos/{owner}/{repo}/commits`, {
 			owner: 'guardian',
 			repo: repositoryName,
 			per_page: 1,
