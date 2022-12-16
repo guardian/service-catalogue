@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -16,17 +17,19 @@ type OrgsResult struct {
 	}
 }
 
-type ProjectsResult struct {
-	org struct {
-		Name string `json:"name"`
+type Issues struct {
+	IssuesArray []struct {
+		PkgName string `json:"pkgName"`
 	}
 }
 
-func makeSnykRequest[A any](path string, snykToken string) (A, error) {
+func snykRequest[A any](method string, path string, headers http.Header, reqBody string) (A, error) {
 	var a A
+	payloadBuf := new(bytes.Buffer)
+	json.NewEncoder(payloadBuf).Encode(reqBody)
 	url := "https://api.snyk.io/api/v1/" + path
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add("Authorization", "token "+snykToken)
+	req, err := http.NewRequest(method, url, payloadBuf)
+	req.Header = headers
 
 	resp, err := http.DefaultClient.Do(req)
 	if resp.StatusCode != 200 {
@@ -63,6 +66,7 @@ type TagArray []struct {
 }
 
 type ProjectArray []struct {
+	Id            string   `json:"id"`
 	Name          string   `json:"name"`
 	Origin        string   `json:"origin"`
 	RemoteRepoUrl string   `json:"remoteRepoUrl"`
@@ -73,22 +77,21 @@ type ProjectResult struct {
 	Projects ProjectArray
 }
 
-func extractOrgSlugs(orgsResult OrgsResult) []string {
+func extractOrgIds(orgsResult OrgsResult) []string {
 
 	var result []string
-
 	for _, s := range orgsResult.Orgs {
 		result = append(result, s.Id)
 	}
 	return result
 }
-func getOrgs(snykGroupId string, snykToken string) ([]string, error) {
+func getOrgs(snykGroupId string, headers http.Header) ([]string, error) {
 	path := "group/" + snykGroupId + "/orgs"
-	orgsResult, err := makeSnykRequest[OrgsResult](path, snykToken)
+	orgsResult, err := snykRequest[OrgsResult](http.MethodGet, path, headers, "")
 	if err != nil {
 		return []string{}, err
 	} else {
-		return extractOrgSlugs(orgsResult), err
+		return extractOrgIds(orgsResult), err
 	}
 }
 
@@ -96,8 +99,11 @@ func main() {
 	//TODO put these two variables in env config
 	snykGroupId := os.Getenv("SNYK_GROUP_ID")
 	snykToken := os.Getenv("SNYK_API_KEY")
-	orgIds, _ := getOrgs(snykGroupId, snykToken)
-	projects, _ := makeSnykRequest[ProjectResult]("org/"+orgIds[1]+"/projects", snykToken)
+	headers := http.Header{"Authorization": {"token " + snykToken}}
+
+	orgIds, _ := getOrgs(snykGroupId, headers)
+	projects, _ := snykRequest[ProjectResult](http.MethodGet, "org/"+orgIds[1]+"/projects", headers, "")
+
 	fmt.Println(projects.Projects[0])
 
 }
