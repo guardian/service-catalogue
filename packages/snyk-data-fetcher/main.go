@@ -18,17 +18,31 @@ type OrgsResult struct {
 }
 
 type Issues struct {
-	IssuesArray []struct {
-		PkgName string `json:"pkgName"`
+	Issues []struct {
+		Id          string   `json:"id"`
+		PkgName     string   `json:"pkgName"`
+		PkgVersions []string `json:"pkgVersions"`
+		IssueData   struct {
+			Severity string `json:"severity"`
+		}
+		FixInfo struct {
+			IsUpgradable       bool     `json:"isUpgradable"`
+			IsFixable          bool     `json:"isFixable"`
+			IsPartiallyFixable bool     `json:"isPartiallyFixable"`
+			FixedIn            []string `json:"fixedIn"`
+		}
+		Links struct {
+			Paths string `json:"paths"`
+		}
 	}
 }
 
 func snykRequest[A any](method string, path string, headers http.Header, reqBody string) (A, error) {
 	var a A
-	payloadBuf := new(bytes.Buffer)
-	json.NewEncoder(payloadBuf).Encode(reqBody)
+	bodyBytes := []byte(reqBody)
+
 	url := "https://api.snyk.io/api/v1/" + path
-	req, err := http.NewRequest(method, url, payloadBuf)
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(bodyBytes))
 	req.Header = headers
 
 	resp, err := http.DefaultClient.Do(req)
