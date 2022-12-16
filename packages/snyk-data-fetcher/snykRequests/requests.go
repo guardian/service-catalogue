@@ -10,7 +10,7 @@ import (
 	"snyk-data-fetcher/models"
 )
 
-func SnykRequest[A any](method string, path string, headers http.Header, reqBody string) (A, error) {
+func snykRequest[A any](method string, path string, headers http.Header, reqBody string) (A, error) {
 	var a A
 	bodyBytes := []byte(reqBody)
 
@@ -45,7 +45,7 @@ func SnykRequest[A any](method string, path string, headers http.Header, reqBody
 func GetOrgs(snykGroupId string, headers http.Header) (models.OrgsResult, error) {
 
 	path := "group/" + snykGroupId + "/orgs"
-	orgsResult, err := SnykRequest[models.OrgsResult](http.MethodGet, path, headers, "")
+	orgsResult, err := snykRequest[models.OrgsResult](http.MethodGet, path, headers, "")
 	if err != nil {
 		return models.OrgsResult{}, err
 	} else {
@@ -55,12 +55,17 @@ func GetOrgs(snykGroupId string, headers http.Header) (models.OrgsResult, error)
 
 func GetProjectsForOrg(orgId string, token string) (models.ProjectResult, error) {
 	authHeader := http.Header{"Authorization": {"token " + token}}
-	return SnykRequest[models.ProjectResult](http.MethodGet, "org/"+orgId+"/projects", authHeader, "")
+	return snykRequest[models.ProjectResult](http.MethodGet, "org/"+orgId+"/projects", authHeader, "")
 }
 
 func UrgentAggregatedIssuesForProject(orgId string, projectId string, token string) (models.Issues, error) {
 	path := "org/" + orgId + "/project/" + projectId + "/aggregated-issues"
 	headers := http.Header{"Authorization": {"token " + token}, "Content-Type": {"application/json"}}
 	body := "{\"filters\": {\"severities\": [\"critical\", \"high\" ]}}"
-	return SnykRequest[models.Issues](http.MethodPost, path, headers, body)
+	return snykRequest[models.Issues](http.MethodPost, path, headers, body)
+}
+
+func GetIssueForProject(orgId string, projectId string, issueId string, token string) (models.IssuePath, error) {
+	path := "org/" + orgId + "/project/" + projectId + "/history/latest/issue/" + issueId + "paths"
+	return snykRequest[models.IssuePath](http.MethodGet, path, http.Header{"Authorization": {"token " + token}}, "")
 }

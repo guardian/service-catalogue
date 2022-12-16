@@ -10,19 +10,20 @@ type IssuePath struct {
 	Paths      []pathArray `json:"paths"`
 }
 
-type Issues struct {
-	Issues []struct {
-		Id          string   `json:"id"`
-		PkgName     string   `json:"pkgName"`
-		PkgVersions []string `json:"pkgVersions"`
-		IssueData   struct {
-			Severity string `json:"severity"`
-		}
-		FixInfo struct {
-			IsUpgradable       bool     `json:"isUpgradable"`
-			IsFixable          bool     `json:"isFixable"`
-			IsPartiallyFixable bool     `json:"isPartiallyFixable"`
-			FixedIn            []string `json:"fixedIn"`
-		}
+type Issue struct {
+	Id          string   `json:"id"`
+	PkgName     string   `json:"pkgName"`
+	PkgVersions []string `json:"pkgVersions"`
+	IssueData   struct {
+		Severity string `json:"severity"`
 	}
+	FixInfo struct {
+		IsUpgradable       bool     `json:"isUpgradable"`
+		IsFixable          bool     `json:"isFixable"`
+		IsPartiallyFixable bool     `json:"isPartiallyFixable"`
+		FixedIn            []string `json:"fixedIn"`
+	}
+}
+type Issues struct {
+	Issues []Issue
 }

@@ -10,7 +10,7 @@ type TagArray []struct {
 	Value string `json:"value"`
 }
 
-type ProjectArray []struct {
+type Project struct {
 	Id            string   `json:"id"`
 	Name          string   `json:"name"`
 	Origin        string   `json:"origin"`
@@ -19,5 +19,5 @@ type ProjectArray []struct {
 }
 type ProjectResult struct {
 	Org      Org
-	Projects ProjectArray
+	Projects []Project
 }
