@@ -212,15 +212,30 @@ async function getRepositoryLanguages(
 export async function getLastCommitForRepositories(
 	client: Octokit,
 	repositories: RepositoriesResponse,
-): Promise<Record<string, Commit | undefined>> {
+): Promise<Record<string, Commit>> {
 	const data = await Promise.all(
-		repositories.map(async ({ name }) => {
-			const lastCommits = await getRepositoryLastCommit(client, name);
-			return {
-				repository: name,
-				lastCommits,
-			};
-		}),
+		repositories
+			.filter((repository) => {
+				const repositoryIsEmpty = repository.size === 0;
+				const hasDefaultBranch = repository.default_branch !== undefined;
+				if (!hasDefaultBranch) {
+					console.log(
+						`Repository ${repository.name} has no default branch so there is also no last commit`,
+					);
+				}
+				return hasDefaultBranch && !repositoryIsEmpty;
+			})
+			.map(async ({ name, default_branch }) => {
+				const lastCommits = await getRepositoryLastCommit(
+					client,
+					name,
+					default_branch!,
+				);
+				return {
+					repository: name,
+					lastCommits,
+				};
+			}),
 	);
 
 	return data.reduce((acc, { repository, lastCommits }) => {
@@ -234,23 +249,22 @@ export async function getLastCommitForRepositories(
 async function getRepositoryLastCommit(
 	client: Octokit,
 	repositoryName: string,
+	defaultBranch: string,
 ): Promise<Commit | undefined> {
 	try {
-		const response = await client.request(`GET /repos/{owner}/{repo}/commits`, {
+		const response = await client.repos.getCommit({
 			owner: 'guardian',
 			repo: repositoryName,
 			per_page: 1,
+			ref: defaultBranch,
 		});
-		const lastCommit = response.data['0'];
-		if (lastCommit) {
-			return {
-				message: lastCommit.commit.message,
-				author: lastCommit.commit.author?.name,
-				date: lastCommit.commit.author?.date,
-				sha: lastCommit.sha,
-			};
-		}
-		return undefined;
+		const lastCommit = response.data;
+		return {
+			message: lastCommit.commit.message,
+			author: lastCommit.commit.author?.name,
+			date: lastCommit.commit.author?.date,
+			sha: lastCommit.sha,
+		};
 	} catch {
 		console.log('Repository ' + repositoryName + ' has no commits');
 		return undefined;
