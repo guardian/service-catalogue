@@ -2,6 +2,7 @@ import { createAppAuth } from '@octokit/auth-app';
 import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
 import type { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
+import type { Commit } from 'common/model/github';
 import { sleep } from '../sleep';
 
 const ThrottledOctokit = Octokit.plugin(throttling);
@@ -175,6 +176,7 @@ export async function getLanguagesForRepositories(
 	client: Octokit,
 	repositories: RepositoriesResponse,
 ): Promise<Record<string, string[]>> {
+	console.log('Get repo languages');
 	const data = await Promise.all(
 		repositories.map(async ({ name }) => {
 			const languages = await getRepositoryLanguages(client, name);
@@ -206,4 +208,67 @@ async function getRepositoryLanguages(
 		`Repository ${repositoryName} uses languages: ${languages.join(', ')}`,
 	);
 	return languages;
+}
+
+export async function getLastCommitForRepositories(
+	client: Octokit,
+	repositories: RepositoriesResponse,
+): Promise<Record<string, Commit>> {
+	console.log('Get last commits for repos');
+	const data = await Promise.all(
+		repositories
+			.filter((repository) => {
+				const repositoryIsEmpty = repository.size === 0;
+				if (repositoryIsEmpty) {
+					console.log(
+						`Repository ${repository.name} is empty so there is also no last commit`,
+					);
+				}
+				const hasDefaultBranch = repository.default_branch !== undefined;
+				if (!hasDefaultBranch) {
+					console.log(
+						`Repository ${repository.name} has no default branch so there is also no last commit`,
+					);
+				}
+				return hasDefaultBranch && !repositoryIsEmpty;
+			})
+			.map(async ({ name, default_branch }) => {
+				const lastCommits = await getRepositoryLastCommit(
+					client,
+					name,
+					default_branch!,
+				);
+				return {
+					repository: name,
+					lastCommits,
+				};
+			}),
+	);
+
+	return data.reduce((acc, { repository, lastCommits }) => {
+		return {
+			...acc,
+			[repository]: lastCommits,
+		};
+	}, {});
+}
+
+async function getRepositoryLastCommit(
+	client: Octokit,
+	repositoryName: string,
+	defaultBranch: string,
+): Promise<Commit | undefined> {
+	const response = await client.repos.getCommit({
+		owner: 'guardian',
+		repo: repositoryName,
+		per_page: 1,
+		ref: defaultBranch,
+	});
+	const lastCommit = response.data;
+	return {
+		message: lastCommit.commit.message,
+		author: lastCommit.commit.author?.name,
+		date: lastCommit.commit.author?.date,
+		sha: lastCommit.sha,
+	};
 }

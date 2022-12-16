@@ -3,7 +3,7 @@ import type {
 	RepositoryResponse,
 	TeamRepoResponse,
 } from 'common/github/github';
-import type { Member, Repository } from 'common/model/github';
+import type { Commit, Member, Repository } from 'common/model/github';
 
 const parseDateString = (
 	dateString: string | null | undefined,
@@ -31,6 +31,7 @@ export const asRepo = (
 	repo: RepositoryResponse,
 	owners: string[],
 	languages: string[],
+	lastCommit?: Commit,
 ): Repository => {
 	return {
 		id: repo.id,
@@ -49,6 +50,7 @@ export const asRepo = (
 		default_branch: repo.default_branch,
 		owners,
 		languages,
+		lastCommit,
 	};
 };
 

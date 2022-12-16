@@ -3,6 +3,7 @@ import type { Octokit } from '@octokit/rest';
 import { getS3Client, putObject } from 'common/aws/s3';
 import {
 	getLanguagesForRepositories,
+	getLastCommitForRepositories,
 	getOctokit,
 	getReposForTeam,
 	getTeam,
@@ -82,6 +83,10 @@ async function getGHData(
 
 	// Get all repositories
 	const repositories = await listRepositories(client);
+
+	//TODO implement better way to test on dev
+	//repositories = repositories.slice(0, 10);
+
 	console.log(`Found ${repositories.length} github repos`);
 
 	// Get all organisation members
@@ -95,8 +100,14 @@ async function getGHData(
 	const membersOutput = members.map((member) =>
 		asMember(member, membersOfTeams[member.login] ?? []),
 	);
+	console.log('Join members to teams');
 
 	const repositoryLanguages = await getLanguagesForRepositories(
+		client,
+		repositories,
+	);
+
+	const repositoryLastCommit = await getLastCommitForRepositories(
 		client,
 		repositories,
 	);
@@ -108,8 +119,10 @@ async function getGHData(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
 			repositoryLanguages[repository.name] ?? [],
+			repositoryLastCommit[repository.name],
 		);
 	});
+	console.log('Join repositories to teams');
 
 	const teamsMap = repositories.reduce<
 		Record<string, Repository[] | undefined>
@@ -119,6 +132,7 @@ async function getGHData(
 			repository,
 			repositoriesToAdmins[repository.name] ?? [],
 			repositoryLanguages[repository.name] ?? [],
+			repositoryLastCommit[repository.name],
 		);
 
 		adminTeamSlugs.forEach((adminSlug: string) => {
