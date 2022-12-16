@@ -1,123 +1,41 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	"log"
 	"net/http"
 	"os"
+	"snyk-data-fetcher/models"
+	"snyk-data-fetcher/snykRequests"
 )
-
-type OrgsResult struct {
-	Orgs []struct {
-		Id   string `json:"id"`
-		Slug string `json:"slug"`
-	}
-}
-
-type Issues struct {
-	Issues []struct {
-		Id          string   `json:"id"`
-		PkgName     string   `json:"pkgName"`
-		PkgVersions []string `json:"pkgVersions"`
-		IssueData   struct {
-			Severity string `json:"severity"`
-		}
-		FixInfo struct {
-			IsUpgradable       bool     `json:"isUpgradable"`
-			IsFixable          bool     `json:"isFixable"`
-			IsPartiallyFixable bool     `json:"isPartiallyFixable"`
-			FixedIn            []string `json:"fixedIn"`
-		}
-		Links struct {
-			Paths string `json:"paths"`
-		}
-	}
-}
-
-func snykRequest[A any](method string, path string, headers http.Header, reqBody string) (A, error) {
-	var a A
-	bodyBytes := []byte(reqBody)
-
-	url := "https://api.snyk.io/api/v1/" + path
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(bodyBytes))
-	req.Header = headers
-
-	resp, err := http.DefaultClient.Do(req)
-	if resp.StatusCode != 200 {
-		return a, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-	}
-	if err != nil {
-		log.Println("Error on response.\n[ERROR] -", err)
-		return a, err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Println("Error while reading the response bytes:", err)
-		return a, err
-	}
-
-	err = json.Unmarshal(body, &a)
-	if err != nil {
-		return a, err
-	}
-
-	return a, nil
-}
-
-type Org struct {
-	Name string `json:"name"`
-	Id   string `json:"id"`
-}
-
-type TagArray []struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-type ProjectArray []struct {
-	Id            string   `json:"id"`
-	Name          string   `json:"name"`
-	Origin        string   `json:"origin"`
-	RemoteRepoUrl string   `json:"remoteRepoUrl"`
-	Tags          TagArray `json:"tags"`
-}
-type ProjectResult struct {
-	Org      Org
-	Projects ProjectArray
-}
-
-func extractOrgIds(orgsResult OrgsResult) []string {
-
-	var result []string
-	for _, s := range orgsResult.Orgs {
-		result = append(result, s.Id)
-	}
-	return result
-}
-func getOrgs(snykGroupId string, headers http.Header) ([]string, error) {
-	path := "group/" + snykGroupId + "/orgs"
-	orgsResult, err := snykRequest[OrgsResult](http.MethodGet, path, headers, "")
-	if err != nil {
-		return []string{}, err
-	} else {
-		return extractOrgIds(orgsResult), err
-	}
-}
 
 func main() {
 	//TODO put these two variables in env config
 	snykGroupId := os.Getenv("SNYK_GROUP_ID")
 	snykToken := os.Getenv("SNYK_API_KEY")
-	headers := http.Header{"Authorization": {"token " + snykToken}}
+	authHeader := http.Header{"Authorization": {"token " + snykToken}}
 
-	orgIds, _ := getOrgs(snykGroupId, headers)
-	projects, _ := snykRequest[ProjectResult](http.MethodGet, "org/"+orgIds[1]+"/projects", headers, "")
+	fmt.Println("\n----ORG IDS----")
+	orgIds, _ := snykRequests.GetOrgs(snykGroupId, authHeader)
+	fmt.Println(orgIds)
 
-	fmt.Println(projects.Projects[0])
+	fmt.Println("\n----A PROJECT IN AN ORG----")
+	orgId := orgIds.Orgs[1].Id
+	projects, _ := snykRequests.GetProjectsForOrg(orgId, snykToken)
+	project := projects.Projects[3]
+	fmt.Println(project)
 
+	fmt.Println("\n----FIRST ISSUE IN PROJECT----")
+	projectId := project.Id
+	issuesForProject, _ := snykRequests.UrgentAggregatedIssuesForProject(orgId, projectId, snykToken)
+	fmt.Println(issuesForProject.Issues[0])
+
+	fmt.Println("\n----ISSUE PATHS----")
+	path := "org/" + orgId + "/project/" + projectId + "/history/latest/issue/" + issuesForProject.Issues[0].Id + "paths"
+
+	res, err := snykRequests.SnykRequest[models.IssuePath](http.MethodGet, path, http.Header{"Authorization": {"token " + snykToken}}, "")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(res)
+	}
 }
