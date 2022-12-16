@@ -246,27 +246,22 @@ export async function getLastCommitForRepositories(
 	}, {});
 }
 
-async function getRepositoryLastCommit(
+export async function getRepositoryLastCommit(
 	client: Octokit,
 	repositoryName: string,
 	defaultBranch: string,
 ): Promise<Commit | undefined> {
-	try {
-		const response = await client.repos.getCommit({
-			owner: 'guardian',
-			repo: repositoryName,
-			per_page: 1,
-			ref: defaultBranch,
-		});
-		const lastCommit = response.data;
-		return {
-			message: lastCommit.commit.message,
-			author: lastCommit.commit.author?.name,
-			date: lastCommit.commit.author?.date,
-			sha: lastCommit.sha,
-		};
-	} catch {
-		console.log('Repository ' + repositoryName + ' has no commits');
-		return undefined;
-	}
+	const response = await client.repos.getCommit({
+		owner: 'guardian',
+		repo: repositoryName,
+		per_page: 1,
+		ref: defaultBranch,
+	});
+	const lastCommit = response.data;
+	return {
+		message: lastCommit.commit.message,
+		author: lastCommit.commit.author?.name,
+		date: lastCommit.commit.author?.date,
+		sha: lastCommit.sha,
+	};
 }
