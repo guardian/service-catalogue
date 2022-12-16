@@ -106,13 +106,11 @@ async function getGHData(
 		client,
 		repositories,
 	);
-	console.log('Get repo languages');
 
 	const repositoryLastCommit = await getLastCommitForRepositories(
 		client,
 		repositories,
 	);
-	console.log('Get last commits for repos');
 
 	// Join repositories to teams
 	const repositoriesToAdmins = await teamRepositories(client, teamSlugs);

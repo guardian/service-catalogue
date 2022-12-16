@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createAppAuth } from '@octokit/auth-app';
 import { throttling } from '@octokit/plugin-throttling';
 import { Octokit } from '@octokit/rest';
@@ -176,6 +177,7 @@ export async function getLanguagesForRepositories(
 	client: Octokit,
 	repositories: RepositoriesResponse,
 ): Promise<Record<string, string[]>> {
+	console.log('Get repo languages');
 	const data = await Promise.all(
 		repositories.map(async ({ name }) => {
 			const languages = await getRepositoryLanguages(client, name);
@@ -213,10 +215,16 @@ export async function getLastCommitForRepositories(
 	client: Octokit,
 	repositories: RepositoriesResponse,
 ): Promise<Record<string, Commit>> {
+	console.log('Get last commits for repos');
 	const data = await Promise.all(
 		repositories
 			.filter((repository) => {
 				const repositoryIsEmpty = repository.size === 0;
+				if (repositoryIsEmpty) {
+					console.log(
+						`Repository ${repository.name} is empty so there is also no last commit`,
+					);
+				}
 				const hasDefaultBranch = repository.default_branch !== undefined;
 				if (!hasDefaultBranch) {
 					console.log(
