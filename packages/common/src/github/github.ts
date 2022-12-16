@@ -246,7 +246,7 @@ export async function getLastCommitForRepositories(
 	}, {});
 }
 
-export async function getRepositoryLastCommit(
+async function getRepositoryLastCommit(
 	client: Octokit,
 	repositoryName: string,
 	defaultBranch: string,
