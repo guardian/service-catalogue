@@ -82,6 +82,7 @@ async function getReposFromS3(
 	path: string,
 ): Promise<Repository[]> {
 	const repos = await getObject<Repository[]>(S3client, bucket, path);
+	console.log(`Found ${repos.payload.length} repositories in S3`);
 	return repos.payload;
 }
 
@@ -101,16 +102,14 @@ async function getGHData(
 
 	//TODO implement better way to test on dev
 	//repositories = repositories.slice(0, 10);
-	console.log(`Found ${changedRepos.length} modified or new github repos`);
 
-	// Get all organisation members
-	const members = await listMembers(client);
-	console.log(`Found ${members.length} organisation members`);
+	const orgMembers = await listMembers(client);
+	console.log(`Found ${orgMembers.length} organisation members`);
 	const teamSlugs = teams.map((_) => _.slug);
 
 	// Join members to teams
 	const membersOfTeams = await teamMembers(client, teamSlugs);
-	const membersOutput = members.map((member) =>
+	const membersOutput: Member[] = orgMembers.map((member) =>
 		asMember(member, membersOfTeams[member.login] ?? []),
 	);
 	console.log('Join members to teams');
@@ -133,31 +132,34 @@ async function getGHData(
 			);
 		})
 		.concat(unchangedRepos);
-	console.log('Join repositories to teams');
+	console.log(`${repositoriesOutput.length} repositories in output`);
 
-	const teamsMap = changedRepos.reduce<
-		Record<string, Repository[] | undefined>
-	>((acc, repository) => {
-		const adminTeamSlugs = repositoriesToAdmins[repository.name] ?? [];
-		const repo = asRepo(
-			repository,
-			repositoriesToAdmins[repository.name] ?? [],
-			repositoryLanguages[repository.name] ?? [],
-			repositoryLastCommit[repository.name],
+	console.log('Join repositories to teams');
+	const teamsMap: Record<string, Repository[] | undefined> =
+		changedRepos.reduce<Record<string, Repository[] | undefined>>(
+			(acc, repository) => {
+				const adminTeamSlugs = repositoriesToAdmins[repository.name] ?? [];
+				const repo = asRepo(
+					repository,
+					repositoriesToAdmins[repository.name] ?? [],
+					repositoryLanguages[repository.name] ?? [],
+					repositoryLastCommit[repository.name],
+				);
+
+				adminTeamSlugs.forEach((adminSlug: string) => {
+					if (acc[adminSlug] == undefined) {
+						acc[adminSlug] = [repo];
+					} else {
+						acc[adminSlug]?.push(repo);
+					}
+				});
+
+				return acc;
+			},
+			{},
 		);
 
-		adminTeamSlugs.forEach((adminSlug: string) => {
-			if (acc[adminSlug] == undefined) {
-				acc[adminSlug] = [repo];
-			} else {
-				acc[adminSlug]?.push(repo);
-			}
-		});
-
-		return acc;
-	}, {});
-
-	const teamsOutput = teams.map((team): Team => {
+	const teamsOutput: Team[] = teams.map((team): Team => {
 		const repos = teamsMap[team.slug];
 
 		return {
@@ -224,6 +226,9 @@ export const main = async (): Promise<void> => {
 
 	const unchangedRepos: Repository[] = oldRepos.filter((oldRepo) =>
 		foundUnchangedMatchOnGithub(oldRepo, currentRepos),
+	);
+	console.log(
+		`${unchangedRepos.length} repositories have not been updated since the last successful run`,
 	);
 
 	const reposThatNeedUpdating: RepositoriesResponse = currentRepos.filter(

@@ -97,7 +97,7 @@ export const getOctokit = (config: GitHubConfig): Octokit => {
 export const getReposFromGitHub = async (
 	client: Octokit,
 ): Promise<RepositoriesResponse> => {
-	return await client.paginate(
+	const repos: RepositoriesResponse = await client.paginate(
 		client.repos.listForOrg,
 		{
 			org: 'guardian',
@@ -105,6 +105,8 @@ export const getReposFromGitHub = async (
 		},
 		(response) => response.data,
 	);
+	console.log(`Found ${repos.length} repositories on Github`);
+	return repos;
 };
 
 export const getTeam = async (
