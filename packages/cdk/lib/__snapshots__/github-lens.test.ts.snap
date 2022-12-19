@@ -1252,7 +1252,7 @@ systemctl start github-lens-api
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Tags": [
           {
             "Key": "App",

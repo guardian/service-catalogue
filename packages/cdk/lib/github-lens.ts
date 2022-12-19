@@ -133,7 +133,7 @@ systemctl start ${apiApp}
 			certificateProps: { domainName: props.domainName },
 			scaling: { minimumInstances: 1, maximumInstances: 2 },
 			userData: userData,
-			imageRecipe: 'arm64-focal-node16-devx',
+			imageRecipe: 'arm64-focal-node18-devx',
 			applicationLogging: { enabled: true },
 		});
 
@@ -151,7 +151,7 @@ systemctl start ${apiApp}
 			`${dataFetcherApp}-lambda`,
 			{
 				app: dataFetcherApp,
-				runtime: Runtime.NODEJS_16_X,
+				runtime: Runtime.NODEJS_18_X,
 				memorySize: 512,
 				handler: 'handler.main',
 				fileName: `${dataFetcherApp}.zip`,
