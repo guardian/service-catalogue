@@ -1,19 +1,24 @@
 import path from 'path';
+import type { S3Client } from '@aws-sdk/client-s3';
 import type { Octokit } from '@octokit/rest';
-import { getS3Client, putObject } from 'common/aws/s3';
+import { getObject, getS3Client, putObject } from 'common/aws/s3';
+import type {
+	RepositoriesResponse,
+	RepositoryResponse,
+} from 'common/github/github';
 import {
 	getLanguagesForRepositories,
 	getLastCommitForRepositories,
 	getOctokit,
 	getReposForTeam,
+	getReposFromGitHub,
 	getTeam,
 	listMembers,
-	listRepositories,
 	listTeamMembers,
 	listTeams,
 } from 'common/github/github';
 import { configureLogging, getLogLevel } from 'common/log/log';
-import type { Member, Repository, Team } from 'common/model/github';
+import type { Commit, Member, Repository, Team } from 'common/model/github';
 import { getConfig } from './config';
 import { asMember, asRepo, getAdminReposFromResponse } from './transformations';
 
@@ -71,8 +76,19 @@ export interface TeamsAndRepositories {
 	members: Member[];
 }
 
+async function getReposFromS3(
+	S3client: S3Client,
+	bucket: string,
+	path: string,
+): Promise<Repository[]> {
+	const repos = await getObject<Repository[]>(S3client, bucket, path);
+	return repos.payload;
+}
+
 async function getGHData(
 	client: Octokit,
+	unchangedRepos: Repository[],
+	changedRepos: RepositoriesResponse,
 	teamSlug?: string,
 ): Promise<TeamsAndRepositories> {
 	// Get all teams
@@ -82,17 +98,14 @@ async function getGHData(
 	console.log(`Found ${teams.length} github teams`);
 
 	// Get all repositories
-	const repositories = await listRepositories(client);
 
 	//TODO implement better way to test on dev
 	//repositories = repositories.slice(0, 10);
-
-	console.log(`Found ${repositories.length} github repos`);
+	console.log(`Found ${changedRepos.length} modified or new github repos`);
 
 	// Get all organisation members
 	const members = await listMembers(client);
 	console.log(`Found ${members.length} organisation members`);
-
 	const teamSlugs = teams.map((_) => _.slug);
 
 	// Join members to teams
@@ -102,29 +115,27 @@ async function getGHData(
 	);
 	console.log('Join members to teams');
 
-	const repositoryLanguages = await getLanguagesForRepositories(
-		client,
-		repositories,
-	);
+	const repositoryLanguages: Record<string, string[]> =
+		await getLanguagesForRepositories(client, changedRepos);
 
-	const repositoryLastCommit = await getLastCommitForRepositories(
-		client,
-		repositories,
-	);
+	const repositoryLastCommit: Record<string, Commit> =
+		await getLastCommitForRepositories(client, changedRepos);
 
 	// Join repositories to teams
 	const repositoriesToAdmins = await teamRepositories(client, teamSlugs);
-	const repositoriesOutput = repositories.map((repository) => {
-		return asRepo(
-			repository,
-			repositoriesToAdmins[repository.name] ?? [],
-			repositoryLanguages[repository.name] ?? [],
-			repositoryLastCommit[repository.name],
-		);
-	});
+	const repositoriesOutput: Repository[] = changedRepos
+		.map((repository) => {
+			return asRepo(
+				repository,
+				repositoriesToAdmins[repository.name] ?? [],
+				repositoryLanguages[repository.name] ?? [],
+				repositoryLastCommit[repository.name],
+			);
+		})
+		.concat(unchangedRepos);
 	console.log('Join repositories to teams');
 
-	const teamsMap = repositories.reduce<
+	const teamsMap = changedRepos.reduce<
 		Record<string, Repository[] | undefined>
 	>((acc, repository) => {
 		const adminTeamSlugs = repositoriesToAdmins[repository.name] ?? [];
@@ -168,12 +179,63 @@ export const main = async (): Promise<void> => {
 	const config = await getConfig();
 	configureLogging(getLogLevel(config.logLevel));
 
+	function timestampsMatch(
+		oldRepo: Repository,
+		newRepo: RepositoryResponse,
+	): boolean {
+		if (newRepo.updated_at && newRepo.pushed_at) {
+			const matchingUpdateTime =
+				new Date(newRepo.updated_at) === oldRepo.updated_at;
+			const matchingPushTime =
+				new Date(newRepo.pushed_at) === oldRepo.pushed_at;
+			return matchingPushTime && matchingUpdateTime;
+		} else {
+			return false;
+		}
+	}
+
+	function foundUnchangedMatchOnGithub(
+		oldRepo: Repository,
+		newRepos: RepositoriesResponse,
+	): boolean {
+		const matchingRepo: RepositoryResponse | undefined = newRepos.find(
+			(newRepo) => newRepo.name === oldRepo.name,
+		);
+		if (matchingRepo) {
+			return timestampsMatch(oldRepo, matchingRepo);
+		} else {
+			return false;
+		}
+	}
+
 	console.log('Starting github-data-fetcher');
 
 	const githubClient = getOctokit(config.github);
 	const s3Client = getS3Client(config.region);
 
-	const ghData = await getGHData(githubClient, config.github.teamToFetch);
+	const oldRepos: Repository[] = await getReposFromS3(
+		s3Client,
+		config.dataBucketName,
+		path.join(config.dataKeyPrefix, 'repos.json'),
+	);
+	const currentRepos: RepositoriesResponse = await getReposFromGitHub(
+		githubClient,
+	);
+
+	const unchangedRepos: Repository[] = oldRepos.filter((oldRepo) =>
+		foundUnchangedMatchOnGithub(oldRepo, currentRepos),
+	);
+
+	const reposThatNeedUpdating: RepositoriesResponse = currentRepos.filter(
+		(newRepo) => !unchangedRepos.map((r) => r.name).includes(newRepo.name),
+	);
+
+	const ghData = await getGHData(
+		githubClient,
+		unchangedRepos,
+		reposThatNeedUpdating,
+		config.github.teamToFetch,
+	);
 
 	const saveObject = async <T>(name: string, data: T) => {
 		const repoFileLocation = path.join(config.dataKeyPrefix, `${name}.json`);

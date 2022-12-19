@@ -94,7 +94,7 @@ export const getOctokit = (config: GitHubConfig): Octokit => {
 	return _octokit;
 };
 
-export const listRepositories = async (
+export const getReposFromGitHub = async (
 	client: Octokit,
 ): Promise<RepositoriesResponse> => {
 	return await client.paginate(
