@@ -2,12 +2,25 @@ import type { Repository, Team } from 'common/model/github';
 import type express from 'express';
 import { engineeringTeamSlugs, validTeamSlugs } from './validGithubTeams';
 
-interface TFilter<T> {
+interface TFilter<T extends Team | Repository> {
+	/**
+	 * The URL query string to observe to activate the filter.
+	 *
+	 * Currently, the value will always come in as a `string`.
+	 * Try to denote the type in the name. For example `isX` or `hasX` for boolean.
+	 */
 	paramName: string;
-	fn: (r: T, paramValue: string) => boolean;
+
+	/**
+	 * A function that returns `true` if the entity matches the filter, `false` otherwise.
+	 *
+	 * @param entity what to filter on
+	 * @param paramValue the (raw) value of the query string
+	 */
+	fn: (entity: T, paramValue: string) => boolean;
 }
 
-const filterT = <T>(
+const filterT = <T extends Team | Repository>(
 	req: express.Request,
 	t: T[],
 	filters: Array<TFilter<T>>,
