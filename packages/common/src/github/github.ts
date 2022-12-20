@@ -221,17 +221,7 @@ export async function getLastCommitForRepositories(
 		repositories
 			.filter((repository) => {
 				const repositoryIsEmpty = repository.size === 0;
-				if (repositoryIsEmpty) {
-					console.log(
-						`Repository ${repository.name} is empty so there is also no last commit`,
-					);
-				}
 				const hasDefaultBranch = repository.default_branch !== undefined;
-				if (!hasDefaultBranch) {
-					console.log(
-						`Repository ${repository.name} has no default branch so there is also no last commit`,
-					);
-				}
 				return hasDefaultBranch && !repositoryIsEmpty;
 			})
 			.map(async ({ name, default_branch }) => {
