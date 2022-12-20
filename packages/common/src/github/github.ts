@@ -94,10 +94,10 @@ export const getOctokit = (config: GitHubConfig): Octokit => {
 	return _octokit;
 };
 
-export const listRepositories = async (
+export const getReposFromGitHub = async (
 	client: Octokit,
 ): Promise<RepositoriesResponse> => {
-	return await client.paginate(
+	const repos: RepositoriesResponse = await client.paginate(
 		client.repos.listForOrg,
 		{
 			org: 'guardian',
@@ -105,6 +105,8 @@ export const listRepositories = async (
 		},
 		(response) => response.data,
 	);
+	console.log(`Found ${repos.length} repositories on Github`);
+	return repos;
 };
 
 export const getTeam = async (
@@ -219,17 +221,7 @@ export async function getLastCommitForRepositories(
 		repositories
 			.filter((repository) => {
 				const repositoryIsEmpty = repository.size === 0;
-				if (repositoryIsEmpty) {
-					console.log(
-						`Repository ${repository.name} is empty so there is also no last commit`,
-					);
-				}
 				const hasDefaultBranch = repository.default_branch !== undefined;
-				if (!hasDefaultBranch) {
-					console.log(
-						`Repository ${repository.name} has no default branch so there is also no last commit`,
-					);
-				}
 				return hasDefaultBranch && !repositoryIsEmpty;
 			})
 			.map(async ({ name, default_branch }) => {
