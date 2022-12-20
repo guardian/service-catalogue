@@ -34,9 +34,7 @@ export const asRepo = (
 	lastCommit?: Commit,
 ): Repository => {
 	return {
-		id: repo.id,
 		name: repo.name,
-		full_name: repo.full_name,
 		private: repo.private,
 		description: repo.description,
 		created_at: parseDateString(repo.created_at),
