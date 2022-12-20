@@ -2,10 +2,7 @@ import path from 'path';
 import type { S3Client } from '@aws-sdk/client-s3';
 import type { Octokit } from '@octokit/rest';
 import { getObject, getS3Client, putObject } from 'common/aws/s3';
-import type {
-	RepositoriesResponse,
-	RepositoryResponse,
-} from 'common/github/github';
+import type { RepositoriesResponse } from 'common/github/github';
 import {
 	getLanguagesForRepositories,
 	getLastCommitForRepositories,
@@ -20,6 +17,7 @@ import {
 import { configureLogging, getLogLevel } from 'common/log/log';
 import type { Commit, Member, Repository, Team } from 'common/model/github';
 import { getConfig } from './config';
+import { foundUnchangedMatchOnGithub } from './repoMatching';
 import { asMember, asRepo, getAdminReposFromResponse } from './transformations';
 
 // Returns a map of repoName -> admins (a list of team slugs).
@@ -223,17 +221,19 @@ export const main = async (): Promise<void> => {
 	const currentRepos: RepositoriesResponse = await getReposFromGitHub(
 		githubClient,
 	);
+	console.log(`Found ${currentRepos.length} repositories on github`);
 
 	const unchangedRepos: Repository[] = oldRepos.filter((oldRepo) =>
 		foundUnchangedMatchOnGithub(oldRepo, currentRepos),
 	);
 	console.log(
-		`${unchangedRepos.length} repositories have not been updated since the last successful run`,
+		`${unchangedRepos.length} repositories are unchanged since the last successful run`,
 	);
 
 	const reposThatNeedUpdating: RepositoriesResponse = currentRepos.filter(
 		(newRepo) => !unchangedRepos.map((r) => r.name).includes(newRepo.name),
 	);
+	console.log(`${reposThatNeedUpdating.length} repositories have been updated`);
 
 	const ghData = await getGHData(
 		githubClient,
