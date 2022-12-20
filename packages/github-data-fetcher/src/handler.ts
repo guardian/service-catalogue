@@ -17,7 +17,7 @@ import {
 import { configureLogging, getLogLevel } from 'common/log/log';
 import type { Commit, Member, Repository, Team } from 'common/model/github';
 import { getConfig } from './config';
-import { foundUnchangedMatchOnGithub } from './repoMatching';
+import { isCachedRepositoryStale } from './repoMatching';
 import { asMember, asRepo, getAdminReposFromResponse } from './transformations';
 
 // Returns a map of repoName -> admins (a list of team slugs).
@@ -75,11 +75,11 @@ export interface TeamsAndRepositories {
 }
 
 async function getReposFromS3(
-	S3client: S3Client,
+	s3Client: S3Client,
 	bucket: string,
 	path: string,
 ): Promise<Repository[]> {
-	const repos = await getObject<Repository[]>(S3client, bucket, path);
+	const repos = await getObject<Repository[]>(s3Client, bucket, path);
 	console.log(`Found ${repos.payload.length} repositories in S3`);
 	return repos.payload;
 }
@@ -195,14 +195,16 @@ export const main = async (): Promise<void> => {
 	console.log(`Found ${currentRepos.length} repositories on github`);
 
 	const unchangedRepos: Repository[] = oldRepos.filter((oldRepo) =>
-		foundUnchangedMatchOnGithub(oldRepo, currentRepos),
+		isCachedRepositoryStale(oldRepo, currentRepos),
 	);
 	console.log(
 		`${unchangedRepos.length} repositories are unchanged since the last successful run`,
 	);
 
+	const unchangedRepoNames = unchangedRepos.map((r) => r.name);
+
 	const reposThatNeedUpdating: RepositoriesResponse = currentRepos.filter(
-		(newRepo) => !unchangedRepos.map((r) => r.name).includes(newRepo.name),
+		(newRepo) => !unchangedRepoNames.includes(newRepo.name),
 	);
 	console.log(`${reposThatNeedUpdating.length} repositories have been updated`);
 

@@ -18,15 +18,15 @@ function timestampsMatch(
 		const oldUpdate: number = new Date(oldRepo.updated_at).getTime();
 		const newPush: number = new Date(newRepo.pushed_at).getTime();
 		const oldPush: number = new Date(oldRepo.pushed_at).getTime();
-		const matchingUpdateTime = newUpdate == oldUpdate;
-		const matchingPushTime = newPush == oldPush;
+		const matchingUpdateTime = newUpdate === oldUpdate;
+		const matchingPushTime = newPush === oldPush;
 		return matchingPushTime && matchingUpdateTime;
 	} else {
 		return false;
 	}
 }
 
-export function foundUnchangedMatchOnGithub(
+export function isCachedRepositoryStale(
 	oldRepo: Repository,
 	newRepos: RepositoriesResponse,
 ): boolean {
