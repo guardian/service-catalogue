@@ -1,3 +1,4 @@
+import type { RepositoryResponse } from 'common/github/github';
 import { mockRepo } from './mockRepo';
 import { foundUnchangedMatchOnGithub } from './repoMatching';
 import { asRepo } from './transformations';
@@ -5,12 +6,26 @@ import { asRepo } from './transformations';
 describe('a positive date match', function () {
 	it('should be confirmed if dates match up exactly', function () {
 		const finalRepoObject = asRepo(mockRepo, [], []);
-
-		expect(
-			foundUnchangedMatchOnGithub(finalRepoObject, [mockRepo]),
-		).toStrictEqual(true);
+		const actual = foundUnchangedMatchOnGithub(finalRepoObject, [mockRepo]);
+		const expected = true;
+		expect(actual).toStrictEqual(expected);
 	});
-	it('should not be confirmed if any date returned is a null', function () {
-		expect(true).toStrictEqual(true);
+	it('should not be confirmed if there are matching nulls', function () {
+		const GHRepo: RepositoryResponse = mockRepo;
+		GHRepo.updated_at = null;
+		const s3Repo = asRepo(GHRepo, [], []);
+		const actual = foundUnchangedMatchOnGithub(s3Repo, [GHRepo]);
+		const expected = false;
+		expect(actual).toStrictEqual(expected);
+	});
+	it('should not be confirmed if some dates are different', function () {
+		const GHRepo: RepositoryResponse = mockRepo;
+		GHRepo.updated_at = '2020-01-01';
+		const s3Repo = asRepo(GHRepo, [], []);
+		s3Repo.updated_at = new Date('1989-10-10');
+
+		const actual = foundUnchangedMatchOnGithub(s3Repo, [GHRepo]);
+		const expected = false;
+		expect(actual).toStrictEqual(expected);
 	});
 });

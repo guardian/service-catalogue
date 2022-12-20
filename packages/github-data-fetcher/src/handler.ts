@@ -179,35 +179,6 @@ export const main = async (): Promise<void> => {
 	const config = await getConfig();
 	configureLogging(getLogLevel(config.logLevel));
 
-	function timestampsMatch(
-		oldRepo: Repository,
-		newRepo: RepositoryResponse,
-	): boolean {
-		if (newRepo.updated_at && newRepo.pushed_at) {
-			const matchingUpdateTime =
-				new Date(newRepo.updated_at) === oldRepo.updated_at;
-			const matchingPushTime =
-				new Date(newRepo.pushed_at) === oldRepo.pushed_at;
-			return matchingPushTime && matchingUpdateTime;
-		} else {
-			return false;
-		}
-	}
-
-	function foundUnchangedMatchOnGithub(
-		oldRepo: Repository,
-		newRepos: RepositoriesResponse,
-	): boolean {
-		const matchingRepo: RepositoryResponse | undefined = newRepos.find(
-			(newRepo) => newRepo.name === oldRepo.name,
-		);
-		if (matchingRepo) {
-			return timestampsMatch(oldRepo, matchingRepo);
-		} else {
-			return false;
-		}
-	}
-
 	console.log('Starting github-data-fetcher');
 
 	const githubClient = getOctokit(config.github);
