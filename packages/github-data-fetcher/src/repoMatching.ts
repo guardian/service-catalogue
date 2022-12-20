@@ -34,11 +34,7 @@ export function foundUnchangedMatchOnGithub(
 		(newRepo) => newRepo.name === oldRepo.name,
 	);
 	if (matchingRepo) {
-		const matchFound: boolean = timestampsMatch(oldRepo, matchingRepo);
-		if (matchFound) {
-			console.log(`match found! ${oldRepo.name}`);
-		}
-		return matchFound;
+		return timestampsMatch(oldRepo, matchingRepo);
 	} else {
 		return false;
 	}
