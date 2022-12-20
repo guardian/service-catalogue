@@ -2,9 +2,9 @@ export interface Repository {
 	name: string;
 	private: boolean;
 	description: string | null;
-	created_at: Date | null;
-	updated_at: Date | null;
-	pushed_at: Date | null;
+	created_at: string | undefined;
+	updated_at: string | undefined;
+	pushed_at: string | undefined;
 	size: number | undefined;
 	languages: string[];
 	archived: boolean | undefined;

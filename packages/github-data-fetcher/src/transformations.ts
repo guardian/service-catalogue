@@ -5,19 +5,6 @@ import type {
 } from 'common/github/github';
 import type { Commit, Member, Repository } from 'common/model/github';
 
-const parseDateString = (
-	dateString: string | null | undefined,
-): Date | null => {
-	if (
-		dateString === undefined ||
-		dateString === null ||
-		dateString.length === 0
-	) {
-		return null;
-	}
-	return new Date(dateString);
-};
-
 export const asMember = (member: MemberResponse, teams: string[]): Member => {
 	return {
 		id: member.id,
@@ -26,6 +13,14 @@ export const asMember = (member: MemberResponse, teams: string[]): Member => {
 		teams,
 	};
 };
+
+function eliminateNull<T>(t: T | null | undefined): T | undefined {
+	if (t === null) {
+		return undefined;
+	} else {
+		return t;
+	}
+}
 
 export const asRepo = (
 	repo: RepositoryResponse,
@@ -37,9 +32,9 @@ export const asRepo = (
 		name: repo.name,
 		private: repo.private,
 		description: repo.description,
-		created_at: parseDateString(repo.created_at),
-		updated_at: parseDateString(repo.updated_at),
-		pushed_at: parseDateString(repo.pushed_at),
+		created_at: eliminateNull<string>(repo.created_at),
+		updated_at: eliminateNull<string>(repo.updated_at),
+		pushed_at: eliminateNull<string>(repo.pushed_at),
 		size: repo.size,
 		archived: repo.archived,
 		open_issues_count: repo.open_issues_count,
