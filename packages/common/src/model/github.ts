@@ -1,4 +1,5 @@
 export interface Repository {
+	//before removing a field, chack it isn't being used by RepoCop
 	name: string;
 	private: boolean;
 	created_at: string | undefined;
