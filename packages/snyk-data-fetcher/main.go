@@ -13,14 +13,6 @@ import (
 	"sync"
 )
 
-var wg sync.WaitGroup
-
-func check(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s; %v", msg, err)
-	}
-}
-
 type StorageData struct {
 	OrgID       string
 	OrgName     string
@@ -41,15 +33,15 @@ func getRepoNameFromURL(s string) string {
 	return name
 }
 
-func writeRepoIssuesToJson(orgID string, snykToken string) {
+func writeRepoIssuesToJson(orgID string, snykToken string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	projectsWithoutIssues, err := snykRequests.GetProjectsForOrg(orgID, snykToken)
 	if err != nil {
 		log.Printf("Could not find projects in org %s", orgID)
 	}
 	for _, p := range projectsWithoutIssues {
-		issues, err := snykRequests.UrgentAggregatedIssuesForProject(p.Org.Id, p.Project.Id, snykToken)
-		if err != nil {
+		issues, issuesError := snykRequests.UrgentAggregatedIssuesForProject(p.Org.Id, p.Project.Id, snykToken)
+		if issuesError != nil {
 			log.Printf("Could not find issues for %s", p.Project.Name)
 			continue
 		}
@@ -82,8 +74,8 @@ func writeRepoIssuesToJson(orgID string, snykToken string) {
 				log.Printf("found %d critical or high severity issues in %s - %s", len(issues.Issues), storageItem.RepoName, storageItem.ProjectName)
 			}
 		}
-
 	}
+	wg.Done()
 }
 
 func main() {
@@ -93,19 +85,22 @@ func main() {
 	authHeader := http.Header{"Authorization": {"token " + snykToken}}
 
 	orgResult, err := snykRequests.GetOrgs(snykGroupId, authHeader)
-	check(err, "Failed to retrieve Organizations from Snyk")
-	log.Printf("Found %d Snyk organizations", len(orgResult.Orgs))
-	orgs := orgResult.Orgs
-	wg.Add(len(orgs))
+	if err != nil {
+		log.Fatalf("Failed to retrieve Organizations from Snyk; %v", err)
+	}
 
 	orgIds := fp.Map(func(x models.OrgIdAndSlug) string {
 		return x.Id
-	})(orgs)
+	})(orgResult.Orgs)
+	log.Printf("Found %d Snyk organizations", len(orgIds))
+
+	var wg sync.WaitGroup
+	wg.Add(len(orgIds))
 
 	for _, orgID := range orgIds {
-		go writeRepoIssuesToJson(orgID, snykToken)
+		go writeRepoIssuesToJson(orgID, snykToken, &wg)
 	}
 
 	wg.Wait()
-
+	wg.Done()
 }
