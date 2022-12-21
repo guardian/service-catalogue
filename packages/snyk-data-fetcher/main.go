@@ -70,10 +70,16 @@ func writeRepoIssuesToJson(orgID string, snykToken string) {
 		}
 
 		if storageItem.RepoName != "" && storageItem.RepoName != "null" {
-			fileName := storageItem.RepoName + "_" + storageItem.ProjectName + ".json"
-			_ = os.WriteFile(fileName, file, 0644)
+			directoryName := storageItem.RepoName
+			// ignore the error
+			_ = os.Mkdir(directoryName, os.ModePerm)
+			filePath := directoryName + "/" + storageItem.ProjectID + ".json"
+			writeError := os.WriteFile(filePath, file, 0644)
+			if writeError != nil {
+				log.Println(writeError)
+			}
 			if len(issues.Issues) > 0 {
-				log.Printf("found %d critical or high severity issues in %s - %s", len(issues.Issues), storageItem.ProjectName, storageItem.ProjectName)
+				log.Printf("found %d critical or high severity issues in %s - %s", len(issues.Issues), storageItem.RepoName, storageItem.ProjectName)
 			}
 		}
 
