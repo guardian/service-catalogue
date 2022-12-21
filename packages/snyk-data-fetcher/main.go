@@ -1,15 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"github.com/davecgh/go-spew/spew"
+	"encoding/json"
 	"github.com/repeale/fp-go"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"snyk-data-fetcher/models"
 	"snyk-data-fetcher/snykRequests"
+	"strings"
+	"sync"
 )
+
+var wg sync.WaitGroup
 
 func check(err error, msg string) {
 	if err != nil {
@@ -17,28 +21,62 @@ func check(err error, msg string) {
 	}
 }
 
-type ProjectAndIssues struct {
-	Org     models.Org
-	Project models.Project
-	Issues  models.Issues
-}
-
 type StorageData struct {
-	orgID     string
-	orgName   string
-	projectID string
-	repoURL   string
-	issueData models.Issues
+	OrgID       string
+	OrgName     string
+	ProjectID   string
+	ProjectName string
+	RepoURL     string
+	RepoName    string
+	Issues      []models.Issue
 }
 
-func transformProjectWithIssues(proj ProjectAndIssues) StorageData {
+func getRepoNameFromURL(s string) string {
+	u, err := url.Parse(s)
+	if err != nil {
+		return ""
+	}
+	nameAndSuffix := strings.ReplaceAll(u.Path, "/guardian/", "")
+	name := strings.ReplaceAll(nameAndSuffix, ".git", "")
+	return name
+}
 
-	return StorageData{
-		orgID:     proj.Org.Id,
-		orgName:   proj.Org.Name,
-		projectID: proj.Project.Id,
-		repoURL:   proj.Project.RemoteRepoUrl,
-		issueData: proj.Issues,
+func writeRepoIssuesToJson(orgID string, snykToken string) {
+	defer wg.Done()
+	projectsWithoutIssues, err := snykRequests.GetProjectsForOrg(orgID, snykToken)
+	if err != nil {
+		log.Printf("Could not find projects in org %s", orgID)
+	}
+	for _, p := range projectsWithoutIssues {
+		issues, err := snykRequests.UrgentAggregatedIssuesForProject(p.Org.Id, p.Project.Id, snykToken)
+		if err != nil {
+			log.Printf("Could not find issues for %s", p.Project.Name)
+			continue
+		}
+
+		storageItem := StorageData{
+			OrgID:       p.Org.Id,
+			OrgName:     p.Org.Name,
+			ProjectID:   p.Project.Id,
+			ProjectName: p.Project.Name,
+			RepoURL:     p.Project.RemoteRepoUrl,
+			RepoName:    getRepoNameFromURL(p.Project.RemoteRepoUrl),
+			Issues:      issues.Issues,
+		}
+
+		file, jsonError := json.MarshalIndent(storageItem, "", "  ")
+		if jsonError != nil {
+			log.Printf("Could not marshall %s to json", p.Project.Name)
+		}
+
+		if storageItem.RepoName != "" && storageItem.RepoName != "null" {
+			fileName := storageItem.RepoName + "_" + storageItem.ProjectName + ".json"
+			_ = os.WriteFile(fileName, file, 0644)
+			if len(issues.Issues) > 0 {
+				log.Printf("found %d critical or high severity issues in %s - %s", len(issues.Issues), storageItem.ProjectName, storageItem.ProjectName)
+			}
+		}
+
 	}
 }
 
@@ -48,36 +86,20 @@ func main() {
 	snykToken := os.Getenv("SNYK_API_KEY")
 	authHeader := http.Header{"Authorization": {"token " + snykToken}}
 
-	fmt.Println("\n----ORG IDS----")
-	orgs, err := snykRequests.GetOrgs(snykGroupId, authHeader)
+	orgResult, err := snykRequests.GetOrgs(snykGroupId, authHeader)
 	check(err, "Failed to retrieve Organizations from Snyk")
-	fmt.Println(orgs)
+	log.Printf("Found %d Snyk organizations", len(orgResult.Orgs))
+	orgs := orgResult.Orgs
+	wg.Add(len(orgs))
 
-	var projectResults []models.ProjectResult
-	for _, org := range orgs.Orgs[5:6] {
-		projects, err := snykRequests.GetProjectsForOrg(org.Id, snykToken)
-		if err != nil {
-			log.Printf("Failed to fetch org: %s, id %s", org.Slug, org.Id)
-			continue
-		}
-		projectResults = append(projectResults, projects)
+	orgIds := fp.Map(func(x models.OrgIdAndSlug) string {
+		return x.Id
+	})(orgs)
+
+	for _, orgID := range orgIds {
+		go writeRepoIssuesToJson(orgID, snykToken)
 	}
-	fmt.Println("\n----PROJECTS WITH ISSUES----")
-	allProjectsWithIssues := []ProjectAndIssues{}
-	for _, result := range projectResults[:1] {
-		for _, project := range result.Projects {
-			issues, err := snykRequests.UrgentAggregatedIssuesForProject(result.Org.Id, project.Id, snykToken)
-			if err != nil {
-				log.Printf("Failed to fetch issues for project: %s, id %s", project.Name, project.Id)
-				continue
-			}
-			allProjectsWithIssues = append(allProjectsWithIssues, ProjectAndIssues{result.Org, project, issues})
-		}
 
-	}
-	rs := fp.Map(func(p ProjectAndIssues) StorageData { return transformProjectWithIssues(p) })(allProjectsWithIssues)
-	spew.Dump(rs[:3])
-
-	//TODO generate the repo name, generate the link to snyk, store the output to json
+	wg.Wait()
 
 }

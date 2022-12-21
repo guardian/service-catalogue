@@ -53,9 +53,23 @@ func GetOrgs(snykGroupId string, headers http.Header) (models.OrgsResult, error)
 	}
 }
 
-func GetProjectsForOrg(orgId string, token string) (models.ProjectResult, error) {
+func GetProjectsForOrg(orgId string, token string) ([]models.ProjectAndIssues, error) {
 	authHeader := http.Header{"Authorization": {"token " + token}}
-	return snykRequest[models.ProjectResult](http.MethodGet, "org/"+orgId+"/projects", authHeader, "")
+	var allProjects []models.ProjectAndIssues
+	resp, err := snykRequest[models.ProjectResult](http.MethodGet, "org/"+orgId+"/projects", authHeader, "")
+	if err != nil {
+		return allProjects, err
+	}
+	for _, i := range resp.Projects {
+
+		project := models.ProjectAndIssues{
+			Org:     resp.Org,
+			Project: i,
+			Issues:  models.Issues{},
+		}
+		allProjects = append(allProjects, project)
+	}
+	return allProjects, nil
 }
 
 func UrgentAggregatedIssuesForProject(orgId string, projectId string, token string) (models.Issues, error) {
@@ -63,9 +77,4 @@ func UrgentAggregatedIssuesForProject(orgId string, projectId string, token stri
 	headers := http.Header{"Authorization": {"token " + token}, "Content-Type": {"application/json"}}
 	body := "{\"filters\": {\"severities\": [\"critical\", \"high\" ]}}"
 	return snykRequest[models.Issues](http.MethodPost, path, headers, body)
-}
-
-func GetIssueForProject(orgId string, projectId string, issueId string, token string) (models.IssuePath, error) {
-	path := "org/" + orgId + "/project/" + projectId + "/history/latest/issue/" + issueId + "paths"
-	return snykRequest[models.IssuePath](http.MethodGet, path, http.Header{"Authorization": {"token " + token}}, "")
 }

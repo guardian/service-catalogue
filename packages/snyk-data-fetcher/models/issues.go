@@ -27,3 +27,9 @@ type Issue struct {
 type Issues struct {
 	Issues []Issue
 }
+
+type ProjectAndIssues struct {
+	Org     Org
+	Project Project
+	Issues  Issues
+}
