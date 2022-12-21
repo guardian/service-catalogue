@@ -45,7 +45,7 @@ describe('repository objects', function () {
 		expect(actual.languages).toStrictEqual([]);
 		expect(actual.topics).toStrictEqual(['production']);
 		expect(actual.default_branch).toStrictEqual('master');
-		expect(actual.lastCommit).toStrictEqual(undefined);
+		expect(actual.lastCommit).toBeUndefined();
 		expect(actual.private).toStrictEqual(false);
 	});
 });

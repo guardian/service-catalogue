@@ -14,9 +14,9 @@ export const asMember = (member: MemberResponse, teams: string[]): Member => {
 	};
 };
 
-function eliminateNull<T>(t: T | null | undefined): T | undefined {
-	if (t === null) {
-		return undefined;
+function eliminateUndefined<T>(t: T | null | undefined): T | null {
+	if (t === undefined) {
+		return null;
 	} else {
 		return t;
 	}
@@ -31,9 +31,9 @@ export const asRepo = (
 	return {
 		name: repo.name,
 		private: repo.private,
-		created_at: eliminateNull<string>(repo.created_at),
-		updated_at: eliminateNull<string>(repo.updated_at),
-		pushed_at: eliminateNull<string>(repo.pushed_at),
+		created_at: eliminateUndefined<string>(repo.created_at),
+		updated_at: eliminateUndefined<string>(repo.updated_at),
+		pushed_at: eliminateUndefined<string>(repo.pushed_at),
 		size: repo.size,
 		archived: repo.archived,
 		topics: repo.topics,

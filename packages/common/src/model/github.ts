@@ -1,10 +1,10 @@
 export interface Repository {
-	//before removing a field, chack it isn't being used by RepoCop
+	//before removing a field, check it isn't being used by RepoCop
 	name: string;
 	private: boolean;
-	created_at: string | undefined;
-	updated_at: string | undefined;
-	pushed_at: string | undefined;
+	created_at: string | null;
+	updated_at: string | null;
+	pushed_at: string | null;
 	size: number | undefined;
 	languages: string[];
 	archived: boolean | undefined;
