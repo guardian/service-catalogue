@@ -1,17 +1,13 @@
 export interface Repository {
-	id: number;
+	//before removing a field, check it isn't being used by RepoCop
 	name: string;
-	full_name: string;
 	private: boolean;
-	description: string | null;
-	created_at: Date | null;
-	updated_at: Date | null;
-	pushed_at: Date | null;
+	created_at: string | null;
+	updated_at: string | null;
+	pushed_at: string | null;
 	size: number | undefined;
 	languages: string[];
 	archived: boolean | undefined;
-	open_issues_count: number | undefined;
-	is_template: boolean | undefined;
 	topics: string[] | undefined;
 	default_branch: string | undefined;
 	owners: string[];

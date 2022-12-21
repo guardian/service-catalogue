@@ -22,7 +22,7 @@ describe('a positive date match', function () {
 		const GHRepo: RepositoryResponse = mockRepo;
 		GHRepo.updated_at = '2020-01-01';
 		const s3Repo = asRepo(GHRepo, [], []);
-		s3Repo.updated_at = new Date('1989-10-10');
+		s3Repo.updated_at = '1989-10-10';
 
 		const actual = isCachedRepositoryStale(s3Repo, [GHRepo]);
 		const expected = false;

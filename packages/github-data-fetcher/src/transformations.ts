@@ -5,19 +5,6 @@ import type {
 } from 'common/github/github';
 import type { Commit, Member, Repository } from 'common/model/github';
 
-const parseDateString = (
-	dateString: string | null | undefined,
-): Date | null => {
-	if (
-		dateString === undefined ||
-		dateString === null ||
-		dateString.length === 0
-	) {
-		return null;
-	}
-	return new Date(dateString);
-};
-
 export const asMember = (member: MemberResponse, teams: string[]): Member => {
 	return {
 		id: member.id,
@@ -27,6 +14,14 @@ export const asMember = (member: MemberResponse, teams: string[]): Member => {
 	};
 };
 
+function eliminateUndefined<T>(t: T | null | undefined): T | null {
+	if (t === undefined) {
+		return null;
+	} else {
+		return t;
+	}
+}
+
 export const asRepo = (
 	repo: RepositoryResponse,
 	owners: string[],
@@ -34,18 +29,13 @@ export const asRepo = (
 	lastCommit?: Commit,
 ): Repository => {
 	return {
-		id: repo.id,
 		name: repo.name,
-		full_name: repo.full_name,
 		private: repo.private,
-		description: repo.description,
-		created_at: parseDateString(repo.created_at),
-		updated_at: parseDateString(repo.updated_at),
-		pushed_at: parseDateString(repo.pushed_at),
+		created_at: eliminateUndefined<string>(repo.created_at),
+		updated_at: eliminateUndefined<string>(repo.updated_at),
+		pushed_at: eliminateUndefined<string>(repo.pushed_at),
 		size: repo.size,
 		archived: repo.archived,
-		open_issues_count: repo.open_issues_count,
-		is_template: repo.is_template,
 		topics: repo.topics,
 		default_branch: repo.default_branch,
 		owners,
