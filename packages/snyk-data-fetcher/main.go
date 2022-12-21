@@ -70,7 +70,7 @@ func writeRepoIssuesToJson(orgID string, snykToken string) {
 		}
 
 		if storageItem.RepoName != "" && storageItem.RepoName != "null" {
-			directoryName := storageItem.RepoName
+			directoryName := "_" + storageItem.RepoName
 			// ignore the error
 			_ = os.Mkdir(directoryName, os.ModePerm)
 			filePath := directoryName + "/" + storageItem.ProjectID + ".json"
