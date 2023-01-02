@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import GHLensAPI.extractRepoListsFromText
+import GHLensAPI.responseToRepos
 
 class GHLensAPISpec extends AnyFlatSpec with Matchers {
 
@@ -65,11 +65,12 @@ class GHLensAPISpec extends AnyFlatSpec with Matchers {
         |  ],
         |  "lastModified": "2022-12-01T10:44:44.000Z"
         |}""".stripMargin
-  val partialJson: String = repotext.take(100)
-  "A typical API response" should "deserialise all the repos" in {
-    extractRepoListsFromText(repotext).getOrElse(List()).length shouldBe 2
+
+  it should "deserialise an API response into a list of repositories" in {
+    responseToRepos(repotext).getOrElse(Nil).length shouldBe 2
   }
-  "A malformed API response" should "fail gracefully" in {
-    extractRepoListsFromText(partialJson).isLeft shouldBe true
+
+  it should "fail gracefully for a malformed API response" in {
+    responseToRepos(repotext.take(100)).isLeft shouldBe true
   }
 }

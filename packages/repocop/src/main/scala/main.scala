@@ -8,19 +8,19 @@ import ExecutionContext.Implicits.global
 
 @main
 def main(): String = {
-  val result: Either[Throwable, List[EvaluatedRepo]] =
-    GHLensAPI.getRepos.map(Rules.evaluateReposForTeam(_, "devx-operations"))
+  val result = GHLensAPI.getRepos.map(Rules.checkForTeam(_, "devx-operations"))
+
   val output = result match
     case Left(e)      => e.getMessage
     case Right(repos) => s"evaluated ${repos.length.toString} repos"
-  println(output)
+
   output
 }
 
 @main
 def markdown(): Unit = {
   val bw = new BufferedWriter(new FileWriter(new File("RepoRules.md")))
-  bw.write(createPage(Rules.RepoRule.values.toList))
+  bw.write(createPage(Rules.all))
   println("Created rule markdown file")
   bw.close()
 }
