@@ -1,9 +1,8 @@
 package com.gu.repocop
 
-import Rules.RepoRule
 object MarkdownHelpers {
 
-  def createPage(rules: List[Rules.RepoRule]): String = {
+  def createPage(rules: List[Rule]): String = {
     val preamble: String =
       """
         |## Repo Rules
@@ -14,25 +13,13 @@ object MarkdownHelpers {
 
     preamble + generateMarkdownTable(rules)
   }
-  private def generateMarkdownTable(rules: List[Rules.RepoRule]): String = {
-    val repoRules: List[(String, (String, String))] = rules
-      .map(_.toString)
-      .zip(rules.map(r => (r.violationMessage, r.ruleJustification)))
-    val tableHeader =
-      "| Rule Name | Violation Message | Rule Justification |\n|---|---|---|\n"
-    val tableContent =
-      repoRules.map(flattenTuple).map(tupleToTable).reduce(_ + _)
-    tableHeader + tableContent
+  private def generateMarkdownTable(rules: List[Rule]): String = {
+    val content = rules
+      .map(repo => s"| ${repo.name} | ${repo.description} |")
+      .mkString("\n")
+    val header =
+      "| Rule | Description |\n|---|---|\n"
+
+    header + content
   }
-
-  private def flattenTuple(
-      nested: (String, (String, String))
-  ): (String, String, String) = {
-    nested match
-      case (x, (y, z)) => (x, y, z)
-  }
-
-  private def tupleToTable(t: (String, String, String)) =
-    s"| ${t._1} | ${t._2} | ${t._3} |\n"
-
 }
