@@ -91,7 +91,10 @@ export class GithubLens extends GuStack {
 
 		const applicationPort = 8900;
 		const handler = 'handler.js';
-
+		const cmd = `aws s3 cp s3://${distBucket}/${keyPrefix}/${apiApp}.zip ${apiApp}.zip &&
+		unzip ${apiApp}.zip &&
+		chmod +x /${handler} &&
+		systemctl restart ${apiApp}`;
 		const userData = `#!/bin/bash -ev
 cat << EOF > /etc/systemd/system/${apiApp}.service
 [Unit]
@@ -107,10 +110,9 @@ ExecStart=/usr/bin/node /${handler}
 WantedBy=multi-user.target
 EOF
 
-aws s3 cp s3://${distBucket}/${keyPrefix}/${apiApp}.zip ${apiApp}.zip
-unzip ${apiApp}.zip
-chmod +x /${handler}
-systemctl start ${apiApp}
+${cmd}
+
+(crontab -l ; echo "30 7 * * * ${cmd}") | crontab -
 `;
 
 		const ec2 = new GuEc2App(this, {

@@ -234,10 +234,19 @@ aws s3 cp s3://",
                 {
                   "Ref": "DistributionBucketName",
                 },
-                "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip
-unzip github-lens-api.zip
-chmod +x /handler.js
-systemctl start github-lens-api
+                "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip &&
+		unzip github-lens-api.zip &&
+		chmod +x /handler.js &&
+		systemctl restart github-lens-api
+
+(crontab -l ; echo "30 7 * * * aws s3 cp s3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip &&
+		unzip github-lens-api.zip &&
+		chmod +x /handler.js &&
+		systemctl restart github-lens-api") | crontab -
 ",
               ],
             ],
