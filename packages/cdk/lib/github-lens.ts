@@ -112,7 +112,7 @@ EOF
 
 ${cmd}
 
-(crontab -l ; echo "30 7 * * * ${cmd}") | crontab -
+(crontab -l ; echo '30 7 * * * ${cmd}') | crontab -
 `;
 
 		const ec2 = new GuEc2App(this, {
