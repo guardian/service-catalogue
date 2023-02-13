@@ -5,42 +5,41 @@ import io.circe.parser.parse
 import io.circe.{Decoder, Encoder, Error, Json}
 import requests.Response
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_DATE_TIME
 import scala.util.{Failure, Success, Try}
 
 object GHLensAPI {
 
-  def getRepos: Either[Throwable, List[Repository]] = request.map { response =>
-    if (response.is2xx) {
-      extractRepoListsFromText(response.text())
-    } else {
-      val msg = "Non 2xx status code from github lens"
-      println(msg)
-      Left(new Exception(msg))
+  def getRepos: Either[Throwable, List[Repository]] = {
+    val result = Try(
+      requests.get(
+        "https://github-lens.gutools.co.uk/repos",
+        connectTimeout = 3000,
+        readTimeout = 3000
+      )
+    ).toEither
+
+    result match {
+      case Right(response) if response.is2xx =>
+        responseToRepos(response.text())
+      case Right(_) =>
+        Left(new Exception("Non 2xx status code from github lens"))
+      case Left(err) =>
+        Left(err)
     }
-  }.joinRight
-
-  def extractRepoListsFromText(
-      requestText: String
-  ): Either[Error, List[Repository]] = {
-    implicit val decoder: Decoder[Repository] = deriveDecoder[Repository]
-    implicit val encoder: Encoder[Repository] = deriveEncoder[Repository]
-
-    val parsed: Either[Error, Json] = parse(requestText)
-    val payload: Either[Error, Json] =
-      parsed.map(_.hcursor.get[Json]("payload")).joinRight
-
-    val parsingResult: Either[Error, List[Repository]] =
-      (for {
-        json <- payload
-      } yield json.as[List[Repository]]).joinRight
-    parsingResult
   }
 
-  private def request: Either[Throwable, Response] = Try(
-    requests.get(
-      "https://github-lens.gutools.co.uk/repos",
-      connectTimeout = 3000,
-      readTimeout = 3000
-    )
-  ).toEither
+  def responseToRepos(
+      requestText: String
+  ): Either[Error, List[Repository]] = {
+    given dtDecoder: Decoder[LocalDateTime] =
+      Decoder.decodeLocalDateTimeWithFormatter(ISO_DATE_TIME)
+    given decoder: Decoder[Repository] = deriveDecoder[Repository]
+
+    for {
+      json <- parse(requestText)
+      repos <- json.hcursor.get[List[Repository]]("payload")
+    } yield repos
+  }
 }
