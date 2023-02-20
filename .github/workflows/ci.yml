@@ -12,6 +12,7 @@ on:
       - main
 jobs:
   CI:
+    timeout-minutes: 1
     runs-on: ubuntu-latest
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
