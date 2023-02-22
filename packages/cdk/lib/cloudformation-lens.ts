@@ -71,7 +71,7 @@ systemctl start ${name}
 			certificateProps: { domainName },
 			scaling: { minimumInstances: 1, maximumInstances: 2 },
 			userData: userData,
-			imageRecipe: 'arm64-bionic-java11-deploy-infrastructure', // TODO should we create a minimal Amigo recipe for this?
+			imageRecipe: 'arm64-focal-java11-deploy-infrastructure', // TODO should we create a minimal Amigo recipe for this?
 			applicationLogging: { enabled: true },
 		});
 
