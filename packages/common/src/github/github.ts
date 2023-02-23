@@ -228,7 +228,7 @@ export async function getLastCommitForRepositories(
 				const lastCommits = await getRepositoryLastCommit(
 					client,
 					name,
-					default_branch!,
+					default_branch,
 				);
 				return {
 					repository: name,
