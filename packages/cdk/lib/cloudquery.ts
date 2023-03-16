@@ -9,8 +9,10 @@ import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
+	Port,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
+import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 
 export class GithubLens extends GuStack {
@@ -35,7 +37,8 @@ export class GithubLens extends GuStack {
 
 			'# Add configuration files',
 			`echo ${awsYaml} > aws.yaml`,
-			`echo ${postgresYaml} > postgres.yaml`,
+			`echo ${postgresYaml} > postgres.yaml`, //this file needs to be committed
+			`./cloudquery sync aws.yml postgres.yml`,
 		);
 
 		const asgProps: AutoScalingGroupProps = {
@@ -46,13 +49,18 @@ export class GithubLens extends GuStack {
 
 		const asg = new AutoScalingGroup(this, 'asg', asgProps);
 
-		const db = new DatabaseInstance(this, 'PostgresInstance1', {
+		//allow ASG to connect to GitHub
+		asg.connections.allowFromAnyIpv4(Port.tcp(443));
+
+		const dbProps: DatabaseInstanceProps = {
 			engine: DatabaseInstanceEngine.POSTGRES,
 			vpc,
 			iamAuthentication: true,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
-		});
+		};
 
-		db.grantConnect(asg); // TODO check if actually works - see docstring link.
+		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
+
+		db.connections.allowDefaultPortFrom(asg);
 	}
 }
