@@ -3,6 +3,8 @@ import cors from 'cors';
 import type { Express } from 'express';
 import express, { Router } from 'express';
 import asyncHandler from 'express-async-handler';
+import morgan from 'morgan';
+import json from 'morgan-json';
 import { getRouteDescriptions } from './controller/describe';
 import { getHealthCheckHandler } from './controller/healthcheck';
 import { getMembers, getMembersByLogin } from './controller/members';
@@ -12,8 +14,26 @@ import type { GitHubData } from './data';
 
 export function buildApp(ghData: Promise<GitHubData>): Express {
 	const app = express();
-	const router = Router();
 
+	app.use(
+		morgan(
+			json({
+				'@timestamp': ':date[iso]',
+				origin: ':remote-addr',
+				referrer: ':referrer',
+				method: ':method',
+				contentLength: ':res[content-length]',
+				status: ':status',
+				duration: ':response-time',
+				requestUri: ':url',
+				userAgent: ':user-agent',
+				message:
+					':remote-addr - :method :url :status :res[content-length] bytes :response-time ms',
+			}),
+		),
+	);
+
+	const router = Router();
 	router.use(jsonBodyParser());
 
 	router.use(
