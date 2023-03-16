@@ -225,27 +225,30 @@ export async function getLastCommitForRepositories(
 				return hasDefaultBranch && !repositoryIsEmpty;
 			})
 			.map(async ({ name, default_branch }) => {
-				const lastCommits = await getRepositoryLastCommit(
+				const lastMainBranchCommit = await getLastCommitFromBranch(
 					client,
 					name,
 					default_branch!,
 				);
 				return {
 					repository: name,
-					lastCommits,
+					lastMainBranchCommit,
 				};
 			}),
 	);
-
-	return data.reduce((acc, { repository, lastCommits }) => {
-		return {
-			...acc,
-			[repository]: lastCommits,
-		};
-	}, {});
+	const lastCommits: Record<string, Commit> = data.reduce(
+		(acc, { repository, lastMainBranchCommit: lastMainBranchCommit }) => {
+			return {
+				...acc,
+				[repository]: lastMainBranchCommit,
+			};
+		},
+		{},
+	);
+	return lastCommits;
 }
 
-async function getRepositoryLastCommit(
+async function getLastCommitFromBranch(
 	client: Octokit,
 	repositoryName: string,
 	defaultBranch: string,

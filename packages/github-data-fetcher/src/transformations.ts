@@ -50,7 +50,7 @@ export const asRepo = (
 		default_branch: repo.default_branch,
 		owners,
 		languages,
-		lastCommit,
+		last_commit: lastCommit,
 	};
 };
 
