@@ -23,12 +23,15 @@ export class CloudQuery extends GuStack {
 
 		const userData = UserData.forLinux();
 
-		const awsYaml = fs.readFileSync('cloudquery/aws.yaml', {
+		const awsYaml = fs.readFileSync(__dirname + '/cloudquery/aws.yaml', {
 			encoding: 'utf-8',
 		});
-		// const postgresYaml = fs.readFileSync('cloudquery/postgres.yaml', {
-		// 	encoding: 'utf-8',
-		// });
+		const postgresqlYaml = fs.readFileSync(
+			__dirname + '/cloudquery/postgresql.yaml',
+			{
+				encoding: 'utf-8',
+			},
+		);
 
 		userData.addCommands(
 			'# Install Cloudquery',
@@ -37,8 +40,8 @@ export class CloudQuery extends GuStack {
 
 			'# Add configuration files',
 			`echo ${awsYaml} > aws.yaml`,
-			//`echo ${postgresYaml} > postgres.yaml`, //this file needs to be committed
-			`./cloudquery sync aws.yml postgres.yml`,
+			`echo ${postgresqlYaml} > postgresql.yaml`,
+			`./cloudquery sync aws.yml postgresql.yml`,
 		);
 
 		const asgProps: AutoScalingGroupProps = {

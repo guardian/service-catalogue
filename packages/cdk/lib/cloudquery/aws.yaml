@@ -4,7 +4,7 @@ spec:
   path: 'cloudquery/aws'
   version: 'v15.4.0'
   # tables: ["*"]
-  destinations: ['sqlite']
+  destinations: ['postgresql']
   skip_tables:
     - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
     - aws_cloudtrail_events
