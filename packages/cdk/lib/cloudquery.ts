@@ -3,24 +3,14 @@ import type { GuAutoScalingGroupProps } from '@guardian/cdk/lib/constructs/autos
 import { GuAutoScalingGroup } from '@guardian/cdk/lib/constructs/autoscaling';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
-import {
-	//GuHttpsEgressSecurityGroup,
-	GuVpc,
-	SubnetType,
-} from '@guardian/cdk/lib/constructs/ec2';
+import { GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import type { App } from 'aws-cdk-lib';
-//import type { AutoScalingGroupProps } from 'aws-cdk-lib/aws-autoscaling';
-//import { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
-	//	LaunchTemplate,
-	//OperatingSystemType,
-	Port,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
-//import type { MachineImageConfig } from 'aws-cdk-lib/aws-ec2';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 
@@ -52,12 +42,10 @@ export class CloudQuery extends GuStack {
 			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery`,
 			`chmod a+x cloudquery`,
 			'# Add configuration files',
-			`echo ${awsYaml} > aws.yaml`,
-			`echo ${postgresqlYaml} > postgresql.yaml`,
+			`cat > aws.yaml << 'EOL'\n"${awsYaml}"\nEOL`,
+			`cat > postgresql.yaml << 'EOL'\n"${postgresqlYaml}"\nEOL`,
 			`./cloudquery sync aws.yml postgresql.yml`, // TODO cron this and ship logs.
 		);
-
-		//const imageId = new GuAmiParameter(this, { app });
 
 		const asgProps: GuAutoScalingGroupProps = {
 			app,
@@ -67,25 +55,9 @@ export class CloudQuery extends GuStack {
 			userData: userData,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 			imageRecipe: 'arm64-jammy-java11-deploy-infrastructure',
-			/* 			launchTemplate: new LaunchTemplate(this, 'launch-template', {
-				instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
-				machineImage: {
-					getImage: (): MachineImageConfig => {
-						return {
-							osType: OperatingSystemType.LINUX,
-							userData,
-							imageId: imageId.valueAsString,
-						};
-					},
-				},
-				securityGroup: GuHttpsEgressSecurityGroup.forVpc(this, { app, vpc }),
-			})*/
 		};
 
 		const asg = new GuAutoScalingGroup(this, 'asg', asgProps);
-
-		//allow ASG to connect to GitHub
-		asg.connections.allowFromAnyIpv4(Port.tcp(443));
 
 		const dbProps: DatabaseInstanceProps = {
 			engine: DatabaseInstanceEngine.POSTGRES,

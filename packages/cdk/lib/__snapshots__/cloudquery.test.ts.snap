@@ -118,15 +118,6 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
             "ToPort": 443,
           },
         ],
-        "SecurityGroupIngress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "from 0.0.0.0/0:443",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
         "Tags": [
           {
             "Key": "App",
@@ -709,7 +700,8 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
 chmod a+x cloudquery
 # Add configuration files
-echo kind: source
+cat > aws.yaml << 'EOL'
+"kind: source
 spec:
   name: 'aws'
   path: 'cloudquery/aws'
@@ -738,8 +730,10 @@ spec:
     accounts:
       - id: deployTools
         local_profile: deployTools
- > aws.yaml
-echo kind: destination
+"
+EOL
+cat > postgresql.yaml << 'EOL'
+"kind: destination
 spec:
   name: 'postgresql'
   registry: 'github'
@@ -748,7 +742,8 @@ spec:
   spec:
     #TODO put credentials and adress later
     connection_string: 'postgresql://postgres:pass@localhost:5432/postgres?sslmode=disable'
- > postgresql.yaml
+"
+EOL
 ./cloudquery sync aws.yml postgresql.yml",
         },
       },
