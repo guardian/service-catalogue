@@ -15,20 +15,20 @@ import {
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 
-export class GithubLens extends GuStack {
+export class CloudQuery extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 		// EC2 ASG - with Cloudquery + config
-		// Postgres (RDS)
 		const vpc = GuVpc.fromIdParameter(this, 'vpc');
 
 		const userData = UserData.forLinux();
+
 		const awsYaml = fs.readFileSync('cloudquery/aws.yaml', {
 			encoding: 'utf-8',
 		});
-		const postgresYaml = fs.readFileSync('cloudquery/postgres.yaml', {
-			encoding: 'utf-8',
-		});
+		// const postgresYaml = fs.readFileSync('cloudquery/postgres.yaml', {
+		// 	encoding: 'utf-8',
+		// });
 
 		userData.addCommands(
 			'# Install Cloudquery',
@@ -37,7 +37,7 @@ export class GithubLens extends GuStack {
 
 			'# Add configuration files',
 			`echo ${awsYaml} > aws.yaml`,
-			`echo ${postgresYaml} > postgres.yaml`, //this file needs to be committed
+			//`echo ${postgresYaml} > postgres.yaml`, //this file needs to be committed
 			`./cloudquery sync aws.yml postgres.yml`,
 		);
 
