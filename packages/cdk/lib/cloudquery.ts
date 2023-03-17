@@ -42,8 +42,12 @@ export class CloudQuery extends GuStack {
 			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery`,
 			`chmod a+x cloudquery`,
 			'# Add configuration files',
-			`cat > aws.yaml << 'EOL'\n"${awsYaml}"\nEOL`,
-			`cat > postgresql.yaml << 'EOL'\n"${postgresqlYaml}"\nEOL`,
+			`cat > aws.yaml << EOL
+${awsYaml}
+EOL`,
+			`cat > postgresql.yaml << EOL
+${postgresqlYaml}
+EOL`,
 			`./cloudquery sync aws.yml postgresql.yml`, // TODO cron this and ship logs.
 		);
 
