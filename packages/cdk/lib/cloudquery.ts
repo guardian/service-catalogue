@@ -48,7 +48,7 @@ EOL`,
 			`cat > postgresql.yaml << EOL
 ${postgresqlYaml}
 EOL`,
-			`./cloudquery sync aws.yml postgresql.yml`, // TODO cron this and ship logs.
+			`./cloudquery sync aws.yaml postgresql.yaml`, // TODO cron this and ship logs.
 		);
 
 		const asgProps: GuAutoScalingGroupProps = {

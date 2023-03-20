@@ -744,7 +744,7 @@ spec:
     connection_string: 'postgresql://postgres:pass@localhost:5432/postgres?sslmode=disable'
 
 EOL
-./cloudquery sync aws.yml postgresql.yml",
+./cloudquery sync aws.yaml postgresql.yaml",
         },
       },
       "Type": "AWS::AutoScaling::LaunchConfiguration",
