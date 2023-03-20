@@ -695,7 +695,11 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
           },
         ],
         "UserData": {
-          "Fn::Base64": "#!/bin/bash
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash
 # Install Cloudquery
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
 chmod a+x cloudquery
@@ -741,10 +745,126 @@ spec:
   version: 'v3.0.0'
   spec:
     #TODO put credentials and adress later
-    connection_string: 'postgresql://postgres:pass@localhost:5432/postgres?sslmode=disable'
+    connection_string: 'postgresql://postgres:$PASSWORD@£HOST:5432/postgres?sslmode=disable'
 
 EOL
+# Replace password + db host
+HOST=$(aws secretsmanager get-secret-value --secret-id ",
+                {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      {
+                        "Fn::Select": [
+                          0,
+                          {
+                            "Fn::Split": [
+                              "-",
+                              {
+                                "Fn::Select": [
+                                  6,
+                                  {
+                                    "Fn::Split": [
+                                      ":",
+                                      {
+                                        "Ref": "PostgresInstance1Secret7FA1A24B",
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        "Fn::Select": [
+                          1,
+                          {
+                            "Fn::Split": [
+                              "-",
+                              {
+                                "Fn::Select": [
+                                  6,
+                                  {
+                                    "Fn::Split": [
+                                      ":",
+                                      {
+                                        "Ref": "PostgresInstance1Secret7FA1A24B",
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  ],
+                },
+                " | jq -r '.SecretString|fromjson|.host')
+sed -i "s/£HOST/$HOST/g" postgresql.yaml
+PASSWORD=$(aws secretsmanager get-secret-value --secret-id ",
+                {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      {
+                        "Fn::Select": [
+                          0,
+                          {
+                            "Fn::Split": [
+                              "-",
+                              {
+                                "Fn::Select": [
+                                  6,
+                                  {
+                                    "Fn::Split": [
+                                      ":",
+                                      {
+                                        "Ref": "PostgresInstance1Secret7FA1A24B",
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        "Fn::Select": [
+                          1,
+                          {
+                            "Fn::Split": [
+                              "-",
+                              {
+                                "Fn::Select": [
+                                  6,
+                                  {
+                                    "Fn::Split": [
+                                      ":",
+                                      {
+                                        "Ref": "PostgresInstance1Secret7FA1A24B",
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  ],
+                },
+                " | jq -r '.SecretString|fromjson|.password')
+sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml
 ./cloudquery sync aws.yaml postgresql.yaml",
+              ],
+            ],
+          },
         },
       },
       "Type": "AWS::AutoScaling::LaunchConfiguration",

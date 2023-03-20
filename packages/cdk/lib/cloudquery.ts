@@ -25,6 +25,21 @@ export class CloudQuery extends GuStack {
 			app,
 		});
 
+		const dbProps: DatabaseInstanceProps = {
+			engine: DatabaseInstanceEngine.POSTGRES,
+			vpc,
+			vpcSubnets: { subnets: privateSubnets },
+			iamAuthentication: true,
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+		};
+
+		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
+		const dbSecret = db.secret?.secretName;
+
+		if (!dbSecret) {
+			throw new Error('DB Secret is missing');
+		}
+
 		const userData = UserData.forLinux();
 
 		const awsYaml = fs.readFileSync(__dirname + '/cloudquery/aws.yaml', {
@@ -48,6 +63,12 @@ EOL`,
 			`cat > postgresql.yaml << EOL
 ${postgresqlYaml}
 EOL`,
+			`# Replace password + db host`,
+			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} | jq -r '.SecretString|fromjson|.host')`,
+			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
+			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} | jq -r '.SecretString|fromjson|.password')`,
+			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
+
 			`./cloudquery sync aws.yaml postgresql.yaml`, // TODO cron this and ship logs.
 		);
 
@@ -62,16 +83,6 @@ EOL`,
 		};
 
 		const asg = new GuAutoScalingGroup(this, 'asg', asgProps);
-
-		const dbProps: DatabaseInstanceProps = {
-			engine: DatabaseInstanceEngine.POSTGRES,
-			vpc,
-			vpcSubnets: { subnets: privateSubnets },
-			iamAuthentication: true,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
-		};
-
-		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
 
 		db.connections.allowDefaultPortFrom(asg);
 	}
