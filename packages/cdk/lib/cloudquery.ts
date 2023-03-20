@@ -71,7 +71,7 @@ EOL`,
 			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
 
-			`echo "!#/bin/sh\n./cloudquery sync aws.yaml postgresql.yaml" > /etc/cron.daily/cloudQuery`,
+			`echo "#!/bin/sh\n./cloudquery sync aws.yaml postgresql.yaml" > /etc/cron.daily/cloudQuery`,
 			`chmod +x /etc/cron.daily/cloudQuery`, // TODO ship logs.
 		);
 

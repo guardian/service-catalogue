@@ -233,6 +233,9 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/ReadOnlyAccess",
+        ],
         "Path": "/",
         "Tags": [
           {
@@ -773,7 +776,7 @@ spec:
   version: 'v3.0.0'
   spec:
     #TODO put credentials and adress later
-    connection_string: 'postgresql://postgres:$PASSWORD@£HOST:5432/postgres?sslmode=disable'
+    connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=disable'
 
 EOL
 # Replace password + db host
@@ -895,9 +898,11 @@ PASSWORD=$(aws secretsmanager get-secret-value --secret-id ",
                 {
                   "Ref": "AWS::Region",
                 },
-                " | jq -r '.SecretString|fromjson|.password')
+                " | jq -r '.SecretString|fromjson|.password|@uri')
 sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml
-./cloudquery sync aws.yaml postgresql.yaml",
+echo "#!/bin/sh
+./cloudquery sync aws.yaml postgresql.yaml" > /etc/cron.daily/cloudQuery
+chmod +x /etc/cron.daily/cloudQuery",
               ],
             ],
           },
