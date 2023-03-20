@@ -701,6 +701,7 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
               [
                 "#!/bin/bash
 # Install Cloudquery
+set -xe
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
 chmod a+x cloudquery
 # Add configuration files
@@ -803,6 +804,10 @@ HOST=$(aws secretsmanager get-secret-value --secret-id ",
                     ],
                   ],
                 },
+                " --region ",
+                {
+                  "Ref": "AWS::Region",
+                },
                 " | jq -r '.SecretString|fromjson|.host')
 sed -i "s/£HOST/$HOST/g" postgresql.yaml
 PASSWORD=$(aws secretsmanager get-secret-value --secret-id ",
@@ -858,6 +863,10 @@ PASSWORD=$(aws secretsmanager get-secret-value --secret-id ",
                       },
                     ],
                   ],
+                },
+                " --region ",
+                {
+                  "Ref": "AWS::Region",
                 },
                 " | jq -r '.SecretString|fromjson|.password')
 sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml

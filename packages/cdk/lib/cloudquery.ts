@@ -54,6 +54,7 @@ export class CloudQuery extends GuStack {
 
 		userData.addCommands(
 			'# Install Cloudquery',
+			`set -xe`,
 			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery`,
 			`chmod a+x cloudquery`,
 			'# Add configuration files',
@@ -64,9 +65,9 @@ EOL`,
 ${postgresqlYaml}
 EOL`,
 			`# Replace password + db host`,
-			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} | jq -r '.SecretString|fromjson|.host')`,
+			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.host')`,
 			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
-			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} | jq -r '.SecretString|fromjson|.password')`,
+			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
 
 			`./cloudquery sync aws.yaml postgresql.yaml`, // TODO cron this and ship logs.
