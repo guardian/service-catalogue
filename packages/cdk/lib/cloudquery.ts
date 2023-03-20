@@ -69,10 +69,10 @@ EOL`,
 			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.host')`,
 			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
 			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
-			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
 
-			`./cloudquery sync aws.yaml postgresql.yaml`, // TODO cron this and ship logs.
+			`echo "!#/bin/sh\n./cloudquery sync aws.yaml postgresql.yaml" > /etc/cron.daily/cloudQuery`,
+			`chmod +x /etc/cron.daily/cloudQuery`, // TODO ship logs.
 		);
 
 		const asgProps: GuAutoScalingGroupProps = {
