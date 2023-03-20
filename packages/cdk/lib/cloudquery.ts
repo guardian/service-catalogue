@@ -67,7 +67,7 @@ EOL`,
 			`# Replace password + db host`,
 			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.host')`,
 			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
-			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password')`,
+			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
 
 			`./cloudquery sync aws.yaml postgresql.yaml`, // TODO cron this and ship logs.

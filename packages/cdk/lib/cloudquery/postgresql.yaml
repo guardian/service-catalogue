@@ -6,4 +6,4 @@ spec:
   version: 'v3.0.0'
   spec:
     #TODO put credentials and adress later
-    connection_string: 'postgresql://postgres:$PASSWORD@£HOST:5432/postgres?sslmode=disable'
+    connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=disable'
