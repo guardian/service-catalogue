@@ -11,6 +11,7 @@ import {
 	InstanceType,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
+import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 
@@ -68,6 +69,7 @@ EOL`,
 			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.host')`,
 			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
 			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
+			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
 
 			`./cloudquery sync aws.yaml postgresql.yaml`, // TODO cron this and ship logs.
@@ -84,6 +86,14 @@ EOL`,
 		};
 
 		const asg = new GuAutoScalingGroup(this, 'asg', asgProps);
+
+		asg.role.addManagedPolicy(
+			ManagedPolicy.fromManagedPolicyArn(
+				this,
+				'read-all-policy',
+				'arn:aws:iam::aws:policy/ReadOnlyAccess',
+			),
+		);
 
 		db.connections.allowDefaultPortFrom(asg);
 		db.secret.grantRead(asg);
