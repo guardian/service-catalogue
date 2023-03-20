@@ -86,5 +86,6 @@ EOL`,
 		const asg = new GuAutoScalingGroup(this, 'asg', asgProps);
 
 		db.connections.allowDefaultPortFrom(asg);
+		db.secret.grantRead(asg);
 	}
 }

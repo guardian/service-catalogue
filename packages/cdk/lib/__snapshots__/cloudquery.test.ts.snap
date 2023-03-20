@@ -259,6 +259,32 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "InstanceRoleCloudqueryDefaultPolicyBCEDADAD": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "InstanceRoleCloudqueryDefaultPolicyBCEDADAD",
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCloudquery54F86B54",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "ParameterStoreReadCloudqueryA859D391": {
       "Properties": {
         "PolicyDocument": {
@@ -667,6 +693,7 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
     },
     "asgCloudqueryLaunchConfigEECD8C1E": {
       "DependsOn": [
+        "InstanceRoleCloudqueryDefaultPolicyBCEDADAD",
         "InstanceRoleCloudquery54F86B54",
       ],
       "Properties": {
