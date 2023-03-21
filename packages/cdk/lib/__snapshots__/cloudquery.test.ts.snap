@@ -6,6 +6,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
     "gu:cdk:constructs": [
       "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuSecurityGroup",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -22,6 +23,65 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
     },
   },
   "Resources": {
+    "PostgresAccessSecurityGroupCloudqueryE959A23F": {
+      "Properties": {
+        "GroupDescription": "CloudQuery/PostgresAccessSecurityGroupCloudquery",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "PostgresAccessSecurityGroupParam38DFE001": {
+      "Properties": {
+        "DataType": "text",
+        "Name": "/TEST/deploy/cloudquery/postgres-access-security-group",
+        "Tags": {
+          "Stack": "deploy",
+          "Stage": "TEST",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/service-catalogue",
+        },
+        "Tier": "Standard",
+        "Type": "String",
+        "Value": {
+          "Fn::GetAtt": [
+            "PostgresAccessSecurityGroupCloudqueryE959A23F",
+            "GroupId",
+          ],
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
     "PostgresInstance16DE4286E": {
       "DeletionPolicy": "Snapshot",
       "Properties": {
@@ -57,6 +117,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
             ],
           ],
         },
+        "Port": "5432",
         "PubliclyAccessible": false,
         "StorageType": "gp2",
         "Tags": [
@@ -177,15 +238,10 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "PostgresInstance1SecurityGroupfromCloudQueryPostgresInstance1SecurityGroupE406EBD1IndirectPortD7FF4792": {
+    "PostgresInstance1SecurityGroupfromCloudQueryPostgresAccessSecurityGroupCloudqueryAE627D465432AE3168F5": {
       "Properties": {
-        "Description": "from CloudQueryPostgresInstance1SecurityGroupE406EBD1:{IndirectPort}",
-        "FromPort": {
-          "Fn::GetAtt": [
-            "PostgresInstance16DE4286E",
-            "Endpoint.Port",
-          ],
-        },
+        "Description": "from CloudQueryPostgresAccessSecurityGroupCloudqueryAE627D46:5432",
+        "FromPort": 5432,
         "GroupId": {
           "Fn::GetAtt": [
             "PostgresInstance1SecurityGroupFA28C3C0",
@@ -195,16 +251,11 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": {
           "Fn::GetAtt": [
-            "PostgresInstance1SecurityGroupFA28C3C0",
+            "PostgresAccessSecurityGroupCloudqueryE959A23F",
             "GroupId",
           ],
         },
-        "ToPort": {
-          "Fn::GetAtt": [
-            "PostgresInstance16DE4286E",
-            "Endpoint.Port",
-          ],
-        },
+        "ToPort": 5432,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
