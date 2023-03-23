@@ -47,6 +47,14 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
+    "deployToolsAccountIDParam": {
+      "Description": "Account ID for deployTools",
+      "Type": "String",
+    },
+    "devPlaygroundAccountIDParam": {
+      "Description": "Account ID for developerPlayground",
+      "Type": "String",
+    },
   },
   "Resources": {
     "DescribeEC2PolicyFF5F9295": {
@@ -257,6 +265,11 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
               ],
               "Effect": "Deny",
               "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
             },
             {
               "Action": [
@@ -812,7 +825,9 @@ spec:
       - eu-west-1
     accounts:
       - id: deployTools
-        local_profile: deployTools
+        role_arn: arn:aws:iam::£DEPLOY_TOOLS_ACCOUNT_ID:role/cloudquery-access
+      - id: developerPlayground
+        role_arn: arn:aws:iam::£DEV_PLAYGROUND_ACCOUNT_ID:role/cloudquery-access
 
 EOL
 cat > postgresql.yaml << EOL
@@ -827,6 +842,17 @@ spec:
     connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=disable'
 
 EOL
+# Set target accounts - temp until we use OUs
+sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/",
+                {
+                  "Ref": "deployToolsAccountIDParam",
+                },
+                "/g" aws.yaml
+sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/",
+                {
+                  "Ref": "devPlaygroundAccountIDParam",
+                },
+                "/g" aws.yaml
 # Replace password + db host
 HOST=$(aws secretsmanager get-secret-value --secret-id ",
                 {

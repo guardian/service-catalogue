@@ -26,4 +26,6 @@ spec:
       - eu-west-1
     accounts:
       - id: deployTools
-        local_profile: deployTools
+        role_arn: arn:aws:iam::£DEPLOY_TOOLS_ACCOUNT_ID:role/cloudquery-access
+      - id: developerPlayground
+        role_arn: arn:aws:iam::£DEV_PLAYGROUND_ACCOUNT_ID:role/cloudquery-access

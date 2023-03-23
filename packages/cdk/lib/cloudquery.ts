@@ -9,6 +9,7 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import type { App } from 'aws-cdk-lib';
+import { CfnParameter } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -88,6 +89,24 @@ export class CloudQuery extends GuStack {
 			},
 		);
 
+		const deployToolsAccountID = new CfnParameter(
+			this,
+			'deployToolsAccountIDParam',
+			{
+				type: 'String',
+				description: 'Account ID for deployTools',
+			},
+		);
+
+		const devPlaygroundAccountID = new CfnParameter(
+			this,
+			'devPlaygroundAccountIDParam',
+			{
+				type: 'String',
+				description: 'Account ID for developerPlayground',
+			},
+		);
+
 		userData.addCommands(
 			'# Install Cloudquery',
 			`set -xe`,
@@ -100,6 +119,10 @@ EOL`,
 			`cat > postgresql.yaml << EOL
 ${postgresqlYaml}
 EOL`,
+			`# Set target accounts - temp until we use OUs`,
+			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" aws.yaml`,
+			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" aws.yaml`,
+
 			`# Replace password + db host`,
 			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.host')`,
 			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
@@ -154,6 +177,14 @@ EOL`,
 					'sdb:Select*',
 					'sqs:ReceiveMessage',
 				],
+			}),
+		);
+
+		asg.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: ['arn:aws:iam::*:role/cloudquery-access'],
+				actions: ['sts:AssumeRole'],
 			}),
 		);
 
