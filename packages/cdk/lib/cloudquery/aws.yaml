@@ -24,6 +24,7 @@ spec:
   spec:
     regions:
       - eu-west-1
+      - us-east-1
     accounts:
       - id: deployTools
         role_arn: arn:aws:iam::£DEPLOY_TOOLS_ACCOUNT_ID:role/cloudquery-access
