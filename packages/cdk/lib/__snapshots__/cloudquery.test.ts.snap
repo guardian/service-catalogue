@@ -259,12 +259,31 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                 "kinesis:Get*",
                 "lambda:GetFunction",
                 "logs:GetLogEvents",
-                "s3:GetObject",
                 "sdb:Select*",
                 "sqs:ReceiveMessage",
               ],
               "Effect": "Deny",
               "Resource": "*",
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Deny",
+              "NotResource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::",
+                    {
+                      "Ref": "DistributionBucketName",
+                    },
+                    "/deploy/TEST/cloudquery/*",
+                  ],
+                ],
+              },
             },
             {
               "Action": "sts:AssumeRole",

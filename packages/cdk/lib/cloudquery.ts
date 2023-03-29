@@ -178,10 +178,19 @@ export class CloudQuery extends GuStack {
 					'kinesis:Get*',
 					'lambda:GetFunction',
 					'logs:GetLogEvents',
-					's3:GetObject',
 					'sdb:Select*',
 					'sqs:ReceiveMessage',
 				],
+			}),
+		);
+
+		asg.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.DENY,
+				actions: ['s3:GetObject'],
+				// This NotResource allows downloading from the artifact bucket, and denies everything else.
+				// See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notresource.html
+				notResources: [bucket.arnForObjects(`${stack}/${stage}/${app}/*`)],
 			}),
 		);
 
