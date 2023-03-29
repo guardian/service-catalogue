@@ -1,8 +1,10 @@
-import fs from 'fs';
 import type { GuAutoScalingGroupProps } from '@guardian/cdk/lib/constructs/autoscaling';
 import { GuAutoScalingGroup } from '@guardian/cdk/lib/constructs/autoscaling';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import {
+	GuDistributionBucketParameter,
+	GuStack,
+} from '@guardian/cdk/lib/constructs/core';
 import {
 	GuSecurityGroup,
 	GuVpc,
@@ -20,6 +22,7 @@ import {
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import {
 	ParameterDataType,
 	ParameterTier,
@@ -79,16 +82,6 @@ export class CloudQuery extends GuStack {
 
 		const userData = UserData.forLinux();
 
-		const awsYaml = fs.readFileSync(__dirname + '/cloudquery/aws.yaml', {
-			encoding: 'utf-8',
-		});
-		const postgresqlYaml = fs.readFileSync(
-			__dirname + '/cloudquery/postgresql.yaml',
-			{
-				encoding: 'utf-8',
-			},
-		);
-
 		const deployToolsAccountID = new CfnParameter(
 			this,
 			'deployToolsAccountIDParam',
@@ -107,18 +100,30 @@ export class CloudQuery extends GuStack {
 			},
 		);
 
+		const bucket = Bucket.fromBucketName(
+			this,
+			'distributionBucket',
+			GuDistributionBucketParameter.getInstance(this).valueAsString,
+		);
+
+		userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/aws.yaml`,
+			localFile: '/aws.yaml',
+		});
+
+		userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/postgresql.yaml`,
+			localFile: '/postgresql.yaml',
+		});
+
 		userData.addCommands(
 			'# Install Cloudquery',
 			`set -xe`,
 			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery`,
 			`chmod a+x cloudquery`,
-			'# Add configuration files',
-			`cat > aws.yaml << EOL
-${awsYaml}
-EOL`,
-			`cat > postgresql.yaml << EOL
-${postgresqlYaml}
-EOL`,
+
 			`# Set target accounts - temp until we use OUs`,
 			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" aws.yaml`,
 			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" aws.yaml`,
@@ -173,10 +178,19 @@ EOL`,
 					'kinesis:Get*',
 					'lambda:GetFunction',
 					'logs:GetLogEvents',
-					's3:GetObject',
 					'sdb:Select*',
 					'sqs:ReceiveMessage',
 				],
+			}),
+		);
+
+		asg.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.DENY,
+				actions: ['s3:GetObject'],
+				// This NotResource allows downloading from the artifact bucket, and denies everything else.
+				// See https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notresource.html
+				notResources: [bucket.arnForObjects(`${stack}/${stage}/${app}/*`)],
 			}),
 		);
 

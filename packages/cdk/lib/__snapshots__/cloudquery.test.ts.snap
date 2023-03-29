@@ -7,13 +7,13 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "GuVpcParameter",
       "GuSubnetListParameter",
       "GuSecurityGroup",
+      "GuDistributionBucketParameter",
       "GuAmiParameter",
       "GuInstanceRole",
       "GuSSMRunCommandPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
-      "GuDistributionBucketParameter",
       "GuGetDistributablePolicy",
       "GuParameterStoreReadPolicy",
       "GuHttpsEgressSecurityGroup",
@@ -259,12 +259,31 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                 "kinesis:Get*",
                 "lambda:GetFunction",
                 "logs:GetLogEvents",
-                "s3:GetObject",
                 "sdb:Select*",
                 "sqs:ReceiveMessage",
               ],
               "Effect": "Deny",
               "Resource": "*",
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Deny",
+              "NotResource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::",
+                    {
+                      "Ref": "DistributionBucketName",
+                    },
+                    "/deploy/TEST/cloudquery/*",
+                  ],
+                ],
+              },
             },
             {
               "Action": "sts:AssumeRole",
@@ -791,58 +810,22 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
               "",
               [
                 "#!/bin/bash
+mkdir -p $(dirname '/aws.yaml')
+aws s3 cp 's3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cloudquery/aws.yaml' '/aws.yaml'
+mkdir -p $(dirname '/postgresql.yaml')
+aws s3 cp 's3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cloudquery/postgresql.yaml' '/postgresql.yaml'
 # Install Cloudquery
 set -xe
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
 chmod a+x cloudquery
-# Add configuration files
-cat > aws.yaml << EOL
-kind: source
-spec:
-  name: 'aws'
-  path: 'cloudquery/aws'
-  version: 'v15.4.0'
-  # tables: ["*"]
-  destinations: ['postgresql']
-  skip_tables:
-    - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
-    - aws_cloudtrail_events
-    - aws_docdb_cluster_parameter_groups
-    - aws_docdb_engine_versions
-    - aws_ec2_instance_types
-    - aws_elasticache_engine_versions
-    - aws_elasticache_parameter_groups
-    - aws_elasticache_reserved_cache_nodes_offerings
-    - aws_elasticache_service_updates
-    - aws_neptune_cluster_parameter_groups
-    - aws_neptune_db_parameter_groups
-    - aws_rds_cluster_parameter_groups
-    - aws_rds_db_parameter_groups
-    - aws_rds_engine_versions
-    - aws_servicequotas_services
-  spec:
-    regions:
-      - eu-west-1
-      - us-east-1
-    accounts:
-      - id: deployTools
-        role_arn: arn:aws:iam::£DEPLOY_TOOLS_ACCOUNT_ID:role/cloudquery-access
-      - id: developerPlayground
-        role_arn: arn:aws:iam::£DEV_PLAYGROUND_ACCOUNT_ID:role/cloudquery-access
-
-EOL
-cat > postgresql.yaml << EOL
-kind: destination
-spec:
-  name: 'postgresql'
-  registry: 'github'
-  path: 'cloudquery/postgresql'
-  version: 'v3.0.0'
-  spec:
-    #TODO put credentials and adress later
-    connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=disable'
-
-EOL
 # Set target accounts - temp until we use OUs
 sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/",
                 {
