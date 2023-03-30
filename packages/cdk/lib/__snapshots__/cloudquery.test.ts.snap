@@ -822,6 +822,18 @@ aws s3 cp 's3://",
                   "Ref": "DistributionBucketName",
                 },
                 "/deploy/TEST/cloudquery/postgresql.yaml' '/postgresql.yaml'
+mkdir -p $(dirname '/etc/systemd/system/cloudquery.service')
+aws s3 cp 's3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cloudquery/cloudquery.service' '/etc/systemd/system/cloudquery.service'
+mkdir -p $(dirname '/etc/systemd/system/cloudquery.timer')
+aws s3 cp 's3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cloudquery/cloudquery.timer' '/etc/systemd/system/cloudquery.timer'
 # Install Cloudquery
 set -xe
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
@@ -958,9 +970,8 @@ PASSWORD=$(aws secretsmanager get-secret-value --secret-id ",
                 },
                 " | jq -r '.SecretString|fromjson|.password|@uri')
 sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml
-echo "#!/bin/sh
-/cloudquery sync /aws.yaml /postgresql.yaml" > /etc/cron.daily/cloudQuery
-chmod +x /etc/cron.daily/cloudQuery",
+systemctl enable cloudquery.timer
+systemctl start cloudquery.timer",
               ],
             ],
           },

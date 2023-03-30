@@ -118,6 +118,18 @@ export class CloudQuery extends GuStack {
 			localFile: '/postgresql.yaml',
 		});
 
+		userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/cloudquery.service`,
+			localFile: '/etc/systemd/system/cloudquery.service',
+		});
+
+		userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/cloudquery.timer`,
+			localFile: '/etc/systemd/system/cloudquery.timer',
+		});
+
 		userData.addCommands(
 			'# Install Cloudquery',
 			`set -xe`,
@@ -133,8 +145,9 @@ export class CloudQuery extends GuStack {
 			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
 			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
-			`echo "#!/bin/sh\n/cloudquery sync /aws.yaml /postgresql.yaml" > /etc/cron.daily/cloudQuery`,
-			`chmod +x /etc/cron.daily/cloudQuery`, // TODO ship logs.
+
+			'systemctl enable cloudquery.timer',
+			'systemctl start cloudquery.timer',
 		);
 
 		const asgProps: GuAutoScalingGroupProps = {
