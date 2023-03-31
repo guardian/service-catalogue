@@ -22,7 +22,7 @@ import {
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
+import type { CfnDBInstance, DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import {
@@ -151,11 +151,7 @@ export class CloudQuery extends GuStack {
 			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" aws.yaml`,
 			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" aws.yaml`,
 
-			`# Replace password + db host`,
-			`HOST=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.host')`,
-			`sed -i "s/£HOST/$HOST/g" postgresql.yaml`,
-			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
-			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
+			`export RDS_HOST=${db.dbInstanceEndpointAddress}`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',
@@ -239,6 +235,18 @@ export class CloudQuery extends GuStack {
 				effect: Effect.ALLOW,
 				resources: ['arn:aws:iam::*:role/cloudquery-access'],
 				actions: ['sts:AssumeRole'],
+			}),
+		);
+
+		const { attrDbiResourceId } = db.node.defaultChild as CfnDBInstance;
+
+		asg.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: [
+					`arn:aws:rds-db:${this.region}:${this.account}:dbuser:${attrDbiResourceId}/cloudquery`,
+				],
+				actions: ['rds-db:connect'],
 			}),
 		);
 
