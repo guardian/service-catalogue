@@ -846,10 +846,17 @@ aws s3 cp 's3://",
                   "Ref": "DistributionBucketName",
                 },
                 "/deploy/TEST/cloudquery/cloudquery.timer' '/etc/systemd/system/cloudquery.timer'
+mkdir -p $(dirname '/cloudquery.sh')
+aws s3 cp 's3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cloudquery/cloudquery.sh' '/cloudquery.sh'
 # Install Cloudquery
 set -xe
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
 chmod a+x cloudquery
+chmod a+x /cloudquery.sh
 # Set target accounts - temp until we use OUs
 sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/",
                 {

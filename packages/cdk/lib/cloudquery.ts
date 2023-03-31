@@ -132,11 +132,20 @@ export class CloudQuery extends GuStack {
 			localFile: '/etc/systemd/system/cloudquery.timer',
 		});
 
+		userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/cloudquery.sh`,
+			localFile: '/cloudquery.sh',
+		});
+
 		userData.addCommands(
 			'# Install Cloudquery',
 			`set -xe`,
 			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery`,
 			`chmod a+x cloudquery`,
+
+			// Set permission to execute cloudquery.sh
+			`chmod a+x /cloudquery.sh`,
 
 			`# Set target accounts - temp until we use OUs`,
 			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" aws.yaml`,

@@ -2,7 +2,7 @@
 Description=CloudQuery
 
 [Service]
-ExecStart=/cloudquery sync --log-format json --log-console /aws.yaml /postgresql.yaml
+ExecStart=/cloudquery.sh
 
 [Install]
 WantedBy=multi-user.target
