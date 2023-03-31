@@ -1,8 +1,10 @@
+import { MetadataKeys } from '@guardian/cdk/lib/constants';
 import type { GuAutoScalingGroupProps } from '@guardian/cdk/lib/constructs/autoscaling';
 import { GuAutoScalingGroup } from '@guardian/cdk/lib/constructs/autoscaling';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuDistributionBucketParameter,
+	GuLoggingStreamNameParameter,
 	GuStack,
 } from '@guardian/cdk/lib/constructs/core';
 import {
@@ -11,7 +13,7 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import type { App } from 'aws-cdk-lib';
-import { CfnParameter } from 'aws-cdk-lib';
+import { CfnParameter, Tags } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -162,6 +164,18 @@ export class CloudQuery extends GuStack {
 		};
 
 		const asg = new GuAutoScalingGroup(this, 'asg', asgProps);
+
+		/*
+		Manually add tags required by devx-logs to build fluentbit configuration,
+		as GuCDK does not currently support this.
+
+		See https://github.com/guardian/cdk/issues/1800.
+		 */
+		Tags.of(asg).add(
+			MetadataKeys.LOG_KINESIS_STREAM_NAME,
+			GuLoggingStreamNameParameter.getInstance(this).valueAsString,
+		);
+		Tags.of(asg).add(MetadataKeys.SYSTEMD_UNIT, `${app}.service`);
 
 		asg.role.addManagedPolicy(
 			ManagedPolicy.fromManagedPolicyArn(
