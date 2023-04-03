@@ -11,4 +11,4 @@ spec:
   migrate_mode: 'forced'
 
   spec:
-    connection_string: ${PG_CONNECTION_STRING}
+    connection_string: ${file:/connection_string}

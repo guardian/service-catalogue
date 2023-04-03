@@ -76,6 +76,13 @@ export class CloudQuery extends GuStack {
 			tier: ParameterTier.STANDARD,
 			dataType: ParameterDataType.TEXT,
 		});
+		new StringParameter(this, 'PostgresInstanceEndpointAddress', {
+			parameterName: `/${stage}/${stack}/${app}/postgres-instance-endpoint-address`,
+			simpleName: false,
+			stringValue: db.dbInstanceEndpointAddress,
+			tier: ParameterTier.STANDARD,
+			dataType: ParameterDataType.TEXT,
+		});
 
 		db.connections.allowFrom(
 			applicationToPostgresSecurityGroup,
@@ -150,8 +157,6 @@ export class CloudQuery extends GuStack {
 			`# Set target accounts - temp until we use OUs`,
 			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" aws.yaml`,
 			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" aws.yaml`,
-
-			`export RDS_HOST=${db.dbInstanceEndpointAddress}`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',

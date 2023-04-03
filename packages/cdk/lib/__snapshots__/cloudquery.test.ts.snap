@@ -661,6 +661,27 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::RDS::DBSubnetGroup",
     },
+    "PostgresInstanceEndpointAddress6E14162C": {
+      "Properties": {
+        "DataType": "text",
+        "Name": "/TEST/deploy/cloudquery/postgres-instance-endpoint-address",
+        "Tags": {
+          "Stack": "deploy",
+          "Stage": "TEST",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/service-catalogue",
+        },
+        "Tier": "Standard",
+        "Type": "String",
+        "Value": {
+          "Fn::GetAtt": [
+            "PostgresInstance16DE4286E",
+            "Endpoint.Address",
+          ],
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
     "SSMRunCommandPolicy244E1613": {
       "Properties": {
         "PolicyDocument": {
@@ -895,14 +916,6 @@ sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/",
                   "Ref": "devPlaygroundAccountIDParam",
                 },
                 "/g" aws.yaml
-export RDS_HOST=",
-                {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-                "
 curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt
 update-ca-certificates
 systemctl enable cloudquery.timer
