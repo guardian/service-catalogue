@@ -737,6 +737,13 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": {
+              "Ref": "LoggingStreamName",
+            },
+          },
+          {
             "Key": "Name",
             "PropagateAtLaunch": true,
             "Value": "CloudQuery/asgCloudquery",
@@ -750,6 +757,11 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
             "Key": "Stage",
             "PropagateAtLaunch": true,
             "Value": "TEST",
+          },
+          {
+            "Key": "SystemdUnit",
+            "PropagateAtLaunch": true,
+            "Value": "cloudquery.service",
           },
         ],
         "VPCZoneIdentifier": {
