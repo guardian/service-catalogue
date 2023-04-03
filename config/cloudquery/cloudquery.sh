@@ -15,7 +15,8 @@ PG_PASSWORD="$(aws rds generate-db-auth-token --hostname $RDS_HOST --port 5432 -
 # See `postgresql.yaml`
 # See https://www.postgresql.org/docs/11/libpq-connect.html#LIBPQ-CONNECT-SSLMODE for sslmode options
 # See https://www.cloudquery.io/docs/advanced-topics/environment-variable-substitution
-export PG_CONNECTION_STRING="postgresql://cloudquery:$PG_PASSWORD@$RDS_HOST:5432/postgres?sslmode=verify-full"  > /connection_string
+echo "user=cloudquery password=$PG_PASSWORD host=$RDS_HOST port=5432 dbname=postgres sslmode=verify-full" > /connection_string
+
 
 # Run cloudquery
 /cloudquery --log-format json --log-console sync /aws.yaml /postgresql.yaml
