@@ -2,7 +2,7 @@ kind: source
 spec:
   name: 'aws'
   path: 'cloudquery/aws'
-  version: 'v15.4.0'
+  version: 'v15.7.0'
   # tables: ["*"]
   destinations: ['postgresql']
   skip_tables:
