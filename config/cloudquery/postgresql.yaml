@@ -4,6 +4,12 @@ spec:
   registry: 'github'
   path: 'cloudquery/postgresql'
   version: 'v3.0.0'
+  
+  # Automatically apply migrations whenever plugins are updated.
+  # Note: This is not encouraged if risk averse, so we should consider removing this once fully in production.
+  # See: https://www.cloudquery.io/docs/advanced-topics/managing-versions#managing-plugin-versions
+  migrate_mode: 'forced'
+  
   spec:
     #TODO put credentials and adress later
     connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=disable'
