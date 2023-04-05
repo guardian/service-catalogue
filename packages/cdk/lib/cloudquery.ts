@@ -148,6 +148,10 @@ export class CloudQuery extends GuStack {
 			`PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${dbSecret} --region ${this.region} | jq -r '.SecretString|fromjson|.password|@uri')`,
 			`sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml`,
 
+			// Install RDS certificate
+			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',
+			'update-ca-certificates',
+
 			'systemctl enable cloudquery.timer',
 			'systemctl start cloudquery.timer',
 		);

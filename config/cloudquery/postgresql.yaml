@@ -12,4 +12,5 @@ spec:
   
   spec:
     #TODO put credentials and adress later
-    connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=disable'
+    # See https://www.postgresql.org/docs/11/libpq-connect.html#LIBPQ-CONNECT-SSLMODE for sslmode options
+    connection_string: 'postgresql://postgres:£PASSWORD@£HOST:5432/postgres?sslmode=verify-full'
