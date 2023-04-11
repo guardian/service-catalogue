@@ -291,6 +291,33 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
               "Resource": "arn:aws:iam::*:role/cloudquery-access",
             },
             {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/cloudquery",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": [
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret",
@@ -634,6 +661,27 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::RDS::DBSubnetGroup",
     },
+    "PostgresInstanceEndpointAddress6E14162C": {
+      "Properties": {
+        "DataType": "text",
+        "Name": "/TEST/deploy/cloudquery/postgres-instance-endpoint-address",
+        "Tags": {
+          "Stack": "deploy",
+          "Stage": "TEST",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/service-catalogue",
+        },
+        "Tier": "Standard",
+        "Type": "String",
+        "Value": {
+          "Fn::GetAtt": [
+            "PostgresInstance16DE4286E",
+            "Endpoint.Address",
+          ],
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
     "SSMRunCommandPolicy244E1613": {
       "Properties": {
         "PolicyDocument": {
@@ -846,10 +894,17 @@ aws s3 cp 's3://",
                   "Ref": "DistributionBucketName",
                 },
                 "/deploy/TEST/cloudquery/cloudquery.timer' '/etc/systemd/system/cloudquery.timer'
+mkdir -p $(dirname '/cloudquery.sh')
+aws s3 cp 's3://",
+                {
+                  "Ref": "DistributionBucketName",
+                },
+                "/deploy/TEST/cloudquery/cloudquery.sh' '/cloudquery.sh'
 # Install Cloudquery
 set -xe
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
 chmod a+x cloudquery
+chmod a+x /cloudquery.sh
 # Set target accounts - temp until we use OUs
 sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/",
                 {
@@ -861,127 +916,6 @@ sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/",
                   "Ref": "devPlaygroundAccountIDParam",
                 },
                 "/g" aws.yaml
-# Replace password + db host
-HOST=$(aws secretsmanager get-secret-value --secret-id ",
-                {
-                  "Fn::Join": [
-                    "-",
-                    [
-                      {
-                        "Fn::Select": [
-                          0,
-                          {
-                            "Fn::Split": [
-                              "-",
-                              {
-                                "Fn::Select": [
-                                  6,
-                                  {
-                                    "Fn::Split": [
-                                      ":",
-                                      {
-                                        "Ref": "PostgresInstance1Secret7FA1A24B",
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                      {
-                        "Fn::Select": [
-                          1,
-                          {
-                            "Fn::Split": [
-                              "-",
-                              {
-                                "Fn::Select": [
-                                  6,
-                                  {
-                                    "Fn::Split": [
-                                      ":",
-                                      {
-                                        "Ref": "PostgresInstance1Secret7FA1A24B",
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  ],
-                },
-                " --region ",
-                {
-                  "Ref": "AWS::Region",
-                },
-                " | jq -r '.SecretString|fromjson|.host')
-sed -i "s/£HOST/$HOST/g" postgresql.yaml
-PASSWORD=$(aws secretsmanager get-secret-value --secret-id ",
-                {
-                  "Fn::Join": [
-                    "-",
-                    [
-                      {
-                        "Fn::Select": [
-                          0,
-                          {
-                            "Fn::Split": [
-                              "-",
-                              {
-                                "Fn::Select": [
-                                  6,
-                                  {
-                                    "Fn::Split": [
-                                      ":",
-                                      {
-                                        "Ref": "PostgresInstance1Secret7FA1A24B",
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                      {
-                        "Fn::Select": [
-                          1,
-                          {
-                            "Fn::Split": [
-                              "-",
-                              {
-                                "Fn::Select": [
-                                  6,
-                                  {
-                                    "Fn::Split": [
-                                      ":",
-                                      {
-                                        "Ref": "PostgresInstance1Secret7FA1A24B",
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  ],
-                },
-                " --region ",
-                {
-                  "Ref": "AWS::Region",
-                },
-                " | jq -r '.SecretString|fromjson|.password|@uri')
-sed -i "s/£PASSWORD/$PASSWORD/g" postgresql.yaml
 curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt
 update-ca-certificates
 systemctl enable cloudquery.timer
