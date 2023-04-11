@@ -11,4 +11,4 @@ spec:
   migrate_mode: 'forced'
 
   spec:
-    connection_string: ${file:/connection_string}
+    connection_string: ${file:/opt/cloudquery/connection_string}
