@@ -254,7 +254,5 @@ export class CloudQuery extends GuStack {
 				actions: ['rds-db:connect'],
 			}),
 		);
-
-		db.secret.grantRead(asg);
 	}
 }
