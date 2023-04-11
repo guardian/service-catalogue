@@ -317,16 +317,6 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                 ],
               },
             },
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-              },
-            },
           ],
           "Version": "2012-10-17",
         },
