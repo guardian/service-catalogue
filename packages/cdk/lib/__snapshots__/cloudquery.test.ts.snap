@@ -484,6 +484,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
         },
         "Port": "5432",
         "PubliclyAccessible": false,
+        "StorageEncrypted": true,
         "StorageType": "gp2",
         "Tags": [
           {
