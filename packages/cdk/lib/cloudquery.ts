@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { MetadataKeys } from '@guardian/cdk/lib/constants';
 import type { GuAutoScalingGroupProps } from '@guardian/cdk/lib/constructs/autoscaling';
 import { GuAutoScalingGroup } from '@guardian/cdk/lib/constructs/autoscaling';
@@ -116,16 +117,19 @@ export class CloudQuery extends GuStack {
 			GuDistributionBucketParameter.getInstance(this).valueAsString,
 		);
 
-		userData.addS3DownloadCommand({
+		const baseDirectory = '/opt/cloudquery';
+		const cloudqueryBinary = path.join(baseDirectory, 'cloudquery');
+
+		const awsYamlFile = userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/aws.yaml`,
-			localFile: '/aws.yaml',
+			localFile: path.join(baseDirectory, 'aws.yaml'),
 		});
 
 		userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/postgresql.yaml`,
-			localFile: '/postgresql.yaml',
+			localFile: path.join(baseDirectory, 'postgresql.yaml'),
 		});
 
 		userData.addS3DownloadCommand({
@@ -140,24 +144,24 @@ export class CloudQuery extends GuStack {
 			localFile: '/etc/systemd/system/cloudquery.timer',
 		});
 
-		userData.addS3DownloadCommand({
+		const cloudqueryScript = userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/cloudquery.sh`,
-			localFile: '/cloudquery.sh',
+			localFile: path.join(baseDirectory, 'cloudquery.sh'),
 		});
 
 		userData.addCommands(
-			'# Install Cloudquery',
+			// Install Cloudquery,
 			`set -xe`,
-			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery`,
-			`chmod a+x cloudquery`,
+			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o ${cloudqueryBinary}`,
+			`chmod a+x ${cloudqueryBinary}`,
 
 			// Set permission to execute cloudquery.sh
-			`chmod a+x /cloudquery.sh`,
+			`chmod a+x ${cloudqueryScript}`,
 
-			`# Set target accounts - temp until we use OUs`,
-			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" aws.yaml`,
-			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" aws.yaml`,
+			// Set target accounts - temp until we use OUs
+			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" ${awsYamlFile}`,
+			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" ${awsYamlFile}`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',

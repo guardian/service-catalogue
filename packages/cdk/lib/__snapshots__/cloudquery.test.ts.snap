@@ -861,18 +861,18 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
               "",
               [
                 "#!/bin/bash
-mkdir -p $(dirname '/aws.yaml')
+mkdir -p $(dirname '/opt/cloudquery/aws.yaml')
 aws s3 cp 's3://",
                 {
                   "Ref": "DistributionBucketName",
                 },
-                "/deploy/TEST/cloudquery/aws.yaml' '/aws.yaml'
-mkdir -p $(dirname '/postgresql.yaml')
+                "/deploy/TEST/cloudquery/aws.yaml' '/opt/cloudquery/aws.yaml'
+mkdir -p $(dirname '/opt/cloudquery/postgresql.yaml')
 aws s3 cp 's3://",
                 {
                   "Ref": "DistributionBucketName",
                 },
-                "/deploy/TEST/cloudquery/postgresql.yaml' '/postgresql.yaml'
+                "/deploy/TEST/cloudquery/postgresql.yaml' '/opt/cloudquery/postgresql.yaml'
 mkdir -p $(dirname '/etc/systemd/system/cloudquery.service')
 aws s3 cp 's3://",
                 {
@@ -885,28 +885,26 @@ aws s3 cp 's3://",
                   "Ref": "DistributionBucketName",
                 },
                 "/deploy/TEST/cloudquery/cloudquery.timer' '/etc/systemd/system/cloudquery.timer'
-mkdir -p $(dirname '/cloudquery.sh')
+mkdir -p $(dirname '/opt/cloudquery/cloudquery.sh')
 aws s3 cp 's3://",
                 {
                   "Ref": "DistributionBucketName",
                 },
-                "/deploy/TEST/cloudquery/cloudquery.sh' '/cloudquery.sh'
-# Install Cloudquery
+                "/deploy/TEST/cloudquery/cloudquery.sh' '/opt/cloudquery/cloudquery.sh'
 set -xe
-curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o cloudquery
-chmod a+x cloudquery
-chmod a+x /cloudquery.sh
-# Set target accounts - temp until we use OUs
+curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o /opt/cloudquery/cloudquery
+chmod a+x /opt/cloudquery/cloudquery
+chmod a+x /opt/cloudquery/cloudquery.sh
 sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/",
                 {
                   "Ref": "deployToolsAccountIDParam",
                 },
-                "/g" aws.yaml
+                "/g" /opt/cloudquery/aws.yaml
 sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/",
                 {
                   "Ref": "devPlaygroundAccountIDParam",
                 },
-                "/g" aws.yaml
+                "/g" /opt/cloudquery/aws.yaml
 curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt
 update-ca-certificates
 systemctl enable cloudquery.timer

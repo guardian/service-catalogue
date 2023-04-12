@@ -2,7 +2,7 @@
 Description=CloudQuery
 
 [Service]
-ExecStart=/cloudquery.sh
+ExecStart=/opt/cloudquery/cloudquery.sh
 
 [Install]
 WantedBy=multi-user.target
