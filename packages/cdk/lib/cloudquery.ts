@@ -32,6 +32,22 @@ import {
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
 
+const CloudQueryManifest = {
+	/**
+	 * The version of the CloudQuery CLI to install.
+	 *
+	 * @see https://github.com/cloudquery/cloudquery/releases?q=cli
+	 */
+	version: '2.5.1',
+
+	/**
+	 * The checksum of the CloudQuery CLI. Found in the `checksums.txt` asset.
+	 *
+	 * @see https://github.com/cloudquery/cloudquery/releases?q=cli
+	 */
+	checksum: '8f06db6e35b907dae754a2b16435cbc25206f3d978b6015336b2a4e880bbf836',
+};
+
 export class CloudQuery extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
@@ -153,7 +169,11 @@ export class CloudQuery extends GuStack {
 		userData.addCommands(
 			// Install Cloudquery,
 			`set -xe`,
-			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.1/cloudquery_linux_arm64 -o ${cloudqueryBinary}`,
+			`curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v${CloudQueryManifest.version}/cloudquery_linux_arm64 -o ${cloudqueryBinary}`,
+
+			// Perform checksum verification
+			`echo "${CloudQueryManifest.checksum}  ${cloudqueryBinary}" | shasum -c -a 256`,
+
 			`chmod a+x ${cloudqueryBinary}`,
 
 			// Set permission to execute cloudquery.sh
