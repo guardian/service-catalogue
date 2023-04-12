@@ -179,7 +179,7 @@ export class CloudQuery extends GuStack {
 			vpcSubnets: { subnets: privateSubnets },
 			minimumInstances: 1,
 			userData: userData,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MEDIUM),
 			imageRecipe: 'arm64-jammy-java11-deploy-infrastructure',
 			additionalSecurityGroups: [applicationToPostgresSecurityGroup],
 		};

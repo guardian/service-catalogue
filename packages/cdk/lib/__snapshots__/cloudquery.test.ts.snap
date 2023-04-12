@@ -832,7 +832,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
         "ImageId": {
           "Ref": "AMICloudquery",
         },
-        "InstanceType": "t4g.small",
+        "InstanceType": "t4g.medium",
         "MetadataOptions": {
           "HttpTokens": "required",
         },
