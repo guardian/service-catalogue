@@ -38,14 +38,14 @@ const CloudQueryManifest = {
 	 *
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=cli
 	 */
-	version: '2.5.1',
+	version: '2.5.3',
 
 	/**
 	 * The checksum of the CloudQuery CLI. Found in the `checksums.txt` asset.
 	 *
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=cli
 	 */
-	checksum: '8f06db6e35b907dae754a2b16435cbc25206f3d978b6015336b2a4e880bbf836',
+	checksum: '286cff19c54098328c0b85dbbfa94e87234b5a53be421c3b6ca406803122a7ee',
 };
 
 export class CloudQuery extends GuStack {
