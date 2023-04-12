@@ -21,6 +21,7 @@ spec:
     - aws_rds_db_parameter_groups
     - aws_rds_engine_versions
     - aws_servicequotas_services
+  concurrency: 100000 # this is known to work with a t4g.medium and our current sources but not optimised.
   spec:
     regions:
       - eu-west-1
