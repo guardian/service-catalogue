@@ -1,0 +1,11 @@
+{
+  "name": "cloudquery",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "docker compose up -d",
+    "test": "echo not implmented",
+    "build": "echo not implmented",
+    "lint": "echo not implmented",
+    "typecheck": "echo not implmented"
+  }
+}
