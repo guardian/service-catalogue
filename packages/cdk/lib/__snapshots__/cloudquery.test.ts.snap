@@ -47,14 +47,6 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "deployToolsAccountIDParam": {
-      "Description": "Account ID for deployTools",
-      "Type": "String",
-    },
-    "devPlaygroundAccountIDParam": {
-      "Description": "Account ID for developerPlayground",
-      "Type": "String",
-    },
   },
   "Resources": {
     "DescribeEC2PolicyFF5F9295": {
@@ -316,6 +308,15 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "organizations:ListAccounts",
+                "organizations:ListAccountsForParent",
+                "organizations:ListChildren",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
           ],
           "Version": "2012-10-17",
@@ -896,16 +897,7 @@ curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.3/cl
 echo "286cff19c54098328c0b85dbbfa94e87234b5a53be421c3b6ca406803122a7ee  /opt/cloudquery/cloudquery" | shasum -c -a 256
 chmod a+x /opt/cloudquery/cloudquery
 chmod a+x /opt/cloudquery/cloudquery.sh
-sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/",
-                {
-                  "Ref": "deployToolsAccountIDParam",
-                },
-                "/g" /opt/cloudquery/aws.yaml
-sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/",
-                {
-                  "Ref": "devPlaygroundAccountIDParam",
-                },
-                "/g" /opt/cloudquery/aws.yaml
+sed -i "s/£TARGET_ORG_UNIT/ou-123/g" /opt/cloudquery/aws.yaml
 curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt
 update-ca-certificates
 systemctl enable cloudquery.timer
