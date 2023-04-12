@@ -54,6 +54,7 @@ export class CloudQuery extends GuStack {
 			vpcSubnets: { subnets: privateSubnets },
 			iamAuthentication: true,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			storageEncrypted: true,
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
