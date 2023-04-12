@@ -3,7 +3,7 @@
 set -e
 # This is created in the Cloudformation
 # TODO: At the moment this is hard-coded, but if we want multiple stages in the future we would need to change this
-SSM_PATH=/INFRA/deploy/cloudquery/postgres-instance-endpoint-address
+SSM_PATH=/INFRA/deploy/cloudquery/database/endpoint-address
 
 # This function will generate a connection string to the RDS database, with a temporary password that expires after 15 minutes.
 issueRdsAuthToken() {

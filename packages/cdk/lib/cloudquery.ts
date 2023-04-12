@@ -8,11 +8,7 @@ import {
 	GuLoggingStreamNameParameter,
 	GuStack,
 } from '@guardian/cdk/lib/constructs/core';
-import {
-	GuSecurityGroup,
-	GuVpc,
-	SubnetType,
-} from '@guardian/cdk/lib/constructs/ec2';
+import { GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Tags } from 'aws-cdk-lib';
@@ -20,18 +16,11 @@ import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
-	Port,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
-import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import {
-	ParameterDataType,
-	ParameterTier,
-	StringParameter,
-} from 'aws-cdk-lib/aws-ssm';
+import { GuDatabase } from './constructs/database';
 
 const CloudQueryManifest = {
 	/**
@@ -62,51 +51,16 @@ export class CloudQuery extends GuStack {
 			app,
 		});
 
-		const port = 5432;
-
-		const dbProps: DatabaseInstanceProps = {
-			engine: DatabaseInstanceEngine.POSTGRES,
-			port,
+		const db = new GuDatabase(this, 'PostgresInstance1', {
+			app,
 			vpc,
 			vpcSubnets: { subnets: privateSubnets },
-			iamAuthentication: true,
+			allowExternalConnection: true,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
-			storageEncrypted: true,
-		};
 
-		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
-		const dbSecret = db.secret?.secretName;
-
-		if (!dbSecret) {
-			throw new Error('DB Secret is missing');
-		}
-
-		const applicationToPostgresSecurityGroup = new GuSecurityGroup(
-			this,
-			'PostgresAccessSecurityGroup',
-			{ app, vpc },
-		);
-
-		// Used by downstream services that read CloudQuery data, namely Grafana.
-		new StringParameter(this, 'PostgresAccessSecurityGroupParam', {
-			parameterName: `/${stage}/${stack}/${app}/postgres-access-security-group`,
-			simpleName: false,
-			stringValue: applicationToPostgresSecurityGroup.securityGroupId,
-			tier: ParameterTier.STANDARD,
-			dataType: ParameterDataType.TEXT,
+			// TODO move to rds-ca-rsa2048-g1. This will likely require updating the certificate downloaded in the user data.
+			caCertificateIdentifier: 'rds-ca-2019',
 		});
-		new StringParameter(this, 'PostgresInstanceEndpointAddress', {
-			parameterName: `/${stage}/${stack}/${app}/postgres-instance-endpoint-address`,
-			simpleName: false,
-			stringValue: db.dbInstanceEndpointAddress,
-			tier: ParameterTier.STANDARD,
-			dataType: ParameterDataType.TEXT,
-		});
-
-		db.connections.allowFrom(
-			applicationToPostgresSecurityGroup,
-			Port.tcp(port),
-		);
 
 		const userData = UserData.forLinux();
 
@@ -188,7 +142,7 @@ export class CloudQuery extends GuStack {
 			userData: userData,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MEDIUM),
 			imageRecipe: 'arm64-jammy-java11-deploy-infrastructure',
-			additionalSecurityGroups: [applicationToPostgresSecurityGroup],
+			additionalSecurityGroups: [db.accessSecurityGroup],
 		};
 
 		const asg = new GuAutoScalingGroup(this, 'asg', asgProps);
