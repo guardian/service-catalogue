@@ -13,15 +13,22 @@ It includes:
 - Docker
 
 ## Running
-1. Get AWS credentials from Janus (check [cloudquery.yaml](./dev-config/cloudquery.yaml) for the AWS profiles needed)
-2. Run:
+1. Start Docker
+2. Get AWS credentials from Janus (check [cloudquery.yaml](./dev-config/cloudquery.yaml) for the AWS profiles needed)
+3. Run:
    
    ```sh
    npm start --workspace cloudquery
    ```
    
+   OR:
+
+   ```sh
+   ./packages/cloudquery/script/start
+   ```
+
    This will start the Docker containers, and CloudQuery will start collecting data.
-3. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
+4. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
 
 > **Note**
 > You can also use other Postgres clients, such as `psql`, or even your IDE!

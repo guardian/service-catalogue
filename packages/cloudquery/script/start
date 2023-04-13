@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+if curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1 >/dev/null; then
+  docker compose -f "${DIR}/../docker-compose.yaml" up -d
+else
+  echo "Docker is not running. Please start Docker."
+  exit 1
+fi
