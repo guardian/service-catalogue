@@ -21,12 +21,12 @@ spec:
     - aws_rds_db_parameter_groups
     - aws_rds_engine_versions
     - aws_servicequotas_services
+  concurrency: 100000 # this is expected to work with a t4g.medium and our current sources but not optimised. Will adjust once live.
   spec:
     regions:
       - eu-west-1
       - us-east-1
-    accounts:
-      - id: deployTools
-        role_arn: arn:aws:iam::£DEPLOY_TOOLS_ACCOUNT_ID:role/cloudquery-access
-      - id: developerPlayground
-        role_arn: arn:aws:iam::£DEV_PLAYGROUND_ACCOUNT_ID:role/cloudquery-access
+    org:
+      member_role_name: cloudquery-access # See: https://github.com/guardian/aws-account-setup/pull/58.
+      organization_units:
+        - £TARGET_ORG_UNIT

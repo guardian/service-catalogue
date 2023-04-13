@@ -4,6 +4,9 @@ const generateProject = (name) => {
 		transform: {
 			'^.+\\.tsx?$': 'ts-jest',
 		},
+		transformIgnorePatterns: [
+			'node_modules/(?!@guardian/private-infrastructure-config)',
+		],
 		testMatch: [`<rootDir>/packages/${name}/**/*.test.ts`],
 		setupFilesAfterEnv: [`./packages/${name}/jest.setup.js`],
 		moduleNameMapper: {

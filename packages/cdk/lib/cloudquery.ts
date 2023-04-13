@@ -13,8 +13,9 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
+import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { CfnParameter, Tags } from 'aws-cdk-lib';
+import { Tags } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -109,24 +110,6 @@ export class CloudQuery extends GuStack {
 
 		const userData = UserData.forLinux();
 
-		const deployToolsAccountID = new CfnParameter(
-			this,
-			'deployToolsAccountIDParam',
-			{
-				type: 'String',
-				description: 'Account ID for deployTools',
-			},
-		);
-
-		const devPlaygroundAccountID = new CfnParameter(
-			this,
-			'devPlaygroundAccountIDParam',
-			{
-				type: 'String',
-				description: 'Account ID for developerPlayground',
-			},
-		);
-
 		const bucket = Bucket.fromBucketName(
 			this,
 			'distributionBucket',
@@ -179,9 +162,8 @@ export class CloudQuery extends GuStack {
 			// Set permission to execute cloudquery.sh
 			`chmod a+x ${cloudqueryScript}`,
 
-			// Set target accounts - temp until we use OUs
-			`sed -i "s/£DEPLOY_TOOLS_ACCOUNT_ID/${deployToolsAccountID.valueAsString}/g" ${awsYamlFile}`,
-			`sed -i "s/£DEV_PLAYGROUND_ACCOUNT_ID/${devPlaygroundAccountID.valueAsString}/g" ${awsYamlFile}`,
+			// Set target Org Unit
+			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${awsYamlFile}`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',
@@ -197,7 +179,7 @@ export class CloudQuery extends GuStack {
 			vpcSubnets: { subnets: privateSubnets },
 			minimumInstances: 1,
 			userData: userData,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.MEDIUM),
 			imageRecipe: 'arm64-jammy-java11-deploy-infrastructure',
 			additionalSecurityGroups: [applicationToPostgresSecurityGroup],
 		};
@@ -277,6 +259,18 @@ export class CloudQuery extends GuStack {
 					`arn:aws:rds-db:${this.region}:${this.account}:dbuser:${attrDbiResourceId}/cloudquery`,
 				],
 				actions: ['rds-db:connect'],
+			}),
+		);
+
+		asg.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: ['*'],
+				actions: [
+					'organizations:ListAccounts',
+					'organizations:ListAccountsForParent',
+					'organizations:ListChildren',
+				],
 			}),
 		);
 	}
