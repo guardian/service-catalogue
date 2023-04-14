@@ -3,7 +3,9 @@ kind: source
 spec:
   name: 'aws'
   path: 'cloudquery/aws'
-  version: 'v15.7.0'
+
+  # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
+  version: 'v16.1.0'
   destinations: ['postgresql']
   skip_tables:
     - aws_ec2_vpc_endpoint_services
