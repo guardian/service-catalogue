@@ -37,7 +37,9 @@ spec:
   name: 'postgresql'
   registry: 'github'
   path: 'cloudquery/postgresql'
-  version: 'v3.0.0'
+
+  # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-destination-postgresql-&expanded=true
+  version: 'v4.0.2'
 
   # Automatically apply migrations whenever plugins are updated.
   # Note: This is not encouraged if risk averse, so we should consider removing this once fully in production.
