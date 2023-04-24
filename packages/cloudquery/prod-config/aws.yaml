@@ -42,6 +42,9 @@ spec:
     - aws_ssoadmin_instances
     - aws_glue_connections
     - aws_computeoptimizer_ecs_service_recommendations
+    - aws_xray_sampling_rules
+    - aws_xray_resource_policies
+    - aws_xray_groups
   concurrency: 100000 # this is expected to work with a t4g.medium and our current sources but not optimised. Will adjust once live.
   spec:
     regions:
