@@ -33,6 +33,11 @@ spec:
     - aws_quicksight_data_sets
     - aws_quicksight_dashboards
     - aws_quicksight_analyses
+    - aws_quicksight_users
+    - aws_quicksight_templates
+    - aws_quicksight_groups
+    - aws_quicksight_folders
+    - aws_quicksight_data_sources
     - aws_amp_workspaces
     - aws_ssoadmin_instances
     - aws_glue_connections
@@ -42,13 +47,13 @@ spec:
     regions:
       # All regions we support.
       # See https://github.com/guardian/infosec-platform/blob/main/policies/DenyAccessToNonApprovedRegions.json
-      - "eu-west-1"
-      - "eu-west-2"
-      - "us-east-1"
-      - "us-east-2"
-      - "us-west-1"
-      - "ap-southeast-2"
-      - "ca-central-1"
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
     org:
       member_role_name: cloudquery-access # See: https://github.com/guardian/aws-account-setup/pull/58.
       organization_units:
