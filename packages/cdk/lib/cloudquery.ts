@@ -266,11 +266,7 @@ export class CloudQuery extends GuStack {
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				resources: ['*'],
-				actions: [
-					'organizations:ListAccounts',
-					'organizations:ListAccountsForParent',
-					'organizations:ListChildren',
-				],
+				actions: ['organizations:List*'],
 			}),
 		);
 	}

@@ -310,11 +310,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
               },
             },
             {
-              "Action": [
-                "organizations:ListAccounts",
-                "organizations:ListAccountsForParent",
-                "organizations:ListChildren",
-              ],
+              "Action": "organizations:List*",
               "Effect": "Allow",
               "Resource": "*",
             },
