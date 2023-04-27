@@ -23,8 +23,8 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
       "GuParameterStoreReadPolicy",
       "GuAmiParameter",
       "GuHttpsEgressSecurityGroup",
-      "GuAutoScalingGroup",
       "GuWazuhAccess",
+      "GuAutoScalingGroup",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
@@ -105,8 +105,16 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
       "Properties": {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "LaunchConfigurationName": {
-          "Ref": "AutoScalingGroupGithublensapiLaunchConfigED794D0D",
+        "LaunchTemplate": {
+          "LaunchTemplateId": {
+            "Ref": "deployINFRAgithublensapi5D5BAC5D",
+          },
+          "Version": {
+            "Fn::GetAtt": [
+              "deployINFRAgithublensapi5D5BAC5D",
+              "LatestVersionNumber",
+            ],
+          },
         },
         "MaxSize": "2",
         "MinSize": "1",
@@ -134,11 +142,6 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
             },
           },
           {
-            "Key": "Name",
-            "PropagateAtLaunch": true,
-            "Value": "GithubLens/AutoScalingGroupGithublensapi",
-          },
-          {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "deploy",
@@ -164,86 +167,6 @@ exports[`The GithubLens stack matches the snapshot 1`] = `
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-    },
-    "AutoScalingGroupGithublensapiInstanceProfile02115151": {
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "InstanceRoleGithublensapi15815617",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "AutoScalingGroupGithublensapiLaunchConfigED794D0D": {
-      "DependsOn": [
-        "InstanceRoleGithublensapiDefaultPolicy0C5E588B",
-        "InstanceRoleGithublensapi15815617",
-      ],
-      "Properties": {
-        "IamInstanceProfile": {
-          "Ref": "AutoScalingGroupGithublensapiInstanceProfile02115151",
-        },
-        "ImageId": {
-          "Ref": "AMIGithublensapi",
-        },
-        "InstanceType": "t4g.nano",
-        "MetadataOptions": {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "GuHttpsEgressSecurityGroupGithublensapi4002F148",
-              "GroupId",
-            ],
-          },
-          {
-            "Fn::GetAtt": [
-              "WazuhSecurityGroup",
-              "GroupId",
-            ],
-          },
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash -ev
-cat << EOF > /etc/systemd/system/github-lens-api.service
-[Unit]
-Description=Github Lens API
-
-[Service]
-Environment="DATA_BUCKET_NAME=",
-                {
-                  "Ref": "githublensdatabucketGithublens7C07FDE7",
-                },
-                ""
-Environment="PORT=8900"
-Environment="STAGE=INFRA"
-ExecStart=/usr/bin/node /handler.js
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-aws s3 cp s3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip
-unzip github-lens-api.zip
-chmod +x /handler.js
-systemctl start github-lens-api
-",
-              ],
-            ],
-          },
-        },
-      },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
     "CertificateGithublensapi4318D111": {
       "DeletionPolicy": "Retain",
@@ -803,6 +726,27 @@ systemctl start github-lens-api
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "InternalIngressSecurityGroupGithublensapitoGithubLensWazuhSecurityGroup44449F2B8900D45DACE8": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ListenerGithublensapiCF255DF8": {
       "Properties": {
         "Certificates": [
@@ -917,6 +861,27 @@ systemctl start github-lens-api
         "DestinationSecurityGroupId": {
           "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "LoadBalancerGithublensapiSecurityGrouptoGithubLensWazuhSecurityGroup44449F2B8900F68D66F0": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
             "GroupId",
           ],
         },
@@ -1186,6 +1151,210 @@ systemctl start github-lens-api
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "WazuhSecurityGroupfromGithubLensInternalIngressSecurityGroupGithublensapiD4073FAD8900154E9DF1": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupGithublensapi2BEE9DF4",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "WazuhSecurityGroupfromGithubLensLoadBalancerGithublensapiSecurityGroup2BC6E5BA8900658C78D5": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerGithublensapiSecurityGroup3BAB53B9",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "deployINFRAgithublensapi5D5BAC5D": {
+      "Properties": {
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "deployINFRAgithublensapiProfileA453D57A",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": {
+            "Ref": "AMIGithublensapi",
+          },
+          "InstanceType": "t4g.nano",
+          "MetadataOptions": {
+            "HttpTokens": "required",
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "GuHttpsEgressSecurityGroupGithublensapi4002F148",
+                "GroupId",
+              ],
+            },
+            {
+              "Fn::GetAtt": [
+                "WazuhSecurityGroup",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "GithubLens/deploy-INFRA-github-lens-api",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "INFRA",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "GithubLens/deploy-INFRA-github-lens-api",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "INFRA",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/bash -ev
+cat << EOF > /etc/systemd/system/github-lens-api.service
+[Unit]
+Description=Github Lens API
+
+[Service]
+Environment="DATA_BUCKET_NAME=",
+                  {
+                    "Ref": "githublensdatabucketGithublens7C07FDE7",
+                  },
+                  ""
+Environment="PORT=8900"
+Environment="STAGE=INFRA"
+ExecStart=/usr/bin/node /handler.js
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+aws s3 cp s3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/INFRA/github-lens-api/github-lens-api.zip github-lens-api.zip
+unzip github-lens-api.zip
+chmod +x /handler.js
+systemctl start github-lens-api
+",
+                ],
+              ],
+            },
+          },
+        },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:repo",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Key": "Name",
+                "Value": "GithubLens/deploy-INFRA-github-lens-api",
+              },
+              {
+                "Key": "Stack",
+                "Value": "deploy",
+              },
+              {
+                "Key": "Stage",
+                "Value": "INFRA",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "deployINFRAgithublensapiProfileA453D57A": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceRoleGithublensapi15815617",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
     },
     "githubdatafetcherlambda94945EFA": {
       "DependsOn": [

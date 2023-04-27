@@ -8,11 +8,11 @@
     "synth": "cdk synth --path-metadata false --version-reporting false"
   },
   "devDependencies": {
-    "@guardian/cdk": "49.0.2",
+    "@guardian/cdk": "49.4.0",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v2.3.0",
-    "aws-cdk": "2.59.0",
-    "aws-cdk-lib": "2.59.0",
-    "constructs": "10.1.215",
+    "aws-cdk": "2.64.0",
+    "aws-cdk-lib": "2.64.0",
+    "constructs": "10.1.246",
     "source-map-support": "^0.5.21"
   }
 }

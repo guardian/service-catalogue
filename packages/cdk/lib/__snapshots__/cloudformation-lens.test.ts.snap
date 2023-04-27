@@ -19,8 +19,8 @@ exports[`The CloudFormation Lens stack matches the snapshot 1`] = `
       "GuParameterStoreReadPolicy",
       "GuAmiParameter",
       "GuHttpsEgressSecurityGroup",
-      "GuAutoScalingGroup",
       "GuWazuhAccess",
+      "GuAutoScalingGroup",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
@@ -83,8 +83,16 @@ exports[`The CloudFormation Lens stack matches the snapshot 1`] = `
       "Properties": {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "LaunchConfigurationName": {
-          "Ref": "AutoScalingGroupCloudformationlensLaunchConfig82219E2C",
+        "LaunchTemplate": {
+          "LaunchTemplateId": {
+            "Ref": "deployTESTcloudformationlens282DC7E0",
+          },
+          "Version": {
+            "Fn::GetAtt": [
+              "deployTESTcloudformationlens282DC7E0",
+              "LatestVersionNumber",
+            ],
+          },
         },
         "MaxSize": "2",
         "MinSize": "1",
@@ -112,11 +120,6 @@ exports[`The CloudFormation Lens stack matches the snapshot 1`] = `
             },
           },
           {
-            "Key": "Name",
-            "PropagateAtLaunch": true,
-            "Value": "CloudFormationLens/AutoScalingGroupCloudformationlens",
-          },
-          {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "deploy",
@@ -142,83 +145,6 @@ exports[`The CloudFormation Lens stack matches the snapshot 1`] = `
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-    },
-    "AutoScalingGroupCloudformationlensInstanceProfile4261FC07": {
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCloudformationlensBF921D31",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "AutoScalingGroupCloudformationlensLaunchConfig82219E2C": {
-      "DependsOn": [
-        "InstanceRoleCloudformationlensDefaultPolicy5FCE5D0D",
-        "InstanceRoleCloudformationlensBF921D31",
-      ],
-      "Properties": {
-        "IamInstanceProfile": {
-          "Ref": "AutoScalingGroupCloudformationlensInstanceProfile4261FC07",
-        },
-        "ImageId": {
-          "Ref": "AMICloudformationlens",
-        },
-        "InstanceType": "t4g.nano",
-        "MetadataOptions": {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
-              "GroupId",
-            ],
-          },
-          {
-            "Fn::GetAtt": [
-              "WazuhSecurityGroup",
-              "GroupId",
-            ],
-          },
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash -ev
-cat << EOF > /etc/systemd/system/cloudformation-lens.service
-[Unit]
-Description=CDK Metadata
-
-[Service]
-Environment="BUCKET=",
-                {
-                  "Ref": "databucketA7E4F76C",
-                },
-                ""
-ExecStart=/cloudformation-lens
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-aws s3 cp s3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/TEST/cloudformation-lens/cloudformation-lens /cloudformation-lens
-chmod +x /cloudformation-lens
-systemctl start cloudformation-lens
-",
-              ],
-            ],
-          },
-        },
-      },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
     "CertificateCloudformationlens470553BA": {
       "DeletionPolicy": "Retain",
@@ -712,6 +638,27 @@ systemctl start cloudformation-lens
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "InternalIngressSecurityGroupCloudformationlenstoCloudFormationLensWazuhSecurityGroup7663AD3989006D2B44A7": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupCloudformationlens0AC9589A",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ListenerCloudformationlens664D2766": {
       "Properties": {
         "Certificates": [
@@ -826,6 +773,27 @@ systemctl start cloudformation-lens
         "DestinationSecurityGroupId": {
           "Fn::GetAtt": [
             "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCloudformationlensSecurityGroup43E2BD8C",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "LoadBalancerCloudformationlensSecurityGrouptoCloudFormationLensWazuhSecurityGroup7663AD398900E92E9724": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
             "GroupId",
           ],
         },
@@ -1096,6 +1064,48 @@ systemctl start cloudformation-lens
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "WazuhSecurityGroupfromCloudFormationLensInternalIngressSecurityGroupCloudformationlensA274C0878900CA0BDDEF": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupCloudformationlens0AC9589A",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "WazuhSecurityGroupfromCloudFormationLensLoadBalancerCloudformationlensSecurityGroup432308D38900722D57BD": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerCloudformationlensSecurityGroup43E2BD8C",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "cname": {
       "Properties": {
         "Name": "cloudformation-lens.gutools.co.uk",
@@ -1145,6 +1155,165 @@ systemctl start cloudformation-lens
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
+    },
+    "deployTESTcloudformationlens282DC7E0": {
+      "Properties": {
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "deployTESTcloudformationlensProfile688D83E7",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": {
+            "Ref": "AMICloudformationlens",
+          },
+          "InstanceType": "t4g.nano",
+          "MetadataOptions": {
+            "HttpTokens": "required",
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "GuHttpsEgressSecurityGroupCloudformationlens7F9B14D7",
+                "GroupId",
+              ],
+            },
+            {
+              "Fn::GetAtt": [
+                "WazuhSecurityGroup",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CloudFormationLens/deploy-TEST-cloudformation-lens",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CloudFormationLens/deploy-TEST-cloudformation-lens",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/bash -ev
+cat << EOF > /etc/systemd/system/cloudformation-lens.service
+[Unit]
+Description=CDK Metadata
+
+[Service]
+Environment="BUCKET=",
+                  {
+                    "Ref": "databucketA7E4F76C",
+                  },
+                  ""
+ExecStart=/cloudformation-lens
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+aws s3 cp s3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudformation-lens/cloudformation-lens /cloudformation-lens
+chmod +x /cloudformation-lens
+systemctl start cloudformation-lens
+",
+                ],
+              ],
+            },
+          },
+        },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:repo",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Key": "Name",
+                "Value": "CloudFormationLens/deploy-TEST-cloudformation-lens",
+              },
+              {
+                "Key": "Stack",
+                "Value": "deploy",
+              },
+              {
+                "Key": "Stage",
+                "Value": "TEST",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "deployTESTcloudformationlensProfile688D83E7": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCloudformationlensBF921D31",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
     },
   },
 }
