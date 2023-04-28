@@ -10,15 +10,14 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "GuDistributionBucketParameter",
       "GuAmiParameter",
       "GuInstanceRole",
-      "GuSSMRunCommandPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
       "GuGetDistributablePolicy",
       "GuParameterStoreReadPolicy",
       "GuHttpsEgressSecurityGroup",
-      "GuAutoScalingGroup",
       "GuWazuhAccess",
+      "GuAutoScalingGroup",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -204,6 +203,18 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
           "Version": "2012-10-17",
         },
         "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
           "arn:aws:iam::aws:policy/ReadOnlyAccess",
         ],
         "Path": "/",
@@ -670,42 +681,6 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::SSM::Parameter",
     },
-    "SSMRunCommandPolicy244E1613": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply",
-                "ssm:UpdateInstanceInformation",
-                "ssm:ListInstanceAssociations",
-                "ssm:DescribeInstanceProperties",
-                "ssm:DescribeDocumentParameters",
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "ssm-run-command-policy",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCloudquery54F86B54",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "WazuhSecurityGroup": {
       "Properties": {
         "GroupDescription": "Allow outbound traffic from wazuh agent to manager",
@@ -751,8 +726,16 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
     },
     "asgCloudqueryASG40AB7667": {
       "Properties": {
-        "LaunchConfigurationName": {
-          "Ref": "asgCloudqueryLaunchConfigEECD8C1E",
+        "LaunchTemplate": {
+          "LaunchTemplateId": {
+            "Ref": "deployTESTcloudquery13DE7BFF",
+          },
+          "Version": {
+            "Fn::GetAtt": [
+              "deployTESTcloudquery13DE7BFF",
+              "LatestVersionNumber",
+            ],
+          },
         },
         "MaxSize": "2",
         "MinSize": "1",
@@ -780,11 +763,6 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
             },
           },
           {
-            "Key": "Name",
-            "PropagateAtLaunch": true,
-            "Value": "CloudQuery/asgCloudquery",
-          },
-          {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "deploy",
@@ -806,88 +784,132 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
-    "asgCloudqueryInstanceProfileD6927F3E": {
+    "deployTESTcloudquery13DE7BFF": {
       "Properties": {
-        "Roles": [
-          {
-            "Ref": "InstanceRoleCloudquery54F86B54",
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "deployTESTcloudqueryProfile4BE5D073",
+                "Arn",
+              ],
+            },
           },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "asgCloudqueryLaunchConfigEECD8C1E": {
-      "DependsOn": [
-        "InstanceRoleCloudqueryDefaultPolicyBCEDADAD",
-        "InstanceRoleCloudquery54F86B54",
-      ],
-      "Properties": {
-        "IamInstanceProfile": {
-          "Ref": "asgCloudqueryInstanceProfileD6927F3E",
-        },
-        "ImageId": {
-          "Ref": "AMICloudquery",
-        },
-        "InstanceType": "t4g.medium",
-        "MetadataOptions": {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "GuHttpsEgressSecurityGroupCloudquery3AE9FC4C",
-              "GroupId",
-            ],
+          "ImageId": {
+            "Ref": "AMICloudquery",
           },
-          {
-            "Fn::GetAtt": [
-              "WazuhSecurityGroup",
-              "GroupId",
-            ],
+          "InstanceType": "t4g.medium",
+          "MetadataOptions": {
+            "HttpTokens": "required",
           },
-          {
-            "Fn::GetAtt": [
-              "PostgresAccessSecurityGroupCloudqueryE959A23F",
-              "GroupId",
-            ],
-          },
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "GuHttpsEgressSecurityGroupCloudquery3AE9FC4C",
+                "GroupId",
+              ],
+            },
+            {
+              "Fn::GetAtt": [
+                "WazuhSecurityGroup",
+                "GroupId",
+              ],
+            },
+            {
+              "Fn::GetAtt": [
+                "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CloudQuery/deploy-TEST-cloudquery",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "CloudQuery/deploy-TEST-cloudquery",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/bash
 mkdir -p $(dirname '/opt/cloudquery/aws.yaml')
 aws s3 cp 's3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/TEST/cloudquery/aws.yaml' '/opt/cloudquery/aws.yaml'
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/aws.yaml' '/opt/cloudquery/aws.yaml'
 mkdir -p $(dirname '/opt/cloudquery/postgresql.yaml')
 aws s3 cp 's3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/TEST/cloudquery/postgresql.yaml' '/opt/cloudquery/postgresql.yaml'
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/postgresql.yaml' '/opt/cloudquery/postgresql.yaml'
 mkdir -p $(dirname '/etc/systemd/system/cloudquery.service')
 aws s3 cp 's3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/TEST/cloudquery/cloudquery.service' '/etc/systemd/system/cloudquery.service'
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/cloudquery.service' '/etc/systemd/system/cloudquery.service'
 mkdir -p $(dirname '/etc/systemd/system/cloudquery.timer')
 aws s3 cp 's3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/TEST/cloudquery/cloudquery.timer' '/etc/systemd/system/cloudquery.timer'
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/cloudquery.timer' '/etc/systemd/system/cloudquery.timer'
 mkdir -p $(dirname '/opt/cloudquery/cloudquery.sh')
 aws s3 cp 's3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/TEST/cloudquery/cloudquery.sh' '/opt/cloudquery/cloudquery.sh'
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/cloudquery.sh' '/opt/cloudquery/cloudquery.sh'
 set -xe
 curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v2.5.3/cloudquery_linux_arm64 -o /opt/cloudquery/cloudquery
 echo "286cff19c54098328c0b85dbbfa94e87234b5a53be421c3b6ca406803122a7ee  /opt/cloudquery/cloudquery" | shasum -c -a 256
@@ -898,12 +920,50 @@ curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/s
 update-ca-certificates
 systemctl enable cloudquery.timer
 systemctl start cloudquery.timer",
+                ],
               ],
-            ],
+            },
           },
         },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:repo",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Key": "Name",
+                "Value": "CloudQuery/deploy-TEST-cloudquery",
+              },
+              {
+                "Key": "Stack",
+                "Value": "deploy",
+              },
+              {
+                "Key": "Stage",
+                "Value": "TEST",
+              },
+            ],
+          },
+        ],
       },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "deployTESTcloudqueryProfile4BE5D073": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceRoleCloudquery54F86B54",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
     },
   },
 }

@@ -12,7 +12,6 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
       "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
-      "GuSSMRunCommandPolicy",
       "GuDescribeEC2Policy",
       "GuLoggingStreamNameParameter",
       "GuLogShippingPolicy",
@@ -20,8 +19,8 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
       "GuParameterStoreReadPolicy",
       "GuAmiParameter",
       "GuHttpsEgressSecurityGroup",
-      "GuAutoScalingGroup",
       "GuWazuhAccess",
+      "GuAutoScalingGroup",
       "GuApplicationLoadBalancer",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
@@ -89,8 +88,16 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
       "Properties": {
         "HealthCheckGracePeriod": 120,
         "HealthCheckType": "ELB",
-        "LaunchConfigurationName": {
-          "Ref": "AutoScalingGroupServicesapiLaunchConfigCE2ECB8E",
+        "LaunchTemplate": {
+          "LaunchTemplateId": {
+            "Ref": "deployINFRAservicesapi1571C7B5",
+          },
+          "Version": {
+            "Fn::GetAtt": [
+              "deployINFRAservicesapi1571C7B5",
+              "LatestVersionNumber",
+            ],
+          },
         },
         "MaxSize": "2",
         "MinSize": "1",
@@ -118,11 +125,6 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
             },
           },
           {
-            "Key": "Name",
-            "PropagateAtLaunch": true,
-            "Value": "ServicesApi/AutoScalingGroupServicesapi",
-          },
-          {
             "Key": "Stack",
             "PropagateAtLaunch": true,
             "Value": "deploy",
@@ -148,86 +150,6 @@ exports[`The ServicesAPI stack matches the snapshot 1`] = `
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
-    },
-    "AutoScalingGroupServicesapiInstanceProfile24D91637": {
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "InstanceRoleServicesapi62D8A4C9",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "AutoScalingGroupServicesapiLaunchConfigCE2ECB8E": {
-      "DependsOn": [
-        "InstanceRoleServicesapiDefaultPolicyCC9CBC9F",
-        "InstanceRoleServicesapi62D8A4C9",
-      ],
-      "Properties": {
-        "IamInstanceProfile": {
-          "Ref": "AutoScalingGroupServicesapiInstanceProfile24D91637",
-        },
-        "ImageId": {
-          "Ref": "AMIServicesapi",
-        },
-        "InstanceType": "t4g.nano",
-        "MetadataOptions": {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "GuHttpsEgressSecurityGroupServicesapi97019AE9",
-              "GroupId",
-            ],
-          },
-          {
-            "Fn::GetAtt": [
-              "WazuhSecurityGroup",
-              "GroupId",
-            ],
-          },
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash -ev
-cat << EOF > /etc/systemd/system/services-api.service
-[Unit]
-Description=Github Lens API
-
-[Service]
-Environment="PORT=8900"
-Environment="STAGE=INFRA"
-Environment="GALAXIES_BUCKET_NAME=",
-                {
-                  "Ref": "galaxiesbucketname",
-                },
-                ""
-ExecStart=/usr/bin/node /handler.js
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-aws s3 cp s3://",
-                {
-                  "Ref": "DistributionBucketName",
-                },
-                "/deploy/INFRA/services-api/services-api.zip services-api.zip
-unzip services-api.zip
-chmod +x /handler.js
-systemctl start services-api
-",
-              ],
-            ],
-          },
-        },
-      },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
     },
     "CertificateServicesapi12F9DD3E": {
       "DeletionPolicy": "Retain",
@@ -586,6 +508,20 @@ systemctl start services-api
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
         "Path": "/",
         "Tags": [
           {
@@ -730,6 +666,27 @@ systemctl start services-api
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "InternalIngressSecurityGroupServicesapitoServicesApiWazuhSecurityGroupD11932B68900004C3881": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupServicesapi63B228EB",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ListenerServicesapiED329399": {
       "Properties": {
         "Certificates": [
@@ -859,6 +816,27 @@ systemctl start services-api
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "LoadBalancerServicesapiSecurityGrouptoServicesApiWazuhSecurityGroupD11932B68900990A1552": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerServicesapiSecurityGroup382D3D00",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
     "ParameterStoreReadServicesapiE20CBAEE": {
       "Properties": {
         "PolicyDocument": {
@@ -910,42 +888,6 @@ systemctl start services-api
           "Version": "2012-10-17",
         },
         "PolicyName": "parameter-store-read-policy",
-        "Roles": [
-          {
-            "Ref": "InstanceRoleServicesapi62D8A4C9",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "SSMRunCommandPolicy244E1613": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply",
-                "ssm:UpdateInstanceInformation",
-                "ssm:ListInstanceAssociations",
-                "ssm:DescribeInstanceProperties",
-                "ssm:DescribeDocumentParameters",
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "ssm-run-command-policy",
         "Roles": [
           {
             "Ref": "InstanceRoleServicesapi62D8A4C9",
@@ -1149,6 +1091,210 @@ systemctl start services-api
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "WazuhSecurityGroupfromServicesApiInternalIngressSecurityGroupServicesapiAED8783A8900F38783EF": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "InternalIngressSecurityGroupServicesapi63B228EB",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "WazuhSecurityGroupfromServicesApiLoadBalancerServicesapiSecurityGroup2FB0855D89005F47080D": {
+      "Properties": {
+        "Description": "Load balancer to target",
+        "FromPort": 8900,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "WazuhSecurityGroup",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "LoadBalancerServicesapiSecurityGroup382D3D00",
+            "GroupId",
+          ],
+        },
+        "ToPort": 8900,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "deployINFRAservicesapi1571C7B5": {
+      "Properties": {
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "deployINFRAservicesapiProfile0E81820A",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": {
+            "Ref": "AMIServicesapi",
+          },
+          "InstanceType": "t4g.nano",
+          "MetadataOptions": {
+            "HttpTokens": "required",
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "GuHttpsEgressSecurityGroupServicesapi97019AE9",
+                "GroupId",
+              ],
+            },
+            {
+              "Fn::GetAtt": [
+                "WazuhSecurityGroup",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "ServicesApi/deploy-INFRA-services-api",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "INFRA",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "gu:cdk:version",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "ServicesApi/deploy-INFRA-services-api",
+                },
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "INFRA",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/bash -ev
+cat << EOF > /etc/systemd/system/services-api.service
+[Unit]
+Description=Github Lens API
+
+[Service]
+Environment="PORT=8900"
+Environment="STAGE=INFRA"
+Environment="GALAXIES_BUCKET_NAME=",
+                  {
+                    "Ref": "galaxiesbucketname",
+                  },
+                  ""
+ExecStart=/usr/bin/node /handler.js
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+aws s3 cp s3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/INFRA/services-api/services-api.zip services-api.zip
+unzip services-api.zip
+chmod +x /handler.js
+systemctl start services-api
+",
+                ],
+              ],
+            },
+          },
+        },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "gu:cdk:version",
+                "Value": "TEST",
+              },
+              {
+                "Key": "gu:repo",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Key": "Name",
+                "Value": "ServicesApi/deploy-INFRA-services-api",
+              },
+              {
+                "Key": "Stack",
+                "Value": "deploy",
+              },
+              {
+                "Key": "Stage",
+                "Value": "INFRA",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "deployINFRAservicesapiProfile0E81820A": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "InstanceRoleServicesapi62D8A4C9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
     },
   },
 }
