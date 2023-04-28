@@ -11,6 +11,7 @@ It includes:
 
 ## Requirements
 - Docker
+- to query github you need to put a private key for github in /packages/cloudquery/dev-config/git-hub-key
 
 ## Running
 1. Start Docker
@@ -29,6 +30,7 @@ It includes:
 
    This will start the Docker containers, and CloudQuery will start collecting data.
 4. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
+5. To restart on your local machine, delete the container in docker and go back to step 3.
 
 > **Note**
 > You can also use other Postgres clients, such as `psql`, or even your IDE!

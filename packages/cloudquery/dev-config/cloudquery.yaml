@@ -1,58 +1,77 @@
----
+#---
+#kind: source
+#spec:
+#  name: 'aws'
+#  path: 'cloudquery/aws'
+#
+#  # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
+#  version: 'v16.1.0'
+#  destinations: ['postgresql']
+#  skip_tables:
+#    - aws_ec2_vpc_endpoint_services
+#    - aws_cloudtrail_events
+#    - aws_docdb_cluster_parameter_groups
+#    - aws_docdb_engine_versions
+#    - aws_ec2_instance_types
+#    - aws_elasticache_engine_versions
+#    - aws_elasticache_parameter_groups
+#    - aws_elasticache_reserved_cache_nodes_offerings
+#    - aws_elasticache_service_updates
+#    - aws_neptune_cluster_parameter_groups
+#    - aws_neptune_db_parameter_groups
+#    - aws_rds_cluster_parameter_groups
+#    - aws_rds_db_parameter_groups
+#    - aws_rds_engine_versions
+#    - aws_servicequotas_services
+#    - aws_organizations_delegated_services
+#    - aws_organizations_roots
+#    - aws_organizations_delegated_administrators
+#    - aws_organizations_policies
+#    - aws_organizations_organizational_units
+#    - aws_organization_resource_policies
+#    - aws_identitystore_users
+#    - aws_identitystore_groups
+#    - aws_quicksight_data_sets
+#    - aws_quicksight_dashboards
+#    - aws_quicksight_analyses
+#    - aws_quicksight_users
+#    - aws_quicksight_templates
+#    - aws_quicksight_groups
+#    - aws_quicksight_folders
+#    - aws_quicksight_data_sources
+#    - aws_amp_workspaces
+#    - aws_ssoadmin_instances
+#    - aws_glue_connections
+#    - aws_computeoptimizer_ecs_service_recommendations
+#    - aws_xray_sampling_rules
+#    - aws_xray_resource_policies
+#    - aws_xray_groups
+#  spec:
+#    regions:
+#      - eu-west-1
+#      - us-east-1
+#    accounts:
+#      - id: 'developerPlayground'
+#        local_profile: 'developerPlayground'
+#
+#---
 kind: source
 spec:
-  name: 'aws'
-  path: 'cloudquery/aws'
-
-  # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
-  version: 'v16.1.0'
-  destinations: ['postgresql']
-  skip_tables:
-    - aws_ec2_vpc_endpoint_services
-    - aws_cloudtrail_events
-    - aws_docdb_cluster_parameter_groups
-    - aws_docdb_engine_versions
-    - aws_ec2_instance_types
-    - aws_elasticache_engine_versions
-    - aws_elasticache_parameter_groups
-    - aws_elasticache_reserved_cache_nodes_offerings
-    - aws_elasticache_service_updates
-    - aws_neptune_cluster_parameter_groups
-    - aws_neptune_db_parameter_groups
-    - aws_rds_cluster_parameter_groups
-    - aws_rds_db_parameter_groups
-    - aws_rds_engine_versions
-    - aws_servicequotas_services
-    - aws_organizations_delegated_services
-    - aws_organizations_roots
-    - aws_organizations_delegated_administrators
-    - aws_organizations_policies
-    - aws_organizations_organizational_units
-    - aws_organization_resource_policies
-    - aws_identitystore_users
-    - aws_identitystore_groups
-    - aws_quicksight_data_sets
-    - aws_quicksight_dashboards
-    - aws_quicksight_analyses
-    - aws_quicksight_users
-    - aws_quicksight_templates
-    - aws_quicksight_groups
-    - aws_quicksight_folders
-    - aws_quicksight_data_sources
-    - aws_amp_workspaces
-    - aws_ssoadmin_instances
-    - aws_glue_connections
-    - aws_computeoptimizer_ecs_service_recommendations
-    - aws_xray_sampling_rules
-    - aws_xray_resource_policies
-    - aws_xray_groups
+  # Source spec section
+  name: 'github'
+  path: 'cloudquery/github'
+  version: "v5.1.0"
+  tables: ["*"]
+  destinations: ["postgresql"]
   spec:
-    regions:
-      - eu-west-1
-      - us-east-1
-    accounts:
-      - id: 'developerPlayground'
-        local_profile: 'developerPlayground'
+    ## App Authentication (one per org):
+    app_auth:
+      - org: 'guardian'
+        private_key_path: 'git-hub-key' # Path to private key file
+        app_id: '325393' # App ID, required for App Authentication.
+        installation_id: '36949835' # Installation ID for this org
+    #orgs: [] # Optional. List of organizations to extract from
+    repos: ["guardian/cdk"] # Optional. List of repositories to extract from
 
 ---
 kind: destination
@@ -71,3 +90,4 @@ spec:
 
   spec:
     connection_string: 'postgresql://postgres:not_at_all_secret@postgres:5432/postgres?sslmode=disable'
+
