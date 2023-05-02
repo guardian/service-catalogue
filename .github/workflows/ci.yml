@@ -78,7 +78,7 @@ jobs:
             repocop:
               - packages/repocop/target/scala-3.2.1/repocop.jar
             cloudquery:
-              - packages/cloudquery/prod-config/
+              - packages/cloudquery/PROD/
 
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
