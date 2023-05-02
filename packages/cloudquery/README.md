@@ -14,7 +14,7 @@ It includes:
 
 ## Running
 1. Start Docker
-2. Get AWS credentials from Janus (check [cloudquery.yaml](./dev-config/cloudquery.yaml) for the AWS profiles needed)
+2. Get AWS credentials from Janus (check [cloudquery.yaml](DEV/cloudquery.yaml) for the AWS profiles needed)
 3. Run:
    
    ```sh
