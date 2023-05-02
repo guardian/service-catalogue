@@ -1,3 +1,4 @@
+---
 #---
 #kind: source
 #spec:
@@ -60,18 +61,18 @@ spec:
   # Source spec section
   name: 'github'
   path: 'cloudquery/github'
-  version: "v5.1.0"
-  tables: ["*"]
-  destinations: ["postgresql"]
+  version: 'v5.1.0'
+  tables: ['*']
+  destinations: ['postgresql']
   spec:
     ## App Authentication (one per org):
     app_auth:
       - org: 'guardian'
-        private_key_path: 'git-hub-key' # Path to private key file
+        private_key_path: '/github-key' # Path to private key file
         app_id: '325393' # App ID, required for App Authentication.
         installation_id: '36949835' # Installation ID for this org
     #orgs: [] # Optional. List of organizations to extract from
-    repos: ["guardian/cdk"] # Optional. List of repositories to extract from
+    repos: ['guardian/cdk'] # Optional. List of repositories to extract from
 
 ---
 kind: destination
@@ -90,4 +91,3 @@ spec:
 
   spec:
     connection_string: 'postgresql://postgres:not_at_all_secret@postgres:5432/postgres?sslmode=disable'
-
