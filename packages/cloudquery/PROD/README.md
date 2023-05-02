@@ -11,3 +11,5 @@ We have the following sources configured:
 We have the following destinations configured:
 - [RDS Postgres](postgresql.yaml). CloudQuery connects to RDS Postgres via IAM Authentication.
 
+## Visualising
+Grafana is configured with read-only access to the database.
