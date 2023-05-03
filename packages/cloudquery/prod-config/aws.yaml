@@ -4,7 +4,7 @@ spec:
   path: 'cloudquery/aws'
 
   # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
-  version: 'v16.1.0'
+  version: 'v17.0.0'
   destinations: ['postgresql']
   skip_tables:
     - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
