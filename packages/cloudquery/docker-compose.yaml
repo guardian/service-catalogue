@@ -19,6 +19,8 @@ services:
       - ~/.gu/cloudquery-github-key:/github-key
     environment:
       AWS_SHARED_CREDENTIALS_FILE: "/.aws/credentials"
+      GITHUB_APP_ID: ${GITHUB_APP_ID}
+      GITHUB_INSTALLATION_ID: ${GITHUB_INSTALLATION_ID}
     command: sync /dev-config.yaml --log-console --log-level warn
   grafana:
     image: grafana/grafana-oss:9.4.7
