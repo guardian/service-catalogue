@@ -7,6 +7,7 @@ import {
 	GuDistributionBucketParameter,
 	GuLoggingStreamNameParameter,
 	GuStack,
+	GuStringParameter,
 } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuSecurityGroup,
@@ -131,6 +132,18 @@ export class CloudQuery extends GuStack {
 			localFile: path.join(baseDirectory, 'template-summary.yaml'),
 		});
 
+		const githubYamlFile = userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/github.yaml`,
+			localFile: path.join(baseDirectory, 'github.yaml'),
+		});
+
+		userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/github-key`,
+			localFile: path.join(baseDirectory, 'github-key'),
+		});
+
 		userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/postgresql.yaml`,
@@ -155,6 +168,20 @@ export class CloudQuery extends GuStack {
 			localFile: path.join(baseDirectory, 'cloudquery.sh'),
 		});
 
+		const githubAppId: string = new GuStringParameter(this, 'app-id', {
+			fromSSM: true,
+			default: `/${stage}/${stack}/${app}/github-app-id`,
+		}).valueAsString;
+
+		const githubInstallationId: string = new GuStringParameter(
+			this,
+			'installation-id',
+			{
+				fromSSM: true,
+				default: `/${stage}/${stack}/${app}/github-installation-id`,
+			},
+		).valueAsString;
+
 		userData.addCommands(
 			// Install Cloudquery,
 			`set -xe`,
@@ -171,6 +198,9 @@ export class CloudQuery extends GuStack {
 			// Set target Org Unit
 			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${awsYamlFile}`,
 			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${templateSummaryYamlFile}`,
+
+			`sed -i "s/£GITHUB_APP_ID/${githubAppId}/g" ${githubYamlFile}`,
+			`sed -i "s/£GITHUB_INSTALLATION_ID/${githubInstallationId}/g" ${githubYamlFile}`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',

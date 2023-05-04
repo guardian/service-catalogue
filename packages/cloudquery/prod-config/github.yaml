@@ -1,0 +1,17 @@
+kind: source
+spec:
+  # Source spec section
+  name: 'github'
+  path: 'cloudquery/github'
+  version: 'v5.1.1'
+  tables: ['*']
+  destinations: ['postgresql']
+  concurrency: 1000 # TODO what's the ideal value here?!
+  spec:
+    ## App Authentication (one per org):
+    app_auth:
+      - org: 'guardian'
+        private_key_path: '/opt/cloudquery/github-key' # Path to private key file
+        app_id: £GITHUB_APP_ID # App ID, required for App Authentication.
+        installation_id: £GITHUB_INSTALLATION_ID # Installation ID for this org
+    orgs: ['guardian']

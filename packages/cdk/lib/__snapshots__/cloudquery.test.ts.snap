@@ -8,6 +8,8 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "GuSubnetListParameter",
       "GuSecurityGroup",
       "GuDistributionBucketParameter",
+      "GuStringParameter",
+      "GuStringParameter",
       "GuAmiParameter",
       "GuInstanceRole",
       "GuDescribeEC2Policy",
@@ -41,10 +43,18 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
+    "appid": {
+      "Default": "/TEST/deploy/cloudquery/github-app-id",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "cloudqueryPrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
+    "installationid": {
+      "Default": "/TEST/deploy/cloudquery/github-installation-id",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": {
@@ -896,6 +906,18 @@ aws s3 cp 's3://",
                     "Ref": "DistributionBucketName",
                   },
                   "/deploy/TEST/cloudquery/template-summary.yaml' '/opt/cloudquery/template-summary.yaml'
+mkdir -p $(dirname '/opt/cloudquery/github.yaml')
+aws s3 cp 's3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/github.yaml' '/opt/cloudquery/github.yaml'
+mkdir -p $(dirname '/opt/cloudquery/github-key')
+aws s3 cp 's3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/github-key' '/opt/cloudquery/github-key'
 mkdir -p $(dirname '/opt/cloudquery/postgresql.yaml')
 aws s3 cp 's3://",
                   {
@@ -927,6 +949,16 @@ chmod a+x /opt/cloudquery/cloudquery
 chmod a+x /opt/cloudquery/cloudquery.sh
 sed -i "s/£TARGET_ORG_UNIT/ou-123/g" /opt/cloudquery/aws.yaml
 sed -i "s/£TARGET_ORG_UNIT/ou-123/g" /opt/cloudquery/template-summary.yaml
+sed -i "s/£GITHUB_APP_ID/",
+                  {
+                    "Ref": "appid",
+                  },
+                  "/g" /opt/cloudquery/github.yaml
+sed -i "s/£GITHUB_INSTALLATION_ID/",
+                  {
+                    "Ref": "installationid",
+                  },
+                  "/g" /opt/cloudquery/github.yaml
 curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt
 update-ca-certificates
 systemctl enable cloudquery.timer

@@ -36,3 +36,11 @@ issueRdsAuthToken
   sync \
   /opt/cloudquery/template-summary.yaml \
   /opt/cloudquery/postgresql.yaml
+
+issueRdsAuthToken
+/opt/cloudquery/cloudquery \
+  --log-format json \
+  --log-console \
+  sync \
+  /opt/cloudquery/github.yaml \
+  /opt/cloudquery/postgresql.yaml
