@@ -125,6 +125,12 @@ export class CloudQuery extends GuStack {
 			localFile: path.join(baseDirectory, 'aws.yaml'),
 		});
 
+		const templateSummaryYamlFile = userData.addS3DownloadCommand({
+			bucket: bucket,
+			bucketKey: `${stack}/${stage}/${app}/template-summary.yaml`,
+			localFile: path.join(baseDirectory, 'template-summary.yaml'),
+		});
+
 		userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/postgresql.yaml`,
@@ -164,6 +170,7 @@ export class CloudQuery extends GuStack {
 
 			// Set target Org Unit
 			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${awsYamlFile}`,
+			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${templateSummaryYamlFile}`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',

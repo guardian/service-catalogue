@@ -23,5 +23,6 @@ echo "user=cloudquery password=$PG_PASSWORD host=$RDS_HOST port=5432 dbname=post
   --log-format json \
   --log-console \
   sync \
+  /opt/cloudquery/template-summary.yaml \
   /opt/cloudquery/aws.yaml \
   /opt/cloudquery/postgresql.yaml
