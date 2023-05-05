@@ -24,7 +24,7 @@ import {
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import type { CfnDBInstance, DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
+import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import {
@@ -250,17 +250,7 @@ export class CloudQuery extends GuStack {
 			}),
 		);
 
-		const { attrDbiResourceId } = db.node.defaultChild as CfnDBInstance;
-
-		asg.addToRolePolicy(
-			new PolicyStatement({
-				effect: Effect.ALLOW,
-				resources: [
-					`arn:aws:rds-db:${this.region}:${this.account}:dbuser:${attrDbiResourceId}/cloudquery`,
-				],
-				actions: ['rds-db:connect'],
-			}),
-		);
+		db.grantConnect(asg, 'cloudquery');
 
 		asg.addToRolePolicy(
 			new PolicyStatement({

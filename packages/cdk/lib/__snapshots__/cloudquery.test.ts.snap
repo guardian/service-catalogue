@@ -300,7 +300,11 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:rds-db:",
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
                     {
                       "Ref": "AWS::Region",
                     },
