@@ -58,7 +58,7 @@ kind: source
 spec:
   name: 'template-summary'
   path: 'guardian/cloudformation-template-summary'
-  version: 'v0.1.0'
+  version: 'v0.3.0'
   tables: ['*']
   destinations: ['postgresql']
   spec:
