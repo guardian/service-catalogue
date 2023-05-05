@@ -17,12 +17,17 @@ PG_PASSWORD="$(aws rds generate-db-auth-token --hostname $RDS_HOST --port 5432 -
 # See https://www.cloudquery.io/docs/advanced-topics/environment-variable-substitution
 echo "user=cloudquery password=$PG_PASSWORD host=$RDS_HOST port=5432 dbname=postgres sslmode=verify-full" > /opt/cloudquery/connection_string
 
-
 # Run cloudquery
 /opt/cloudquery/cloudquery \
   --log-format json \
   --log-console \
   sync \
-  /opt/cloudquery/template-summary.yaml \
   /opt/cloudquery/aws.yaml \
+  /opt/cloudquery/postgresql.yaml
+
+/opt/cloudquery/cloudquery \
+  --log-format json \
+  --log-console \
+  sync \
+  /opt/cloudquery/template-summary.yaml \
   /opt/cloudquery/postgresql.yaml
