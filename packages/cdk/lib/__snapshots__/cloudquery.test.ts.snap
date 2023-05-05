@@ -890,6 +890,12 @@ aws s3 cp 's3://",
                     "Ref": "DistributionBucketName",
                   },
                   "/deploy/TEST/cloudquery/aws.yaml' '/opt/cloudquery/aws.yaml'
+mkdir -p $(dirname '/opt/cloudquery/template-summary.yaml')
+aws s3 cp 's3://",
+                  {
+                    "Ref": "DistributionBucketName",
+                  },
+                  "/deploy/TEST/cloudquery/template-summary.yaml' '/opt/cloudquery/template-summary.yaml'
 mkdir -p $(dirname '/opt/cloudquery/postgresql.yaml')
 aws s3 cp 's3://",
                   {
@@ -920,6 +926,7 @@ echo "286cff19c54098328c0b85dbbfa94e87234b5a53be421c3b6ca406803122a7ee  /opt/clo
 chmod a+x /opt/cloudquery/cloudquery
 chmod a+x /opt/cloudquery/cloudquery.sh
 sed -i "s/£TARGET_ORG_UNIT/ou-123/g" /opt/cloudquery/aws.yaml
+sed -i "s/£TARGET_ORG_UNIT/ou-123/g" /opt/cloudquery/template-summary.yaml
 curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt
 update-ca-certificates
 systemctl enable cloudquery.timer

@@ -53,6 +53,21 @@ spec:
     accounts:
       - id: 'developerPlayground'
         local_profile: 'developerPlayground'
+---
+kind: source
+spec:
+  name: 'template-summary'
+  path: 'guardian/cloudformation-template-summary'
+  version: 'v0.3.0'
+  tables: ['*']
+  destinations: ['postgresql']
+  spec:
+    regions:
+      - eu-west-1
+      - us-east-1
+    accounts:
+      - id: 'developerPlayground'
+        local_profile: 'developerPlayground'
 
 ---
 kind: source
