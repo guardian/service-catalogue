@@ -48,7 +48,7 @@ spec:
   concurrency: 100000 # this is expected to work with a t4g.medium and our current sources but not optimised. Will adjust once live.
   spec:
     regions:
-      # All regions we support.
+      # All regions we support.
       # See https://github.com/guardian/infosec-platform/blob/main/policies/DenyAccessToNonApprovedRegions.json
       - eu-west-1
       - eu-west-2
@@ -60,4 +60,4 @@ spec:
     org:
       member_role_name: cloudquery-access # See: https://github.com/guardian/aws-account-setup/pull/58.
       organization_units:
-        - £TARGET_ORG_UNIT
+        - ${file:/opt/cloudquery/aws-organisation-root}

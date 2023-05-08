@@ -13,7 +13,6 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Tags } from 'aws-cdk-lib';
 import {
@@ -119,13 +118,13 @@ export class CloudQuery extends GuStack {
 		const baseDirectory = '/opt/cloudquery';
 		const cloudqueryBinary = path.join(baseDirectory, 'cloudquery');
 
-		const awsYamlFile = userData.addS3DownloadCommand({
+		userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/aws.yaml`,
 			localFile: path.join(baseDirectory, 'aws.yaml'),
 		});
 
-		const templateSummaryYamlFile = userData.addS3DownloadCommand({
+		userData.addS3DownloadCommand({
 			bucket: bucket,
 			bucketKey: `${stack}/${stage}/${app}/template-summary.yaml`,
 			localFile: path.join(baseDirectory, 'template-summary.yaml'),
@@ -169,8 +168,7 @@ export class CloudQuery extends GuStack {
 			`chmod a+x ${cloudqueryScript}`,
 
 			// Set target Org Unit
-			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${awsYamlFile}`,
-			`sed -i "s/£TARGET_ORG_UNIT/${GuardianOrganisationalUnits.Root}/g" ${templateSummaryYamlFile}`,
+			`aws organizations list-roots | jq '.Roots[0].Id' > ${baseDirectory}/aws-organisation-root`,
 
 			// Install RDS certificate
 			'curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem -o /usr/local/share/ca-certificates/rds-ca-2019-root.crt',
