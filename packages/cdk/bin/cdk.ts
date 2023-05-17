@@ -2,6 +2,7 @@ import 'source-map-support/register';
 import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
 import { CloudFormationLens } from '../lib/cloudformation-lens';
 import { CloudQuery } from '../lib/cloudquery';
+import { Cloudquery as CloudqueryEcs } from '../lib/ecs/cloudquery';
 import { GithubLens } from '../lib/github-lens';
 import { Repocop } from '../lib/repocop';
 import { ServicesApi } from '../lib/services-api';
@@ -38,4 +39,11 @@ new CloudQuery(app, 'CloudQuery-INFRA', {
 	stack: 'deploy',
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
+});
+
+new CloudqueryEcs(app, 'Cloudquery', {
+	stack: 'playground',
+	stage: 'INFRA',
+	env: { region: 'eu-west-1' },
+	cloudFormationStackName: 'playground-INFRA-cloudquery',
 });
