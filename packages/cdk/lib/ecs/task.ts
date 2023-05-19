@@ -15,7 +15,9 @@ import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { awsSourceConfig, destinationConfig } from './config';
+import { dump } from 'js-yaml';
+import type { CloudqueryConfig } from './config';
+import { postgresDestinationConfig } from './config';
 import { Versions } from './versions';
 
 const cloudqueryImage = ContainerImage.fromRegistry(
@@ -60,34 +62,32 @@ export interface ScheduledCloudqueryTaskProps
 	policies: PolicyStatement[];
 
 	/**
-	 * The tables to include in the CloudQuery scan.
-	 *
-	 * Either tables or skipTables must be provided.
+	 * The CloudQuery config to use to collect data from.
 	 */
-	tables?: string[];
+	sourceConfig: CloudqueryConfig;
 
 	/**
-	 * The tables to skip in the CloudQuery scan.
+	 * The CloudQuery config to use to store data to.
 	 *
-	 * Either skipTables or tables must be provided.
+	 * @default Postgres
 	 */
-	skipTables?: string[];
+	destinationConfig?: CloudqueryConfig;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
-	public readonly tables?: string[];
+	public readonly sourceConfig: CloudqueryConfig;
 	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
 		const {
 			db,
 			cluster,
 			app,
 			dbAccess,
-			tables,
-			skipTables,
 			schedule,
 			managedPolicies,
 			policies,
 			loggingStreamName,
+			sourceConfig,
+			destinationConfig = postgresDestinationConfig(),
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -95,10 +95,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		// TODO remove once IAM Auth is working
 		if (!db.secret) {
 			throw new Error('DB Secret is missing');
-		}
-
-		if (!tables && !skipTables) {
-			throw new Error('Either tables or skipTables must be provided');
 		}
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`);
@@ -114,8 +110,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					`printf '${awsSourceConfig(tables, skipTables)}' > /source.yaml`,
-					`printf '${destinationConfig()}' > /destination.yaml`,
+					`printf '${dump(sourceConfig)}' > /source.yaml`,
+					`printf '${dump(destinationConfig)}' > /destination.yaml`,
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),
 			],
@@ -166,6 +162,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			securityGroups: [dbAccess],
 		});
 
-		this.tables = tables;
+		this.sourceConfig = sourceConfig;
 	}
 }

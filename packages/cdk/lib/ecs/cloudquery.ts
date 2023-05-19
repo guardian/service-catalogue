@@ -20,6 +20,7 @@ import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
+import { awsSourceConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
 export class Cloudquery extends GuStack {
@@ -141,29 +142,41 @@ export class Cloudquery extends GuStack {
 			loggingStreamName,
 		};
 
+		interface CustomRateTable {
+			schedule: Schedule;
+			tables: string[];
+		}
+
 		// Collect these tables at a frequency other than once a day
-		const customRateTables = [
-			new ScheduledCloudqueryTask(this, 'AwsS3Buckets', {
-				...coreTaskProps,
+		const customRateTables: CustomRateTable[] = [
+			{
 				schedule: Schedule.rate(Duration.hours(2)),
 				tables: ['aws_s3_buckets'],
-			}),
-
-			new ScheduledCloudqueryTask(this, 'AwsLambdaFunctions', {
-				...coreTaskProps,
+			},
+			{
 				schedule: Schedule.rate(Duration.minutes(30)),
 				tables: ['aws_lambda_functions'],
-			}),
-		]
-			.flatMap((_) => _.tables)
-			.filter(Boolean) as string[]; // filter out undefined
+			},
+		];
+
+		customRateTables.forEach(({ schedule, tables }, index) => {
+			new ScheduledCloudqueryTask(this, `AwsCustomRate${index}`, {
+				...coreTaskProps,
+				schedule,
+				sourceConfig: awsSourceConfig({
+					tables,
+				}),
+			});
+		});
 
 		// Collect every other table once a day
 		new ScheduledCloudqueryTask(this, 'AwsOther', {
 			...coreTaskProps,
 			schedule: Schedule.rate(Duration.days(1)),
-			tables: ['*'],
-			skipTables: customRateTables,
+			sourceConfig: awsSourceConfig({
+				tables: ['*'],
+				skipTables: customRateTables.flatMap((_) => _.tables),
+			}),
 		});
 	}
 }

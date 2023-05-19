@@ -1,8 +1,21 @@
-import { dump } from 'js-yaml';
+import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import { Versions } from './versions';
 
-export function destinationConfig() {
-	const config = {
+export interface CloudqueryConfig {
+	kind: 'source' | 'destination';
+	spec: Record<string, unknown>;
+}
+
+interface CloudqueryTableConfig {
+	tables?: string[];
+	skipTables?: string[];
+}
+
+/**
+ * Create a CloudQuery destination configuration for Postgres.
+ */
+export function postgresDestinationConfig(): CloudqueryConfig {
+	return {
 		kind: 'destination',
 		spec: {
 			name: 'postgresql',
@@ -22,11 +35,19 @@ export function destinationConfig() {
 			},
 		},
 	};
-	return dump(config);
 }
 
-export function awsSourceConfig(tables?: string[], skipTables?: string[]) {
-	const config = {
+export function awsSourceConfig(
+	tableConfig: CloudqueryTableConfig,
+	extraConfig: Record<string, unknown> = {},
+): CloudqueryConfig {
+	const { tables, skipTables } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
 		kind: 'source',
 		spec: {
 			name: 'aws',
@@ -47,14 +68,50 @@ export function awsSourceConfig(tables?: string[], skipTables?: string[]) {
 					'ap-southeast-2',
 					'ca-central-1',
 				],
-				// TODO add these once running in the deployTools account
-				// org: {
-				// 	// See: https://github.com/guardian/aws-account-setup/pull/58
-				// 	member_role_name: 'cloudquery-access',
-				// 	organization_units: [GuardianOrganisationalUnits.Root],
-				// },
+				...extraConfig,
 			},
 		},
 	};
-	return dump(config);
+}
+
+/**
+ * Create a CloudQuery configuration for all AWS accounts in the organisation.
+ * @param tableConfig Which tables to include or exclude.
+ *
+ * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#org
+ */
+export function awsSourceConfigForOrganisation(
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	return awsSourceConfig(tableConfig, {
+		org: {
+			// See: https://github.com/guardian/aws-account-setup/pull/58
+			member_role_name: 'cloudquery-access',
+			organization_units: [GuardianOrganisationalUnits.Root],
+		},
+	});
+}
+
+/**
+ * Create a CloudQuery configuration for a single AWS account.
+ * Use this for those services running across the organisation which are aggregated in a single account.
+ * For example, Access Analyzer.
+ *
+ * @param accountNumber The AWS account to query. CloudQuery will assume the role `cloudquery-access` in this account.
+ * @param tableConfig Which tables to include or exclude.
+ *
+ * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#account
+ */
+export function awsSourceConfigForAccount(
+	accountNumber: string,
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	return awsSourceConfig(tableConfig, {
+		accounts: [
+			{
+				id: `cq-for-${accountNumber}`,
+				role_arn: `arn:aws:iam::${accountNumber}:role/cloudquery-access`,
+			},
+		],
+	});
 }
