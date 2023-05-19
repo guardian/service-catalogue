@@ -16,31 +16,11 @@ import {
 	InstanceType,
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
-import {
-	Cluster,
-	ContainerImage,
-	FargateTaskDefinition,
-	FirelensConfigFileType,
-	FireLensLogDriver,
-	FirelensLogRouterType,
-	LogDrivers,
-	Secret,
-} from 'aws-cdk-lib/aws-ecs';
-import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
+import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
-import { awsSourceConfig, destinationConfig } from './config';
-import { Versions } from './versions';
-
-const cloudqueryImage = ContainerImage.fromRegistry(
-	`ghcr.io/cloudquery/cloudquery:${Versions.CloudqueryCli}`,
-);
-
-const firelensImage = ContainerImage.fromRegistry(
-	'ghcr.io/guardian/hackday-firelens:main',
-);
+import { ScheduledCloudqueryTask } from './task';
 
 export class Cloudquery extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
@@ -48,9 +28,6 @@ export class Cloudquery extends GuStack {
 
 		const app = this.constructor.name.toLowerCase();
 		Tags.of(this).add('App', app);
-
-		const { stack, stage, region } = this;
-		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
 
 		const loggingStreamName =
 			GuLoggingStreamNameParameter.getInstance(this).valueAsString;
@@ -95,64 +72,9 @@ export class Cloudquery extends GuStack {
 		});
 		db.connections.allowFrom(dbAccess, Port.tcp(dbPort));
 
-		// TODO remove once IAM Auth is working
-		if (!db.secret) {
-			throw new Error('DB Secret is missing');
-		}
-
 		const cluster = new Cluster(this, `${app}Cluster`, {
 			vpc,
 			enableFargateCapacityProviders: true,
-		});
-
-		const task = new FargateTaskDefinition(this, 'TaskDefinition');
-
-		task.addContainer(`CloudQuery`, {
-			image: cloudqueryImage,
-			secrets: {
-				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
-				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
-			},
-			entryPoint: [''],
-			command: [
-				'/bin/sh',
-				'-c',
-				[
-					`printf '${awsSourceConfig(['aws_s3_buckets'])}' > /source.yaml`,
-					`printf '${destinationConfig()}' > /destination.yaml`,
-					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
-				].join(';'),
-			],
-			logging: new FireLensLogDriver({
-				options: {
-					Name: `kinesis_streams`,
-					region,
-					stream: loggingStreamName,
-					retry_limit: '2',
-				},
-			}),
-		});
-
-		task.addFirelensLogRouter('firelens', {
-			image: firelensImage,
-			logging: LogDrivers.awsLogs({
-				streamPrefix: [stack, stage, app].join('/'),
-				logRetention: RetentionDays.ONE_DAY,
-			}),
-			environment: {
-				STACK: stack,
-				STAGE: stage,
-				APP: app,
-				GU_REPO: thisRepo,
-			},
-			firelensConfig: {
-				type: FirelensLogRouterType.FLUENTBIT,
-				options: {
-					enableECSLogMetadata: true,
-					configFileType: FirelensConfigFileType.FILE,
-					configFileValue: '/custom.conf',
-				},
-			},
 		});
 
 		const managedPolicies = [
@@ -209,19 +131,26 @@ export class Cloudquery extends GuStack {
 			// }),
 		];
 
-		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
-		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
-		db.grantConnect(task.taskRole);
-
-		new ScheduledFargateTask(this, 'ScheduledTask', {
-			schedule: Schedule.rate(Duration.days(1)),
+		const coreTaskProps = {
+			app,
 			cluster,
-			vpc,
-			subnetSelection: { subnets: privateSubnets },
-			scheduledFargateTaskDefinitionOptions: {
-				taskDefinition: task,
-			},
-			securityGroups: [dbAccess],
+			db,
+			dbAccess,
+			managedPolicies,
+			policies,
+			loggingStreamName,
+		};
+
+		new ScheduledCloudqueryTask(this, 'AwsS3Buckets', {
+			...coreTaskProps,
+			schedule: Schedule.rate(Duration.days(1)),
+			tables: ['aws_s3_buckets'],
+		});
+
+		new ScheduledCloudqueryTask(this, 'AwsLambdaFunctions', {
+			...coreTaskProps,
+			schedule: Schedule.rate(Duration.minutes(5)),
+			tables: ['aws_lambda_functions'],
 		});
 	}
 }

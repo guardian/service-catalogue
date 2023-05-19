@@ -29,6 +29,1118 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
     },
   },
   "Resources": {
+    "AwsLambdaFunctionsScheduledEventRule61E40624": {
+      "Properties": {
+        "ScheduleExpression": "rate(5 minutes)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "cloudqueryCluster5370C11B",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "DbAccessCloudqueryFD49EBA5",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "AwsLambdaFunctionsTaskDefinitionF34D0EB6",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "AwsLambdaFunctionsTaskDefinitionEventsRole70E6018C",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "AwsLambdaFunctionsTaskDefinitionAwsLambdaFunctionsFirelensLogGroup65921DD8": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "AwsLambdaFunctionsTaskDefinitionEventsRole70E6018C": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AwsLambdaFunctionsTaskDefinitionEventsRoleDefaultPolicy06D47B12": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "cloudqueryCluster5370C11B",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "AwsLambdaFunctionsTaskDefinitionF34D0EB6",
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AwsLambdaFunctionsTaskDefinitionExecutionRole3747334D",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AwsLambdaFunctionsTaskDefinitionTaskRole67093AA0",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AwsLambdaFunctionsTaskDefinitionEventsRoleDefaultPolicy06D47B12",
+        "Roles": [
+          {
+            "Ref": "AwsLambdaFunctionsTaskDefinitionEventsRole70E6018C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "AwsLambdaFunctionsTaskDefinitionExecutionRole3747334D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AwsLambdaFunctionsTaskDefinitionExecutionRoleDefaultPolicy39A82AC5": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "DatabaseSecretAttachmentE5D1B020",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AwsLambdaFunctionsTaskDefinitionAwsLambdaFunctionsFirelensLogGroup65921DD8",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AwsLambdaFunctionsTaskDefinitionExecutionRoleDefaultPolicy39A82AC5",
+        "Roles": [
+          {
+            "Ref": "AwsLambdaFunctionsTaskDefinitionExecutionRole3747334D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "AwsLambdaFunctionsTaskDefinitionF34D0EB6": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "printf 'kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v17.0.0
+  tables:
+    - aws_lambda_functions
+  destinations:
+    - postgresql
+  spec:
+    regions:
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
+' > /source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: github
+  path: cloudquery/postgresql
+  version: v4.1.0
+  migrate_mode: forced
+  spec:
+    connection_string: >-
+      user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=disable
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/cloudquery/cloudquery:3.3.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "AwsLambdaFunctionsContainer",
+            "Secrets": [
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "DatabaseSecretAttachmentE5D1B020",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "DatabaseSecretAttachmentE5D1B020",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "playground",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "TEST",
+              },
+              {
+                "Name": "APP",
+                "Value": "cloudquery",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Options": {
+                "config-file-type": "file",
+                "config-file-value": "/custom.conf",
+                "enable-ecs-log-metadata": "true",
+              },
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "AwsLambdaFunctionsTaskDefinitionAwsLambdaFunctionsFirelensLogGroup65921DD8",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "playground/TEST/cloudquery",
+              },
+            },
+            "Name": "AwsLambdaFunctionsFirelens",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "AwsLambdaFunctionsTaskDefinitionExecutionRole3747334D",
+            "Arn",
+          ],
+        },
+        "Family": "CloudqueryAwsLambdaFunctionsTaskDefinition4422FDBF",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "AwsLambdaFunctionsTaskDefinitionTaskRole67093AA0",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "AwsLambdaFunctionsTaskDefinitionTaskRole67093AA0": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/ReadOnlyAccess",
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AwsLambdaFunctionsTaskDefinitionTaskRoleDefaultPolicy9607F105": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "cloudformation:GetTemplate",
+                "dynamodb:GetItem",
+                "dynamodb:BatchGetItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "ec2:GetConsoleOutput",
+                "ec2:GetConsoleScreenshot",
+                "ecr:BatchGetImage",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "kinesis:Get*",
+                "lambda:GetFunction",
+                "logs:GetLogEvents",
+                "sdb:Select*",
+                "sqs:ReceiveMessage",
+              ],
+              "Effect": "Deny",
+              "Resource": "*",
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "DatabaseB269D8BB",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "DatabaseSecretAttachmentE5D1B020",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AwsLambdaFunctionsTaskDefinitionTaskRoleDefaultPolicy9607F105",
+        "Roles": [
+          {
+            "Ref": "AwsLambdaFunctionsTaskDefinitionTaskRole67093AA0",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "AwsS3BucketsScheduledEventRule02814C4A": {
+      "Properties": {
+        "ScheduleExpression": "rate(1 day)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "cloudqueryCluster5370C11B",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "DbAccessCloudqueryFD49EBA5",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "AwsS3BucketsTaskDefinition5276292D",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "AwsS3BucketsTaskDefinitionEventsRole05F2A462",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "AwsS3BucketsTaskDefinition5276292D": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "printf 'kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v17.0.0
+  tables:
+    - aws_s3_buckets
+  destinations:
+    - postgresql
+  spec:
+    regions:
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
+' > /source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: github
+  path: cloudquery/postgresql
+  version: v4.1.0
+  migrate_mode: forced
+  spec:
+    connection_string: >-
+      user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=disable
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/cloudquery/cloudquery:3.3.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "AwsS3BucketsContainer",
+            "Secrets": [
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "DatabaseSecretAttachmentE5D1B020",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "DatabaseSecretAttachmentE5D1B020",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "playground",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "TEST",
+              },
+              {
+                "Name": "APP",
+                "Value": "cloudquery",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Options": {
+                "config-file-type": "file",
+                "config-file-value": "/custom.conf",
+                "enable-ecs-log-metadata": "true",
+              },
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "AwsS3BucketsTaskDefinitionAwsS3BucketsFirelensLogGroupE4F96A7B",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "playground/TEST/cloudquery",
+              },
+            },
+            "Name": "AwsS3BucketsFirelens",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "AwsS3BucketsTaskDefinitionExecutionRole0C174AC3",
+            "Arn",
+          ],
+        },
+        "Family": "CloudqueryAwsS3BucketsTaskDefinition37568122",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "AwsS3BucketsTaskDefinitionTaskRole106CBDE5",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "AwsS3BucketsTaskDefinitionAwsS3BucketsFirelensLogGroupE4F96A7B": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "AwsS3BucketsTaskDefinitionEventsRole05F2A462": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AwsS3BucketsTaskDefinitionEventsRoleDefaultPolicy645EFA48": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "cloudqueryCluster5370C11B",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "AwsS3BucketsTaskDefinition5276292D",
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AwsS3BucketsTaskDefinitionExecutionRole0C174AC3",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AwsS3BucketsTaskDefinitionTaskRole106CBDE5",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AwsS3BucketsTaskDefinitionEventsRoleDefaultPolicy645EFA48",
+        "Roles": [
+          {
+            "Ref": "AwsS3BucketsTaskDefinitionEventsRole05F2A462",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "AwsS3BucketsTaskDefinitionExecutionRole0C174AC3": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AwsS3BucketsTaskDefinitionExecutionRoleDefaultPolicy8D029915": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "DatabaseSecretAttachmentE5D1B020",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AwsS3BucketsTaskDefinitionAwsS3BucketsFirelensLogGroupE4F96A7B",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AwsS3BucketsTaskDefinitionExecutionRoleDefaultPolicy8D029915",
+        "Roles": [
+          {
+            "Ref": "AwsS3BucketsTaskDefinitionExecutionRole0C174AC3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "AwsS3BucketsTaskDefinitionTaskRole106CBDE5": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/ReadOnlyAccess",
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "playground",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AwsS3BucketsTaskDefinitionTaskRoleDefaultPolicyC5C18703": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "cloudformation:GetTemplate",
+                "dynamodb:GetItem",
+                "dynamodb:BatchGetItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "ec2:GetConsoleOutput",
+                "ec2:GetConsoleScreenshot",
+                "ecr:BatchGetImage",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "kinesis:Get*",
+                "lambda:GetFunction",
+                "logs:GetLogEvents",
+                "sdb:Select*",
+                "sqs:ReceiveMessage",
+              ],
+              "Effect": "Deny",
+              "Resource": "*",
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "DatabaseB269D8BB",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "DatabaseSecretAttachmentE5D1B020",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AwsS3BucketsTaskDefinitionTaskRoleDefaultPolicyC5C18703",
+        "Roles": [
+          {
+            "Ref": "AwsS3BucketsTaskDefinitionTaskRole106CBDE5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "DatabaseB269D8BB": {
       "DeletionPolicy": "Snapshot",
       "Properties": {
@@ -287,562 +1399,6 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
-    },
-    "ScheduledTaskScheduledEventRule2EB8ABE4": {
-      "Properties": {
-        "ScheduleExpression": "rate(1 day)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
-                "Arn",
-              ],
-            },
-            "EcsParameters": {
-              "LaunchType": "FARGATE",
-              "NetworkConfiguration": {
-                "AwsVpcConfiguration": {
-                  "AssignPublicIp": "DISABLED",
-                  "SecurityGroups": [
-                    {
-                      "Fn::GetAtt": [
-                        "DbAccessCloudqueryFD49EBA5",
-                        "GroupId",
-                      ],
-                    },
-                  ],
-                  "Subnets": {
-                    "Ref": "PrivateSubnets",
-                  },
-                },
-              },
-              "TaskCount": 1,
-              "TaskDefinitionArn": {
-                "Ref": "TaskDefinitionB36D86D9",
-              },
-            },
-            "Id": "Target0",
-            "Input": "{}",
-            "RoleArn": {
-              "Fn::GetAtt": [
-                "TaskDefinitionEventsRole1DC90F44",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "TaskDefinitionB36D86D9": {
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Command": [
-              "/bin/sh",
-              "-c",
-              "printf 'kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v17.0.0
-  tables:
-    - aws_s3_buckets
-  destinations:
-    - postgresql
-  spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
-' > /source.yaml;printf 'kind: destination
-spec:
-  name: postgresql
-  registry: github
-  path: cloudquery/postgresql
-  version: v4.1.0
-  migrate_mode: forced
-  spec:
-    connection_string: >-
-      user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-      dbname=postgres sslmode=disable
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.3.1",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": "eu-west-1",
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "Name": "CloudQuery",
-            "Secrets": [
-              {
-                "Name": "DB_HOST",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "DatabaseSecretAttachmentE5D1B020",
-                      },
-                      ":host::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "DB_PASSWORD",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "DatabaseSecretAttachmentE5D1B020",
-                      },
-                      ":password::",
-                    ],
-                  ],
-                },
-              },
-            ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "playground",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "TEST",
-              },
-              {
-                "Name": "APP",
-                "Value": "cloudquery",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "TaskDefinitionfirelensLogGroupCC3D07D9",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "playground/TEST/cloudquery",
-              },
-            },
-            "Name": "firelens",
-          },
-        ],
-        "Cpu": "256",
-        "ExecutionRoleArn": {
-          "Fn::GetAtt": [
-            "TaskDefinitionExecutionRole8D61C2FB",
-            "Arn",
-          ],
-        },
-        "Family": "CloudqueryTaskDefinitionBA948726",
-        "Memory": "512",
-        "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": [
-          "FARGATE",
-        ],
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cloudquery",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "playground",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "TaskRoleArn": {
-          "Fn::GetAtt": [
-            "TaskDefinitionTaskRoleFD40A61D",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "TaskDefinitionEventsRole1DC90F44": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cloudquery",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "playground",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TaskDefinitionEventsRoleDefaultPolicyD432DADD": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "TaskDefinitionB36D86D9",
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "TaskDefinitionExecutionRole8D61C2FB",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "TaskDefinitionTaskRoleFD40A61D",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "TaskDefinitionEventsRoleDefaultPolicyD432DADD",
-        "Roles": [
-          {
-            "Ref": "TaskDefinitionEventsRole1DC90F44",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TaskDefinitionExecutionRole8D61C2FB": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cloudquery",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "playground",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TaskDefinitionExecutionRoleDefaultPolicy1F3406F5": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "DatabaseSecretAttachmentE5D1B020",
-              },
-            },
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "TaskDefinitionfirelensLogGroupCC3D07D9",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "TaskDefinitionExecutionRoleDefaultPolicy1F3406F5",
-        "Roles": [
-          {
-            "Ref": "TaskDefinitionExecutionRole8D61C2FB",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TaskDefinitionTaskRoleDefaultPolicy282E8624": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kinesis:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "cloudformation:GetTemplate",
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
-              "Action": "rds-db:connect",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":rds-db:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":dbuser:",
-                    {
-                      "Fn::GetAtt": [
-                        "DatabaseB269D8BB",
-                        "DbiResourceId",
-                      ],
-                    },
-                    "/{{resolve:secretsmanager:",
-                    {
-                      "Ref": "DatabaseSecretAttachmentE5D1B020",
-                    },
-                    ":SecretString:username::}}",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "TaskDefinitionTaskRoleDefaultPolicy282E8624",
-        "Roles": [
-          {
-            "Ref": "TaskDefinitionTaskRoleFD40A61D",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "TaskDefinitionTaskRoleFD40A61D": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cloudquery",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "playground",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "TaskDefinitionfirelensLogGroupCC3D07D9": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "cloudquery",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "playground",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
     },
     "cloudqueryCluster5370C11B": {
       "Properties": {

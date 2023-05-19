@@ -46,6 +46,7 @@ export function awsSourceConfig(tables: string[]) {
 					'ap-southeast-2',
 					'ca-central-1',
 				],
+				// TODO add these once running in the deployTools account
 				// org: {
 				// 	// See: https://github.com/guardian/aws-account-setup/pull/58
 				// 	member_role_name: 'cloudquery-access',
