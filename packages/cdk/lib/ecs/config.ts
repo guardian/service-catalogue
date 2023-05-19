@@ -30,7 +30,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 					'host=${DB_HOST}',
 					'port=5432',
 					'dbname=postgres',
-					'sslmode=disable',
+					'sslmode=verify-full',
 				].join(' '),
 			},
 		},

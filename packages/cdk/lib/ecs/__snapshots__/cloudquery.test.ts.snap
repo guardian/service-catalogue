@@ -84,7 +84,7 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -112,7 +112,7 @@ spec:
   spec:
     connection_string: >-
       user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-      dbname=postgres sslmode=disable
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "EntryPoint": [
@@ -640,7 +640,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -668,7 +668,7 @@ spec:
   spec:
     connection_string: >-
       user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-      dbname=postgres sslmode=disable
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "EntryPoint": [
@@ -1226,7 +1226,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -1257,7 +1257,7 @@ spec:
   spec:
     connection_string: >-
       user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-      dbname=postgres sslmode=disable
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "EntryPoint": [

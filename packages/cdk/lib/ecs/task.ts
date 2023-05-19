@@ -110,6 +110,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
+					'wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates',
 					`printf '${dump(sourceConfig)}' > /source.yaml`,
 					`printf '${dump(destinationConfig)}' > /destination.yaml`,
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',

@@ -20,7 +20,7 @@ describe('Config generation, and converting to YAML', () => {
 		  spec:
 		    connection_string: >-
 		      user=postgres password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-		      dbname=postgres sslmode=disable
+		      dbname=postgres sslmode=verify-full
 		"
 	`);
 	});
