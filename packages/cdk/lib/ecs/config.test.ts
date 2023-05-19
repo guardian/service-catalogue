@@ -40,10 +40,6 @@ describe('Config generation', () => {
 		      - us-west-1
 		      - ap-southeast-2
 		      - ca-central-1
-		    org:
-		      member_role_name: cloudquery-access
-		      organization_units:
-		        - ou-123
 		"
 	`);
 	});

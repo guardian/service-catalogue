@@ -1,4 +1,3 @@
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import { dump } from 'js-yaml';
 import { Versions } from './versions';
 
@@ -47,11 +46,11 @@ export function awsSourceConfig(tables: string[]) {
 					'ap-southeast-2',
 					'ca-central-1',
 				],
-				org: {
-					// See: https://github.com/guardian/aws-account-setup/pull/58
-					member_role_name: 'cloudquery-access',
-					organization_units: [GuardianOrganisationalUnits.Root],
-				},
+				// org: {
+				// 	// See: https://github.com/guardian/aws-account-setup/pull/58
+				// 	member_role_name: 'cloudquery-access',
+				// 	organization_units: [GuardianOrganisationalUnits.Root],
+				// },
 			},
 		},
 	};
