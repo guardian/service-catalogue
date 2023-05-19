@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuLoggingStreamNameParameter,
@@ -10,7 +8,6 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import {
@@ -34,6 +31,7 @@ import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
+import { awsSourceConfig, destinationConfig } from './config';
 
 const cloudqueryImage = ContainerImage.fromRegistry(
 	'ghcr.io/cloudquery/cloudquery:3.3.1',
@@ -108,15 +106,8 @@ export class Cloudquery extends GuStack {
 
 		const task = new FargateTaskDefinition(this, 'TaskDefinition');
 
-		const config = fs.readFileSync(path.join(__dirname, 'config.yaml'), {
-			encoding: 'utf-8',
-		});
-
 		task.addContainer(`CloudQuery`, {
 			image: cloudqueryImage,
-			environment: {
-				TARGET_ORG_UNIT: GuardianOrganisationalUnits.Root,
-			},
 			secrets: {
 				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
 				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
@@ -126,8 +117,9 @@ export class Cloudquery extends GuStack {
 				'/bin/sh',
 				'-c',
 				[
-					`printf '${config}' > /config.yaml`,
-					'/app/cloudquery sync /config.yaml --log-format json --log-console',
+					`printf '${awsSourceConfig(['aws_s3_buckets'])}' > /source.yaml`,
+					`printf '${destinationConfig()}' > /destination.yaml`,
+					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),
 			],
 			logging: new FireLensLogDriver({
