@@ -25,7 +25,7 @@ export function destinationConfig() {
 	return dump(config);
 }
 
-export function awsSourceConfig(tables: string[]) {
+export function awsSourceConfig(tables?: string[], skipTables?: string[]) {
 	const config = {
 		kind: 'source',
 		spec: {
@@ -33,6 +33,7 @@ export function awsSourceConfig(tables: string[]) {
 			path: 'cloudquery/aws',
 			version: `v${Versions.CloudqueryAws}`,
 			tables,
+			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			spec: {
 				regions: [

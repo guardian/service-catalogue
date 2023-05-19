@@ -29,16 +29,53 @@ const firelensImage = ContainerImage.fromRegistry(
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
+	/**
+	 * THe Postgres database for CloudQuery to connect to.
+	 */
 	db: DatabaseInstance;
-	cluster: Cluster;
+
+	/**
+	 * The security group to allow CloudQuery to connect to the database.
+	 */
 	dbAccess: GuSecurityGroup;
-	tables: string[];
-	managedPolicies: IManagedPolicy[];
-	policies: PolicyStatement[];
+
+	/**
+	 * The ECS cluster to run the task in.
+	 */
+	cluster: Cluster;
+
+	/**
+	 * The name of the Kinesis stream to send logs to.
+	 */
 	loggingStreamName: string;
+
+	/**
+	 * The IAM managed policies to attach to the task.
+	 */
+	managedPolicies: IManagedPolicy[];
+
+	/**
+	 * The IAM policies to attach to the task.
+	 */
+	policies: PolicyStatement[];
+
+	/**
+	 * The tables to include in the CloudQuery scan.
+	 *
+	 * Either tables or skipTables must be provided.
+	 */
+	tables?: string[];
+
+	/**
+	 * The tables to skip in the CloudQuery scan.
+	 *
+	 * Either skipTables or tables must be provided.
+	 */
+	skipTables?: string[];
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
+	public readonly tables?: string[];
 	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
 		const {
 			db,
@@ -46,6 +83,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			app,
 			dbAccess,
 			tables,
+			skipTables,
 			schedule,
 			managedPolicies,
 			policies,
@@ -57,6 +95,10 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		// TODO remove once IAM Auth is working
 		if (!db.secret) {
 			throw new Error('DB Secret is missing');
+		}
+
+		if (!tables && !skipTables) {
+			throw new Error('Either tables or skipTables must be provided');
 		}
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`);
@@ -72,7 +114,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					`printf '${awsSourceConfig(tables)}' > /source.yaml`,
+					`printf '${awsSourceConfig(tables, skipTables)}' > /source.yaml`,
 					`printf '${destinationConfig()}' > /destination.yaml`,
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),
@@ -123,5 +165,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			securityGroups: [dbAccess],
 		});
+
+		this.tables = tables;
 	}
 }

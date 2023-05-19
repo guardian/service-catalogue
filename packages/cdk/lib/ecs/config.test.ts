@@ -43,4 +43,31 @@ describe('Config generation', () => {
 		"
 	`);
 	});
+
+	it('Should create an AWS source configuration with skipped tables', () => {
+		const config = awsSourceConfig(['*'], ['aws_s3_buckets']);
+		expect(config).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: aws
+		  path: cloudquery/aws
+		  version: v17.0.0
+		  tables:
+		    - '*'
+		  skip_tables:
+		    - aws_s3_buckets
+		  destinations:
+		    - postgresql
+		  spec:
+		    regions:
+		      - eu-west-1
+		      - eu-west-2
+		      - us-east-1
+		      - us-east-2
+		      - us-west-1
+		      - ap-southeast-2
+		      - ca-central-1
+		"
+	`);
+	});
 });
