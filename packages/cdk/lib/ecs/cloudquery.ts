@@ -32,9 +32,10 @@ import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { awsSourceConfig, destinationConfig } from './config';
+import { Versions } from './versions';
 
 const cloudqueryImage = ContainerImage.fromRegistry(
-	'ghcr.io/cloudquery/cloudquery:3.3.1',
+	`ghcr.io/cloudquery/cloudquery:${Versions.CloudqueryCli}`,
 );
 
 const firelensImage = ContainerImage.fromRegistry(

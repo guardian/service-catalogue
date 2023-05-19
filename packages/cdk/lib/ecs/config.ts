@@ -1,5 +1,6 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import { dump } from 'js-yaml';
+import { Versions } from './versions';
 
 export function destinationConfig() {
 	const config = {
@@ -8,7 +9,7 @@ export function destinationConfig() {
 			name: 'postgresql',
 			registry: 'github',
 			path: 'cloudquery/postgresql',
-			version: 'v4.1.0',
+			version: `v${Versions.CloudqueryPostgres}`,
 			migrate_mode: 'forced',
 			spec: {
 				connection_string: [
@@ -31,7 +32,7 @@ export function awsSourceConfig(tables: string[]) {
 		spec: {
 			name: 'aws',
 			path: 'cloudquery/aws',
-			version: 'v17.0.0',
+			version: `v${Versions.CloudqueryAws}`,
 			tables,
 			destinations: ['postgresql'],
 			spec: {
