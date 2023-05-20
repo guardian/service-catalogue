@@ -13,9 +13,12 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import {
+	GuardianAwsAccounts,
+	GuardianOrganisationalUnits,
+} from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { Tags } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -23,6 +26,7 @@ import {
 	Port,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
+import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
@@ -273,6 +277,32 @@ export class CloudQuery extends GuStack {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
+			customRateTables: [
+				{
+					schedule: Schedule.rate(Duration.hours(2)),
+					tables: ['aws_s3_buckets'],
+				},
+				{
+					schedule: Schedule.rate(Duration.minutes(30)),
+					tables: ['aws_lambda_functions'],
+				},
+				{
+					// This data doesn't change often, so we can afford to run it less frequently (the 1st of each month).
+					// Only the Deploy Tools account can access this data, so only run it there,
+					// else the logs will contain access denied messages.
+					schedule: Schedule.cron({ day: '1' }),
+					tables: [
+						'aws_organizations',
+						'aws_organizations_accounts',
+						'aws_organizations_delegated_services',
+						'aws_organizations_delegated_administrators',
+						'aws_organizations_organizational_units',
+						'aws_organizations_policies',
+						'aws_organizations_roots',
+					],
+					awsAccountNumber: GuardianAwsAccounts.DeployTools,
+				},
+			],
 		});
 	}
 }

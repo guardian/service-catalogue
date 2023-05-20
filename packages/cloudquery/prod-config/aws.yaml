@@ -39,6 +39,17 @@ spec:
     - aws_xray_sampling_rules
     - aws_xray_resource_policies
     - aws_xray_groups
+
+    # These tables are being collected by the ECS infrastructure
+    - aws_s3_buckets
+    - aws_lambda_functions
+    - aws_organizations
+    - aws_organizations_accounts
+    - aws_organizations_delegated_services
+    - aws_organizations_delegated_administrators
+    - aws_organizations_organizational_units
+    - aws_organizations_policies
+    - aws_organizations_roots
   concurrency: 100000 # this is expected to work with a t4g.medium and our current sources but not optimised. Will adjust once live.
   spec:
     regions:

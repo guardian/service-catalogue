@@ -7,32 +7,58 @@ import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { awsSourceConfigForOrganisation } from './config';
+import {
+	awsSourceConfigForAccount,
+	awsSourceConfigForOrganisation,
+} from './config';
 import { ScheduledCloudqueryTask } from './task';
 
-interface CloudqueryClusterProps extends AppIdentity {
-	vpc: IVpc;
-	db: DatabaseInstance;
-	dbAccess: GuSecurityGroup;
-}
-
 interface CustomRateTable {
+	/**
+	 * The rate at which to collect data.
+	 */
 	schedule: Schedule;
+
+	/**
+	 * Which tables from the CLoudQuery source to collect data.
+	 */
 	tables: string[];
+
+	/**
+	 * The AWS account to collect data from.
+	 */
+	awsAccountNumber?: string;
 }
 
-// Collect these tables at a frequency other than once a day
-const customRateTables: CustomRateTable[] = [
-	{
-		schedule: Schedule.rate(Duration.hours(2)),
-		tables: ['aws_s3_buckets'],
-	},
-	{
-		schedule: Schedule.rate(Duration.minutes(30)),
-		tables: ['aws_lambda_functions'],
-	},
-];
+interface CloudqueryClusterProps extends AppIdentity {
+	/**
+	 * The VPC to create the cluster in.
+	 */
+	vpc: IVpc;
 
+	/**
+	 * The database for CloudQuery to write to.
+	 */
+	db: DatabaseInstance;
+
+	/**
+	 * The security group that provides access to the database.
+	 */
+	dbAccess: GuSecurityGroup;
+
+	/**
+	 * Which tables to collect at a frequency other than once a day.
+	 */
+	customRateTables: CustomRateTable[];
+}
+
+/**
+ * An ECS cluster for running CloudQuery.
+ * The cluster and its tasks will be created in the private subnets of the VPC provided.
+ *
+ * By default, CloudQuery will collect data from all tables once a day.
+ * Customise this with the `customRateTables` prop.
+ */
 export class CloudqueryCluster extends Cluster {
 	constructor(scope: GuStack, id: string, props: CloudqueryClusterProps) {
 		super(scope, id, {
@@ -40,7 +66,7 @@ export class CloudqueryCluster extends Cluster {
 			enableFargateCapacityProviders: true,
 		});
 
-		const { app, db, dbAccess } = props;
+		const { app, db, dbAccess, customRateTables } = props;
 
 		const loggingStreamName =
 			GuLoggingStreamNameParameter.getInstance(scope).valueAsString;
@@ -113,15 +139,19 @@ export class CloudqueryCluster extends Cluster {
 			loggingStreamName,
 		};
 
-		customRateTables.forEach(({ schedule, tables }, index) => {
-			new ScheduledCloudqueryTask(scope, `AwsCustomRate${index}`, {
-				...coreTaskProps,
-				schedule,
-				sourceConfig: awsSourceConfigForOrganisation({
-					tables,
-				}),
-			});
-		});
+		customRateTables.forEach(
+			({ schedule, tables, awsAccountNumber }, index) => {
+				new ScheduledCloudqueryTask(scope, `AwsCustomRate${index}`, {
+					...coreTaskProps,
+					schedule,
+					sourceConfig: awsAccountNumber
+						? awsSourceConfigForAccount(awsAccountNumber, { tables })
+						: awsSourceConfigForOrganisation({
+								tables,
+						  }),
+				});
+			},
+		);
 
 		// Collect every other table once a day
 		new ScheduledCloudqueryTask(scope, 'AwsOther', {
