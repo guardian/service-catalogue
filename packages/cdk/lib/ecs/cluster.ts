@@ -161,6 +161,10 @@ export class CloudqueryCluster extends Cluster {
 				tables: ['*'],
 				skipTables: customRateTables.flatMap((_) => _.tables),
 			}),
+
+			// Disabled whilst we have the EC2 infrastructure collecting the data, else it's duplicated.
+			// TODO remove this once we have migrated
+			enabled: false,
 		});
 	}
 }

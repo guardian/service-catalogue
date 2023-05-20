@@ -2321,7 +2321,7 @@ spec:
     "AwsOtherScheduledEventRule796471DE": {
       "Properties": {
         "ScheduleExpression": "rate(1 day)",
-        "State": "ENABLED",
+        "State": "DISABLED",
         "Targets": [
           {
             "Arn": {

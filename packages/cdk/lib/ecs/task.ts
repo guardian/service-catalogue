@@ -92,6 +92,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			loggingStreamName,
 			sourceConfig,
 			destinationConfig = postgresDestinationConfig(),
+			enabled,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -195,6 +196,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				taskDefinition: task,
 			},
 			securityGroups: [dbAccess],
+			enabled,
 		});
 
 		this.sourceConfig = sourceConfig;
