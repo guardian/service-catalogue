@@ -5,8 +5,7 @@
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
     "typecheck": "tsc -noEmit",
     "cdk": "cdk",
-    "synth": "cdk synth --path-metadata false --version-reporting false",
-    "deploy:cloudquery-ecs": "AWS_PROFILE=developerPlayground cdk deploy --path-metadata false --version-reporting false Cloudquery"
+    "synth": "cdk synth --path-metadata false --version-reporting false"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
