@@ -32,6 +32,7 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { CloudqueryCluster } from './ecs/cluster';
 
 const CloudQueryManifest = {
 	/**
@@ -266,5 +267,12 @@ export class CloudQuery extends GuStack {
 				actions: ['organizations:List*'],
 			}),
 		);
+
+		new CloudqueryCluster(this, `${app}Cluster`, {
+			app,
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+		});
 	}
 }

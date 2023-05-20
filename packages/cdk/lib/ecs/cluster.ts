@@ -7,7 +7,7 @@ import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { awsSourceConfig } from './config';
+import { awsSourceConfigForOrganisation } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -90,18 +90,17 @@ export class CloudqueryCluster extends Cluster {
 				],
 			}),
 
-			// TODO add these once running in the deployTools account
-			// new PolicyStatement({
-			// 	effect: Effect.ALLOW,
-			// 	resources: ['arn:aws:iam::*:role/cloudquery-access'],
-			// 	actions: ['sts:AssumeRole'],
-			// }),
-			//
-			// new PolicyStatement({
-			// 	effect: Effect.ALLOW,
-			// 	resources: ['*'],
-			// 	actions: ['organizations:List*'],
-			// }),
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: ['arn:aws:iam::*:role/cloudquery-access'],
+				actions: ['sts:AssumeRole'],
+			}),
+
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				resources: ['*'],
+				actions: ['organizations:List*'],
+			}),
 		];
 
 		const coreTaskProps = {
@@ -118,7 +117,7 @@ export class CloudqueryCluster extends Cluster {
 			new ScheduledCloudqueryTask(scope, `AwsCustomRate${index}`, {
 				...coreTaskProps,
 				schedule,
-				sourceConfig: awsSourceConfig({
+				sourceConfig: awsSourceConfigForOrganisation({
 					tables,
 				}),
 			});
@@ -128,7 +127,7 @@ export class CloudqueryCluster extends Cluster {
 		new ScheduledCloudqueryTask(scope, 'AwsOther', {
 			...coreTaskProps,
 			schedule: Schedule.rate(Duration.days(1)),
-			sourceConfig: awsSourceConfig({
+			sourceConfig: awsSourceConfigForOrganisation({
 				tables: ['*'],
 				skipTables: customRateTables.flatMap((_) => _.tables),
 			}),
