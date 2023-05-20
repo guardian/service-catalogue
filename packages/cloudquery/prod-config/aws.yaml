@@ -50,6 +50,9 @@ spec:
     - aws_organizations_organizational_units
     - aws_organizations_policies
     - aws_organizations_roots
+    - aws_accessanalyzer_analyzers
+    - aws_accessanalyzer_analyzer_archive_rules
+    - aws_accessanalyzer_analyzer_findings
   concurrency: 100000 # this is expected to work with a t4g.medium and our current sources but not optimised. Will adjust once live.
   spec:
     regions:

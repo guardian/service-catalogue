@@ -312,6 +312,17 @@ export class CloudQuery extends GuStack {
 					],
 					awsAccountNumber: GuardianAwsAccounts.DeployTools,
 				},
+				{
+					// The Security account is configured to collect Access Analyzer data for the organization,
+					// so no need to collect it from each individual account.
+					schedule: Schedule.rate(Duration.hours(4)), // TODO what rate does Access Analyzer update at?
+					tables: [
+						'aws_accessanalyzer_analyzers',
+						'aws_accessanalyzer_analyzer_archive_rules',
+						'aws_accessanalyzer_analyzer_findings',
+					],
+					awsAccountNumber: GuardianAwsAccounts.Security,
+				},
 			],
 		});
 	}
