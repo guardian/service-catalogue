@@ -24,14 +24,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			version: `v${Versions.CloudqueryPostgres}`,
 			migrate_mode: 'forced',
 			spec: {
-				connection_string: [
-					'user=postgres',
-					'password=${DB_PASSWORD}',
-					'host=${DB_HOST}',
-					'port=5432',
-					'dbname=postgres',
-					'sslmode=verify-full',
-				].join(' '),
+				connection_string: '${file:/var/scratch/connection_string}',
 			},
 		},
 	};

@@ -2,13 +2,13 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
+	ContainerDependencyCondition,
 	ContainerImage,
 	FargateTaskDefinition,
 	FirelensConfigFileType,
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDrivers,
-	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
@@ -19,6 +19,10 @@ import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
 import { Versions } from './versions';
+
+const awsCliImage = ContainerImage.fromRegistry(
+	'public.ecr.aws/aws-cli/aws-cli',
+);
 
 const cloudqueryImage = ContainerImage.fromRegistry(
 	`ghcr.io/cloudquery/cloudquery:${Versions.CloudqueryCli}`,
@@ -92,19 +96,30 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
 
-		// TODO remove once IAM Auth is working
-		if (!db.secret) {
-			throw new Error('DB Secret is missing');
-		}
-
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`);
 
-		task.addContainer(`${id}Container`, {
-			image: cloudqueryImage,
-			secrets: {
-				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
-				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+		const dbUser = 'cloudquery';
+
+		// This container is used to generate the DB auth token, storing it on a volume that's shared with the CloudQuery container
+		const dbAuth = task.addContainer(`${id}AwsCli`, {
+			image: awsCliImage,
+			environment: {
+				DB_HOST: db.dbInstanceEndpointAddress,
 			},
+			entryPoint: [''],
+			command: [
+				'/bin/bash',
+				'-c',
+				[
+					`PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username ${dbUser})`,
+					`echo "user=${dbUser} password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string`,
+				].join(';'),
+			],
+			essential: false,
+		});
+
+		const worker = task.addContainer(`${id}Container`, {
+			image: cloudqueryImage,
 			entryPoint: [''],
 			command: [
 				'/bin/sh',
@@ -124,6 +139,25 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					retry_limit: '2',
 				},
 			}),
+		});
+
+		task.addVolume({ name: 'scratch', host: {} });
+		dbAuth.addMountPoints({
+			containerPath: '/var/scratch',
+			sourceVolume: 'scratch',
+			readOnly: false,
+		});
+		worker.addMountPoints({
+			containerPath: '/var/scratch',
+			sourceVolume: 'scratch',
+			readOnly: true,
+		});
+
+		worker.addContainerDependencies({
+			container: dbAuth,
+
+			// Only start the worker once the DB auth token has been generated
+			condition: ContainerDependencyCondition.SUCCESS,
 		});
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
@@ -150,7 +184,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
-		db.grantConnect(task.taskRole);
+		db.grantConnect(task.taskRole, dbUser);
 
 		super(scope, id, {
 			schedule,
