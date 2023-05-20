@@ -61,10 +61,20 @@ export class CloudQuery extends GuStack {
 		const { stage, stack } = this;
 		const app = props.app ?? 'cloudquery';
 
-		const vpc = GuVpc.fromIdParameter(this, 'vpc');
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
-			app,
+		});
+
+		const vpc = GuVpc.fromIdParameter(this, 'vpc', {
+			/*
+			CDK wants privateSubnetIds to be a multiple of availabilityZones.
+			We're pulling the subnets from a parameter at runtime.
+			We know they evaluate to 3 subnets, but at compile time CDK doesn't.
+			Set the number of AZs to 1 to avoid the error:
+			  `Error: Number of privateSubnetIds (1) must be a multiple of availability zones (2).`
+			 */
+			availabilityZones: ['ignored'],
+			privateSubnetIds: privateSubnets.map((subnet) => subnet.subnetId),
 		});
 
 		const port = 5432;

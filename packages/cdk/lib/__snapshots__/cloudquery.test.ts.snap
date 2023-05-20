@@ -4,8 +4,8 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
-      "GuVpcParameter",
       "GuSubnetListParameter",
+      "GuVpcParameter",
       "GuSecurityGroup",
       "GuDistributionBucketParameter",
       "GuAmiParameter",
@@ -36,15 +36,15 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "PrivateSubnets": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
+    },
     "VpcId": {
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
-    },
-    "cloudqueryPrivateSubnets": {
-      "Default": "/account/vpc/primary/subnets/private",
-      "Description": "A list of private subnets",
-      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
   },
   "Resources": {
@@ -73,7 +73,9 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                       ],
                     },
                   ],
-                  "Subnets": [],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
                 },
               },
               "TaskCount": 1,
@@ -637,7 +639,9 @@ spec:
                       ],
                     },
                   ],
-                  "Subnets": [],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
                 },
               },
               "TaskCount": 1,
@@ -1201,7 +1205,9 @@ spec:
                       ],
                     },
                   ],
-                  "Subnets": [],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
                 },
               },
               "TaskCount": 1,
@@ -1770,7 +1776,9 @@ spec:
                       ],
                     },
                   ],
-                  "Subnets": [],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
                 },
               },
               "TaskCount": 1,
@@ -2912,7 +2920,7 @@ spec:
       "Properties": {
         "DBSubnetGroupDescription": "Subnet group for PostgresInstance1 database",
         "SubnetIds": {
-          "Ref": "cloudqueryPrivateSubnets",
+          "Ref": "PrivateSubnets",
         },
         "Tags": [
           {
@@ -3054,7 +3062,7 @@ spec:
           },
         ],
         "VPCZoneIdentifier": {
-          "Ref": "cloudqueryPrivateSubnets",
+          "Ref": "PrivateSubnets",
         },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
