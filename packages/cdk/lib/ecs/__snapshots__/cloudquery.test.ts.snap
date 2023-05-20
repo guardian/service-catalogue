@@ -4,10 +4,10 @@ exports[`The Cloudquery stack matches the snapshot 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
-      "GuLoggingStreamNameParameter",
       "GuSubnetListParameter",
       "GuVpcParameter",
       "GuSecurityGroup",
+      "GuLoggingStreamNameParameter",
     ],
     "gu:cdk:version": "TEST",
   },

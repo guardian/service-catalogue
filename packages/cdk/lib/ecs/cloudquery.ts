@@ -1,27 +1,20 @@
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import {
-	GuLoggingStreamNameParameter,
-	GuStack,
-} from '@guardian/cdk/lib/constructs/core';
+import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuSecurityGroup,
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import type { App } from 'aws-cdk-lib';
-import { Duration, Tags } from 'aws-cdk-lib';
+import { Tags } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
-import { Cluster } from 'aws-cdk-lib/aws-ecs';
-import { Schedule } from 'aws-cdk-lib/aws-events';
-import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
-import { awsSourceConfig } from './config';
-import { ScheduledCloudqueryTask } from './task';
+import { CloudqueryCluster } from './cluster';
 
 export class Cloudquery extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
@@ -29,14 +22,6 @@ export class Cloudquery extends GuStack {
 
 		const app = this.constructor.name.toLowerCase();
 		Tags.of(this).add('App', app);
-
-		const loggingStreamName =
-			GuLoggingStreamNameParameter.getInstance(this).valueAsString;
-		const loggingStreamArn = this.formatArn({
-			service: 'kinesis',
-			resource: 'stream',
-			resourceName: loggingStreamName,
-		});
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
@@ -73,110 +58,6 @@ export class Cloudquery extends GuStack {
 		});
 		db.connections.allowFrom(dbAccess, Port.tcp(dbPort));
 
-		const cluster = new Cluster(this, `${app}Cluster`, {
-			vpc,
-			enableFargateCapacityProviders: true,
-		});
-
-		const managedPolicies = [
-			ManagedPolicy.fromManagedPolicyArn(
-				this,
-				'readonly-policy',
-				'arn:aws:iam::aws:policy/ReadOnlyAccess',
-			),
-		];
-
-		const policies = [
-			// Log shipping
-			new PolicyStatement({
-				actions: ['kinesis:Describe*', 'kinesis:Put*'],
-				effect: Effect.ALLOW,
-				resources: [loggingStreamArn],
-			}),
-
-			// See https://github.com/cloudquery/iam-for-aws-orgs/ and
-			// https://github.com/cloudquery/iam-for-aws-orgs/blob/d44ffe5509ba8a6c84c31dcc1dac7f475a5099e3/template.yml#L95.
-			new PolicyStatement({
-				effect: Effect.DENY,
-				resources: ['*'],
-				actions: [
-					'cloudformation:GetTemplate',
-					'dynamodb:GetItem',
-					'dynamodb:BatchGetItem',
-					'dynamodb:Query',
-					'dynamodb:Scan',
-					'ec2:GetConsoleOutput',
-					'ec2:GetConsoleScreenshot',
-					'ecr:BatchGetImage',
-					'ecr:GetAuthorizationToken',
-					'ecr:GetDownloadUrlForLayer',
-					'kinesis:Get*',
-					'lambda:GetFunction',
-					'logs:GetLogEvents',
-					'sdb:Select*',
-					'sqs:ReceiveMessage',
-				],
-			}),
-
-			// TODO add these once running in the deployTools account
-			// new PolicyStatement({
-			// 	effect: Effect.ALLOW,
-			// 	resources: ['arn:aws:iam::*:role/cloudquery-access'],
-			// 	actions: ['sts:AssumeRole'],
-			// }),
-			//
-			// new PolicyStatement({
-			// 	effect: Effect.ALLOW,
-			// 	resources: ['*'],
-			// 	actions: ['organizations:List*'],
-			// }),
-		];
-
-		const coreTaskProps = {
-			app,
-			cluster,
-			db,
-			dbAccess,
-			managedPolicies,
-			policies,
-			loggingStreamName,
-		};
-
-		interface CustomRateTable {
-			schedule: Schedule;
-			tables: string[];
-		}
-
-		// Collect these tables at a frequency other than once a day
-		const customRateTables: CustomRateTable[] = [
-			{
-				schedule: Schedule.rate(Duration.hours(2)),
-				tables: ['aws_s3_buckets'],
-			},
-			{
-				schedule: Schedule.rate(Duration.minutes(30)),
-				tables: ['aws_lambda_functions'],
-			},
-		];
-
-		customRateTables.forEach(({ schedule, tables }, index) => {
-			new ScheduledCloudqueryTask(this, `AwsCustomRate${index}`, {
-				...coreTaskProps,
-				schedule,
-				sourceConfig: awsSourceConfig({
-					tables,
-				}),
-			});
-		});
-
-		// Collect every other table once a day
-		new ScheduledCloudqueryTask(this, 'AwsOther', {
-			...coreTaskProps,
-			schedule: Schedule.rate(Duration.days(1)),
-			sourceConfig: awsSourceConfig({
-				tables: ['*'],
-				skipTables: customRateTables.flatMap((_) => _.tables),
-			}),
-		});
+		new CloudqueryCluster(this, `${app}Cluster`, { app, vpc, db, dbAccess });
 	}
 }
