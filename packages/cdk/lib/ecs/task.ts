@@ -69,13 +69,6 @@ export interface ScheduledCloudqueryTaskProps
 	 * The CloudQuery config to use to collect data from.
 	 */
 	sourceConfig: CloudqueryConfig;
-
-	/**
-	 * The CloudQuery config to use to store data to.
-	 *
-	 * @default Postgres
-	 */
-	destinationConfig?: CloudqueryConfig;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -91,7 +84,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			policies,
 			loggingStreamName,
 			sourceConfig,
-			destinationConfig = postgresDestinationConfig(),
 			enabled,
 		} = props;
 		const { region, stack, stage } = scope;
@@ -100,6 +92,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`);
 
 		const dbUser = 'cloudquery';
+		const destinationConfig = postgresDestinationConfig();
 
 		// This container is used to generate the DB auth token, storing it on a volume that's shared with the CloudQuery container
 		const dbAuth = task.addContainer(`${id}AwsCli`, {
