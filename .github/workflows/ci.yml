@@ -45,11 +45,6 @@ jobs:
           distribution: 'corretto'
           cache: 'sbt'
 
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.20'
-          cache-dependency-path: packages/cloudformation-lens/go.sum
-
       - uses: guardian/actions-read-private-repos@v0.1.0
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
@@ -73,8 +68,6 @@ jobs:
               - packages/github-lens-api/dist/github-lens-api.zip
             services-api:
               - packages/services-api/dist/services-api.zip
-            cloudformation-lens:
-              - packages/cloudformation-lens/cloudformation-lens
             repocop:
               - packages/repocop/target/scala-3.2.1/repocop.jar
             cloudquery:
