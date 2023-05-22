@@ -48,9 +48,9 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
     },
   },
   "Resources": {
-    "AwsCustomRate0ScheduledEventRuleF56BF849": {
+    "CloudquerySourceAllScheduledEventRuleAE930F8B": {
       "Properties": {
-        "ScheduleExpression": "rate(2 hours)",
+        "ScheduleExpression": "rate(1 day)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -80,14 +80,14 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
               },
               "TaskCount": 1,
               "TaskDefinitionArn": {
-                "Ref": "AwsCustomRate0TaskDefinition8D186693",
+                "Ref": "CloudquerySourceAllTaskDefinition8F8AA120",
               },
             },
             "Id": "Target0",
             "Input": "{}",
             "RoleArn": {
               "Fn::GetAtt": [
-                "AwsCustomRate0TaskDefinitionEventsRole941F70DB",
+                "CloudquerySourceAllTaskDefinitionEventsRoleF0320BC8",
                 "Arn",
               ],
             },
@@ -96,7 +96,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::Events::Rule",
     },
-    "AwsCustomRate0TaskDefinition8D186693": {
+    "CloudquerySourceAllTaskDefinition8F8AA120": {
       "Properties": {
         "ContainerDefinitions": [
           {
@@ -128,7 +128,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "AwsCustomRate0AwsCli",
+            "Name": "CloudquerySource-AllAwsCli",
           },
           {
             "Command": [
@@ -140,7 +140,40 @@ spec:
   path: cloudquery/aws
   version: v17.0.0
   tables:
-    - aws_s3_buckets
+    - '*'
+  skip_tables:
+    - aws_ec2_vpc_endpoint_services
+    - aws_cloudtrail_events
+    - aws_docdb_cluster_parameter_groups
+    - aws_docdb_engine_versions
+    - aws_ec2_instance_types
+    - aws_elasticache_engine_versions
+    - aws_elasticache_parameter_groups
+    - aws_elasticache_reserved_cache_nodes_offerings
+    - aws_elasticache_service_updates
+    - aws_neptune_cluster_parameter_groups
+    - aws_neptune_db_parameter_groups
+    - aws_rds_cluster_parameter_groups
+    - aws_rds_db_parameter_groups
+    - aws_rds_engine_versions
+    - aws_servicequotas_services
+    - aws_identitystore_users
+    - aws_identitystore_groups
+    - aws_quicksight_data_sets
+    - aws_quicksight_dashboards
+    - aws_quicksight_analyses
+    - aws_quicksight_users
+    - aws_quicksight_templates
+    - aws_quicksight_groups
+    - aws_quicksight_folders
+    - aws_quicksight_data_sources
+    - aws_amp_workspaces
+    - aws_ssoadmin_instances
+    - aws_glue_connections
+    - aws_computeoptimizer_ecs_service_recommendations
+    - aws_xray_sampling_rules
+    - aws_xray_resource_policies
+    - aws_xray_groups
   destinations:
     - postgresql
   spec:
@@ -170,7 +203,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "SUCCESS",
-                "ContainerName": "AwsCustomRate0AwsCli",
+                "ContainerName": "CloudquerySource-AllAwsCli",
               },
             ],
             "EntryPoint": [
@@ -198,7 +231,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "AwsCustomRate0Container",
+            "Name": "CloudquerySource-AllContainer",
           },
           {
             "Environment": [
@@ -233,7 +266,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "AwsCustomRate0TaskDefinitionAwsCustomRate0FirelensLogGroupD613FA02",
+                  "Ref": "CloudquerySourceAllTaskDefinitionCloudquerySourceAllFirelensLogGroupF1C1A97B",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -241,17 +274,17 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/cloudquery",
               },
             },
-            "Name": "AwsCustomRate0Firelens",
+            "Name": "CloudquerySource-AllFirelens",
           },
         ],
         "Cpu": "256",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
-            "AwsCustomRate0TaskDefinitionExecutionRole65361959",
+            "CloudquerySourceAllTaskDefinitionExecutionRole57AE7309",
             "Arn",
           ],
         },
-        "Family": "CloudQueryAwsCustomRate0TaskDefinition03778498",
+        "Family": "CloudQueryCloudquerySourceAllTaskDefinitionC1F1D919",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -277,7 +310,7 @@ spec:
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "AwsCustomRate0TaskDefinitionTaskRole400B4BCB",
+            "CloudquerySourceAllTaskDefinitionTaskRole4E4F856D",
             "Arn",
           ],
         },
@@ -290,7 +323,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "AwsCustomRate0TaskDefinitionAwsCustomRate0FirelensLogGroupD613FA02": {
+    "CloudquerySourceAllTaskDefinitionCloudquerySourceAllFirelensLogGroupF1C1A97B": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -316,7 +349,60 @@ spec:
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "AwsCustomRate0TaskDefinitionEventsRole941F70DB": {
+    "CloudquerySourceAllTaskDefinitionEventsRoleDefaultPolicy394A66F6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "cloudqueryCluster5370C11B",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceAllTaskDefinition8F8AA120",
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAllTaskDefinitionExecutionRole57AE7309",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAllTaskDefinitionTaskRole4E4F856D",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAllTaskDefinitionEventsRoleDefaultPolicy394A66F6",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAllTaskDefinitionEventsRoleF0320BC8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceAllTaskDefinitionEventsRoleF0320BC8": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -351,60 +437,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate0TaskDefinitionEventsRoleDefaultPolicy629C99F0": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "AwsCustomRate0TaskDefinition8D186693",
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsCustomRate0TaskDefinitionExecutionRole65361959",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsCustomRate0TaskDefinitionTaskRole400B4BCB",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsCustomRate0TaskDefinitionEventsRoleDefaultPolicy629C99F0",
-        "Roles": [
-          {
-            "Ref": "AwsCustomRate0TaskDefinitionEventsRole941F70DB",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsCustomRate0TaskDefinitionExecutionRole65361959": {
+    "CloudquerySourceAllTaskDefinitionExecutionRole57AE7309": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -439,7 +472,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate0TaskDefinitionExecutionRoleDefaultPolicy40676FC6": {
+    "CloudquerySourceAllTaskDefinitionExecutionRoleDefaultPolicy82390649": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -451,7 +484,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate0TaskDefinitionAwsCustomRate0FirelensLogGroupD613FA02",
+                  "CloudquerySourceAllTaskDefinitionCloudquerySourceAllFirelensLogGroupF1C1A97B",
                   "Arn",
                 ],
               },
@@ -459,16 +492,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsCustomRate0TaskDefinitionExecutionRoleDefaultPolicy40676FC6",
+        "PolicyName": "CloudquerySourceAllTaskDefinitionExecutionRoleDefaultPolicy82390649",
         "Roles": [
           {
-            "Ref": "AwsCustomRate0TaskDefinitionExecutionRole65361959",
+            "Ref": "CloudquerySourceAllTaskDefinitionExecutionRole57AE7309",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "AwsCustomRate0TaskDefinitionTaskRole400B4BCB": {
+    "CloudquerySourceAllTaskDefinitionTaskRole4E4F856D": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -506,7 +539,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate0TaskDefinitionTaskRoleDefaultPolicy70D89350": {
+    "CloudquerySourceAllTaskDefinitionTaskRoleDefaultPolicy53CB4BC7": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -541,6 +574,11 @@ spec:
               },
             },
             {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+            },
+            {
               "Action": [
                 "cloudformation:GetTemplate",
                 "dynamodb:GetItem",
@@ -559,16 +597,6 @@ spec:
                 "sqs:ReceiveMessage",
               ],
               "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
-              "Action": "organizations:List*",
-              "Effect": "Allow",
               "Resource": "*",
             },
             {
@@ -605,18 +633,18 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsCustomRate0TaskDefinitionTaskRoleDefaultPolicy70D89350",
+        "PolicyName": "CloudquerySourceAllTaskDefinitionTaskRoleDefaultPolicy53CB4BC7",
         "Roles": [
           {
-            "Ref": "AwsCustomRate0TaskDefinitionTaskRole400B4BCB",
+            "Ref": "CloudquerySourceAllTaskDefinitionTaskRole4E4F856D",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "AwsCustomRate1ScheduledEventRuleA69E1812": {
+    "CloudquerySourceDeployToolsListOrgsScheduledEventRuleDF9BD8AF": {
       "Properties": {
-        "ScheduleExpression": "rate(30 minutes)",
+        "ScheduleExpression": "rate(1 day)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -646,14 +674,14 @@ spec:
               },
               "TaskCount": 1,
               "TaskDefinitionArn": {
-                "Ref": "AwsCustomRate1TaskDefinition21F848BD",
+                "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionDE2A34D9",
               },
             },
             "Id": "Target0",
             "Input": "{}",
             "RoleArn": {
               "Fn::GetAtt": [
-                "AwsCustomRate1TaskDefinitionEventsRole6CD12639",
+                "CloudquerySourceDeployToolsListOrgsTaskDefinitionEventsRole349D11D9",
                 "Arn",
               ],
             },
@@ -662,201 +690,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "AwsCustomRate1TaskDefinition21F848BD": {
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "AwsCustomRate1AwsCli",
-          },
-          {
-            "Command": [
-              "/bin/sh",
-              "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v17.0.0
-  tables:
-    - aws_lambda_functions
-  destinations:
-    - postgresql
-  spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
-    org:
-      member_role_name: cloudquery-access
-      organization_units:
-        - ou-123
-' > /source.yaml;printf 'kind: destination
-spec:
-  name: postgresql
-  registry: github
-  path: cloudquery/postgresql
-  version: v4.1.0
-  migrate_mode: forced
-  spec:
-    connection_string: \${file:/var/scratch/connection_string}
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "AwsCustomRate1AwsCli",
-              },
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.3.1",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "AwsCustomRate1Container",
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "TEST",
-              },
-              {
-                "Name": "APP",
-                "Value": "cloudquery",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "AwsCustomRate1TaskDefinitionAwsCustomRate1FirelensLogGroup6EA9E9ED",
-                },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
-              },
-            },
-            "Name": "AwsCustomRate1Firelens",
-          },
-        ],
-        "Cpu": "256",
-        "ExecutionRoleArn": {
-          "Fn::GetAtt": [
-            "AwsCustomRate1TaskDefinitionExecutionRole7B302127",
-            "Arn",
-          ],
-        },
-        "Family": "CloudQueryAwsCustomRate1TaskDefinition41B2E226",
-        "Memory": "512",
-        "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": [
-          "FARGATE",
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "TaskRoleArn": {
-          "Fn::GetAtt": [
-            "AwsCustomRate1TaskDefinitionTaskRoleFF883DCA",
-            "Arn",
-          ],
-        },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "AwsCustomRate1TaskDefinitionAwsCustomRate1FirelensLogGroup6EA9E9ED": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsFirelensLogGroup27F2A6EA": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -882,353 +716,7 @@ spec:
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "AwsCustomRate1TaskDefinitionEventsRole6CD12639": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "AwsCustomRate1TaskDefinitionEventsRoleDefaultPolicy17E2EE08": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "AwsCustomRate1TaskDefinition21F848BD",
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsCustomRate1TaskDefinitionExecutionRole7B302127",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsCustomRate1TaskDefinitionTaskRoleFF883DCA",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsCustomRate1TaskDefinitionEventsRoleDefaultPolicy17E2EE08",
-        "Roles": [
-          {
-            "Ref": "AwsCustomRate1TaskDefinitionEventsRole6CD12639",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsCustomRate1TaskDefinitionExecutionRole7B302127": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "AwsCustomRate1TaskDefinitionExecutionRoleDefaultPolicy663EED15": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsCustomRate1TaskDefinitionAwsCustomRate1FirelensLogGroup6EA9E9ED",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsCustomRate1TaskDefinitionExecutionRoleDefaultPolicy663EED15",
-        "Roles": [
-          {
-            "Ref": "AwsCustomRate1TaskDefinitionExecutionRole7B302127",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsCustomRate1TaskDefinitionTaskRoleDefaultPolicy9B8D9983": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "cloudformation:GetTemplate",
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
-              "Action": "organizations:List*",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": "rds-db:connect",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":dbuser:",
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresInstance16DE4286E",
-                        "DbiResourceId",
-                      ],
-                    },
-                    "/cloudquery",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsCustomRate1TaskDefinitionTaskRoleDefaultPolicy9B8D9983",
-        "Roles": [
-          {
-            "Ref": "AwsCustomRate1TaskDefinitionTaskRoleFF883DCA",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsCustomRate1TaskDefinitionTaskRoleFF883DCA": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "AwsCustomRate2ScheduledEventRule09DB67EC": {
-      "Properties": {
-        "ScheduleExpression": "cron(* * 1 * ? *)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
-                "Arn",
-              ],
-            },
-            "EcsParameters": {
-              "LaunchType": "FARGATE",
-              "NetworkConfiguration": {
-                "AwsVpcConfiguration": {
-                  "AssignPublicIp": "DISABLED",
-                  "SecurityGroups": [
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
-                        "GroupId",
-                      ],
-                    },
-                  ],
-                  "Subnets": {
-                    "Ref": "PrivateSubnets",
-                  },
-                },
-              },
-              "TaskCount": 1,
-              "TaskDefinitionArn": {
-                "Ref": "AwsCustomRate2TaskDefinition0A50736E",
-              },
-            },
-            "Id": "Target0",
-            "Input": "{}",
-            "RoleArn": {
-              "Fn::GetAtt": [
-                "AwsCustomRate2TaskDefinitionEventsRoleA5653DBB",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "AwsCustomRate2TaskDefinition0A50736E": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionDE2A34D9": {
       "Properties": {
         "ContainerDefinitions": [
           {
@@ -1260,7 +748,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "AwsCustomRate2AwsCli",
+            "Name": "CloudquerySource-DeployToolsListOrgsAwsCli",
           },
           {
             "Command": [
@@ -1307,7 +795,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "SUCCESS",
-                "ContainerName": "AwsCustomRate2AwsCli",
+                "ContainerName": "CloudquerySource-DeployToolsListOrgsAwsCli",
               },
             ],
             "EntryPoint": [
@@ -1335,7 +823,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "AwsCustomRate2Container",
+            "Name": "CloudquerySource-DeployToolsListOrgsContainer",
           },
           {
             "Environment": [
@@ -1370,7 +858,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "AwsCustomRate2TaskDefinitionAwsCustomRate2FirelensLogGroupFBA33255",
+                  "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsFirelensLogGroup27F2A6EA",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -1378,17 +866,17 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/cloudquery",
               },
             },
-            "Name": "AwsCustomRate2Firelens",
+            "Name": "CloudquerySource-DeployToolsListOrgsFirelens",
           },
         ],
         "Cpu": "256",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
-            "AwsCustomRate2TaskDefinitionExecutionRole13CADD33",
+            "CloudquerySourceDeployToolsListOrgsTaskDefinitionExecutionRole8F75CE49",
             "Arn",
           ],
         },
-        "Family": "CloudQueryAwsCustomRate2TaskDefinitionC9774D2B",
+        "Family": "CloudQueryCloudquerySourceDeployToolsListOrgsTaskDefinitionCE19EB7F",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1414,7 +902,7 @@ spec:
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "AwsCustomRate2TaskDefinitionTaskRoleEF327D97",
+            "CloudquerySourceDeployToolsListOrgsTaskDefinitionTaskRole1340B0DE",
             "Arn",
           ],
         },
@@ -1427,33 +915,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "AwsCustomRate2TaskDefinitionAwsCustomRate2FirelensLogGroupFBA33255": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "AwsCustomRate2TaskDefinitionEventsRoleA5653DBB": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionEventsRole349D11D9": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1488,7 +950,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate2TaskDefinitionEventsRoleDefaultPolicy9B197EDC": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionEventsRoleDefaultPolicy229537D4": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1506,7 +968,7 @@ spec:
               },
               "Effect": "Allow",
               "Resource": {
-                "Ref": "AwsCustomRate2TaskDefinition0A50736E",
+                "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionDE2A34D9",
               },
             },
             {
@@ -1514,7 +976,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate2TaskDefinitionExecutionRole13CADD33",
+                  "CloudquerySourceDeployToolsListOrgsTaskDefinitionExecutionRole8F75CE49",
                   "Arn",
                 ],
               },
@@ -1524,7 +986,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate2TaskDefinitionTaskRoleEF327D97",
+                  "CloudquerySourceDeployToolsListOrgsTaskDefinitionTaskRole1340B0DE",
                   "Arn",
                 ],
               },
@@ -1532,16 +994,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsCustomRate2TaskDefinitionEventsRoleDefaultPolicy9B197EDC",
+        "PolicyName": "CloudquerySourceDeployToolsListOrgsTaskDefinitionEventsRoleDefaultPolicy229537D4",
         "Roles": [
           {
-            "Ref": "AwsCustomRate2TaskDefinitionEventsRoleA5653DBB",
+            "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionEventsRole349D11D9",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "AwsCustomRate2TaskDefinitionExecutionRole13CADD33": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionExecutionRole8F75CE49": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1576,7 +1038,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate2TaskDefinitionExecutionRoleDefaultPolicy6E1FB285": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionExecutionRoleDefaultPolicyDA54629E": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1588,7 +1050,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate2TaskDefinitionAwsCustomRate2FirelensLogGroupFBA33255",
+                  "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsFirelensLogGroup27F2A6EA",
                   "Arn",
                 ],
               },
@@ -1596,124 +1058,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsCustomRate2TaskDefinitionExecutionRoleDefaultPolicy6E1FB285",
+        "PolicyName": "CloudquerySourceDeployToolsListOrgsTaskDefinitionExecutionRoleDefaultPolicyDA54629E",
         "Roles": [
           {
-            "Ref": "AwsCustomRate2TaskDefinitionExecutionRole13CADD33",
+            "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionExecutionRole8F75CE49",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "AwsCustomRate2TaskDefinitionTaskRoleDefaultPolicy99842392": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "cloudformation:GetTemplate",
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
-              "Action": "organizations:List*",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": "rds-db:connect",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":dbuser:",
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresInstance16DE4286E",
-                        "DbiResourceId",
-                      ],
-                    },
-                    "/cloudquery",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsCustomRate2TaskDefinitionTaskRoleDefaultPolicy99842392",
-        "Roles": [
-          {
-            "Ref": "AwsCustomRate2TaskDefinitionTaskRoleEF327D97",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsCustomRate2TaskDefinitionTaskRoleEF327D97": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionTaskRole1340B0DE": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1751,9 +1105,117 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate3ScheduledEventRule6698515E": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionTaskRoleDefaultPolicyBCA03B33": {
       "Properties": {
-        "ScheduleExpression": "rate(4 hours)",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+            },
+            {
+              "Action": "organizations:List*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "cloudformation:GetTemplate",
+                "dynamodb:GetItem",
+                "dynamodb:BatchGetItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "ec2:GetConsoleOutput",
+                "ec2:GetConsoleScreenshot",
+                "ecr:BatchGetImage",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "kinesis:Get*",
+                "lambda:GetFunction",
+                "logs:GetLogEvents",
+                "sdb:Select*",
+                "sqs:ReceiveMessage",
+              ],
+              "Effect": "Deny",
+              "Resource": "*",
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/cloudquery",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceDeployToolsListOrgsTaskDefinitionTaskRoleDefaultPolicyBCA03B33",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionTaskRole1340B0DE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceSecurityAccessAnalyserScheduledEventRuleF5D02F1B": {
+      "Properties": {
+        "ScheduleExpression": "rate(1 day)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -1783,14 +1245,14 @@ spec:
               },
               "TaskCount": 1,
               "TaskDefinitionArn": {
-                "Ref": "AwsCustomRate3TaskDefinition532A7F1C",
+                "Ref": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEEA17FBA",
               },
             },
             "Id": "Target0",
             "Input": "{}",
             "RoleArn": {
               "Fn::GetAtt": [
-                "AwsCustomRate3TaskDefinitionEventsRoleB2021752",
+                "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEventsRole9378F427",
                 "Arn",
               ],
             },
@@ -1799,7 +1261,33 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "AwsCustomRate3TaskDefinition532A7F1C": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionCloudquerySourceSecurityAccessAnalyserFirelensLogGroup5B3FE9C1": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEEA17FBA": {
       "Properties": {
         "ContainerDefinitions": [
           {
@@ -1831,7 +1319,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "AwsCustomRate3AwsCli",
+            "Name": "CloudquerySource-SecurityAccessAnalyserAwsCli",
           },
           {
             "Command": [
@@ -1874,7 +1362,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "SUCCESS",
-                "ContainerName": "AwsCustomRate3AwsCli",
+                "ContainerName": "CloudquerySource-SecurityAccessAnalyserAwsCli",
               },
             ],
             "EntryPoint": [
@@ -1902,7 +1390,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "AwsCustomRate3Container",
+            "Name": "CloudquerySource-SecurityAccessAnalyserContainer",
           },
           {
             "Environment": [
@@ -1937,7 +1425,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "AwsCustomRate3TaskDefinitionAwsCustomRate3FirelensLogGroup7128D1A2",
+                  "Ref": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionCloudquerySourceSecurityAccessAnalyserFirelensLogGroup5B3FE9C1",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -1945,17 +1433,17 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/cloudquery",
               },
             },
-            "Name": "AwsCustomRate3Firelens",
+            "Name": "CloudquerySource-SecurityAccessAnalyserFirelens",
           },
         ],
         "Cpu": "256",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
-            "AwsCustomRate3TaskDefinitionExecutionRoleA37BDFCF",
+            "CloudquerySourceSecurityAccessAnalyserTaskDefinitionExecutionRole3D443B15",
             "Arn",
           ],
         },
-        "Family": "CloudQueryAwsCustomRate3TaskDefinition392355AE",
+        "Family": "CloudQueryCloudquerySourceSecurityAccessAnalyserTaskDefinitionA7A5AECB",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1981,7 +1469,7 @@ spec:
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "AwsCustomRate3TaskDefinitionTaskRoleE6A3042B",
+            "CloudquerySourceSecurityAccessAnalyserTaskDefinitionTaskRole8B920EA4",
             "Arn",
           ],
         },
@@ -1994,33 +1482,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "AwsCustomRate3TaskDefinitionAwsCustomRate3FirelensLogGroup7128D1A2": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "AwsCustomRate3TaskDefinitionEventsRoleB2021752": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEventsRole9378F427": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -2055,7 +1517,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate3TaskDefinitionEventsRoleDefaultPolicy74FFD9CE": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEventsRoleDefaultPolicy0FE84DC4": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -2073,7 +1535,7 @@ spec:
               },
               "Effect": "Allow",
               "Resource": {
-                "Ref": "AwsCustomRate3TaskDefinition532A7F1C",
+                "Ref": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEEA17FBA",
               },
             },
             {
@@ -2081,7 +1543,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate3TaskDefinitionExecutionRoleA37BDFCF",
+                  "CloudquerySourceSecurityAccessAnalyserTaskDefinitionExecutionRole3D443B15",
                   "Arn",
                 ],
               },
@@ -2091,7 +1553,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate3TaskDefinitionTaskRoleE6A3042B",
+                  "CloudquerySourceSecurityAccessAnalyserTaskDefinitionTaskRole8B920EA4",
                   "Arn",
                 ],
               },
@@ -2099,16 +1561,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsCustomRate3TaskDefinitionEventsRoleDefaultPolicy74FFD9CE",
+        "PolicyName": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEventsRoleDefaultPolicy0FE84DC4",
         "Roles": [
           {
-            "Ref": "AwsCustomRate3TaskDefinitionEventsRoleB2021752",
+            "Ref": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionEventsRole9378F427",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "AwsCustomRate3TaskDefinitionExecutionRoleA37BDFCF": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionExecutionRole3D443B15": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -2143,7 +1605,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsCustomRate3TaskDefinitionExecutionRoleDefaultPolicy48CFD354": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionExecutionRoleDefaultPolicy4CB6BB83": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -2155,7 +1617,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "AwsCustomRate3TaskDefinitionAwsCustomRate3FirelensLogGroup7128D1A2",
+                  "CloudquerySourceSecurityAccessAnalyserTaskDefinitionCloudquerySourceSecurityAccessAnalyserFirelensLogGroup5B3FE9C1",
                   "Arn",
                 ],
               },
@@ -2163,124 +1625,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsCustomRate3TaskDefinitionExecutionRoleDefaultPolicy48CFD354",
+        "PolicyName": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionExecutionRoleDefaultPolicy4CB6BB83",
         "Roles": [
           {
-            "Ref": "AwsCustomRate3TaskDefinitionExecutionRoleA37BDFCF",
+            "Ref": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionExecutionRole3D443B15",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "AwsCustomRate3TaskDefinitionTaskRoleDefaultPolicyDB0EC6F3": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "cloudformation:GetTemplate",
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
-              "Action": "organizations:List*",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": "rds-db:connect",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":dbuser:",
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresInstance16DE4286E",
-                        "DbiResourceId",
-                      ],
-                    },
-                    "/cloudquery",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsCustomRate3TaskDefinitionTaskRoleDefaultPolicyDB0EC6F3",
-        "Roles": [
-          {
-            "Ref": "AwsCustomRate3TaskDefinitionTaskRoleE6A3042B",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsCustomRate3TaskDefinitionTaskRoleE6A3042B": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionTaskRole8B920EA4": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -2318,478 +1672,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "AwsOtherScheduledEventRule796471DE": {
-      "Properties": {
-        "ScheduleExpression": "rate(1 day)",
-        "State": "DISABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
-                "Arn",
-              ],
-            },
-            "EcsParameters": {
-              "LaunchType": "FARGATE",
-              "NetworkConfiguration": {
-                "AwsVpcConfiguration": {
-                  "AssignPublicIp": "DISABLED",
-                  "SecurityGroups": [
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
-                        "GroupId",
-                      ],
-                    },
-                  ],
-                  "Subnets": {
-                    "Ref": "PrivateSubnets",
-                  },
-                },
-              },
-              "TaskCount": 1,
-              "TaskDefinitionArn": {
-                "Ref": "AwsOtherTaskDefinitionC3EAE08B",
-              },
-            },
-            "Id": "Target0",
-            "Input": "{}",
-            "RoleArn": {
-              "Fn::GetAtt": [
-                "AwsOtherTaskDefinitionEventsRole0780C70A",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "AwsOtherTaskDefinitionAwsOtherFirelensLogGroup4B78BE53": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "AwsOtherTaskDefinitionC3EAE08B": {
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "AwsOtherAwsCli",
-          },
-          {
-            "Command": [
-              "/bin/sh",
-              "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v17.0.0
-  tables:
-    - '*'
-  skip_tables:
-    - aws_s3_buckets
-    - aws_lambda_functions
-    - aws_organizations
-    - aws_organizations_accounts
-    - aws_organizations_delegated_services
-    - aws_organizations_delegated_administrators
-    - aws_organizations_organizational_units
-    - aws_organizations_policies
-    - aws_organizations_roots
-    - aws_accessanalyzer_analyzers
-    - aws_accessanalyzer_analyzer_archive_rules
-    - aws_accessanalyzer_analyzer_findings
-  destinations:
-    - postgresql
-  spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
-    org:
-      member_role_name: cloudquery-access
-      organization_units:
-        - ou-123
-' > /source.yaml;printf 'kind: destination
-spec:
-  name: postgresql
-  registry: github
-  path: cloudquery/postgresql
-  version: v4.1.0
-  migrate_mode: forced
-  spec:
-    connection_string: \${file:/var/scratch/connection_string}
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "AwsOtherAwsCli",
-              },
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.3.1",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "AwsOtherContainer",
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "TEST",
-              },
-              {
-                "Name": "APP",
-                "Value": "cloudquery",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "AwsOtherTaskDefinitionAwsOtherFirelensLogGroup4B78BE53",
-                },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
-              },
-            },
-            "Name": "AwsOtherFirelens",
-          },
-        ],
-        "Cpu": "256",
-        "ExecutionRoleArn": {
-          "Fn::GetAtt": [
-            "AwsOtherTaskDefinitionExecutionRole4BA3FB88",
-            "Arn",
-          ],
-        },
-        "Family": "CloudQueryAwsOtherTaskDefinition2784A4E3",
-        "Memory": "512",
-        "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": [
-          "FARGATE",
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "TaskRoleArn": {
-          "Fn::GetAtt": [
-            "AwsOtherTaskDefinitionTaskRoleD0E2A3F5",
-            "Arn",
-          ],
-        },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "AwsOtherTaskDefinitionEventsRole0780C70A": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "AwsOtherTaskDefinitionEventsRoleDefaultPolicyF11C2244": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "AwsOtherTaskDefinitionC3EAE08B",
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsOtherTaskDefinitionExecutionRole4BA3FB88",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsOtherTaskDefinitionTaskRoleD0E2A3F5",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsOtherTaskDefinitionEventsRoleDefaultPolicyF11C2244",
-        "Roles": [
-          {
-            "Ref": "AwsOtherTaskDefinitionEventsRole0780C70A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsOtherTaskDefinitionExecutionRole4BA3FB88": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "AwsOtherTaskDefinitionExecutionRoleDefaultPolicy7B8CD093": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsOtherTaskDefinitionAwsOtherFirelensLogGroup4B78BE53",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "AwsOtherTaskDefinitionExecutionRoleDefaultPolicy7B8CD093",
-        "Roles": [
-          {
-            "Ref": "AwsOtherTaskDefinitionExecutionRole4BA3FB88",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "AwsOtherTaskDefinitionTaskRoleD0E2A3F5": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "AwsOtherTaskDefinitionTaskRoleDefaultPolicyEFC01BB6": {
+    "CloudquerySourceSecurityAccessAnalyserTaskDefinitionTaskRoleDefaultPolicyE507D9C0": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -2824,6 +1707,11 @@ spec:
               },
             },
             {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+            },
+            {
               "Action": [
                 "cloudformation:GetTemplate",
                 "dynamodb:GetItem",
@@ -2842,16 +1730,6 @@ spec:
                 "sqs:ReceiveMessage",
               ],
               "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
-              "Action": "organizations:List*",
-              "Effect": "Allow",
               "Resource": "*",
             },
             {
@@ -2888,10 +1766,10 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "AwsOtherTaskDefinitionTaskRoleDefaultPolicyEFC01BB6",
+        "PolicyName": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionTaskRoleDefaultPolicyE507D9C0",
         "Roles": [
           {
-            "Ref": "AwsOtherTaskDefinitionTaskRoleD0E2A3F5",
+            "Ref": "CloudquerySourceSecurityAccessAnalyserTaskDefinitionTaskRole8B920EA4",
           },
         ],
       },

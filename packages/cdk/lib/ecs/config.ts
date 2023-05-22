@@ -1,10 +1,7 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import { Versions } from './versions';
 
-export interface CloudqueryConfig {
-	kind: 'source' | 'destination';
-	spec: Record<string, unknown>;
-}
+export type CloudqueryConfig = Record<string, unknown>;
 
 interface CloudqueryTableConfig {
 	tables?: string[];
@@ -108,3 +105,39 @@ export function awsSourceConfigForAccount(
 		],
 	});
 }
+
+// Tables we are skipping because they are slow and or uninteresting to us.
+export const skipTables = [
+	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
+	'aws_cloudtrail_events',
+	'aws_docdb_cluster_parameter_groups',
+	'aws_docdb_engine_versions',
+	'aws_ec2_instance_types',
+	'aws_elasticache_engine_versions',
+	'aws_elasticache_parameter_groups',
+	'aws_elasticache_reserved_cache_nodes_offerings',
+	'aws_elasticache_service_updates',
+	'aws_neptune_cluster_parameter_groups',
+	'aws_neptune_db_parameter_groups',
+	'aws_rds_cluster_parameter_groups',
+	'aws_rds_db_parameter_groups',
+	'aws_rds_engine_versions',
+	'aws_servicequotas_services',
+	'aws_identitystore_users',
+	'aws_identitystore_groups',
+	'aws_quicksight_data_sets',
+	'aws_quicksight_dashboards',
+	'aws_quicksight_analyses',
+	'aws_quicksight_users',
+	'aws_quicksight_templates',
+	'aws_quicksight_groups',
+	'aws_quicksight_folders',
+	'aws_quicksight_data_sources',
+	'aws_amp_workspaces',
+	'aws_ssoadmin_instances',
+	'aws_glue_connections',
+	'aws_computeoptimizer_ecs_service_recommendations',
+	'aws_xray_sampling_rules',
+	'aws_xray_resource_policies',
+	'aws_xray_groups',
+];

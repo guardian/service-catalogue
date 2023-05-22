@@ -1,33 +1,47 @@
 import { GuLoggingStreamNameParameter } from '@guardian/cdk/lib/constructs/core';
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster } from 'aws-cdk-lib/aws-ecs';
-import { Schedule } from 'aws-cdk-lib/aws-events';
-import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import type { Schedule } from 'aws-cdk-lib/aws-events';
+import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import {
-	awsSourceConfigForAccount,
-	awsSourceConfigForOrganisation,
-} from './config';
+import type { CloudqueryConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
-interface CustomRateTable {
+interface CloudquerySource {
+	/**
+	 * The name of the source.
+	 */
+	name: string;
+
+	/**
+	 * Purely descriptive, not used for anything runtime related.
+	 */
+	description: string;
+
 	/**
 	 * The rate at which to collect data.
 	 */
 	schedule: Schedule;
 
 	/**
-	 * Which tables from the CLoudQuery source to collect data.
+	 * Cloudquery config (aka 'spec') for this source.
+	 *
+	 * This should be the JS version of whatever YAML config you want to use for this source.
 	 */
-	tables: string[];
+	config: CloudqueryConfig;
 
 	/**
-	 * The AWS account to collect data from.
+	 * Policies required by this source.
 	 */
-	awsAccountNumber?: string;
+	policies?: PolicyStatement[];
+
+	/**
+	 * Managed policies required by this source.
+	 */
+	managedPolicies?: IManagedPolicy[];
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -49,15 +63,12 @@ interface CloudqueryClusterProps extends AppIdentity {
 	/**
 	 * Which tables to collect at a frequency other than once a day.
 	 */
-	customRateTables: CustomRateTable[];
+	sources: CloudquerySource[];
 }
 
 /**
- * An ECS cluster for running CloudQuery.
- * The cluster and its tasks will be created in the private subnets of the VPC provided.
- *
- * By default, CloudQuery will collect data from all tables once a day.
- * Customise this with the `customRateTables` prop.
+ * An ECS cluster for running CloudQuery. The cluster and its tasks will be
+ * created in the private subnets of the VPC provided.
  */
 export class CloudqueryCluster extends Cluster {
 	constructor(scope: GuStack, id: string, props: CloudqueryClusterProps) {
@@ -66,7 +77,7 @@ export class CloudqueryCluster extends Cluster {
 			enableFargateCapacityProviders: true,
 		});
 
-		const { app, db, dbAccess, customRateTables } = props;
+		const { app, db, dbAccess, sources } = props;
 
 		const loggingStreamName =
 			GuLoggingStreamNameParameter.getInstance(scope).valueAsString;
@@ -76,15 +87,7 @@ export class CloudqueryCluster extends Cluster {
 			resourceName: loggingStreamName,
 		});
 
-		const managedPolicies = [
-			ManagedPolicy.fromManagedPolicyArn(
-				this,
-				'readonly-policy',
-				'arn:aws:iam::aws:policy/ReadOnlyAccess',
-			),
-		];
-
-		const policies = [
+		const essentialPolicies = [
 			// Log shipping
 			new PolicyStatement({
 				actions: ['kinesis:Describe*', 'kinesis:Put*'],
@@ -92,79 +95,31 @@ export class CloudqueryCluster extends Cluster {
 				resources: [loggingStreamArn],
 			}),
 
-			// See https://github.com/cloudquery/iam-for-aws-orgs/ and
-			// https://github.com/cloudquery/iam-for-aws-orgs/blob/d44ffe5509ba8a6c84c31dcc1dac7f475a5099e3/template.yml#L95.
-			new PolicyStatement({
-				effect: Effect.DENY,
-				resources: ['*'],
-				actions: [
-					'cloudformation:GetTemplate',
-					'dynamodb:GetItem',
-					'dynamodb:BatchGetItem',
-					'dynamodb:Query',
-					'dynamodb:Scan',
-					'ec2:GetConsoleOutput',
-					'ec2:GetConsoleScreenshot',
-					'ecr:BatchGetImage',
-					'ecr:GetAuthorizationToken',
-					'ecr:GetDownloadUrlForLayer',
-					'kinesis:Get*',
-					'lambda:GetFunction',
-					'logs:GetLogEvents',
-					'sdb:Select*',
-					'sqs:ReceiveMessage',
-				],
-			}),
-
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				resources: ['arn:aws:iam::*:role/cloudquery-access'],
 				actions: ['sts:AssumeRole'],
 			}),
-
-			new PolicyStatement({
-				effect: Effect.ALLOW,
-				resources: ['*'],
-				actions: ['organizations:List*'],
-			}),
 		];
 
-		const coreTaskProps = {
+		const taskProps = {
 			app,
 			cluster: this,
 			db,
 			dbAccess,
-			managedPolicies,
-			policies,
 			loggingStreamName,
 		};
 
-		customRateTables.forEach(
-			({ schedule, tables, awsAccountNumber }, index) => {
-				new ScheduledCloudqueryTask(scope, `AwsCustomRate${index}`, {
-					...coreTaskProps,
+		sources.forEach(
+			({ name, schedule, config, managedPolicies = [], policies = [] }) => {
+				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
+					...taskProps,
+					managedPolicies,
+					policies: essentialPolicies.concat(policies),
 					schedule,
-					sourceConfig: awsAccountNumber
-						? awsSourceConfigForAccount(awsAccountNumber, { tables })
-						: awsSourceConfigForOrganisation({
-								tables,
-						  }),
+					sourceConfig: config,
 				});
 			},
 		);
-
-		// Collect every other table once a day
-		new ScheduledCloudqueryTask(scope, 'AwsOther', {
-			...coreTaskProps,
-			schedule: Schedule.rate(Duration.days(1)),
-			sourceConfig: awsSourceConfigForOrganisation({
-				tables: ['*'],
-				skipTables: customRateTables.flatMap((_) => _.tables),
-			}),
-
-			// Disabled whilst we have the EC2 infrastructure collecting the data, else it's duplicated.
-			// TODO remove this once we have migrated
-			enabled: false,
-		});
 	}
 }

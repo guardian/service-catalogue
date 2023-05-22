@@ -37,6 +37,16 @@ import {
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
 import { CloudqueryCluster } from './ecs/cluster';
+import {
+	awsSourceConfigForAccount,
+	awsSourceConfigForOrganisation,
+	skipTables,
+} from './ecs/config';
+import {
+	listOrgsPolicy,
+	readonlyAccessManagedPolicy,
+	standardDenyPolicy,
+} from './ecs/policies';
 
 const CloudQueryManifest = {
 	/**
@@ -287,41 +297,57 @@ export class CloudQuery extends GuStack {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
-			customRateTables: [
+			sources: [
 				{
-					schedule: Schedule.rate(Duration.hours(2)),
-					tables: ['aws_s3_buckets'],
-				},
-				{
-					schedule: Schedule.rate(Duration.minutes(30)),
-					tables: ['aws_lambda_functions'],
-				},
-				{
-					// This data doesn't change often, so we can afford to run it less frequently (the 1st of each month).
-					// Only the Deploy Tools account can access this data, so only run it there,
-					// else the logs will contain access denied messages.
-					schedule: Schedule.cron({ day: '1' }),
-					tables: [
-						'aws_organizations',
-						'aws_organizations_accounts',
-						'aws_organizations_delegated_services',
-						'aws_organizations_delegated_administrators',
-						'aws_organizations_organizational_units',
-						'aws_organizations_policies',
-						'aws_organizations_roots',
+					name: 'All',
+					description: 'Data fetched across all accounts in the organisation.',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: awsSourceConfigForOrganisation({
+						tables: ['*'],
+						skipTables: skipTables,
+					}),
+					managedPolicies: [
+						readonlyAccessManagedPolicy(this, 'fetch-all-managed-policy'),
 					],
-					awsAccountNumber: GuardianAwsAccounts.DeployTools,
+					policies: [standardDenyPolicy],
 				},
 				{
-					// The Security account is configured to collect Access Analyzer data for the organization,
-					// so no need to collect it from each individual account.
-					schedule: Schedule.rate(Duration.hours(4)), // TODO what rate does Access Analyzer update at?
-					tables: [
-						'aws_accessanalyzer_analyzers',
-						'aws_accessanalyzer_analyzer_archive_rules',
-						'aws_accessanalyzer_analyzer_findings',
+					name: 'DeployToolsListOrgs',
+					description:
+						'Data fetched from the Deploy Tools account (delegated from Root).',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
+						tables: [
+							'aws_organizations',
+							'aws_organizations_accounts',
+							'aws_organizations_delegated_services',
+							'aws_organizations_delegated_administrators',
+							'aws_organizations_organizational_units',
+							'aws_organizations_policies',
+							'aws_organizations_roots',
+						],
+					}),
+					managedPolicies: [
+						readonlyAccessManagedPolicy(this, 'list-orgs-managed-policy'),
 					],
-					awsAccountNumber: GuardianAwsAccounts.Security,
+					policies: [listOrgsPolicy, standardDenyPolicy],
+				},
+				{
+					name: 'SecurityAccessAnalyser',
+					description:
+						'Data fetched from the Security account. Note, Access Analyzer collects data from our entire organisation so we only need to query it in one place.',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
+						tables: [
+							'aws_accessanalyzer_analyzers',
+							'aws_accessanalyzer_analyzer_archive_rules',
+							'aws_accessanalyzer_analyzer_findings',
+						],
+					}),
+					managedPolicies: [
+						readonlyAccessManagedPolicy(this, 'access-analyser-managed-policy'),
+					],
+					policies: [standardDenyPolicy],
 				},
 			],
 		});
