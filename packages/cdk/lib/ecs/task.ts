@@ -112,7 +112,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			essential: false,
 		});
 
-		const worker = task.addContainer(`${id}Container`, {
+		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: cloudqueryImage,
 			entryPoint: [''],
 			command: [
@@ -141,13 +141,13 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			sourceVolume: 'scratch',
 			readOnly: false,
 		});
-		worker.addMountPoints({
+		cloudqueryTask.addMountPoints({
 			containerPath: '/var/scratch',
 			sourceVolume: 'scratch',
 			readOnly: true,
 		});
 
-		worker.addContainerDependencies({
+		cloudqueryTask.addContainerDependencies({
 			container: dbAuth,
 
 			// Only start the worker once the DB auth token has been generated
