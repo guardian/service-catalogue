@@ -13,9 +13,12 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import {
+	GuardianAwsAccounts,
+	GuardianOrganisationalUnits,
+} from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { Tags } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -23,6 +26,7 @@ import {
 	Port,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
+import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
@@ -32,6 +36,17 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { CloudqueryCluster } from './ecs/cluster';
+import {
+	awsSourceConfigForAccount,
+	awsSourceConfigForOrganisation,
+	skipTables,
+} from './ecs/config';
+import {
+	listOrgsPolicy,
+	readonlyAccessManagedPolicy,
+	standardDenyPolicy,
+} from './ecs/policies';
 
 const CloudQueryManifest = {
 	/**
@@ -56,10 +71,20 @@ export class CloudQuery extends GuStack {
 		const { stage, stack } = this;
 		const app = props.app ?? 'cloudquery';
 
-		const vpc = GuVpc.fromIdParameter(this, 'vpc');
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
-			app,
+		});
+
+		const vpc = GuVpc.fromIdParameter(this, 'vpc', {
+			/*
+			CDK wants privateSubnetIds to be a multiple of availabilityZones.
+			We're pulling the subnets from a parameter at runtime.
+			We know they evaluate to 3 subnets, but at compile time CDK doesn't.
+			Set the number of AZs to 1 to avoid the error:
+			  `Error: Number of privateSubnetIds (1) must be a multiple of availability zones (2).`
+			 */
+			availabilityZones: ['ignored'],
+			privateSubnetIds: privateSubnets.map((subnet) => subnet.subnetId),
 		});
 
 		const port = 5432;
@@ -266,5 +291,65 @@ export class CloudQuery extends GuStack {
 				actions: ['organizations:List*'],
 			}),
 		);
+
+		new CloudqueryCluster(this, `${app}Cluster`, {
+			app,
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+			sources: [
+				{
+					name: 'All',
+					description: 'Data fetched across all accounts in the organisation.',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: awsSourceConfigForOrganisation({
+						tables: ['*'],
+						skipTables: skipTables,
+					}),
+					managedPolicies: [
+						readonlyAccessManagedPolicy(this, 'fetch-all-managed-policy'),
+					],
+					policies: [standardDenyPolicy],
+				},
+				{
+					name: 'DeployToolsListOrgs',
+					description:
+						'Data fetched from the Deploy Tools account (delegated from Root).',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
+						tables: [
+							'aws_organizations',
+							'aws_organizations_accounts',
+							'aws_organizations_delegated_services',
+							'aws_organizations_delegated_administrators',
+							'aws_organizations_organizational_units',
+							'aws_organizations_policies',
+							'aws_organizations_roots',
+						],
+					}),
+					managedPolicies: [
+						readonlyAccessManagedPolicy(this, 'list-orgs-managed-policy'),
+					],
+					policies: [listOrgsPolicy, standardDenyPolicy],
+				},
+				{
+					name: 'SecurityAccessAnalyser',
+					description:
+						'Data fetched from the Security account. Note, Access Analyzer collects data from our entire organisation so we only need to query it in one place.',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
+						tables: [
+							'aws_accessanalyzer_analyzers',
+							'aws_accessanalyzer_analyzer_archive_rules',
+							'aws_accessanalyzer_analyzer_findings',
+						],
+					}),
+					managedPolicies: [
+						readonlyAccessManagedPolicy(this, 'access-analyser-managed-policy'),
+					],
+					policies: [standardDenyPolicy],
+				},
+			],
+		});
 	}
 }
