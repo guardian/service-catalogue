@@ -109,6 +109,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					`echo "user=${dbUser} password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string`,
 				].join(';'),
 			],
+
+			/*
+			A container that is listed as a dependency of another cannot be marked as essential.
+			Below, we describe a dependency such that CloudQuery will only start if the DB Auth step succeeds.
+			 */
 			essential: false,
 		});
 
