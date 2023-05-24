@@ -1,8 +1,0 @@
-[Unit]
-Description=CloudQuery
-
-[Service]
-ExecStart=/opt/cloudquery/cloudquery.sh
-
-[Install]
-WantedBy=multi-user.target
