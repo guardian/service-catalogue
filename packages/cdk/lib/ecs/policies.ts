@@ -42,3 +42,11 @@ export const listOrgsPolicy = new PolicyStatement({
 	resources: ['*'],
 	actions: ['organizations:List*'],
 });
+
+export function cloudqueryAccess(accountId: string) {
+	return new PolicyStatement({
+		effect: Effect.ALLOW,
+		resources: [`arn:aws:iam::${accountId}:role/cloudquery-access`],
+		actions: ['sts:AssumeRole'],
+	});
+}
