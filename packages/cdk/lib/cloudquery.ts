@@ -7,7 +7,7 @@ import {
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { ArnFormat, Duration } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -18,6 +18,7 @@ import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
+import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import {
 	ParameterDataType,
 	ParameterTier,
@@ -101,6 +102,17 @@ export class CloudQuery extends GuStack {
 			Port.tcp(port),
 		);
 
+		const githubCredentials = SecretsManager.fromSecretPartialArn(
+			this,
+			'github-credentials',
+			this.formatArn({
+				service: 'secretsmanager',
+				resource: 'secret',
+				resourceName: `/${stage}/${stack}/${app}/github-credentials`,
+				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+			}),
+		);
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
@@ -171,30 +183,21 @@ export class CloudQuery extends GuStack {
 					schedule: Schedule.rate(Duration.days(1)),
 					config: githubSourceConfig({ tables: ['github_repositories'] }),
 					secrets: {
-						GITHUB_PRIVATE_KEY: Secret.fromSsmParameter(
-							StringParameter.fromStringParameterName(
-								this,
-								'github-private-key',
-								`/${stage}/${stack}/${app}/github-private-key`,
-							),
+						GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
+							githubCredentials,
+							'private-key',
 						),
-						GITHUB_APP_ID: Secret.fromSsmParameter(
-							StringParameter.fromStringParameterName(
-								this,
-								'github-app-id',
-								`/${stage}/${stack}/${app}/github-app-id`,
-							),
+						GITHUB_APP_ID: Secret.fromSecretsManager(
+							githubCredentials,
+							'app-id',
 						),
-						GITHUB_INSTALLATION_ID: Secret.fromSsmParameter(
-							StringParameter.fromStringParameterName(
-								this,
-								'github-installation-id',
-								`/${stage}/${stack}/${app}/github-installation-id`,
-							),
+						GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+							githubCredentials,
+							'installation-id',
 						),
 					},
 					additionalCommands: [
-						'echo $GITHUB_PRIVATE_KEY > /github-private-key',
+						'echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
 						'echo $GITHUB_APP_ID > /github-app-id',
 						'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
 					],

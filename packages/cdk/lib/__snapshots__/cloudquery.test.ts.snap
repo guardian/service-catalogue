@@ -27,18 +27,6 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
-    "githubappidParameter": {
-      "Default": "/TEST/deploy/cloudquery/github-app-id",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "githubinstallationidParameter": {
-      "Default": "/TEST/deploy/cloudquery/github-installation-id",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "githubprivatekeyParameter": {
-      "Default": "/TEST/deploy/cloudquery/github-private-key",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
   },
   "Resources": {
     "CloudquerySourceAllScheduledEventRuleAE930F8B": {
@@ -1409,10 +1397,8 @@ spec:
           "Statement": [
             {
               "Action": [
-                "ssm:DescribeParameters",
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-                "ssm:GetParameterHistory",
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
               ],
               "Effect": "Allow",
               "Resource": {
@@ -1423,7 +1409,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ssm:",
+                    ":secretsmanager:",
                     {
                       "Ref": "AWS::Region",
                     },
@@ -1431,65 +1417,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cloudquery/github-private-key",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ssm:DescribeParameters",
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-                "ssm:GetParameterHistory",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/deploy/cloudquery/github-app-id",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ssm:DescribeParameters",
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-                "ssm:GetParameterHistory",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/deploy/cloudquery/github-installation-id",
+                    ":secret:/TEST/deploy/cloudquery/github-credentials-??????",
                   ],
                 ],
               },
@@ -1557,7 +1485,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo $GITHUB_PRIVATE_KEY > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -1629,7 +1557,7 @@ spec:
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":ssm:",
+                      ":secretsmanager:",
                       {
                         "Ref": "AWS::Region",
                       },
@@ -1637,7 +1565,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":parameter/TEST/deploy/cloudquery/github-private-key",
+                      ":secret:/TEST/deploy/cloudquery/github-credentials:private-key::",
                     ],
                   ],
                 },
@@ -1652,7 +1580,7 @@ spec:
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":ssm:",
+                      ":secretsmanager:",
                       {
                         "Ref": "AWS::Region",
                       },
@@ -1660,7 +1588,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":parameter/TEST/deploy/cloudquery/github-app-id",
+                      ":secret:/TEST/deploy/cloudquery/github-credentials:app-id::",
                     ],
                   ],
                 },
@@ -1675,7 +1603,7 @@ spec:
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":ssm:",
+                      ":secretsmanager:",
                       {
                         "Ref": "AWS::Region",
                       },
@@ -1683,7 +1611,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":parameter/TEST/deploy/cloudquery/github-installation-id",
+                      ":secret:/TEST/deploy/cloudquery/github-credentials:installation-id::",
                     ],
                   ],
                 },
