@@ -1,8 +1,0 @@
-[Unit]
-Description=Run CloudQuery every 6AM
-
-[Timer]
-OnCalendar=06:00
-
-[Install]
-WantedBy=timers.target
