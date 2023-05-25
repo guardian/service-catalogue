@@ -19,4 +19,11 @@ export const Versions = {
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
 	 */
 	CloudqueryAws: '17.0.0',
+
+	/**
+	 * The version of the CloudQuery GitHub source plugin to install.
+	 *
+	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-github
+	 */
+	CloudqueryGithub: '5.2.0',
 };

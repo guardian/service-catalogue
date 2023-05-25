@@ -106,6 +106,42 @@ export function awsSourceConfigForAccount(
 	});
 }
 
+export function githubSourceConfig(
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	const { tables, skipTables } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'github',
+			path: 'cloudquery/github',
+			version: `v${Versions.CloudqueryGithub}`,
+			tables,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+			concurrency: 1000, // TODO what's the ideal value here?!
+			spec: {
+				orgs: ['guardian'],
+				app_auth: [
+					{
+						org: 'guardian',
+
+						// For simplicity, read all configuration from disk.
+						private_key_path: '/github-private-key',
+						app_id: '${file:/github-app-id}',
+						installation_id: '${file:/github-installation-id}',
+					},
+				],
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts

@@ -14,6 +14,7 @@ import {
 	InstanceType,
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
+import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
@@ -26,6 +27,7 @@ import { CloudqueryCluster } from './ecs/cluster';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	githubSourceConfig,
 	skipTables,
 } from './ecs/config';
 import {
@@ -161,6 +163,40 @@ export class CloudQuery extends GuStack {
 					policies: [
 						standardDenyPolicy,
 						cloudqueryAccess(GuardianAwsAccounts.Security),
+					],
+				},
+				{
+					name: 'GitHub Repositories',
+					description: 'Collect GitHub repository data',
+					schedule: Schedule.rate(Duration.days(1)),
+					config: githubSourceConfig({ tables: ['github_repositories'] }),
+					secrets: {
+						GITHUB_PRIVATE_KEY: Secret.fromSsmParameter(
+							StringParameter.fromStringParameterName(
+								this,
+								'github-private-key',
+								`/${stage}/${stack}/${app}/github-private-key`,
+							),
+						),
+						GITHUB_APP_ID: Secret.fromSsmParameter(
+							StringParameter.fromStringParameterName(
+								this,
+								'github-app-id',
+								`/${stage}/${stack}/${app}/github-app-id`,
+							),
+						),
+						GITHUB_INSTALLATION_ID: Secret.fromSsmParameter(
+							StringParameter.fromStringParameterName(
+								this,
+								'github-installation-id',
+								`/${stage}/${stack}/${app}/github-installation-id`,
+							),
+						),
+					},
+					additionalCommands: [
+						'echo $GITHUB_PRIVATE_KEY > /github-private-key',
+						'echo $GITHUB_APP_ID > /github-app-id',
+						'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
 					],
 				},
 			],
