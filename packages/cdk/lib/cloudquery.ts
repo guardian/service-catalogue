@@ -24,6 +24,7 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import type { CloudquerySource } from './ecs/cluster';
 import { CloudqueryCluster } from './ecs/cluster';
 import {
 	awsSourceConfigForAccount,
@@ -102,6 +103,67 @@ export class CloudQuery extends GuStack {
 			Port.tcp(port),
 		);
 
+		const awsSources: CloudquerySource[] = [
+			{
+				name: 'All',
+				description: 'Data fetched across all accounts in the organisation.',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['*'],
+					skipTables: skipTables,
+				}),
+				managedPolicies: [
+					readonlyAccessManagedPolicy(this, 'fetch-all-managed-policy'),
+				],
+				policies: [standardDenyPolicy, cloudqueryAccess('*')],
+			},
+			{
+				name: 'DeployToolsListOrgs',
+				description:
+					'Data fetched from the Deploy Tools account (delegated from Root).',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
+					tables: [
+						'aws_organizations',
+						'aws_organizations_accounts',
+						'aws_organizations_delegated_services',
+						'aws_organizations_delegated_administrators',
+						'aws_organizations_organizational_units',
+						'aws_organizations_policies',
+						'aws_organizations_roots',
+					],
+				}),
+				managedPolicies: [
+					readonlyAccessManagedPolicy(this, 'list-orgs-managed-policy'),
+				],
+				policies: [
+					listOrgsPolicy,
+					standardDenyPolicy,
+					cloudqueryAccess(GuardianAwsAccounts.DeployTools),
+				],
+			},
+			{
+				name: 'SecurityAccessAnalyser',
+				description:
+					'Data fetched from the Security account. Note, Access Analyzer collects data from our entire organisation so we only need to query it in one place.',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
+					tables: [
+						'aws_accessanalyzer_analyzers',
+						'aws_accessanalyzer_analyzer_archive_rules',
+						'aws_accessanalyzer_analyzer_findings',
+					],
+				}),
+				managedPolicies: [
+					readonlyAccessManagedPolicy(this, 'access-analyser-managed-policy'),
+				],
+				policies: [
+					standardDenyPolicy,
+					cloudqueryAccess(GuardianAwsAccounts.Security),
+				],
+			},
+		];
+
 		const githubCredentials = SecretsManager.fromSecretPartialArn(
 			this,
 			'github-credentials',
@@ -113,96 +175,37 @@ export class CloudQuery extends GuStack {
 			}),
 		);
 
+		const githubSources: CloudquerySource[] = [
+			{
+				name: 'GitHub Repositories',
+				description: 'Collect GitHub repository data',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: githubSourceConfig({ tables: ['github_repositories'] }),
+				secrets: {
+					GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
+						githubCredentials,
+						'private-key',
+					),
+					GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
+					GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+						githubCredentials,
+						'installation-id',
+					),
+				},
+				additionalCommands: [
+					'echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
+					'echo $GITHUB_APP_ID > /github-app-id',
+					'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
+				],
+			},
+		];
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
-			sources: [
-				{
-					name: 'All',
-					description: 'Data fetched across all accounts in the organisation.',
-					schedule: Schedule.rate(Duration.days(1)),
-					config: awsSourceConfigForOrganisation({
-						tables: ['*'],
-						skipTables: skipTables,
-					}),
-					managedPolicies: [
-						readonlyAccessManagedPolicy(this, 'fetch-all-managed-policy'),
-					],
-					policies: [standardDenyPolicy, cloudqueryAccess('*')],
-				},
-				{
-					name: 'DeployToolsListOrgs',
-					description:
-						'Data fetched from the Deploy Tools account (delegated from Root).',
-					schedule: Schedule.rate(Duration.days(1)),
-					config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
-						tables: [
-							'aws_organizations',
-							'aws_organizations_accounts',
-							'aws_organizations_delegated_services',
-							'aws_organizations_delegated_administrators',
-							'aws_organizations_organizational_units',
-							'aws_organizations_policies',
-							'aws_organizations_roots',
-						],
-					}),
-					managedPolicies: [
-						readonlyAccessManagedPolicy(this, 'list-orgs-managed-policy'),
-					],
-					policies: [
-						listOrgsPolicy,
-						standardDenyPolicy,
-						cloudqueryAccess(GuardianAwsAccounts.DeployTools),
-					],
-				},
-				{
-					name: 'SecurityAccessAnalyser',
-					description:
-						'Data fetched from the Security account. Note, Access Analyzer collects data from our entire organisation so we only need to query it in one place.',
-					schedule: Schedule.rate(Duration.days(1)),
-					config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
-						tables: [
-							'aws_accessanalyzer_analyzers',
-							'aws_accessanalyzer_analyzer_archive_rules',
-							'aws_accessanalyzer_analyzer_findings',
-						],
-					}),
-					managedPolicies: [
-						readonlyAccessManagedPolicy(this, 'access-analyser-managed-policy'),
-					],
-					policies: [
-						standardDenyPolicy,
-						cloudqueryAccess(GuardianAwsAccounts.Security),
-					],
-				},
-				{
-					name: 'GitHub Repositories',
-					description: 'Collect GitHub repository data',
-					schedule: Schedule.rate(Duration.days(1)),
-					config: githubSourceConfig({ tables: ['github_repositories'] }),
-					secrets: {
-						GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-							githubCredentials,
-							'private-key',
-						),
-						GITHUB_APP_ID: Secret.fromSecretsManager(
-							githubCredentials,
-							'app-id',
-						),
-						GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-							githubCredentials,
-							'installation-id',
-						),
-					},
-					additionalCommands: [
-						'echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
-						'echo $GITHUB_APP_ID > /github-app-id',
-						'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
-					],
-				},
-			],
+			sources: [...awsSources, ...githubSources],
 		});
 	}
 }

@@ -11,7 +11,7 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { CloudqueryConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
-interface CloudquerySource {
+export interface CloudquerySource {
 	/**
 	 * The name of the source.
 	 */
