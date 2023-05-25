@@ -29,6 +29,7 @@ import {
 	skipTables,
 } from './ecs/config';
 import {
+	cloudqueryAccess,
 	listOrgsPolicy,
 	readonlyAccessManagedPolicy,
 	standardDenyPolicy,
@@ -115,7 +116,7 @@ export class CloudQuery extends GuStack {
 					managedPolicies: [
 						readonlyAccessManagedPolicy(this, 'fetch-all-managed-policy'),
 					],
-					policies: [standardDenyPolicy],
+					policies: [standardDenyPolicy, cloudqueryAccess('*')],
 				},
 				{
 					name: 'DeployToolsListOrgs',
@@ -136,7 +137,11 @@ export class CloudQuery extends GuStack {
 					managedPolicies: [
 						readonlyAccessManagedPolicy(this, 'list-orgs-managed-policy'),
 					],
-					policies: [listOrgsPolicy, standardDenyPolicy],
+					policies: [
+						listOrgsPolicy,
+						standardDenyPolicy,
+						cloudqueryAccess(GuardianAwsAccounts.DeployTools),
+					],
 				},
 				{
 					name: 'SecurityAccessAnalyser',
@@ -153,7 +158,10 @@ export class CloudQuery extends GuStack {
 					managedPolicies: [
 						readonlyAccessManagedPolicy(this, 'access-analyser-managed-policy'),
 					],
-					policies: [standardDenyPolicy],
+					policies: [
+						standardDenyPolicy,
+						cloudqueryAccess(GuardianAwsAccounts.Security),
+					],
 				},
 			],
 		});

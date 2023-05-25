@@ -555,11 +555,6 @@ spec:
               },
             },
             {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
               "Action": [
                 "cloudformation:GetTemplate",
                 "dynamodb:GetItem",
@@ -579,6 +574,11 @@ spec:
               ],
               "Effect": "Deny",
               "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
             },
             {
               "Action": "rds-db:connect",
@@ -1121,11 +1121,6 @@ spec:
               },
             },
             {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
               "Action": "organizations:List*",
               "Effect": "Allow",
               "Resource": "*",
@@ -1150,6 +1145,11 @@ spec:
               ],
               "Effect": "Deny",
               "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::000000000018:role/cloudquery-access",
             },
             {
               "Action": "rds-db:connect",
@@ -1688,11 +1688,6 @@ spec:
               },
             },
             {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
               "Action": [
                 "cloudformation:GetTemplate",
                 "dynamodb:GetItem",
@@ -1712,6 +1707,11 @@ spec:
               ],
               "Effect": "Deny",
               "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::000000000015:role/cloudquery-access",
             },
             {
               "Action": "rds-db:connect",

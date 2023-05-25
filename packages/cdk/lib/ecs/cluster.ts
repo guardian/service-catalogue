@@ -87,20 +87,11 @@ export class CloudqueryCluster extends Cluster {
 			resourceName: loggingStreamName,
 		});
 
-		const essentialPolicies = [
-			// Log shipping
-			new PolicyStatement({
-				actions: ['kinesis:Describe*', 'kinesis:Put*'],
-				effect: Effect.ALLOW,
-				resources: [loggingStreamArn],
-			}),
-
-			new PolicyStatement({
-				effect: Effect.ALLOW,
-				resources: ['arn:aws:iam::*:role/cloudquery-access'],
-				actions: ['sts:AssumeRole'],
-			}),
-		];
+		const logShippingPolicy = new PolicyStatement({
+			actions: ['kinesis:Describe*', 'kinesis:Put*'],
+			effect: Effect.ALLOW,
+			resources: [loggingStreamArn],
+		});
 
 		const taskProps = {
 			app,
@@ -115,7 +106,7 @@ export class CloudqueryCluster extends Cluster {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
 					managedPolicies,
-					policies: essentialPolicies.concat(policies),
+					policies: [logShippingPolicy, ...policies],
 					schedule,
 					sourceConfig: config,
 				});
