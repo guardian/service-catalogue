@@ -177,7 +177,7 @@ export class CloudQuery extends GuStack {
 
 		const githubSources: CloudquerySource[] = [
 			{
-				name: 'GitHub Repositories',
+				name: 'GitHubRepositories',
 				description: 'Collect GitHub repository data',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({ tables: ['github_repositories'] }),

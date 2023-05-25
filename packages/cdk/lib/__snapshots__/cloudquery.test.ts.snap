@@ -1194,7 +1194,7 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceGitHubRepositoriesScheduledEventRule92EB197A": {
+    "CloudquerySourceGitHubRepositoriesScheduledEventRuleC7F5836E": {
       "Properties": {
         "ScheduleExpression": "rate(1 day)",
         "State": "ENABLED",
@@ -1226,14 +1226,14 @@ spec:
               },
               "TaskCount": 1,
               "TaskDefinitionArn": {
-                "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionF922DBC7",
+                "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC",
               },
             },
             "Id": "Target0",
             "Input": "{}",
             "RoleArn": {
               "Fn::GetAtt": [
-                "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleB1DAD5D1",
+                "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRole93DB1A26",
                 "Arn",
               ],
             },
@@ -1242,212 +1242,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup79D2F011": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleB1DAD5D1": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleDefaultPolicy6C5373E1": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionF922DBC7",
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole4915D08F",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRole6D516435",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleDefaultPolicy6C5373E1",
-        "Roles": [
-          {
-            "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleB1DAD5D1",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole4915D08F": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRoleDefaultPolicy0A64529F": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/cloudquery/github-credentials-??????",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup79D2F011",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRoleDefaultPolicy0A64529F",
-        "Roles": [
-          {
-            "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole4915D08F",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionF922DBC7": {
+    "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC": {
       "Properties": {
         "ContainerDefinitions": [
           {
@@ -1479,7 +1274,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "CloudquerySource-GitHub RepositoriesAwsCli",
+            "Name": "CloudquerySource-GitHubRepositoriesAwsCli",
           },
           {
             "Command": [
@@ -1517,7 +1312,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-GitHub RepositoriesAwsCli",
+                "ContainerName": "CloudquerySource-GitHubRepositoriesAwsCli",
               },
             ],
             "EntryPoint": [
@@ -1545,7 +1340,7 @@ spec:
                 "SourceVolume": "scratch",
               },
             ],
-            "Name": "CloudquerySource-GitHub RepositoriesContainer",
+            "Name": "CloudquerySource-GitHubRepositoriesContainer",
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -1651,7 +1446,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup79D2F011",
+                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -1659,17 +1454,17 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/cloudquery",
               },
             },
-            "Name": "CloudquerySource-GitHub RepositoriesFirelens",
+            "Name": "CloudquerySource-GitHubRepositoriesFirelens",
           },
         ],
         "Cpu": "256",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
-            "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole4915D08F",
+            "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole03A80EA4",
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceGitHubRepositoriesTaskDefinition3B546046",
+        "Family": "CloudQueryCloudquerySourceGitHubRepositoriesTaskDefinition885F5347",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1695,7 +1490,7 @@ spec:
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRole6D516435",
+            "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleCEEE8FE4",
             "Arn",
           ],
         },
@@ -1708,7 +1503,121 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRole6D516435": {
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRole93DB1A26": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleDefaultPolicy1ECEEEB2": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "cloudqueryCluster5370C11B",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC",
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole03A80EA4",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleCEEE8FE4",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRoleDefaultPolicy1ECEEEB2",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionEventsRole93DB1A26",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole03A80EA4": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1743,7 +1652,98 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleDefaultPolicy2521BC73": {
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRoleDefaultPolicy04F69199": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":secretsmanager:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":secret:/TEST/deploy/cloudquery/github-credentials-??????",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRoleDefaultPolicy04F69199",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionExecutionRole03A80EA4",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleCEEE8FE4": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleDefaultPolicy77BC36C4": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1811,10 +1811,10 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleDefaultPolicy2521BC73",
+        "PolicyName": "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleDefaultPolicy77BC36C4",
         "Roles": [
           {
-            "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRole6D516435",
+            "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionTaskRoleCEEE8FE4",
           },
         ],
       },
