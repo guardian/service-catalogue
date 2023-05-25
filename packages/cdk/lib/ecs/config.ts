@@ -142,6 +142,40 @@ export function githubSourceConfig(
 	};
 }
 
+/**
+ * Configuration for the Fastly source plugin.
+ * @see https://www.cloudquery.io/docs/plugins/sources/fastly/overview#configuration
+ */
+export function fastlySourceConfig(
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	const { tables, skipTables } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'fastly',
+			path: 'cloudquery/fastly',
+			version: `v${Versions.CloudqueryFastly}`,
+			tables,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+
+			// The Fastly API is rate limited to 1000 requests per hour.
+			// See https://docs.fastly.com/en/guides/resource-limits#rate-and-time-limits.
+			// TODO what's the ideal value here?!
+			concurrency: 1000,
+			spec: {
+				fastly_api_key: '${FASTLY_API_KEY}',
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
