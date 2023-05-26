@@ -176,28 +176,32 @@ export class CloudQuery extends GuStack {
 			}),
 		);
 
+		const githubSecrets: Record<string, Secret> = {
+			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
+				githubCredentials,
+				'private-key',
+			),
+			GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
+			GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+				githubCredentials,
+				'installation-id',
+			),
+		};
+
+		const additionalGithubCommands = [
+			'echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
+			'echo $GITHUB_APP_ID > /github-app-id',
+			'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
+		];
+
 		const githubSources: CloudquerySource[] = [
 			{
 				name: 'GitHubRepositories',
 				description: 'Collect GitHub repository data',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({ tables: ['github_repositories'] }),
-				secrets: {
-					GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-						githubCredentials,
-						'private-key',
-					),
-					GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
-					GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-						githubCredentials,
-						'installation-id',
-					),
-				},
-				additionalCommands: [
-					'echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
-					'echo $GITHUB_APP_ID > /github-app-id',
-					'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
-				],
+				secrets: githubSecrets,
+				additionalCommands: additionalGithubCommands,
 			},
 		];
 
