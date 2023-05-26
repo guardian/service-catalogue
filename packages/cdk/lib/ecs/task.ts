@@ -12,6 +12,7 @@ import {
 } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
+import type { Secret } from 'aws-cdk-lib/aws-ecs/lib/container-definition';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
@@ -69,6 +70,19 @@ export interface ScheduledCloudqueryTaskProps
 	 * The CloudQuery config to use to collect data from.
 	 */
 	sourceConfig: CloudqueryConfig;
+
+	/**
+	 * Any secrets to pass to the CloudQuery container.
+	 *
+	 * @see https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs.ContainerDefinitionOptions.html#secrets
+	 * @see https://repost.aws/knowledge-center/ecs-data-security-container-task
+	 */
+	secrets?: Record<string, Secret>;
+
+	/**
+	 * Additional commands to run within the CloudQuery container, executed first.
+	 */
+	additionalCommands?: string[];
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -85,6 +99,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			loggingStreamName,
 			sourceConfig,
 			enabled,
+			secrets,
+			additionalCommands = [],
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -120,10 +136,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: cloudqueryImage,
 			entryPoint: [''],
+			secrets,
 			command: [
 				'/bin/sh',
 				'-c',
 				[
+					...additionalCommands,
 					'wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates',
 					`printf '${dump(sourceConfig)}' > /source.yaml`,
 					`printf '${dump(destinationConfig)}' > /destination.yaml`,

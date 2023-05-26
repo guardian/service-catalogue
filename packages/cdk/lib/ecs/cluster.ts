@@ -3,6 +3,7 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster } from 'aws-cdk-lib/aws-ecs';
+import type { Secret } from 'aws-cdk-lib/aws-ecs/lib/container-definition';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
@@ -10,7 +11,7 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { CloudqueryConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
-interface CloudquerySource {
+export interface CloudquerySource {
 	/**
 	 * The name of the source.
 	 */
@@ -42,6 +43,19 @@ interface CloudquerySource {
 	 * Managed policies required by this source.
 	 */
 	managedPolicies?: IManagedPolicy[];
+
+	/**
+	 * Any secrets to pass to the CloudQuery container.
+	 *
+	 * @see https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs.ContainerDefinitionOptions.html#secrets
+	 * @see https://repost.aws/knowledge-center/ecs-data-security-container-task
+	 */
+	secrets?: Record<string, Secret>;
+
+	/**
+	 * Additional commands to run within the CloudQuery container, executed first.
+	 */
+	additionalCommands?: string[];
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -102,13 +116,23 @@ export class CloudqueryCluster extends Cluster {
 		};
 
 		sources.forEach(
-			({ name, schedule, config, managedPolicies = [], policies = [] }) => {
+			({
+				name,
+				schedule,
+				config,
+				managedPolicies = [],
+				policies = [],
+				secrets,
+				additionalCommands,
+			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
 					managedPolicies,
 					policies: [logShippingPolicy, ...policies],
 					schedule,
 					sourceConfig: config,
+					secrets,
+					additionalCommands,
 				});
 			},
 		);

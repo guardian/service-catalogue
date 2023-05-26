@@ -3,6 +3,7 @@ import { dump } from 'js-yaml';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	githubSourceConfig,
 	postgresDestinationConfig,
 } from './config';
 
@@ -120,6 +121,31 @@ describe('Config generation, and converting to YAML', () => {
 		    accounts:
 		      - id: cq-for-000000000015
 		        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+		"
+	`);
+	});
+
+	it('Should create a GitHub source configuration', () => {
+		const config = githubSourceConfig({ tables: ['github_repositories'] });
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: github
+		  path: cloudquery/github
+		  version: v5.2.0
+		  tables:
+		    - github_repositories
+		  destinations:
+		    - postgresql
+		  concurrency: 1000
+		  spec:
+		    orgs:
+		      - guardian
+		    app_auth:
+		      - org: guardian
+		        private_key_path: /github-private-key
+		        app_id: \${file:/github-app-id}
+		        installation_id: \${file:/github-installation-id}
 		"
 	`);
 	});
