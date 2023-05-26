@@ -4,21 +4,21 @@ export const Versions = {
 	 *
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=cli
 	 */
-	CloudqueryCli: '3.3.1',
+	CloudqueryCli: '3.5.0',
 
 	/**
 	 * The version of the CloudQuery Postgres destination plugin to install.
 	 *
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-destination-postgresql
 	 */
-	CloudqueryPostgres: '4.1.0',
+	CloudqueryPostgres: '4.2.0',
 
 	/**
 	 * The version of the CloudQuery AWS source plugin to install.
 	 *
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
 	 */
-	CloudqueryAws: '17.0.0',
+	CloudqueryAws: '17.4.0',
 
 	/**
 	 * The version of the CloudQuery GitHub source plugin to install.

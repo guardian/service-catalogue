@@ -17,7 +17,7 @@ describe('Config generation, and converting to YAML', () => {
 		  name: postgresql
 		  registry: github
 		  path: cloudquery/postgresql
-		  version: v4.1.0
+		  version: v4.2.0
 		  migrate_mode: forced
 		  spec:
 		    connection_string: \${file:/var/scratch/connection_string}
@@ -34,7 +34,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v17.0.0
+		  version: v17.4.0
 		  tables:
 		    - aws_s3_buckets
 		  destinations:
@@ -66,7 +66,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v17.0.0
+		  version: v17.4.0
 		  tables:
 		    - '*'
 		  skip_tables:
@@ -103,7 +103,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v17.0.0
+		  version: v17.4.0
 		  tables:
 		    - aws_accessanalyzer_analyzers
 		    - aws_accessanalyzer_analyzer_archive_rules
