@@ -104,6 +104,11 @@ export class CloudQuery extends GuStack {
 			Port.tcp(port),
 		);
 
+		const readonlyPolicy = readonlyAccessManagedPolicy(
+			this,
+			'readonly-managed-policy',
+		);
+
 		const awsSources: CloudquerySource[] = [
 			{
 				name: 'All',
@@ -113,9 +118,7 @@ export class CloudQuery extends GuStack {
 					tables: ['*'],
 					skipTables: skipTables,
 				}),
-				managedPolicies: [
-					readonlyAccessManagedPolicy(this, 'fetch-all-managed-policy'),
-				],
+				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
 			},
 			{
@@ -134,9 +137,7 @@ export class CloudQuery extends GuStack {
 						'aws_organizations_roots',
 					],
 				}),
-				managedPolicies: [
-					readonlyAccessManagedPolicy(this, 'list-orgs-managed-policy'),
-				],
+				managedPolicies: [readonlyPolicy],
 				policies: [
 					listOrgsPolicy,
 					standardDenyPolicy,
@@ -155,13 +156,27 @@ export class CloudQuery extends GuStack {
 						'aws_accessanalyzer_analyzer_findings',
 					],
 				}),
-				managedPolicies: [
-					readonlyAccessManagedPolicy(this, 'access-analyser-managed-policy'),
-				],
+				managedPolicies: [readonlyPolicy],
 				policies: [
 					standardDenyPolicy,
 					cloudqueryAccess(GuardianAwsAccounts.Security),
 				],
+			},
+			{
+				name: 'OrgWideCloudFormation',
+				description:
+					'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
+				schedule: Schedule.rate(Duration.hours(3)),
+				config: awsSourceConfigForOrganisation({
+					tables: [
+						'aws_cloudformation_stacks',
+						'aws_cloudformation_stack_resources',
+						'aws_cloudformation_stack_templates',
+						'aws_cloudformation_template_summaries',
+					],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
 		];
 
