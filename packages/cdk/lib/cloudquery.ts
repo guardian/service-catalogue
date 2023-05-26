@@ -203,6 +203,20 @@ export class CloudQuery extends GuStack {
 				secrets: githubSecrets,
 				additionalCommands: additionalGithubCommands,
 			},
+			{
+				name: 'GitHubTeams',
+				description: 'Collect GitHub team data',
+				schedule: Schedule.cron({ day: '1' }),
+				config: githubSourceConfig({
+					tables: [
+						'github_teams',
+						'github_team_members',
+						'github_team_repositories',
+					],
+				}),
+				secrets: githubSecrets,
+				additionalCommands: additionalGithubCommands,
+			},
 		];
 
 		const fastlyCredentials = SecretsManager.fromSecretPartialArn(
