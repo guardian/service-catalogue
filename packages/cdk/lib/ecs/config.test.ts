@@ -3,6 +3,7 @@ import { dump } from 'js-yaml';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	fastlySourceConfig,
 	githubSourceConfig,
 	postgresDestinationConfig,
 } from './config';
@@ -146,6 +147,25 @@ describe('Config generation, and converting to YAML', () => {
 		        private_key_path: /github-private-key
 		        app_id: \${file:/github-app-id}
 		        installation_id: \${file:/github-installation-id}
+		"
+	`);
+	});
+
+	it('Should create a Fastly source configuration', () => {
+		const config = fastlySourceConfig({ tables: ['*'] });
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: fastly
+		  path: cloudquery/fastly
+		  version: v1.3.1
+		  tables:
+		    - '*'
+		  destinations:
+		    - postgresql
+		  concurrency: 1000
+		  spec:
+		    fastly_api_key: \${FASTLY_API_KEY}
 		"
 	`);
 	});

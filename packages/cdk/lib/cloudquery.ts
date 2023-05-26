@@ -29,6 +29,7 @@ import { CloudqueryCluster } from './ecs/cluster';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	fastlySourceConfig,
 	githubSourceConfig,
 	skipTables,
 } from './ecs/config';
@@ -200,12 +201,46 @@ export class CloudQuery extends GuStack {
 			},
 		];
 
+		const fastlyCredentials = SecretsManager.fromSecretPartialArn(
+			this,
+			'fastly-credentials',
+			this.formatArn({
+				service: 'secretsmanager',
+				resource: 'secret',
+				resourceName: `/${stage}/${stack}/${app}/fastly-credentials`,
+				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+			}),
+		);
+
+		const fastlySources: CloudquerySource[] = [
+			{
+				name: 'FastlyServices',
+				description: 'Fastly services data',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: fastlySourceConfig({
+					tables: [
+						'fastly_services',
+						'fastly_service_versions',
+						'fastly_service_backends',
+						'fastly_service_domains',
+						'fastly_service_health_checks',
+					],
+				}),
+				secrets: {
+					FASTLY_API_KEY: Secret.fromSecretsManager(
+						fastlyCredentials,
+						'api-key',
+					),
+				},
+			},
+		];
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
-			sources: [...awsSources, ...githubSources],
+			sources: [...awsSources, ...githubSources, ...fastlySources],
 		});
 	}
 }
