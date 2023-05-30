@@ -2400,7 +2400,7 @@ spec:
     },
     "CloudquerySourceGitHubTeamsScheduledEventRule051F542B": {
       "Properties": {
-        "ScheduleExpression": "cron(* * 1 * ? *)",
+        "ScheduleExpression": "cron(* * ? * 1 *)",
         "State": "ENABLED",
         "Targets": [
           {

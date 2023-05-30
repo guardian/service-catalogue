@@ -206,7 +206,7 @@ export class CloudQuery extends GuStack {
 			{
 				name: 'GitHubTeams',
 				description: 'Collect GitHub team data',
-				schedule: Schedule.cron({ day: '1' }),
+				schedule: Schedule.cron({ weekDay: '1' }),
 				config: githubSourceConfig({
 					tables: [
 						'github_teams',
