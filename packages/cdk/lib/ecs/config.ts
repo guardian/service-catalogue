@@ -176,6 +176,26 @@ export function fastlySourceConfig(
 	};
 }
 
+export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'galaxies',
+			path: 'guardian/galaxies',
+			version: Versions.CloudqueryGalaxies,
+			destinations: ['postgresql'],
+			tables: [
+				'galaxies_people_table',
+				'galaxies_teams_table',
+				'galaxies_streams_table',
+			],
+			spec: {
+				bucket: bucketName,
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts

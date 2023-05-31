@@ -4,6 +4,7 @@ import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
 	fastlySourceConfig,
+	galaxiesSourceConfig,
 	githubSourceConfig,
 	postgresDestinationConfig,
 } from './config';
@@ -166,6 +167,26 @@ describe('Config generation, and converting to YAML', () => {
 		  concurrency: 1000
 		  spec:
 		    fastly_api_key: \${FASTLY_API_KEY}
+		"
+	`);
+	});
+
+	it('Should create a Galaxies source configuration', () => {
+		const config = galaxiesSourceConfig('my-galaxies-bucket');
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: galaxies
+		  path: guardian/galaxies
+		  version: v1.1.0
+		  destinations:
+		    - postgresql
+		  tables:
+		    - galaxies_people_table
+		    - galaxies_teams_table
+		    - galaxies_streams_table
+		  spec:
+		    bucket: my-galaxies-bucket
 		"
 	`);
 	});

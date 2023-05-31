@@ -33,4 +33,11 @@ export const Versions = {
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-fastly
 	 */
 	CloudqueryFastly: '1.3.1',
+
+	/**
+	 * The version of the our custom Galaxies source plugin to install.
+	 *
+	 * @see https://github.com/guardian/cq-source-galaxies
+	 */
+	CloudqueryGalaxies: 'v1.1.0',
 };

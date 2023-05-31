@@ -50,3 +50,19 @@ export function cloudqueryAccess(accountId: string) {
 		actions: ['sts:AssumeRole'],
 	});
 }
+
+/**
+ * Create a policy statement allowing read access to the given S3 bucket.
+ *
+ * @param resources a list of S3 bucket ARN resources. E.g.
+ * `arn:aws:s3:::my-bucket/foo/*` to allow read access to everything under
+ * `/foo`.
+ * @returns a policy statement allowing read access to the given S3 bucket
+ */
+export const readBucketPolicy = (...resources: string[]): PolicyStatement => {
+	return new PolicyStatement({
+		effect: Effect.ALLOW,
+		resources: resources,
+		actions: ['s3:GetObject'],
+	});
+};
