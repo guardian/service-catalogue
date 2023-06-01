@@ -1,10 +1,11 @@
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuSecurityGroup,
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
+import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { ArnFormat, Duration } from 'aws-cdk-lib';
@@ -30,12 +31,14 @@ import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
 	fastlySourceConfig,
+	galaxiesSourceConfig,
 	githubSourceConfig,
 	skipTables,
 } from './ecs/config';
 import {
 	cloudqueryAccess,
 	listOrgsPolicy,
+	readBucketPolicy,
 	readonlyAccessManagedPolicy,
 	standardDenyPolicy,
 } from './ecs/policies';
@@ -268,12 +271,47 @@ export class CloudQuery extends GuStack {
 			},
 		];
 
+		// The bucket in which the Galaxies data lives.
+		const actionsStaticSiteBucketArn = new GuStringParameter(
+			this,
+			'ActionsStaticSiteBucketArnParam',
+			{
+				fromSSM: true,
+				default: '/INFRA/deploy/cloudquery/actions-static-site-bucket-arn',
+			},
+		).valueAsString;
+
+		const actionsStaticSiteBucket = GuS3Bucket.fromBucketArn(
+			this,
+			'ActionsStaticSiteBucket',
+			actionsStaticSiteBucketArn,
+		);
+
+		const galaxiesSources: CloudquerySource[] = [
+			{
+				name: 'Galaxies',
+				description: 'Galaxies data',
+				schedule: Schedule.rate(Duration.days(1)),
+				policies: [
+					readBucketPolicy(
+						`${actionsStaticSiteBucket.bucketArn}/galaxies.gutools.co.uk/data/*`,
+					),
+				],
+				config: galaxiesSourceConfig(actionsStaticSiteBucket.bucketName),
+			},
+		];
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
-			sources: [...awsSources, ...githubSources, ...fastlySources],
+			sources: [
+				...awsSources,
+				...githubSources,
+				...fastlySources,
+				...galaxiesSources,
+			],
 		});
 	}
 }
