@@ -196,6 +196,36 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 	};
 }
 
+export function snykSourceConfig(
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	const { tables, skipTables } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'snyk',
+			path: 'cloudquery/snyk',
+			version: `v${Versions.CloudquerySnyk}`,
+			tables,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+			spec: {
+				api_key: '${SNYK_API_KEY}',
+				table_options: {
+					snyk_reporting_issues: {
+						period: '30d',
+					},
+				},
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts

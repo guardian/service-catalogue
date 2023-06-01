@@ -34,6 +34,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	skipTables,
+	snykSourceConfig,
 } from './ecs/config';
 import {
 	cloudqueryAccess,
@@ -301,6 +302,29 @@ export class CloudQuery extends GuStack {
 			},
 		];
 
+		const snykCredentials = SecretsManager.fromSecretPartialArn(
+			this,
+			'snyk-credentials',
+			this.formatArn({
+				service: 'secretsmanager',
+				resource: 'secret',
+				resourceName: `/${stage}/${stack}/${app}/snyk-credentials`,
+				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+			}),
+		);
+
+		const snykSources: CloudquerySource[] = [
+			{
+				name: 'SnykAll',
+				description: 'Collecting all Snyk data',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: snykSourceConfig({ tables: ['*'] }),
+				secrets: {
+					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
+				},
+			},
+		];
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
@@ -311,6 +335,7 @@ export class CloudQuery extends GuStack {
 				...githubSources,
 				...fastlySources,
 				...galaxiesSources,
+				...snykSources,
 			],
 		});
 	}

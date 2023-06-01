@@ -40,4 +40,11 @@ export const Versions = {
 	 * @see https://github.com/guardian/cq-source-galaxies
 	 */
 	CloudqueryGalaxies: 'v1.1.0',
+
+	/**
+	 * The version of the CloudQuery Snyk source plugin to install.
+	 *
+	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-snyk
+	 */
+	CloudquerySnyk: '3.0.0',
 };
