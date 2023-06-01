@@ -4,16 +4,7 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-COMMON_PARAMS="--profile deployTools --region eu-west-1"
-BUCKET=$(aws ssm get-parameter --name /account/services/artifact.bucket ${COMMON_PARAMS} | jq -r .Parameter.Value)
+echo "Creating .env file from .env.example"
+cp $DIR/../.env.example $DIR/../.env
 
-mkdir -p ~/.gu
-
-if [ "$BUCKET" ]; then
-    aws s3 cp s3://"$BUCKET"/deploy/DEV/cloudquery/cloudquery-github-key ~/.gu/cloudquery-github-key ${COMMON_PARAMS}
-    aws s3 cp s3://"$BUCKET"/deploy/DEV/cloudquery/.env $DIR/../.env ${COMMON_PARAMS}
-
-else
-    echo "Could not get artifact bucket parameter value from SSM, make sure you have deployTools credentials configured."
-    exit 1
-fi
+echo "Visit https://github.com/settings/tokens?type=beta to create a GitHub token, and add it to the .env file"

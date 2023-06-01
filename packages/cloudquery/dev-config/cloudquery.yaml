@@ -3,10 +3,10 @@ kind: source
 spec:
   name: 'aws'
   path: 'cloudquery/aws'
-
-  # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
-  version: 'v17.4.0'
+  version: v${CQ_AWS}
   destinations: ['postgresql']
+  tables:
+    - '*'
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events
@@ -53,17 +53,11 @@ spec:
   # Source spec section
   name: 'github'
   path: 'cloudquery/github'
-  version: 'v5.2.0'
+  version: v${CQ_GITHUB}
   tables: ['*']
   destinations: ['postgresql']
   spec:
-    ## App Authentication (one per org):
-    app_auth:
-      - org: 'guardian'
-        private_key_path: '/github-key' # Path to private key file
-        app_id: '${GITHUB_APP_ID}' # App ID, required for App Authentication.
-        installation_id: '${GITHUB_INSTALLATION_ID}' # Installation ID for this org
-    #orgs: [] # Optional. List of organizations to extract from
+    access_token: ${GITHUB_ACCESS_TOKEN}
     repos: [
         # example devX owned repos
         'guardian/cdk',
@@ -74,7 +68,7 @@ spec:
 
         # example private repo
         'guardian/tracker',
-      ] # Optional. List of repositories to extract from
+      ]
 
 ---
 kind: destination
@@ -82,9 +76,7 @@ spec:
   name: 'postgresql'
   registry: 'github'
   path: 'cloudquery/postgresql'
-
-  # Track releases on https://github.com/cloudquery/cloudquery/releases?q=plugins-destination-postgresql-&expanded=true
-  version: 'v4.2.0'
+  version: v${CQ_POSTGRES}
 
   # Automatically apply migrations whenever plugins are updated.
   # Note: This is not encouraged if risk averse, so we should consider removing this once fully in production.
