@@ -1,7 +1,13 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import { Versions } from './versions';
 
-export type CloudqueryConfig = Record<string, unknown>;
+export type CloudqueryConfig = {
+	spec: {
+		tables?: string[];
+		[k: string]: unknown;
+	};
+	[k: string]: unknown;
+};
 
 interface CloudqueryTableConfig {
 	tables?: string[];
