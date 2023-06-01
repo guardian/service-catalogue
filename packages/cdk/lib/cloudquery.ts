@@ -34,6 +34,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	skipTables,
+	snykSourceConfig,
 } from './ecs/config';
 import {
 	cloudqueryAccess,
@@ -301,6 +302,42 @@ export class CloudQuery extends GuStack {
 			},
 		];
 
+		const snykCredentials = SecretsManager.fromSecretPartialArn(
+			this,
+			'snyk-credentials',
+			this.formatArn({
+				service: 'secretsmanager',
+				resource: 'secret',
+				resourceName: `/${stage}/${stack}/${app}/snyk-credentials`,
+				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+			}),
+		);
+
+		const snykSources: CloudquerySource[] = [
+			{
+				name: 'SnykAll',
+				description: 'Collecting all Snyk data',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: snykSourceConfig({
+					tables: [
+						'snyk_dependencies',
+						'snyk_groups',
+						'snyk_group_members',
+						'snyk_integrations',
+						'snyk_organizations',
+						'snyk_organization_members',
+						'snyk_organization_provisions',
+						'snyk_projects',
+						'snyk_reporting_issues',
+						'snyk_reporting_latest_issues',
+					],
+				}),
+				secrets: {
+					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
+				},
+			},
+		];
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
@@ -311,6 +348,7 @@ export class CloudQuery extends GuStack {
 				...githubSources,
 				...fastlySources,
 				...galaxiesSources,
+				...snykSources,
 			],
 		});
 	}

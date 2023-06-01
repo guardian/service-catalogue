@@ -7,6 +7,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	postgresDestinationConfig,
+	snykSourceConfig,
 } from './config';
 
 describe('Config generation, and converting to YAML', () => {
@@ -187,6 +188,27 @@ describe('Config generation, and converting to YAML', () => {
 		    - galaxies_streams_table
 		  spec:
 		    bucket: my-galaxies-bucket
+		"
+	`);
+	});
+
+	it('Should create a Snyk source configuration', () => {
+		const config = snykSourceConfig({ tables: ['*'] });
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: snyk
+		  path: cloudquery/snyk
+		  version: v3.0.0
+		  tables:
+		    - '*'
+		  destinations:
+		    - postgresql
+		  spec:
+		    api_key: \${SNYK_API_KEY}
+		    table_options:
+		      snyk_reporting_issues:
+		        period: 30d
 		"
 	`);
 	});
