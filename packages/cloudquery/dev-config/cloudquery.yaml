@@ -6,7 +6,7 @@ spec:
   version: v${CQ_AWS}
   destinations: ['postgresql']
   tables:
-    - '*'
+    - 'aws_*'
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events
@@ -54,7 +54,7 @@ spec:
   name: 'github'
   path: 'cloudquery/github'
   version: v${CQ_GITHUB}
-  tables: ['*']
+  tables: ['github_*']
   destinations: ['postgresql']
   spec:
     access_token: ${GITHUB_ACCESS_TOKEN}
@@ -77,7 +77,7 @@ spec:
   version: v${CQ_SNYK}
   destinations: ['postgresql']
   tables:
-    - '*'
+    - 'snyk_*'
   spec:
     api_key: ${SNYK_TOKEN}
     table_options:
