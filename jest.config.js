@@ -21,9 +21,5 @@ module.exports = {
 	testEnvironment: 'node',
 	projects: [
 		'cdk',
-		'github-lens-api',
-		'github-data-fetcher',
-		'common',
-		'services-api',
 	].map(generateProject),
 };

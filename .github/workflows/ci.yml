@@ -62,12 +62,6 @@ jobs:
           contentDirectories: |
             cdk.out:
               - packages/cdk/cdk.out
-            github-data-fetcher:
-              - packages/github-data-fetcher/dist/github-data-fetcher.zip
-            github-lens-api:
-              - packages/github-lens-api/dist/github-lens-api.zip
-            services-api:
-              - packages/services-api/dist/services-api.zip
             repocop:
               - packages/repocop/target/scala-3.2.1/repocop.jar
 
