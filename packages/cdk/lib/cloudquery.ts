@@ -119,7 +119,7 @@ export class CloudQuery extends GuStack {
 				description: 'Data fetched across all accounts in the organisation.',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
-					tables: ['*'],
+					tables: ['aws_*'],
 					skipTables: skipTables,
 				}),
 				managedPolicies: [readonlyPolicy],
@@ -340,18 +340,7 @@ export class CloudQuery extends GuStack {
 				description: 'Collecting all Snyk data',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: snykSourceConfig({
-					tables: [
-						'snyk_dependencies',
-						'snyk_groups',
-						'snyk_group_members',
-						'snyk_integrations',
-						'snyk_organizations',
-						'snyk_organization_members',
-						'snyk_organization_provisions',
-						'snyk_projects',
-						'snyk_reporting_issues',
-						'snyk_reporting_latest_issues',
-					],
+					tables: ['snyk_*'],
 				}),
 				secrets: {
 					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),

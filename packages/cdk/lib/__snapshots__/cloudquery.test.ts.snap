@@ -126,7 +126,7 @@ spec:
   path: cloudquery/aws
   version: v17.4.0
   tables:
-    - '*'
+    - aws_*
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events
@@ -5956,16 +5956,7 @@ spec:
   path: cloudquery/snyk
   version: v3.0.0
   tables:
-    - snyk_dependencies
-    - snyk_groups
-    - snyk_group_members
-    - snyk_integrations
-    - snyk_organizations
-    - snyk_organization_members
-    - snyk_organization_provisions
-    - snyk_projects
-    - snyk_reporting_issues
-    - snyk_reporting_latest_issues
+    - snyk_*
   destinations:
     - postgresql
   spec:
