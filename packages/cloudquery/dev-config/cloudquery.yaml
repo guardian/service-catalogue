@@ -69,7 +69,20 @@ spec:
         # example private repo
         'guardian/tracker',
       ]
-
+---
+kind: source
+spec:
+  name: 'snyk'
+  path: 'cloudquery/snyk'
+  version: v${CQ_SNYK}
+  destinations: ['postgresql']
+  tables:
+    - '*'
+  spec:
+    api_key: ${SNYK_TOKEN}
+    table_options:
+      snyk_reporting_issues:
+        period: 30d
 ---
 kind: destination
 spec:

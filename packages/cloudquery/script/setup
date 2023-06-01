@@ -8,6 +8,7 @@ echo "Creating .env file from .env.example"
 cp $DIR/../.env.example $DIR/../.env
 
 echo "Visit https://github.com/settings/tokens?type=beta to create a GitHub token, and add it to the .env file"
+echo "Visit https://docs.snyk.io/snyk-api-info/authentication-for-api to create a Snyk token, and add it to the .env file"
 
 echo "Checking AWS credentials"
 STATUS=$(aws sts get-caller-identity --profile developerPlayground 2>&1 || true)
