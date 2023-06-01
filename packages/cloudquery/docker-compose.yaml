@@ -9,18 +9,19 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: not_at_all_secret
   cloudquery:
-    image: ghcr.io/cloudquery/cloudquery:2.5.3
+    image: ghcr.io/cloudquery/cloudquery:${CQ_CLI}
     platform: linux/amd64
     depends_on:
       - postgres
     volumes:
       - ~/.aws/credentials:/.aws/credentials
       - ./dev-config/cloudquery.yaml:/dev-config.yaml
-      - ~/.gu/cloudquery-github-key:/github-key
     environment:
       AWS_SHARED_CREDENTIALS_FILE: "/.aws/credentials"
-      GITHUB_APP_ID: ${GITHUB_APP_ID}
-      GITHUB_INSTALLATION_ID: ${GITHUB_INSTALLATION_ID}
+      CQ_POSTGRES: ${CQ_POSTGRES}
+      CQ_AWS: ${CQ_AWS}
+      CQ_GITHUB: ${CQ_GITHUB}
+      GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
     command: sync /dev-config.yaml --log-console --log-level warn
   grafana:
     image: grafana/grafana-oss:9.4.7

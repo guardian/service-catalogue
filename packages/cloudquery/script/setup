@@ -4,16 +4,19 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-COMMON_PARAMS="--profile deployTools --region eu-west-1"
-BUCKET=$(aws ssm get-parameter --name /account/services/artifact.bucket ${COMMON_PARAMS} | jq -r .Parameter.Value)
+echo "Creating .env file from .env.example"
+cp $DIR/../.env.example $DIR/../.env
 
-mkdir -p ~/.gu
+echo "Visit https://github.com/settings/tokens?type=beta to create a GitHub token, and add it to the .env file"
 
-if [ "$BUCKET" ]; then
-    aws s3 cp s3://"$BUCKET"/deploy/DEV/cloudquery/cloudquery-github-key ~/.gu/cloudquery-github-key ${COMMON_PARAMS}
-    aws s3 cp s3://"$BUCKET"/deploy/DEV/cloudquery/.env $DIR/../.env ${COMMON_PARAMS}
-
+echo "Checking AWS credentials"
+STATUS=$(aws sts get-caller-identity --profile developerPlayground 2>&1 || true)
+if [[ ${STATUS} =~ (ExpiredToken) ]]; then
+  echo "Credentials for the developerPlayground profile have expired. Please fetch new credentials."
+  exit 1
+elif [[ ${STATUS} =~ ("could not be found") ]]; then
+  echo "Credentials for the developerPlayground profile are missing. Please fetch some."
+  exit 1
 else
-    echo "Could not get artifact bucket parameter value from SSM, make sure you have deployTools credentials configured."
-    exit 1
+  echo "AWS credentials are valid"
 fi
