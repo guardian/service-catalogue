@@ -318,7 +318,20 @@ export class CloudQuery extends GuStack {
 				name: 'SnykAll',
 				description: 'Collecting all Snyk data',
 				schedule: Schedule.rate(Duration.days(1)),
-				config: snykSourceConfig({ tables: ['*'] }),
+				config: snykSourceConfig({
+					tables: [
+						'snyk_dependencies',
+						'snyk_groups',
+						'snyk_group_members',
+						'snyk_integrations',
+						'snyk_organizations',
+						'snyk_organization_members',
+						'snyk_organization_provisions',
+						'snyk_projects',
+						'snyk_reporting_issues',
+						'snyk_reporting_latest_issues',
+					],
+				}),
 				secrets: {
 					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
 				},

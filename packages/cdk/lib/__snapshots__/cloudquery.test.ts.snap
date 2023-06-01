@@ -4823,7 +4823,16 @@ spec:
   path: cloudquery/snyk
   version: v3.0.0
   tables:
-    - '*'
+    - snyk_dependencies
+    - snyk_groups
+    - snyk_group_members
+    - snyk_integrations
+    - snyk_organizations
+    - snyk_organization_members
+    - snyk_organization_provisions
+    - snyk_projects
+    - snyk_reporting_issues
+    - snyk_reporting_latest_issues
   destinations:
     - postgresql
   spec:
