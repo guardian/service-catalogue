@@ -56,6 +56,11 @@ export interface CloudquerySource {
 	 * Additional commands to run within the CloudQuery container, executed first.
 	 */
 	additionalCommands?: string[];
+
+	/**
+	 * The amount (in MiB) of memory used by the task.
+	 */
+	memoryLimitMiB?: number;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -124,6 +129,7 @@ export class CloudqueryCluster extends Cluster {
 				policies = [],
 				secrets,
 				additionalCommands,
+				memoryLimitMiB,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -133,6 +139,7 @@ export class CloudqueryCluster extends Cluster {
 					sourceConfig: config,
 					secrets,
 					additionalCommands,
+					memoryLimitMiB,
 				});
 			},
 		);

@@ -271,7 +271,7 @@ spec:
           ],
         },
         "Family": "CloudQueryCloudquerySourceAllTaskDefinitionC1F1D919",
-        "Memory": "512",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

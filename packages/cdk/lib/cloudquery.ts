@@ -124,6 +124,7 @@ export class CloudQuery extends GuStack {
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
+				memoryLimitMiB: 2048,
 			},
 			{
 				name: 'DeployToolsListOrgs',
