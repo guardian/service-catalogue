@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: not_at_all_secret
   cloudquery:
-    image: ghcr.io/cloudquery/cloudquery:2.5.3
+    image: ghcr.io/cloudquery/cloudquery:3.5.0
     platform: linux/amd64
     depends_on:
       - postgres
