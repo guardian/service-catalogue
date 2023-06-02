@@ -5417,7 +5417,7 @@ spec:
     - aws_stepfunctions_*
   destinations:
     - postgresql
-  concurrency: 5000
+  concurrency: 10000
   spec:
     regions:
       - eu-west-1
@@ -5527,7 +5527,7 @@ spec:
           ],
         },
         "Family": "CloudQueryCloudquerySourceOrgWideLambdaTaskDefinition26B11C87",
-        "Memory": "512",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

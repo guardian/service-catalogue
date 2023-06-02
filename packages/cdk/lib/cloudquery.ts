@@ -211,10 +211,11 @@ export class CloudQuery extends GuStack {
 				schedule: Schedule.rate(Duration.hours(3)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_lambda_*', 'aws_stepfunctions_*'],
-					concurrency: 5000,
+					concurrency: 10000,
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
+				memoryLimitMiB: 2048,
 			},
 			{
 				name: 'OrgWideS3',
