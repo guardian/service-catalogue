@@ -203,6 +203,17 @@ export class CloudQuery extends GuStack {
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
 			},
+			{
+				name: 'OrgWideLambda',
+				description:
+					'Collecting lambda and step function data across the organisation',
+				schedule: Schedule.rate(Duration.hours(3)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_lambda_*', 'aws_stepfunctions_*'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [standardDenyPolicy, cloudqueryAccess('*')],
+			},
 		];
 
 		const selectedAwsTables = awsSources.flatMap(
