@@ -214,6 +214,16 @@ export class CloudQuery extends GuStack {
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
 			},
+			{
+				name: 'OrgWideS3',
+				description: 'Collecting Se data across the organisation',
+				schedule: Schedule.rate(Duration.hours(3)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_s3_*'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [standardDenyPolicy, cloudqueryAccess('*')],
+			},
 		];
 
 		const selectedAwsTables = awsSources.flatMap(
