@@ -205,6 +205,7 @@ export class CloudQuery extends GuStack {
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [...skipTables, ...selectedAwsTables],
+				concurrency: 10000,
 			}),
 			managedPolicies: [readonlyPolicy],
 			policies: [standardDenyPolicy, cloudqueryAccess('*')],

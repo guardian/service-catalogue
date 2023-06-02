@@ -176,6 +176,7 @@ spec:
     - aws_cloudformation_template_summaries
   destinations:
     - postgresql
+  concurrency: 10000
   spec:
     regions:
       - eu-west-1
