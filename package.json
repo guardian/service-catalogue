@@ -4,9 +4,6 @@
   "description": "A lens into your GitHub organisation",
   "scripts": {
     "test": "npm run test --workspaces --if-present",
-    "dev-data-fetcher": "npm -w packages/github-data-fetcher run dev",
-    "dev-github-lens-api": "npm -w packages/github-lens-api run dev",
-    "dev-services-api": "npm -w packages/services-api run dev",
     "synth": "npm run synth --workspace=cdk",
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces --if-present",
