@@ -199,6 +199,7 @@ export class CloudQuery extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_ec2_*'],
 					skipTables: ['aws_ec2_instance_types'],
+					concurrency: 10000,
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
@@ -210,6 +211,7 @@ export class CloudQuery extends GuStack {
 				schedule: Schedule.rate(Duration.hours(3)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_lambda_*', 'aws_stepfunctions_*'],
+					concurrency: 5000,
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
@@ -220,6 +222,7 @@ export class CloudQuery extends GuStack {
 				schedule: Schedule.rate(Duration.hours(3)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_s3_*'],
+					concurrency: 10000,
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],

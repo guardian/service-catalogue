@@ -4854,6 +4854,7 @@ spec:
     - aws_ec2_instance_types
   destinations:
     - postgresql
+  concurrency: 10000
   spec:
     regions:
       - eu-west-1
@@ -5416,6 +5417,7 @@ spec:
     - aws_stepfunctions_*
   destinations:
     - postgresql
+  concurrency: 5000
   spec:
     regions:
       - eu-west-1
@@ -6544,6 +6546,7 @@ spec:
     - aws_s3_*
   destinations:
     - postgresql
+  concurrency: 10000
   spec:
     regions:
       - eu-west-1
