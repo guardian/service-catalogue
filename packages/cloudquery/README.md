@@ -14,11 +14,12 @@ It includes:
 ## Requirements
 
 - Docker
-- to query github you need to put a private key for github in /packages/cloudquery/dev-config/git-hub-key
+- A GitHub Personal Access Token (PAT)
+- A Snyk token
 
 ## Setup
 
-In the project root, run:
+In the project root, run the following, and follow the resulting instructions:
 
 ```sh
 ./packages/cloudquery/script/setup
