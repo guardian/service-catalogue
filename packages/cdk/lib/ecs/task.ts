@@ -102,12 +102,14 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			secrets,
 			additionalCommands = [],
 			memoryLimitMiB,
+			cpu,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB,
+			cpu,
 		});
 
 		const dbUser = 'cloudquery';

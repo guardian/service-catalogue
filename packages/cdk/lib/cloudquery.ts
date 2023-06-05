@@ -215,7 +215,8 @@ export class CloudQuery extends GuStack {
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [standardDenyPolicy, cloudqueryAccess('*')],
-				memoryLimitMiB: 2048,
+				memoryLimitMiB: 3072,
+				cpu: 1024,
 			},
 			{
 				name: 'OrgWideS3',
@@ -246,6 +247,7 @@ export class CloudQuery extends GuStack {
 			managedPolicies: [readonlyPolicy],
 			policies: [standardDenyPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 2048,
+			cpu: 1024,
 		};
 
 		const githubCredentials = SecretsManager.fromSecretPartialArn(

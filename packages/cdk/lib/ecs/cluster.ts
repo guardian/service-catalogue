@@ -60,7 +60,12 @@ export interface CloudquerySource {
 	/**
 	 * The amount (in MiB) of memory used by the task.
 	 */
-	memoryLimitMiB?: number;
+	memoryLimitMiB?: 512 | 1024 | 2048 | 3072 | 4096 | 8192 | 16384 | 32768;
+
+	/**
+	 * The number of cpu units used by the task.
+	 */
+	cpu?: 256 | 512 | 1024 | 2048 | 4096 | 8192 | 16384;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -130,6 +135,7 @@ export class CloudqueryCluster extends Cluster {
 				secrets,
 				additionalCommands,
 				memoryLimitMiB,
+				cpu,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -140,6 +146,7 @@ export class CloudqueryCluster extends Cluster {
 					secrets,
 					additionalCommands,
 					memoryLimitMiB,
+					cpu,
 				});
 			},
 		);

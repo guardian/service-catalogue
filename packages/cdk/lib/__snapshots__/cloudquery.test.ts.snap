@@ -285,7 +285,7 @@ spec:
             "Name": "CloudquerySource-AllFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceAllTaskDefinitionExecutionRole57AE7309",
@@ -5519,7 +5519,7 @@ spec:
             "Name": "CloudquerySource-OrgWideLambdaFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceOrgWideLambdaTaskDefinitionExecutionRole855AB313",
@@ -5527,7 +5527,7 @@ spec:
           ],
         },
         "Family": "CloudQueryCloudquerySourceOrgWideLambdaTaskDefinition26B11C87",
-        "Memory": "2048",
+        "Memory": "3072",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
