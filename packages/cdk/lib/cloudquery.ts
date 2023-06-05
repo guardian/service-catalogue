@@ -182,6 +182,16 @@ export class CloudQuery extends GuStack {
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
+			{
+				name: 'OrgWideLoadBalancers',
+				description: 'Collecting load balancer data across the organisation.',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+			},
 		];
 
 		const githubCredentials = SecretsManager.fromSecretPartialArn(
