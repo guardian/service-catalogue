@@ -45,7 +45,7 @@ jobs:
           distribution: 'corretto'
           cache: 'sbt'
 
-      - uses: guardian/actions-read-private-repos@v0.1.0
+      - uses: guardian/actions-read-private-repos@v0.1.1
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
