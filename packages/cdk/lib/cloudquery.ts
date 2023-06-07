@@ -218,7 +218,7 @@ export class CloudQuery extends GuStack {
 				description: 'Collecting Inspector data across the organisation.',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
-					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
+					tables: ['aws_inspector2_findings'],
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
