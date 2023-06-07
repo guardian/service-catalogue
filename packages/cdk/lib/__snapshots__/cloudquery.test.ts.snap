@@ -5398,7 +5398,6 @@ spec:
   path: cloudquery/aws
   version: v17.4.0
   tables:
-    - aws_inspector_findings
     - aws_inspector2_findings
   destinations:
     - postgresql
