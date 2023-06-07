@@ -193,6 +193,16 @@ export class CloudQuery extends GuStack {
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
 			{
+				name: 'OrgWideCertificates',
+				description: 'Collecting certificate data across the organisation.',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_acm*'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+			},
+			{
 				name: 'OrgWideCloudwatchAlarms',
 				description:
 					'Collecting CloudWatch Alarm data across the organisation.',
