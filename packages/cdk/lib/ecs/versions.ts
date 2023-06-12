@@ -48,5 +48,5 @@ export const Versions = {
 	 */
 	CloudquerySnyk: '3.0.0',
 
-	CloudquerySnykGuardian: '0.1.0',
+	CloudquerySnykGuardian: '0.1.1',
 };
