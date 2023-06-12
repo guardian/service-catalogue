@@ -198,6 +198,8 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 
 export function snykSourceConfig(
 	tableConfig: CloudqueryTableConfig,
+	path = 'cloudquery/snyk',
+	version = `v${Versions.CloudquerySnyk}`,
 ): CloudqueryConfig {
 	const { tables, skipTables } = tableConfig;
 
@@ -209,8 +211,8 @@ export function snykSourceConfig(
 		kind: 'source',
 		spec: {
 			name: 'snyk',
-			path: 'cloudquery/snyk',
-			version: `v${Versions.CloudquerySnyk}`,
+			path,
+			version,
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],

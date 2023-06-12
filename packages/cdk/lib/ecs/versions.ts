@@ -47,4 +47,6 @@ export const Versions = {
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-snyk
 	 */
 	CloudquerySnyk: '3.0.0',
+
+	CloudquerySnykGuardian: '0.1.0',
 };
