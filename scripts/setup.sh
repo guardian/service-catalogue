@@ -9,13 +9,6 @@ STAGE=DEV
 APP=github-lens
 STACK=deploy
 
-setup_git_hook() {
-  echo "Setting up repocop pre-commit hook"
-  cp "${ROOT_DIR}/scripts/pre-commit" "${ROOT_DIR}/.git/hooks/pre-commit"
-
-chmod +x "${ROOT_DIR}/.git/hooks/pre-commit"
-}
-
 check_node_version() {
   runningNodeVersion=$(node -v)
   requiredNodeVersion=$(cat "$ROOT_DIR/.nvmrc")
@@ -50,6 +43,5 @@ install_dependencies() {
   npm install
 }
 
-setup_git_hook
 check_node_version
 install_dependencies
