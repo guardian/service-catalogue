@@ -33,6 +33,7 @@ import {
 	fastlySourceConfig,
 	galaxiesSourceConfig,
 	githubSourceConfig,
+	guardianSnykSourceConfig,
 	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
@@ -43,7 +44,6 @@ import {
 	readonlyAccessManagedPolicy,
 	standardDenyPolicy,
 } from './ecs/policies';
-import { Versions } from './ecs/versions';
 
 export class CloudQuery extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
@@ -393,13 +393,9 @@ export class CloudQuery extends GuStack {
 				description:
 					'Collecting Snyk projects including grouped vulnerabilities and tags',
 				schedule: Schedule.rate(Duration.days(1)),
-				config: snykSourceConfig(
-					{
-						tables: ['snyk_projects'],
-					},
-					'guardian/snyk-full-project',
-					`v${Versions.CloudquerySnyk}`,
-				),
+				config: guardianSnykSourceConfig({
+					tables: ['snyk_projects'],
+				}),
 				secrets: {
 					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
 				},

@@ -3719,18 +3719,15 @@ spec:
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
 spec:
-  name: snyk
+  name: guardian-snyk
   path: guardian/snyk-full-project
-  version: v3.0.0
+  version: v0.1.0
   tables:
     - snyk_projects
   destinations:
     - postgresql
   spec:
     api_key: \${SNYK_API_KEY}
-    table_options:
-      snyk_reporting_issues:
-        period: 30d
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
