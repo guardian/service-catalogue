@@ -33,6 +33,5 @@ We want to be able to answer the following questions:
 The following packages form part of Service Catalogue:
 
 * [cloudquery](packages/cloudquery/README.md): A set of Cloudquery (ECS) tasks to collect the data
-* [repo-cop](packages/repocop/README.md): A service to warn teams about issues with the repositories they own
 
 
