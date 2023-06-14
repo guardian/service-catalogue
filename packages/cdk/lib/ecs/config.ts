@@ -226,6 +226,31 @@ export function snykSourceConfig(
 	};
 }
 
+export function guardianSnykSourceConfig(
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	const { tables, skipTables } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'guardian-snyk',
+			path: 'guardian/snyk-full-project',
+			version: `v${Versions.CloudquerySnykGuardian}`,
+			tables,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+			spec: {
+				api_key: '${SNYK_API_KEY}',
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts

@@ -37,6 +37,7 @@ import {
 	fastlySourceConfig,
 	galaxiesSourceConfig,
 	githubSourceConfig,
+	guardianSnykSourceConfig,
 	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
@@ -385,7 +386,7 @@ export class CloudQuery extends GuStack {
 		const snykSources: CloudquerySource[] = [
 			{
 				name: 'SnykAll',
-				description: 'Collecting all Snyk data',
+				description: 'Collecting all Snyk data, except for projects',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: snykSourceConfig({
 					tables: [
@@ -396,10 +397,21 @@ export class CloudQuery extends GuStack {
 						'snyk_organizations',
 						'snyk_organization_members',
 						'snyk_organization_provisions',
-						'snyk_projects',
 						'snyk_reporting_issues',
 						'snyk_reporting_latest_issues',
 					],
+				}),
+				secrets: {
+					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
+				},
+			},
+			{
+				name: 'GuardianCustomSnykProjects',
+				description:
+					'Collecting Snyk projects including grouped vulnerabilities and tags',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: guardianSnykSourceConfig({
+					tables: ['snyk_projects'],
 				}),
 				secrets: {
 					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
