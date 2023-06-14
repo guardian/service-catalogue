@@ -6,13 +6,17 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
+import {
+	GuardianAwsAccounts,
+	GuardianPrivateNetworks,
+} from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { ArnFormat, Duration } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
+	Peer,
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
@@ -70,6 +74,11 @@ export class CloudQuery extends GuStack {
 
 		const port = 5432;
 
+		const dbSecurityGroup = new GuSecurityGroup(this, 'PostgresSecurityGroup', {
+			app,
+			vpc,
+		});
+
 		const dbProps: DatabaseInstanceProps = {
 			engine: DatabaseInstanceEngine.POSTGRES,
 			port,
@@ -78,6 +87,7 @@ export class CloudQuery extends GuStack {
 			iamAuthentication: true,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 			storageEncrypted: true,
+			securityGroups: [dbSecurityGroup],
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
@@ -86,6 +96,18 @@ export class CloudQuery extends GuStack {
 			this,
 			'PostgresAccessSecurityGroup',
 			{ app, vpc },
+		);
+
+		// TODO use a bastion host here instead? https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ec2.BastionHostLinux.html
+		dbSecurityGroup.addIngressRule(
+			Peer.ipv4(GuardianPrivateNetworks.Engineering),
+			Port.tcp(port),
+			'Allow connection to Postgres from the office network.',
+		);
+
+		dbSecurityGroup.connections.allowFrom(
+			applicationToPostgresSecurityGroup,
+			Port.tcp(port),
 		);
 
 		// Used by downstream services that read CloudQuery data, namely Grafana.
@@ -103,11 +125,6 @@ export class CloudQuery extends GuStack {
 			tier: ParameterTier.STANDARD,
 			dataType: ParameterDataType.TEXT,
 		});
-
-		db.connections.allowFrom(
-			applicationToPostgresSecurityGroup,
-			Port.tcp(port),
-		);
 
 		const readonlyPolicy = readonlyAccessManagedPolicy(
 			this,

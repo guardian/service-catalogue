@@ -7,6 +7,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "GuSubnetListParameter",
       "GuVpcParameter",
       "GuSecurityGroup",
+      "GuSecurityGroup",
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
     ],
@@ -8278,7 +8279,7 @@ spec:
         "VPCSecurityGroups": [
           {
             "Fn::GetAtt": [
-              "PostgresInstance1SecurityGroupFA28C3C0",
+              "PostgresSecurityGroupCloudquery65E31BB8",
               "GroupId",
             ],
           },
@@ -8341,61 +8342,6 @@ spec:
       },
       "Type": "AWS::SecretsManager::SecretTargetAttachment",
     },
-    "PostgresInstance1SecurityGroupFA28C3C0": {
-      "Properties": {
-        "GroupDescription": "Security group for PostgresInstance1 database",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "PostgresInstance1SecurityGroupfromCloudQueryPostgresAccessSecurityGroupCloudqueryAE627D465432AE3168F5": {
-      "Properties": {
-        "Description": "from CloudQueryPostgresAccessSecurityGroupCloudqueryAE627D46:5432",
-        "FromPort": 5432,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "PostgresInstance1SecurityGroupFA28C3C0",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "PostgresAccessSecurityGroupCloudqueryE959A23F",
-            "GroupId",
-          ],
-        },
-        "ToPort": 5432,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "PostgresInstance1SubnetGroupCAC045A5": {
       "Properties": {
         "DBSubnetGroupDescription": "Subnet group for PostgresInstance1 database",
@@ -8443,6 +8389,74 @@ spec:
         },
       },
       "Type": "AWS::SSM::Parameter",
+    },
+    "PostgresSecurityGroupCloudquery65E31BB8": {
+      "Properties": {
+        "GroupDescription": "CloudQuery/PostgresSecurityGroupCloudquery",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "10.0.0.4/22",
+            "Description": "Allow connection to Postgres from the office network.",
+            "FromPort": 5432,
+            "IpProtocol": "tcp",
+            "ToPort": 5432,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "cloudquery",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "PostgresSecurityGroupCloudqueryfromCloudQueryPostgresAccessSecurityGroupCloudqueryAE627D46543299D711F8": {
+      "Properties": {
+        "Description": "from CloudQueryPostgresAccessSecurityGroupCloudqueryAE627D46:5432",
+        "FromPort": 5432,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "PostgresSecurityGroupCloudquery65E31BB8",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "PostgresAccessSecurityGroupCloudqueryE959A23F",
+            "GroupId",
+          ],
+        },
+        "ToPort": 5432,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "cloudqueryCluster5370C11B": {
       "Properties": {
