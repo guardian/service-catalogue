@@ -125,7 +125,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - '*'
   skip_tables:
@@ -181,7 +181,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -197,7 +197,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -745,7 +745,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_organizations
     - aws_organizations_accounts
@@ -773,7 +773,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -789,7 +789,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -1316,7 +1316,7 @@ spec:
 spec:
   name: fastly
   path: cloudquery/fastly
-  version: v1.3.1
+  version: v2.0.2
   tables:
     - fastly_services
     - fastly_service_versions
@@ -1333,7 +1333,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -1349,7 +1349,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -1910,7 +1910,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -1929,7 +1929,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -2437,7 +2437,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v5.2.0
+  version: v6.0.2
   tables:
     - github_repositories
   skip_tables:
@@ -2461,7 +2461,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -2477,7 +2477,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -3068,7 +3068,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v5.2.0
+  version: v6.0.2
   tables:
     - github_teams
     - github_team_members
@@ -3089,7 +3089,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -3105,7 +3105,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -3734,7 +3734,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -3750,7 +3750,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4269,7 +4269,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_acm*
   destinations:
@@ -4292,7 +4292,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -4308,7 +4308,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4861,7 +4861,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_cloudformation_stacks
     - aws_cloudformation_stack_resources
@@ -4887,7 +4887,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -4903,7 +4903,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5582,7 +5582,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_cloudwatch_alarms
   destinations:
@@ -5605,7 +5605,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -5621,7 +5621,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5970,7 +5970,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_inspector_findings
     - aws_inspector2_findings
@@ -5994,7 +5994,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -6010,7 +6010,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -6715,7 +6715,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_elbv1_*
     - aws_elbv2_*
@@ -6739,7 +6739,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -6755,7 +6755,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7130,7 +7130,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v17.4.0
+  version: v18.3.0
   tables:
     - aws_accessanalyzer_analyzers
     - aws_accessanalyzer_analyzer_archive_rules
@@ -7154,7 +7154,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -7170,7 +7170,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7666,7 +7666,7 @@ spec:
 spec:
   name: snyk
   path: cloudquery/snyk
-  version: v3.0.0
+  version: v3.0.2
   tables:
     - snyk_dependencies
     - snyk_groups
@@ -7689,7 +7689,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v4.2.0
+  version: v4.2.2
   migrate_mode: forced
   spec:
     connection_string: \${file:/var/scratch/connection_string}
@@ -7705,7 +7705,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.0",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
