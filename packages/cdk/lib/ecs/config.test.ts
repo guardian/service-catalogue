@@ -22,7 +22,9 @@ describe('Config generation, and converting to YAML', () => {
 		  version: v4.2.2
 		  migrate_mode: forced
 		  spec:
-		    connection_string: \${file:/var/scratch/connection_string}
+		    connection_string: >-
+		      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+		      dbname=postgres sslmode=verify-full
 		"
 	`);
 	});

@@ -2,17 +2,16 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
-	ContainerDependencyCondition,
 	ContainerImage,
 	FargateTaskDefinition,
 	FirelensConfigFileType,
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDrivers,
+	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
-import type { Secret } from 'aws-cdk-lib/aws-ecs/lib/container-definition';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
@@ -20,10 +19,6 @@ import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
 import { Versions } from './versions';
-
-const awsCliImage = ContainerImage.fromRegistry(
-	'public.ecr.aws/aws-cli/aws-cli',
-);
 
 const cloudqueryImage = ContainerImage.fromRegistry(
 	`ghcr.io/cloudquery/cloudquery:${Versions.CloudqueryCli}`,
@@ -107,36 +102,23 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`);
 
-		const dbUser = 'cloudquery';
 		const destinationConfig = postgresDestinationConfig();
 
-		// This container is used to generate the DB auth token, storing it on a volume that's shared with the CloudQuery container
-		const dbAuth = task.addContainer(`${id}AwsCli`, {
-			image: awsCliImage,
-			environment: {
-				DB_HOST: db.dbInstanceEndpointAddress,
-			},
-			entryPoint: [''],
-			command: [
-				'/bin/bash',
-				'-c',
-				[
-					`PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username ${dbUser})`,
-					`echo "user=${dbUser} password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string`,
-				].join(';'),
-			],
+		// TODO remove once IAM Auth is working
+		// CloudQuery is currently using the root credentials to connect to the database
+		if (!db.secret) {
+			throw new Error('DB Secret is missing');
+		}
 
-			/*
-			A container that is listed as a dependency of another cannot be marked as essential.
-			Below, we describe a dependency such that CloudQuery will only start if the DB Auth step succeeds.
-			 */
-			essential: false,
-		});
-
-		const cloudqueryTask = task.addContainer(`${id}Container`, {
+		task.addContainer(`${id}Container`, {
 			image: cloudqueryImage,
 			entryPoint: [''],
-			secrets,
+			secrets: {
+				...secrets,
+				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
+				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
+				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+			},
 			command: [
 				'/bin/sh',
 				'-c',
@@ -156,25 +138,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					retry_limit: '2',
 				},
 			}),
-		});
-
-		task.addVolume({ name: 'scratch', host: {} });
-		dbAuth.addMountPoints({
-			containerPath: '/var/scratch',
-			sourceVolume: 'scratch',
-			readOnly: false,
-		});
-		cloudqueryTask.addMountPoints({
-			containerPath: '/var/scratch',
-			sourceVolume: 'scratch',
-			readOnly: true,
-		});
-
-		cloudqueryTask.addContainerDependencies({
-			container: dbAuth,
-
-			// Only start the worker once the DB auth token has been generated
-			condition: ContainerDependencyCondition.SUCCESS,
 		});
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
@@ -201,7 +164,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
-		db.grantConnect(task.taskRole, dbUser);
+
+		db.grantConnect(task.taskRole);
 
 		super(scope, id, {
 			schedule,

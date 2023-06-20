@@ -88,37 +88,6 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-AllAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -184,14 +153,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-AllAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -211,14 +176,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-AllContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-AllContainer",
           },
           {
             "Environment": [
@@ -301,12 +303,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -465,6 +461,16 @@ spec:
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -612,7 +618,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -708,37 +718,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-DeployToolsListOrgsAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -776,14 +755,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-DeployToolsListOrgsAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -803,14 +778,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-DeployToolsListOrgsContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-DeployToolsListOrgsContainer",
           },
           {
             "Environment": [
@@ -893,12 +905,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -1029,6 +1035,16 @@ spec:
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
             {
               "Action": [
                 "logs:CreateLogStream",
@@ -1183,7 +1199,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -1279,37 +1299,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-FastlyServicesAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -1336,14 +1325,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-FastlyServicesAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -1363,13 +1348,6 @@ spec:
                 },
               },
             },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
             "Name": "CloudquerySource-FastlyServicesContainer",
             "Secrets": [
               {
@@ -1391,6 +1369,48 @@ spec:
                         "Ref": "AWS::AccountId",
                       },
                       ":secret:/TEST/deploy/cloudquery/fastly-credentials:api-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
                     ],
                   ],
                 },
@@ -1478,12 +1498,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -1604,6 +1618,16 @@ spec:
                     ":secret:/TEST/deploy/cloudquery/fastly-credentials-??????",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -1761,7 +1785,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -1831,37 +1859,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-GalaxiesAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               {
@@ -1913,16 +1910,12 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
                   ],
                 ],
-              },
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-GalaxiesAwsCli",
               },
             ],
             "EntryPoint": [
@@ -1943,14 +1936,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-GalaxiesContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-GalaxiesContainer",
           },
           {
             "Environment": [
@@ -2033,12 +2063,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -2197,6 +2221,16 @@ spec:
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -2330,7 +2364,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -2400,37 +2438,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubRepositoriesAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -2464,14 +2471,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-GitHubRepositoriesAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -2491,13 +2494,6 @@ spec:
                 },
               },
             },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
             "Name": "CloudquerySource-GitHubRepositoriesContainer",
             "Secrets": [
               {
@@ -2565,6 +2561,48 @@ spec:
                         "Ref": "AWS::AccountId",
                       },
                       ":secret:/TEST/deploy/cloudquery/github-credentials:installation-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
                     ],
                   ],
                 },
@@ -2652,12 +2690,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -2843,6 +2875,16 @@ spec:
             },
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -2961,7 +3003,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -3031,37 +3077,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubTeamsAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -3092,14 +3107,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-GitHubTeamsAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -3119,13 +3130,6 @@ spec:
                 },
               },
             },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
             "Name": "CloudquerySource-GitHubTeamsContainer",
             "Secrets": [
               {
@@ -3193,6 +3197,48 @@ spec:
                         "Ref": "AWS::AccountId",
                       },
                       ":secret:/TEST/deploy/cloudquery/github-credentials:installation-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
                     ],
                   ],
                 },
@@ -3280,12 +3326,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -3471,6 +3511,16 @@ spec:
             },
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -3589,7 +3639,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -3685,37 +3739,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-GuardianCustomSnykProjectsAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -3737,14 +3760,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-GuardianCustomSnykProjectsAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -3764,13 +3783,6 @@ spec:
                 },
               },
             },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
             "Name": "CloudquerySource-GuardianCustomSnykProjectsContainer",
             "Secrets": [
               {
@@ -3792,6 +3804,48 @@ spec:
                         "Ref": "AWS::AccountId",
                       },
                       ":secret:/TEST/deploy/cloudquery/snyk-credentials:api-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
                     ],
                   ],
                 },
@@ -3879,12 +3933,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -4044,6 +4092,16 @@ spec:
             },
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -4162,7 +4220,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -4232,37 +4294,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-OrgWideCertificatesAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -4295,14 +4326,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-OrgWideCertificatesAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -4322,14 +4349,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-OrgWideCertificatesContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-OrgWideCertificatesContainer",
           },
           {
             "Environment": [
@@ -4412,12 +4476,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -4576,6 +4634,16 @@ spec:
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -4728,7 +4796,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -4824,37 +4896,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-OrgWideCloudFormationAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -4890,14 +4931,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-OrgWideCloudFormationAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -4917,14 +4954,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-OrgWideCloudFormationContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-OrgWideCloudFormationContainer",
           },
           {
             "Environment": [
@@ -5007,12 +5081,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -5143,6 +5211,16 @@ spec:
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
             {
               "Action": [
                 "logs:CreateLogStream",
@@ -5297,7 +5375,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -5517,6 +5599,16 @@ spec:
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -5543,37 +5635,6 @@ spec:
     "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionF28C916F": {
       "Properties": {
         "ContainerDefinitions": [
-          {
-            "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsAwsCli",
-          },
           {
             "Command": [
               "/bin/sh",
@@ -5608,14 +5669,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-OrgWideCloudwatchAlarmsAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -5635,14 +5692,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsContainer",
           },
           {
             "Environment": [
@@ -5725,12 +5819,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -5825,7 +5913,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -5933,37 +6025,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-OrgWideInspectorAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -5997,14 +6058,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-OrgWideInspectorAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -6024,14 +6081,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-OrgWideInspectorContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-OrgWideInspectorContainer",
           },
           {
             "Environment": [
@@ -6114,12 +6208,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -6278,6 +6366,16 @@ spec:
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -6430,7 +6528,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -6650,6 +6752,16 @@ spec:
           "Statement": [
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -6676,37 +6788,6 @@ spec:
     "CloudquerySourceOrgWideLoadBalancersTaskDefinitionF1D11F23": {
       "Properties": {
         "ContainerDefinitions": [
-          {
-            "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-OrgWideLoadBalancersAwsCli",
-          },
           {
             "Command": [
               "/bin/sh",
@@ -6742,14 +6823,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-OrgWideLoadBalancersAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -6769,14 +6846,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-OrgWideLoadBalancersContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-OrgWideLoadBalancersContainer",
           },
           {
             "Environment": [
@@ -6859,12 +6973,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -6997,7 +7105,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -7093,37 +7205,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-SecurityAccessAnalyserAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -7157,14 +7238,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-SecurityAccessAnalyserAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -7184,14 +7261,51 @@ spec:
                 },
               },
             },
-            "MountPoints": [
+            "Name": "CloudquerySource-SecurityAccessAnalyserContainer",
+            "Secrets": [
               {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
               },
             ],
-            "Name": "CloudquerySource-SecurityAccessAnalyserContainer",
           },
           {
             "Environment": [
@@ -7274,12 +7388,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -7410,6 +7518,16 @@ spec:
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
             {
               "Action": [
                 "logs:CreateLogStream",
@@ -7559,7 +7677,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
@@ -7629,37 +7751,6 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "/bin/bash",
-              "-c",
-              "PG_PASSWORD=$(/usr/local/bin/aws rds generate-db-auth-token --hostname $DB_HOST --port 5432 --region eu-west-1 --username cloudquery);echo "user=cloudquery password=$PG_PASSWORD host=$DB_HOST port=5432 dbname=postgres sslmode=verify-full" > /var/scratch/connection_string",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "DB_HOST",
-                "Value": {
-                  "Fn::GetAtt": [
-                    "PostgresInstance16DE4286E",
-                    "Endpoint.Address",
-                  ],
-                },
-              },
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/aws-cli/aws-cli",
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": false,
-                "SourceVolume": "scratch",
-              },
-            ],
-            "Name": "CloudquerySource-SnykAllAwsCli",
-          },
-          {
-            "Command": [
               "/bin/sh",
               "-c",
               "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
@@ -7692,14 +7783,10 @@ spec:
   version: v4.2.2
   migrate_mode: forced
   spec:
-    connection_string: \${file:/var/scratch/connection_string}
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-SnykAllAwsCli",
-              },
             ],
             "EntryPoint": [
               "",
@@ -7719,13 +7806,6 @@ spec:
                 },
               },
             },
-            "MountPoints": [
-              {
-                "ContainerPath": "/var/scratch",
-                "ReadOnly": true,
-                "SourceVolume": "scratch",
-              },
-            ],
             "Name": "CloudquerySource-SnykAllContainer",
             "Secrets": [
               {
@@ -7747,6 +7827,48 @@ spec:
                         "Ref": "AWS::AccountId",
                       },
                       ":secret:/TEST/deploy/cloudquery/snyk-credentials:api-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
                     ],
                   ],
                 },
@@ -7834,12 +7956,6 @@ spec:
             "Arn",
           ],
         },
-        "Volumes": [
-          {
-            "Host": {},
-            "Name": "scratch",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -8025,6 +8141,16 @@ spec:
             },
             {
               "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ],
@@ -8143,7 +8269,11 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/cloudquery",
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
                   ],
                 ],
               },
