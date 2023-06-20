@@ -287,7 +287,7 @@ spec:
             "Name": "CloudquerySource-AllFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceAllTaskDefinitionExecutionRole57AE7309",
@@ -295,7 +295,7 @@ spec:
           ],
         },
         "Family": "CloudQueryCloudquerySourceAllTaskDefinitionC1F1D919",
-        "Memory": "512",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
