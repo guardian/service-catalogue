@@ -131,18 +131,7 @@ export class CloudQuery extends GuStack {
 			'readonly-managed-policy',
 		);
 
-		const awsSources: CloudquerySource[] = [
-			{
-				name: 'All',
-				description: 'Data fetched across all accounts in the organisation.',
-				schedule: Schedule.rate(Duration.days(1)),
-				config: awsSourceConfigForOrganisation({
-					tables: ['aws_*'],
-					skipTables: skipTables,
-				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [standardDenyPolicy, cloudqueryAccess('*')],
-			},
+		const individualAwsSources: CloudquerySource[] = [
 			{
 				name: 'DeployToolsListOrgs',
 				description:
@@ -242,6 +231,25 @@ export class CloudQuery extends GuStack {
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
 		];
+
+		const remainingAwsSources: CloudquerySource = {
+			name: 'All',
+			description: 'Data fetched across all accounts in the organisation.',
+			schedule: Schedule.rate(Duration.days(1)),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_*'],
+				skipTables: [
+					...skipTables,
+
+					// casting because `config.spec.tables` could be empty, though in reality it never is
+					...(individualAwsSources.flatMap(
+						(_) => _.config.spec.tables,
+					) as string[]),
+				],
+			}),
+			managedPolicies: [readonlyPolicy],
+			policies: [standardDenyPolicy, cloudqueryAccess('*')],
+		};
 
 		const githubCredentials = SecretsManager.fromSecretPartialArn(
 			this,
@@ -425,7 +433,8 @@ export class CloudQuery extends GuStack {
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
 			sources: [
-				...awsSources,
+				...individualAwsSources,
+				remainingAwsSources,
 				...githubSources,
 				...fastlySources,
 				...galaxiesSources,

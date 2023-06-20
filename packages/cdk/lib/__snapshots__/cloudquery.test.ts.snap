@@ -130,6 +130,26 @@ spec:
     - aws_xray_sampling_rules
     - aws_xray_resource_policies
     - aws_xray_groups
+    - aws_organizations
+    - aws_organizations_accounts
+    - aws_organizations_delegated_services
+    - aws_organizations_delegated_administrators
+    - aws_organizations_organizational_units
+    - aws_organizations_policies
+    - aws_organizations_roots
+    - aws_accessanalyzer_analyzers
+    - aws_accessanalyzer_analyzer_archive_rules
+    - aws_accessanalyzer_analyzer_findings
+    - aws_cloudformation_stacks
+    - aws_cloudformation_stack_resources
+    - aws_cloudformation_stack_templates
+    - aws_cloudformation_template_summaries
+    - aws_elbv1_*
+    - aws_elbv2_*
+    - aws_acm*
+    - aws_cloudwatch_alarms
+    - aws_inspector_findings
+    - aws_inspector2_findings
   destinations:
     - postgresql
   spec:
