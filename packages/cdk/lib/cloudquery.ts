@@ -84,7 +84,7 @@ export class CloudQuery extends GuStack {
 			port,
 			vpc,
 			vpcSubnets: { subnets: privateSubnets },
-			iamAuthentication: true,
+			iamAuthentication: true, // We're not using IAM auth for ECS tasks, however we do use IAM auth when connecting to RDS locally.
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],

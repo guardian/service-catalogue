@@ -104,8 +104,14 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		const destinationConfig = postgresDestinationConfig();
 
-		// TODO remove once IAM Auth is working
-		// CloudQuery is currently using the root credentials to connect to the database
+		/*
+		This error shouldn't ever be thrown as AWS CDK creates a secret by default,
+		it is just typed as optional.
+
+		See https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_rds.DatabaseInstance.html#credentials.
+
+		TODO: Remove this once IAM auth is working.
+		 */
 		if (!db.secret) {
 			throw new Error('DB Secret is missing');
 		}
