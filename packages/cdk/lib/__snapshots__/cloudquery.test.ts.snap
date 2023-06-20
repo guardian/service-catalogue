@@ -152,6 +152,7 @@ spec:
     - aws_inspector2_findings
   destinations:
     - postgresql
+  concurrency: 2000
   spec:
     regions:
       - eu-west-1

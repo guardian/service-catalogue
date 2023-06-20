@@ -246,6 +246,11 @@ export class CloudQuery extends GuStack {
 						(_) => _.config.spec.tables,
 					) as string[]),
 				],
+
+				// Defaulted to 500000 by CloudQuery, concurrency controls the maximum number of Go routines to use.
+				// The amount of memory used is a function of this value.
+				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
+				concurrency: 2000,
 			}),
 			managedPolicies: [readonlyPolicy],
 			policies: [standardDenyPolicy, cloudqueryAccess('*')],

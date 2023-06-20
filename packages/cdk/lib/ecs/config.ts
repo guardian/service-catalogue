@@ -12,6 +12,7 @@ export type CloudqueryConfig = {
 interface CloudqueryTableConfig {
 	tables?: string[];
 	skipTables?: string[];
+	concurrency?: number;
 }
 
 /**
@@ -44,7 +45,7 @@ export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
+	const { tables, skipTables, concurrency } = tableConfig;
 
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
@@ -59,6 +60,7 @@ export function awsSourceConfig(
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
+			concurrency,
 			spec: {
 				regions: [
 					// All regions we support.
