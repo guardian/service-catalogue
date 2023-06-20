@@ -96,7 +96,7 @@ spec:
   path: cloudquery/aws
   version: v18.3.0
   tables:
-    - '*'
+    - aws_*
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events

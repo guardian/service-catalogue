@@ -137,7 +137,7 @@ export class CloudQuery extends GuStack {
 				description: 'Data fetched across all accounts in the organisation.',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
-					tables: ['*'],
+					tables: ['aws_*'],
 					skipTables: skipTables,
 				}),
 				managedPolicies: [readonlyPolicy],
