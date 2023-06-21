@@ -156,22 +156,21 @@ export class CloudQuery extends GuStack {
 				],
 			},
 			{
-				name: 'SecurityAccessAnalyser',
+				name: 'DelegatedToSecurityAccount',
 				description:
-					'Data fetched from the Security account. Note, Access Analyzer collects data from our entire organisation so we only need to query it in one place.',
+					'Collecting data across the organisation from services delegated to the Security account.',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
-					tables: [
-						'aws_accessanalyzer_analyzers',
-						'aws_accessanalyzer_analyzer_archive_rules',
-						'aws_accessanalyzer_analyzer_findings',
-					],
+					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
+					concurrency: 2000,
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [
 					standardDenyPolicy,
 					cloudqueryAccess(GuardianAwsAccounts.Security),
 				],
+				memoryLimitMiB: 2048,
+				cpu: 1024,
 			},
 			{
 				name: 'OrgWideCloudFormation',
