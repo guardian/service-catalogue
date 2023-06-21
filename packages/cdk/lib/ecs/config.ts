@@ -1,11 +1,18 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
 import { Versions } from './versions';
 
-export type CloudqueryConfig = Record<string, unknown>;
+export type CloudqueryConfig = {
+	spec: {
+		tables?: string[];
+		[k: string]: unknown;
+	};
+	[k: string]: unknown;
+};
 
 interface CloudqueryTableConfig {
 	tables?: string[];
 	skipTables?: string[];
+	concurrency?: number;
 }
 
 /**
@@ -21,7 +28,14 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			version: `v${Versions.CloudqueryPostgres}`,
 			migrate_mode: 'forced',
 			spec: {
-				connection_string: '${file:/var/scratch/connection_string}',
+				connection_string: [
+					'user=${DB_USERNAME}',
+					'password=${DB_PASSWORD}',
+					'host=${DB_HOST}',
+					'port=5432',
+					'dbname=postgres',
+					'sslmode=verify-full',
+				].join(' '),
 			},
 		},
 	};
@@ -31,7 +45,7 @@ export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
+	const { tables, skipTables, concurrency } = tableConfig;
 
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
@@ -46,6 +60,7 @@ export function awsSourceConfig(
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
+			concurrency,
 			spec: {
 				regions: [
 					// All regions we support.
@@ -285,4 +300,9 @@ export const skipTables = [
 	'aws_xray_sampling_rules',
 	'aws_xray_resource_policies',
 	'aws_xray_groups',
+
+	// These appear to be heavily rate limited, and not too interesting (yet).
+	// Don't collect them to reduce execution time.
+	'aws_stepfunctions_map_runs',
+	'aws_stepfunctions_map_run_executions',
 ];

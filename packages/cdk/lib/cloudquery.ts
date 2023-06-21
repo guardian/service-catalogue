@@ -84,7 +84,7 @@ export class CloudQuery extends GuStack {
 			port,
 			vpc,
 			vpcSubnets: { subnets: privateSubnets },
-			iamAuthentication: true,
+			iamAuthentication: true, // We're not using IAM auth for ECS tasks, however we do use IAM auth when connecting to RDS locally.
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
@@ -131,18 +131,7 @@ export class CloudQuery extends GuStack {
 			'readonly-managed-policy',
 		);
 
-		const awsSources: CloudquerySource[] = [
-			{
-				name: 'All',
-				description: 'Data fetched across all accounts in the organisation.',
-				schedule: Schedule.rate(Duration.days(1)),
-				config: awsSourceConfigForOrganisation({
-					tables: ['*'],
-					skipTables: skipTables,
-				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [standardDenyPolicy, cloudqueryAccess('*')],
-			},
+		const individualAwsSources: CloudquerySource[] = [
 			{
 				name: 'DeployToolsListOrgs',
 				description:
@@ -242,6 +231,34 @@ export class CloudQuery extends GuStack {
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
 		];
+
+		const remainingAwsSources: CloudquerySource = {
+			name: 'All',
+			description: 'Data fetched across all accounts in the organisation.',
+			schedule: Schedule.rate(Duration.days(1)),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_*'],
+				skipTables: [
+					...skipTables,
+
+					// casting because `config.spec.tables` could be empty, though in reality it never is
+					...(individualAwsSources.flatMap(
+						(_) => _.config.spec.tables,
+					) as string[]),
+				],
+
+				// Defaulted to 500000 by CloudQuery, concurrency controls the maximum number of Go routines to use.
+				// The amount of memory used is a function of this value.
+				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
+				concurrency: 2000,
+			}),
+			managedPolicies: [readonlyPolicy],
+			policies: [standardDenyPolicy, cloudqueryAccess('*')],
+
+			// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
+			memoryLimitMiB: 2048,
+			cpu: 1024,
+		};
 
 		const githubCredentials = SecretsManager.fromSecretPartialArn(
 			this,
@@ -425,7 +442,8 @@ export class CloudQuery extends GuStack {
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
 			sources: [
-				...awsSources,
+				...individualAwsSources,
+				remainingAwsSources,
 				...githubSources,
 				...fastlySources,
 				...galaxiesSources,
