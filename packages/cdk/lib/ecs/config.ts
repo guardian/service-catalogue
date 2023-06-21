@@ -300,4 +300,9 @@ export const skipTables = [
 	'aws_xray_sampling_rules',
 	'aws_xray_resource_policies',
 	'aws_xray_groups',
+
+	// These appear to be heavily rate limited, and not too interesting (yet).
+	// Don't collect them to reduce execution time.
+	'aws_stepfunctions_map_runs',
+	'aws_stepfunctions_map_run_executions',
 ];

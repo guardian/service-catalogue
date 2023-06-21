@@ -130,6 +130,8 @@ spec:
     - aws_xray_sampling_rules
     - aws_xray_resource_policies
     - aws_xray_groups
+    - aws_stepfunctions_map_runs
+    - aws_stepfunctions_map_run_executions
     - aws_organizations
     - aws_organizations_accounts
     - aws_organizations_delegated_services
