@@ -323,6 +323,16 @@ export class CloudQuery extends GuStack {
 				secrets: githubSecrets,
 				additionalCommands: additionalGithubCommands,
 			},
+			{
+				name: 'GitHubIssues',
+				description: 'Collect GitHub issue data (PRs and Issues)',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: githubSourceConfig({
+					tables: ['github_issues'],
+				}),
+				secrets: githubSecrets,
+				additionalCommands: additionalGithubCommands,
+			},
 		];
 
 		const fastlyCredentials = SecretsManager.fromSecretPartialArn(
