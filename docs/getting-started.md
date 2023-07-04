@@ -86,13 +86,13 @@ FROM aws_acm_certificates certs
 ```
 
 This query links the URL of a service to the team that owns the repository that created it. Here the key join is the
-final line: `repo_owners.repo_name=certs.tags ->>'gu:repo'` which joins the repository associated with a team to the repository
-associated with a stack. It allows us to generate a table of domain owners like this:
+final line: `repo_owners.repo_name=certs.tags ->>'gu:repo'` which joins the repository associated with a team to the
+repository associated with a stack. It allows us to generate a table of domain owners like this:
 
-| domain_name     | team_name     |
-|-----------------|---------------|
-| api.example.com | The Best Team |
-| example.com     | Team Number 2 |
-| example.net     | Another Team  |
+| domain_name     | team_name   |
+|-----------------|-------------|
+| api.example.com | Team Edward |
+| example.com     | Team Jacob  |
+| example.net     | Team Rocket |
 
 
