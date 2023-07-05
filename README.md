@@ -34,4 +34,5 @@ The following packages form part of Service Catalogue:
 
 * [cloudquery](packages/cloudquery/README.md): A set of Cloudquery (ECS) tasks to collect the data
 
+To learn how to use cloudquery, see the [docs](docs/getting-started.md) for an introduction.
 
