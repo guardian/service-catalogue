@@ -12,9 +12,12 @@ import {
 } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
+import { Rule } from 'aws-cdk-lib/aws-events';
+import { SnsTopic } from 'aws-cdk-lib/aws-events-targets';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import type { Topic } from 'aws-cdk-lib/aws-sns';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
@@ -67,6 +70,11 @@ export interface ScheduledCloudqueryTaskProps
 	sourceConfig: CloudqueryConfig;
 
 	/**
+	 * The topic used to notify someone if a task f
+	 */
+	topic: Topic;
+
+	/**
 	 * Any secrets to pass to the CloudQuery container.
 	 *
 	 * @see https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs.ContainerDefinitionOptions.html#secrets
@@ -93,6 +101,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			policies,
 			loggingStreamName,
 			sourceConfig,
+			topic,
 			enabled,
 			secrets,
 			additionalCommands = [],
@@ -172,6 +181,29 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				},
 			},
 		});
+
+		new Rule(scope, `${id}-TaskErrorRule`, {
+			description:
+				'Rule for events indicating an ECS task exited due to an error.',
+			eventPattern: {
+				detail: {
+					clusterArn: [cluster.clusterArn],
+					containers: {
+						exitCode: [
+							1, // application error
+							137, // sigkill force exit
+							139, // segmentation fault
+							255, // container entrypoint cmd failed
+						],
+					},
+					lastStatus: ['STOPPED'],
+					stoppedReason: [`Essential container in task exited`],
+					taskDefinitionArn: [task.taskDefinitionArn],
+				},
+				detailType: ['ECS Task State Change'],
+				source: ['aws.ecs'],
+			},
+		}).addTarget(new SnsTopic(topic));
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
