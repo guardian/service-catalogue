@@ -197,7 +197,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						],
 					},
 					lastStatus: ['STOPPED'],
-					stoppedReason: [`Essential container in task exited`],
+					stoppedReason: [`Task ${id} exited`],
 					taskDefinitionArn: [task.taskDefinitionArn],
 				},
 				detailType: ['ECS Task State Change'],

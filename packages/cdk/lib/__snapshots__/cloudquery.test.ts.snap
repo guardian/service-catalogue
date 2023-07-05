@@ -745,7 +745,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-All exited",
             ],
             "taskDefinitionArn": [
               {
@@ -1369,7 +1369,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-DelegatedToSecurityAccount exited",
             ],
             "taskDefinitionArn": [
               {
@@ -2002,7 +2002,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-DeployToolsListOrgs exited",
             ],
             "taskDefinitionArn": [
               {
@@ -2640,7 +2640,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-FastlyServices exited",
             ],
             "taskDefinitionArn": [
               {
@@ -3271,7 +3271,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-Galaxies exited",
             ],
             "taskDefinitionArn": [
               {
@@ -3957,7 +3957,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-GitHubIssues exited",
             ],
             "taskDefinitionArn": [
               {
@@ -4648,7 +4648,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-GitHubRepositories exited",
             ],
             "taskDefinitionArn": [
               {
@@ -5336,7 +5336,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-GitHubTeams exited",
             ],
             "taskDefinitionArn": [
               {
@@ -5969,7 +5969,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-GuardianCustomSnykProjects exited",
             ],
             "taskDefinitionArn": [
               {
@@ -6597,7 +6597,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-OrgWideCertificates exited",
             ],
             "taskDefinitionArn": [
               {
@@ -7228,7 +7228,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-OrgWideCloudFormation exited",
             ],
             "taskDefinitionArn": [
               {
@@ -7856,7 +7856,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-OrgWideCloudwatchAlarms exited",
             ],
             "taskDefinitionArn": [
               {
@@ -8485,7 +8485,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-OrgWideInspector exited",
             ],
             "taskDefinitionArn": [
               {
@@ -9114,7 +9114,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-OrgWideLoadBalancers exited",
             ],
             "taskDefinitionArn": [
               {
@@ -9758,7 +9758,7 @@ spec:
               "STOPPED",
             ],
             "stoppedReason": [
-              "Essential container in task exited",
+              "Task CloudquerySource-SnykAll exited",
             ],
             "taskDefinitionArn": [
               {
