@@ -9,6 +9,7 @@ import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Topic } from 'aws-cdk-lib/aws-sns';
+import { EmailSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import type { CloudqueryConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
@@ -119,6 +120,10 @@ export class CloudqueryCluster extends Cluster {
 		});
 
 		const topic = new Topic(scope, 'CloudQueryAlertTopic');
+
+		topic.addSubscription(
+			new EmailSubscription('devx.operations@guardian.co.uk'),
+		);
 
 		const taskProps = {
 			app,

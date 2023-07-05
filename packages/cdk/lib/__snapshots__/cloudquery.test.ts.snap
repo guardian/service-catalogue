@@ -84,6 +84,16 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       },
       "Type": "AWS::SNS::TopicPolicy",
     },
+    "CloudQueryAlertTopicdevxoperationsguardiancouk4BB39369": {
+      "Properties": {
+        "Endpoint": "devx.operations@guardian.co.uk",
+        "Protocol": "email",
+        "TopicArn": {
+          "Ref": "CloudQueryAlertTopicBFD81410",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
     "CloudquerySourceAllScheduledEventRuleAE930F8B": {
       "Properties": {
         "ScheduleExpression": "rate(1 day)",
