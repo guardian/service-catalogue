@@ -268,7 +268,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -282,7 +282,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -296,7 +296,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -918,7 +918,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -932,7 +932,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -946,7 +946,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -1546,7 +1546,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -1560,7 +1560,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -1574,7 +1574,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -2191,7 +2191,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -2205,7 +2205,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -2219,7 +2219,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -2808,7 +2808,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -2822,7 +2822,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -2836,7 +2836,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -3697,7 +3697,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -3711,7 +3711,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -3725,7 +3725,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -4173,7 +4173,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -4187,7 +4187,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -4201,7 +4201,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -4861,7 +4861,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -4875,7 +4875,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -4889,7 +4889,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -5520,7 +5520,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -5534,7 +5534,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -5548,7 +5548,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -6115,7 +6115,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -6129,7 +6129,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -6143,7 +6143,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -6772,7 +6772,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -6786,7 +6786,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -6800,7 +6800,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -7562,7 +7562,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -7576,7 +7576,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -7590,7 +7590,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -8003,7 +8003,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -8017,7 +8017,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -8031,7 +8031,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -8820,7 +8820,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -8834,7 +8834,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -8848,7 +8848,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
@@ -9283,7 +9283,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":username::",
                     ],
                   ],
                 },
@@ -9297,7 +9297,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":username::",
+                      ":host::",
                     ],
                   ],
                 },
@@ -9311,7 +9311,7 @@ spec:
                       {
                         "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
                       },
-                      ":host::",
+                      ":password::",
                     ],
                   ],
                 },
