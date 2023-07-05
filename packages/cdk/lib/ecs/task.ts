@@ -135,9 +135,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			entryPoint: [''],
 			secrets: {
 				...secrets,
-				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
-				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
-				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'host'),
+				DB_HOST: Secret.fromSecretsManager(db.secret, 'username'),
+				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'host'),
 			},
 			command: [
 				'/bin/sh',
