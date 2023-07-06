@@ -243,7 +243,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -893,7 +893,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -1521,7 +1521,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -2143,7 +2143,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -2783,7 +2783,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -3603,7 +3603,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4080,7 +4080,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4768,7 +4768,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5473,7 +5473,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -6091,7 +6091,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -6748,7 +6748,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7538,7 +7538,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7979,7 +7979,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -8796,7 +8796,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -9236,7 +9236,7 @@ spec:
               "",
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:3.5.2",
+            "Image": "ghcr.io/cloudquery/cloudquery:3.9.0",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
