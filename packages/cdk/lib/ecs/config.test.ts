@@ -137,7 +137,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v6.0.2
+		  version: v6.0.3
 		  tables:
 		    - github_repositories
 		  destinations:
