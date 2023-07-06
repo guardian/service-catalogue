@@ -70,7 +70,7 @@ export interface ScheduledCloudqueryTaskProps
 	sourceConfig: CloudqueryConfig;
 
 	/**
-	 * The topic used to notify someone if a task f
+	 * The topic used to notify someone if a task fails
 	 */
 	topic: Topic;
 
