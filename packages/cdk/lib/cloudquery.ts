@@ -302,6 +302,7 @@ export class CloudQuery extends GuStack {
 						'github_releases',
 						'github_release_assets',
 						'github_repository_branches',
+						'github_repository_dependabot_alerts',
 						'github_repository_dependabot_secrets',
 					],
 				}),
