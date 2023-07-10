@@ -5,6 +5,7 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
+import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import {
 	GuardianAwsAccounts,
@@ -21,6 +22,7 @@ import {
 } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
@@ -471,6 +473,14 @@ export class CloudQuery extends GuStack {
 				...galaxiesSources,
 				...snykSources,
 			],
+		});
+
+		new GuLambdaFunction(this, 'GithubRecentlyUpdated', {
+			app: 'github-recently-updated',
+			runtime: Runtime.NODEJS_18_X,
+			handler: 'handler.main',
+			fileName: 'github-recently-updated.zip',
+			vpc,
 		});
 	}
 }

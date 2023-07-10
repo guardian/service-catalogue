@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo TODO",
     "typecheck": "tsc -noEmit",
-    "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18",
+    "esbuild": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18",
+    "package": "zip -FSjr dist/github-recently-updated.zip dist/handler.js",
+    "build": "npm run esbuild && npm run package",
     "start": "ts-node src/run-locally.ts"
   }
 }
