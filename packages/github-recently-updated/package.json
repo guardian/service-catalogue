@@ -1,0 +1,11 @@
+{
+  "name": "github-recently-updated",
+  "version": "0.0.1",
+  "description": "Creating a cache of recently updated GitHub repositories",
+  "scripts": {
+    "test": "echo TODO",
+    "typecheck": "tsc -noEmit",
+    "build": "esbuild src/handler.ts --bundle --outdir=dist --platform=node --target=node18",
+    "start": "ts-node src/run-locally.ts"
+  }
+}
