@@ -25,7 +25,7 @@ export const Versions = {
 	 *
 	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-github
 	 */
-	CloudqueryGithub: '6.0.2',
+	CloudqueryGithub: '6.0.3',
 
 	/**
 	 * The version of the CloudQuery Fastly source plugin to install.
