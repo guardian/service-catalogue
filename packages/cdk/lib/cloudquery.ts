@@ -315,9 +315,21 @@ export class CloudQuery extends GuStack {
 				schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
 				config: githubSourceConfig({
 					tables: [
+						'github_organizations',
+						'github_organization_members',
 						'github_teams',
 						'github_team_members',
 						'github_team_repositories',
+					],
+					skipTables: [
+						/*
+						These tables are children of github_organizations.
+						CloudQuery collects child tables automatically.
+						We don't use them as they take a long time to collect, so skip them.
+						See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
+						 */
+						'github_organization_dependabot_alerts',
+						'github_organization_dependabot_secrets',
 					],
 				}),
 				secrets: githubSecrets,
