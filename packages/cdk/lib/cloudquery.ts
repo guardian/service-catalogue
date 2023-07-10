@@ -475,12 +475,24 @@ export class CloudQuery extends GuStack {
 			],
 		});
 
-		new GuLambdaFunction(this, 'GithubRecentlyUpdated', {
-			app: 'github-recently-updated',
-			runtime: Runtime.NODEJS_18_X,
-			handler: 'handler.main',
-			fileName: 'github-recently-updated.zip',
-			vpc,
-		});
+		const ghRecentlyUpdatedDbUser = 'github_recently_updated';
+		const ghRecentlyUpdated = new GuLambdaFunction(
+			this,
+			'GithubRecentlyUpdated',
+			{
+				app: 'github-recently-updated',
+				runtime: Runtime.NODEJS_18_X,
+				handler: 'handler.main',
+				fileName: 'github-recently-updated.zip',
+				vpc,
+				securityGroups: [applicationToPostgresSecurityGroup],
+				environment: {
+					DATABASE_HOST: db.dbInstanceEndpointAddress,
+					DATABASE_USER: ghRecentlyUpdatedDbUser,
+					DIFFERENCE_IN_DAYS: '1',
+				},
+			},
+		);
+		db.grantConnect(ghRecentlyUpdated, ghRecentlyUpdatedDbUser);
 	}
 }

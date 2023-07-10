@@ -8,14 +8,25 @@ const environmentOrError = (name: string): string => {
 	return value;
 };
 
+const stage = environmentOrError('STAGE');
+const isDev = stage === 'DEV';
+
 export const config = {
 	app: environmentOrError('APP'),
-	stage: environmentOrError('STAGE'),
+	stage,
+	isDev,
 	logLevel: getLogLevel(process.env.LOG_LEVEL),
 	differenceInDays: environmentOrError('DIFFERENCE_IN_DAYS'),
 	database: {
 		host: environmentOrError('DATABASE_HOST'),
 		user: environmentOrError('DATABASE_USER'),
-		password: environmentOrError('DATABASE_PASSWORD'),
+		password: process.env.DATABASE_PASSWORD,
+
+		// Use IAM authentication by default, but allow it to be disabled for local development.
+		useIamAuth: (process.env.DATABASE_IAM_AUTH ?? 'true') === 'true',
+	},
+	aws: {
+		profile: 'deployTools',
+		region: process.env.AWS_REGION ?? 'eu-west-1',
 	},
 };

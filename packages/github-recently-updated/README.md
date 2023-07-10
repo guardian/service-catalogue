@@ -18,4 +18,16 @@ where       greatest(pushed_at, updated_at) > NOW() - INTERVAL '1 days';
 This will return a list of repositories that have been updated in the last 24 hours[^1], a subset of all repositories in the organisation.
 This list can then be used in CloudQuery tasks to limit the scope of data collection.
 
+## Credentials
+This app uses IAM authentication to access RDS. 
+A dedicated user has been created for it, with access scoped to the tables it needs to read from.
+
+```sql
+CREATE USER github_recently_updated;
+GRANT rds_iam TO github_recently_updated;
+
+GRANT USAGE ON SCHEMA public TO github_recently_updated;
+GRANT SELECT ON public.github_repositories TO github_recently_updated;
+```
+
 [^1]: The query will run at the same cadence that the `github_repositories` table is updated. Currently, once a day. 
