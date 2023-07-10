@@ -39,16 +39,13 @@ where (
 create or replace view view_running_instances as
 select distinct
     accts.name,
-    instances.state ->> 'Name' as state,
     instances.tags ->> 'App' as app,
     instances.image_id,
     instances.instance_id,
-    images.tags ->> 'BuiltBy' as built_by
+    images.tags ->> 'BuiltBy'='amigo' as built_by_amigo
 from
     aws_ec2_instances instances
         left join aws_ec2_images images on instances.image_id = images.image_id
         left join aws_organizations_accounts accts on instances.account_id = accts.id
 where
-            instances.state ->> 'Name' = 'running'
-order by
-    instance_id desc;
+            instances.state ->> 'Name' = 'running';
