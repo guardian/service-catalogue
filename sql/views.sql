@@ -42,7 +42,10 @@ select distinct
     instances.tags ->> 'App' as app,
     instances.image_id,
     instances.instance_id,
-    images.tags ->> 'BuiltBy'='amigo' as built_by_amigo
+    CASE
+        WHEN images.tags ->> 'BuiltBy'='amigo' THEN true
+        ELSE false
+    END as built_by_amigo
 from
     aws_ec2_instances instances
         left join aws_ec2_images images on instances.image_id = images.image_id
