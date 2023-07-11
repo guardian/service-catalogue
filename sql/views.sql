@@ -52,3 +52,34 @@ from
         left join aws_organizations_accounts accts on instances.account_id = accts.id
 where
             instances.state ->> 'Name' = 'running';
+
+/*
+ This view destructures snyk_projects on the tags field, creating a layout that is easier to query.
+
+ It's shape is:
+   id | org_id | name | repo | commit
+ */
+CREATE OR REPLACE VIEW view_snyk_project_tags AS
+WITH
+    expanded_tags AS (
+        SELECT  *
+             , jsonb_array_elements(tags) ->> 'value' AS tag
+        FROM snyk_projects
+    )
+   , project_tags as (
+    SELECT  id
+         , org_id
+         , name
+         , CASE WHEN tag LIKE 'guardian/%' THEN tag END AS repo
+         , CASE WHEN tag NOT LIKE 'guardian/%' THEN tag END AS commit
+    FROM expanded_tags
+)
+SELECT      id
+     , org_id
+     , name
+     , max(repo) AS repo
+     , max(commit) AS commit
+FROM        project_tags
+GROUP BY    id
+       , org_id
+       , name;
