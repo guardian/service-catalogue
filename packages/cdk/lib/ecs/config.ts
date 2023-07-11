@@ -121,10 +121,18 @@ export function awsSourceConfigForAccount(
 	});
 }
 
+export interface GithubCloudqueryTableConfig extends CloudqueryTableConfig {
+	/**
+	 * If true, only a subset of repositories will be queried.
+	 * @default false
+	 */
+	limitRepositories?: boolean;
+}
+
 export function githubSourceConfig(
-	tableConfig: CloudqueryTableConfig,
+	tableConfig: GithubCloudqueryTableConfig,
 ): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
+	const { tables, skipTables, limitRepositories = false } = tableConfig;
 
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
@@ -152,6 +160,9 @@ export function githubSourceConfig(
 						installation_id: '${file:/github-installation-id}',
 					},
 				],
+				...(limitRepositories && {
+					repos: '${file:/github-repositories}',
+				}),
 			},
 		},
 	};

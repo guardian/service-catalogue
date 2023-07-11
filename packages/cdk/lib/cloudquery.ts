@@ -293,12 +293,14 @@ export class CloudQuery extends GuStack {
 				githubCredentials,
 				'installation-id',
 			),
+			GITHUB_REPOSITORIES: Secret.fromSecretsManager(githubRecentlyUpdated),
 		};
 
 		const additionalGithubCommands = [
 			'echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
 			'echo $GITHUB_APP_ID > /github-app-id',
 			'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
+			'echo $GITHUB_REPOSITORIES > /github-repositories',
 		];
 
 		const githubSources: CloudquerySource[] = [
@@ -354,6 +356,18 @@ export class CloudQuery extends GuStack {
 				schedule: Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({
 					tables: ['github_issues'],
+				}),
+				secrets: githubSecrets,
+				additionalCommands: additionalGithubCommands,
+			},
+			{
+				name: 'GitHubBranches',
+				description:
+					'Collect GitHub branch data from recently updated repositories',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: githubSourceConfig({
+					tables: ['github_repository_branches'],
+					limitRepositories: true,
 				}),
 				secrets: githubSecrets,
 				additionalCommands: additionalGithubCommands,
