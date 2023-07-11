@@ -28,5 +28,6 @@ export const config = {
 	aws: {
 		profile: 'deployTools',
 		region: process.env.AWS_REGION ?? 'eu-west-1',
+		secretArn: environmentOrError('SECRET_ARN'),
 	},
 };

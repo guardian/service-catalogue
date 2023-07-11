@@ -1,3 +1,7 @@
+import {
+	SecretsManagerClient,
+	UpdateSecretCommand,
+} from '@aws-sdk/client-secrets-manager';
 import { fromNodeProviderChain } from '@aws-sdk/credential-providers';
 import { Signer } from '@aws-sdk/rds-signer';
 import { Client } from 'ts-postgres';
@@ -35,26 +39,28 @@ const getPassword = async () => {
 
 export const main = async () => {
 	const {
+		isDev,
 		logLevel,
 		database: { host, user },
 		differenceInDays,
+		aws: { region, secretArn, profile },
 	} = config;
 
 	// Configure the logger first, so any calls to `console.log`, `console.warn` etc. are filtered as necessary.
 	configureLogging(logLevel);
 
 	const password = await getPassword();
-	const client = new Client({
+	const dbClient = new Client({
 		host,
 		user,
 		password,
 	});
 
 	try {
-		await client.connect();
+		await dbClient.connect();
 		console.log(`Connected to database`);
 
-		const result = await client.query(
+		const result = await dbClient.query(
 			`SELECT full_name FROM github_repositories WHERE GREATEST(pushed_at, updated_at) > NOW() - INTERVAL '${differenceInDays} days'`,
 		);
 
@@ -67,7 +73,25 @@ export const main = async () => {
 			`Repositories updated in the last ${differenceInDays} days: ${repositories.length}`,
 		);
 		console.debug(repositories.join(','));
+
+		const ssmClient = new SecretsManagerClient({
+			region,
+
+			/*
+			Only supply credentials in development, as they are implicitly provided within AWS Lambda.
+			See https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-lambda.html
+		 */
+			...(isDev && { credentials: fromNodeProviderChain({ profile }) }),
+		});
+
+		const command = new UpdateSecretCommand({
+			SecretId: secretArn,
+			SecretString: JSON.stringify(repositories),
+		});
+
+		await ssmClient.send(command);
+		console.log(`Secret updated!`);
 	} finally {
-		await client.end();
+		await dbClient.end();
 	}
 };

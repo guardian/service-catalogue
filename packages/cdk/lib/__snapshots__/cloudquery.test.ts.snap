@@ -9821,6 +9821,9 @@ spec:
             },
             "DATABASE_USER": "github_recently_updated",
             "DIFFERENCE_IN_DAYS": "1",
+            "SECRET_ARN": {
+              "Ref": "githubrecentlyupdated500ED9D1",
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -10055,6 +10058,16 @@ spec:
                     "/github_recently_updated",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:UpdateSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "githubrecentlyupdated500ED9D1",
               },
             },
           ],
@@ -10402,6 +10415,34 @@ spec:
         "DefaultCapacityProviderStrategy": [],
       },
       "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
+    },
+    "githubrecentlyupdated500ED9D1": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Description": "A list of repositories that have been updated recently, updated by the 'github-recently-updated' lambda",
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/cloudquery/github-recently-updated",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
     },
   },
 }

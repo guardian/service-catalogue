@@ -272,6 +272,17 @@ export class CloudQuery extends GuStack {
 			}),
 		);
 
+		// The values in this secret aren't secret/confidential, however usage of SecretsManager makes it easier to pass to the ECS tasks.
+		const githubRecentlyUpdated = new SecretsManager(
+			this,
+			'github-recently-updated',
+			{
+				secretName: `/${stage}/${stack}/${app}/github-recently-updated`,
+				description:
+					"A list of repositories that have been updated recently, updated by the 'github-recently-updated' lambda",
+			},
+		);
+
 		const githubSecrets: Record<string, Secret> = {
 			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
 				githubCredentials,
@@ -490,9 +501,11 @@ export class CloudQuery extends GuStack {
 					DATABASE_HOST: db.dbInstanceEndpointAddress,
 					DATABASE_USER: ghRecentlyUpdatedDbUser,
 					DIFFERENCE_IN_DAYS: '1',
+					SECRET_ARN: githubRecentlyUpdated.secretArn,
 				},
 			},
 		);
 		db.grantConnect(ghRecentlyUpdated, ghRecentlyUpdatedDbUser);
+		githubRecentlyUpdated.grantWrite(ghRecentlyUpdated);
 	}
 }
