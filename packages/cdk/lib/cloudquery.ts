@@ -294,14 +294,13 @@ export class CloudQuery extends GuStack {
 				description: 'Collect GitHub repository data',
 				schedule: Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({
-					tables: ['github_repositories'],
+					tables: ['github_repositories', 'github_repository_branches'],
 
 					// We're not (yet) interested in the following tables, so do not collect them to reduce API quota usage.
 					// See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
 					skipTables: [
 						'github_releases',
 						'github_release_assets',
-						'github_repository_branches',
 						'github_repository_dependabot_alerts',
 						'github_repository_dependabot_secrets',
 					],
