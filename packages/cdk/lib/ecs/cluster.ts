@@ -10,7 +10,7 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import { EmailSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
-import type { CloudqueryConfig } from './config';
+import type { CloudqueryConfig, PostgresWriteMode } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
 export interface CloudquerySource {
@@ -68,6 +68,11 @@ export interface CloudquerySource {
 	 * The number of cpu units used by the task.
 	 */
 	cpu?: 256 | 512 | 1024 | 2048 | 4096 | 8192 | 16384;
+
+	/**
+	 * @see https://www.cloudquery.io/docs/reference/destination-spec#write_mode
+	 */
+	writeMode?: PostgresWriteMode;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -145,6 +150,7 @@ export class CloudqueryCluster extends Cluster {
 				additionalCommands,
 				memoryLimitMiB,
 				cpu,
+				writeMode = 'overwrite-delete-stale',
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -156,6 +162,7 @@ export class CloudqueryCluster extends Cluster {
 					additionalCommands,
 					memoryLimitMiB,
 					cpu,
+					writeMode,
 				});
 			},
 		);

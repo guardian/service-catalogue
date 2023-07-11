@@ -12,7 +12,7 @@ import {
 
 describe('Config generation, and converting to YAML', () => {
 	it('Should create a destination configuration', () => {
-		const config = postgresDestinationConfig();
+		const config = postgresDestinationConfig('overwrite-delete-stale');
 		expect(dump(config)).toMatchInlineSnapshot(`
 		"kind: destination
 		spec:
@@ -21,6 +21,7 @@ describe('Config generation, and converting to YAML', () => {
 		  path: cloudquery/postgresql
 		  version: v4.2.2
 		  migrate_mode: forced
+		  write_mode: overwrite-delete-stale
 		  spec:
 		    connection_string: >-
 		      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432

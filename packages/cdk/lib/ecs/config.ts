@@ -16,9 +16,19 @@ interface CloudqueryTableConfig {
 }
 
 /**
+ * @see https://www.cloudquery.io/docs/reference/destination-spec#write_mode
+ */
+export type PostgresWriteMode =
+	| 'overwrite-delete-stale'
+	| 'overwrite'
+	| 'append';
+
+/**
  * Create a CloudQuery destination configuration for Postgres.
  */
-export function postgresDestinationConfig(): CloudqueryConfig {
+export function postgresDestinationConfig(
+	writeMode: PostgresWriteMode,
+): CloudqueryConfig {
 	return {
 		kind: 'destination',
 		spec: {
@@ -27,6 +37,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			path: 'cloudquery/postgresql',
 			version: `v${Versions.CloudqueryPostgres}`,
 			migrate_mode: 'forced',
+			write_mode: writeMode,
 			spec: {
 				connection_string: [
 					'user=${DB_USERNAME}',

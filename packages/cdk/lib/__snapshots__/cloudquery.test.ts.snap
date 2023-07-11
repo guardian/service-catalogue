@@ -240,6 +240,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -890,6 +891,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -1518,6 +1520,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -2140,6 +2143,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -2777,6 +2781,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -3386,6 +3391,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -4313,6 +4319,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -4796,6 +4803,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -5505,6 +5513,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -6226,6 +6235,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -6844,6 +6854,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -7501,6 +7512,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -8291,6 +8303,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -8732,6 +8745,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -9549,6 +9563,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
@@ -9989,6 +10004,7 @@ spec:
   path: cloudquery/postgresql
   version: v4.2.2
   migrate_mode: forced
+  write_mode: overwrite-delete-stale
   spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432

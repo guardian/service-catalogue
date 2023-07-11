@@ -371,6 +371,11 @@ export class CloudQuery extends GuStack {
 				}),
 				secrets: githubSecrets,
 				additionalCommands: additionalGithubCommands,
+
+				// We're only collecting data from recently updated repositories.
+				// Use `overwrite` mode to preserve data from repositories that haven't been updated recently.
+				// See https://www.cloudquery.io/docs/reference/destination-spec#write_mode
+				writeMode: 'overwrite',
 			},
 		];
 
