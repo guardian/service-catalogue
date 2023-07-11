@@ -345,6 +345,17 @@ export class CloudQuery extends GuStack {
 				secrets: githubSecrets,
 				additionalCommands: additionalGithubCommands,
 			},
+			{
+				name: 'GitHubBranches',
+				description:
+					'Collect GitHub branch data, specifically the latest commit',
+				schedule: Schedule.rate(Duration.days(1)),
+				config: githubSourceConfig({
+					tables: ['github_repository_branches'],
+				}),
+				secrets: githubSecrets,
+				additionalCommands: additionalGithubCommands,
+			},
 		];
 
 		const fastlyCredentials = SecretsManager.fromSecretPartialArn(
