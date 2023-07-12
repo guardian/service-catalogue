@@ -60,6 +60,8 @@ where
    id | org_id | name | repo | commit
  */
 
+create or replace view view_snyk_project_tags as
+
 --| project1 | key:commit, value:somecommithash |
 --| project1 | key:repo, value:guardian/somerepo |
 with all_tags as (
@@ -69,7 +71,7 @@ with all_tags as (
 
  -- | project-1 | somecommithash |
 projects_with_hashes as (
-  select id, tags ->> 'value' as hash
+  select id, tags ->> 'value' as commit
   from all_tags
   where tags ->> 'key' = 'commit'
 ),
@@ -81,10 +83,10 @@ projects_with_repos as (
   where tags ->> 'key' = 'repo'
 )
 
-create or replace view view_snyk_project_tags as select
-  p.id, p.org_id, p.name, r.repo, h.hash
+select
+  p.id, p.org_id, p.name, r.repo, h.commit
 from
   snyk_projects p
   left join projects_with_hashes h on p.id = h.id
   left join projects_with_repos r on p.id = r.id
-order by h.hash
+order by h.commit;
