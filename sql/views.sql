@@ -59,27 +59,32 @@ where
  It's shape is:
    id | org_id | name | repo | commit
  */
-CREATE OR REPLACE VIEW view_snyk_project_tags AS
-WITH
-    expanded_tags AS (
-        SELECT  *
-             , jsonb_array_elements(tags) ->> 'value' AS tag
-        FROM snyk_projects
-    )
-   , project_tags as (
-    SELECT  id
-         , org_id
-         , name
-         , CASE WHEN tag LIKE 'guardian/%' THEN tag END AS repo
-         , CASE WHEN tag NOT LIKE 'guardian/%' THEN tag END AS commit
-    FROM expanded_tags
+
+--| project1 | key:commit, value:somecommithash |
+--| project1 | key:repo, value:guardian/somerepo |
+with all_tags as (
+  select id, jsonb_array_elements(tags) as tags
+  from snyk_projects
+),
+
+ -- | project-1 | somecommithash |
+projects_with_hashes as (
+  select id, tags ->> 'value' as hash
+  from all_tags
+  where tags ->> 'key' = 'commit'
+),
+
+-- | project-1 | guardian/somerepo |
+projects_with_repos as (
+  select id, tags ->> 'value' as repo
+  from all_tags
+  where tags ->> 'key' = 'repo'
 )
-SELECT      id
-     , org_id
-     , name
-     , max(repo) AS repo
-     , max(commit) AS commit
-FROM        project_tags
-GROUP BY    id
-       , org_id
-       , name;
+
+create or replace view view_snyk_project_tags as select
+  p.id, p.org_id, p.name, r.repo, h.hash
+from
+  snyk_projects p
+  left join projects_with_hashes h on p.id = h.id
+  left join projects_with_repos r on p.id = r.id
+order by h.hash
