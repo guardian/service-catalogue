@@ -191,13 +191,7 @@ spec:
     - aws_xray_groups
     - aws_stepfunctions_map_runs
     - aws_stepfunctions_map_run_executions
-    - aws_organizations
-    - aws_organizations_accounts
-    - aws_organizations_delegated_services
-    - aws_organizations_delegated_administrators
-    - aws_organizations_organizational_units
-    - aws_organizations_policies
-    - aws_organizations_roots
+    - aws_organization*
     - aws_accessanalyzer_*
     - aws_securityhub_*
     - aws_cloudformation_stacks
@@ -1483,13 +1477,7 @@ spec:
   path: cloudquery/aws
   version: v18.3.0
   tables:
-    - aws_organizations
-    - aws_organizations_accounts
-    - aws_organizations_delegated_services
-    - aws_organizations_delegated_administrators
-    - aws_organizations_organizational_units
-    - aws_organizations_policies
-    - aws_organizations_roots
+    - aws_organization*
   destinations:
     - postgresql
   spec:

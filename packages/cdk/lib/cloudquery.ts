@@ -139,13 +139,12 @@ export class CloudQuery extends GuStack {
 				schedule: Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 					tables: [
-						'aws_organizations',
-						'aws_organizations_accounts',
-						'aws_organizations_delegated_services',
-						'aws_organizations_delegated_administrators',
-						'aws_organizations_organizational_units',
-						'aws_organizations_policies',
-						'aws_organizations_roots',
+						/*
+						Collect all AWS Organisation tables, including account names, and which OU they belong to.
+						A wildcard is used, as there are a lot of tables!
+						See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
+						 */
+						'aws_organization*',
 					],
 				}),
 				managedPolicies: [readonlyPolicy],
