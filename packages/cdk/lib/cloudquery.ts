@@ -136,7 +136,7 @@ export class CloudQuery extends GuStack {
 				name: 'DeployToolsListOrgs',
 				description:
 					'Data fetched from the Deploy Tools account (delegated from Root).',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 					tables: [
 						/*
