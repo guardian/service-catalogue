@@ -1,3 +1,5 @@
+-- The Guardian has six recognised production statuses for repositories.
+-- Here they are enumerated and prioritised
 drop table if exists guardian_production_status;
 
 create table guardian_production_status
@@ -9,12 +11,18 @@ create table guardian_production_status
 insert into guardian_production_status (status, priority)
 values ('production', 0),
        ('testing', 1),
-       ('documentation', 2),
+       ('documentation', 2), --no code, but still needs to be up to date
        ('prototype', 3),
        ('hackday', 4),
        ('learning', 5)
 on conflict (status) do nothing;
 
+/*
+ A lot of best practice recommendations and expectations only apply to repos
+ that are owned by P&E or are otherwise uncategorised. This is a list of github
+ team slugs for teams that sit outside of the P&E department for easy exclusion
+ of these teams in queries.
+ */
 drop table if exists guardian_non_p_and_e_github_teams;
 
 create table guardian_non_p_and_e_github_teams
@@ -80,10 +88,12 @@ where (
     )
   and ec2.state ->> 'Name' = 'running';
 
--- General information about running EC2 instances
--- | account_name |  app |  image_id  | instance_id | built_by_amigo | launch_time|
--- |--------------|------|------------|-------------|----------------|------------|
--- |    account1  | grid | ami-123456 |  i-1234556  |      true      | 2023-06-23 |
+/*
+General information about running EC2 instances
+| account_name |  app |  image_id  | instance_id | built_by_amigo | launch_time|
+|--------------|------|------------|-------------|----------------|------------|
+|    account1  | grid | ami-123456 |  i-1234556  |      true      | 2023-06-23 |
+ */
 create or replace view view_running_instances as
 with id_and_tags as (select image_id, tags ->> 'BuiltBy' as built_by
                      from aws_ec2_images
