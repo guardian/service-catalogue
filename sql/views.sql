@@ -1,3 +1,46 @@
+drop table if exists guardian_production_status;
+
+create table guardian_production_status
+(
+    status   text PRIMARY KEY,
+    priority integer NOT NULL
+);
+
+insert into guardian_production_status (status, priority)
+values ('production', 0),
+       ('testing', 1),
+       ('documentation', 2),
+       ('prototype', 3),
+       ('hackday', 4),
+       ('learning', 5)
+on conflict (status) do nothing;
+
+drop table if exists guardian_non_p_and_e_github_teams;
+
+create table guardian_non_p_and_e_github_teams
+(
+    team_name text PRIMARY KEY
+);
+insert into guardian_non_p_and_e_github_teams (team_name)
+values ('data-and-insight'),
+       ('data-design'),
+       ('data-science'),
+       ('d-i-data-science'),
+       ('enterprise-infrastructure'),
+       ('esd'),
+       ('esd-admin'),
+       ('guardian-design-team'),
+       ('guardian-us-design-team'),
+       ('glabs-au'),
+       ('it-australia'),
+       ('infosec'),
+       ('infosec-admin'),
+       ('interactive-team'),
+       ('interactives-owner-placeholder'),
+       ('interactives-admin'),
+       ('multimedia')
+on conflict (team_name) do nothing;
+
 create or replace view view_repo_ownership as
 select ght.id as "github_team_id"
      , ght.name as "github_team_name"
