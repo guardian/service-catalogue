@@ -197,7 +197,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 		spec: {
 			name: 'galaxies',
 			path: 'guardian/galaxies',
-			version: Versions.CloudqueryGalaxies,
+			version: `v${Versions.CloudqueryGalaxies}`,
 			destinations: ['postgresql'],
 			tables: [
 				'galaxies_people_table',
