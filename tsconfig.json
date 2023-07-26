@@ -1,18 +1,9 @@
 {
   "extends": "@guardian/tsconfig/tsconfig.json",
   "compilerOptions": {
-
     "module": "commonjs",
     "esModuleInterop": true,
-
-
-
-
     "baseUrl": ".",
-    "paths": {
-      "common": ["packages/common/src"],
-      "common/*": ["packages/common/src/*"]
-    }
   },
   "ts-node": {
     "require": ["tsconfig-paths/register", "dotenv/config"]

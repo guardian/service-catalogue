@@ -1,57 +1,22 @@
+const envOrError = (name: string): string => {
+	const value = process.env[name];
+	if (!value) {
+		throw new Error(`Missing environment variable ${name}`);
+	}
+	return value;
+};
+
+/**
+ * The versions of various CloudQuery plugins.
+ * See the `.env` file at the root of the repository.
+ */
 export const Versions = {
-	/**
-	 * The version of the CloudQuery CLI to install.
-	 *
-	 * @see https://github.com/cloudquery/cloudquery/releases?q=cli
-	 */
-	CloudqueryCli: '3.9.1',
-
-	/**
-	 * The version of the CloudQuery Postgres destination plugin to install.
-	 *
-	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-destination-postgresql
-	 */
-	CloudqueryPostgres: '5.0.0',
-
-	/**
-	 * The version of the CloudQuery AWS source plugin to install.
-	 *
-	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-aws
-	 */
-	CloudqueryAws: '20.0.0',
-
-	/**
-	 * The version of the CloudQuery GitHub source plugin to install.
-	 *
-	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-github
-	 */
-	CloudqueryGithub: '6.0.3',
-
-	/**
-	 * The version of the CloudQuery Fastly source plugin to install.
-	 *
-	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-fastly
-	 */
-	CloudqueryFastly: '2.0.2',
-
-	/**
-	 * The version of the our custom Galaxies source plugin to install.
-	 *
-	 * @see https://github.com/guardian/cq-source-galaxies
-	 */
-	CloudqueryGalaxies: 'v1.1.0',
-
-	/**
-	 * The version of the CloudQuery Snyk source plugin to install.
-	 *
-	 * @see https://github.com/cloudquery/cloudquery/releases?q=plugins-source-snyk
-	 */
-	CloudquerySnyk: '3.0.2',
-
-	/**
-	 * The version of the CloudQuery Snyk source plugin to install.
-	 *
-	 * @see https://github.com/guardian/cq-source-snyk-full-project
-	 */
-	CloudquerySnykGuardian: '0.1.1',
+	CloudqueryCli: envOrError('CQ_CLI'),
+	CloudqueryPostgres: envOrError('CQ_POSTGRES'),
+	CloudqueryAws: envOrError('CQ_AWS'),
+	CloudqueryGithub: envOrError('CQ_GITHUB'),
+	CloudqueryFastly: envOrError('CQ_FASTLY'),
+	CloudqueryGalaxies: envOrError('CQ_GUARDIAN_GALAXIES'),
+	CloudquerySnyk: envOrError('CQ_SNYK'),
+	CloudquerySnykGuardian: envOrError('CQ_GUARDIAN_SNYK'),
 };

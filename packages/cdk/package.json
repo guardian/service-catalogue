@@ -4,8 +4,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
     "typecheck": "tsc -noEmit",
-    "cdk": "cdk",
-    "synth": "cdk synth --path-metadata false --version-reporting false"
+    "synth": "DOTENV_CONFIG_PATH=../../.env cdk synth --path-metadata false --version-reporting false"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",

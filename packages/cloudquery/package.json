@@ -2,10 +2,6 @@
   "name": "cloudquery",
   "version": "0.0.0",
   "scripts": {
-    "start": "./script/start",
-    "test": "echo not implmented",
-    "build": "echo not implmented",
-    "lint": "echo not implmented",
-    "typecheck": "echo not implmented"
+    "start": "./script/start"
   }
 }

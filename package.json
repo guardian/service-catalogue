@@ -5,7 +5,7 @@
   "scripts": {
     "test": "npm run test --workspaces --if-present",
     "synth": "npm run synth --workspace=cdk",
-    "typecheck": "npm run typecheck --workspaces",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "lint": "eslint packages/** --ext .ts --no-error-on-unmatched-pattern"
   },
@@ -17,7 +17,6 @@
     "@guardian/eslint-config-typescript": "^2.0.0",
     "@guardian/prettier": "^2.1.5",
     "@guardian/tsconfig": "^0.2.0",
-    "aws-sdk-client-mock": "^2.0.0",
     "dotenv": "^16.0.1",
     "esbuild": "^0.15.16",
     "eslint-plugin-prettier": "^4.2.1"
