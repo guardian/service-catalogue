@@ -153,7 +153,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_*
   skip_tables:
@@ -851,7 +851,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_accessanalyzer_*
     - aws_securityhub_*
@@ -1475,7 +1475,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_organization*
   destinations:
@@ -6049,7 +6049,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_acm*
   destinations:
@@ -6703,7 +6703,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_cloudformation_stacks
     - aws_cloudformation_stack_resources
@@ -7496,7 +7496,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_cloudwatch_alarms
   destinations:
@@ -7936,7 +7936,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_inspector_findings
     - aws_inspector2_findings
@@ -8753,7 +8753,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v20.0.0
+  version: v22.0.1
   tables:
     - aws_elbv1_*
     - aws_elbv2_*
