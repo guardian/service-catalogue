@@ -203,6 +203,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 				'galaxies_people_table',
 				'galaxies_teams_table',
 				'galaxies_streams_table',
+				'galaxies_people_profile_info_table',
 			],
 			spec: {
 				bucket: bucketName,
