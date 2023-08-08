@@ -19,7 +19,7 @@ describe('Config generation, and converting to YAML', () => {
 		  name: postgresql
 		  registry: github
 		  path: cloudquery/postgresql
-		  version: v5.0.0
+		  version: v5.0.5
 		  migrate_mode: forced
 		  spec:
 		    connection_string: >-
@@ -38,7 +38,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v22.0.1
+		  version: v22.6.0
 		  tables:
 		    - aws_s3_buckets
 		  destinations:
@@ -70,7 +70,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v22.0.1
+		  version: v22.6.0
 		  tables:
 		    - '*'
 		  skip_tables:
@@ -107,7 +107,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v22.0.1
+		  version: v22.6.0
 		  tables:
 		    - aws_accessanalyzer_analyzers
 		    - aws_accessanalyzer_analyzer_archive_rules
@@ -137,7 +137,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v6.0.3
+		  version: v7.1.3
 		  tables:
 		    - github_repositories
 		  destinations:
@@ -162,7 +162,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: fastly
 		  path: cloudquery/fastly
-		  version: v2.0.2
+		  version: v2.1.5
 		  tables:
 		    - '*'
 		  destinations:
@@ -202,7 +202,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: snyk
 		  path: cloudquery/snyk
-		  version: v3.0.2
+		  version: v3.1.5
 		  tables:
 		    - '*'
 		  destinations:
