@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-#df requires columns 'repo_name', 'slug'
+#owner_df requires columns 'repo_name', 'slug'
 #topics_df requires columns 'full_name', 'topics'
 def github_06(owner_df, topics_df, production_topics, non_pe_teams)-> DataFrame:
     aggregated_name_and_owners = owner_df.groupby(['repo_name'])['slug'].apply(set).reset_index(name='slugs')
