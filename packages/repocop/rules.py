@@ -1,5 +1,13 @@
 from pandas import DataFrame
 
+#default_branch_df needs to be a dataframe with the following columns:
+# - full_name (string)
+# - default_branch (string)
+def repository_01(default_branch_df: DataFrame) -> DataFrame:
+    """Repository 01: Default branch should be main"""
+    default_branch_df['repository_01'] = default_branch_df['default_branch'] == 'main'
+    return default_branch_df[['full_name', 'repository_01']]
+
 #owner_df requires columns 'repo_name', 'slug'
 #topics_df requires columns 'full_name', 'topics'
 def repository_06(owner_df, topics_df, production_topics, non_pe_teams)-> DataFrame:
