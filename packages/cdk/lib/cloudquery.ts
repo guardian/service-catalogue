@@ -6,6 +6,8 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
+import type { GuScheduledLambdaProps } from '@guardian/cdk/lib/patterns';
+import { GuScheduledLambda } from '@guardian/cdk/lib/patterns';
 import {
 	GuardianAwsAccounts,
 	GuardianPrivateNetworks,
@@ -21,6 +23,7 @@ import {
 } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
@@ -455,6 +458,21 @@ export class CloudQuery extends GuStack {
 				},
 			},
 		];
+
+		const lambdaProps: GuScheduledLambdaProps = {
+			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
+			monitoringConfiguration: {
+				noMonitoring: true,
+			},
+			runtime: Runtime.PYTHON_3_11,
+			handler: 'main.handler',
+			app: 'repocop',
+			fileName: 'repocop.zip',
+			timeout: Duration.minutes(15),
+			retryAttempts: 1,
+		};
+
+		new GuScheduledLambda(this, app, lambdaProps);
 
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,

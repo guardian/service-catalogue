@@ -264,3 +264,8 @@ dist
 # Ignore zipped buildg artifacts
 *.zip
 target
+
+# Python
+__pycache__/
+.ipynb_checkpoints/
+.venv/
