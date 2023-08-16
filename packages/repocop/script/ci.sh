@@ -2,14 +2,13 @@
 
 set -e
 
+
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR="${DIR}/.."
-REPOCOP_DIR="${ROOT_DIR}/packages/repocop"
+REPOCOP_DIR="$(realpath "${DIR}/..")"
 APP_NAME="repocop"
 
 python3 -m venv "$REPOCOP_DIR/.venv"
 source "$REPOCOP_DIR/.venv/bin/activate"
-
 pip3 install -r "$REPOCOP_DIR/requirements.txt"
 
 ( #Steps to package the python venv
