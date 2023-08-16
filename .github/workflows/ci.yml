@@ -43,6 +43,9 @@ jobs:
       - name: Run script/ci
         run: ./scripts/ci.sh
 
+      - name: Run script/ci-repocop  #TODO combine the scripts and remove this step eventually
+        run: ./scripts/ci-repocop.sh
+
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@v2
         with:
@@ -53,6 +56,7 @@ jobs:
           contentDirectories: |
             cdk.out:
               - packages/cdk/cdk.out
-
+            repocop:
+              - packages/repocop
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

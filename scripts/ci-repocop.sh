@@ -3,7 +3,8 @@
 set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-REPOCOP_DIR="${DIR}/.."
+ROOT_DIR="${DIR}/.."
+REPOCOP_DIR="${ROOT_DIR}/packages/repocop"
 APP_NAME="repocop"
 
 python3 -m venv "$REPOCOP_DIR/.venv"
