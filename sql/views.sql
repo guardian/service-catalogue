@@ -62,6 +62,7 @@ from github_team_repositories tr
          left join galaxies_teams_table gtt on ght.slug = gtt.team_primary_github_team
 where tr.role_name = 'admin';
 
+
 CREATE OR REPLACE FUNCTION coalesce_dates(image_creation_time text, instance_launch_time timestamp) RETURNS date
     LANGUAGE SQL
     IMMUTABLE
