@@ -1,0 +1,8 @@
+{
+	"name": "repocop",
+	"version": "0.0.0",
+	"scripts": {
+		"test": "./script/test.sh",
+		"build": "./script/ci.sh"
+	}
+}

@@ -5,10 +5,6 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR=${DIR}/..
 
-STAGE=DEV
-APP=github-lens
-STACK=deploy
-
 check_node_version() {
   runningNodeVersion=$(node -v)
   requiredNodeVersion=$(cat "$ROOT_DIR/.nvmrc")

@@ -9,6 +9,8 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "GuSecurityGroup",
       "GuSecurityGroup",
       "GuStringParameter",
+      "GuDistributionBucketParameter",
+      "GuScheduledLambda",
       "GuLoggingStreamNameParameter",
     ],
     "gu:cdk:version": "TEST",
@@ -16,6 +18,11 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
   "Parameters": {
     "ActionsStaticSiteBucketArnParam": {
       "Default": "/INFRA/deploy/cloudquery/actions-static-site-bucket-arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "DistributionBucketName": {
+      "Default": "/account/services/artifact.bucket",
+      "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "LoggingStreamName": {
@@ -10078,6 +10085,76 @@ spec:
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
+    "cloudquery94E245F6": {
+      "DependsOn": [
+        "cloudqueryServiceRoleDefaultPolicyDBB70D58",
+        "cloudqueryServiceRole55C3C96C",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "deploy/TEST/repocop/repocop.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "APP": "repocop",
+            "SECRET_ARN": {
+              "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+            },
+            "STACK": "deploy",
+            "STAGE": "TEST",
+          },
+        },
+        "Handler": "main.handler",
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "cloudqueryServiceRole55C3C96C",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.11",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "repocop",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 900,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "PrivateSubnets",
+          },
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "cloudqueryCluster5370C11B": {
       "Properties": {
         "Tags": [
@@ -10113,6 +10190,263 @@ spec:
         "DefaultCapacityProviderStrategy": [],
       },
       "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
+    },
+    "cloudqueryEventInvokeConfigDA0DA31B": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "cloudquery94E245F6",
+        },
+        "MaximumRetryAttempts": 1,
+        "Qualifier": "$LATEST",
+      },
+      "Type": "AWS::Lambda::EventInvokeConfig",
+    },
+    "cloudqueryServiceRole55C3C96C": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "repocop",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "cloudqueryServiceRoleDefaultPolicyDBB70D58": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/deploy/TEST/repocop/repocop.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/repocop",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/repocop/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "cloudqueryServiceRoleDefaultPolicyDBB70D58",
+        "Roles": [
+          {
+            "Ref": "cloudqueryServiceRole55C3C96C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "cloudquerycloudqueryrate1day04EA3DD54": {
+      "Properties": {
+        "ScheduleExpression": "rate(1 day)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "cloudquery94E245F6",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "cloudquerycloudqueryrate1day0AllowEventRuleCloudQuerycloudquery5AB72A486877854B": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "cloudquery94E245F6",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "cloudquerycloudqueryrate1day04EA3DD54",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
   },
 }
