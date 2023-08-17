@@ -462,7 +462,10 @@ export class CloudQuery extends GuStack {
 		const lambdaProps: GuScheduledLambdaProps = {
 			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
 			monitoringConfiguration: {
-				noMonitoring: true,
+				noMonitoring: true, //TODO implement this when finished setting up the lambda
+			},
+			environment: {
+				SECRET_ARN: db.secret!.secretArn,
 			},
 			runtime: Runtime.PYTHON_3_11,
 			handler: 'main.handler',
@@ -470,9 +473,15 @@ export class CloudQuery extends GuStack {
 			fileName: 'repocop.zip',
 			timeout: Duration.minutes(15),
 			retryAttempts: 1,
+			vpc,
+			vpcSubnets: { subnets: privateSubnets },
+			securityGroups: [applicationToPostgresSecurityGroup],
 		};
 
-		new GuScheduledLambda(this, app, lambdaProps);
+		const lambda = new GuScheduledLambda(this, app, lambdaProps);
+
+		db.grantConnect(lambda);
+		db.secret?.grantRead(lambda);
 
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
