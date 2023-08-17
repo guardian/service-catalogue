@@ -12,6 +12,8 @@ jobs:
     with:
       ORG: guardian-devtools
       SKIP_NODE: false
+      SKIP_PYTHON: false
+      PYTHON_VERSION: '3.11'
       EXCLUDE: cdk
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
