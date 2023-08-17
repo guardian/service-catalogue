@@ -52,7 +52,8 @@ on conflict (team_name) do nothing;
 create or replace view view_repo_ownership as
 select ght.id        as "github_team_id"
      , ght.name      as "github_team_name"
-     , tr.full_name  as "repo_name"
+     , tr.full_name  as "repo_name" --deprecated. use full_name below for consistency with other tables
+     , tr.full_name  as "full_name"
      , tr.role_name
      , tr.archived
      , gtt.team_name as "galaxies_team"
