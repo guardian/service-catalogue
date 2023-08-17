@@ -2,8 +2,6 @@
 
 set -e
 
-MAJOR_PYTHON_VERSION="3.11"
-
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 REPOCOP_DIR="$(realpath "${DIR}/..")"
 
