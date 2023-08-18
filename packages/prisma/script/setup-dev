@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+export DATABASE_URL="postgresql://postgres:not_at_all_secret@localhost:5432/postgres?schema=public"
+npm run get-schemas
+npm run generate-client
+npm run start

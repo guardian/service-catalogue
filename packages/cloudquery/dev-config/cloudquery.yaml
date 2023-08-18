@@ -1,6 +1,106 @@
 ---
 kind: source
 spec:
+  # Source spec section
+  name: 'github'
+  path: 'cloudquery/github'
+  version: v${CQ_GITHUB}
+  tables: ['*']
+  destinations: ['postgresql']
+  spec:
+    access_token: ${GITHUB_ACCESS_TOKEN}
+    repos: [
+        # example devX owned repos
+        'guardian/cdk',
+        'guardian/service-catalogue',
+
+        # example non-devX repo
+        'guardian/dotcom-rendering',
+
+        # example private repo
+        'guardian/tracker',
+
+        #75 public repos selected at random from the guardian org
+        'guardian/isw-mapshaper-extractor',
+        'guardian/embed-tool',
+        'guardian/sophie-practical-scala-test',
+        'guardian/animated-frontier-massacres',
+        'guardian/media-flipper',
+        'guardian/world-map',
+        'guardian/sbt-benchmark-plugin',
+        'guardian/brother-audio-wall-202103',
+        'guardian/gdn-smooth-operator',
+        'guardian/grid-permissions',
+        'guardian/dog-relatedness',
+        'guardian/main-media-sv-addiction',
+        'guardian/backend-101-scala-starter-ParisaTork',
+        'guardian/zuora-undo',
+        'guardian/Oz_covid_bans',
+        'guardian/fonts',
+        'guardian/doc-cards',
+        'guardian/odd-job',
+        'guardian/nsw-state-election-2019',
+        'guardian/online-abuse-analysis',
+        'guardian/rockers',
+        'guardian/element-aws-config',
+        'guardian/drought-map-australia',
+        'guardian/course-outline',
+        'guardian/watchman',
+        'guardian/guss-grid-system',
+        'guardian/word-of-the-year',
+        'guardian/oz-230213-emissions-offset-scraper',
+        'guardian/test-api-gateway-workshop',
+        'guardian/prout',
+        'guardian/gu-who',
+        'guardian/gocapimodels',
+        'guardian/react2angular',
+        'guardian/gu-most-popular',
+        'guardian/techtime',
+        'guardian/teamcity-queue-boss-plugin',
+        'guardian/acquisition-iframe-tracking',
+        'guardian/ing-audio-wall-202107',
+        'guardian/content-api-scala-client',
+        'guardian/source-shakedown',
+        'guardian/skf-flask',
+        'guardian/202206-Griffith-image-grid',
+        'guardian/main-media-black-power-video',
+        'guardian/cq-source-snyk-full-project',
+        'guardian/land-clearing-gis-relocator-tool-global',
+        'guardian/page-enhancer-back-to-top-btn',
+        'guardian/get-programming-with-scala',
+        'guardian/element-aws-identity',
+        'guardian/elasticsearch-monitoring-demo',
+        'guardian/nla-pageview-job',
+        'guardian/autosave-browser',
+        'guardian/trump-russia-embeds',
+        'guardian/scala-school-test1',
+        'guardian/csrf-example',
+        'guardian/giant',
+        'guardian/flexible-restorer',
+        'guardian/iframe-messenger',
+        'guardian/scribe-plugin-blockquote-command',
+        'guardian/repo-apocalypse',
+        'guardian/support-shared-tokens',
+        'guardian/sauce-connect-launcher',
+        'guardian/https-ready',
+        'guardian/most-viewed-video-uploader',
+        'guardian/flexible-octopus-converter',
+        'guardian/reusable-line-chart-v1',
+        'guardian/dotcom-logic',
+        'guardian/argogo',
+        'guardian/ajwl-scala-lambda-test',
+        'guardian/opsm-immersive-2020',
+        'guardian/paygap-automated-story',
+        'guardian/hackday-particulers',
+        'guardian/yacht-charter-python-library',
+        'guardian/ipv6-checker',
+        'guardian/mobile-notifications-api-client',
+        'guardian/high-five-the-archive',
+
+      ]
+---
+kind: source
+spec:
   name: 'aws'
   path: 'cloudquery/aws'
   version: v${CQ_AWS}
@@ -47,28 +147,6 @@ spec:
     accounts:
       - id: 'developerPlayground'
         local_profile: 'developerPlayground'
----
-kind: source
-spec:
-  # Source spec section
-  name: 'github'
-  path: 'cloudquery/github'
-  version: v${CQ_GITHUB}
-  tables: ['*']
-  destinations: ['postgresql']
-  spec:
-    access_token: ${GITHUB_ACCESS_TOKEN}
-    repos: [
-        # example devX owned repos
-        'guardian/cdk',
-        'guardian/service-catalogue',
-
-        # example non-devX repo
-        'guardian/dotcom-rendering',
-
-        # example private repo
-        'guardian/tracker',
-      ]
 ---
 kind: source
 spec:
