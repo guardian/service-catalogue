@@ -9,10 +9,10 @@ datasource db {
 }
 
 model repocop_github_repository_rules {
-  full_name   String   @id
+  full_name     String   @id
   repository_01 Boolean
   repository_02 Boolean
-  timestamp    DateTime @default(now())
+  timestamp     DateTime @default(now())
 }
 
 model aws_accessanalyzer_analyzer_archive_rules {
