@@ -1,4 +1,11 @@
-import { GitHubRepositories, GitHubRepository, GitHubRepositoryBranches, RepoRuleEvaluation, Repository01, Repository02 } from './model';
+import type {
+	GitHubRepositories,
+	GitHubRepository,
+	GitHubRepositoryBranches,
+	RepoRuleEvaluation,
+	Repository01,
+	Repository02,
+} from './model';
 
 export function repository01(repos: GitHubRepositories): Repository01[] {
 	return repos.map((repo) => {
@@ -43,4 +50,3 @@ export function repositoryRuleEvaluation(
 		repository_02: repo2.repository_02,
 	};
 }
-
