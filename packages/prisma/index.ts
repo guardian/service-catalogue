@@ -13,8 +13,8 @@ async function main() {
 	const evaluation = repository01(repos).sort();
 	const branches: GitHubRepositoryBranches =
 		await prisma.github_repository_branches.findMany();
-	console.log(evaluation[0]);
-	console.log(repository02(repos, branches)[0]);
+	console.table(evaluation);
+	console.table(repository02(repos, branches));
 }
 
 main()
