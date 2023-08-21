@@ -1,67 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import {GitHubRepositories, GitHubRepositoryBranches } from './model';
+import { repository01, repository02 } from './repositoryRuleEvaluation';
 
 const prisma = new PrismaClient();
 
-interface GitHubRepository {
-	full_name: string | null;
-	default_branch: string | null;
-	topics: string[] | null;
-	id: bigint | null;
-}
-
-type GitHubRepositories = GitHubRepository[];
-
-interface GitHubRepositoryBranch {
-	repository_id: bigint;
-	name: string;
-	protected: boolean | null;
-	protection: any;
-}
-
-type GitHubRepositoryBranches = GitHubRepositoryBranch[];
-
-interface Repository01 {
-	full_name: string;
-	repository_01: boolean;
-}
-
-export function repository01(repos: GitHubRepositories): Repository01[] {
-	return repos.map((repo) => {
-		return {
-			full_name: repo.full_name ?? '',
-			repository_01: repo.default_branch == 'main',
-		};
-	});
-}
-
-interface Repository02 {
-	full_name: string | null;
-	repository_02: boolean | null;
-}
-
-function findBranchProtectionForOneRepo(
-	repo: GitHubRepository,
-	branches: GitHubRepositoryBranches,
-): Repository02 {
-	const branch = branches.find((branch) => {
-		return (
-			branch.repository_id == repo.id && branch.name == repo.default_branch
-		);
-	});
-	return {
-		full_name: repo.full_name ?? '',
-		repository_02: branch?.protected ?? false,
-	};
-}
-
-function repository02(
-	repos: GitHubRepositories,
-	branches: GitHubRepositoryBranches,
-): Repository02[] {
-	return repos.map((repo) => {
-		return findBranchProtectionForOneRepo(repo, branches);
-	});
-}
 
 async function main() {
 	// ... you will write your Prisma Client queries here
