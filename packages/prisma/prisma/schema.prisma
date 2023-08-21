@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model repocop_github_repository_rules {
+  full_name   String   @id
+  repository_01 Boolean
+  repository_02 Boolean
+  timestamp    DateTime @default(now())
+}
+
 model aws_accessanalyzer_analyzer_archive_rules {
   cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name String?   @map("_cq_source_name")
