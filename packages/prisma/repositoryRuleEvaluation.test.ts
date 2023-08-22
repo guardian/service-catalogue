@@ -1,12 +1,15 @@
-import type { GitHubRepository, GitHubRepositoryBranch } from './model';
+import { github_repositories, github_repository_branches } from '@prisma/client';
 import { repository01, repository02 } from './repositoryRuleEvaluation';
 
-const thePerfectRepo: GitHubRepository = {
+const nullRepo: github_repositories = 
+
+const thePerfectRepo: github_repositories = {
 	full_name: 'repo1',
 	default_branch: 'main',
 	topics: ['production'],
 	id: BigInt(1),
 };
+
 
 describe('repository_01 should be false when the default branch is not main', () => {
 	test('branch is not main', () => {
@@ -20,13 +23,13 @@ describe('repository_01 should be false when the default branch is not main', ()
 
 	describe('Repositories should have branch protection', () => {
 		test('We should get an affirmative result when the default branch is protected', () => {
-			const protectedMainBranch: GitHubRepositoryBranch = {
+			const protectedMainBranch: github_repository_branches[]= {
 				repository_id: BigInt(1),
 				name: 'main',
 				protected: true,
 				protection: {},
 			};
-			const unprotectedSideBranch: GitHubRepositoryBranch = {
+			const unprotectedSideBranch: github_repository_branches[] = {
 				...protectedMainBranch,
 				protected: false,
 			};
@@ -45,7 +48,7 @@ describe('repository_01 should be false when the default branch is not main', ()
 				id: BigInt(1),
 			};
 
-			const unprotectedMainBranch: GitHubRepositoryBranch = {
+			const unprotectedMainBranch: github_repository_branches = {
 				repository_id: BigInt(1),
 				name: 'default',
 				protected: false,
