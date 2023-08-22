@@ -5,9 +5,12 @@
 		"test": "jest --detectOpenHandles --config ../../jest.config.js  --selectProjects prisma",
 		"get-schemas": "npx prisma db pull",
 		"generate-client": "npx prisma generate",
-		"start": "npx ts-node index.ts"
+		"start": "npx ts-node index.ts",
+		"postinstall": "ln -sf $npm_config_local_prefix/node_modules/@prisma node_modules && npx prisma generate"
 	},
 	"devDependencies": {
+		"@aws-sdk/credential-providers": "^3.395.0",
+		"@aws-sdk/rds-signer": "^3.395.0",
 		"prisma": "5.1.1"
 	},
 	"dependencies": {

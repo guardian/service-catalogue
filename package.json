@@ -39,7 +39,8 @@
     }
   },
   "eslintIgnore": [
-    "packages/common/dist"
+    "packages/common/dist",
+    "packages/prisma/*.ts"
   ],
   "prettier": "@guardian/prettier"
 }
