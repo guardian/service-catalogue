@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client';
-import type { GitHubRepositories, GitHubRepositoryBranches } from './model';
+import { PrismaClient, github_repositories, github_repository_branches } from '@prisma/client';
 import { repository01, repository02 } from './repositoryRuleEvaluation';
 import {Datasources} from "@prisma/client/runtime/library";
 import * as process from "process";
 import { Signer } from "@aws-sdk/rds-signer";
-import {fromIni} from "@aws-sdk/credential-providers";
 
 interface Config {
 	stage: string;
@@ -72,19 +70,16 @@ async function getPrismaClient(config: Config): Promise<PrismaClient> {
 }
 
 export async function main() {
-	// ... you will write your Prisma Client queries here
-	//   const allUsers = await prisma.user.findMany()
-	//   console.log(allUsers)
 	const config = getConfig();
 	const prisma = await getPrismaClient(config);
 
 	try {
-		const repos: GitHubRepositories = await prisma.github_repositories.findMany({take: 10});
-		const evaluation = repository01(repos).sort();
-		const branches: GitHubRepositoryBranches =
-			await prisma.github_repository_branches.findMany({take: 10});
-		console.log(evaluation[0])
-		console.log(repository02(repos, branches)[0]);
+		const repo: github_repositories = await prisma.github_repositories.findFirst();
+		const evaluation = repository01(repo);
+		const branches: github_repository_branches[] =
+			await prisma.github_repository_branches.findMany();
+		console.log(evaluation)
+		console.log(repository02(repo, branches));
 	} catch(e) {
 		console.error(e);
 		process.exit(1);

@@ -1,43 +1,20 @@
+import { github_repositories, github_repository_branches } from '@prisma/client';
 import type {
-	GitHubRepositories,
-	GitHubRepository,
-	GitHubRepositoryBranches,
 	RepoRuleEvaluation,
 	Repository01,
 	Repository02,
 } from './model';
 
-export function repository01(repos: GitHubRepositories): Repository01[] {
-	return repos.map((repo) => {
-		return {
-			full_name: repo.full_name ?? '',
-			repository_01: repo.default_branch === 'main',
-		};
-	});
-}
-
-function findBranchProtectionForOneRepo(
-	repo: GitHubRepository,
-	branches: GitHubRepositoryBranches,
-): Repository02 {
-	const branch = branches.find((branch) => {
-		return (
-			branch.repository_id === repo.id && branch.name === repo.default_branch
-		);
-	});
-	return {
-		full_name: repo.full_name ?? '',
-		repository_02: branch?.protected ?? false,
-	};
+export function repository01(repo: github_repositories): boolean {
+	return repo.default_branch === 'main';
 }
 
 export function repository02(
-	repos: GitHubRepositories,
-	branches: GitHubRepositoryBranches,
-): Repository02[] {
-	return repos.map((repo) => {
-		return findBranchProtectionForOneRepo(repo, branches);
-	});
+	repo: github_repositories,
+	branches: github_repository_branches[],
+): boolean {
+	const branch = branches.find((branch) => branch.repository_id === repo.id && branch.name === repo.default_branch);
+	return branch.protected;
 }
 
 export function repositoryRuleEvaluation(
