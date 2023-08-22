@@ -28,7 +28,7 @@ function getConfig(): Config {
 		stage: process.env['STAGE'] || 'DEV',
 		database: {
 			hostname: getEnvOrThrow('DATABASE_HOSTNAME'),
-			user: getEnvOrThrow('DATABASE_USER'),
+			user: 'repocop',
 			port: 5432,
 		}
 	}
@@ -49,7 +49,7 @@ async function getDatasource(config: Config): Promise<Datasources> {
 		});
 		const token = await signer.getAuthToken();
 
-		const url = `user=${user} password=${token} host=${hostname} port=${port} dbname=postgres sslmode=require schema=public`;
+		const url = `postgresql://${user}:${encodeURIComponent(token)}@${hostname}:${port}/postgres?schema=public&sslmode=verify-full`;
 
 		return {
 			db: {
@@ -72,7 +72,7 @@ async function getPrismaClient(config: Config): Promise<PrismaClient> {
 	});
 }
 
-async function main() {
+export async function main() {
 	// ... you will write your Prisma Client queries here
 	//   const allUsers = await prisma.user.findMany()
 	//   console.log(allUsers)
@@ -80,12 +80,12 @@ async function main() {
 	const prisma = await getPrismaClient(config);
 
 	try {
-		const repos: GitHubRepositories = await prisma.github_repositories.findMany();
+		const repos: GitHubRepositories = await prisma.github_repositories.findMany({take: 10});
 		const evaluation = repository01(repos).sort();
 		const branches: GitHubRepositoryBranches =
-			await prisma.github_repository_branches.findMany();
-		console.table(evaluation);
-		console.table(repository02(repos, branches));
+			await prisma.github_repository_branches.findMany({take: 10});
+		console.log(evaluation[0])
+		console.log(repository02(repos, branches)[0]);
 	} catch(e) {
 		console.error(e);
 		process.exit(1);
@@ -94,11 +94,11 @@ async function main() {
 	}
 }
 
-main()
-	.then(async () => {
-		process.exit(0);
-	})
-	.catch(async (e) => {
-		console.error(e);
-		process.exit(1);
-	});
+// main()
+// 	.then(async () => {
+// 		process.exit(0);
+// 	})
+// 	.catch(async (e) => {
+// 		console.error(e);
+// 		process.exit(1);
+// 	});

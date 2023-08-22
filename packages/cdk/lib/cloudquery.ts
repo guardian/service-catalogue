@@ -459,6 +459,25 @@ export class CloudQuery extends GuStack {
 			},
 		];
 
+		const prismaLambda = new GuScheduledLambda(this, 'PrismaLambda', {
+			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
+			monitoringConfiguration: {
+				noMonitoring: true
+			},
+			environment: {
+				'DATABASE_HOSTNAME': db.dbInstanceEndpointAddress,
+			},
+			runtime: Runtime.NODEJS_16_X,
+			handler: 'dist/index.main',
+			app: 'prisma',
+			fileName: 'prisma.zip',
+			vpc,
+			vpcSubnets: { subnets: privateSubnets },
+			securityGroups: [applicationToPostgresSecurityGroup],
+		})
+
+		db.grantConnect(prismaLambda, 'repocop');
+
 		const lambdaProps: GuScheduledLambdaProps = {
 			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
 			monitoringConfiguration: {

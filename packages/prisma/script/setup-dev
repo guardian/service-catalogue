@@ -3,14 +3,14 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT_DIR=$(realpath ${DIR}/../../..)
+ROOT_DIR=$(realpath "${DIR}"/../../..)
 
 generateClient() {
   # prisma expects to find `prisma-client` in the node_modules directory of this workspace.
   # NPM does not support package no-hoisting, so we need to create a symlink to the prisma-client package.
   # TODO find a more native NPM solution for this? (Or move to PNPM?)
   echo 'Creating symlink to prisma-client package'
-  ln -sf $ROOT_DIR/node_modules/@prisma node_modules
+  ln -sf "$ROOT_DIR"/node_modules/@prisma node_modules
 
   echo 'Generating prisma client'
   npm run generate-client

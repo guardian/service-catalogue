@@ -11,6 +11,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
       "GuStringParameter",
       "GuDistributionBucketParameter",
       "GuScheduledLambda",
+      "GuScheduledLambda",
       "GuLoggingStreamNameParameter",
     ],
     "gu:cdk:version": "TEST",
@@ -10084,6 +10085,312 @@ spec:
         "ToPort": 5432,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "PrismaLambda48D094F2": {
+      "DependsOn": [
+        "PrismaLambdaServiceRoleDefaultPolicy794C316B",
+        "PrismaLambdaServiceRoleA26B18B2",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "deploy/TEST/prisma/prisma.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "APP": "prisma",
+            "DATABASE_HOSTNAME": {
+              "Fn::GetAtt": [
+                "PostgresInstance16DE4286E",
+                "Endpoint.Address",
+              ],
+            },
+            "STACK": "deploy",
+            "STAGE": "TEST",
+          },
+        },
+        "Handler": "dist/index.main",
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "PrismaLambdaServiceRoleA26B18B2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "prisma",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 30,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "PrivateSubnets",
+          },
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "PrismaLambdaPrismaLambdarate1day01CCD531F": {
+      "Properties": {
+        "ScheduleExpression": "rate(1 day)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "PrismaLambda48D094F2",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "PrismaLambdaPrismaLambdarate1day0AllowEventRuleCloudQueryPrismaLambda1B834995D420C393": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "PrismaLambda48D094F2",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "PrismaLambdaPrismaLambdarate1day01CCD531F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "PrismaLambdaServiceRoleA26B18B2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "prisma",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PrismaLambdaServiceRoleDefaultPolicy794C316B": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/deploy/TEST/prisma/prisma.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/prisma",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/prisma/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/repocop",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "PrismaLambdaServiceRoleDefaultPolicy794C316B",
+        "Roles": [
+          {
+            "Ref": "PrismaLambdaServiceRoleA26B18B2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "cloudquery94E245F6": {
       "DependsOn": [
