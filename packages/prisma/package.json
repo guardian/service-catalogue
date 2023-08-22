@@ -7,7 +7,7 @@
 		"generate-client": "npx prisma generate",
 		"start": "npx ts-node index.ts",
 		"postinstall": "ln -sf $npm_config_local_prefix/node_modules/@prisma node_modules && npx prisma generate",
-		"build": "esbuild index.ts --bundle --outdir=dist --platform=node --target=node16 && cp -r prisma/ dist/prisma/ && zip -FSr prisma.zip dist"
+		"build": "esbuild index.ts --bundle --outdir=dist --platform=node --target=node16 && cp prisma/schema.prisma dist/ && zip -FSr prisma.zip dist"
 	},
 	"devDependencies": {
 		"@aws-sdk/credential-providers": "^3.395.0",
