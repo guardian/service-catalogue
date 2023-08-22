@@ -36,15 +36,13 @@ function getConfig(): Config {
 
 async function getDatasource(config: Config): Promise<Datasources> {
 	if (config.stage === 'INFRA') {
-		console.log('Obtaining IAM token for RDS connection')
+
 		const {hostname, port, user} = config.database
 
 		const signer = new Signer({
 			hostname,
 			port,
 			username: user,
-			// TODO: Use a credential provider chain so this works properly in PROD
-			credentials: fromIni({profile: 'deployTools'}),
 			region: 'eu-west-1'
 		});
 		const token = await signer.getAuthToken();
@@ -57,6 +55,7 @@ async function getDatasource(config: Config): Promise<Datasources> {
 			}
 		}
 	}
+	//TODO implement for dev stage
 
 	return Promise.resolve({
 		db: {
