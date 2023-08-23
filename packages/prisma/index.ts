@@ -1,4 +1,4 @@
-import { PrismaClient, github_repositories, github_repository_branches } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { repository01, repository02 } from './repositoryRuleEvaluation';
 import {Datasources} from "@prisma/client/runtime/library";
 import * as process from "process";
@@ -53,14 +53,13 @@ async function getDatasource(config: Config): Promise<Datasources> {
 			}
 		}
 	}
-	//TODO implement for dev stage
-
-	return Promise.resolve({
-		db: {
-			// TODO: Specify the local DB connection in a single place? At the moment it is also in docker-compose.yml
-			url: 'postgresql://postgres:not_at_all_secret@localhost:5432/postgres?schema=public'
+	else {
+		return {
+			db: {
+				url: getEnvOrThrow('DATABASE_URL')
+			}
 		}
-	})
+	}
 }
 
 async function getPrismaClient(config: Config): Promise<PrismaClient> {
@@ -74,11 +73,9 @@ export async function main() {
 	const prisma = await getPrismaClient(config);
 
 	try {
-		const repo: github_repositories = await prisma.github_repositories.findFirst();
-		const evaluation = repository01(repo);
-		const branches: github_repository_branches[] =
-			await prisma.github_repository_branches.findMany();
-		console.log(evaluation)
+		const repo = await prisma.github_repositories.findFirst();
+		const branches = await prisma.github_repository_branches.findMany();
+		console.log(repository01(repo))
 		console.log(repository02(repo, branches));
 	} catch(e) {
 		console.error(e);
