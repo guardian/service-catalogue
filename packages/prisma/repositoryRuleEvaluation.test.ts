@@ -13,9 +13,10 @@ const thePerfectRepo: github_repositories = {
 
 describe('repository_01 should be false when the default branch is not main', () => {
 	test('branch is not main', () => {
+		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: github_repositories[] = [
 			thePerfectRepo,
-			{ ...thePerfectRepo, default_branch: 'notMain' },
+			badRepo,
 		];
 		expect(repos.map(repository01)).toEqual([true, false]);
 	});
@@ -30,6 +31,7 @@ describe('repository_01 should be false when the default branch is not main', ()
 			};
 			const unprotectedSideBranch: github_repository_branches = {
 				...protectedMainBranch,
+				name: 'side-branch',
 				protected: false,
 			};
 
@@ -54,7 +56,7 @@ describe('repository_01 should be false when the default branch is not main', ()
 				protected: false,
 				protection: {},
 			};
-			expect( repository02(repo, [unprotectedMainBranch])).toEqual(false);
+			expect(repository02(repo, [unprotectedMainBranch])).toEqual(false);
 		});
 	});
 });
