@@ -8,4 +8,5 @@ export interface RepoRuleEvaluation {
 	repository_05?: boolean;
 	repository_06?: boolean;
 	repository_07?: boolean;
+	timestamp?: string;
 }

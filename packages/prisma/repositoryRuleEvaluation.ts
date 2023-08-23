@@ -1,5 +1,4 @@
-import { github_repositories, github_repository_branches } from '@prisma/client';
-import type { RepoRuleEvaluation } from './model';
+import { github_repositories, github_repository_branches, repocop_github_repository_rules } from '@prisma/client';
 
 export function repository01(repo: github_repositories): boolean {
 	return repo.default_branch === 'main';
@@ -19,10 +18,11 @@ export function repository02(
 export function repositoryRuleEvaluation(
 	repo: github_repositories,
 	allBranches: github_repository_branches[],
-): RepoRuleEvaluation {
+): repocop_github_repository_rules {
 	return {
 		full_name: repo.full_name!,
 		repository_01: repository01(repo),
 		repository_02: repository02(repo, allBranches),
+		timestamp: new Date(),
 	};
 }

@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import { repository01, repository02 } from './repositoryRuleEvaluation';
+import { repository01, repository02, repositoryRuleEvaluation } from './repositoryRuleEvaluation';
 import {Datasources} from "@prisma/client/runtime/library";
 import * as process from "process";
 import { Signer } from "@aws-sdk/rds-signer";
+import { RepoRuleEvaluation } from './model';
 
 interface Config {
 	stage: string;
@@ -72,11 +73,25 @@ export async function main() {
 	const config = getConfig();
 	const prisma = await getPrismaClient(config);
 
+	new Date().toISOString()
+
 	try {
 		const repo = await prisma.github_repositories.findFirst();
 		const branches = await prisma.github_repository_branches.findMany();
 		console.log(repository01(repo))
 		console.log(repository02(repo, branches));
+		const result = repositoryRuleEvaluation(repo, branches);
+		console.log(result);
+		// write result to db
+		console.log('removing old records from table');
+		prisma.repocop_github_repository_rules.deleteMany({});
+		console.log('inserting new records to table');
+		prisma.repocop_github_repository_rules.createMany({
+			data: [result]
+		});
+		console.log('done');
+
+
 	} catch(e) {
 		console.error(e);
 		process.exit(1);
