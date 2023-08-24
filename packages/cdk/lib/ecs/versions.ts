@@ -7,7 +7,7 @@ const envOrError = (name: string): string => {
 };
 
 /**
- * The versions of various CloudQuery plugins.
+ * The versions of various ServiceCatalogue plugins.
  * See the `.env` file at the root of the repository.
  */
 export const Versions = {
