@@ -10,11 +10,12 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack: 'deploy',
 	stage: 'PROD',
 	env: { region: 'eu-west-1' },
+	schedule: Schedule.rate(Duration.minutes(5)),
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stack: 'deploy',
 	stage: 'CODE',
 	env: { region: 'eu-west-1' },
-	schedule: Schedule.rate(Duration.days(30)),
+	schedule: Schedule.rate(Duration.minutes(5)),
 });
