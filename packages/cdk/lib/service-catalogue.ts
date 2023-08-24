@@ -57,7 +57,7 @@ export class ServiceCatalogue extends GuStack {
 		super(scope, id, props);
 
 		const { stage, stack } = this;
-		const app = props.app ?? 'cloudquery';
+		const app = props.app ?? 'service-catalogue';
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
