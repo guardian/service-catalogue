@@ -245,7 +245,7 @@ export class ServiceCatalogue extends GuStack {
 		];
 
 		const remainingAwsSources: CloudquerySource = {
-			name: 'All',
+			name: 'RemainingAwsData',
 			description: 'Data fetched across all accounts in the organisation.',
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 			config: awsSourceConfigForOrganisation({
