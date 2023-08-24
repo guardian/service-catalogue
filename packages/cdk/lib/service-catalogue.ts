@@ -52,7 +52,7 @@ import {
 	standardDenyPolicy,
 } from './ecs/policies';
 
-export class CloudQuery extends GuStack {
+export class ServiceCatalogue extends GuStack {
 	constructor(scope: App, id: string, props: GuStackProps) {
 		super(scope, id, props);
 
@@ -113,7 +113,7 @@ export class CloudQuery extends GuStack {
 			Port.tcp(port),
 		);
 
-		// Used by downstream services that read CloudQuery data, namely Grafana.
+		// Used by downstream services that read ServiceCatalogue data, namely Grafana.
 		new StringParameter(this, 'PostgresAccessSecurityGroupParam', {
 			parameterName: `/${stage}/${stack}/${app}/postgres-access-security-group`,
 			simpleName: false,
@@ -248,7 +248,7 @@ export class CloudQuery extends GuStack {
 					) as string[]),
 				],
 
-				// Defaulted to 500000 by CloudQuery, concurrency controls the maximum number of Go routines to use.
+				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
 				// The amount of memory used is a function of this value.
 				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
 				concurrency: 2000,
@@ -325,7 +325,7 @@ export class CloudQuery extends GuStack {
 					skipTables: [
 						/*
 						These tables are children of github_organizations.
-						CloudQuery collects child tables automatically.
+						ServiceCatalogue collects child tables automatically.
 						We don't use them as they take a long time to collect, so skip them.
 						See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
 						 */

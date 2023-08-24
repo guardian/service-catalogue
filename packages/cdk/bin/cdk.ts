@@ -1,10 +1,10 @@
 import 'source-map-support/register';
 import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
-import { CloudQuery } from '../lib/cloudquery';
+import { ServiceCatalogue } from '../lib/service-catalogue';
 
 const app = new GuRootExperimental();
 
-new CloudQuery(app, 'CloudQuery-INFRA', {
+new ServiceCatalogue(app, 'ServiceCatalogue-INFRA', {
 	stack: 'deploy',
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },

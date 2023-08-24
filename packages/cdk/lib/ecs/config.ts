@@ -16,7 +16,7 @@ interface CloudqueryTableConfig {
 }
 
 /**
- * Create a CloudQuery destination configuration for Postgres.
+ * Create a ServiceCatalogue destination configuration for Postgres.
  */
 export function postgresDestinationConfig(): CloudqueryConfig {
 	return {
@@ -80,7 +80,7 @@ export function awsSourceConfig(
 }
 
 /**
- * Create a CloudQuery configuration for all AWS accounts in the organisation.
+ * Create a ServiceCatalogue configuration for all AWS accounts in the organisation.
  * @param tableConfig Which tables to include or exclude.
  *
  * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#org
@@ -98,11 +98,11 @@ export function awsSourceConfigForOrganisation(
 }
 
 /**
- * Create a CloudQuery configuration for a single AWS account.
+ * Create a ServiceCatalogue configuration for a single AWS account.
  * Use this for those services running across the organisation which are aggregated in a single account.
  * For example, Access Analyzer.
  *
- * @param accountNumber The AWS account to query. CloudQuery will assume the role `cloudquery-access` in this account.
+ * @param accountNumber The AWS account to query. ServiceCatalogue will assume the role `cloudquery-access` in this account.
  * @param tableConfig Which tables to include or exclude.
  *
  * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#account
