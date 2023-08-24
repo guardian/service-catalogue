@@ -5,7 +5,7 @@ import { ServiceCatalogue } from './service-catalogue';
 describe('The ServiceCatalogue stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App();
-		const stack = new ServiceCatalogue(app, 'CloudQuery', {
+		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
 			stack: 'deploy',
 			stage: 'TEST',
 		});

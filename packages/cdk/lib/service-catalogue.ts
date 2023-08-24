@@ -13,7 +13,7 @@ import {
 	GuardianPrivateNetworks,
 } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { ArnFormat, Duration } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -26,7 +26,7 @@ import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
-import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
+import {Secret as SecretsManager} from 'aws-cdk-lib/aws-secretsmanager';
 import {
 	ParameterDataType,
 	ParameterTier,
@@ -53,6 +53,7 @@ import {
 } from './ecs/policies';
 
 interface ServiceCatalogueProps extends GuStackProps {
+	//TODO add fields for every kind of job to make schedule explicit at a glance.
 	//For code environments, data accuracy is not the main priority.
 	// To keep costs low, we can choose to run all the tasks on the same cadence, less frequently than on prod
 	schedule?: Schedule;
@@ -269,16 +270,9 @@ export class ServiceCatalogue extends GuStack {
 			cpu: 1024,
 		};
 
-		const githubCredentials = SecretsManager.fromSecretPartialArn(
-			this,
-			'github-credentials',
-			this.formatArn({
-				service: 'secretsmanager',
-				resource: 'secret',
-				resourceName: `/${stage}/${stack}/${app}/github-credentials`,
-				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
-			}),
-		);
+		const githubCredentials = new SecretsManager(this, 'github-credentials', {
+			secretName: `/${stage}/${stack}/${app}/github-credentials`,
+		})
 
 		const githubSecrets: Record<string, Secret> = {
 			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
@@ -356,16 +350,9 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
-		const fastlyCredentials = SecretsManager.fromSecretPartialArn(
-			this,
-			'fastly-credentials',
-			this.formatArn({
-				service: 'secretsmanager',
-				resource: 'secret',
-				resourceName: `/${stage}/${stack}/${app}/fastly-credentials`,
-				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
-			}),
-		);
+		const fastlyCredentials = new SecretsManager(this, 'fastly-credentials', {
+			secretName: `/${stage}/${stack}/${app}/fastly-credentials`,
+		});
 
 		const fastlySources: CloudquerySource[] = [
 			{
@@ -420,16 +407,11 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
-		const snykCredentials = SecretsManager.fromSecretPartialArn(
-			this,
-			'snyk-credentials',
-			this.formatArn({
-				service: 'secretsmanager',
-				resource: 'secret',
-				resourceName: `/${stage}/${stack}/${app}/snyk-credentials`,
-				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
-			}),
+		const snykCredentials = new SecretsManager(this, 'snyk-credentials', {
+			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
+			}
 		);
+
 
 		const snykSources: CloudquerySource[] = [
 			{

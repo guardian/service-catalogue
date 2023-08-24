@@ -6,9 +6,9 @@ import { Duration } from 'aws-cdk-lib';
 
 const app = new GuRootExperimental();
 
-new ServiceCatalogue(app, 'ServiceCatalogue-INFRA', {
+new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack: 'deploy',
-	stage: 'INFRA',
+	stage: 'PROD',
 	env: { region: 'eu-west-1' },
 });
 
