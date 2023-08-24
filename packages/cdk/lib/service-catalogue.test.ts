@@ -1,11 +1,11 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { CloudQuery } from './cloudquery';
+import { ServiceCatalogue } from './service-catalogue';
 
-describe('The CloudQuery stack', () => {
+describe('The ServiceCatalogue stack', () => {
 	it('matches the snapshot', () => {
 		const app = new App();
-		const stack = new CloudQuery(app, 'CloudQuery', {
+		const stack = new ServiceCatalogue(app, 'CloudQuery', {
 			stack: 'deploy',
 			stage: 'TEST',
 		});

@@ -47,7 +47,7 @@ export interface CloudquerySource {
 	managedPolicies?: IManagedPolicy[];
 
 	/**
-	 * Any secrets to pass to the CloudQuery container.
+	 * Any secrets to pass to the ServiceCatalogue container.
 	 *
 	 * @see https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs.ContainerDefinitionOptions.html#secrets
 	 * @see https://repost.aws/knowledge-center/ecs-data-security-container-task
@@ -55,7 +55,7 @@ export interface CloudquerySource {
 	secrets?: Record<string, Secret>;
 
 	/**
-	 * Additional commands to run within the CloudQuery container, executed first.
+	 * Additional commands to run within the ServiceCatalogue container, executed first.
 	 */
 	additionalCommands?: string[];
 
@@ -77,7 +77,7 @@ interface CloudqueryClusterProps extends AppIdentity {
 	vpc: IVpc;
 
 	/**
-	 * The database for CloudQuery to write to.
+	 * The database for ServiceCatalogue to write to.
 	 */
 	db: DatabaseInstance;
 
@@ -93,7 +93,7 @@ interface CloudqueryClusterProps extends AppIdentity {
 }
 
 /**
- * An ECS cluster for running CloudQuery. The cluster and its tasks will be
+ * An ECS cluster for running ServiceCatalogue. The cluster and its tasks will be
  * created in the private subnets of the VPC provided.
  */
 export class CloudqueryCluster extends Cluster {

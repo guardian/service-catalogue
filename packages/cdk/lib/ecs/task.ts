@@ -35,12 +35,12 @@ export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
 	/**
-	 * THe Postgres database for CloudQuery to connect to.
+	 * THe Postgres database for ServiceCatalogue to connect to.
 	 */
 	db: DatabaseInstance;
 
 	/**
-	 * The security group to allow CloudQuery to connect to the database.
+	 * The security group to allow ServiceCatalogue to connect to the database.
 	 */
 	dbAccess: GuSecurityGroup;
 
@@ -65,7 +65,7 @@ export interface ScheduledCloudqueryTaskProps
 	policies: PolicyStatement[];
 
 	/**
-	 * The CloudQuery config to use to collect data from.
+	 * The ServiceCatalogue config to use to collect data from.
 	 */
 	sourceConfig: CloudqueryConfig;
 
@@ -75,7 +75,7 @@ export interface ScheduledCloudqueryTaskProps
 	topic: Topic;
 
 	/**
-	 * Any secrets to pass to the CloudQuery container.
+	 * Any secrets to pass to the ServiceCatalogue container.
 	 *
 	 * @see https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs.ContainerDefinitionOptions.html#secrets
 	 * @see https://repost.aws/knowledge-center/ecs-data-security-container-task
@@ -83,7 +83,7 @@ export interface ScheduledCloudqueryTaskProps
 	secrets?: Record<string, Secret>;
 
 	/**
-	 * Additional commands to run within the CloudQuery container, executed first.
+	 * Additional commands to run within the ServiceCatalogue container, executed first.
 	 */
 	additionalCommands?: string[];
 }

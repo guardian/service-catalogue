@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The CloudQuery stack matches the snapshot 1`] = `
+exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
 {
   "Metadata": {
     "gu:cdk:constructs": [
@@ -110,7 +110,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -122,7 +122,7 @@ exports[`The CloudQuery stack matches the snapshot 1`] = `
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -317,7 +317,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -343,7 +343,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-AllFirelens",
@@ -425,7 +425,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -730,7 +730,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -782,7 +782,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -794,7 +794,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -967,7 +967,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -993,7 +993,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-DelegatedToSecurityAccountFirelens",
@@ -1084,7 +1084,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -1354,7 +1354,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -1406,7 +1406,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -1418,7 +1418,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -1589,7 +1589,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -1615,7 +1615,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-DeployToolsListOrgsFirelens",
@@ -1706,7 +1706,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -1981,7 +1981,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -2033,7 +2033,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -2045,7 +2045,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -2173,7 +2173,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/fastly-credentials:api-key::",
+                      ":secret:/TEST/deploy/service-catalogue/fastly-credentials:api-key::",
                     ],
                   ],
                 },
@@ -2234,7 +2234,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -2260,7 +2260,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-FastlyServicesFirelens",
@@ -2316,7 +2316,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -2420,7 +2420,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:/TEST/deploy/cloudquery/fastly-credentials-??????",
+                    ":secret:/TEST/deploy/service-catalogue/fastly-credentials-??????",
                   ],
                 ],
               },
@@ -2619,7 +2619,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -2671,7 +2671,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -2683,7 +2683,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -2852,7 +2852,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -2878,7 +2878,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-GalaxiesFirelens",
@@ -2995,7 +2995,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -3251,7 +3251,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -3303,7 +3303,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -3315,7 +3315,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -3414,7 +3414,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -3518,7 +3518,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:/TEST/deploy/cloudquery/github-credentials-??????",
+                    ":secret:/TEST/deploy/service-catalogue/github-credentials-??????",
                   ],
                 ],
               },
@@ -3634,7 +3634,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:private-key::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:private-key::",
                     ],
                   ],
                 },
@@ -3657,7 +3657,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:app-id::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:app-id::",
                     ],
                   ],
                 },
@@ -3680,7 +3680,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:installation-id::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:installation-id::",
                     ],
                   ],
                 },
@@ -3741,7 +3741,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -3767,7 +3767,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-GitHubIssuesFirelens",
@@ -3937,7 +3937,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -3989,7 +3989,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -4001,7 +4001,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -4111,7 +4111,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:private-key::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:private-key::",
                     ],
                   ],
                 },
@@ -4134,7 +4134,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:app-id::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:app-id::",
                     ],
                   ],
                 },
@@ -4157,7 +4157,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:installation-id::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:installation-id::",
                     ],
                   ],
                 },
@@ -4218,7 +4218,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -4244,7 +4244,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-GitHubRepositoriesFirelens",
@@ -4361,7 +4361,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -4465,7 +4465,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:/TEST/deploy/cloudquery/github-credentials-??????",
+                    ":secret:/TEST/deploy/service-catalogue/github-credentials-??????",
                   ],
                 ],
               },
@@ -4629,7 +4629,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -4681,7 +4681,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -4693,7 +4693,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -4804,7 +4804,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:private-key::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:private-key::",
                     ],
                   ],
                 },
@@ -4827,7 +4827,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:app-id::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:app-id::",
                     ],
                   ],
                 },
@@ -4850,7 +4850,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/github-credentials:installation-id::",
+                      ":secret:/TEST/deploy/service-catalogue/github-credentials:installation-id::",
                     ],
                   ],
                 },
@@ -4911,7 +4911,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -4937,7 +4937,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-GitHubTeamsFirelens",
@@ -5054,7 +5054,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -5158,7 +5158,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:/TEST/deploy/cloudquery/github-credentials-??????",
+                    ":secret:/TEST/deploy/service-catalogue/github-credentials-??????",
                   ],
                 ],
               },
@@ -5322,7 +5322,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -5374,7 +5374,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -5386,7 +5386,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -5509,7 +5509,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/snyk-credentials:api-key::",
+                      ":secret:/TEST/deploy/service-catalogue/snyk-credentials:api-key::",
                     ],
                   ],
                 },
@@ -5570,7 +5570,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -5596,7 +5596,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-GuardianCustomSnykProjectsFirelens",
@@ -5687,7 +5687,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -5791,7 +5791,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:/TEST/deploy/cloudquery/snyk-credentials-??????",
+                    ":secret:/TEST/deploy/service-catalogue/snyk-credentials-??????",
                   ],
                 ],
               },
@@ -5955,7 +5955,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -6007,7 +6007,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -6019,7 +6019,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -6165,7 +6165,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -6191,7 +6191,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-OrgWideCertificatesFirelens",
@@ -6308,7 +6308,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -6583,7 +6583,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -6635,7 +6635,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -6647,7 +6647,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -6822,7 +6822,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -6848,7 +6848,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-OrgWideCloudFormationFirelens",
@@ -6939,7 +6939,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -7214,7 +7214,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -7266,7 +7266,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -7278,7 +7278,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -7377,7 +7377,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -7612,7 +7612,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -7638,7 +7638,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsFirelens",
@@ -7842,7 +7842,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -7894,7 +7894,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -7906,7 +7906,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -8053,7 +8053,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -8079,7 +8079,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-OrgWideInspectorFirelens",
@@ -8161,7 +8161,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -8471,7 +8471,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -8523,7 +8523,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -8535,7 +8535,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -8634,7 +8634,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -8870,7 +8870,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -8896,7 +8896,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-OrgWideLoadBalancersFirelens",
@@ -9100,7 +9100,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -9152,7 +9152,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudqueryCluster5370C11B",
+                "servicecatalogueCluster5FC34DC5",
                 "Arn",
               ],
             },
@@ -9164,7 +9164,7 @@ spec:
                   "SecurityGroups": [
                     {
                       "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                         "GroupId",
                       ],
                     },
@@ -9272,7 +9272,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":secret:/TEST/deploy/cloudquery/snyk-credentials:api-key::",
+                      ":secret:/TEST/deploy/service-catalogue/snyk-credentials:api-key::",
                     ],
                   ],
                 },
@@ -9333,7 +9333,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "cloudquery",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -9359,7 +9359,7 @@ spec:
                 "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "awslogs-stream-prefix": "deploy/TEST/cloudquery",
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "CloudquerySource-SnykAllFirelens",
@@ -9476,7 +9476,7 @@ spec:
                 "ArnEquals": {
                   "ecs:cluster": {
                     "Fn::GetAtt": [
-                      "cloudqueryCluster5370C11B",
+                      "servicecatalogueCluster5FC34DC5",
                       "Arn",
                     ],
                   },
@@ -9580,7 +9580,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":secret:/TEST/deploy/cloudquery/snyk-credentials-??????",
+                    ":secret:/TEST/deploy/service-catalogue/snyk-credentials-??????",
                   ],
                 ],
               },
@@ -9744,7 +9744,7 @@ spec:
             "clusterArn": [
               {
                 "Fn::GetAtt": [
-                  "cloudqueryCluster5370C11B",
+                  "servicecatalogueCluster5FC34DC5",
                   "Arn",
                 ],
               },
@@ -9788,9 +9788,30 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "PostgresAccessSecurityGroupCloudqueryE959A23F": {
+    "PostgresAccessSecurityGroupParam38DFE001": {
       "Properties": {
-        "GroupDescription": "CloudQuery/PostgresAccessSecurityGroupCloudquery",
+        "DataType": "text",
+        "Name": "/TEST/deploy/service-catalogue/postgres-access-security-group",
+        "Tags": {
+          "Stack": "deploy",
+          "Stage": "TEST",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/service-catalogue",
+        },
+        "Tier": "Standard",
+        "Type": "String",
+        "Value": {
+          "Fn::GetAtt": [
+            "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+            "GroupId",
+          ],
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
+    "PostgresAccessSecurityGroupServicecatalogue03C78F14": {
+      "Properties": {
+        "GroupDescription": "CloudQuery/PostgresAccessSecurityGroupServicecatalogue",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -9801,7 +9822,7 @@ spec:
         "Tags": [
           {
             "Key": "App",
-            "Value": "cloudquery",
+            "Value": "service-catalogue",
           },
           {
             "Key": "gu:cdk:version",
@@ -9825,27 +9846,6 @@ spec:
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
-    },
-    "PostgresAccessSecurityGroupParam38DFE001": {
-      "Properties": {
-        "DataType": "text",
-        "Name": "/TEST/deploy/cloudquery/postgres-access-security-group",
-        "Tags": {
-          "Stack": "deploy",
-          "Stage": "TEST",
-          "gu:cdk:version": "TEST",
-          "gu:repo": "guardian/service-catalogue",
-        },
-        "Tier": "Standard",
-        "Type": "String",
-        "Value": {
-          "Fn::GetAtt": [
-            "PostgresAccessSecurityGroupCloudqueryE959A23F",
-            "GroupId",
-          ],
-        },
-      },
-      "Type": "AWS::SSM::Parameter",
     },
     "PostgresInstance16DE4286E": {
       "DeletionPolicy": "Snapshot",
@@ -9907,7 +9907,7 @@ spec:
         "VPCSecurityGroups": [
           {
             "Fn::GetAtt": [
-              "PostgresSecurityGroupCloudquery65E31BB8",
+              "PostgresSecurityGroupServicecatalogueD2F089D5",
               "GroupId",
             ],
           },
@@ -10000,7 +10000,7 @@ spec:
     "PostgresInstanceEndpointAddress6E14162C": {
       "Properties": {
         "DataType": "text",
-        "Name": "/TEST/deploy/cloudquery/postgres-instance-endpoint-address",
+        "Name": "/TEST/deploy/service-catalogue/postgres-instance-endpoint-address",
         "Tags": {
           "Stack": "deploy",
           "Stage": "TEST",
@@ -10018,9 +10018,9 @@ spec:
       },
       "Type": "AWS::SSM::Parameter",
     },
-    "PostgresSecurityGroupCloudquery65E31BB8": {
+    "PostgresSecurityGroupServicecatalogueD2F089D5": {
       "Properties": {
-        "GroupDescription": "CloudQuery/PostgresSecurityGroupCloudquery",
+        "GroupDescription": "CloudQuery/PostgresSecurityGroupServicecatalogue",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -10040,7 +10040,7 @@ spec:
         "Tags": [
           {
             "Key": "App",
-            "Value": "cloudquery",
+            "Value": "service-catalogue",
           },
           {
             "Key": "gu:cdk:version",
@@ -10065,20 +10065,20 @@ spec:
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "PostgresSecurityGroupCloudqueryfromCloudQueryPostgresAccessSecurityGroupCloudqueryAE627D46543299D711F8": {
+    "PostgresSecurityGroupServicecataloguefromCloudQueryPostgresAccessSecurityGroupServicecatalogue06C390A15432355F6AD5": {
       "Properties": {
-        "Description": "from CloudQueryPostgresAccessSecurityGroupCloudqueryAE627D46:5432",
+        "Description": "from CloudQueryPostgresAccessSecurityGroupServicecatalogue06C390A1:5432",
         "FromPort": 5432,
         "GroupId": {
           "Fn::GetAtt": [
-            "PostgresSecurityGroupCloudquery65E31BB8",
+            "PostgresSecurityGroupServicecatalogueD2F089D5",
             "GroupId",
           ],
         },
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": {
           "Fn::GetAtt": [
-            "PostgresAccessSecurityGroupCloudqueryE959A23F",
+            "PostgresAccessSecurityGroupServicecatalogue03C78F14",
             "GroupId",
           ],
         },
@@ -10086,316 +10086,10 @@ spec:
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "PrismaLambda48D094F2": {
+    "servicecatalogue26ECB16F": {
       "DependsOn": [
-        "PrismaLambdaServiceRoleDefaultPolicy794C316B",
-        "PrismaLambdaServiceRoleA26B18B2",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "DistributionBucketName",
-          },
-          "S3Key": "deploy/TEST/prisma/prisma.zip",
-        },
-        "Environment": {
-          "Variables": {
-            "APP": "prisma",
-            "DATABASE_HOSTNAME": {
-              "Fn::GetAtt": [
-                "PostgresInstance16DE4286E",
-                "Endpoint.Address",
-              ],
-            },
-            "STACK": "deploy",
-            "STAGE": "TEST",
-          },
-        },
-        "Handler": "dist/index.main",
-        "MemorySize": 512,
-        "Role": {
-          "Fn::GetAtt": [
-            "PrismaLambdaServiceRoleA26B18B2",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs16.x",
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "prisma",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "Timeout": 30,
-        "VpcConfig": {
-          "SecurityGroupIds": [
-            {
-              "Fn::GetAtt": [
-                "PostgresAccessSecurityGroupCloudqueryE959A23F",
-                "GroupId",
-              ],
-            },
-          ],
-          "SubnetIds": {
-            "Ref": "PrivateSubnets",
-          },
-        },
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PrismaLambdaPrismaLambdarate1day01CCD531F": {
-      "Properties": {
-        "ScheduleExpression": "rate(1 day)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "PrismaLambda48D094F2",
-                "Arn",
-              ],
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "PrismaLambdaPrismaLambdarate1day0AllowEventRuleCloudQueryPrismaLambda1B834995D420C393": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "PrismaLambda48D094F2",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "PrismaLambdaPrismaLambdarate1day01CCD531F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "PrismaLambdaServiceRoleA26B18B2": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "prisma",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PrismaLambdaServiceRoleDefaultPolicy794C316B": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::",
-                      {
-                        "Ref": "DistributionBucketName",
-                      },
-                      "/deploy/TEST/prisma/prisma.zip",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "ssm:GetParametersByPath",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/deploy/prisma",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/TEST/deploy/prisma/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "rds-db:connect",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":dbuser:",
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresInstance16DE4286E",
-                        "DbiResourceId",
-                      ],
-                    },
-                    "/repocop",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PrismaLambdaServiceRoleDefaultPolicy794C316B",
-        "Roles": [
-          {
-            "Ref": "PrismaLambdaServiceRoleA26B18B2",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "cloudquery94E245F6": {
-      "DependsOn": [
-        "cloudqueryServiceRoleDefaultPolicyDBB70D58",
-        "cloudqueryServiceRole55C3C96C",
+        "servicecatalogueServiceRoleDefaultPolicyA38CBB2F",
+        "servicecatalogueServiceRole5903EE6A",
       ],
       "Properties": {
         "Code": {
@@ -10418,7 +10112,7 @@ spec:
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
-            "cloudqueryServiceRole55C3C96C",
+            "servicecatalogueServiceRole5903EE6A",
             "Arn",
           ],
         },
@@ -10450,7 +10144,7 @@ spec:
           "SecurityGroupIds": [
             {
               "Fn::GetAtt": [
-                "PostgresAccessSecurityGroupCloudqueryE959A23F",
+                "PostgresAccessSecurityGroupServicecatalogue03C78F14",
                 "GroupId",
               ],
             },
@@ -10462,7 +10156,7 @@ spec:
       },
       "Type": "AWS::Lambda::Function",
     },
-    "cloudqueryCluster5370C11B": {
+    "servicecatalogueCluster5FC34DC5": {
       "Properties": {
         "Tags": [
           {
@@ -10485,30 +10179,30 @@ spec:
       },
       "Type": "AWS::ECS::Cluster",
     },
-    "cloudqueryClusterAF1C9455": {
+    "servicecatalogueClusterAF65BC89": {
       "Properties": {
         "CapacityProviders": [
           "FARGATE",
           "FARGATE_SPOT",
         ],
         "Cluster": {
-          "Ref": "cloudqueryCluster5370C11B",
+          "Ref": "servicecatalogueCluster5FC34DC5",
         },
         "DefaultCapacityProviderStrategy": [],
       },
       "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
     },
-    "cloudqueryEventInvokeConfigDA0DA31B": {
+    "servicecatalogueEventInvokeConfig5642B219": {
       "Properties": {
         "FunctionName": {
-          "Ref": "cloudquery94E245F6",
+          "Ref": "servicecatalogue26ECB16F",
         },
         "MaximumRetryAttempts": 1,
         "Qualifier": "$LATEST",
       },
       "Type": "AWS::Lambda::EventInvokeConfig",
     },
-    "cloudqueryServiceRole55C3C96C": {
+    "servicecatalogueServiceRole5903EE6A": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -10573,7 +10267,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "cloudqueryServiceRoleDefaultPolicyDBB70D58": {
+    "servicecatalogueServiceRoleDefaultPolicyA38CBB2F": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -10709,16 +10403,35 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "cloudqueryServiceRoleDefaultPolicyDBB70D58",
+        "PolicyName": "servicecatalogueServiceRoleDefaultPolicyA38CBB2F",
         "Roles": [
           {
-            "Ref": "cloudqueryServiceRole55C3C96C",
+            "Ref": "servicecatalogueServiceRole5903EE6A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "cloudquerycloudqueryrate1day04EA3DD54": {
+    "servicecatalogueservicecataloguerate1day0AllowEventRuleCloudQueryservicecatalogue6D2868B192080787": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "servicecatalogue26ECB16F",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "servicecatalogueservicecataloguerate1day0EBEAD0C4",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "servicecatalogueservicecataloguerate1day0EBEAD0C4": {
       "Properties": {
         "ScheduleExpression": "rate(1 day)",
         "State": "ENABLED",
@@ -10726,7 +10439,7 @@ spec:
           {
             "Arn": {
               "Fn::GetAtt": [
-                "cloudquery94E245F6",
+                "servicecatalogue26ECB16F",
                 "Arn",
               ],
             },
@@ -10735,25 +10448,6 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
-    },
-    "cloudquerycloudqueryrate1day0AllowEventRuleCloudQuerycloudquery5AB72A486877854B": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "cloudquery94E245F6",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "cloudquerycloudqueryrate1day04EA3DD54",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
   },
 }
