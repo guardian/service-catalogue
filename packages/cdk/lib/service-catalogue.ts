@@ -26,7 +26,7 @@ import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
-import {Secret as SecretsManager} from 'aws-cdk-lib/aws-secretsmanager';
+import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import {
 	ParameterDataType,
 	ParameterTier,
@@ -66,7 +66,7 @@ export class ServiceCatalogue extends GuStack {
 		const { stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
 
-		const nonProdSchedule = props.schedule
+		const nonProdSchedule = props.schedule;
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
@@ -148,7 +148,9 @@ export class ServiceCatalogue extends GuStack {
 				name: 'DeployToolsListOrgs',
 				description:
 					'Data fetched from the Deploy Tools account (delegated from Root).',
-				schedule: nonProdSchedule ?? Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
+				schedule:
+					nonProdSchedule ??
+					Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 					tables: [
 						/*
@@ -272,7 +274,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const githubCredentials = new SecretsManager(this, 'github-credentials', {
 			secretName: `/${stage}/${stack}/${app}/github-credentials`,
-		})
+		});
 
 		const githubSecrets: Record<string, Secret> = {
 			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
@@ -315,7 +317,9 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'GitHubTeams',
 				description: 'Collect GitHub team data',
-				schedule: nonProdSchedule ?? Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
+				schedule:
+					nonProdSchedule ??
+					Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
 				config: githubSourceConfig({
 					tables: [
 						'github_organizations',
@@ -409,9 +413,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const snykCredentials = new SecretsManager(this, 'snyk-credentials', {
 			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
-			}
-		);
-
+		});
 
 		const snykSources: CloudquerySource[] = [
 			{
