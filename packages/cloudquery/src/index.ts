@@ -1,8 +1,9 @@
 import yargs from 'yargs';
-import { getClient, listTasks } from './ecs';
+import { getEcsClient, getSsmClient, listTasks, runTask } from './aws';
 
 const Commands = {
 	list: 'list-tasks',
+	run: 'run-task',
 };
 
 const parseCommandLineArguments = () => {
@@ -31,6 +32,13 @@ const parseCommandLineArguments = () => {
 						});
 				},
 			)
+			.command(Commands.run, 'run task', (yargs) => {
+				yargs.option('arn', {
+					description: `The task's ARN`,
+					type: 'string',
+					demandOption: true,
+				});
+			})
 			.demandCommand(1, '') // just print help
 			.help()
 			.alias('h', 'help').argv,
@@ -38,12 +46,12 @@ const parseCommandLineArguments = () => {
 };
 
 parseCommandLineArguments()
-	.then((argv) => {
+	.then((argv): Promise<unknown> => {
 		const command = argv._[0];
 		switch (command) {
 			case Commands.list: {
 				const { stack, stage, app } = argv;
-				const client = getClient();
+				const client = getEcsClient();
 				return listTasks(
 					client,
 					stack as string,
@@ -51,12 +59,22 @@ parseCommandLineArguments()
 					app as string,
 				);
 			}
+			case Commands.run: {
+				const { arn } = argv;
+				const ecsClient = getEcsClient();
+				const ssmClient = getSsmClient();
+				return runTask(ecsClient, ssmClient, arn as string);
+			}
 			default:
 				throw new Error(`Unknown command ${command ?? ''}`);
 		}
 	})
-	.then((x) => {
-		console.log(JSON.stringify(x, null, 2));
+	.then((commandResponse) => {
+		if (typeof commandResponse === 'number') {
+			process.exitCode = commandResponse;
+		} else {
+			console.log(JSON.stringify(commandResponse, null, 2));
+		}
 	})
 	.catch((err) => {
 		console.error(err);
