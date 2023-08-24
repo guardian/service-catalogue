@@ -9,3 +9,9 @@ new ServiceCatalogue(app, 'ServiceCatalogue-INFRA', {
 	stage: 'INFRA',
 	env: { region: 'eu-west-1' },
 });
+
+new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
+	stack: 'deploy',
+	stage: 'CODE',
+	env: { region: 'eu-west-1' },
+});
