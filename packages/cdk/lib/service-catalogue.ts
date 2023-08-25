@@ -57,6 +57,13 @@ interface ServiceCatalogueProps extends GuStackProps {
 	//For code environments, data accuracy is not the main priority.
 	// To keep costs low, we can choose to run all the tasks on the same cadence, less frequently than on prod
 	schedule?: Schedule;
+
+	/**
+	 * Enable deletion protection for the RDS instance?
+	 *
+	 * @default true
+	 */
+	rdsDeletionProtection?: boolean;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -65,6 +72,8 @@ export class ServiceCatalogue extends GuStack {
 
 		const { stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
+
+		const { rdsDeletionProtection = true } = props;
 
 		const nonProdSchedule = props.schedule;
 
@@ -100,6 +109,7 @@ export class ServiceCatalogue extends GuStack {
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
+			deletionProtection: rdsDeletionProtection,
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
