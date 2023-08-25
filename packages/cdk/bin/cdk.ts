@@ -17,4 +17,5 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stage: 'CODE',
 	env: { region: 'eu-west-1' },
 	schedule: Schedule.rate(Duration.days(30)),
+	rdsDeletionProtection: false,
 });

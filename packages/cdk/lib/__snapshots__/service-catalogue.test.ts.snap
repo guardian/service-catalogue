@@ -9945,6 +9945,7 @@ spec:
         "DBSubnetGroupName": {
           "Ref": "PostgresInstance1SubnetGroupCAC045A5",
         },
+        "DeletionProtection": true,
         "EnableIAMDatabaseAuthentication": true,
         "Engine": "postgres",
         "MasterUserPassword": {
