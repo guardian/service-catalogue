@@ -18,7 +18,7 @@
     "@guardian/prettier": "^2.1.5",
     "@guardian/tsconfig": "^0.2.0",
     "dotenv": "^16.0.1",
-    "esbuild": "^0.15.16",
+    "esbuild": "^0.19.2",
     "eslint-plugin-prettier": "^4.2.1"
   },
   "dependencies": {
