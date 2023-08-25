@@ -310,7 +310,11 @@ export class ServiceCatalogue extends GuStack {
 				description: 'Collect GitHub repository data',
 				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({
-					tables: ['github_repositories', 'github_repository_branches'],
+					tables: [
+						'github_repositories',
+						'github_repository_branches',
+						'github_workflows',
+					],
 
 					// We're not (yet) interested in the following tables, so do not collect them to reduce API quota usage.
 					// See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
