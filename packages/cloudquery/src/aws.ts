@@ -156,7 +156,29 @@ const findCluster = async (
 	});
 };
 
-export const runTask = async (
+const runTaskByArn = async (
+	ecsClient: ECSClient,
+	taskArn: string,
+	clusterArn: string,
+	privateSubnets: string[],
+	securityGroup: string,
+): Promise<RunTaskCommandOutput> => {
+	const command = new RunTaskCommand({
+		cluster: clusterArn,
+		taskDefinition: taskArn,
+		networkConfiguration: {
+			awsvpcConfiguration: {
+				subnets: privateSubnets,
+				securityGroups: [securityGroup],
+			},
+		},
+		capacityProviderStrategy: [{ capacityProvider: 'FARGATE' }],
+	});
+
+	return ecsClient.send(command);
+};
+
+export const runOneTask = async (
 	ecsClient: ECSClient,
 	ssmClient: SSMClient,
 	stack: string,
@@ -189,17 +211,50 @@ export const runTask = async (
 	const privateSubnets = await getPrivateSubnets(ssmClient);
 	const securityGroup = await getSecurityGroup(ssmClient, stack, stage, app);
 
-	const command = new RunTaskCommand({
-		cluster: cluster.arn,
-		taskDefinition: task.arn,
-		networkConfiguration: {
-			awsvpcConfiguration: {
-				subnets: privateSubnets,
-				securityGroups: [securityGroup],
-			},
-		},
-		capacityProviderStrategy: [{ capacityProvider: 'FARGATE' }],
-	});
+	return await runTaskByArn(
+		ecsClient,
+		task.arn,
+		cluster.arn,
+		privateSubnets,
+		securityGroup,
+	);
+};
 
-	return ecsClient.send(command);
+export const runAllTasks = async (
+	ecsClient: ECSClient,
+	ssmClient: SSMClient,
+	stack: string,
+	stage: string,
+	app: string,
+): Promise<RunTaskCommandOutput[]> => {
+	const tasks = await listTasks(ecsClient, stack, stage, app);
+
+	if (tasks.length === 0) {
+		throw new Error(
+			`No task found matching Stack=${stack} Stage=${stage} App=${app}`,
+		);
+	}
+
+	const cluster = await findCluster(ecsClient, stack, stage, app);
+
+	if (cluster === undefined) {
+		throw new Error(
+			`Could not find cluster for Stack=${stack} Stage=${stage} App=${app}`,
+		);
+	}
+
+	const privateSubnets = await getPrivateSubnets(ssmClient);
+	const securityGroup = await getSecurityGroup(ssmClient, stack, stage, app);
+
+	return Promise.all(
+		tasks.map((task) =>
+			runTaskByArn(
+				ecsClient,
+				task.arn,
+				cluster.arn,
+				privateSubnets,
+				securityGroup,
+			),
+		),
+	);
 };
