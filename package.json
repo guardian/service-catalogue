@@ -19,7 +19,7 @@
     "@guardian/tsconfig": "^0.2.0",
     "dotenv": "^16.0.1",
     "esbuild": "^0.19.2",
-    "eslint-plugin-prettier": "^4.2.1"
+    "eslint-plugin-prettier": "^5.0.0"
   },
   "dependencies": {
     "@types/jest": "^29.5.4",
