@@ -3401,6 +3401,7 @@ spec:
   tables:
     - github_repositories
     - github_repository_branches
+    - github_workflows
   skip_tables:
     - github_releases
     - github_release_assets
