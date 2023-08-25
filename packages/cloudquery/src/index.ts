@@ -36,6 +36,12 @@ const parseCommandLineArguments = () => {
 							description: 'The App tag',
 							type: 'string',
 							demandOption: true,
+						})
+						.option('debug', {
+							description:
+								'Show more information about tasks, such as the ARN, and all their tags',
+							type: 'boolean',
+							default: false,
 						});
 				},
 			)
@@ -91,14 +97,19 @@ parseCommandLineArguments()
 		const command = argv._[0];
 		switch (command) {
 			case Commands.list: {
-				const { stack, stage, app } = argv;
+				const { stack, stage, app, debug } = argv;
 				const client = getEcsClient();
-				return listTasks(
+
+				const tasks = listTasks(
 					client,
 					stack as string,
 					stage as string,
 					app as string,
 				);
+
+				return debug
+					? tasks
+					: tasks.then((tasks) => tasks.map((task) => task['Name']));
 			}
 			case Commands.run: {
 				const { stack, stage, app, name } = argv;
