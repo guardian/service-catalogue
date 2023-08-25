@@ -16,6 +16,7 @@ import { ScheduledCloudqueryTask } from './task';
 export interface CloudquerySource {
 	/**
 	 * The name of the source.
+	 * This will get added to the `Name` tag of the task definition.
 	 */
 	name: string;
 
@@ -148,6 +149,7 @@ export class CloudqueryCluster extends Cluster {
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
+					name,
 					managedPolicies,
 					policies: [logShippingPolicy, ...policies],
 					schedule,

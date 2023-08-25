@@ -1,5 +1,6 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import { Tags } from 'aws-cdk-lib';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerImage,
@@ -34,6 +35,12 @@ const firelensImage = ContainerImage.fromRegistry(
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
+	/**
+	 * The name of the source.
+	 * This will get added to the `Name` tag of the task definition.
+	 */
+	name: string;
+
 	/**
 	 * THe Postgres database for ServiceCatalogue to connect to.
 	 */
@@ -92,6 +99,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 	public readonly sourceConfig: CloudqueryConfig;
 	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
 		const {
+			name,
 			db,
 			cluster,
 			app,
@@ -115,6 +123,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			memoryLimitMiB,
 			cpu,
 		});
+
+		/*
+		A scheduled task (i.e. `this`) cannot be tagged, so we tag the task definition instead.
+		 */
+		Tags.of(task).add('Name', name);
 
 		const destinationConfig = postgresDestinationConfig();
 
