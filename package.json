@@ -40,7 +40,7 @@
   },
   "eslintIgnore": [
     "packages/common/dist",
-    "packages/prisma/*.ts"
+    "packages/prisma-repocop/*.ts"
   ],
   "prettier": "@guardian/prettier"
 }

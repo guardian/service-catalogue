@@ -1,5 +1,5 @@
 {
-	"name": "prisma",
+	"name": "prisma-repocop",
 	"version": "1.0.0",
 	"scripts": {
 		"test": "jest --detectOpenHandles --config ../../jest.config.js  --selectProjects prisma",
