@@ -13,7 +13,7 @@ import {
 	GuardianPrivateNetworks,
 } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { ArnFormat, Duration } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -52,12 +52,21 @@ import {
 	standardDenyPolicy,
 } from './ecs/policies';
 
+interface ServiceCatalogueProps extends GuStackProps {
+	//TODO add fields for every kind of job to make schedule explicit at a glance.
+	//For code environments, data accuracy is not the main priority.
+	// To keep costs low, we can choose to run all the tasks on the same cadence, less frequently than on prod
+	schedule?: Schedule;
+}
+
 export class ServiceCatalogue extends GuStack {
-	constructor(scope: App, id: string, props: GuStackProps) {
+	constructor(scope: App, id: string, props: ServiceCatalogueProps) {
 		super(scope, id, props);
 
 		const { stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
+
+		const nonProdSchedule = props.schedule;
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
@@ -139,7 +148,9 @@ export class ServiceCatalogue extends GuStack {
 				name: 'DeployToolsListOrgs',
 				description:
 					'Data fetched from the Deploy Tools account (delegated from Root).',
-				schedule: Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
+				schedule:
+					nonProdSchedule ??
+					Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 					tables: [
 						/*
@@ -161,7 +172,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'DelegatedToSecurityAccount',
 				description:
 					'Collecting data across the organisation from services delegated to the Security account.',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
 					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
 					concurrency: 2000,
@@ -178,7 +189,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'OrgWideCloudFormation',
 				description:
 					'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
-				schedule: Schedule.rate(Duration.hours(3)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(3)),
 				config: awsSourceConfigForOrganisation({
 					tables: [
 						'aws_cloudformation_stacks',
@@ -193,7 +204,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideLoadBalancers',
 				description: 'Collecting load balancer data across the organisation.',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
 				}),
@@ -203,7 +214,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideCertificates',
 				description: 'Collecting certificate data across the organisation.',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_acm*'],
 				}),
@@ -214,7 +225,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'OrgWideCloudwatchAlarms',
 				description:
 					'Collecting CloudWatch Alarm data across the organisation.',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_cloudwatch_alarms'],
 				}),
@@ -224,7 +235,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideInspector',
 				description: 'Collecting Inspector data across the organisation.',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
 				}),
@@ -236,7 +247,7 @@ export class ServiceCatalogue extends GuStack {
 		const remainingAwsSources: CloudquerySource = {
 			name: 'All',
 			description: 'Data fetched across all accounts in the organisation.',
-			schedule: Schedule.rate(Duration.days(1)),
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
@@ -261,16 +272,9 @@ export class ServiceCatalogue extends GuStack {
 			cpu: 1024,
 		};
 
-		const githubCredentials = SecretsManager.fromSecretPartialArn(
-			this,
-			'github-credentials',
-			this.formatArn({
-				service: 'secretsmanager',
-				resource: 'secret',
-				resourceName: `/${stage}/${stack}/${app}/github-credentials`,
-				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
-			}),
-		);
+		const githubCredentials = new SecretsManager(this, 'github-credentials', {
+			secretName: `/${stage}/${stack}/${app}/github-credentials`,
+		});
 
 		const githubSecrets: Record<string, Secret> = {
 			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
@@ -294,7 +298,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'GitHubRepositories',
 				description: 'Collect GitHub repository data',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({
 					tables: ['github_repositories', 'github_repository_branches'],
 
@@ -313,7 +317,9 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'GitHubTeams',
 				description: 'Collect GitHub team data',
-				schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
+				schedule:
+					nonProdSchedule ??
+					Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
 				config: githubSourceConfig({
 					tables: [
 						'github_organizations',
@@ -339,7 +345,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'GitHubIssues',
 				description: 'Collect GitHub issue data (PRs and Issues)',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: githubSourceConfig({
 					tables: ['github_issues'],
 				}),
@@ -348,22 +354,15 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
-		const fastlyCredentials = SecretsManager.fromSecretPartialArn(
-			this,
-			'fastly-credentials',
-			this.formatArn({
-				service: 'secretsmanager',
-				resource: 'secret',
-				resourceName: `/${stage}/${stack}/${app}/fastly-credentials`,
-				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
-			}),
-		);
+		const fastlyCredentials = new SecretsManager(this, 'fastly-credentials', {
+			secretName: `/${stage}/${stack}/${app}/fastly-credentials`,
+		});
 
 		const fastlySources: CloudquerySource[] = [
 			{
 				name: 'FastlyServices',
 				description: 'Fastly services data',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: fastlySourceConfig({
 					tables: [
 						'fastly_services',
@@ -402,7 +401,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'Galaxies',
 				description: 'Galaxies data',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				policies: [
 					readBucketPolicy(
 						`${actionsStaticSiteBucket.bucketArn}/galaxies.gutools.co.uk/data/*`,
@@ -412,22 +411,15 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
-		const snykCredentials = SecretsManager.fromSecretPartialArn(
-			this,
-			'snyk-credentials',
-			this.formatArn({
-				service: 'secretsmanager',
-				resource: 'secret',
-				resourceName: `/${stage}/${stack}/${app}/snyk-credentials`,
-				arnFormat: ArnFormat.COLON_RESOURCE_NAME,
-			}),
-		);
+		const snykCredentials = new SecretsManager(this, 'snyk-credentials', {
+			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
+		});
 
 		const snykSources: CloudquerySource[] = [
 			{
 				name: 'SnykAll',
 				description: 'Collecting all Snyk data, except for projects',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: snykSourceConfig({
 					tables: [
 						'snyk_dependencies',
@@ -449,7 +441,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'GuardianCustomSnykProjects',
 				description:
 					'Collecting Snyk projects including grouped vulnerabilities and tags',
-				schedule: Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 				config: guardianSnykSourceConfig({
 					tables: ['snyk_projects'],
 				}),
@@ -460,7 +452,7 @@ export class ServiceCatalogue extends GuStack {
 		];
 
 		const lambdaProps: GuScheduledLambdaProps = {
-			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
+			rules: [{ schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)) }],
 			monitoringConfiguration: {
 				noMonitoring: true, //TODO implement this when finished setting up the lambda
 			},

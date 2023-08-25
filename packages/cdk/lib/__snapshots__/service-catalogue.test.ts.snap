@@ -355,7 +355,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceAllTaskDefinitionC1F1D919",
+        "Family": "ServiceCatalogueCloudquerySourceAllTaskDefinitionE250D25B",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1005,7 +1005,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceDelegatedToSecurityAccountTaskDefinitionD7565E6C",
+        "Family": "ServiceCatalogueCloudquerySourceDelegatedToSecurityAccountTaskDefinitionCFCDF71C",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1627,7 +1627,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceDeployToolsListOrgsTaskDefinitionCE19EB7F",
+        "Family": "ServiceCatalogueCloudquerySourceDeployToolsListOrgsTaskDefinitionDB3242BB",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -2160,19 +2160,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "fastlycredentialsF42D3C80",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/fastly-credentials:api-key::",
+                      ":api-key::",
                     ],
                   ],
                 },
@@ -2272,7 +2263,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceFastlyServicesTaskDefinitionB7E1552F",
+        "Family": "ServiceCatalogueCloudquerySourceFastlyServicesTaskDefinition92125649",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -2404,24 +2395,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/service-catalogue/fastly-credentials-??????",
-                  ],
-                ],
+                "Ref": "fastlycredentialsF42D3C80",
               },
             },
             {
@@ -2890,7 +2864,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceGalaxiesTaskDefinition4D5FC019",
+        "Family": "ServiceCatalogueCloudquerySourceGalaxiesTaskDefinition6724C33F",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -3502,24 +3476,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/service-catalogue/github-credentials-??????",
-                  ],
-                ],
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -3621,19 +3578,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:private-key::",
+                      ":private-key::",
                     ],
                   ],
                 },
@@ -3644,19 +3592,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:app-id::",
+                      ":app-id::",
                     ],
                   ],
                 },
@@ -3667,19 +3606,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:installation-id::",
+                      ":installation-id::",
                     ],
                   ],
                 },
@@ -3779,7 +3709,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceGitHubIssuesTaskDefinitionE6A35EED",
+        "Family": "ServiceCatalogueCloudquerySourceGitHubIssuesTaskDefinition750BB414",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -4098,19 +4028,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:private-key::",
+                      ":private-key::",
                     ],
                   ],
                 },
@@ -4121,19 +4042,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:app-id::",
+                      ":app-id::",
                     ],
                   ],
                 },
@@ -4144,19 +4056,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:installation-id::",
+                      ":installation-id::",
                     ],
                   ],
                 },
@@ -4256,7 +4159,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceGitHubRepositoriesTaskDefinition885F5347",
+        "Family": "ServiceCatalogueCloudquerySourceGitHubRepositoriesTaskDefinition13A7DF48",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -4449,24 +4352,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/service-catalogue/github-credentials-??????",
-                  ],
-                ],
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -4791,19 +4677,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:private-key::",
+                      ":private-key::",
                     ],
                   ],
                 },
@@ -4814,19 +4691,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:app-id::",
+                      ":app-id::",
                     ],
                   ],
                 },
@@ -4837,19 +4705,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/github-credentials:installation-id::",
+                      ":installation-id::",
                     ],
                   ],
                 },
@@ -4949,7 +4808,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceGitHubTeamsTaskDefinitionF1E24843",
+        "Family": "ServiceCatalogueCloudquerySourceGitHubTeamsTaskDefinition5CFD9707",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -5142,24 +5001,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/service-catalogue/github-credentials-??????",
-                  ],
-                ],
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -5496,19 +5338,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "snykcredentials4D951A18",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/snyk-credentials:api-key::",
+                      ":api-key::",
                     ],
                   ],
                 },
@@ -5608,7 +5441,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceGuardianCustomSnykProjectsTaskDefinition0C269E5A",
+        "Family": "ServiceCatalogueCloudquerySourceGuardianCustomSnykProjectsTaskDefinition778615F1",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -5775,24 +5608,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/service-catalogue/snyk-credentials-??????",
-                  ],
-                ],
+                "Ref": "snykcredentials4D951A18",
               },
             },
             {
@@ -6203,7 +6019,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceOrgWideCertificatesTaskDefinition03B902C8",
+        "Family": "ServiceCatalogueCloudquerySourceOrgWideCertificatesTaskDefinitionF1FAA598",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -6860,7 +6676,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceOrgWideCloudFormationTaskDefinition1F53C12D",
+        "Family": "ServiceCatalogueCloudquerySourceOrgWideCloudFormationTaskDefinitionC6E96023",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -7650,7 +7466,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionE2AF961D",
+        "Family": "ServiceCatalogueCloudquerySourceOrgWideCloudwatchAlarmsTaskDefinition61B22AE9",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -8091,7 +7907,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceOrgWideInspectorTaskDefinition1B063758",
+        "Family": "ServiceCatalogueCloudquerySourceOrgWideInspectorTaskDefinition280F3CC7",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -8908,7 +8724,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceOrgWideLoadBalancersTaskDefinitionD98C0E9B",
+        "Family": "ServiceCatalogueCloudquerySourceOrgWideLoadBalancersTaskDefinition572402B4",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -9259,19 +9075,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "snykcredentials4D951A18",
                       },
-                      ":secretsmanager:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/TEST/deploy/service-catalogue/snyk-credentials:api-key::",
+                      ":api-key::",
                     ],
                   ],
                 },
@@ -9371,7 +9178,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "CloudQueryCloudquerySourceSnykAllTaskDefinition0DC6FF6E",
+        "Family": "ServiceCatalogueCloudquerySourceSnykAllTaskDefinitionBFF67A0E",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -9564,24 +9371,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/TEST/deploy/service-catalogue/snyk-credentials-??????",
-                  ],
-                ],
+                "Ref": "snykcredentials4D951A18",
               },
             },
             {
@@ -9810,7 +9600,7 @@ spec:
     },
     "PostgresAccessSecurityGroupServicecatalogue03C78F14": {
       "Properties": {
-        "GroupDescription": "CloudQuery/PostgresAccessSecurityGroupServicecatalogue",
+        "GroupDescription": "ServiceCatalogue/PostgresAccessSecurityGroupServicecatalogue",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -10019,7 +9809,7 @@ spec:
     },
     "PostgresSecurityGroupServicecatalogueD2F089D5": {
       "Properties": {
-        "GroupDescription": "CloudQuery/PostgresSecurityGroupServicecatalogue",
+        "GroupDescription": "ServiceCatalogue/PostgresSecurityGroupServicecatalogue",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -10064,9 +9854,9 @@ spec:
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "PostgresSecurityGroupServicecataloguefromCloudQueryPostgresAccessSecurityGroupServicecatalogue06C390A15432355F6AD5": {
+    "PostgresSecurityGroupServicecataloguefromServiceCataloguePostgresAccessSecurityGroupServicecatalogue56F7252C5432A44FF186": {
       "Properties": {
-        "Description": "from CloudQueryPostgresAccessSecurityGroupServicecatalogue06C390A1:5432",
+        "Description": "from ServiceCataloguePostgresAccessSecurityGroupServicecatalogue56F7252C:5432",
         "FromPort": 5432,
         "GroupId": {
           "Fn::GetAtt": [
@@ -10084,6 +9874,60 @@ spec:
         "ToPort": 5432,
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "fastlycredentialsF42D3C80": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/fastly-credentials",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "githubcredentialsAF453741": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/github-credentials",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
     },
     "servicecatalogue26ECB16F": {
       "DependsOn": [
@@ -10411,7 +10255,7 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueservicecataloguerate1day0AllowEventRuleCloudQueryservicecatalogue6D2868B192080787": {
+    "servicecatalogueservicecataloguerate1day0AllowEventRuleServiceCatalogueservicecatalogue5615FD275A6D6143": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -10447,6 +10291,33 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
+    },
+    "snykcredentials4D951A18": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/snyk-credentials",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
     },
   },
 }
