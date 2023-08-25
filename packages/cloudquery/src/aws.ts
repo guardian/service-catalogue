@@ -1,3 +1,4 @@
+import type { RunTaskCommandOutput } from '@aws-sdk/client-ecs';
 import {
 	ECSClient,
 	ListClustersCommand,
@@ -9,14 +10,7 @@ import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import { fromIni } from '@aws-sdk/credential-providers';
 
 interface EcsResourceTags {
-	/**
-	 * The ARN.
-	 */
 	arn: string;
-
-	/**
-	 * The tags.
-	 */
 	[key: string]: string;
 }
 
@@ -29,7 +23,7 @@ export const getSsmClient = () => {
 	return new SSMClient(awsConfig);
 };
 
-const getParameter = async (client: SSMClient, path: string) => {
+const getSsmParameter = async (client: SSMClient, path: string) => {
 	const command = new GetParameterCommand({ Name: path });
 	const response = await client.send(command);
 
@@ -43,7 +37,7 @@ const getParameter = async (client: SSMClient, path: string) => {
 export const getPrivateSubnets = async (
 	client: SSMClient,
 ): Promise<string[]> => {
-	const value = await getParameter(
+	const value = await getSsmParameter(
 		client,
 		'/account/vpc/primary/subnets/private',
 	);
@@ -56,8 +50,10 @@ export const getSecurityGroup = async (
 	stage: string,
 	app: string,
 ): Promise<string> => {
-	return await getParameter(
+	return await getSsmParameter(
 		client,
+
+		// This SSM Parameter has been created in the Service Catalogue stack
 		`/${stage}/${stack}/${app}/postgres-access-security-group`,
 	);
 };
@@ -76,7 +72,17 @@ const listResourceTags = async (
 
 	const tags = response.tags ?? [];
 
+	/*
+	Flatten the tags.
+
+	From:
+	[{key: 'Stack', value: 'deploy' }, { key: 'Stage', value: 'CODE' }]
+
+	To:
+	{Stack: 'deploy', Stage: 'CODE'}
+	 */
 	return tags.reduce<Record<string, string>>((acc, { key, value }) => {
+		// This should never happen, but AWS types these as optional, so we need to check
 		if (!(key && value)) {
 			return acc;
 		}
@@ -88,7 +94,9 @@ const listResourceTags = async (
 	}, {});
 };
 
-const listAllTasks = async (client: ECSClient) => {
+const listAllTasks: (client: ECSClient) => Promise<EcsResourceTags[]> = async (
+	client: ECSClient,
+) => {
 	const response = await client.send(new ListTaskDefinitionsCommand({}));
 	const taskDefinitionArns = response.taskDefinitionArns ?? [];
 
@@ -151,17 +159,24 @@ const findCluster = async (
 export const runTask = async (
 	ecsClient: ECSClient,
 	ssmClient: SSMClient,
-	taskArn: string,
-) => {
-	const taskDetails = await listResourceTags(ecsClient, taskArn);
+	stack: string,
+	stage: string,
+	app: string,
+	name: string,
+): Promise<RunTaskCommandOutput> => {
+	const tasks = (await listTasks(ecsClient, stack, stage, app)).filter(
+		(taskDescription) => taskDescription['Name'] === name,
+	);
 
-	const stack = taskDetails['Stack'];
-	const stage = taskDetails['Stage'];
-	const app = taskDetails['App'];
-
-	if (stack === undefined || stage === undefined || app === undefined) {
-		throw new Error(`Task ${taskArn} does not have the required tags`);
+	// We expect to find exactly one task matching the name
+	if (tasks.length !== 1) {
+		throw new Error(
+			`${tasks.length} task(s) found matching Stack=${stack} Stage=${stage} App=${app} Name=${name}`,
+		);
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we've checked the length above
+	const task = tasks.at(0)!;
 
 	const cluster = await findCluster(ecsClient, stack, stage, app);
 
@@ -176,7 +191,7 @@ export const runTask = async (
 
 	const command = new RunTaskCommand({
 		cluster: cluster.arn,
-		taskDefinition: taskArn,
+		taskDefinition: task.arn,
 		networkConfiguration: {
 			awsvpcConfiguration: {
 				subnets: privateSubnets,

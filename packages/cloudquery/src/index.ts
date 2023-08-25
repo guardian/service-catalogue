@@ -32,12 +32,28 @@ const parseCommandLineArguments = () => {
 						});
 				},
 			)
-			.command(Commands.run, 'run task', (yargs) => {
-				yargs.option('arn', {
-					description: `The task's ARN`,
-					type: 'string',
-					demandOption: true,
-				});
+			.command(Commands.run, 'Run a single task', (yargs) => {
+				yargs
+					.option('stack', {
+						description: 'The Stack tag of the task to run',
+						type: 'string',
+						demandOption: true,
+					})
+					.option('stage', {
+						description: 'The Stage tag of the task to run',
+						type: 'string',
+						demandOption: true,
+					})
+					.option('app', {
+						description: 'The App tag of the task to run',
+						type: 'string',
+						demandOption: true,
+					})
+					.option('name', {
+						description: 'The Name tag of the task to run',
+						type: 'string',
+						demandOption: true,
+					});
 			})
 			.demandCommand(1, '') // just print help
 			.help()
@@ -60,10 +76,17 @@ parseCommandLineArguments()
 				);
 			}
 			case Commands.run: {
-				const { arn } = argv;
+				const { stack, stage, app, name } = argv;
 				const ecsClient = getEcsClient();
 				const ssmClient = getSsmClient();
-				return runTask(ecsClient, ssmClient, arn as string);
+				return runTask(
+					ecsClient,
+					ssmClient,
+					stack as string,
+					stage as string,
+					app as string,
+					name as string,
+				);
 			}
 			default:
 				throw new Error(`Unknown command ${command ?? ''}`);
