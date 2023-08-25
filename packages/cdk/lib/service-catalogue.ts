@@ -6,8 +6,6 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import type { GuScheduledLambdaProps } from '@guardian/cdk/lib/patterns';
-import { GuScheduledLambda } from '@guardian/cdk/lib/patterns';
 import {
 	GuardianAwsAccounts,
 	GuardianPrivateNetworks,
@@ -23,7 +21,6 @@ import {
 } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
@@ -464,30 +461,6 @@ export class ServiceCatalogue extends GuStack {
 				},
 			},
 		];
-
-		const lambdaProps: GuScheduledLambdaProps = {
-			rules: [{ schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)) }],
-			monitoringConfiguration: {
-				noMonitoring: true, //TODO implement this when finished setting up the lambda
-			},
-			environment: {
-				SECRET_ARN: db.secret!.secretArn,
-			},
-			runtime: Runtime.PYTHON_3_11,
-			handler: 'main.handler',
-			app: 'repocop',
-			fileName: 'repocop.zip',
-			timeout: Duration.minutes(15),
-			retryAttempts: 1,
-			vpc,
-			vpcSubnets: { subnets: privateSubnets },
-			securityGroups: [applicationToPostgresSecurityGroup],
-		};
-
-		const lambda = new GuScheduledLambda(this, app, lambdaProps);
-
-		db.grantConnect(lambda);
-		db.secret?.grantRead(lambda);
 
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
