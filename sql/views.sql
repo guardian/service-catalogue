@@ -63,6 +63,17 @@ from github_team_repositories tr
          left join galaxies_teams_table gtt on ght.slug = gtt.team_primary_github_team
 where tr.role_name = 'admin';
 
+CREATE OR REPLACE VIEW aws_accounts AS
+SELECT DISTINCT acc.id,
+                acc.name,
+                acc.email,
+                acc.status,
+                acc.joined_timestamp,
+                COALESCE(ou.name, 'ROOT') AS "organizational_unit"
+FROM aws_organizations_accounts acc
+         LEFT JOIN aws_organizations_account_parents par  ON acc.id = par.id
+         LEFT JOIN aws_organizations_organizational_units ou on par.parent_id = ou.id;
+
 
 CREATE OR REPLACE FUNCTION coalesce_dates(image_creation_time text, instance_launch_time timestamp) RETURNS date
     LANGUAGE SQL
