@@ -1,9 +1,16 @@
 import yargs from 'yargs';
-import { getEcsClient, getSsmClient, listTasks, runTask } from './aws';
+import {
+	getEcsClient,
+	getSsmClient,
+	listTasks,
+	runAllTasks,
+	runOneTask,
+} from './aws';
 
 const Commands = {
 	list: 'list-tasks',
 	run: 'run-task',
+	runAll: 'run-all-tasks',
 };
 
 const parseCommandLineArguments = () => {
@@ -55,6 +62,24 @@ const parseCommandLineArguments = () => {
 						demandOption: true,
 					});
 			})
+			.command(Commands.runAll, 'Run all tasks', (yargs) => {
+				yargs
+					.option('stack', {
+						description: 'The Stack tag of the tasks to run',
+						type: 'string',
+						demandOption: true,
+					})
+					.option('stage', {
+						description: 'The Stage tag of the tasks to run',
+						type: 'string',
+						demandOption: true,
+					})
+					.option('app', {
+						description: 'The App tag of the tasks to run',
+						type: 'string',
+						demandOption: true,
+					});
+			})
 			.demandCommand(1, '') // just print help
 			.help()
 			.alias('h', 'help').argv,
@@ -79,13 +104,25 @@ parseCommandLineArguments()
 				const { stack, stage, app, name } = argv;
 				const ecsClient = getEcsClient();
 				const ssmClient = getSsmClient();
-				return runTask(
+				return runOneTask(
 					ecsClient,
 					ssmClient,
 					stack as string,
 					stage as string,
 					app as string,
 					name as string,
+				);
+			}
+			case Commands.runAll: {
+				const { stack, stage, app } = argv;
+				const ecsClient = getEcsClient();
+				const ssmClient = getSsmClient();
+				return runAllTasks(
+					ecsClient,
+					ssmClient,
+					stack as string,
+					stage as string,
+					app as string,
 				);
 			}
 			default:
