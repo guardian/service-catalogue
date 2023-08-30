@@ -219,6 +219,16 @@ export class ServiceCatalogue extends GuStack {
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
 			{
+				name: 'OrgWideAutoScalingGroups',
+				description: 'Collecting ASG data across the organisation.',
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_autoscaling_groups'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+			},
+			{
 				name: 'OrgWideCertificates',
 				description: 'Collecting certificate data across the organisation.',
 				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
