@@ -1,5 +1,0 @@
-# Install dependencies from requirements.txt too
--r requirements.txt
-
-pytest==7.4.0
-matplotlib==3.7.2
