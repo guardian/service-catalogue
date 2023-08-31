@@ -58,5 +58,7 @@ jobs:
           contentDirectories: |
             cdk.out:
               - packages/cdk/cdk.out
+            repocop:
+              - packages/repocop/repocop.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
