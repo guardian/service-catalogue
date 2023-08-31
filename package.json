@@ -17,7 +17,7 @@
     "@guardian/eslint-config-typescript": "5.0.0",
     "@guardian/prettier": "5.0.0",
     "@guardian/tsconfig": "^0.2.0",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.3.1",
     "esbuild": "^0.19.2",
     "eslint-plugin-prettier": "^5.0.0"
   },
