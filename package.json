@@ -39,7 +39,8 @@
     }
   },
   "eslintIgnore": [
-    "packages/common/dist"
+    "packages/common/dist",
+    "packages/repocop"
   ],
   "prettier": "@guardian/prettier"
 }
