@@ -6,7 +6,7 @@
     "cli": "ts-node src/index.ts"
   },
   "devDependencies": {
-    "@aws-sdk/client-ecs": "^3.398.0",
+    "@aws-sdk/client-ecs": "^3.404.0",
     "@aws-sdk/client-ssm": "^3.398.0",
     "@aws-sdk/credential-providers": "^3.398.0",
     "@types/yargs": "^17.0.24",
