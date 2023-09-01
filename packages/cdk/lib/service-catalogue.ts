@@ -1,3 +1,4 @@
+import { GuScheduledLambda } from '@guardian/cdk';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import {
@@ -6,6 +7,7 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
+import type { GuScheduledLambdaProps } from '@guardian/cdk/lib/patterns/scheduled-lambda';
 import {
 	GuardianAwsAccounts,
 	GuardianPrivateNetworks,
@@ -21,6 +23,7 @@ import {
 } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
@@ -486,5 +489,16 @@ export class ServiceCatalogue extends GuStack {
 				...snykSources,
 			],
 		});
+
+		const repocopLampdaProps: GuScheduledLambdaProps = {
+			app: 'repocop',
+			fileName: 'repocop.zip',
+			handler: 'index.main',
+			monitoringConfiguration: { noMonitoring: true },
+			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
+			runtime: Runtime.NODEJS_18_X,
+		};
+
+		new GuScheduledLambda(this, 'repocop', repocopLampdaProps);
 	}
 }
