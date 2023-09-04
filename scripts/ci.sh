@@ -15,6 +15,12 @@ createRepocopZip() {
   # Copy the Prisma schema file to the dist directory
   cp -r "$ROOT_DIR/packages/repocop/prisma" "$ROOT_DIR/packages/repocop/dist"
 
+  # Copy the generated Prisma client
+  mkdir -p "$ROOT_DIR/packages/repocop/dist/node_modules"
+  cp -r "$ROOT_DIR/node_modules/@prisma" "$ROOT_DIR/packages/repocop/dist/node_modules/@prisma"
+  cp -r "$ROOT_DIR/node_modules/prisma" "$ROOT_DIR/packages/repocop/dist/node_modules/prisma"
+  cp -r "$ROOT_DIR/node_modules/.prisma" "$ROOT_DIR/packages/repocop/dist/node_modules/.prisma"
+
   # Create a zip file of the dist directory
   (
     cd "$ROOT_DIR/packages/repocop/dist"
