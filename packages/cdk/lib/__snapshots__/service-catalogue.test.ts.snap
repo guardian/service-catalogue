@@ -10895,6 +10895,12 @@ spec:
         "Environment": {
           "Variables": {
             "APP": "repocop",
+            "DATABASE_HOSTNAME": {
+              "Fn::GetAtt": [
+                "PostgresInstance16DE4286E",
+                "Endpoint.Address",
+              ],
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },

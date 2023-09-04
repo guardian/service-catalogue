@@ -497,6 +497,7 @@ export class ServiceCatalogue extends GuStack {
 			monitoringConfiguration: { noMonitoring: true },
 			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
 			runtime: Runtime.NODEJS_18_X,
+			environment: {DATABASE_HOSTNAME: db.dbInstanceEndpointAddress}
 		};
 
 		new GuScheduledLambda(this, 'repocop', repocopLampdaProps);
