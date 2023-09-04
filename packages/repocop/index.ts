@@ -36,7 +36,7 @@ export async function main() {
 			db: {
 				url: await getDatabaseUrl(config),
 			},
-		},
+		}
 	});
 	console.log('Query prisma');
 	const queryResult = await prisma.github_repositories.findFirst({where: {
