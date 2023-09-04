@@ -11,4 +11,15 @@ npm run test
 npm run synth
 npm run build
 
-zip -j "$ROOT_DIR/packages/repocop/repocop.zip" packages/repocop/index.js packages/repocop/prisma/schema.prisma
+createRepocopZip() {
+  # Copy the Prisma schema file to the dist directory
+  cp -r "$ROOT_DIR/packages/repocop/prisma" "$ROOT_DIR/packages/repocop/dist"
+
+  # Create a zip file of the dist directory
+  (
+    cd "$ROOT_DIR/packages/repocop/dist"
+    zip -r repocop.zip .
+  )
+}
+
+createRepocopZip
