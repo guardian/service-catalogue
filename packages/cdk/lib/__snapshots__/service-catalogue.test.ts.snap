@@ -10937,6 +10937,19 @@ spec:
           },
         ],
         "Timeout": 30,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "PrivateSubnets",
+          },
+        },
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -10964,6 +10977,18 @@ spec:
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
               ],
             ],
           },
@@ -11077,6 +11102,37 @@ spec:
                       "Ref": "AWS::AccountId",
                     },
                     ":parameter/TEST/deploy/repocop/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/repocop",
                   ],
                 ],
               },
