@@ -59,7 +59,7 @@ async function getDatabaseUrl(config: Config){
 	});
 	const token = await signer.getAuthToken();
 
-	const databaseUrl = `postgres:repocop:${encodeURIComponent(token)}@${hostname}:${port}/postgres?schema=public&sslmode=verify-full`;
+	const databaseUrl = `postgres://repocop:${encodeURIComponent(token)}@${hostname}:${port}/postgres?schema=public&sslmode=verify-full`;
 
 	return databaseUrl
 }
