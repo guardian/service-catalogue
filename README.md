@@ -34,7 +34,9 @@ The following packages form part of Service Catalogue:
 
 * [cloudquery](packages/cloudquery/README.md): A set of Cloudquery (ECS) tasks to collect the data
 
-To learn how to use cloudquery, see the [docs](docs/getting-started.md) for an introduction.
+To learn how to use the production cloudquery data, see the [docs](docs/getting-started.md) for an introduction.
+
+To run cloudquery locally, see the package [README](packages/cloudquery/README.md).
 
 ## Updating CloudQuery
 To update the version of CloudQuery, and its plugins:
