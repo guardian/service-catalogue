@@ -18,10 +18,8 @@ It includes:
 - A Snyk token
 
 ## Setup
-1. Check [cloudquery.yaml](./dev-config/cloudquery.yaml) for the AWS profiles needed to run cloudquery (in the AWS
-section of the config)
-2. Get AWS credentials from Janus
-3. In the project root, run the following, and follow the resulting instructions:
+1. Get developer playground credentials from Janus
+2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
 ./packages/cloudquery/script/setup
