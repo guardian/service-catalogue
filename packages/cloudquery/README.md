@@ -18,8 +18,8 @@ It includes:
 - A Snyk token
 
 ## Setup
-
-In the project root, run the following, and follow the resulting instructions:
+1. Get developer playground credentials from Janus
+2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
 ./packages/cloudquery/script/setup
@@ -27,8 +27,9 @@ In the project root, run the following, and follow the resulting instructions:
 
 ## Running
 
-1. Start Docker
-2. Get AWS credentials from Janus (check [cloudquery.yaml](./dev-config/cloudquery.yaml) for the AWS profiles needed)
+1. Put your GitHub PAT and Snyk tokens in the `.env.local` file at the repo root. It is ignored by git so is safe to edit
+for local development (n.b. do not put them in the `.env` file, as you will probably commit a secret by accident).
+2. Start Docker
 3. Run:
 
    ```sh
@@ -42,16 +43,26 @@ In the project root, run the following, and follow the resulting instructions:
    ```
 
    This will start the Docker containers, and CloudQuery will start collecting data.
-
-4. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
-5. To restart on your local machine, delete the container in docker and go back to step 3.
+4. Wait for tables to start being populated. Usually the first tables show up after a few seconds, but this could take
+as long as a minute.
+5. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
+6. To restart on your local machine, delete the container in docker and go back to step 3.
 
 > **Note**
-> You can also use other Postgres clients, such as `psql`, or even your IDE!
+> You can also use other Postgres clients, such as `psql` to query the data, or even your IDE!
 
 ## Links
 
 - [CloudQuery provided Grafana dashboards](https://github.com/cloudquery/cloudquery/tree/main/plugins/source/aws/dashboards)
+
+## Tips and tricks
+
+The local instance of cloudquery executes sequentially according to the order of the plugins in the config file. If
+you're particularly interested in Snyk data, you can move the Snyk plugin to the top of the list in the config file, and
+that data will be collected first.
+
+If cloudquery can't detect credentials for Snyk or GitHub, it will skip those jobs. If you're not interested in GitHub
+data, you don't need to generate a token. It will still collect data from other sources.
 
 ## TODO
 
