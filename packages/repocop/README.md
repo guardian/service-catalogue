@@ -1,8 +1,5 @@
 ## Prisma
-The .env file contains the DATABASE_URL needed for prisma
 
-To run locally you can run
+The .env file contains the DATABASE_URL needed for prisma.
 
-    ts-node run-locally.ts
-
-which is also available as start in the package.json
+To run locally you can run `npm run start` in the `repocop` directory.
