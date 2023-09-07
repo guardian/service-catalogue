@@ -36,11 +36,6 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
       - uses: guardian/actions-read-private-repos@v0.1.1
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
