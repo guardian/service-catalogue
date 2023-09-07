@@ -6,8 +6,8 @@
     "prisma": "^5.2.0"
   },
   "scripts": {
-    "build": "esbuild index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
-    "start": "ts-node run-locally.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+    "start": "ts-node src/run-locally.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
