@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { getConfig } from "./config";
-import { repositoryRuleEvaluation } from "./rules/repository";
+import { PrismaClient } from '@prisma/client';
+import { getConfig } from './config';
+import { repositoryRuleEvaluation } from './rules/repository';
 
 export async function main() {
 	const config = await getConfig();
@@ -9,7 +9,7 @@ export async function main() {
 			db: {
 				url: config.databaseConnectionString,
 			},
-		}
+		},
 	});
 
 	// TODO Process ALL repositories
@@ -29,7 +29,7 @@ export async function main() {
 
 		console.log('Writing to table');
 		await prisma.repocop_github_repository_rules.createMany({
-			data: [ruleEvaluation]
+			data: [ruleEvaluation],
 		});
 	}
 
