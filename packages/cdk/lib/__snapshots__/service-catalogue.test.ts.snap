@@ -10901,6 +10901,7 @@ spec:
                 "Endpoint.Address",
               ],
             },
+            "QUERY_LOGGING": "false",
             "STACK": "deploy",
             "STAGE": "TEST",
           },

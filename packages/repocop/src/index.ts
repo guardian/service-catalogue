@@ -10,6 +10,14 @@ export async function main() {
 				url: config.databaseConnectionString,
 			},
 		},
+		...(config.withQueryLogging && {
+			log: [
+				{
+					emit: 'stdout',
+					level: 'query',
+				},
+			],
+		}),
 	});
 
 	// TODO Process ALL repositories

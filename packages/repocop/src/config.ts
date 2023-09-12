@@ -12,6 +12,13 @@ export interface Config {
 	 * If the `DATABASE_PASSWORD` environment variable is not set, a token (temporary password) will be generated for IAM authentication for RDS.
 	 */
 	databaseConnectionString: string;
+
+	/**
+	 * Whether to configure Prisma to log the SQL queries being executed.
+	 *
+	 * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/logging
+	 */
+	withQueryLogging: boolean;
 }
 
 interface DatabaseConfig {
@@ -59,9 +66,12 @@ export async function getConfig(): Promise<Config> {
 		password: process.env['DATABASE_PASSWORD'],
 	};
 
+	const queryLogging = (process.env['QUERY_LOGGING'] ?? 'false') === 'true';
+
 	return {
 		stage: getEnvOrThrow('STAGE'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
+		withQueryLogging: queryLogging,
 	};
 }
 

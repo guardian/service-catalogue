@@ -497,7 +497,12 @@ export class ServiceCatalogue extends GuStack {
 			monitoringConfiguration: { noMonitoring: true },
 			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
 			runtime: Runtime.NODEJS_18_X,
-			environment: { DATABASE_HOSTNAME: db.dbInstanceEndpointAddress },
+			environment: {
+				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
+
+				// Set this to 'true' to enable SQL query logging
+				QUERY_LOGGING: 'false',
+			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
 		};
