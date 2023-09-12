@@ -1,8 +1,8 @@
 import type {
 	github_repositories,
 	github_repository_branches,
-	github_team_repositories,
 } from '@prisma/client';
+import type { RepositoryTeams } from '../query';
 import { repository01, repository02, repository04 } from './repository';
 
 const nullRepo: github_repositories = {
@@ -130,118 +130,6 @@ const nullBranch: github_repository_branches = {
 	protected: null,
 };
 
-const nullTeam: github_team_repositories = {
-	allow_forking: null,
-	allow_merge_commit: null,
-	allow_rebase_merge: null,
-	allow_squash_merge: null,
-	allow_update_branch: null,
-	archive_url: null,
-	archived: null,
-	assignees_url: null,
-	auto_init: null,
-	blobs_url: null,
-	branches_url: null,
-	clone_url: null,
-	code_of_conduct: null,
-	collaborators_url: null,
-	comments_url: null,
-	commits_url: null,
-	compare_url: null,
-	contents_url: null,
-	contributors_url: null,
-	cq_id: '',
-	cq_parent_id: null,
-	cq_source_name: null,
-	cq_sync_time: null,
-	created_at: null,
-	default_branch: null,
-	delete_branch_on_merge: null,
-	deployments_url: null,
-	description: null,
-	disabled: null,
-	downloads_url: null,
-	events_url: null,
-	fork: null,
-	forks_count: null,
-	forks_url: null,
-	full_name: null,
-	git_commits_url: null,
-	git_refs_url: null,
-	git_tags_url: null,
-	git_url: null,
-	gitignore_template: null,
-	has_discussions: null,
-	has_downloads: null,
-	has_issues: null,
-	has_pages: null,
-	has_projects: null,
-	has_wiki: null,
-	homepage: null,
-	hooks_url: null,
-	html_url: null,
-	id: 0n,
-	is_template: null,
-	issue_comment_url: null,
-	issue_events_url: null,
-	issues_url: null,
-	keys_url: null,
-	labels_url: null,
-	language: null,
-	languages_url: null,
-	license: null,
-	license_template: null,
-	master_branch: null,
-	merge_commit_message: null,
-	merge_commit_title: null,
-	merges_url: null,
-	milestones_url: null,
-	mirror_url: null,
-	name: null,
-	network_count: null,
-	node_id: null,
-	notifications_url: null,
-	open_issues: null,
-	open_issues_count: null,
-	org: '',
-	organization: null,
-	owner: null,
-	parent: null,
-	permissions: null,
-	private: null,
-	pulls_url: null,
-	pushed_at: null,
-	releases_url: null,
-	role_name: null,
-	security_and_analysis: null,
-	size: null,
-	source: null,
-	squash_merge_commit_message: null,
-	squash_merge_commit_title: null,
-	ssh_url: null,
-	stargazers_count: null,
-	stargazers_url: null,
-	statuses_url: null,
-	subscribers_count: null,
-	subscribers_url: null,
-	subscription_url: null,
-	svn_url: null,
-	tags_url: null,
-	team_id: 0n,
-	teams_url: null,
-	template_repository: null,
-	text_matches: null,
-	topics: [],
-	trees_url: null,
-	updated_at: null,
-	url: null,
-	use_squash_pr_title_as_default: null,
-	visibility: null,
-	watchers: null,
-	watchers_count: null,
-	allow_auto_merge: null,
-};
-
 const thePerfectRepo: github_repositories = {
 	...nullRepo,
 	full_name: 'repo1',
@@ -305,9 +193,8 @@ describe('Repository admin access', () => {
 			id: 1234n,
 		};
 
-		const teams: github_team_repositories[] = [
+		const teams: RepositoryTeams[] = [
 			{
-				...nullTeam,
 				role_name: 'read-only',
 				id: 1234n,
 			},
@@ -323,14 +210,12 @@ describe('Repository admin access', () => {
 			id: 1234n,
 		};
 
-		const teams: github_team_repositories[] = [
+		const teams: RepositoryTeams[] = [
 			{
-				...nullTeam,
 				role_name: 'read-only',
 				id: 1234n,
 			},
 			{
-				...nullTeam,
 				role_name: 'admin',
 				id: 1234n,
 			},
@@ -347,14 +232,12 @@ describe('Repository admin access', () => {
 			topics: ['hackday'],
 		};
 
-		const teams: github_team_repositories[] = [
+		const teams: RepositoryTeams[] = [
 			{
-				...nullTeam,
 				role_name: 'read-only',
 				id: 1234n,
 			},
 			{
-				...nullTeam,
 				role_name: 'admin',
 				id: 1234n,
 			},
@@ -371,14 +254,12 @@ describe('Repository admin access', () => {
 			topics: ['production'],
 		};
 
-		const teams: github_team_repositories[] = [
+		const teams: RepositoryTeams[] = [
 			{
-				...nullTeam,
 				role_name: 'read-only',
 				id: 1234n,
 			},
 			{
-				...nullTeam,
 				role_name: 'admin',
 				id: 1234n,
 			},
