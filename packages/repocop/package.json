@@ -15,7 +15,7 @@
     "schema": "prisma/schema.prisma"
   },
   "dependencies": {
-    "@aws-sdk/rds-signer": "^3.405.0",
+    "@aws-sdk/rds-signer": "^3.410.0",
     "@prisma/client": "^5.2.0"
   }
 }
