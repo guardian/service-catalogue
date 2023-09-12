@@ -8,5 +8,8 @@ if (require.main === module) {
 	process.env.DATABASE_PASSWORD = 'not_at_all_secret';
 	process.env.DATABASE_USER = 'postgres';
 
+	// Set this to 'false' to disable SQL query logging
+	process.env.QUERY_LOGGING = 'true';
+
 	void (async () => await main())();
 }
