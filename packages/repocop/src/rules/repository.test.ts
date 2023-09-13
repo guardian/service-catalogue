@@ -3,7 +3,12 @@ import type {
 	github_repository_branches,
 } from '@prisma/client';
 import type { RepositoryTeam } from '../query';
-import { repository01, repository02, repository04 } from './repository';
+import {
+	repository01,
+	repository02,
+	repository04,
+	repository06,
+} from './repository';
 
 const nullRepo: github_repositories = {
 	cq_sync_time: null,
@@ -266,5 +271,52 @@ describe('Repository admin access', () => {
 		];
 
 		expect(repository04(repo, teams)).toEqual(true);
+	});
+});
+
+describe('Repository topics', () => {
+	test('Should return true when there is a single recognised topic', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			topics: ['production'],
+		};
+
+		expect(repository06(repo)).toEqual(true);
+	});
+
+	test('Should return true when there is are multiple recognised topics', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			topics: ['production', 'hackday'],
+		};
+
+		expect(repository06(repo)).toEqual(true);
+	});
+
+	test('Should return true when there is are multiple topics, not all are recognised', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			topics: ['production', 'android'],
+		};
+
+		expect(repository06(repo)).toEqual(true);
+	});
+
+	test('Should return false when there are no topics', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			topics: [],
+		};
+
+		expect(repository06(repo)).toEqual(false);
+	});
+
+	test('Should return false when there are no recognised topics', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			topics: ['android', 'mobile'],
+		};
+
+		expect(repository06(repo)).toEqual(false);
 	});
 });
