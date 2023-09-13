@@ -2,7 +2,8 @@ import type {
 	github_repositories,
 	github_repository_branches,
 } from '@prisma/client';
-import { repository01, repository02 } from './repository';
+import type { RepositoryTeam } from '../query';
+import { repository01, repository02, repository04 } from './repository';
 
 const nullRepo: github_repositories = {
 	cq_sync_time: null,
@@ -181,5 +182,89 @@ describe('Repositories should have branch protection', () => {
 			protection: {},
 		};
 		expect(repository02(repo, [unprotectedMainBranch])).toEqual(false);
+	});
+});
+
+describe('Repository admin access', () => {
+	test('Should return false when there is no admin team', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			full_name: 'guardian/service-catalogue',
+			id: 1234n,
+		};
+
+		const teams: RepositoryTeam[] = [
+			{
+				role_name: 'read-only',
+				id: 1234n,
+			},
+		];
+
+		expect(repository04(repo, teams)).toEqual(false);
+	});
+
+	test('Should return true when there is an admin team', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			full_name: 'guardian/service-catalogue',
+			id: 1234n,
+		};
+
+		const teams: RepositoryTeam[] = [
+			{
+				role_name: 'read-only',
+				id: 1234n,
+			},
+			{
+				role_name: 'admin',
+				id: 1234n,
+			},
+		];
+
+		expect(repository04(repo, teams)).toEqual(true);
+	});
+
+	test(`Should not evaluate repository's with a 'hackday' topic`, () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			full_name: 'guardian/service-catalogue',
+			id: 1234n,
+			topics: ['hackday'],
+		};
+
+		const teams: RepositoryTeam[] = [
+			{
+				role_name: 'read-only',
+				id: 1234n,
+			},
+			{
+				role_name: 'admin',
+				id: 1234n,
+			},
+		];
+
+		expect(repository04(repo, teams)).toEqual(false);
+	});
+
+	test(`Should evaluate repository's with a 'production' topic`, () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			full_name: 'guardian/service-catalogue',
+			id: 1234n,
+			topics: ['production'],
+		};
+
+		const teams: RepositoryTeam[] = [
+			{
+				role_name: 'read-only',
+				id: 1234n,
+			},
+			{
+				role_name: 'admin',
+				id: 1234n,
+			},
+		];
+
+		expect(repository04(repo, teams)).toEqual(true);
 	});
 });

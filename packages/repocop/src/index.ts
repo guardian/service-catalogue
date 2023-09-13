@@ -5,6 +5,7 @@ import type {
 } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getConfig } from './config';
+import { getRepositoryTeams } from './query';
 import { repositoryRuleEvaluation } from './rules/repository';
 
 async function getRepositories(
@@ -59,7 +60,8 @@ async function evaluateRepositories(
 	return await Promise.all(
 		repositories.map(async (repo) => {
 			const branches = await getRepositoryBranches(client, repo);
-			return repositoryRuleEvaluation(repo, branches);
+			const teams = await getRepositoryTeams(client, repo);
+			return repositoryRuleEvaluation(repo, branches, teams);
 		}),
 	);
 }
