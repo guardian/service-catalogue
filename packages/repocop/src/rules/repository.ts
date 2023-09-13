@@ -85,12 +85,12 @@ export function repositoryRuleEvaluation(
 		full_name: repo.full_name!,
 		repository_01: repository01(repo),
 		repository_02: repository02(repo, allBranches),
+		repository_04: repository04(repo, teams),
+		repository_06: repository06(repo),
 
 		// TODO - implement these rules
 		repository_03: false,
-		repository_04: repository04(repo, teams),
 		repository_05: false,
-		repository_06: repository06(repo),
 		repository_07: false,
 	};
 }
