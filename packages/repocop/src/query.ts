@@ -6,7 +6,7 @@ import type {
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
 
-export async function getRepositories(
+export async function getUnarchivedRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<github_repositories[]> {
@@ -29,22 +29,16 @@ export async function getRepositories(
 	return repositories;
 }
 
+// We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
 export async function getRepositoryBranches(
 	client: PrismaClient,
-	repository: github_repositories,
+	repos: github_repositories[],
 ): Promise<github_repository_branches[]> {
 	const branches = await client.github_repository_branches.findMany({
 		where: {
-			repository_id: repository.id,
+			repository_id: { in: repos.map((repo) => repo.id) },
 		},
 	});
-
-	// `full_name` is typed as nullable, in reality it is not, so the fallback to `id` shouldn't happen
-	const repoIdentifier = repository.full_name ?? repository.id;
-
-	console.log(
-		`Found ${branches.length} branches for repository ${repoIdentifier}`,
-	);
 
 	return branches;
 }
