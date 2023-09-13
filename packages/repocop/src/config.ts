@@ -77,7 +77,11 @@ export async function getConfig(): Promise<Config> {
 		stage: getEnvOrThrow('STAGE'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
-		ignoredRepositoryPrefixes: ['guardian/interactive-', 'guardian/oz-'],
+		ignoredRepositoryPrefixes: [
+			'guardian/interactive-',
+			'guardian/oz-',
+			'guardian/esd-',
+		],
 	};
 }
 
