@@ -1,55 +1,12 @@
-import type {
-	github_repositories,
-	github_repository_branches,
-	repocop_github_repository_rules,
-} from '@prisma/client';
+import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getConfig } from './config';
-import { getRepositoryTeams } from './query';
+import {
+	getRepositories,
+	getRepositoryBranches,
+	getRepositoryTeams,
+} from './query';
 import { repositoryRuleEvaluation } from './rules/repository';
-
-async function getRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<github_repositories[]> {
-	console.log('Discovering repositories');
-	const repositories = await client.github_repositories.findMany({
-		where: {
-			archived: false,
-
-			NOT: [
-				{
-					OR: ignoredRepositoryPrefixes.map((prefix) => {
-						return { full_name: { startsWith: prefix } };
-					}),
-				},
-			],
-		},
-	});
-	console.log(`Found ${repositories.length} repositories`);
-
-	return repositories;
-}
-
-async function getRepositoryBranches(
-	client: PrismaClient,
-	repository: github_repositories,
-): Promise<github_repository_branches[]> {
-	const branches = await client.github_repository_branches.findMany({
-		where: {
-			repository_id: repository.id,
-		},
-	});
-
-	// `full_name` is typed as nullable, in reality it is not, so the fallback to `id` shouldn't happen
-	const repoIdentifier = repository.full_name ?? repository.id;
-
-	console.log(
-		`Found ${branches.length} branches for repository ${repoIdentifier}`,
-	);
-
-	return branches;
-}
 
 async function evaluateRepositories(
 	client: PrismaClient,
