@@ -505,6 +505,7 @@ export class ServiceCatalogue extends GuStack {
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
+			timeout: Duration.minutes(15),
 		};
 
 		const repocopLambda = new GuScheduledLambda(
