@@ -56,6 +56,24 @@ export function repository04(
 }
 
 /**
+ * Apply the following rule to a GitHub repository:
+ *   > Repositories should have a topic to help understand what is in production.
+ *   > Repositories owned only by non-P&E teams are exempt.
+ */
+export function repository06(repo: github_repositories): boolean {
+	const validTopics = [
+		'prototype',
+		'learning',
+		'hackday',
+		'testing',
+		'documentation',
+		'production',
+	];
+
+	return repo.topics.filter((topic) => validTopics.includes(topic)).length > 0;
+}
+
+/**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
 export function repositoryRuleEvaluation(
@@ -72,7 +90,7 @@ export function repositoryRuleEvaluation(
 		repository_03: false,
 		repository_04: repository04(repo, teams),
 		repository_05: false,
-		repository_06: false,
+		repository_06: repository06(repo),
 		repository_07: false,
 	};
 }
