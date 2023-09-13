@@ -2,7 +2,7 @@ import type {
 	github_repositories,
 	github_repository_branches,
 } from '@prisma/client';
-import type { RepositoryTeams } from '../query';
+import type { RepositoryTeam } from '../query';
 import { repository01, repository02, repository04 } from './repository';
 
 const nullRepo: github_repositories = {
@@ -193,7 +193,7 @@ describe('Repository admin access', () => {
 			id: 1234n,
 		};
 
-		const teams: RepositoryTeams[] = [
+		const teams: RepositoryTeam[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,
@@ -210,7 +210,7 @@ describe('Repository admin access', () => {
 			id: 1234n,
 		};
 
-		const teams: RepositoryTeams[] = [
+		const teams: RepositoryTeam[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,
@@ -232,7 +232,7 @@ describe('Repository admin access', () => {
 			topics: ['hackday'],
 		};
 
-		const teams: RepositoryTeams[] = [
+		const teams: RepositoryTeam[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,
@@ -254,7 +254,7 @@ describe('Repository admin access', () => {
 			topics: ['production'],
 		};
 
-		const teams: RepositoryTeams[] = [
+		const teams: RepositoryTeam[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,

@@ -3,7 +3,7 @@ import type {
 	github_repository_branches,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { RepositoryTeams } from '../query';
+import type { RepositoryTeam } from '../query';
 
 /**
  * Apply the following rule to a GitHub repository:
@@ -39,7 +39,7 @@ export function repository02(
  */
 export function repository04(
 	repo: github_repositories,
-	teams: RepositoryTeams[],
+	teams: RepositoryTeam[],
 ): boolean {
 	const adminTeams = teams.filter(
 		({ id, role_name }) => id === repo.id && role_name === 'admin',
@@ -61,7 +61,7 @@ export function repository04(
 export function repositoryRuleEvaluation(
 	repo: github_repositories,
 	allBranches: github_repository_branches[],
-	teams: RepositoryTeams[],
+	teams: RepositoryTeam[],
 ): repocop_github_repository_rules {
 	return {
 		full_name: repo.full_name!,
