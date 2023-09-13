@@ -6,7 +6,7 @@ import type {
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
 
-export async function getRepositories(
+export async function getUnarchivedRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<github_repositories[]> {
@@ -29,16 +29,14 @@ export async function getRepositories(
 	return repositories;
 }
 
-// We only care about branches from unarchived repos, so lets only pull those to save us some time/memory
-export async function getUnarchivedRepositoryBranches(
+// We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
+export async function getRepositoryBranches(
 	client: PrismaClient,
 	repos: github_repositories[],
 ): Promise<github_repository_branches[]> {
-	const unarchivedRepos = repos.filter((repo) => !repo.archived);
-
 	const branches = await client.github_repository_branches.findMany({
 		where: {
-			repository_id: { in: unarchivedRepos.map((repo) => repo.id) },
+			repository_id: { in: repos.map((repo) => repo.id) },
 		},
 	});
 
