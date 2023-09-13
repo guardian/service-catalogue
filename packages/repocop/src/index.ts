@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { getConfig } from './config';
 import {
-	getUnarchivedRepositories,
-	getRepositoryTeams,
 	getRepositoryBranches,
+	getRepositoryTeams,
+	getUnarchivedRepositories,
 } from './query';
 import { repositoryRuleEvaluation } from './rules/repository';
 
