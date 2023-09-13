@@ -78,9 +78,22 @@ export async function getConfig(): Promise<Config> {
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
 		ignoredRepositoryPrefixes: [
+			// Visuals team
 			'guardian/interactive-',
+			'guardian/interactives-',
 			'guardian/oz-',
+			'guardian/aus-',
+			'guardian/australia-',
+			'guardian/australian-',
+			'guardian/visuals-',
+			'guardian/us-',
+			'guardian/main-media-',
+
+			// ESD team
 			'guardian/esd-',
+
+			// Multimedia team
+			'guardian/pluto-',
 		],
 	};
 }
