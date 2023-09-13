@@ -19,6 +19,11 @@ export interface Config {
 	 * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/logging
 	 */
 	withQueryLogging: boolean;
+
+	/**
+	 * Repositories that should not be processed, for example, because they are not owned by a team in Product and Engineering.
+	 */
+	ignoredRepositoryPrefixes: string[];
 }
 
 interface DatabaseConfig {
@@ -72,6 +77,7 @@ export async function getConfig(): Promise<Config> {
 		stage: getEnvOrThrow('STAGE'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
+		ignoredRepositoryPrefixes: ['guardian/interactive-', 'guardian/oz-'],
 	};
 }
 
