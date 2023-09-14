@@ -7,6 +7,7 @@ import {
 	repository01,
 	repository02,
 	repository04,
+	repository05,
 	repository06,
 } from './repository';
 
@@ -318,5 +319,40 @@ describe('Repository topics', () => {
 		};
 
 		expect(repository06(repo)).toEqual(false);
+	});
+});
+
+describe('Identification of an inactive repository', () => {
+	beforeAll(() => {
+		// Make the system time deterministic
+		jest.useFakeTimers().setSystemTime(new Date(2023, 9, 1, 12, 0, 0));
+	});
+
+	test('Should identify a repo last pushed to over 2 years ago, with a random topic, and no teams as inactive', () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			id: 1234n,
+			archived: false,
+			pushed_at: new Date(2020, 1, 1),
+			topics: ['random'],
+		};
+
+		const teams: RepositoryTeam[] = [];
+
+		expect(repository05(repo, teams)).toEqual(false);
+	});
+
+	test(`Should identify a repo last pushed to over 2 years ago, with a 'production' topic, and no teams as active`, () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			id: 1234n,
+			archived: false,
+			pushed_at: new Date(2020, 1, 1),
+			topics: ['production'],
+		};
+
+		const teams: RepositoryTeam[] = [];
+
+		expect(repository05(repo, teams)).toEqual(true);
 	});
 });

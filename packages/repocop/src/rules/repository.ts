@@ -3,6 +3,7 @@ import type {
 	github_repository_branches,
 	repocop_github_repository_rules,
 } from '@prisma/client';
+import { daysDifference } from '../date';
 import type { RepositoryTeam } from '../query';
 
 /**
@@ -57,6 +58,58 @@ export function repository04(
 
 /**
  * Apply the following rule to a GitHub repository:
+ *   > Repositories that are no longer used should be archived.
+ */
+export function repository05(
+	repo: github_repositories,
+	teams: RepositoryTeam[],
+): boolean {
+	const isArchived = repo.archived ?? false;
+
+	// Topic is not production, documentation or testing
+	const importantTopics = ['production', 'testing', 'documentation'];
+	const hasImportantTopic =
+		repo.topics.length === 0 ||
+		repo.topics.filter((topic) => importantTopics.includes(topic)).length > 0;
+
+	// No commits in the last 365 days.
+	const hasRepoBeenRecentlyPushedTo = recentlyPushedTo(repo, 365);
+
+	// Not owned by an external team
+	const adminTeams = teams.filter(
+		({ id, role_name }) => id === repo.id && role_name === 'admin',
+	);
+	const hasAdminTeam = adminTeams.length > 0;
+
+	// TODO check no running AWS services
+
+	console.table({
+		isArchived,
+		hasImportantTopic,
+		hasRepoBeenRecentlyPushedTo,
+		hasAdminTeam,
+	});
+
+	return isArchived && !hasRepoBeenRecentlyPushedTo && !hasImportantTopic;
+
+	// return !hasImportantTopic && !recentlyPushedTo && !hasAdminTeam;
+}
+
+function recentlyPushedTo(repo: github_repositories, daysAgo: number): boolean {
+	const pushedAt = repo.pushed_at;
+
+	if (!pushedAt) {
+		return false;
+	}
+
+	const now = new Date();
+	const diff = daysDifference(now, pushedAt);
+
+	return diff < daysAgo;
+}
+
+/**
+ * Apply the following rule to a GitHub repository:
  *   > Repositories should have a topic to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
@@ -86,11 +139,11 @@ export function repositoryRuleEvaluation(
 		repository_01: repository01(repo),
 		repository_02: repository02(repo, allBranches),
 		repository_04: repository04(repo, teams),
+		repository_05: repository05(repo, teams),
 		repository_06: repository06(repo),
 
 		// TODO - implement these rules
 		repository_03: false,
-		repository_05: false,
 		repository_07: false,
 	};
 }
