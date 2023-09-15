@@ -35,6 +35,7 @@ To deploy a new database migration run
 ```
 npx prisma migrate deploy
 ```
+See [Prisma Documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production)
 
 At the moment it is not possible to have more than 
 one scheme.prisma file.
