@@ -14,9 +14,9 @@ model repocop_github_repository_rules {
   repository_02   Boolean
   repository_03   Boolean
   repository_04   Boolean
-  repository_05   Boolean
+  repository_05   Boolean?
   repository_06   Boolean
-  repository_07   Boolean
+  repository_07   Boolean?
   evaluated_on    DateTime
 }
 

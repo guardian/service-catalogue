@@ -89,9 +89,9 @@ export function repositoryRuleEvaluation(
 		// TODO - implement these rules
 		repository_03: false,
 		repository_04: repository04(repo, teams),
-		repository_05: false,
+		repository_05: null,
 		repository_06: repository06(repo),
-		repository_07: false,
+		repository_07: null,
 		evaluated_on: new Date(),
 	};
 }
