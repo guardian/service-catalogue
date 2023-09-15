@@ -11150,9 +11150,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repocoprepocoprate7days027B60EF4": {
+    "repocoprepocoprate1day091058966": {
       "Properties": {
-        "ScheduleExpression": "rate(7 days)",
+        "ScheduleExpression": "rate(1 day)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -11168,7 +11168,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoprepocoprate7days0AllowEventRuleServiceCataloguerepocop7BEB5892B3FD7B7F": {
+    "repocoprepocoprate1day0AllowEventRuleServiceCataloguerepocop7BEB589276D1514D": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -11180,7 +11180,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repocoprepocoprate7days027B60EF4",
+            "repocoprepocoprate1day091058966",
             "Arn",
           ],
         },
