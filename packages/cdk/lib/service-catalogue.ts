@@ -495,7 +495,7 @@ export class ServiceCatalogue extends GuStack {
 			fileName: 'repocop.zip',
 			handler: 'index.main',
 			monitoringConfiguration: { noMonitoring: true },
-			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
+			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
