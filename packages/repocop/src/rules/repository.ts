@@ -92,6 +92,6 @@ export function repositoryRuleEvaluation(
 		repository_05: false,
 		repository_06: repository06(repo),
 		repository_07: false,
-		evaluated_on: new Date()
+		evaluated_on: new Date(),
 	};
 }
