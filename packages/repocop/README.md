@@ -15,8 +15,14 @@ We need to apply the inial schema to our migration history
 ```
 npx prisma migrate resolve --applied 0_init
 ```
+The prisma commands need to be run in the repocop directory.
 The migration history is in the prisma/migration directory in the repository and the table _prisma_migrations in 
 databases that use prisma to handle migrations.
+
+If you want to use your new table in typescript code you need to regenerate the prisma client
+```
+npx prisma generate
+```
 
 ## Adding new tables in dev
 
