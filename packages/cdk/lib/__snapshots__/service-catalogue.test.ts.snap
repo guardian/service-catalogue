@@ -10901,6 +10901,7 @@ spec:
                 "Endpoint.Address",
               ],
             },
+            "QUERY_LOGGING": "false",
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -10936,7 +10937,7 @@ spec:
             "Value": "TEST",
           },
         ],
-        "Timeout": 30,
+        "Timeout": 900,
         "VpcConfig": {
           "SecurityGroupIds": [
             {

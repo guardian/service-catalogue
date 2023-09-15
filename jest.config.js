@@ -17,6 +17,17 @@ module.exports = {
 				'node_modules/(?!@guardian/private-infrastructure-config)',
 			],
 			setupFilesAfterEnv: [`<rootDir>/packages/cdk/jest.setup.js`],
+			testMatch: ['<rootDir>/packages/cdk/**/*.test.ts'],
+		},
+		{
+			displayName: 'repocop',
+			transform: {
+				'^.+\\.tsx?$': 'ts-jest',
+			},
+			transformIgnorePatterns: [
+				'node_modules/(?!@guardian/private-infrastructure-config)',
+			],
+			testMatch: ['<rootDir>/packages/repocop/**/*.test.ts'],
 		},
 	],
 };

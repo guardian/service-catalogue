@@ -7,11 +7,11 @@
     "synth": "DOTENV_CONFIG_PATH=../../.env cdk synth --path-metadata false --version-reporting false"},
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
-    "@guardian/cdk": "50.10.13",
+    "@guardian/cdk": "50.10.14",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v2.3.0",
-    "aws-cdk": "2.90.0",
-    "aws-cdk-lib": "2.90.0",
-    "constructs": "10.2.69",
+    "aws-cdk": "2.95.1",
+    "aws-cdk-lib": "2.95.1",
+    "constructs": "10.2.70",
     "js-yaml": "^4.1.0",
     "source-map-support": "^0.5.21"
   }
