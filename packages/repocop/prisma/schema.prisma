@@ -17,6 +17,7 @@ model repocop_github_repository_rules {
   repository_05   Boolean
   repository_06   Boolean
   repository_07   Boolean
+  evaluated_on    DateTime
 }
 
 model aws_accessanalyzer_analyzer_archive_rules {
