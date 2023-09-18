@@ -56,7 +56,7 @@ export function repository04(
 }
 /**
  * Apply the following rule to a GitHub repository:
- *   > Repositories should have a topic to help understand what is in production.
+ *   > Repositories should have one and only one of the following topics to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
 export function repository06(repo: github_repositories): boolean {
@@ -69,7 +69,9 @@ export function repository06(repo: github_repositories): boolean {
 		'production',
 	];
 
-	return repo.topics.filter((topic) => validTopics.includes(topic)).length > 0;
+	return (
+		repo.topics.filter((topic) => validTopics.includes(topic)).length === 1
+	);
 }
 
 /**
