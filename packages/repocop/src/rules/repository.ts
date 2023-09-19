@@ -41,23 +41,22 @@ export function repository04(
 	repo: github_repositories,
 	teams: RepositoryTeam[],
 ): boolean {
+	// Repos that have explicitly been classified as these topics are exempt.
+	// Any other repos, regardless of topic, need to be owned by a team, or assigned one of these topics.
+	const exemptedTopics = ['prototype', 'learning', 'hackday'];
+	const isExempt =
+		repo.topics.filter((topic) => exemptedTopics.includes(topic)).length > 0;
+
 	const adminTeams = teams.filter(
 		({ id, role_name }) => id === repo.id && role_name === 'admin',
 	);
 	const hasAdminTeam = adminTeams.length > 0;
 
-	// only evaluate repositories with no topic or a relevant topic
-	const relevantTopics = ['production', 'testing', 'documentation'];
-	const hasRelevantTopic =
-		repo.topics.length === 0 ||
-		repo.topics.filter((topic) => relevantTopics.includes(topic)).length > 0;
-
-	return hasAdminTeam && hasRelevantTopic;
+	return isExempt || hasAdminTeam;
 }
-
 /**
  * Apply the following rule to a GitHub repository:
- *   > Repositories should have a topic to help understand what is in production.
+ *   > Repositories should have one and only one of the following topics to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
 export function repository06(repo: github_repositories): boolean {
@@ -70,7 +69,9 @@ export function repository06(repo: github_repositories): boolean {
 		'production',
 	];
 
-	return repo.topics.filter((topic) => validTopics.includes(topic)).length > 0;
+	return (
+		repo.topics.filter((topic) => validTopics.includes(topic)).length === 1
+	);
 }
 
 /**

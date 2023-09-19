@@ -229,7 +229,8 @@ describe('Repository admin access', () => {
 		expect(repository04(repo, teams)).toEqual(true);
 	});
 
-	test(`Should not evaluate repository's with a 'hackday' topic`, () => {
+	test(`Should validate repositories with a 'hackday' topic`, () => {
+		//We are not interested in making sure hackday projects are kept up to date
 		const repo: github_repositories = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -237,21 +238,12 @@ describe('Repository admin access', () => {
 			topics: ['hackday'],
 		};
 
-		const teams: RepositoryTeam[] = [
-			{
-				role_name: 'read-only',
-				id: 1234n,
-			},
-			{
-				role_name: 'admin',
-				id: 1234n,
-			},
-		];
+		const teams: RepositoryTeam[] = [];
 
-		expect(repository04(repo, teams)).toEqual(false);
+		expect(repository04(repo, teams)).toEqual(true);
 	});
 
-	test(`Should evaluate repository's with a 'production' topic`, () => {
+	test(`Should evaluate repositories with a 'production' topic`, () => {
 		const repo: github_repositories = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -272,6 +264,19 @@ describe('Repository admin access', () => {
 
 		expect(repository04(repo, teams)).toEqual(true);
 	});
+
+	test(`Should return false if all topics are unrecognised`, () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			full_name: 'guardian/service-catalogue',
+			id: 1234n,
+			topics: ['avocado'],
+		};
+
+		const teams: RepositoryTeam[] = [];
+
+		expect(repository04(repo, teams)).toEqual(false);
+	});
 });
 
 describe('Repository topics', () => {
@@ -284,13 +289,15 @@ describe('Repository topics', () => {
 		expect(repository06(repo)).toEqual(true);
 	});
 
-	test('Should return true when there is are multiple recognised topics', () => {
+	test('Should return false when there are multiple recognised topics', () => {
+		// Having more than one recognised topic creates confusion about how the repo
+		// is being used, and could also confuse repocop.
 		const repo: github_repositories = {
 			...nullRepo,
 			topics: ['production', 'hackday'],
 		};
 
-		expect(repository06(repo)).toEqual(true);
+		expect(repository06(repo)).toEqual(false);
 	});
 
 	test('Should return true when there is are multiple topics, not all are recognised', () => {
