@@ -1,8 +1,4 @@
-## Prisma
-
-The .env file in the directory packages/repocop contains the DATABASE_URL needed for prisma `DATABASE_URL="postgresql://dbuser:dbpassword@hosturl:5432/postgres`
-
-To run locally you can run `npm start` in the `repocop` directory.
+# Repocop
 
 ## Database Migrations with Prisma Setup
 
@@ -10,8 +6,10 @@ We want to use prisma for our database migrations in order to profit from the au
 trail in the directory prisma migrations. And in the table _prisma_migration of the 
 databases we use this process. This process is currently manual.
 
+Prisma will look for the `DATABASE_URL` needed for migration in `.env` file in the directory `packages/repocop`.  It takes the form: ```DATABASE_URL="postgresql://dbuser:dbpassword@hosturl:5432/postgres```
+
 All migrations in the prisma/migration subdirectories have to be called migration.sql.
-We need to apply the inial schema to our migration history
+We need to apply the initial schema to our migration history
 ```
 npx prisma migrate resolve --applied 0_init
 ```
@@ -46,4 +44,10 @@ See [Prisma Documentation](https://www.prisma.io/docs/concepts/components/prisma
 At the moment it is not possible to have more than 
 one scheme.prisma file.
 
+## Running Repocop locally
 
+1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database
+2. Put `DATABASE_URL="postgresql://postgres:not_at_all_secret@localhost:5432/postgres"` in a `.env` file in `packages/repocop`
+3. Apply the initial schema: `npx -w repocop prisma migrate resolve --applied 0_init`
+4. Run a migration: `npx -w repocop prisma migrate deploy`
+5. Start Repocop: `npm start -w repocop`
