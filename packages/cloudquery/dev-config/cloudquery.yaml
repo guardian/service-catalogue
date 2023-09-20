@@ -1,6 +1,28 @@
 ---
 kind: source
 spec:
+  # Source spec section
+  name: 'github'
+  path: 'cloudquery/github'
+  version: v${CQ_GITHUB}
+  tables: ['*']
+  destinations: ['postgresql']
+  spec:
+    access_token: ${GITHUB_ACCESS_TOKEN}
+    repos: [
+        # example devX owned repos
+        'guardian/cdk',
+        'guardian/service-catalogue',
+
+        # example non-devX repo
+        'guardian/dotcom-rendering',
+
+        # example private repo
+        'guardian/tracker',
+      ]
+---
+kind: source
+spec:
   name: 'aws'
   path: 'cloudquery/aws'
   version: v${CQ_AWS}
@@ -47,28 +69,6 @@ spec:
     accounts:
       - id: 'developerPlayground'
         local_profile: 'developerPlayground'
----
-kind: source
-spec:
-  # Source spec section
-  name: 'github'
-  path: 'cloudquery/github'
-  version: v${CQ_GITHUB}
-  tables: ['*']
-  destinations: ['postgresql']
-  spec:
-    access_token: ${GITHUB_ACCESS_TOKEN}
-    repos: [
-        # example devX owned repos
-        'guardian/cdk',
-        'guardian/service-catalogue',
-
-        # example non-devX repo
-        'guardian/dotcom-rendering',
-
-        # example private repo
-        'guardian/tracker',
-      ]
 ---
 kind: source
 spec:
