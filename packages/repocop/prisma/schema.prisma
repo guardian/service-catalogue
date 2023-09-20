@@ -1,23 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model repocop_github_repository_rules {
-  full_name       String    @unique
-  repository_01   Boolean
-  repository_02   Boolean
-  repository_03   Boolean
-  repository_04   Boolean
-  repository_05   Boolean?
-  repository_06   Boolean
-  repository_07   Boolean?
-  evaluated_on    DateTime
 }
 
 model aws_accessanalyzer_analyzer_archive_rules {
@@ -96,7 +84,6 @@ model aws_account_alternate_contacts {
   title                  String?
 
   @@id([account_id, alternate_contact_type], map: "aws_account_alternate_contacts_cqpk")
-
   @@ignore
 }
 
@@ -208,7 +195,6 @@ model aws_alpha_cloudwatch_metric_statistics {
   label               String
 
   @@id([account_id, region, parent_input_hash, input_hash, timestamp, label], map: "aws_alpha_cloudwatch_metric_statistics_cqpk")
-
   @@ignore
 }
 
@@ -226,7 +212,6 @@ model aws_alpha_cloudwatch_metrics {
   namespace      String?
 
   @@id([account_id, region, input_hash], map: "aws_alpha_cloudwatch_metrics_cqpk")
-
   @@ignore
 }
 
@@ -246,7 +231,6 @@ model aws_alpha_costexplorer_cost_custom {
   total          Json?
 
   @@id([account_id, start_date, end_date, input_hash], map: "aws_alpha_costexplorer_cost_custom_cqpk")
-
   @@ignore
 }
 
@@ -340,7 +324,6 @@ model aws_apigateway_domain_name_base_path_mappings {
   stage           String?
 
   @@id([account_id, arn], map: "aws_apigateway_domain_name_base_path_mappings_cqpk")
-
   @@ignore
 }
 
@@ -394,7 +377,6 @@ model aws_apigateway_rest_api_authorizers {
   type                             String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_authorizers_cqpk")
-
   @@ignore
 }
 
@@ -413,7 +395,6 @@ model aws_apigateway_rest_api_deployments {
   id             String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_deployments_cqpk")
-
   @@ignore
 }
 
@@ -431,7 +412,6 @@ model aws_apigateway_rest_api_documentation_parts {
   properties     String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_documentation_parts_cqpk")
-
   @@ignore
 }
 
@@ -449,7 +429,6 @@ model aws_apigateway_rest_api_documentation_versions {
   version        String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_documentation_versions_cqpk")
-
   @@ignore
 }
 
@@ -469,7 +448,6 @@ model aws_apigateway_rest_api_gateway_responses {
   status_code         String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_gateway_responses_cqpk")
-
   @@ignore
 }
 
@@ -490,7 +468,6 @@ model aws_apigateway_rest_api_models {
   schema         String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_models_cqpk")
-
   @@ignore
 }
 
@@ -509,7 +486,6 @@ model aws_apigateway_rest_api_request_validators {
   validate_request_parameters Boolean?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_request_validators_cqpk")
-
   @@ignore
 }
 
@@ -541,7 +517,6 @@ model aws_apigateway_rest_api_resource_method_integrations {
   uri                   String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_resource_method_integrations_cqpk")
-
   @@ignore
 }
 
@@ -568,7 +543,6 @@ model aws_apigateway_rest_api_resource_methods {
   request_validator_id String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_resource_methods_cqpk")
-
   @@ignore
 }
 
@@ -588,7 +562,6 @@ model aws_apigateway_rest_api_resources {
   resource_methods Json?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_resources_cqpk")
-
   @@ignore
 }
 
@@ -620,7 +593,6 @@ model aws_apigateway_rest_api_stages {
   web_acl_arn           String?
 
   @@id([account_id, arn], map: "aws_apigateway_rest_api_stages_cqpk")
-
   @@ignore
 }
 
@@ -664,7 +636,6 @@ model aws_apigateway_usage_plan_keys {
   value          String?
 
   @@id([account_id, arn], map: "aws_apigateway_usage_plan_keys_cqpk")
-
   @@ignore
 }
 
@@ -686,7 +657,6 @@ model aws_apigateway_usage_plans {
   throttle       Json?
 
   @@id([account_id, arn], map: "aws_apigateway_usage_plans_cqpk")
-
   @@ignore
 }
 
@@ -707,7 +677,6 @@ model aws_apigateway_vpc_links {
   target_arns    String[]
 
   @@id([account_id, arn], map: "aws_apigateway_vpc_links_cqpk")
-
   @@ignore
 }
 
@@ -734,7 +703,6 @@ model aws_apigatewayv2_api_authorizers {
   jwt_configuration                 Json?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_authorizers_cqpk")
-
   @@ignore
 }
 
@@ -756,7 +724,6 @@ model aws_apigatewayv2_api_deployments {
   description               String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_deployments_cqpk")
-
   @@ignore
 }
 
@@ -778,7 +745,6 @@ model aws_apigatewayv2_api_integration_responses {
   template_selection_expression String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_integration_responses_cqpk")
-
   @@ignore
 }
 
@@ -814,7 +780,6 @@ model aws_apigatewayv2_api_integrations {
   tls_config                                Json?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_integrations_cqpk")
-
   @@ignore
 }
 
@@ -836,7 +801,6 @@ model aws_apigatewayv2_api_models {
   schema         String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_models_cqpk")
-
   @@ignore
 }
 
@@ -857,7 +821,6 @@ model aws_apigatewayv2_api_route_responses {
   route_response_id          String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_route_responses_cqpk")
-
   @@ignore
 }
 
@@ -886,7 +849,6 @@ model aws_apigatewayv2_api_routes {
   target                              String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_routes_cqpk")
-
   @@ignore
 }
 
@@ -916,7 +878,6 @@ model aws_apigatewayv2_api_stages {
   tags                           Json?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_api_stages_cqpk")
-
   @@ignore
 }
 
@@ -947,7 +908,6 @@ model aws_apigatewayv2_apis {
   warnings                     String[]
 
   @@id([account_id, arn], map: "aws_apigatewayv2_apis_cqpk")
-
   @@ignore
 }
 
@@ -966,7 +926,6 @@ model aws_apigatewayv2_domain_name_rest_api_mappings {
   api_mapping_key String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_domain_name_rest_api_mappings_cqpk")
-
   @@ignore
 }
 
@@ -985,7 +944,6 @@ model aws_apigatewayv2_domain_names {
   tags                             Json?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_domain_names_cqpk")
-
   @@ignore
 }
 
@@ -1008,7 +966,6 @@ model aws_apigatewayv2_vpc_links {
   vpc_link_version        String?
 
   @@id([account_id, arn], map: "aws_apigatewayv2_vpc_links_cqpk")
-
   @@ignore
 }
 
@@ -1046,7 +1003,6 @@ model aws_appconfig_configuration_profiles {
   validators         Json?
 
   @@id([application_arn, arn], map: "aws_appconfig_configuration_profiles_cqpk")
-
   @@ignore
 }
 
@@ -1087,7 +1043,6 @@ model aws_appconfig_environments {
   state           String?
 
   @@id([application_arn, arn], map: "aws_appconfig_environments_cqpk")
-
   @@ignore
 }
 
@@ -1109,7 +1064,6 @@ model aws_appconfig_hosted_configuration_versions {
   version_number           BigInt?
 
   @@id([application_arn, arn], map: "aws_appconfig_hosted_configuration_versions_cqpk")
-
   @@ignore
 }
 
@@ -1184,7 +1138,6 @@ model aws_applicationautoscaling_scalable_targets {
   suspended_state     Json?
 
   @@id([account_id, region, resource_id], map: "aws_applicationautoscaling_scalable_targets_cqpk")
-
   @@ignore
 }
 
@@ -1209,7 +1162,6 @@ model aws_applicationautoscaling_scaling_activities {
   status_message     String?
 
   @@id([account_id, region, resource_id], map: "aws_applicationautoscaling_scaling_activities_cqpk")
-
   @@ignore
 }
 
@@ -1251,7 +1203,6 @@ model aws_appmesh_meshes {
   status             Json?
 
   @@id([request_account_id, request_region, arn], map: "aws_appmesh_meshes_cqpk")
-
   @@ignore
 }
 
@@ -1271,7 +1222,6 @@ model aws_appmesh_virtual_gateways {
   virtual_gateway_name String?
 
   @@id([request_account_id, request_region, arn, mesh_arn], map: "aws_appmesh_virtual_gateways_cqpk")
-
   @@ignore
 }
 
@@ -1291,7 +1241,6 @@ model aws_appmesh_virtual_nodes {
   virtual_node_name  String?
 
   @@id([request_account_id, request_region, arn, mesh_arn], map: "aws_appmesh_virtual_nodes_cqpk")
-
   @@ignore
 }
 
@@ -1311,7 +1260,6 @@ model aws_appmesh_virtual_routers {
   virtual_router_name String?
 
   @@id([request_account_id, request_region, arn, mesh_arn], map: "aws_appmesh_virtual_routers_cqpk")
-
   @@ignore
 }
 
@@ -1331,7 +1279,6 @@ model aws_appmesh_virtual_services {
   virtual_service_name String?
 
   @@id([request_account_id, request_region, arn, mesh_arn], map: "aws_appmesh_virtual_services_cqpk")
-
   @@ignore
 }
 
@@ -1534,7 +1481,6 @@ model aws_appstream_application_fleet_associations {
   fleet_name      String
 
   @@id([application_arn, fleet_name], map: "aws_appstream_application_fleet_associations_cqpk")
-
   @@ignore
 }
 
@@ -1578,7 +1524,6 @@ model aws_appstream_directory_configs {
   service_account_credentials             Json?
 
   @@id([account_id, region, directory_name], map: "aws_appstream_directory_configs_cqpk")
-
   @@ignore
 }
 
@@ -1672,7 +1617,6 @@ model aws_appstream_images {
   visibility                      String?
 
   @@id([account_id, region, arn], map: "aws_appstream_images_cqpk")
-
   @@ignore
 }
 
@@ -1692,7 +1636,6 @@ model aws_appstream_stack_entitlements {
   last_modified_time DateTime? @db.Timestamp(6)
 
   @@id([account_id, region, stack_name, name], map: "aws_appstream_stack_entitlements_cqpk")
-
   @@ignore
 }
 
@@ -1709,7 +1652,6 @@ model aws_appstream_stack_user_associations {
   send_email_notification Boolean?
 
   @@id([account_id, region, stack_name, user_name, authentication_type], map: "aws_appstream_stack_user_associations_cqpk")
-
   @@ignore
 }
 
@@ -1751,7 +1693,6 @@ model aws_appstream_usage_report_subscriptions {
   subscription_errors        Json?
 
   @@id([account_id, region, s3_bucket_name], map: "aws_appstream_usage_report_subscriptions_cqpk")
-
   @@ignore
 }
 
@@ -1822,7 +1763,6 @@ model aws_athena_data_catalog_database_tables {
   table_type                 String?
 
   @@id([data_catalog_arn, data_catalog_database_name, name], map: "aws_athena_data_catalog_database_tables_cqpk")
-
   @@ignore
 }
 
@@ -1839,7 +1779,6 @@ model aws_athena_data_catalog_databases {
   parameters       Json?
 
   @@id([data_catalog_arn, name], map: "aws_athena_data_catalog_databases_cqpk")
-
   @@ignore
 }
 
@@ -2102,7 +2041,6 @@ model aws_autoscaling_plan_resources {
   scaling_status_message String?
 
   @@id([account_id, region, resource_id, scaling_plan_name], map: "aws_autoscaling_plan_resources_cqpk")
-
   @@ignore
 }
 
@@ -2123,7 +2061,6 @@ model aws_autoscaling_plans {
   status_start_time    DateTime? @db.Timestamp(6)
 
   @@id([account_id, region, scaling_plan_name], map: "aws_autoscaling_plans_cqpk")
-
   @@ignore
 }
 
@@ -2172,7 +2109,6 @@ model aws_availability_zones {
   zone_type            String?
 
   @@id([account_id, region_name, zone_id], map: "aws_availability_zones_cqpk")
-
   @@ignore
 }
 
@@ -2188,7 +2124,6 @@ model aws_backup_global_settings {
   result_metadata  Json?
 
   @@id([account_id, region], map: "aws_backup_global_settings_cqpk")
-
   @@ignore
 }
 
@@ -2223,7 +2158,6 @@ model aws_backup_jobs {
   status_message           String?
 
   @@id([account_id, region, backup_job_id], map: "aws_backup_jobs_cqpk")
-
   @@ignore
 }
 
@@ -2296,7 +2230,6 @@ model aws_backup_region_settings {
   result_metadata                     Json?
 
   @@id([account_id, region], map: "aws_backup_region_settings_cqpk")
-
   @@ignore
 }
 
@@ -2491,7 +2424,6 @@ model aws_cloudformation_stack_instance_resource_drifts {
   property_differences         Json?
 
   @@id([stack_set_arn, operation_id, logical_resource_id, stack_id, physical_resource_id], map: "aws_cloudformation_stack_instance_resource_drifts_cqpk")
-
   @@ignore
 }
 
@@ -2516,7 +2448,6 @@ model aws_cloudformation_stack_instance_summaries {
   status_reason              String?
 
   @@id([stack_set_arn, stack_set_id], map: "aws_cloudformation_stack_instance_summaries_cqpk")
-
   @@ignore
 }
 
@@ -2584,7 +2515,6 @@ model aws_cloudformation_stack_set_operations {
   status_reason                     String?
 
   @@id([stack_set_arn, creation_timestamp, operation_id], map: "aws_cloudformation_stack_set_operations_cqpk")
-
   @@ignore
 }
 
@@ -2740,7 +2670,6 @@ model aws_cloudfront_functions {
   result_metadata  Json?
 
   @@id([stage, arn], map: "aws_cloudfront_functions_cqpk")
-
   @@ignore
 }
 
@@ -2755,7 +2684,6 @@ model aws_cloudfront_origin_access_identities {
   s3_canonical_user_id String?
 
   @@id([account_id, id], map: "aws_cloudfront_origin_access_identities_cqpk")
-
   @@ignore
 }
 
@@ -2770,7 +2698,6 @@ model aws_cloudfront_origin_request_policies {
   type                  String?
 
   @@id([account_id, id], map: "aws_cloudfront_origin_request_policies_cqpk")
-
   @@ignore
 }
 
@@ -2785,7 +2712,6 @@ model aws_cloudfront_response_headers_policies {
   type                    String?
 
   @@id([account_id, id], map: "aws_cloudfront_response_headers_policies_cqpk")
-
   @@ignore
 }
 
@@ -2877,7 +2803,6 @@ model aws_cloudtrail_imports {
   updated_timestamp DateTime? @db.Timestamp(6)
 
   @@id([account_id, region, id], map: "aws_cloudtrail_imports_cqpk")
-
   @@ignore
 }
 
@@ -2926,7 +2851,6 @@ model aws_cloudtrail_trails {
   tags                           Json?
 
   @@id([account_id, region, arn], map: "aws_cloudtrail_trails_cqpk")
-
   @@ignore
 }
 
@@ -3004,7 +2928,6 @@ model aws_cloudwatchlogs_log_group_subscription_filters {
   role_arn        String?
 
   @@id([log_group_arn, creation_time, filter_name], map: "aws_cloudwatchlogs_log_group_subscription_filters_cqpk")
-
   @@ignore
 }
 
@@ -3044,7 +2967,6 @@ model aws_cloudwatchlogs_metric_filters {
   metric_transformations Json?
 
   @@id([log_group_arn, filter_name], map: "aws_cloudwatchlogs_metric_filters_cqpk")
-
   @@ignore
 }
 
@@ -3060,7 +2982,6 @@ model aws_cloudwatchlogs_resource_policies {
   last_updated_time BigInt?
 
   @@id([account_id, region, policy_name], map: "aws_cloudwatchlogs_resource_policies_cqpk")
-
   @@ignore
 }
 
@@ -3083,7 +3004,6 @@ model aws_codeartifact_domains {
   status             String?
 
   @@id([request_account_id, request_region, arn], map: "aws_codeartifact_domains_cqpk")
-
   @@ignore
 }
 
@@ -3106,7 +3026,6 @@ model aws_codeartifact_repositories {
   upstreams             Json?
 
   @@id([request_account_id, request_region, arn], map: "aws_codeartifact_repositories_cqpk")
-
   @@ignore
 }
 
@@ -3283,7 +3202,6 @@ model aws_cognito_identity_pools {
   result_metadata                  Json?
 
   @@id([account_id, region, id], map: "aws_cognito_identity_pools_cqpk")
-
   @@ignore
 }
 
@@ -3349,7 +3267,6 @@ model aws_cognito_user_pools {
   verification_message_template  Json?
 
   @@id([account_id, region, id], map: "aws_cognito_user_pools_cqpk")
-
   @@ignore
 }
 
@@ -3604,7 +3521,6 @@ model aws_config_delivery_channel_statuses {
   name                          String
 
   @@id([account_id, region, name], map: "aws_config_delivery_channel_statuses_cqpk")
-
   @@ignore
 }
 
@@ -3623,7 +3539,6 @@ model aws_config_delivery_channels {
   sns_topic_arn                       String?
 
   @@id([account_id, region, name], map: "aws_config_delivery_channels_cqpk")
-
   @@ignore
 }
 
@@ -3661,7 +3576,6 @@ model aws_config_retention_configurations {
   retention_period_in_days BigInt?
 
   @@id([account_id, region, name], map: "aws_config_retention_configurations_cqpk")
-
   @@ignore
 }
 
@@ -3679,7 +3593,6 @@ model aws_costexplorer_cost_30d {
   total          Json?
 
   @@id([account_id, start_date, end_date], map: "aws_costexplorer_cost_30d_cqpk")
-
   @@ignore
 }
 
@@ -3697,7 +3610,6 @@ model aws_costexplorer_cost_forecast_30d {
   time_period                     Json?
 
   @@id([account_id, start_date, end_date], map: "aws_costexplorer_cost_forecast_30d_cqpk")
-
   @@ignore
 }
 
@@ -3785,7 +3697,6 @@ model aws_detective_graph_members {
   volume_usage_updated_time                 DateTime? @db.Timestamp(6)
 
   @@id([request_region, account_id, graph_arn], map: "aws_detective_graph_members_cqpk")
-
   @@ignore
 }
 
@@ -3835,7 +3746,6 @@ model aws_directconnect_connections {
   vlan                   BigInt?
 
   @@id([arn, id], map: "aws_directconnect_connections_cqpk")
-
   @@ignore
 }
 
@@ -3899,7 +3809,6 @@ model aws_directconnect_gateways {
   state_change_error           String?
 
   @@id([account_id, arn], map: "aws_directconnect_gateways_cqpk")
-
   @@ignore
 }
 
@@ -3950,7 +3859,6 @@ model aws_directconnect_locations {
   location_name                 String?
 
   @@id([account_id, region, location_code], map: "aws_directconnect_locations_cqpk")
-
   @@ignore
 }
 
@@ -3966,7 +3874,6 @@ model aws_directconnect_virtual_gateways {
   virtual_gateway_state String?
 
   @@id([account_id, region, id], map: "aws_directconnect_virtual_gateways_cqpk")
-
   @@ignore
 }
 
@@ -4062,7 +3969,6 @@ model aws_docdb_certificates {
   valid_till             DateTime? @db.Timestamp(6)
 
   @@id([account_id, arn], map: "aws_docdb_certificates_cqpk")
-
   @@ignore
 }
 
@@ -4347,7 +4253,6 @@ model aws_dynamodb_global_tables {
   replication_group   Json?
 
   @@id([region, arn], map: "aws_dynamodb_global_tables_cqpk")
-
   @@ignore
 }
 
@@ -4450,7 +4355,6 @@ model aws_ec2_account_attributes {
   attribute_values Json?
 
   @@id([account_id, attribute_name], map: "aws_ec2_account_attributes_cqpk")
-
   @@ignore
 }
 
@@ -4467,7 +4371,6 @@ model aws_ec2_byoip_cidrs {
   status_message String?
 
   @@id([account_id, region, cidr], map: "aws_ec2_byoip_cidrs_cqpk")
-
   @@ignore
 }
 
@@ -4539,7 +4442,6 @@ model aws_ec2_dhcp_options {
   owner_id            String?
 
   @@id([account_id, region, dhcp_options_id], map: "aws_ec2_dhcp_options_cqpk")
-
   @@ignore
 }
 
@@ -4674,7 +4576,6 @@ model aws_ec2_eips {
   public_ipv4_pool           String?
 
   @@id([account_id, region, allocation_id], map: "aws_ec2_eips_cqpk")
-
   @@ignore
 }
 
@@ -4803,7 +4704,6 @@ model aws_ec2_images {
   virtualization_type   String?
 
   @@id([account_id, region, arn], map: "aws_ec2_images_cqpk")
-
   @@ignore
 }
 
@@ -4832,7 +4732,6 @@ model aws_ec2_instance_connect_endpoints {
   vpc_id                        String?
 
   @@id([request_account_id, request_region, arn], map: "aws_ec2_instance_connect_endpoints_cqpk")
-
   @@ignore
 }
 
@@ -4978,7 +4877,6 @@ model aws_ec2_launch_template_versions {
   version_description  String?
 
   @@id([arn, version_number], map: "aws_ec2_launch_template_versions_cqpk")
-
   @@ignore
 }
 
@@ -5021,7 +4919,6 @@ model aws_ec2_managed_prefix_lists {
   version            BigInt?
 
   @@id([request_account_id, request_region, arn], map: "aws_ec2_managed_prefix_lists_cqpk")
-
   @@ignore
 }
 
@@ -5117,7 +5014,6 @@ model aws_ec2_regional_configs {
   ebs_default_kms_key_id            String?
 
   @@id([account_id, region], map: "aws_ec2_regional_configs_cqpk")
-
   @@ignore
 }
 
@@ -5222,7 +5118,6 @@ model aws_ec2_spot_fleet_requests {
   spot_fleet_request_state  String?
 
   @@id([account_id, region, spot_fleet_request_id], map: "aws_ec2_spot_fleet_requests_cqpk")
-
   @@ignore
 }
 
@@ -5254,7 +5149,6 @@ model aws_ec2_spot_instance_requests {
   valid_until                    DateTime? @db.Timestamp(6)
 
   @@id([account_id, region, spot_instance_request_id], map: "aws_ec2_spot_instance_requests_cqpk")
-
   @@ignore
 }
 
@@ -5289,7 +5183,6 @@ model aws_ec2_subnets {
   vpc_id                             String?
 
   @@id([request_account_id, request_region, arn], map: "aws_ec2_subnets_cqpk")
-
   @@ignore
 }
 
@@ -5415,7 +5308,6 @@ model aws_ec2_transit_gateways {
   transit_gateway_id  String?
 
   @@id([account_id, region, arn], map: "aws_ec2_transit_gateways_cqpk")
-
   @@ignore
 }
 
@@ -5541,7 +5433,6 @@ model aws_ec2_vpn_connections {
   vpn_gateway_id                 String?
 
   @@id([account_id, region, vpn_connection_id], map: "aws_ec2_vpn_connections_cqpk")
-
   @@ignore
 }
 
@@ -5577,7 +5468,6 @@ model aws_ecr_pull_through_cache_rules {
   upstream_registry_url String
 
   @@id([account_id, region, ecr_repository_prefix, registry_id, upstream_registry_url], map: "aws_ecr_pull_through_cache_rules_cqpk")
-
   @@ignore
 }
 
@@ -5593,7 +5483,6 @@ model aws_ecr_registries {
   result_metadata           Json?
 
   @@id([account_id, region, registry_id], map: "aws_ecr_registries_cqpk")
-
   @@ignore
 }
 
@@ -5609,7 +5498,6 @@ model aws_ecr_registry_policies {
   result_metadata Json?
 
   @@id([account_id, region, registry_id], map: "aws_ecr_registry_policies_cqpk")
-
   @@ignore
 }
 
@@ -5689,7 +5577,6 @@ model aws_ecr_repository_lifecycle_policies {
   repository_name       String
 
   @@id([account_id, region, registry_id, repository_name], map: "aws_ecr_repository_lifecycle_policies_cqpk")
-
   @@ignore
 }
 
@@ -5802,7 +5689,6 @@ model aws_ecs_cluster_services {
   task_sets                         Json?
 
   @@id([arn, cluster_arn], map: "aws_ecs_cluster_services_cqpk")
-
   @@ignore
 }
 
@@ -6033,7 +5919,6 @@ model aws_eks_cluster_addons {
   tags                     Json?
 
   @@id([arn, cluster_arn], map: "aws_eks_cluster_addons_cqpk")
-
   @@ignore
 }
 
@@ -6095,7 +5980,6 @@ model aws_eks_cluster_oidc_identity_provider_configs {
   username_prefix               String?
 
   @@id([arn, cluster_arn], map: "aws_eks_cluster_oidc_identity_provider_configs_cqpk")
-
   @@ignore
 }
 
@@ -6468,7 +6352,6 @@ model aws_elasticbeanstalk_applications {
   versions                  String[]
 
   @@id([arn, date_created], map: "aws_elasticbeanstalk_applications_cqpk")
-
   @@ignore
 }
 
@@ -6553,7 +6436,6 @@ model aws_elasticbeanstalk_environments {
   version_label                   String?
 
   @@id([account_id, id], map: "aws_elasticbeanstalk_environments_cqpk")
-
   @@ignore
 }
 
@@ -6614,7 +6496,6 @@ model aws_elasticsearch_packages {
   package_type              String?
 
   @@id([account_id, region, id], map: "aws_elasticsearch_packages_cqpk")
-
   @@ignore
 }
 
@@ -6629,7 +6510,6 @@ model aws_elasticsearch_versions {
   instance_types Json?
 
   @@id([account_id, region, version], map: "aws_elasticsearch_versions_cqpk")
-
   @@ignore
 }
 
@@ -6856,7 +6736,6 @@ model aws_elbv2_load_balancer_web_acls {
   token_domains                             String[]
 
   @@id([load_balancer_arn, arn], map: "aws_elbv2_load_balancer_web_acls_cqpk")
-
   @@ignore
 }
 
@@ -6945,7 +6824,6 @@ model aws_emr_block_public_access_configs {
   result_metadata                            Json?
 
   @@id([account_id, region], map: "aws_emr_block_public_access_configs_cqpk")
-
   @@ignore
 }
 
@@ -6970,7 +6848,6 @@ model aws_emr_cluster_instance_fleets {
   target_spot_capacity           BigInt?
 
   @@id([cluster_arn, id], map: "aws_emr_cluster_instance_fleets_cqpk")
-
   @@ignore
 }
 
@@ -7002,7 +6879,6 @@ model aws_emr_cluster_instance_groups {
   status                                           Json?
 
   @@id([cluster_arn, id], map: "aws_emr_cluster_instance_groups_cqpk")
-
   @@ignore
 }
 
@@ -7114,7 +6990,6 @@ model aws_emr_release_labels {
   release_label         String
 
   @@id([account_id, region, release_label], map: "aws_emr_release_labels_cqpk")
-
   @@ignore
 }
 
@@ -7130,7 +7005,6 @@ model aws_emr_security_configurations {
   name                   String
 
   @@id([account_id, region, name], map: "aws_emr_security_configurations_cqpk")
-
   @@ignore
 }
 
@@ -7150,7 +7024,6 @@ model aws_emr_steps {
   status             Json?
 
   @@id([cluster_arn, id], map: "aws_emr_steps_cqpk")
-
   @@ignore
 }
 
@@ -7171,7 +7044,6 @@ model aws_emr_studio_session_mappings {
   studio_id          String?
 
   @@id([studio_arn, identity_id, identity_type], map: "aws_emr_studio_session_mappings_cqpk")
-
   @@ignore
 }
 
@@ -7225,7 +7097,6 @@ model aws_emr_supported_instance_types {
   vcpu                     BigInt?
 
   @@id([account_id, region, release_label, type], map: "aws_emr_supported_instance_types_cqpk")
-
   @@ignore
 }
 
@@ -7362,7 +7233,6 @@ model aws_eventbridge_event_bus_targets {
   sqs_parameters                 Json?
 
   @@id([rule_arn, event_bus_arn, id], map: "aws_eventbridge_event_bus_targets_cqpk")
-
   @@ignore
 }
 
@@ -7719,7 +7589,6 @@ model aws_fsx_backups {
   volume                Json?
 
   @@id([account_id, region, id], map: "aws_fsx_backups_cqpk")
-
   @@ignore
 }
 
@@ -7921,7 +7790,6 @@ model aws_glacier_data_retrieval_policies {
   rules          Json?
 
   @@id([account_id, region], map: "aws_glacier_data_retrieval_policies_cqpk")
-
   @@ignore
 }
 
@@ -8001,7 +7869,6 @@ model aws_glue_classifiers {
   xml_classifier  Json?
 
   @@id([account_id, region, name], map: "aws_glue_classifiers_cqpk")
-
   @@ignore
 }
 
@@ -8053,7 +7920,6 @@ model aws_glue_database_table_indexes {
   backfill_errors     Json?
 
   @@id([database_arn, database_table_name, index_name], map: "aws_glue_database_table_indexes_cqpk")
-
   @@ignore
 }
 
@@ -8088,7 +7954,6 @@ model aws_glue_database_tables {
   view_original_text                String?
 
   @@id([database_arn, name], map: "aws_glue_database_tables_cqpk")
-
   @@ignore
 }
 
@@ -8125,7 +7990,6 @@ model aws_glue_datacatalog_encryption_settings {
   encryption_at_rest             Json?
 
   @@id([account_id, region], map: "aws_glue_datacatalog_encryption_settings_cqpk")
-
   @@ignore
 }
 
@@ -8372,7 +8236,6 @@ model aws_glue_security_configurations {
   encryption_configuration Json?
 
   @@id([account_id, region, name], map: "aws_glue_security_configurations_cqpk")
-
   @@ignore
 }
 
@@ -8435,7 +8298,6 @@ model aws_guardduty_detector_filters {
   tags             Json?
 
   @@id([detector_arn, name], map: "aws_guardduty_detector_filters_cqpk")
-
   @@ignore
 }
 
@@ -8462,7 +8324,6 @@ model aws_guardduty_detector_findings {
   title          String?
 
   @@id([detector_arn, arn], map: "aws_guardduty_detector_findings_cqpk")
-
   @@ignore
 }
 
@@ -8479,7 +8340,6 @@ model aws_guardduty_detector_intel_sets {
   tags           Json?
 
   @@id([detector_arn, name], map: "aws_guardduty_detector_intel_sets_cqpk")
-
   @@ignore
 }
 
@@ -8496,7 +8356,6 @@ model aws_guardduty_detector_ip_sets {
   tags           Json?
 
   @@id([detector_arn, name], map: "aws_guardduty_detector_ip_sets_cqpk")
-
   @@ignore
 }
 
@@ -8530,7 +8389,6 @@ model aws_guardduty_detector_publishing_destinations {
   status           String?
 
   @@id([detector_arn, destination_id], map: "aws_guardduty_detector_publishing_destinations_cqpk")
-
   @@ignore
 }
 
@@ -8554,7 +8412,6 @@ model aws_guardduty_detectors {
   result_metadata              Json?
 
   @@id([account_id, region, id], map: "aws_guardduty_detectors_cqpk")
-
   @@ignore
 }
 
@@ -8625,7 +8482,6 @@ model aws_iam_credential_reports {
   access_key2_last_used_service String?
 
   @@id([arn, user_creation_time], map: "aws_iam_credential_reports_cqpk")
-
   @@ignore
 }
 
@@ -8640,7 +8496,6 @@ model aws_iam_group_attached_policies {
   policy_name    String?
 
   @@id([account_id, group_arn, policy_arn], map: "aws_iam_group_attached_policies_cqpk")
-
   @@ignore
 }
 
@@ -8661,7 +8516,6 @@ model aws_iam_group_last_accessed_details {
   tracked_actions_last_accessed Json?
 
   @@id([account_id, group_arn, service_namespace], map: "aws_iam_group_last_accessed_details_cqpk")
-
   @@ignore
 }
 
@@ -8678,7 +8532,6 @@ model aws_iam_group_policies {
   result_metadata Json?
 
   @@id([account_id, group_arn, policy_name], map: "aws_iam_group_policies_cqpk")
-
   @@ignore
 }
 
@@ -8695,7 +8548,6 @@ model aws_iam_groups {
   path           String?
 
   @@id([account_id, arn], map: "aws_iam_groups_cqpk")
-
   @@ignore
 }
 
@@ -8715,7 +8567,6 @@ model aws_iam_instance_profiles {
   roles                 Json?
 
   @@id([account_id, id], map: "aws_iam_instance_profiles_cqpk")
-
   @@ignore
 }
 
@@ -8779,7 +8630,6 @@ model aws_iam_policies {
   update_date                      DateTime? @db.Timestamp(6)
 
   @@id([account_id, id], map: "aws_iam_policies_cqpk")
-
   @@ignore
 }
 
@@ -8800,7 +8650,6 @@ model aws_iam_policy_last_accessed_details {
   tracked_actions_last_accessed Json?
 
   @@id([account_id, arn, service_namespace], map: "aws_iam_policy_last_accessed_details_cqpk")
-
   @@ignore
 }
 
@@ -8815,7 +8664,6 @@ model aws_iam_role_attached_policies {
   policy_name    String?
 
   @@id([account_id, role_arn, policy_arn], map: "aws_iam_role_attached_policies_cqpk")
-
   @@ignore
 }
 
@@ -8836,7 +8684,6 @@ model aws_iam_role_last_accessed_details {
   tracked_actions_last_accessed Json?
 
   @@id([account_id, role_arn, service_namespace], map: "aws_iam_role_last_accessed_details_cqpk")
-
   @@ignore
 }
 
@@ -8853,7 +8700,6 @@ model aws_iam_role_policies {
   result_metadata Json?
 
   @@id([account_id, role_arn, policy_name], map: "aws_iam_role_policies_cqpk")
-
   @@ignore
 }
 
@@ -8876,7 +8722,6 @@ model aws_iam_roles {
   role_last_used              Json?
 
   @@id([account_id, arn], map: "aws_iam_roles_cqpk")
-
   @@ignore
 }
 
@@ -8910,7 +8755,6 @@ model aws_iam_server_certificates {
   upload_date             DateTime? @db.Timestamp(6)
 
   @@id([account_id, id], map: "aws_iam_server_certificates_cqpk")
-
   @@ignore
 }
 
@@ -8929,7 +8773,6 @@ model aws_iam_signing_certificates {
   upload_date      DateTime? @db.Timestamp(6)
 
   @@id([account_id, user_arn, certificate_id], map: "aws_iam_signing_certificates_cqpk")
-
   @@ignore
 }
 
@@ -8947,7 +8790,6 @@ model aws_iam_ssh_public_keys {
   user_name         String?
 
   @@id([account_id, user_arn, ssh_public_key_id], map: "aws_iam_ssh_public_keys_cqpk")
-
   @@ignore
 }
 
@@ -8968,7 +8810,6 @@ model aws_iam_user_access_keys {
   last_rotated           DateTime? @db.Timestamp(6)
 
   @@id([account_id, user_arn, access_key_id], map: "aws_iam_user_access_keys_cqpk")
-
   @@ignore
 }
 
@@ -8984,7 +8825,6 @@ model aws_iam_user_attached_policies {
   policy_arn     String?
 
   @@id([account_id, user_arn, policy_name], map: "aws_iam_user_attached_policies_cqpk")
-
   @@ignore
 }
 
@@ -9003,7 +8843,6 @@ model aws_iam_user_groups {
   path           String?
 
   @@id([account_id, user_arn, arn], map: "aws_iam_user_groups_cqpk")
-
   @@ignore
 }
 
@@ -9024,7 +8863,6 @@ model aws_iam_user_last_accessed_details {
   tracked_actions_last_accessed Json?
 
   @@id([account_id, user_arn, service_namespace], map: "aws_iam_user_last_accessed_details_cqpk")
-
   @@ignore
 }
 
@@ -9042,7 +8880,6 @@ model aws_iam_user_policies {
   result_metadata Json?
 
   @@id([account_id, user_arn, policy_name], map: "aws_iam_user_policies_cqpk")
-
   @@ignore
 }
 
@@ -9062,7 +8899,6 @@ model aws_iam_users {
   permissions_boundary Json?
 
   @@id([account_id, arn], map: "aws_iam_users_cqpk")
-
   @@ignore
 }
 
@@ -9113,7 +8949,6 @@ model aws_inspector2_findings {
   updated_at                    DateTime? @db.Timestamp(6)
 
   @@id([request_account_id, request_region, arn], map: "aws_inspector2_findings_cqpk")
-
   @@ignore
 }
 
@@ -9535,7 +9370,6 @@ model aws_kms_key_grants {
   retiring_principal String?
 
   @@id([key_arn, grant_id], map: "aws_kms_key_grants_cqpk")
-
   @@ignore
 }
 
@@ -9551,7 +9385,6 @@ model aws_kms_key_policies {
   policy         Json?
 
   @@id([key_arn, name], map: "aws_kms_key_policies_cqpk")
-
   @@ignore
 }
 
@@ -9729,7 +9562,6 @@ model aws_lambda_function_versions {
   vpc_config                     Json?
 
   @@id([function_arn, version], map: "aws_lambda_function_versions_cqpk")
-
   @@ignore
 }
 
@@ -10845,7 +10677,6 @@ model aws_networkmanager_global_networks {
   state              String?
 
   @@id([request_region, arn], map: "aws_networkmanager_global_networks_cqpk")
-
   @@ignore
 }
 
@@ -10870,7 +10701,6 @@ model aws_networkmanager_links {
   type              String?
 
   @@id([request_region, arn, global_network_id], map: "aws_networkmanager_links_cqpk")
-
   @@ignore
 }
 
@@ -10892,7 +10722,6 @@ model aws_networkmanager_sites {
   state             String?
 
   @@id([request_region, arn, global_network_id], map: "aws_networkmanager_sites_cqpk")
-
   @@ignore
 }
 
@@ -10908,7 +10737,6 @@ model aws_networkmanager_transit_gateway_registrations {
   transit_gateway_arn String
 
   @@id([request_region, global_network_id, transit_gateway_arn], map: "aws_networkmanager_transit_gateway_registrations_cqpk")
-
   @@ignore
 }
 
@@ -10938,7 +10766,6 @@ model aws_organizations {
   master_account_id    String?
 
   @@id([account_id, arn], map: "aws_organizations_cqpk")
-
   @@ignore
 }
 
@@ -10953,7 +10780,6 @@ model aws_organizations_account_parents {
   type               String
 
   @@id([request_account_id, id, parent_id, type], map: "aws_organizations_account_parents_cqpk")
-
   @@ignore
 }
 
@@ -10973,7 +10799,6 @@ model aws_organizations_accounts {
   status             String?
 
   @@id([request_account_id, arn], map: "aws_organizations_accounts_cqpk")
-
   @@ignore
 }
 
@@ -10993,7 +10818,6 @@ model aws_organizations_delegated_administrators {
   status                  String?
 
   @@id([account_id, arn], map: "aws_organizations_delegated_administrators_cqpk")
-
   @@ignore
 }
 
@@ -11007,7 +10831,6 @@ model aws_organizations_delegated_services {
   service_principal       String
 
   @@id([account_id, service_principal], map: "aws_organizations_delegated_services_cqpk")
-
   @@ignore
 }
 
@@ -11022,7 +10845,6 @@ model aws_organizations_organizational_unit_parents {
   type               String
 
   @@id([request_account_id, id, parent_id, type], map: "aws_organizations_organizational_unit_parents_cqpk")
-
   @@ignore
 }
 
@@ -11037,7 +10859,6 @@ model aws_organizations_organizational_units {
   name               String?
 
   @@id([request_account_id, arn], map: "aws_organizations_organizational_units_cqpk")
-
   @@ignore
 }
 
@@ -11056,7 +10877,6 @@ model aws_organizations_policies {
   type           String?
 
   @@id([account_id, arn], map: "aws_organizations_policies_cqpk")
-
   @@ignore
 }
 
@@ -11073,7 +10893,6 @@ model aws_organizations_roots {
   policy_types       Json?
 
   @@id([request_account_id, arn], map: "aws_organizations_roots_cqpk")
-
   @@ignore
 }
 
@@ -11155,7 +10974,6 @@ model aws_ram_principals {
   resource_share_arn String
 
   @@id([account_id, region, id, resource_share_arn], map: "aws_ram_principals_cqpk")
-
   @@ignore
 }
 
@@ -11177,7 +10995,6 @@ model aws_ram_resource_share_associations {
   status_message      String?
 
   @@id([associated_entity, resource_share_arn], map: "aws_ram_resource_share_associations_cqpk")
-
   @@ignore
 }
 
@@ -11201,7 +11018,6 @@ model aws_ram_resource_share_invitations {
   status                        String?
 
   @@id([account_id, region, arn, receiver_combined], map: "aws_ram_resource_share_invitations_cqpk")
-
   @@ignore
 }
 
@@ -11228,7 +11044,6 @@ model aws_ram_resource_share_permissions {
   version                  String
 
   @@id([account_id, region, resource_share_arn, arn, version], map: "aws_ram_resource_share_permissions_cqpk")
-
   @@ignore
 }
 
@@ -11252,7 +11067,6 @@ model aws_ram_resource_shares {
   status_message            String?
 
   @@id([account_id, region, arn], map: "aws_ram_resource_shares_cqpk")
-
   @@ignore
 }
 
@@ -11268,7 +11082,6 @@ model aws_ram_resource_types {
   service_name          String
 
   @@id([account_id, region, resource_type, service_name], map: "aws_ram_resource_types_cqpk")
-
   @@ignore
 }
 
@@ -11290,7 +11103,6 @@ model aws_ram_resources {
   type                  String?
 
   @@id([account_id, region, arn, resource_share_arn], map: "aws_ram_resources_cqpk")
-
   @@ignore
 }
 
@@ -11312,7 +11124,6 @@ model aws_rds_certificates {
   valid_till                   DateTime? @db.Timestamp(6)
 
   @@id([account_id, arn], map: "aws_rds_certificates_cqpk")
-
   @@ignore
 }
 
@@ -11332,7 +11143,6 @@ model aws_rds_cluster_backtracks {
   status                          String?
 
   @@id([db_cluster_arn, backtrack_identifier], map: "aws_rds_cluster_backtracks_cqpk")
-
   @@ignore
 }
 
@@ -11744,7 +11554,6 @@ model aws_redshift_cluster_parameter_groups {
   parameter_apply_status        String?
 
   @@id([cluster_arn, parameter_group_name], map: "aws_redshift_cluster_parameter_groups_cqpk")
-
   @@ignore
 }
 
@@ -11767,7 +11576,6 @@ model aws_redshift_cluster_parameters {
   source                 String?
 
   @@id([cluster_arn, parameter_name], map: "aws_redshift_cluster_parameters_cqpk")
-
   @@ignore
 }
 
@@ -12016,7 +11824,6 @@ model aws_regions {
   region_name    String?
 
   @@id([account_id, region], map: "aws_regions_cqpk")
-
   @@ignore
 }
 
@@ -12040,7 +11847,6 @@ model aws_resiliencehub_alarm_recommendations {
   prerequisite        String?
 
   @@id([app_arn, assessment_arn, recommendation_id], map: "aws_resiliencehub_alarm_recommendations_cqpk")
-
   @@ignore
 }
 
@@ -12072,7 +11878,6 @@ model aws_resiliencehub_app_assessments {
   version_name            String?
 
   @@id([app_arn, arn], map: "aws_resiliencehub_app_assessments_cqpk")
-
   @@ignore
 }
 
@@ -12093,7 +11898,6 @@ model aws_resiliencehub_app_component_compliances {
   status             String?
 
   @@id([app_arn, assessment_arn, app_component_name], map: "aws_resiliencehub_app_component_compliances_cqpk")
-
   @@ignore
 }
 
@@ -12117,7 +11921,6 @@ model aws_resiliencehub_app_version_resource_mappings {
   terraform_source_name        String?
 
   @@id([app_arn, app_version, physical_resource_identifier], map: "aws_resiliencehub_app_version_resource_mappings_cqpk")
-
   @@ignore
 }
 
@@ -12142,7 +11945,6 @@ model aws_resiliencehub_app_version_resources {
   source_type                  String?
 
   @@id([app_arn, app_version, physical_resource_identifier], map: "aws_resiliencehub_app_version_resources_cqpk")
-
   @@ignore
 }
 
@@ -12160,7 +11962,6 @@ model aws_resiliencehub_app_versions {
   version_name   String?
 
   @@id([app_arn, app_version], map: "aws_resiliencehub_app_versions_cqpk")
-
   @@ignore
 }
 
@@ -12206,7 +12007,6 @@ model aws_resiliencehub_component_recommendations {
   recommendation_status  String?
 
   @@id([app_arn, assessment_arn, app_component_name], map: "aws_resiliencehub_component_recommendations_cqpk")
-
   @@ignore
 }
 
@@ -12234,7 +12034,6 @@ model aws_resiliencehub_recommendation_templates {
   templates_location          Json?
 
   @@id([arn, assessment_arn, app_arn], map: "aws_resiliencehub_recommendation_templates_cqpk")
-
   @@ignore
 }
 
@@ -12278,7 +12077,6 @@ model aws_resiliencehub_sop_recommendations {
   prerequisite       String?
 
   @@id([app_arn, assessment_arn, recommendation_id], map: "aws_resiliencehub_sop_recommendations_cqpk")
-
   @@ignore
 }
 
@@ -12325,7 +12123,6 @@ model aws_resiliencehub_test_recommendations {
   type               String?
 
   @@id([app_arn, assessment_arn, recommendation_id], map: "aws_resiliencehub_test_recommendations_cqpk")
-
   @@ignore
 }
 
@@ -12394,7 +12191,6 @@ model aws_route53_domains {
   result_metadata     Json?
 
   @@id([account_id, domain_name], map: "aws_route53_domains_cqpk")
-
   @@ignore
 }
 
@@ -12476,7 +12272,6 @@ model aws_route53_hosted_zone_traffic_policy_instances {
   traffic_policy_version BigInt?
 
   @@id([account_id, arn], map: "aws_route53_hosted_zone_traffic_policy_instances_cqpk")
-
   @@ignore
 }
 
@@ -12517,7 +12312,6 @@ model aws_route53_operations {
   type              String
 
   @@id([account_id, operation_id, status, submitted_date, type], map: "aws_route53_operations_cqpk")
-
   @@ignore
 }
 
@@ -12552,7 +12346,6 @@ model aws_route53_traffic_policy_versions {
   comment            String?
 
   @@id([traffic_policy_arn, id, version], map: "aws_route53_traffic_policy_versions_cqpk")
-
   @@ignore
 }
 
@@ -12601,7 +12394,6 @@ model aws_route53recoverycontrolconfig_routing_controls {
   status              String?
 
   @@id([arn, control_panel_arn], map: "aws_route53recoverycontrolconfig_routing_controls_cqpk")
-
   @@ignore
 }
 
@@ -12693,7 +12485,6 @@ model aws_route53resolver_firewall_configs {
   resource_id        String?
 
   @@id([account_id, region, id], map: "aws_route53resolver_firewall_configs_cqpk")
-
   @@ignore
 }
 
@@ -12806,7 +12597,6 @@ model aws_route53resolver_resolver_query_log_config_associations {
   status                       String?
 
   @@id([account_id, region, id], map: "aws_route53resolver_resolver_query_log_config_associations_cqpk")
-
   @@ignore
 }
 
@@ -12846,7 +12636,6 @@ model aws_route53resolver_resolver_rule_associations {
   vpc_id           String?
 
   @@id([account_id, region, id], map: "aws_route53resolver_resolver_rule_associations_cqpk")
-
   @@ignore
 }
 
@@ -12952,7 +12741,6 @@ model aws_s3_bucket_grants {
   grantee        Json?
 
   @@id([bucket_arn, grantee_type, grantee_id, permission], map: "aws_s3_bucket_grants_cqpk")
-
   @@ignore
 }
 
@@ -13286,7 +13074,6 @@ model aws_secretsmanager_secret_versions {
   version_stages     String[]
 
   @@id([secret_arn, version_id], map: "aws_secretsmanager_secret_versions_cqpk")
-
   @@ignore
 }
 
@@ -13334,7 +13121,6 @@ model aws_securityhub_enabled_standards {
   standards_status_reason    Json?
 
   @@id([account_id, region, standards_arn, standards_subscription_arn], map: "aws_securityhub_enabled_standards_cqpk")
-
   @@ignore
 }
 
@@ -13388,7 +13174,6 @@ model aws_securityhub_findings {
   workflow_state          String?
 
   @@id([request_account_id, request_region, aws_account_id, created_at, description, generator_id, id, product_arn, schema_version, title, updated_at, region], map: "aws_securityhub_findings_cqpk")
-
   @@ignore
 }
 
@@ -13407,7 +13192,6 @@ model aws_securityhub_hubs {
   result_metadata           Json?
 
   @@id([account_id, region, hub_arn], map: "aws_securityhub_hubs_cqpk")
-
   @@ignore
 }
 
@@ -13427,7 +13211,6 @@ model aws_servicecatalog_launch_paths {
   name                     String?
 
   @@id([account_id, region, provisioned_product_arn, product_id, provisioning_artifact_id], map: "aws_servicecatalog_launch_paths_cqpk")
-
   @@ignore
 }
 
@@ -13510,7 +13293,6 @@ model aws_servicecatalog_provisioning_artifacts {
   status                           String?
 
   @@id([provisioned_product_arn, product_id, provisioning_artifact_id], map: "aws_servicecatalog_provisioning_artifacts_cqpk")
-
   @@ignore
 }
 
@@ -13533,7 +13315,6 @@ model aws_servicecatalog_provisioning_parameters {
   usage_instructions                Json?
 
   @@id([account_id, region, provisioned_product_arn, product_id, provisioning_artifact_id, path_id], map: "aws_servicecatalog_provisioning_parameters_cqpk")
-
   @@ignore
 }
 
@@ -13549,7 +13330,6 @@ model aws_servicediscovery_instances {
   creator_request_id String?
 
   @@id([account_id, region, id], map: "aws_servicediscovery_instances_cqpk")
-
   @@ignore
 }
 
@@ -13610,7 +13390,6 @@ model aws_ses_active_receipt_rule_sets {
   rules             Json?
 
   @@id([account_id, region, name], map: "aws_ses_active_receipt_rule_sets_cqpk")
-
   @@ignore
 }
 
@@ -13631,7 +13410,6 @@ model aws_ses_configuration_set_event_destinations {
   sns_destination              Json?
 
   @@id([account_id, region, configuration_set_name, name], map: "aws_ses_configuration_set_event_destinations_cqpk")
-
   @@ignore
 }
 
@@ -13671,7 +13449,6 @@ model aws_ses_contact_lists {
   topics                 Json?
 
   @@id([account_id, region, name], map: "aws_ses_contact_lists_cqpk")
-
   @@ignore
 }
 
@@ -13939,7 +13716,6 @@ model aws_ssm_associations {
   targets             Json?
 
   @@id([account_id, region, association_id], map: "aws_ssm_associations_cqpk")
-
   @@ignore
 }
 
@@ -13955,7 +13731,6 @@ model aws_ssm_compliance_summary_items {
   non_compliant_summary Json?
 
   @@id([account_id, region, compliance_type], map: "aws_ssm_compliance_summary_items_cqpk")
-
   @@ignore
 }
 
@@ -13979,7 +13754,6 @@ model aws_ssm_document_versions {
   version_name       String?
 
   @@id([document_arn, document_version], map: "aws_ssm_document_versions_cqpk")
-
   @@ignore
 }
 
@@ -14045,7 +13819,6 @@ model aws_ssm_instance_compliance_items {
   title             String?
 
   @@id([id, instance_arn], map: "aws_ssm_instance_compliance_items_cqpk")
-
   @@ignore
 }
 
@@ -14066,7 +13839,6 @@ model aws_ssm_instance_patches {
   cve_ids        String?
 
   @@id([instance_arn, kb_id], map: "aws_ssm_instance_patches_cqpk")
-
   @@ignore
 }
 
@@ -14114,7 +13886,6 @@ model aws_ssm_inventories {
   data           Json?
 
   @@id([account_id, region, id], map: "aws_ssm_inventories_cqpk")
-
   @@ignore
 }
 
@@ -14131,7 +13902,6 @@ model aws_ssm_inventory_schemas {
   display_name   String?
 
   @@id([account_id, region, type_name, version], map: "aws_ssm_inventory_schemas_cqpk")
-
   @@ignore
 }
 
@@ -14155,7 +13925,6 @@ model aws_ssm_parameters {
   version            BigInt?
 
   @@id([account_id, region, name], map: "aws_ssm_parameters_cqpk")
-
   @@ignore
 }
 
@@ -14173,7 +13942,6 @@ model aws_ssm_patch_baselines {
   operating_system     String?
 
   @@id([account_id, region, baseline_id], map: "aws_ssm_patch_baselines_cqpk")
-
   @@ignore
 }
 
@@ -14197,7 +13965,6 @@ model aws_ssm_sessions {
   target               String?
 
   @@id([account_id, region, session_id], map: "aws_ssm_sessions_cqpk")
-
   @@ignore
 }
 
@@ -14356,7 +14123,6 @@ model aws_support_cases {
   time_created          String?
 
   @@id([account_id, region, case_id], map: "aws_support_cases_cqpk")
-
   @@ignore
 }
 
@@ -14373,7 +14139,6 @@ model aws_support_services {
   name           String?
 
   @@id([account_id, region, language_code, code], map: "aws_support_services_cqpk")
-
   @@ignore
 }
 
@@ -14389,7 +14154,6 @@ model aws_support_severity_levels {
   name           String?
 
   @@id([account_id, region, language_code, code], map: "aws_support_severity_levels_cqpk")
-
   @@ignore
 }
 
@@ -14409,7 +14173,6 @@ model aws_support_trusted_advisor_check_results {
   timestamp                 String?
 
   @@id([account_id, region, language_code, check_id], map: "aws_support_trusted_advisor_check_results_cqpk")
-
   @@ignore
 }
 
@@ -14429,7 +14192,6 @@ model aws_support_trusted_advisor_check_summaries {
   has_flagged_resources     Boolean?
 
   @@id([account_id, region, language_code, check_id], map: "aws_support_trusted_advisor_check_summaries_cqpk")
-
   @@ignore
 }
 
@@ -14448,7 +14210,6 @@ model aws_support_trusted_advisor_checks {
   name           String?
 
   @@id([account_id, region, language_code, id], map: "aws_support_trusted_advisor_checks_cqpk")
-
   @@ignore
 }
 
@@ -14564,7 +14325,6 @@ model aws_waf_subscribed_rule_groups {
   name           String?
 
   @@id([account_id, rule_group_id], map: "aws_waf_subscribed_rule_groups_cqpk")
-
   @@ignore
 }
 
@@ -14693,7 +14453,6 @@ model aws_wafv2_managed_rule_groups {
   versioning_supported Boolean?
 
   @@id([account_id, region, scope, name, vendor_name], map: "aws_wafv2_managed_rule_groups_cqpk")
-
   @@ignore
 }
 
@@ -14788,7 +14547,6 @@ model aws_wellarchitected_lens_review_improvements {
   risk                 String?
 
   @@id([workload_arn, milestone_number, lens_alias, pillar_id, question_id], map: "aws_wellarchitected_lens_review_improvements_cqpk")
-
   @@ignore
 }
 
@@ -14816,7 +14574,6 @@ model aws_wellarchitected_lens_reviews {
   updated_at              DateTime? @db.Timestamp(6)
 
   @@id([workload_arn, milestone_number, lens_alias], map: "aws_wellarchitected_lens_reviews_cqpk")
-
   @@ignore
 }
 
@@ -14842,7 +14599,6 @@ model aws_wellarchitected_lenses {
   tags                Json?
 
   @@id([account_id, region, arn], map: "aws_wellarchitected_lenses_cqpk")
-
   @@ignore
 }
 
@@ -14866,7 +14622,6 @@ model aws_wellarchitected_share_invitations {
   workload_name       String?
 
   @@id([account_id, region, share_invitation_id], map: "aws_wellarchitected_share_invitations_cqpk")
-
   @@ignore
 }
 
@@ -14884,7 +14639,6 @@ model aws_wellarchitected_workload_milestones {
   recorded_at      DateTime? @db.Timestamp(6)
 
   @@id([workload_arn, milestone_name], map: "aws_wellarchitected_workload_milestones_cqpk")
-
   @@ignore
 }
 
@@ -14903,7 +14657,6 @@ model aws_wellarchitected_workload_shares {
   status_message  String?
 
   @@id([workload_arn, share_id], map: "aws_wellarchitected_workload_shares_cqpk")
-
   @@ignore
 }
 
@@ -15857,4 +15610,172 @@ model github_workflows {
   badge_url      String?
 
   @@id([org, repository_id, id], map: "github_workflows_cqpk")
+}
+
+model snyk_dependencies {
+  cq_sync_time                  DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                String?   @map("_cq_source_name")
+  cq_id                         String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id                  String?   @map("_cq_parent_id") @db.Uuid
+  organization_id               String
+  id                            String
+  name                          String?
+  type                          String?
+  version                       String?
+  latest_version                String?
+  latest_version_published_date DateTime? @db.Timestamp(6)
+  first_published_date          DateTime? @db.Timestamp(6)
+  is_deprecated                 Boolean?
+  deprecated_versions           String[]
+  dependencies_with_issues      String[]
+  issues_critical               BigInt?
+  issues_high                   BigInt?
+  issues_medium                 BigInt?
+  issues_low                    BigInt?
+  licenses                      Json?
+  projects                      Json?
+  copyright                     String[]
+
+  @@id([organization_id, id], map: "snyk_dependencies_cqpk")
+}
+
+model snyk_group_members {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  group_id       String
+  id             String
+  name           String?
+  username       String?
+  email          String?
+  orgs           Json?
+  group_role     String?
+
+  @@id([group_id, id], map: "snyk_group_members_cqpk")
+}
+
+model snyk_groups {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  id             String    @id(map: "snyk_groups_cqpk")
+  name           String?
+}
+
+model snyk_integrations {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String
+  settings        Json?
+  credentials     Json?
+  id              String
+  type            String?
+
+  @@id([organization_id, id], map: "snyk_integrations_cqpk")
+}
+
+model snyk_organization_members {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String
+  id              String
+  username        String?
+  name            String?
+  email           String?
+  role            String?
+
+  @@id([organization_id, id], map: "snyk_organization_members_cqpk")
+}
+
+model snyk_organization_provisions {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String
+  email           String
+  role            String?
+  role_public_id  String?
+  created         DateTime  @db.Timestamp(6)
+
+  @@id([organization_id, email, created], map: "snyk_organization_provisions_cqpk")
+}
+
+model snyk_organizations {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  group          Json?
+  id             String    @id(map: "snyk_organizations_cqpk")
+  name           String?
+  slug           String?
+  url            String?
+}
+
+model snyk_projects {
+  cq_source_name           String?   @map("_cq_source_name")
+  cq_sync_time             DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_id                    String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id             String?   @map("_cq_parent_id") @db.Uuid
+  id                       String    @id(map: "snyk_projects_cqpk")
+  name                     String?
+  origin                   String?
+  issue_counts_by_severity Json?
+  tags                     Json?
+  org_id                   String?
+}
+
+model snyk_reporting_issues {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String
+  id              String
+  issue           Json?
+  projects        Json?
+  project         Json?
+  is_fixed        Boolean?
+  introduced_date String?
+  patched_date    String?
+  fixed_date      String?
+
+  @@id([organization_id, id], map: "snyk_reporting_issues_cqpk")
+}
+
+model snyk_reporting_latest_issues {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String
+  id              String
+  issue           Json?
+  projects        Json?
+  project         Json?
+  is_fixed        Boolean?
+  introduced_date String?
+  patched_date    String?
+  fixed_date      String?
+
+  @@id([organization_id, id], map: "snyk_reporting_latest_issues_cqpk")
+}
+
+model repocop_github_repository_rules {
+  full_name     String   @unique
+  repository_01 Boolean
+  repository_02 Boolean
+  repository_03 Boolean
+  repository_04 Boolean
+  repository_05 Boolean?
+  repository_06 Boolean
+  repository_07 Boolean?
+  evaluated_on  DateTime
 }
