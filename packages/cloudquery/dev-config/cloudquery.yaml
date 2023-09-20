@@ -105,6 +105,18 @@ spec:
   spec:
     api_key: ${SNYK_TOKEN}
 ---
+kind: source
+spec:
+  name: galaxies
+  path: guardian/galaxies
+  version: v1.1.0
+  destinations:
+    - postgresql
+  tables:
+    - galaxies_*
+  spec:
+    bucket: ${GALAXIES_BUCKET}
+---
 kind: destination
 spec:
   name: 'postgresql'
