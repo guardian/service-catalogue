@@ -15779,3 +15779,52 @@ model repocop_github_repository_rules {
   repository_07 Boolean?
   evaluated_on  DateTime
 }
+
+model galaxies_people_profile_info_table {
+  cq_source_name String?   @map("_cq_source_name")
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_id          String    @id(map: "galaxies_people_profile_info_table_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  id             String?
+  email          String?
+  pronouns       String?
+  git_hub_handle String?
+  twitter_handle String?
+  picture_url    String?
+}
+
+model galaxies_people_table {
+  cq_source_name String?   @map("_cq_source_name")
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_id          String    @id(map: "galaxies_people_table_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  name           String?
+  email_id       String?
+  role           String?
+  teams          String[]
+  streams        String[]
+}
+
+model galaxies_streams_table {
+  cq_source_name     String?   @map("_cq_source_name")
+  cq_sync_time       DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_id              String    @id(map: "galaxies_streams_table_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
+  stream_id          String?
+  stream_name        String?
+  stream_description String?
+  stream_members     String[]
+}
+
+model galaxies_teams_table {
+  cq_source_name             String?   @map("_cq_source_name")
+  cq_sync_time               DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_id                      String    @id(map: "galaxies_teams_table_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id               String?   @map("_cq_parent_id") @db.Uuid
+  team_id                    String?
+  team_name                  String?
+  team_description           String?
+  team_contact_email         String?
+  team_google_chat_space_key String?
+  team_primary_github_team   String?
+}
