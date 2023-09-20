@@ -33,7 +33,7 @@ It includes:
 3. Run:
 
    ```sh
-   npm start --workspace cloudquery
+   npm start -w cloudquery
    ```
 
    OR:
