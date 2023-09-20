@@ -48,6 +48,5 @@ one scheme.prisma file.
 
 1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database
 2. Put `DATABASE_URL="postgresql://postgres:not_at_all_secret@localhost:5432/postgres"` in a `.env` file in `packages/repocop`
-3. Apply the initial schema: `npx -w repocop prisma migrate resolve --applied 0_init`
-4. Run a migration: `npx -w repocop prisma migrate deploy`
-5. Start Repocop: `npm start -w repocop`
+3. Run `npm run migrate:dev -w repocop` to create the _prisma_migrations table in the database (n.b. this will replace any existing table)
+4. Start Repocop: `npm start -w repocop`

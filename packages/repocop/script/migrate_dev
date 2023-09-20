@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+# clear existing local migrations table (if applicable)
+# and apply all migrations
+dotenv -e ~/.gu/service_catalogue/.env.local -- npx prisma migrate reset --force
