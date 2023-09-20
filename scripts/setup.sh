@@ -42,7 +42,8 @@ install_dependencies() {
 setup_cloudquery() {
   red='\033[0;31m'
   clear='\033[0m'
-  green='\033[0;32m'
+  yellow='\033[1;33m'
+  cyan='\033[0;36m'
 
   echo "Checking AWS credentials"
   STATUS=$(aws sts get-caller-identity --profile developerPlayground 2>&1 || true)
@@ -87,20 +88,22 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
     # Check if file is empty - don't want to overwrite any existing tokens
     if [ "$FILE_SIZE" -gt "$SIZE_THRESHOLD" ]
     then
-      echo -e "${green}Local non-empty .env file found in $LOCAL_ENV_FILE_DIR${clear}. No changes made"
+      echo "Local non-empty .env file found in $LOCAL_ENV_FILE_DIR. No changes made"
     else
-      echo -e "${green}Empty local .env file found in $LOCAL_ENV_FILE_DIR, adding token names${clear}"
+      echo "Empty local .env file found in $LOCAL_ENV_FILE_DIR, adding token names"
       echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
     fi
   else
-    echo -e "${green}No local .env file found - creating it in $LOCAL_ENV_FILE_DIR and adding token names${clear}"
+    echo "No local .env file found - creating it in $LOCAL_ENV_FILE_DIR and adding token names"
     mkdir -p "$HOME"/.gu/service_catalogue/secrets
     touch -a "$LOCAL_ENV_FILE_DIR"/.env
     echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
   fi
 
-echo "Visit https://github.com/settings/tokens?type=beta to create a GitHub token, and add it to $LOCAL_ENV_FILE"
-echo "Visit https://docs.snyk.io/snyk-api-info/authentication-for-api to create or retrieve a Snyk token, and add it to $LOCAL_ENV_FILE"
+echo -e "${yellow}Please create a GitHub token${clear}.
+Visit ${cyan}https://github.com/settings/tokens?type=beta${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
+echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
+Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
 }
 
 check_node_version
