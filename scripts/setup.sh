@@ -36,7 +36,7 @@ setup_node_env() {
 }
 
 install_dependencies() {
-  npm install
+  npm install --silent
 }
 
 setup_cloudquery() {
@@ -79,7 +79,6 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
   echo "Running CloudQuery setup"
 
   # Check if .env file exists in user's /service_catalogue/secrets/
-  echo "Checking to see if you have a local .env file in $LOCAL_ENV_FILE_DIR"
   if [ -e "$LOCAL_ENV_FILE" ]
   then
     # Get file size in bytes
@@ -100,10 +99,23 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
     echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
   fi
 
-echo -e "${yellow}Please create a GitHub token${clear}.
+source "$LOCAL_ENV_FILE"
+
+  # Check if GitHub token is set
+  if [ -z "$GITHUB_ACCESS_TOKEN" ]
+  then
+    echo -e "${yellow}Please create a GitHub token${clear}.
 Visit ${cyan}https://github.com/settings/tokens?type=beta${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
-echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
-Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
+  fi
+
+  # Check if Snyk token is set
+  if [ -z "$SNYK_TOKEN" ]
+  then
+    echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
+  Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
+  fi
+
+
 }
 
 check_node_version
