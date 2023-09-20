@@ -6,7 +6,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR=$DIR/../../..
 
 MAIN_ENV_FILE=$ROOT_DIR/.env
-LOCAL_ENV_FILE=$HOME/.gu/service_catalogue/secrets/.env
+LOCAL_ENV_FILE=$HOME/.gu/service_catalogue/.env.local
 
 echo "Checking AWS credentials"
 STATUS=$(aws sts get-caller-identity --profile deployTools 2>&1 || true)

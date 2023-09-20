@@ -28,7 +28,7 @@ It includes:
 
 ## Running
 
-1. Put your GitHub PAT and Snyk token in the `.env` file at `~/.gu/service_catalogue/secrets/.env`(n.b. DO NOT put them in the repo `.env` file, as you will probably commit a secret by accident).
+1. Put your GitHub PAT and Snyk token in the `.env.local` file at `~/.gu/service_catalogue/`(n.b. DO NOT put them in the repo `.env` file, as you could commit a secret by accident).
 2. Start Docker
 3. Run:
 
