@@ -18,17 +18,18 @@ It includes:
 - A Snyk token
 
 ## Setup
+
 1. Get developer playground credentials from Janus
 2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
-./packages/cloudquery/script/setup
+./scripts/setup.sh
 ```
 
 ## Running
 
 1. Put your GitHub PAT and Snyk tokens in the `.env.local` file at the repo root. It is ignored by git so is safe to edit
-for local development (n.b. do not put them in the `.env` file, as you will probably commit a secret by accident).
+   for local development (n.b. do not put them in the `.env` file, as you will probably commit a secret by accident).
 2. Start Docker
 3. Run:
 
@@ -43,8 +44,9 @@ for local development (n.b. do not put them in the `.env` file, as you will prob
    ```
 
    This will start the Docker containers, and CloudQuery will start collecting data.
+
 4. Wait for tables to start being populated. Usually the first tables show up after a few seconds, but this could take
-as long as a minute.
+   as long as a minute.
 5. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
 6. To restart on your local machine, delete the container in docker and go back to step 3.
 
