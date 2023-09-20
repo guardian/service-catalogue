@@ -14,7 +14,7 @@ It includes:
 ## Requirements
 
 - Docker
-- A GitHub Personal Access Token (PAT)
+- A GitHub Personal Access Token (PAT) with read access on all repos
 - A Snyk token
 
 ## Setup
@@ -28,8 +28,7 @@ It includes:
 
 ## Running
 
-1. Put your GitHub PAT and Snyk tokens in the `.env.local` file at the repo root. It is ignored by git so is safe to edit
-   for local development (n.b. do not put them in the `.env` file, as you will probably commit a secret by accident).
+1. Put your GitHub PAT and Snyk token in the `.env` file at `~/.gu/service_catalogue/secrets/.env`(n.b. DO NOT put them in the repo `.env` file, as you will probably commit a secret by accident).
 2. Start Docker
 3. Run:
 
