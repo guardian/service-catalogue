@@ -44,6 +44,18 @@ setup_cloudquery() {
   clear='\033[0m'
   green='\033[0;32m'
 
+  echo "Checking AWS credentials"
+  STATUS=$(aws sts get-caller-identity --profile developerPlayground 2>&1 || true)
+  if [[ ${STATUS} =~ (ExpiredToken) ]]; then
+    echo -e "${red}Credentials for the developerPlayground profile have expired${clear}. Please fetch new credentials."
+    exit 1
+  elif [[ ${STATUS} =~ ("could not be found") ]]; then
+    echo -e "${red}Credentials for the developerPlayground profile are missing${clear}. Please fetch some."
+    exit 1
+  else
+    echo "AWS credentials are valid"
+  fi
+
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
   LOCAL_ENV_FILE_DIR=$HOME/.gu/service_catalogue/secrets
@@ -52,11 +64,16 @@ setup_cloudquery() {
 
   SIZE_THRESHOLD=1
 
-  TOKEN_TEXT="# See https://github.com/settings/tokens?type=beta
-  GITHUB_ACCESS_TOKEN=
+  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
-  # See https://docs.snyk.io/snyk-api-info/authentication-for-api
-  SNYK_TOKEN="
+  TOKEN_TEXT="# See https://github.com/settings/tokens?type=beta
+GITHUB_ACCESS_TOKEN=
+
+# See https://docs.snyk.io/snyk-api-info/authentication-for-api
+SNYK_TOKEN=
+
+GALAXIES_BUCKET=${GALAXIES_BUCKET}
+"
 
   echo "Running CloudQuery setup"
 
@@ -84,18 +101,6 @@ setup_cloudquery() {
 
 echo "Visit https://github.com/settings/tokens?type=beta to create a GitHub token, and add it to $LOCAL_ENV_FILE"
 echo "Visit https://docs.snyk.io/snyk-api-info/authentication-for-api to create or retrieve a Snyk token, and add it to $LOCAL_ENV_FILE"
-
-  echo "Checking AWS credentials"
-  STATUS=$(aws sts get-caller-identity --profile developerPlayground 2>&1 || true)
-  if [[ ${STATUS} =~ (ExpiredToken) ]]; then
-    echo -e "${red}Credentials for the developerPlayground profile have expired${clear}. Please fetch new credentials."
-    exit 1
-  elif [[ ${STATUS} =~ ("could not be found") ]]; then
-    echo -e "${red}Credentials for the developerPlayground profile are missing${clear}. Please fetch some."
-    exit 1
-  else
-    echo "AWS credentials are valid"
-  fi
 }
 
 check_node_version
