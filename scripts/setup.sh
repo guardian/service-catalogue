@@ -2,6 +2,12 @@
 
 set -e
 
+# Set up text colours
+red='\033[0;31m'
+clear='\033[0m'
+yellow='\033[1;33m'
+cyan='\033[0;36m'
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR=${DIR}/..
 
@@ -44,10 +50,10 @@ check_credentials() {
   echo "Checking AWS credentials"
   STATUS=$(aws sts get-caller-identity --profile "$PROFILE" 2>&1 || true)
   if [[ ${STATUS} =~ (ExpiredToken) ]]; then
-    echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile have expired${clear}. Please fetch new credentials."
+    echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile have expired${clear}. Please fetch new credentials and rerun the script."
     exit 1
   elif [[ ${STATUS} =~ ("could not be found") ]]; then
-    echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile are missing${clear}. Please fetch some."
+    echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile are missing${clear}. Please fetch new credentials and rerun the script."
     exit 1
   else
     echo "AWS credentials for $PROFILE are valid"
@@ -55,13 +61,6 @@ check_credentials() {
 }
 
 setup_cloudquery() {
-  red='\033[0;31m'
-  clear='\033[0m'
-  yellow='\033[1;33m'
-  cyan='\033[0;36m'
-
-  check_credentials developerPlayground
-  check_credentials deployTools
 
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -118,7 +117,7 @@ Visit ${cyan}https://github.com/settings/tokens?type=beta${clear}, and add it to
   if [ -z "$SNYK_TOKEN" ]
   then
     echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
-  Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
+Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
   fi
 
 
@@ -126,5 +125,5 @@ Visit ${cyan}https://github.com/settings/tokens?type=beta${clear}, and add it to
 
 check_node_version
 install_dependencies
+check_credentials deployTools
 setup_cloudquery
-

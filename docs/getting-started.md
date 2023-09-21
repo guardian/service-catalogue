@@ -90,9 +90,7 @@ final line: `repo_owners.repo_name=certs.tags ->>'gu:repo'` which joins the repo
 repository associated with a stack. It allows us to generate a table of domain owners like this:
 
 | domain_name     | team_name   |
-|-----------------|-------------|
+| --------------- | ----------- |
 | api.example.com | Team Edward |
 | example.com     | Team Jacob  |
 | example.net     | Team Rocket |
-
-

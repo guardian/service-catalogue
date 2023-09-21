@@ -67,8 +67,8 @@ spec:
       - eu-west-1
       - us-east-1
     accounts:
-      - id: 'developerPlayground'
-        local_profile: 'developerPlayground'
+      - id: 'deployTools'
+        local_profile: 'deployTools'
 ---
 kind: source
 spec:

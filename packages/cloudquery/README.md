@@ -19,7 +19,7 @@ It includes:
 
 ## Setup
 
-1. Get developer playground credentials from Janus
+1. Get deployTools credentials from Janus
 2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
