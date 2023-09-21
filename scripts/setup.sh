@@ -39,23 +39,29 @@ install_dependencies() {
   npm install --silent
 }
 
+check_credentials() {
+  PROFILE=$1
+  echo "Checking AWS credentials"
+  STATUS=$(aws sts get-caller-identity --profile "$PROFILE" 2>&1 || true)
+  if [[ ${STATUS} =~ (ExpiredToken) ]]; then
+    echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile have expired${clear}. Please fetch new credentials."
+    exit 1
+  elif [[ ${STATUS} =~ ("could not be found") ]]; then
+    echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile are missing${clear}. Please fetch some."
+    exit 1
+  else
+    echo "AWS credentials for $PROFILE are valid"
+  fi
+}
+
 setup_cloudquery() {
   red='\033[0;31m'
   clear='\033[0m'
   yellow='\033[1;33m'
   cyan='\033[0;36m'
 
-  echo "Checking AWS credentials"
-  STATUS=$(aws sts get-caller-identity --profile developerPlayground 2>&1 || true)
-  if [[ ${STATUS} =~ (ExpiredToken) ]]; then
-    echo -e "${red}Credentials for the developerPlayground profile have expired${clear}. Please fetch new credentials."
-    exit 1
-  elif [[ ${STATUS} =~ ("could not be found") ]]; then
-    echo -e "${red}Credentials for the developerPlayground profile are missing${clear}. Please fetch some."
-    exit 1
-  else
-    echo "AWS credentials are valid"
-  fi
+  check_credentials developerPlayground
+  check_credentials deployTools
 
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
