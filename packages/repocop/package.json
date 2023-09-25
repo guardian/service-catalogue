@@ -4,7 +4,6 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.122",
     "@types/aws-lambda": "^8.10.119",
-    "dotenv-cli": "^7.3.0",
     "prisma": "^5.3.1"
   },
   "scripts": {
@@ -12,7 +11,9 @@
     "start": "ts-node src/run-locally.ts",
     "postinstall": "prisma generate",
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
-    "migrate:dev": "./script/migrate_dev"
+    "migrate:dev": "script/migrate.sh --dev",
+    "migrate:code": "script/migrate.sh --code",
+    "migrate:prod": "script/migrate.sh --prod"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
