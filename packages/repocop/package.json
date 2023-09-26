@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "@aws-sdk/rds-signer": "^3.415.0",
-    "@prisma/client": "^5.2.0"
+    "@prisma/client": "^5.3.1"
   }
 }
