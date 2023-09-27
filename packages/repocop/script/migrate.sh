@@ -13,11 +13,11 @@ migrateDEV() {
 }
 
 migrateCODE() {
-  export DATABASE_URL="TODO"
+  echo "Migrating CODE"
 }
 
 migratePROD() {
-  export DATABASE_URL="TODO"
+  echo "Migrating PROD"
 }
 
 # Read in input flag
