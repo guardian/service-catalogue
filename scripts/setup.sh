@@ -64,9 +64,9 @@ setup_cloudquery() {
 
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-  LOCAL_ENV_FILE_DIR=$HOME/.gu/service_catalogue/secrets
+  LOCAL_ENV_FILE_DIR=$HOME/.gu/service_catalogue
 
-  LOCAL_ENV_FILE=$LOCAL_ENV_FILE_DIR/.env
+  LOCAL_ENV_FILE=$LOCAL_ENV_FILE_DIR/.env.local
 
   SIZE_THRESHOLD=1
 
@@ -83,7 +83,8 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
 
   echo "Running CloudQuery setup"
 
-  # Check if .env file exists in user's /service_catalogue/secrets/
+  # Check if .env.local file exists in ~/.gu/service_catalogue/
+  echo "Checking to see if you have a .env.local file in $LOCAL_ENV_FILE_DIR"
   if [ -e "$LOCAL_ENV_FILE" ]
   then
     # Get file size in bytes
@@ -92,15 +93,15 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
     # Check if file is empty - don't want to overwrite any existing tokens
     if [ "$FILE_SIZE" -gt "$SIZE_THRESHOLD" ]
     then
-      echo "Local non-empty .env file found in $LOCAL_ENV_FILE_DIR. No changes made"
+      echo "Non-empty .env.local file found in $LOCAL_ENV_FILE_DIR. No changes made"
     else
-      echo "Empty local .env file found in $LOCAL_ENV_FILE_DIR, adding token names"
+      echo "Empty .env.local file found in $LOCAL_ENV_FILE_DIR, adding token names$"
       echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
     fi
   else
-    echo "No local .env file found - creating it in $LOCAL_ENV_FILE_DIR and adding token names"
-    mkdir -p "$HOME"/.gu/service_catalogue/secrets
-    touch -a "$LOCAL_ENV_FILE_DIR"/.env
+    echo "No .env.local file found - creating it in $LOCAL_ENV_FILE_DIR and adding token names"
+    mkdir -p "$HOME"/.gu/service_catalogue
+    touch -a "$LOCAL_ENV_FILE_DIR"/.env.local
     echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
   fi
 
@@ -119,8 +120,6 @@ Visit ${cyan}https://github.com/settings/tokens?type=beta${clear}, and add it to
     echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
 Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
   fi
-
-
 }
 
 check_node_version
