@@ -41,6 +41,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
+	ns1SourceConfig,
 	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
@@ -475,6 +476,22 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
+		const ns1Credentials = new SecretsManager(this, 'ns1-credentials', {
+			secretName: `/${stage}/${stack}/${app}/ns1-credentials`,
+		});
+
+		const ns1Sources: CloudquerySource[] = [
+			{
+				name: 'NS1',
+				description: 'Collecting data from NS1',
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				config: ns1SourceConfig({ tables: ['ns1_*'] }),
+				secrets: {
+					NS1_API_KEY: Secret.fromSecretsManager(ns1Credentials, 'api-key'),
+				},
+			},
+		];
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
@@ -487,6 +504,7 @@ export class ServiceCatalogue extends GuStack {
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
+				...ns1Sources,
 			],
 		});
 

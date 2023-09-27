@@ -5303,6 +5303,634 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceNS1ScheduledEventRule1D618E3C": {
+      "Properties": {
+        "ScheduleExpression": "rate(1 day)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceNS1TaskDefinition56258A70",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceNS1TaskDefinitionEventsRole2D5A948C",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceNS1TaskDefinition56258A70": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+spec:
+  name: guardian-ns1
+  path: ghcr.io/guardian/cq-source-ns1
+  version: v0.0.1
+  registry: docker
+  tables:
+    - ns1_*
+  destinations:
+    - postgresql
+  spec:
+    apiKey: \${NS1_API_KEY}
+' > /source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: github
+  path: cloudquery/postgresql
+  version: v5.0.6
+  migrate_mode: forced
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/cloudquery/cloudquery:3.14.4",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-NS1Container",
+            "Secrets": [
+              {
+                "Name": "NS1_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "ns1credentialsA8DD3B2D",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "TEST",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Options": {
+                "config-file-type": "file",
+                "config-file-value": "/custom.conf",
+                "enable-ecs-log-metadata": "true",
+              },
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+              },
+            },
+            "Name": "CloudquerySource-NS1Firelens",
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceNS1TaskDefinitionExecutionRoleECC80718",
+            "Arn",
+          ],
+        },
+        "Family": "ServiceCatalogueCloudquerySourceNS1TaskDefinitionE32F0EBB",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "NS1",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceNS1TaskDefinitionTaskRole654B2CE7",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "NS1",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceNS1TaskDefinitionEventsRole2D5A948C": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "NS1",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceNS1TaskDefinitionEventsRoleDefaultPolicyE40A5A68": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceNS1TaskDefinition56258A70",
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceNS1TaskDefinitionExecutionRoleECC80718",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceNS1TaskDefinitionTaskRole654B2CE7",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceNS1TaskDefinitionEventsRoleDefaultPolicyE40A5A68",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceNS1TaskDefinitionEventsRole2D5A948C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceNS1TaskDefinitionExecutionRoleDefaultPolicyA99171A1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ns1credentialsA8DD3B2D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceNS1TaskDefinitionExecutionRoleDefaultPolicyA99171A1",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceNS1TaskDefinitionExecutionRoleECC80718",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceNS1TaskDefinitionExecutionRoleECC80718": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "NS1",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceNS1TaskDefinitionTaskRole654B2CE7": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "NS1",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceNS1TaskDefinitionTaskRoleDefaultPolicy7B696A72": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceNS1TaskDefinitionTaskRoleDefaultPolicy7B696A72",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceNS1TaskDefinitionTaskRole654B2CE7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceNS1TaskErrorRule8AEB4F03": {
+      "Properties": {
+        "Description": "Rule for events indicating an ECS task exited due to an error.",
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers": {
+              "exitCode": [
+                1,
+                137,
+                139,
+                255,
+              ],
+            },
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stoppedReason": [
+              "Task CloudquerySource-NS1 exited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceNS1TaskDefinition56258A70",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Ref": "CloudQueryAlertTopicBFD81410",
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
     "CloudquerySourceOrgWideAutoScalingGroupsScheduledEventRuleC637A0C6": {
       "Properties": {
         "ScheduleExpression": "rate(1 day)",
@@ -10858,6 +11486,33 @@ spec:
       "Properties": {
         "GenerateSecretString": {},
         "Name": "/TEST/deploy/service-catalogue/github-credentials",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ns1credentialsA8DD3B2D": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/ns1-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",

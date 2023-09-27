@@ -267,6 +267,32 @@ export function guardianSnykSourceConfig(
 	};
 }
 
+export function ns1SourceConfig(
+	tableConfig: CloudqueryTableConfig,
+): CloudqueryConfig {
+	const { tables, skipTables } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'guardian-ns1',
+			path: 'ghcr.io/guardian/cq-source-ns1',
+			version: `v${Versions.CloudqueryNS1}`,
+			registry: 'docker',
+			tables,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+			spec: {
+				apiKey: '${NS1_API_KEY}',
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
