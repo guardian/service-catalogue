@@ -1,35 +1,3 @@
-/*
- A lot of best practice recommendations and expectations only apply to repos
- that are owned by P&E or are otherwise uncategorised. This is a list of github
- team slugs for teams that sit outside of the P&E department for easy exclusion
- of these teams in queries.
- */
-drop table if exists guardian_non_p_and_e_github_teams;
-
-create table guardian_non_p_and_e_github_teams
-(
-    team_name text PRIMARY KEY
-);
-insert into guardian_non_p_and_e_github_teams (team_name)
-values ('data-and-insight'),
-       ('data-design'),
-       ('data-science'),
-       ('d-i-data-science'),
-       ('enterprise-infrastructure'),
-       ('esd'),
-       ('esd-admin'),
-       ('guardian-design-team'),
-       ('guardian-us-design-team'),
-       ('glabs-au'),
-       ('it-australia'),
-       ('infosec'),
-       ('infosec-admin'),
-       ('interactive-team'),
-       ('interactives-owner-placeholder'),
-       ('interactives-admin'),
-       ('multimedia')
-on conflict (team_name) do nothing;
-
 create or replace view view_repo_ownership as
 select ght.id        as "github_team_id"
      , ght.name      as "github_team_name"
