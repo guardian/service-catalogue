@@ -15828,3 +15828,12 @@ model galaxies_teams_table {
   team_google_chat_space_key String?
   team_primary_github_team   String?
 }
+
+model guardian_production_status {
+  status   String @id
+  priority Int
+}
+
+model guardian_non_p_and_e_github_teams {
+  team_name String @id
+}
