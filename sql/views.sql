@@ -1,22 +1,3 @@
--- The Guardian has six recognised production statuses for repositories.
--- Here they are enumerated and prioritised
-drop table if exists guardian_production_status;
-
-create table guardian_production_status
-(
-    status   text PRIMARY KEY,
-    priority integer NOT NULL
-);
-
-insert into guardian_production_status (status, priority)
-values ('production', 0),
-       ('testing', 1),
-       ('documentation', 2), --no code, but still needs to be up to date
-       ('prototype', 3),
-       ('hackday', 4),
-       ('learning', 5)
-on conflict (status) do nothing;
-
 /*
  A lot of best practice recommendations and expectations only apply to repos
  that are owned by P&E or are otherwise uncategorised. This is a list of github
