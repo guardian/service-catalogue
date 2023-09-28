@@ -1,11 +1,15 @@
 {
-  "name": "branch-protector",
-  "version": "1.0.0",
-  "description": "This lambda applies branch protection to repos that are passed to it via an SQS topic",
-  "main": "index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "guardian",
-  "license": "ISC"
+	"name": "branch-protector",
+	"version": "1.0.0",
+	"description": "A lambda which applies branch protection to repos that are passed to it via an SQS topic",
+	"main": "index.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "ts-node src/run-locally.ts"
+	},
+	"author": "guardian",
+	"dependencies": {
+		"@octokit/types": "^12.0.0",
+		"octokit": "^3.1.1"
+	}
 }
