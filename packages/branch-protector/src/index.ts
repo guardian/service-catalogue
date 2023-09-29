@@ -1,4 +1,5 @@
 import type { Endpoints } from '@octokit/types';
+import fetch from 'node-fetch';
 import { Octokit } from 'octokit';
 import type { UpdateBranchProtectionEvent } from './model';
 
@@ -69,7 +70,10 @@ async function isBranchProtected(
 /**
  * Sends asynchronous message into Google Chat
  */
-export function webhook(repo: string, googleChatUrl: string): void {
+export async function webhook(
+	repo: string,
+	googleChatUrl: string,
+): Promise<void> {
 	//TODO: when we have the initial warning message set up, we can pass the thread key through to reply to the initial message
 	const data: string = JSON.stringify({
 		text: `${repo} branch protection updated.\nThis message was sent by repocop, part of the service-catalogue.`,
@@ -78,7 +82,15 @@ export function webhook(repo: string, googleChatUrl: string): void {
 
 	//TODO do not log full URL in production
 	console.log(`Sending message to ${googleChatUrl} with data ${data}`);
-	console.log(data);
+
+	const resp = await fetch(googleChatUrl, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8',
+		},
+		body: data,
+	});
+	console.log(resp.status);
 }
 
 export async function main(event: UpdateBranchProtectionEvent) {
@@ -99,11 +111,11 @@ export async function main(event: UpdateBranchProtectionEvent) {
 	console.log(`Is ${repo} protected? ${isProtected.toString()}`);
 	if (isProtected) {
 		console.log(`${repo}'s default branch is protected. No action required`);
-		webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO remove this when testing is finished
+		// await webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO remove this when testing is finished
 	} else {
 		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
-		webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO get key from parameter store irl
+		// await webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO get key from parameter store irl
 	}
 }
