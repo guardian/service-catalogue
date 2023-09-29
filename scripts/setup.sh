@@ -123,9 +123,31 @@ Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, 
   fi
 }
 
-setup_hook() {
+setup_hooks() {
+  echo "Setting up pre-commit hook"
+  PRE_COMMIT_TEXT='#!/usr/bin/env bash
+red="\033[0;31m"
+clear="\033[0m"
+yellow="\033[1;33m"
+#check for staged changes in .env and ask user to confirm
+if [[ $(git diff --cached --name-only | grep .env) ]]; then
+  echo -e "${red}You have staged changes in .env"
+  echo -e "${yellow}Are you sure you want to commit these changes?${clear} [y/N] "
+  exec < /dev/tty
+  read REPLY
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo -e \""${red}Aborting commit${clear}"\"
+    exit 1
+  fi
+fi'
+
+  PRE_COMMIT="${ROOT_DIR}/.git/hooks/pre-commit"
+  echo "$PRE_COMMIT_TEXT" > "$PRE_COMMIT"
+  chmod +x "$PRE_COMMIT"
+
   echo "Setting up pre-push hook"
   HOOK_TEXT="#!/usr/bin/env bash
+
 echo 'Running pre-push hook'
 if [ -w ${ROOT_DIR}/.env ]; then
 echo 'Removing write permissions from .env' file && chmod -w .env
@@ -141,4 +163,4 @@ check_node_version
 install_dependencies
 check_credentials deployTools
 setup_cloudquery
-setup_hook
+setup_hooks
