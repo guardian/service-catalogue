@@ -9,7 +9,7 @@ yellow='\033[1;33m'
 cyan='\033[0;36m'
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT_DIR=${DIR}/..
+ROOT_DIR=$(realpath "${DIR}/..")
 
 check_node_version() {
   runningNodeVersion=$(node -v)
@@ -102,6 +102,7 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
     echo "No .env.local file found - creating it in $LOCAL_ENV_FILE_DIR and adding token names"
     mkdir -p "$HOME"/.gu/service_catalogue
     touch -a "$LOCAL_ENV_FILE_DIR"/.env.local
+    chmod +w "$LOCAL_ENV_FILE_DIR"/.env.local
     echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
   fi
 
@@ -122,7 +123,22 @@ Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, 
   fi
 }
 
+setup_hook() {
+  echo "Setting up pre-push hook"
+  HOOK_TEXT="#!/usr/bin/env bash
+echo 'Running pre-push hook'
+if [ -w ${ROOT_DIR}/.env ]; then
+echo 'Removing write permissions from .env' file && chmod -w .env
+else echo '.env file not writeable'
+fi"
+
+PRE_PUSH="${ROOT_DIR}/.git/hooks/pre-push"
+echo "$HOOK_TEXT" > "$PRE_PUSH"
+chmod +x "$PRE_PUSH"
+}
+
 check_node_version
 install_dependencies
 check_credentials deployTools
 setup_cloudquery
+setup_hook
