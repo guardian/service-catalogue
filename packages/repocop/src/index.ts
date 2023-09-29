@@ -2,13 +2,14 @@ import { PrismaClient } from '@prisma/client';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { getConfig } from './config';
 import {
+	getRepoOwnership,
 	getRepositoryBranches,
 	getRepositoryTeams,
 	getUnarchivedRepositories,
 } from './query';
 import { repositoryRuleEvaluation } from './rules/repository';
 
-async function evaluateRepositories(
+export async function evaluateRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<repocop_github_repository_rules[]> {
@@ -44,6 +45,9 @@ export async function main() {
 			],
 		}),
 	});
+
+	// We're not doing anything with this data, this is just to demonstrate we can interact with SQL views using Prisma.
+	await getRepoOwnership(prisma);
 
 	const data = await evaluateRepositories(
 		prisma,
