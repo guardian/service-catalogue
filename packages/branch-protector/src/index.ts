@@ -52,7 +52,7 @@ async function getDefaultBranchName(
 	return data.data.default_branch;
 }
 
-async function isMainBranchProtected(
+async function isBranchProtected(
 	octokit: Octokit,
 	owner: string,
 	repo: string,
@@ -69,34 +69,27 @@ async function isMainBranchProtected(
 /**
  * Sends asynchronous message into Google Chat
  */
-export function webhook(repo: string, spaceId: string, apiKey: string): void {
+export function webhook(repo: string, googleChatUrl: string): void {
 	//TODO: when we have the initial warning message set up, we can pass the thread key through to reply to the initial message
-	const webhookURL = `https://chat.googleapis.com/v1/spaces/${spaceId}/messages?key=${apiKey}`;
-
 	const data: string = JSON.stringify({
 		text: `${repo} branch protection updated.\nThis message was sent by repocop, part of the service-catalogue.`,
 		formattedText: `${repo} branch protection updated.\nThis message was sent by repocop, part of the [service-catalogue](https://github.com/guardian/service-catalogue).`,
 	});
 
 	//TODO do not log full URL in production
-	console.log(`Sending message to ${webhookURL} with data ${data}`);
+	console.log(`Sending message to ${googleChatUrl} with data ${data}`);
 	console.log(data);
-}
-
-function getUniqueWorkspaceIds(event: UpdateBranchProtectionEvent): string[] {
-	const workspaceIds: string[] = event.teamContacts.map(
-		(teamContact) => teamContact.workspaceId,
-	);
-	return [...new Set(workspaceIds)];
 }
 
 export async function main(event: UpdateBranchProtectionEvent) {
 	const octokit: Octokit = new Octokit({ auth: authToken });
 
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const repo = event.fullName.split('/')[1]!;
 	const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
-	const isProtected = await isMainBranchProtected(
+	const isProtected = await isBranchProtected(
 		octokit,
 		owner,
 		repo,
@@ -105,15 +98,12 @@ export async function main(event: UpdateBranchProtectionEvent) {
 
 	console.log(`Is ${repo} protected? ${isProtected.toString()}`);
 	if (isProtected) {
-		console.log(`${repo}'s main branch is protected. No action required`);
+		console.log(`${repo}'s default branch is protected. No action required`);
+		webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO remove this when testing is finished
 	} else {
 		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
-		//get only workspace ids from input event
-		const uniqueWorkspaceIds = getUniqueWorkspaceIds(event);
-		uniqueWorkspaceIds.forEach((workspaceId) => {
-			webhook(repo, workspaceId, getEnvOrThrow('GOOGLE_CHAT_API_KEY')); //TODO get key from parameter store irl
-		});
+		webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO get key from parameter store irl
 	}
 }
