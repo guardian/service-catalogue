@@ -9,7 +9,7 @@ yellow='\033[1;33m'
 cyan='\033[0;36m'
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT_DIR=${DIR}/..
+ROOT_DIR=$(realpath "${DIR}/..")
 
 check_node_version() {
   runningNodeVersion=$(node -v)
@@ -122,6 +122,14 @@ Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, 
   fi
 }
 
+setup_hook() {
+  HOOK_NAME=$1
+  echo "Setting up $HOOK_NAME hook"
+  cp "$ROOT_DIR/.hooks/$HOOK_NAME" "$ROOT_DIR/.git/hooks/$HOOK_NAME"
+  chmod +x "$ROOT_DIR/.git/hooks/$HOOK_NAME"
+}
+
+setup_hook pre-commit
 check_node_version
 install_dependencies
 check_credentials deployTools
