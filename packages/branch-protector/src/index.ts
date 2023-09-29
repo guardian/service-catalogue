@@ -64,25 +64,25 @@ async function isMainBranchProtected(
     return branchData.data.protected;
 }
 
-export async function main() {
+export async function main(event: updateProtectionEvent) {
     const octokit: Octokit = new Octokit({auth: authToken});
 
-    const exampleRepo = 'guardian/service-catalogue';
-
-    const owner = exampleRepo.split('/')[0]!;
-    const repo = exampleRepo.split('/')[1]!;
+    const owner = event.full_name.split('/')[0]!;
+    const repo = event.full_name.split('/')[1]!;
     const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
     const isProtected = await isMainBranchProtected(octokit, owner, repo, defaultBranchName);
-    console.log(`Is ${exampleRepo} protected? ${isProtected.toString()}`);
+    console.log(`Is ${repo} protected? ${isProtected.toString()}`);
     if (isProtected) {
-        console.log(`${exampleRepo}'s main branch is protected. No action required`)
+        console.log(`${repo}'s main branch is protected. No action required`)
+        return false;
     } else {
-        console.log(`Updating ${exampleRepo} branch protection`)
+        console.log(`Updating ${repo} branch protection`)
         await updateBranchProtection(octokit,
             owner,
             repo,
             defaultBranchName,
         );
-        console.log(`Update of ${exampleRepo} successful`)
+        console.log(`Update of ${repo} successful`)
+        return true;
     }
 }

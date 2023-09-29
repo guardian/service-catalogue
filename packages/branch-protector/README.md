@@ -7,8 +7,8 @@ Input looks like this:
 ```json
 {
   "full_name": "guardian/repo1",
-  "admin_slugs": ["team1, team2"],
-  "team_contact": "some email or chat id"
+  "admin_slug": "team1",
+  "team_contact": "SomeChatId"
 }
 ```
 
