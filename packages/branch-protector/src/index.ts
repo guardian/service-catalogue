@@ -1,5 +1,5 @@
+import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { Endpoints } from '@octokit/types';
-import fetch from 'node-fetch';
 import { Octokit } from 'octokit';
 import type { UpdateBranchProtectionEvent } from './model';
 
@@ -111,11 +111,22 @@ export async function main(event: UpdateBranchProtectionEvent) {
 	console.log(`Is ${repo} protected? ${isProtected.toString()}`);
 	if (isProtected) {
 		console.log(`${repo}'s default branch is protected. No action required`);
-		// await webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO remove this when testing is finished
+
+		const client = new Anghammarad();
+		await client.notify({
+			subject: 'Hello',
+			message:
+				"Hi there, something has happened which we'd like to tell you about",
+			actions: [],
+			target: { Stack: 'deploy' },
+			channel: RequestedChannel.PreferHangouts,
+			sourceSystem: 'branch-protector',
+			topicArn: getEnvOrThrow('TOPIC'),
+		});
 	} else {
 		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
-		// await webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO get key from parameter store irl
+		await webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO get key from parameter store irl
 	}
 }
