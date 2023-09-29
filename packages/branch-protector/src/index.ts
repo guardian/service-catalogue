@@ -68,17 +68,19 @@ async function isMainBranchProtected(
 
 /**
  * Sends asynchronous message into Google Chat
- * @return{obj} response
  */
 export function webhook(repo: string, spaceId: string, apiKey: string): void {
 	//TODO: when we have the initial warning message set up, we can pass the thread key through to reply to the initial message
 	const webhookURL = `https://chat.googleapis.com/v1/spaces/${spaceId}/messages?key=${apiKey}`;
 
 	const data: string = JSON.stringify({
-		text: `${repo} branch protection updated`,
+		text: `${repo} branch protection updated.\nThis message was sent by repocop, part of the service-catalogue.`,
+		formattedText: `${repo} branch protection updated.\nThis message was sent by repocop, part of the [service-catalogue](https://github.com/guardian/service-catalogue).`,
 	});
 
+	//TODO do not log full URL in production
 	console.log(`Sending message to ${webhookURL} with data ${data}`);
+	console.log(data);
 }
 
 function getUniqueWorkspaceIds(event: UpdateBranchProtectionEvent): string[] {
