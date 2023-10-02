@@ -125,7 +125,7 @@ export async function main(event: UpdateBranchProtectionEvent) {
 			target: { Stack: 'deploy' },
 			channel: RequestedChannel.PreferHangouts,
 			sourceSystem: 'branch-protector',
-			topicArn: getEnvOrThrow('TOPIC'),
+			topicArn: config.anghammaradSnsTopic,
 		});
 	} else {
 		console.log(`Updating ${repo} branch protection`);
