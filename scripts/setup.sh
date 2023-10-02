@@ -131,7 +131,7 @@ clear="\033[0m"
 yellow="\033[1;33m"
 #check for staged changes in .env and ask user to confirm
 if [[ $(git diff --cached --name-only | grep .env) ]]; then
-  echo -e "${red}You have staged changes in .env"
+  echo -e "${red}You have staged changes in the original .env file. This might include secrets you do not intend to commit."
   echo -e "${yellow}Are you sure you want to commit these changes?${clear} [y/N] "
   exec < /dev/tty
   read REPLY
@@ -151,7 +151,7 @@ fi'
 echo 'Running pre-push hook'
 if [ -w ${ROOT_DIR}/.env ]; then
 echo 'Removing write permissions from .env' file && chmod -w .env
-else echo '.env file not writeable'
+else echo '.env file not writeable ✅'
 fi"
 
 PRE_PUSH="${ROOT_DIR}/.git/hooks/pre-push"
