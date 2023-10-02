@@ -1,8 +1,9 @@
+import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { Endpoints } from '@octokit/types';
 import { Octokit } from 'octokit';
+import type { Config } from './config';
 import type { UpdateBranchProtectionEvent } from './model';
-import { Config } from './config';
 
 //TODO: move to a common place
 export function getEnvOrThrow(key: string): string {
@@ -92,11 +93,25 @@ export async function webhook(
 	console.log(resp.status);
 }
 
+async function getAnghammaradTopic(region: string): Promise<string> {
+	const ssmClient = new SSMClient({ region });
+	const ssm = new SSM(ssmClient);
+	const topic = await ssm.getParameter({
+		Name: '/account/services/anghammarad.topic.arn',
+		WithDecryption: true,
+	});
+
+	if (topic.Parameter === undefined) {
+		throw new Error('Topic not found');
+	}
+	return topic.Parameter.Value!;
+}
+
 export async function main(event: UpdateBranchProtectionEvent) {
 	const config: Config = {
 		stage: process.env['STAGE'] ?? 'DEV',
 		githubAccessToken: getEnvOrThrow('GITHUB_ACCESS_TOKEN'),
-		anghammaradSnsTopic: getEnvOrThrow('TOPIC'),
+		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
 	};
 	const octokit: Octokit = new Octokit({ auth: config.githubAccessToken });
 
