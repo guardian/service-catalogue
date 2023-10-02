@@ -2,6 +2,7 @@ import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { Endpoints } from '@octokit/types';
 import { Octokit } from 'octokit';
 import type { UpdateBranchProtectionEvent } from './model';
+import { Config } from './config';
 
 //TODO: move to a common place
 export function getEnvOrThrow(key: string): string {
@@ -11,8 +12,6 @@ export function getEnvOrThrow(key: string): string {
 	}
 	return value;
 }
-
-const authToken: string = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
 
 export type UpdateBranchProtectionParams =
 	Endpoints['PUT /repos/{owner}/{repo}/branches/{branch}/protection']['parameters'];
@@ -94,7 +93,12 @@ export async function webhook(
 }
 
 export async function main(event: UpdateBranchProtectionEvent) {
-	const octokit: Octokit = new Octokit({ auth: authToken });
+	const config: Config = {
+		stage: process.env['STAGE'] ?? 'DEV',
+		githubAccessToken: getEnvOrThrow('GITHUB_ACCESS_TOKEN'),
+		anghammaradSnsTopic: getEnvOrThrow('TOPIC'),
+	};
+	const octokit: Octokit = new Octokit({ auth: config.githubAccessToken });
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
