@@ -107,6 +107,19 @@ async function getAnghammaradTopic(region: string): Promise<string> {
 	return topic.Parameter.Value!;
 }
 
+async function notify(fullRepoName: string, topicArn: string) {
+	const client = new Anghammarad();
+	await client.notify({
+		subject: 'Hello',
+		message: `Branch protection has been applied to ${fullRepoName}`,
+		actions: [], //TODO: add a link to the repo prompting users to check the branch protection
+		target: { Stack: 'deploy' }, //TODO use a GitHubTeamSlug target when new version of anghammarad is released. For now, send all messages to DevX
+		channel: RequestedChannel.PreferHangouts,
+		sourceSystem: 'branch-protector',
+		topicArn: topicArn,
+	});
+}
+
 export async function main(event: UpdateBranchProtectionEvent) {
 	const config: Config = {
 		stage: process.env['STAGE'] ?? 'DEV',
@@ -130,22 +143,10 @@ export async function main(event: UpdateBranchProtectionEvent) {
 	console.log(`Is ${repo} protected? ${isProtected.toString()}`);
 	if (isProtected) {
 		console.log(`${repo}'s default branch is protected. No action required`);
-
-		const client = new Anghammarad();
-		await client.notify({
-			subject: 'Hello',
-			message:
-				"Hi there, something has happened which we'd like to tell you about",
-			actions: [],
-			target: { Stack: 'deploy' },
-			channel: RequestedChannel.PreferHangouts,
-			sourceSystem: 'branch-protector',
-			topicArn: config.anghammaradSnsTopic,
-		});
 	} else {
 		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
-		await webhook(repo, getEnvOrThrow('GOOGLE_CHAT_URL')); //TODO get key from parameter store irl
+		await notify(repo, config.anghammaradSnsTopic);
 	}
 }
