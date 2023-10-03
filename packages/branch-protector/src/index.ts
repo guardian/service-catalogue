@@ -128,12 +128,14 @@ export async function main(event: UpdateBranchProtectionEvent) {
 	};
 	const octokit: Octokit = new Octokit({ auth: config.githubAccessToken });
 
-	const [org, repo] = event.fullName.split('/');
-
-	const defaultBranchName = await getDefaultBranchName(org, repo, octokit);
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
+	const owner = event.fullName.split('/')[0]!;
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
+	const repo = event.fullName.split('/')[1]!;
+	const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
 	const isProtected = await isBranchProtected(
 		octokit,
-		org,
+		owner,
 		repo,
 		defaultBranchName,
 	);
@@ -143,7 +145,7 @@ export async function main(event: UpdateBranchProtectionEvent) {
 		console.log(`${repo}'s default branch is protected. No action required`);
 	} else {
 		console.log(`Updating ${repo} branch protection`);
-		await updateBranchProtection(octokit, org, repo, defaultBranchName);
+		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
 		await notify(repo, config.anghammaradSnsTopic);
 	}
