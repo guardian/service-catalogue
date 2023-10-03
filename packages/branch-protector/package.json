@@ -1,0 +1,18 @@
+{
+	"name": "branch-protector",
+	"version": "1.0.0",
+	"description": "A lambda which applies branch protection to repos that are passed to it via an SQS topic",
+	"main": "index.ts",
+	"scripts": {
+		"test": "echo \"No test specified\" && exit 0",
+		"start": "ts-node src/run-locally.ts"
+	},
+	"author": "guardian",
+	"dependencies": {
+		"@aws-sdk/client-ssm": "^3.418.0",
+		"@aws-sdk/types": "^3.418.0",
+		"@guardian/anghammarad": "^1.0.2",
+		"@octokit/types": "^12.0.0",
+		"octokit": "^3.1.1"
+	}
+}
