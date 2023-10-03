@@ -3,6 +3,7 @@ import type {
 	github_repository_branches,
 	Prisma,
 	PrismaClient,
+	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
 
@@ -73,6 +74,16 @@ export async function getRepositoryTeams(
 	console.log(
 		`Found ${data.length} teams with access to repository ${repoIdentifier}`,
 	);
+
+	return data;
+}
+
+export async function getRepoOwnership(
+	client: PrismaClient,
+): Promise<view_repo_ownership[]> {
+	const data = await client.view_repo_ownership.findMany();
+
+	console.log(`Found ${data.length} repo ownership records.`);
 
 	return data;
 }
