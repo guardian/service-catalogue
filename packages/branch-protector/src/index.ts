@@ -1,5 +1,6 @@
 import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
+import { createAppAuth } from '@octokit/auth-app';
 import type { Endpoints } from '@octokit/types';
 import { Octokit } from 'octokit';
 import type { Config } from './config';
@@ -130,7 +131,23 @@ export async function main(event: UpdateBranchProtectionEvent) {
 		githubAccessToken: getEnvOrThrow('GITHUB_ACCESS_TOKEN'),
 		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
 	};
-	const octokit: Octokit = new Octokit({ auth: config.githubAccessToken });
+
+	const auth = createAppAuth({
+		appId: getEnvOrThrow('APP_ID'),
+		privateKey: getEnvOrThrow('PRIVATE_KEY'),
+		clientId: getEnvOrThrow('CLIENT_ID'),
+		clientSecret: getEnvOrThrow('CLIENT_SECRET'),
+	});
+
+	// Retrieve installation access token
+	const installationAuthentication = await auth({
+		type: 'installation',
+		installationId: getEnvOrThrow('INSTALLATION_ID'),
+	});
+
+	const octokit: Octokit = new Octokit({
+		auth: installationAuthentication.token,
+	});
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
