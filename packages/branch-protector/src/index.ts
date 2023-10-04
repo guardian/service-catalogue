@@ -111,7 +111,12 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 	await client.notify({
 		subject: 'Hello',
 		message: `Branch protection has been applied to ${fullRepoName}`,
-		actions: [], //TODO: add a link to the repo prompting users to check the branch protection
+		actions: [
+			{
+				cta: 'Check branch protections here',
+				url: `https://github.com/${fullRepoName}/settings/branches`,
+			},
+		],
 		target: { GithubTeamSlug: slug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: 'branch-protector',
@@ -147,7 +152,7 @@ export async function main(event: UpdateBranchProtectionEvent) {
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
 		for (const slug of event.teamNameSlugs) {
-			await notify(repo, config.anghammaradSnsTopic, slug);
+			await notify(event.fullName, config.anghammaradSnsTopic, slug);
 		}
 		console.log(`Notified teams`);
 	}
