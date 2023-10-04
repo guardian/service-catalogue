@@ -128,21 +128,23 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 export async function main(event: UpdateBranchProtectionEvent) {
 	const config: Config = {
 		stage: process.env['STAGE'] ?? 'DEV',
-		githubAccessToken: getEnvOrThrow('GITHUB_ACCESS_TOKEN'),
+		githubAppConfig: {
+			strategyOptions: {
+				appId: getEnvOrThrow('APP_ID'),
+				privateKey: getEnvOrThrow('PRIVATE_KEY'),
+				clientId: getEnvOrThrow('CLIENT_ID'),
+				clientSecret: getEnvOrThrow('CLIENT_SECRET'),
+			},
+			installationId: getEnvOrThrow('INSTALLATION_ID'),
+		},
 		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
 	};
-
-	const auth = createAppAuth({
-		appId: getEnvOrThrow('APP_ID'),
-		privateKey: getEnvOrThrow('PRIVATE_KEY'),
-		clientId: getEnvOrThrow('CLIENT_ID'),
-		clientSecret: getEnvOrThrow('CLIENT_SECRET'),
-	});
+	const auth = createAppAuth(config.githubAppConfig.strategyOptions);
 
 	// Retrieve installation access token
 	const installationAuthentication = await auth({
 		type: 'installation',
-		installationId: getEnvOrThrow('INSTALLATION_ID'),
+		installationId: config.githubAppConfig.installationId,
 	});
 
 	const octokit: Octokit = new Octokit({

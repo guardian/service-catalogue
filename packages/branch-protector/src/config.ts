@@ -1,3 +1,5 @@
+import type { StrategyOptions } from '@octokit/auth-app';
+
 export interface Config {
 	/**
 	 * The stage of the application, e.g. DEV, CODE, PROD.
@@ -5,11 +7,14 @@ export interface Config {
 	stage: string;
 
 	/**
-	 * Github Personal Access Token.
+	 * Auth configuration for the GitHub App.
 	 *
-	 * If the `GITHUB_ACCESS_TOKENB` environment variable is not set, this won't work.
+	 * TODO: put in parameter store/secrets manager
 	 */
-	githubAccessToken: string;
+	githubAppConfig: {
+		strategyOptions: StrategyOptions;
+		installationId: string | number;
+	};
 
 	/**
 	 * SNS topic to use for Anghammarad.
