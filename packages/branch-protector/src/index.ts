@@ -94,11 +94,10 @@ export async function webhook(
 }
 
 async function getAnghammaradTopic(region: string): Promise<string> {
-	const ssmClient = new SSMClient({ region });
+	const ssmClient = new SSMClient({ region: region });
 	const ssm = new SSM(ssmClient);
 	const topic = await ssm.getParameter({
 		Name: '/account/services/anghammarad.topic.arn',
-		WithDecryption: true,
 	});
 
 	if (topic.Parameter === undefined) {
@@ -107,13 +106,13 @@ async function getAnghammaradTopic(region: string): Promise<string> {
 	return topic.Parameter.Value!;
 }
 
-async function notify(fullRepoName: string, topicArn: string) {
+async function notify(fullRepoName: string, topicArn: string, slug: string) {
 	const client = new Anghammarad();
 	await client.notify({
 		subject: 'Hello',
 		message: `Branch protection has been applied to ${fullRepoName}`,
 		actions: [], //TODO: add a link to the repo prompting users to check the branch protection
-		target: { Stack: 'deploy' }, //TODO use a GitHubTeamSlug target when new version of anghammarad is released. For now, send all messages to DevX
+		target: { GithubTeamSlug: slug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: 'branch-protector',
 		topicArn: topicArn,
@@ -147,6 +146,9 @@ export async function main(event: UpdateBranchProtectionEvent) {
 		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Update of ${repo} successful`);
-		await notify(repo, config.anghammaradSnsTopic);
+		for (const slug of event.teamNameSlugs) {
+			await notify(repo, config.anghammaradSnsTopic, slug);
+		}
+		console.log(`Notified teams`);
 	}
 }
