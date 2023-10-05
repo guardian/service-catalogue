@@ -9,5 +9,6 @@ echo -e "${yellow}Removing write permissions from .env and committing change${cl
 chmod -w .env
 git add .env
 git commit -m "Remove write permissions from .env. This action was performed by a pre-push hook."
+git push
 else echo '.env file not writeable ✅'
 fi
