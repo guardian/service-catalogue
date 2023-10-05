@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+clear="\033[0m"
+yellow="\033[1;33m"
+
+echo 'Running pre-push hook'
+
+if [ -w .env ]; then
+echo -e "${yellow}Removing write permissions from .env and committing change${clear}"
+chmod -w .env
+git add .env
+git commit -m "Remove write permissions from .env. This action was performed by a pre-push hook."
+else echo '.env file not writeable ✅'
+fi
