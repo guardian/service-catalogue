@@ -13,6 +13,16 @@ migrateDEV() {
 }
 
 migrateCODE() {
+
+  allSecrets=$(aws secretsmanager list-secrets --profile deployTools --region eu-west-1 | jq '.SecretList')
+  secret_id=$(jq -r '.[] | select(.Tags[] as $t | any($t.Key=="Stack" and $t.Value=="deploy")) | select(.Tags[] as $t | any($t.Key=="Stage" and $t.Value=="CODE")) | select(.Tags[] as $t | any($t.Key=="App" and $t.Value=="service-catalogue")) | select(.Name | test("PostgresInstance")) | .Name' <<< "$allSecrets")
+  dbSecretJson=$(aws secretsmanager get-secret-value --secret-id "$secret_id" --profile deployTools --region eu-west-1 | jq -c '[.SecretString | fromjson]')
+  db_username=$(jq -r '.[] | .username' <<< "$dbSecretJson")
+  db_password=$(jq -r '.[] | .password' <<< "$dbSecretJson")
+  db_host=$(jq -r '.[] | .host' <<< "$dbSecretJson")
+  db_port=$(jq -r '.[] | .port' <<< "$dbSecretJson")
+
+  export DATABASE_URL="postgresql://$db_username:$db_password@$db_host:$db_port/postgres"
   echo "Migrating CODE"
 }
 
