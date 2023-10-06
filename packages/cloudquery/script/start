@@ -20,8 +20,8 @@ else
   echo "AWS credentials are valid"
 fi
 
-if curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1 >/dev/null; then
-  docker compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d
+if (docker info) 2>&1 >/dev/null; then
+  docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d
 else
   echo "Docker is not running. Please start Docker."
   exit 1
