@@ -2,7 +2,25 @@
 
 set -e
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR="${DIR}/.."
+ROOT_DIR=$(realpath "${DIR}/..")
+
+env_check() {
+  clear="\033[0m"
+  red='\033[0;31m'
+  yellow="\033[1;33m"
+
+  ENV_FILE="${ROOT_DIR}/.env"
+  echo "${ENV_FILE}"
+
+  if [ -w "${ENV_FILE}" ]; then
+      echo -e "${red='\033[0;31m'}Error: .env file is writeable ❌"
+      echo -e "Please run ${yellow}'chmod -w .env'${red} to make it read-only${clear}"
+      exit 1
+  else echo '.env file not writeable ✅'
+  fi
+}
+
+env_check
 
 npm ci
 npm run typecheck
