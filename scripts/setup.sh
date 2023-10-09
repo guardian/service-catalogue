@@ -102,7 +102,7 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
     # Check if file is empty - don't want to overwrite any existing tokens
     if [ "$FILE_SIZE" -gt "$SIZE_THRESHOLD" ]
     then
-      echo "Detected env.local. No changes made."
+      echo "Detected non-empty env.local. No changes made."
     else
       echo "Empty .env.local file found in $LOCAL_ENV_FILE_DIR, adding token names$"
       echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
