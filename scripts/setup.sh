@@ -10,8 +10,15 @@ cyan='\033[0;36m'
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR=$(realpath "${DIR}/..")
+STEP_COUNT=0
+
+step(){
+  ((STEP_COUNT++))
+  echo -e "${cyan}Step ${STEP_COUNT}${clear}: $1"
+}
 
 check_node_version() {
+  step "Checking node version"
   runningNodeVersion=$(node -v)
   requiredNodeVersion=$(cat "$ROOT_DIR/.nvmrc")
 
@@ -25,6 +32,7 @@ check_node_version() {
 }
 
 setup_node_env() {
+  step "Setting up node environment"
   echo "Attempting to switch node versions for you..."
   if command -v fnm &> /dev/null
   then
@@ -42,12 +50,13 @@ setup_node_env() {
 }
 
 install_dependencies() {
+  step "Installing dependencies"
   npm install --silent
 }
 
 check_credentials() {
+  step "Checking AWS credentials"
   PROFILE=$1
-  echo "Checking AWS credentials"
   STATUS=$(aws sts get-caller-identity --profile "$PROFILE" 2>&1 || true)
   if [[ ${STATUS} =~ (ExpiredToken) ]]; then
     echo -e "${red}Credentials for the ${yellow}$PROFILE${red} profile have expired${clear}. Please fetch new credentials and rerun the script."
@@ -61,7 +70,7 @@ check_credentials() {
 }
 
 setup_cloudquery() {
-
+  step "Setting up CloudQuery"
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
   LOCAL_ENV_FILE_DIR=$HOME/.gu/service_catalogue
@@ -84,7 +93,7 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
   echo "Running CloudQuery setup"
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/
-  echo "Checking to see if you have a .env.local file in $LOCAL_ENV_FILE_DIR"
+  echo "Checking for .env.local file in $LOCAL_ENV_FILE_DIR"
   if [ -e "$LOCAL_ENV_FILE" ]
   then
     # Get file size in bytes
@@ -93,7 +102,7 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
     # Check if file is empty - don't want to overwrite any existing tokens
     if [ "$FILE_SIZE" -gt "$SIZE_THRESHOLD" ]
     then
-      echo "Non-empty .env.local file found in $LOCAL_ENV_FILE_DIR. No changes made"
+      echo "Detected non-empty env.local. No changes made."
     else
       echo "Empty .env.local file found in $LOCAL_ENV_FILE_DIR, adding token names$"
       echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
@@ -124,7 +133,7 @@ Visit ${cyan}https://docs.snyk.io/snyk-api-info/authentication-for-api${clear}, 
 
 setup_hook() {
   HOOK_NAME=$1
-  echo "Setting up $HOOK_NAME hook"
+  step "Setting up $HOOK_NAME hook"
   cp "$ROOT_DIR/.hooks/$HOOK_NAME" "$ROOT_DIR/.git/hooks/$HOOK_NAME"
   chmod +x "$ROOT_DIR/.git/hooks/$HOOK_NAME"
 }
@@ -134,3 +143,5 @@ check_node_version
 install_dependencies
 check_credentials deployTools
 setup_cloudquery
+
+echo -e "${cyan}Setup complete${clear} ✅"
