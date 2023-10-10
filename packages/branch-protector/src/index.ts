@@ -1,3 +1,4 @@
+import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
@@ -126,16 +127,39 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 }
 
 export async function main(event: UpdateBranchProtectionEvent) {
+	// get secret by name
+	const secretsManager = new SecretsManager();
+
+	const secret = await secretsManager.getSecretValue({
+		SecretId:
+			'/CODE/deploy/service-catalogue/branch-protector-github-app-secret',
+	});
+
+	const secretString = secret.SecretString ?? '';
+
+	interface SecretObj {
+		appId: string;
+		base64PrivateKey: string;
+		clientId: string;
+		clientSecret: string;
+		installationId: string;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- coming from AWS
+	const secretJson: SecretObj = JSON.parse(secretString);
+
+	const privateKey = atob(secretJson.base64PrivateKey);
+
 	const config: Config = {
 		stage: process.env['STAGE'] ?? 'DEV',
 		githubAppConfig: {
 			strategyOptions: {
-				appId: getEnvOrThrow('APP_ID'),
-				privateKey: getEnvOrThrow('PRIVATE_KEY'),
-				clientId: getEnvOrThrow('CLIENT_ID'),
-				clientSecret: getEnvOrThrow('CLIENT_SECRET'),
+				appId: secretJson.appId,
+				privateKey,
+				clientId: secretJson.clientId,
+				clientSecret: secretJson.clientId,
 			},
-			installationId: getEnvOrThrow('INSTALLATION_ID'),
+			installationId: secretJson.installationId,
 		},
 		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
 	};
