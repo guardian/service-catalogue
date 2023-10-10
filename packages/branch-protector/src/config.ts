@@ -22,14 +22,6 @@ export interface Config {
 	anghammaradSnsTopic: string;
 }
 
-interface GithubAppSecret {
-	appId: string;
-	base64PrivateKey: string;
-	clientId: string;
-	clientSecret: string;
-	installationId: string;
-}
-
 async function getAnghammaradTopic(region: string): Promise<string> {
 	const ssmClient = new SSMClient({ region: region });
 	const ssm = new SSM(ssmClient);
@@ -43,6 +35,14 @@ async function getAnghammaradTopic(region: string): Promise<string> {
 	return topic.Parameter.Value!;
 }
 
+interface GithubAppSecret {
+	appId: string;
+	base64PrivateKey: string;
+	clientId: string;
+	clientSecret: string;
+	installationId: string;
+}
+
 async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
 	const secretsManager = new SecretsManager();
 
@@ -51,7 +51,7 @@ async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
 			'/CODE/deploy/service-catalogue/branch-protector-github-app-secret',
 	});
 
-	const secretJson = JSON.parse(secret.SecretString!);
+	const secretJson = JSON.parse(secret.SecretString ?? '{}') as GithubAppSecret;
 	return secretJson;
 }
 
