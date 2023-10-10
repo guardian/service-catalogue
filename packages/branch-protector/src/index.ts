@@ -1,5 +1,3 @@
-import { SecretsManager } from '@aws-sdk/client-secrets-manager';
-import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { Endpoints } from '@octokit/types';
@@ -25,6 +23,7 @@ export async function updateBranchProtection(
 	repo: string,
 	branch: string,
 ) {
+	console.log(`Updating ${repo} branch protection`);
 	//https://github.com/guardian/recommendations/blob/main/github.md#branch-protection
 	const branchProtectionParams: UpdateBranchProtectionParams = {
 		owner: owner,
@@ -44,6 +43,7 @@ export async function updateBranchProtection(
 		allow_deletions: false,
 	};
 	await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
+	console.log(`Update of ${repo} successful`);
 }
 
 async function getDefaultBranchName(
@@ -67,6 +67,20 @@ async function isBranchProtected(
 		branch,
 	});
 	return branchData.data.protected;
+}
+
+async function getGithubClient(config: Config) {
+	const auth = createAppAuth(config.githubAppConfig.strategyOptions);
+
+	const installationAuthentication = await auth({
+		type: 'installation',
+		installationId: config.githubAppConfig.installationId,
+	});
+
+	const octokit: Octokit = new Octokit({
+		auth: installationAuthentication.token,
+	});
+	return octokit;
 }
 
 /**
@@ -95,19 +109,6 @@ export async function webhook(
 	console.log(resp.status);
 }
 
-async function getAnghammaradTopic(region: string): Promise<string> {
-	const ssmClient = new SSMClient({ region: region });
-	const ssm = new SSM(ssmClient);
-	const topic = await ssm.getParameter({
-		Name: '/account/services/anghammarad.topic.arn',
-	});
-
-	if (topic.Parameter === undefined) {
-		throw new Error('Topic not found');
-	}
-	return topic.Parameter.Value!;
-}
-
 async function notify(fullRepoName: string, topicArn: string, slug: string) {
 	const client = new Anghammarad();
 	await client.notify({
@@ -126,50 +127,9 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 	});
 }
 
-interface GithubAppSecret {
-	appId: string;
-	base64PrivateKey: string;
-	clientId: string;
-	clientSecret: string;
-	installationId: string;
-}
-
-async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
-	const secretsManager = new SecretsManager();
-
-	const secret = await secretsManager.getSecretValue({
-		SecretId:
-			'/CODE/deploy/service-catalogue/branch-protector-github-app-secret',
-	});
-
-	const secretJson = JSON.parse(secret.SecretString!);
-	return secretJson;
-}
-
 export async function main(event: UpdateBranchProtectionEvent) {
-	const secretJson = await getGithubAppSecretJson();
-	const config: Config = {
-		stage: process.env['STAGE'] ?? 'DEV',
-		githubAppConfig: {
-			strategyOptions: {
-				...secretJson,
-				privateKey: atob(secretJson.base64PrivateKey),
-			},
-			installationId: secretJson.installationId,
-		},
-		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
-	};
-	const auth = createAppAuth(config.githubAppConfig.strategyOptions);
-
-	// Retrieve installation access token
-	const installationAuthentication = await auth({
-		type: 'installation',
-		installationId: config.githubAppConfig.installationId,
-	});
-
-	const octokit: Octokit = new Octokit({
-		auth: installationAuthentication.token,
-	});
+	const config: Config = await getConfig();
+	const octokit: Octokit = await getGithubClient(config);
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
@@ -187,9 +147,7 @@ export async function main(event: UpdateBranchProtectionEvent) {
 	if (isProtected) {
 		console.log(`${repo}'s default branch is protected. No action required`);
 	} else {
-		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
-		console.log(`Update of ${repo} successful`);
 		for (const slug of event.teamNameSlugs) {
 			await notify(event.fullName, config.anghammaradSnsTopic, slug);
 		}
