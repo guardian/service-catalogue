@@ -262,6 +262,16 @@ export class ServiceCatalogue extends GuStack {
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
+			{
+				name: 'OrgWideS3',
+				description: 'Collecting S3 data across the organisation.',
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_s3*'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+			},
 		];
 
 		const remainingAwsSources: CloudquerySource = {

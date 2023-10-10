@@ -2,7 +2,7 @@
 
 set -e
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR="${DIR}/.."
+ROOT_DIR=$(realpath "${DIR}/..")
 
 npm ci
 npm run typecheck
