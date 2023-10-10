@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-ecs": "^3.418.0",
-    "@aws-sdk/client-ssm": "^3.419.0",
+    "@aws-sdk/client-ssm": "^3.427.0",
     "@aws-sdk/credential-providers": "^3.414.0",
     "@types/yargs": "^17.0.28",
     "yargs": "^17.7.2"
