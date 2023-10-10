@@ -2,6 +2,10 @@
 
 set -e
 
+red='\x1B[0;31m'
+bold='\x1B[1m'
+plain='\x1B[0m'
+
 migrateDEV() {
   source ../../.env
 
@@ -25,16 +29,32 @@ getDbUrl() {
   export DATABASE_URL="postgresql://$db_username:$db_password@$db_host:$db_port/postgres"
 }
 
+note="NOTE: You need to be on the VPN to migrate. \nMigration may fail if the table(s) already exist in the database.\nSee https://www.prisma.io/docs/guides/migrate/production-troubleshooting#failed-migration for how to fix."
+
+continueQuery() {
+  stage=$1
+  echo -e "${bold}Do you want to continue (y/n)?${plain}"
+    read -r answer
+    if [ "$answer" != "${answer#[Yy]}" ] ;then
+        echo "$stage migration in progress..."
+        getDbUrl "$stage"
+        npx prisma migrate deploy
+    else
+        echo "Exiting without migrating, goodbye."
+        return
+    fi
+}
+
 migrateCODE() {
-  echo "Migrating CODE"
-  getDbUrl 'CODE'
-  npx prisma migrate deploy
+  echo -e "$note"
+  echo -e "${red}WARNING: Changes made on your local machine will affect Service Catalogue CODE data.${plain}"
+  continueQuery "CODE"
 }
 
 migratePROD() {
-  echo "Migrating PROD"
-  getDbUrl 'PROD'
-  # TODO: migrate
+  echo -e "$note"
+  echo -e "${red}${bold}WARNING: You are in PROD mode! ${plain}${red}Changes made on your local machine will affect Service Catalogue PROD data.${plain}"
+  continueQuery "PROD"
 }
 
 # Read in input flag
