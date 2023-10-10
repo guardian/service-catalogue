@@ -9,10 +9,10 @@
 	},
 	"author": "guardian",
 	"dependencies": {
-		"@aws-sdk/client-secrets-manager": "^3.427.0",
+		"@aws-sdk/client-secrets-manager": "^3.418.0",
 		"@aws-sdk/client-ssm": "^3.418.0",
 		"@aws-sdk/types": "^3.418.0",
-		"@guardian/anghammarad": "^1.8.0-SNAPSHOT",
+		"@guardian/anghammarad": "^1.8.0",
 		"@octokit/auth-app": "^6.0.1",
 		"@octokit/types": "^12.0.0",
 		"octokit": "^3.1.1"
