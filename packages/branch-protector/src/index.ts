@@ -126,8 +126,15 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 	});
 }
 
-export async function main(event: UpdateBranchProtectionEvent) {
-	// get secret by name
+interface GithubAppSecret {
+	appId: string;
+	base64PrivateKey: string;
+	clientId: string;
+	clientSecret: string;
+	installationId: string;
+}
+
+async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
 	const secretsManager = new SecretsManager();
 
 	const secret = await secretsManager.getSecretValue({
@@ -135,29 +142,18 @@ export async function main(event: UpdateBranchProtectionEvent) {
 			'/CODE/deploy/service-catalogue/branch-protector-github-app-secret',
 	});
 
-	const secretString = secret.SecretString ?? '';
+	const secretJson = JSON.parse(secret.SecretString!);
+	return secretJson;
+}
 
-	interface SecretObj {
-		appId: string;
-		base64PrivateKey: string;
-		clientId: string;
-		clientSecret: string;
-		installationId: string;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- coming from AWS
-	const secretJson: SecretObj = JSON.parse(secretString);
-
-	const privateKey = atob(secretJson.base64PrivateKey);
-
+export async function main(event: UpdateBranchProtectionEvent) {
+	const secretJson = await getGithubAppSecretJson();
 	const config: Config = {
 		stage: process.env['STAGE'] ?? 'DEV',
 		githubAppConfig: {
 			strategyOptions: {
-				appId: secretJson.appId,
-				privateKey,
-				clientId: secretJson.clientId,
-				clientSecret: secretJson.clientId,
+				...secretJson,
+				privateKey: atob(secretJson.base64PrivateKey),
 			},
 			installationId: secretJson.installationId,
 		},

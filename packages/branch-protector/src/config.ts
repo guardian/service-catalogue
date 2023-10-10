@@ -8,8 +8,6 @@ export interface Config {
 
 	/**
 	 * Auth configuration for the GitHub App.
-	 *
-	 * TODO: put in parameter store/secrets manager
 	 */
 	githubAppConfig: {
 		strategyOptions: StrategyOptions;
