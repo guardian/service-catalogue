@@ -2,6 +2,7 @@ import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { Endpoints } from '@octokit/types';
 import { Octokit } from 'octokit';
+import { getConfig } from './config';
 import type { Config } from './config';
 import type { UpdateBranchProtectionEvent } from './model';
 
@@ -81,32 +82,6 @@ async function getGithubClient(config: Config) {
 		auth: installationAuthentication.token,
 	});
 	return octokit;
-}
-
-/**
- * Sends asynchronous message into Google Chat
- */
-export async function webhook(
-	repo: string,
-	googleChatUrl: string,
-): Promise<void> {
-	//TODO: when we have the initial warning message set up, we can pass the thread key through to reply to the initial message
-	const data: string = JSON.stringify({
-		text: `${repo} branch protection updated.\nThis message was sent by repocop, part of the service-catalogue.`,
-		formattedText: `${repo} branch protection updated.\nThis message was sent by repocop, part of the [service-catalogue](https://github.com/guardian/service-catalogue).`,
-	});
-
-	//TODO do not log full URL in production
-	console.log(`Sending message to ${googleChatUrl} with data ${data}`);
-
-	const resp = await fetch(googleChatUrl, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json; charset=UTF-8',
-		},
-		body: data,
-	});
-	console.log(resp.status);
 }
 
 async function notify(fullRepoName: string, topicArn: string, slug: string) {
