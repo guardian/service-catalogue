@@ -1,125 +1,20 @@
-import { ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
-import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import { createAppAuth } from '@octokit/auth-app';
-import type { Endpoints } from '@octokit/types';
-import { Octokit } from 'octokit';
+import type { Octokit } from 'octokit';
+import { getEvents, notify } from './aws-requests';
 import { getConfig } from './config';
 import type { Config } from './config';
+import {
+	getDefaultBranchName,
+	getGithubClient,
+	isBranchProtected,
+	updateBranchProtection,
+} from './github-requests';
 import type { UpdateBranchProtectionEvent } from './model';
 
-export type UpdateBranchProtectionParams =
-	Endpoints['PUT /repos/{owner}/{repo}/branches/{branch}/protection']['parameters'];
-
-export async function updateBranchProtection(
+async function protectBranch(
 	octokit: Octokit,
-	owner: string,
-	repo: string,
-	branch: string,
+	config: Config,
+	event: UpdateBranchProtectionEvent,
 ) {
-	console.log(`Updating ${repo} branch protection`);
-	//https://github.com/guardian/recommendations/blob/main/github.md#branch-protection
-	const branchProtectionParams: UpdateBranchProtectionParams = {
-		owner: owner,
-		repo: repo,
-		branch: branch,
-		required_status_checks: {
-			strict: true,
-			contexts: [],
-		},
-		restrictions: null,
-		enforce_admins: true,
-		required_pull_request_reviews: {
-			require_code_owner_reviews: true,
-			required_approving_review_count: 1,
-		},
-		allow_force_pushes: false,
-		allow_deletions: false,
-	};
-	await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
-	console.log(`Update of ${repo} successful`);
-}
-
-async function getDefaultBranchName(
-	owner: string,
-	repo: string,
-	octokit: Octokit,
-) {
-	const data = await octokit.rest.repos.get({ owner: owner, repo: repo });
-	return data.data.default_branch;
-}
-
-async function isBranchProtected(
-	octokit: Octokit,
-	owner: string,
-	repo: string,
-	branch: string,
-): Promise<boolean> {
-	const branchData = await octokit.rest.repos.getBranch({
-		owner,
-		repo,
-		branch,
-	});
-	return branchData.data.protected;
-}
-
-async function getGithubClient(config: Config) {
-	const auth = createAppAuth(config.githubAppConfig.strategyOptions);
-
-	const installationAuthentication = await auth({
-		type: 'installation',
-		installationId: config.githubAppConfig.installationId,
-	});
-
-	const octokit: Octokit = new Octokit({
-		auth: installationAuthentication.token,
-	});
-	return octokit;
-}
-
-async function notify(fullRepoName: string, topicArn: string, slug: string) {
-	const client = new Anghammarad();
-	await client.notify({
-		subject: 'Hello',
-		message: `Branch protection has been applied to ${fullRepoName}`,
-		actions: [
-			{
-				cta: 'Check branch protections here',
-				url: `https://github.com/${fullRepoName}/settings/branches`,
-			},
-		],
-		target: { GithubTeamSlug: slug },
-		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: 'branch-protector',
-		topicArn: topicArn,
-	});
-}
-
-export async function main() {
-	const config: Config = await getConfig();
-	const octokit: Octokit = await getGithubClient(config);
-
-	const command = new ReceiveMessageCommand({
-		QueueUrl: config.queueUrl,
-		MaxNumberOfMessages: 1,
-		WaitTimeSeconds: 20,
-	});
-
-	const sqsClient = new SQSClient({});
-
-	const result = await sqsClient.send(command);
-	if (result.Messages === undefined) {
-		console.log('No messages found');
-		return;
-	} else {
-		console.log('Message found');
-		console.log(result.Messages[0]!.Body);
-	}
-
-	const event: UpdateBranchProtectionEvent = {
-		fullName: 'guardian/service-catalogue',
-		teamNameSlugs: ['devx-operations', 'devx-security'],
-	};
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const repo = event.fullName.split('/')[1]!;
@@ -139,5 +34,15 @@ export async function main() {
 			await notify(event.fullName, config.anghammaradSnsTopic, slug);
 		}
 		console.log(`Notified teams`);
+	}
+}
+
+export async function main() {
+	const config: Config = await getConfig();
+	const octokit: Octokit = await getGithubClient(config);
+
+	const events = await getEvents(1, config);
+	for (const event of events) {
+		await protectBranch(octokit, config, event);
 	}
 }
