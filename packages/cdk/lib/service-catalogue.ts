@@ -27,6 +27,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
 import {
 	ParameterDataType,
 	ParameterTier,
@@ -525,5 +526,46 @@ export class ServiceCatalogue extends GuStack {
 		);
 
 		db.grantConnect(repocopLambda, 'repocop');
+
+		const branchProtectorGithubApp = new SecretsManager(
+			this,
+			'branch-protector-github-app-auth',
+			{
+				secretName: `/${stage}/${stack}/${app}/branch-protector-github-app-secret`,
+			},
+		);
+
+		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
+			app: 'branch-protector',
+			fileName: 'branch-protector.zip',
+			handler: 'index.main',
+			monitoringConfiguration: {
+				toleratedErrorPercentage: 50,
+				lengthOfEvaluationPeriod: Duration.minutes(1),
+				numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
+				snsTopicName: 'devx-alerts',
+			},
+			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
+			runtime: Runtime.NODEJS_18_X,
+			environment: {
+				GITHUB_APP_SECRET: branchProtectorGithubApp.secretName,
+			},
+			vpc,
+			timeout: Duration.minutes(1),
+		};
+
+		const branchProtectorLambda = new GuScheduledLambda(
+			this,
+			'branch-protector',
+			branchProtectorLambdaProps,
+		);
+
+		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
+			queueName: 'branch-protector-queue.fifo',
+			contentBasedDeduplication: true,
+			fifo: true, //defaults to false for some reason
+		});
+
+		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
 	}
 }
