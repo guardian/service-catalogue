@@ -1,3 +1,4 @@
+import { ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { Endpoints } from '@octokit/types';
@@ -93,10 +94,31 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 	});
 }
 
-export async function main(event: UpdateBranchProtectionEvent) {
+export async function main() {
 	const config: Config = await getConfig();
 	const octokit: Octokit = await getGithubClient(config);
 
+	const command = new ReceiveMessageCommand({
+		QueueUrl: config.queueUrl,
+		MaxNumberOfMessages: 1,
+		WaitTimeSeconds: 20,
+	});
+
+	const sqsClient = new SQSClient({});
+
+	const result = await sqsClient.send(command);
+	if (result.Messages === undefined) {
+		console.log('No messages found');
+		return;
+	} else {
+		console.log('Message found');
+		console.log(result.Messages[0]!.Body);
+	}
+
+	const event: UpdateBranchProtectionEvent = {
+		fullName: 'guardian/service-catalogue',
+		teamNameSlugs: ['devx-operations', 'devx-security'],
+	};
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
@@ -109,7 +131,6 @@ export async function main(event: UpdateBranchProtectionEvent) {
 		defaultBranchName,
 	);
 
-	console.log(`Is ${repo} protected? ${isProtected.toString()}`);
 	if (isProtected) {
 		console.log(`${repo}'s default branch is protected. No action required`);
 	} else {

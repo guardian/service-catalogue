@@ -28,6 +28,11 @@ export interface Config {
 	 * SNS topic to use for Anghammarad.
 	 */
 	anghammaradSnsTopic: string;
+
+	/**
+	 * SQS queue to read messages from.
+	 */
+	queueUrl: string;
 }
 
 interface GithubAppSecret {
@@ -61,6 +66,7 @@ export async function getConfig() {
 			installationId: secretJson.installationId,
 		},
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD'),
+		queueUrl: getEnvOrThrow('QUEUE_URL'),
 	};
 	return config;
 }

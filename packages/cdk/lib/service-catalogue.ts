@@ -543,14 +543,17 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		/*
-		 * TODO: Add a step to setup script that grabs the ARN and sets it as an env var
-		 */
 		const anghammaradTopicParameter = StringParameter.fromStringParameterName(
 			this,
 			'anghammarad-topic',
 			'/account/services/anghammarad.topic.arn',
 		);
+
+		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
+			queueName: 'branch-protector-queue.fifo',
+			contentBasedDeduplication: true,
+			fifo: true, //defaults to false for some reason
+		});
 
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
 			app: 'branch-protector',
@@ -567,6 +570,7 @@ export class ServiceCatalogue extends GuStack {
 			environment: {
 				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
 				ANGHAMMARAD: anghammaradTopicParameter.stringValue,
+				QUEUE_URL: branchProtectorQueue.queueUrl,
 			},
 			vpc,
 			timeout: Duration.minutes(1),
@@ -577,12 +581,6 @@ export class ServiceCatalogue extends GuStack {
 			'branch-protector',
 			branchProtectorLambdaProps,
 		);
-
-		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
-			queueName: 'branch-protector-queue.fifo',
-			contentBasedDeduplication: true,
-			fifo: true, //defaults to false for some reason
-		});
 
 		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);

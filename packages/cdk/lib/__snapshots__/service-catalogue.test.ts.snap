@@ -11644,6 +11644,9 @@ spec:
                 ],
               ],
             },
+            "QUEUE_URL": {
+              "Ref": "branchprotectorqueueEF5856E4",
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },
