@@ -1,7 +1,8 @@
-import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
+import { createAppAuth } from '@octokit/auth-app';
 import type { Endpoints } from '@octokit/types';
 import { Octokit } from 'octokit';
+import { getConfig } from './config';
 import type { Config } from './config';
 import type { UpdateBranchProtectionEvent } from './model';
 
@@ -23,6 +24,7 @@ export async function updateBranchProtection(
 	repo: string,
 	branch: string,
 ) {
+	console.log(`Updating ${repo} branch protection`);
 	//https://github.com/guardian/recommendations/blob/main/github.md#branch-protection
 	const branchProtectionParams: UpdateBranchProtectionParams = {
 		owner: owner,
@@ -42,6 +44,7 @@ export async function updateBranchProtection(
 		allow_deletions: false,
 	};
 	await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
+	console.log(`Update of ${repo} successful`);
 }
 
 async function getDefaultBranchName(
@@ -67,43 +70,18 @@ async function isBranchProtected(
 	return branchData.data.protected;
 }
 
-/**
- * Sends asynchronous message into Google Chat
- */
-export async function webhook(
-	repo: string,
-	googleChatUrl: string,
-): Promise<void> {
-	//TODO: when we have the initial warning message set up, we can pass the thread key through to reply to the initial message
-	const data: string = JSON.stringify({
-		text: `${repo} branch protection updated.\nThis message was sent by repocop, part of the service-catalogue.`,
-		formattedText: `${repo} branch protection updated.\nThis message was sent by repocop, part of the [service-catalogue](https://github.com/guardian/service-catalogue).`,
+async function getGithubClient(config: Config) {
+	const auth = createAppAuth(config.githubAppConfig.strategyOptions);
+
+	const installationAuthentication = await auth({
+		type: 'installation',
+		installationId: config.githubAppConfig.installationId,
 	});
 
-	//TODO do not log full URL in production
-	console.log(`Sending message to ${googleChatUrl} with data ${data}`);
-
-	const resp = await fetch(googleChatUrl, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json; charset=UTF-8',
-		},
-		body: data,
+	const octokit: Octokit = new Octokit({
+		auth: installationAuthentication.token,
 	});
-	console.log(resp.status);
-}
-
-async function getAnghammaradTopic(region: string): Promise<string> {
-	const ssmClient = new SSMClient({ region: region });
-	const ssm = new SSM(ssmClient);
-	const topic = await ssm.getParameter({
-		Name: '/account/services/anghammarad.topic.arn',
-	});
-
-	if (topic.Parameter === undefined) {
-		throw new Error('Topic not found');
-	}
-	return topic.Parameter.Value!;
+	return octokit;
 }
 
 async function notify(fullRepoName: string, topicArn: string, slug: string) {
@@ -125,12 +103,8 @@ async function notify(fullRepoName: string, topicArn: string, slug: string) {
 }
 
 export async function main(event: UpdateBranchProtectionEvent) {
-	const config: Config = {
-		stage: process.env['STAGE'] ?? 'DEV',
-		githubAccessToken: getEnvOrThrow('GITHUB_ACCESS_TOKEN'),
-		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
-	};
-	const octokit: Octokit = new Octokit({ auth: config.githubAccessToken });
+	const config: Config = await getConfig();
+	const octokit: Octokit = await getGithubClient(config);
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
 	const owner = event.fullName.split('/')[0]!;
@@ -148,9 +122,7 @@ export async function main(event: UpdateBranchProtectionEvent) {
 	if (isProtected) {
 		console.log(`${repo}'s default branch is protected. No action required`);
 	} else {
-		console.log(`Updating ${repo} branch protection`);
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
-		console.log(`Update of ${repo} successful`);
 		for (const slug of event.teamNameSlugs) {
 			await notify(event.fullName, config.anghammaradSnsTopic, slug);
 		}
