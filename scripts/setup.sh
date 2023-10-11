@@ -81,6 +81,10 @@ setup_cloudquery() {
 
   GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
+  ANGHAMMARAD=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
+
+  echo "$ANGHAMMARAD"
+
   TOKEN_TEXT="# See https://github.com/settings/tokens?type=beta
 GITHUB_ACCESS_TOKEN=
 
@@ -88,6 +92,8 @@ GITHUB_ACCESS_TOKEN=
 SNYK_TOKEN=
 
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
+
+ANGHAMMARAD=${ANGHAMMARAD}
 "
 
   echo "Running CloudQuery setup"
@@ -96,15 +102,16 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
   echo "Checking for .env.local file in $LOCAL_ENV_FILE_DIR"
   if [ -e "$LOCAL_ENV_FILE" ]
   then
+    echo "Found .env.local file in $LOCAL_ENV_FILE_DIR"
     # Get file size in bytes
     FILE_SIZE=$(wc -c < "$LOCAL_ENV_FILE")
 
     # Check if file is empty - don't want to overwrite any existing tokens
     if [ "$FILE_SIZE" -gt "$SIZE_THRESHOLD" ]
     then
-      echo "Detected non-empty env.local. No changes made."
+      echo "File is not empty. No changes made."
     else
-      echo "Empty .env.local file found in $LOCAL_ENV_FILE_DIR, adding token names$"
+      echo "File is empty, adding token names$"
       echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
     fi
   else
@@ -119,7 +126,7 @@ source "$LOCAL_ENV_FILE"
   # Check if GitHub token is set
   if [ -z "$GITHUB_ACCESS_TOKEN" ]
   then
-    echo -e "${yellow}Please create a GitHub token${clear}.
+    echo -e "${yellow}Please create or retrieve a GitHub token${clear}.
 Visit ${cyan}https://github.com/settings/tokens?type=beta${clear}, and add it to ${cyan}$LOCAL_ENV_FILE${clear}"
   fi
 

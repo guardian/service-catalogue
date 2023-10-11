@@ -6,15 +6,6 @@ import { getConfig } from './config';
 import type { Config } from './config';
 import type { UpdateBranchProtectionEvent } from './model';
 
-//TODO: move to a common place
-export function getEnvOrThrow(key: string): string {
-	const value: string | undefined = process.env[key];
-	if (value === undefined) {
-		throw new Error(`Environment variable ${key} is not set`);
-	}
-	return value;
-}
-
 export type UpdateBranchProtectionParams =
 	Endpoints['PUT /repos/{owner}/{repo}/branches/{branch}/protection']['parameters'];
 

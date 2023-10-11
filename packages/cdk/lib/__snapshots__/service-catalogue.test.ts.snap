@@ -11495,7 +11495,7 @@ spec:
         },
         "Environment": {
           "Variables": {
-            "ANGHAMMARAD_TOPIC_ARN": {
+            "ANGHAMMARAD": {
               "Ref": "anghammaradtopicParameter",
             },
             "APP": "branch-protector",
@@ -12019,35 +12019,6 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "branchprotectorgithubappauth4E91892E",
-              },
-            },
-            {
-              "Action": [
-                "ssm:DescribeParameters",
-                "ssm:GetParameters",
-                "ssm:GetParameter",
-                "ssm:GetParameterHistory",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/account/services/anghammarad.topic.arn",
-                  ],
-                ],
               },
             },
             {

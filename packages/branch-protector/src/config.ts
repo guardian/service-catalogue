@@ -1,6 +1,14 @@
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
-import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { type StrategyOptions } from '@octokit/auth-app';
+
+//TODO: move to a common place
+export function getEnvOrThrow(key: string): string {
+	const value: string | undefined = process.env[key];
+	if (value === undefined) {
+		throw new Error(`Environment variable ${key} is not set.`);
+	}
+	return value;
+}
 
 export interface Config {
 	/**
@@ -20,19 +28,6 @@ export interface Config {
 	 * SNS topic to use for Anghammarad.
 	 */
 	anghammaradSnsTopic: string;
-}
-
-async function getAnghammaradTopic(region: string): Promise<string> {
-	const ssmClient = new SSMClient({ region: region });
-	const ssm = new SSM(ssmClient);
-	const topic = await ssm.getParameter({
-		Name: '/account/services/anghammarad.topic.arn',
-	});
-
-	if (topic.Parameter === undefined) {
-		throw new Error('Topic not found');
-	}
-	return topic.Parameter.Value!;
 }
 
 interface GithubAppSecret {
@@ -65,7 +60,7 @@ export async function getConfig() {
 			},
 			installationId: secretJson.installationId,
 		},
-		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
+		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD'),
 	};
 	return config;
 }

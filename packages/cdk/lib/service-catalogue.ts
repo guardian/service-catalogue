@@ -566,7 +566,7 @@ export class ServiceCatalogue extends GuStack {
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
 				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
-				ANGHAMMARAD_TOPIC_ARN: anghammaradTopicParameter.stringValue,
+				ANGHAMMARAD: anghammaradTopicParameter.stringValue,
 			},
 			vpc,
 			timeout: Duration.minutes(1),
@@ -586,7 +586,6 @@ export class ServiceCatalogue extends GuStack {
 
 		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
-		anghammaradTopicParameter.grantRead(branchProtectorLambda);
 		Topic.fromTopicArn(
 			this,
 			'anghammarad-arn',
