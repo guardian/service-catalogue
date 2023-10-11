@@ -42,6 +42,10 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
+    "anghammaradtopicParameter": {
+      "Default": "/account/services/anghammarad.topic.arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
   },
   "Resources": {
     "CloudQueryAlertTopicBFD81410": {
@@ -12012,6 +12016,35 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "branchprotectorgithubappauth4E91892E",
+              },
+            },
+            {
+              "Action": [
+                "ssm:DescribeParameters",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameterHistory",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/account/services/anghammarad.topic.arn",
+                  ],
+                ],
               },
             },
           ],

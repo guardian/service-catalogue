@@ -541,6 +541,18 @@ export class ServiceCatalogue extends GuStack {
 				secretName: `/${stage}/${stack}/${app}/branch-protector-github-app-secret`,
 			},
 		);
+		
+		/*
+		 * We are not reading the topic ARN directly into the lambda currently as that is an
+		 * extra environment variable that needs to be set when running locally.
+		 *
+		 * TODO: Add a step to setup script that grabs the ARN and sets it as an env var
+		 */
+		const anghammaradTopic = StringParameter.fromStringParameterName(
+			this,
+			'anghammarad-topic',
+			'/account/services/anghammarad.topic.arn',
+		);
 
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
 			app: 'branch-protector',
@@ -575,5 +587,6 @@ export class ServiceCatalogue extends GuStack {
 
 		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
+		anghammaradTopic.grantRead(branchProtectorLambda);
 	}
 }
