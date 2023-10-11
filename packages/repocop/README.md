@@ -1,51 +1,75 @@
 # Repocop
 
-## Database Migrations with Prisma Setup
+Repocop is a tool to help us discover and apply best practices across our estate. See the [Grafana dashboard](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1) for a definition of the rules and how they are met.
 
-We want to use prisma for our database migrations in order to profit from the audit
-trail in the directory prisma migrations. And in the table _prisma_migration of the 
-databases we use this process. This process is currently manual.
+Repocop uses the [Prisma](https://www.prisma.io) ORM for database migrations in order to profit from the audit
+trail it provides.
 
-Prisma will look for the `DATABASE_URL` needed for migration in `.env` file in the directory `packages/repocop`.  It takes the form: ```DATABASE_URL="postgresql://dbuser:dbpassword@hosturl:5432/postgres```
+## Database migrations with Prisma
 
-All migrations in the prisma/migration subdirectories have to be called migration.sql.
-We need to apply the initial schema to our migration history
+The migration process is currently manual.
+
+Migration history is held in the `prisma/migrations` directory in the repository and the `_prisma_migrations` table in the
+database.
+
+All migrations in the `prisma/migrations` subdirectories must be named `migration.sql`.
+
+Prisma will look for the `DATABASE_URL` environment variable in order to carry out migration. It takes the form:
+
 ```
-npx prisma migrate resolve --applied 0_init
+DATABASE_URL="postgresql://dbuser:dbpassword@hosturl:5432/postgres
 ```
-The prisma commands need to be run in the repocop directory.
-The migration history is in the prisma/migration directory in the repository and the table _prisma_migrations in 
-databases that use prisma to handle migrations.
 
-If you want to use your new table in typescript code you need to regenerate the prisma client
+The `DATABASE_URL` is set by the npm migration scripts (see below).
+
+**Note**  
+At the moment it is not possible to have more than
+one `schema.prisma` file.
+
+## Adding new tables locally
+
+To add a new table to the database you need to add a new model to the `schema.prisma` file. To apply the migration locally:
+
+1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database.
+2. Apply the migration by running:
+```
+npm -w repocop run migrate:dev [migration-name]
+```
+
+**Note**
+This will apply all migrations including any new ones, and replace the `_prisma_migrations` table and any existing tables locally.
+
+See [Prisma documentation on creating migrations](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate#create-migrations).
+
+If you want to use your new table(s) in Typescript code you need to regenerate the Prisma client by running:
+
 ```
 npx prisma generate
 ```
 
-## Adding new tables in dev
+## Deploying new tables (migrating) to code or prod
 
-To add a new table on the db you need to a new model to the schema.prisma and apply to migration by running
-in the `repocop` directory
-```
-npx prisma migrate dev --name migration-name
-```
-See [Prisma Documentation](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate#create-migrations)
-Create the migration and make sure it works locally
-Raise a PR and mention it has to be applied to production manually at the moment
+1. Create the migration (see above) and make sure it works locally.
+2. Raise a PR and ensure to note that migration has to be deployed manually after the PR is merged.
+3. Connect to the VPN.
+4. To deploy the migration to code, run:
 
-## Deploy database migration
-
-To deploy a new database migration run
 ```
-npx prisma migrate deploy
+npm -w repocop run migrate:code 
 ```
-See [Prisma Documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production)
 
-At the moment it is not possible to have more than 
-one scheme.prisma file.
+or to prod, run:
+
+```
+npm -w repocop run migrate:prod
+```
+
+If you encounter errors, it might be because the table existed already in the database (used by another app). See [how to fix](https://www.prisma.io/docs/guides/migrate/production-troubleshooting#failed-migration).
+
+See [Prisma documentation on migration](https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production).
 
 ## Running Repocop locally
 
-1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database
-2. Run `npm run migrate:dev -w repocop` to create the _prisma_migrations table in the database (n.b. this will replace any existing table locally)
-3. Start Repocop: `npm start -w repocop`
+1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database.
+2. Run `npm -w repocop run migrate:setuplocal` to create the `_prisma_migrations table` in the database. Note: This will replace any existing tables locally.
+3. Start Repocop: `npm -w repocop start`.
