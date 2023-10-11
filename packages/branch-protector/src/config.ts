@@ -13,7 +13,7 @@ export interface Config {
 	 */
 	githubAppConfig: {
 		strategyOptions: StrategyOptions;
-		installationId: string | number;
+		installationId: string;
 	};
 
 	/**
