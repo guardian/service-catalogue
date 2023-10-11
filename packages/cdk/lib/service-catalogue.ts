@@ -27,6 +27,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
+import { Topic } from 'aws-cdk-lib/aws-sns';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import {
 	ParameterDataType,
@@ -541,14 +542,11 @@ export class ServiceCatalogue extends GuStack {
 				secretName: `/${stage}/${stack}/${app}/branch-protector-github-app-secret`,
 			},
 		);
-		
+
 		/*
-		 * We are not reading the topic ARN directly into the lambda currently as that is an
-		 * extra environment variable that needs to be set when running locally.
-		 *
 		 * TODO: Add a step to setup script that grabs the ARN and sets it as an env var
 		 */
-		const anghammaradTopic = StringParameter.fromStringParameterName(
+		const anghammaradTopicParameter = StringParameter.fromStringParameterName(
 			this,
 			'anghammarad-topic',
 			'/account/services/anghammarad.topic.arn',
@@ -568,6 +566,7 @@ export class ServiceCatalogue extends GuStack {
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
 				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
+				ANGHAMMARAD_TOPIC_ARN: anghammaradTopicParameter.stringValue,
 			},
 			vpc,
 			timeout: Duration.minutes(1),
@@ -587,6 +586,11 @@ export class ServiceCatalogue extends GuStack {
 
 		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
-		anghammaradTopic.grantRead(branchProtectorLambda);
+		anghammaradTopicParameter.grantRead(branchProtectorLambda);
+		Topic.fromTopicArn(
+			this,
+			'anghammarad-arn',
+			anghammaradTopicParameter.stringValue,
+		).grantPublish(branchProtectorLambda);
 	}
 }

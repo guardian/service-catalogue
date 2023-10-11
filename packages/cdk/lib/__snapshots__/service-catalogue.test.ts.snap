@@ -11495,6 +11495,9 @@ spec:
         },
         "Environment": {
           "Variables": {
+            "ANGHAMMARAD_TOPIC_ARN": {
+              "Ref": "anghammaradtopicParameter",
+            },
             "APP": "branch-protector",
             "GITHUB_APP_SECRET": {
               "Fn::Join": [
@@ -12045,6 +12048,13 @@ spec:
                     ":parameter/account/services/anghammarad.topic.arn",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "anghammaradtopicParameter",
               },
             },
           ],
