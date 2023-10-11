@@ -303,18 +303,25 @@ export class ServiceCatalogue extends GuStack {
 			cpu: 1024,
 		};
 
-		const githubCredentials = new SecretsManager(this, 'github-credentials', {
-			secretName: `/${stage}/${stack}/${app}/github-credentials`,
-		});
+		const cloudqueryGithubCredentials = new SecretsManager(
+			this,
+			'github-credentials',
+			{
+				secretName: `/${stage}/${stack}/${app}/github-credentials`,
+			},
+		);
 
 		const githubSecrets: Record<string, Secret> = {
 			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-				githubCredentials,
+				cloudqueryGithubCredentials,
 				'private-key',
 			),
-			GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
+			GITHUB_APP_ID: Secret.fromSecretsManager(
+				cloudqueryGithubCredentials,
+				'app-id',
+			),
 			GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-				githubCredentials,
+				cloudqueryGithubCredentials,
 				'installation-id',
 			),
 		};
@@ -527,7 +534,7 @@ export class ServiceCatalogue extends GuStack {
 
 		db.grantConnect(repocopLambda, 'repocop');
 
-		const branchProtectorGithubApp = new SecretsManager(
+		const branchProtectorGithubCredentials = new SecretsManager(
 			this,
 			'branch-protector-github-app-auth',
 			{
@@ -548,7 +555,7 @@ export class ServiceCatalogue extends GuStack {
 			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
-				GITHUB_APP_SECRET: branchProtectorGithubApp.secretName,
+				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
 			},
 			vpc,
 			timeout: Duration.minutes(1),
@@ -567,5 +574,6 @@ export class ServiceCatalogue extends GuStack {
 		});
 
 		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
+		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
 	}
 }

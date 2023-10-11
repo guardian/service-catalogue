@@ -12004,6 +12004,16 @@ spec:
                 ],
               },
             },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "branchprotectorgithubappauth4E91892E",
+              },
+            },
           ],
           "Version": "2012-10-17",
         },

@@ -47,8 +47,7 @@ async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
 	const secretsManager = new SecretsManager();
 
 	const secret = await secretsManager.getSecretValue({
-		SecretId:
-			'/CODE/deploy/service-catalogue/branch-protector-github-app-secret',
+		SecretId: process.env['GITHUB_APP_SECRET'],
 	});
 
 	const secretJson = JSON.parse(secret.SecretString ?? '{}') as GithubAppSecret;
