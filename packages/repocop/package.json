@@ -11,7 +11,8 @@
     "start": "ts-node src/run-locally.ts",
     "postinstall": "prisma generate",
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
-    "migrate:dev": "script/migrate.sh --dev",
+    "migrate:setuplocal": "script/migrate.sh --dev",
+    "migrate:dev": "script/migrate.sh --dev $NAME",
     "migrate:code": "script/migrate.sh --code",
     "migrate:prod": "script/migrate.sh --prod"
   },
