@@ -36,9 +36,9 @@ getDbUrl() {
 
 note="NOTE: You need to be on the VPN to migrate. \nMigration may fail if the table(s) already exist in the database.\nSee https://www.prisma.io/docs/guides/migrate/production-troubleshooting#failed-migration for how to fix."
 
-continueQuery() {
+continueMigrate() {
   stage=$1
-  echo -e "${bold}Do you want to continue (y/n)?${plain}"
+  echo -e "${bold}Do you want to continue (y/n)? (No is default)${plain}"
     read -r answer
     if [ "$answer" != "${answer#[Yy]}" ] ;then
         echo "$stage migration in progress..."
@@ -50,16 +50,16 @@ continueQuery() {
     fi
 }
 
-migrateCODE() {
-  echo -e "$note"
-  echo -e "${red}WARNING: Changes made on your local machine will affect Service Catalogue CODE data.${plain}"
-  continueQuery "CODE"
+migrateWarning() {
+  stage=$1
+  echo -e "${red}WARNING: Changes made on your local machine will affect Service Catalogue $stage data as all pending migrations will be applied.${plain}"
 }
 
-migratePROD() {
+migrateDeploy() {
+  stage=$1
   echo -e "$note"
-  echo -e "${red}${bold}WARNING: You are in PROD mode! ${plain}${red}Changes made on your local machine will affect Service Catalogue PROD data.${plain}"
-  continueQuery "PROD"
+  migrateWarning "$stage"
+  continueMigrate "$stage"
 }
 
 # Read in input stage(s)
@@ -77,10 +77,10 @@ then
   fi
 elif [ "$stage" == "--code" ]
 then
-  migrateCODE
+  migrateDeploy "CODE"
 elif [ "$stage" == "--prod" ]
 then
-  migratePROD
+  migrateDeploy "PROD"
 else
   echo -e "Stage '$stage' not recognised, please try again."
 fi

@@ -22,8 +22,8 @@ DATABASE_URL="postgresql://dbuser:dbpassword@hosturl:5432/postgres
 
 The `DATABASE_URL` is set by the npm migration scripts (see below).
 
-**Note**  
-At the moment it is not possible to have more than
+> [!NOTE]  
+> At the moment it is not possible to have more than
 one `schema.prisma` file.
 
 ## Adding new tables locally
@@ -36,8 +36,8 @@ To add a new table to the database you need to add a new model to the `schema.pr
 npm -w repocop run migrate:dev [migration-name]
 ```
 
-**Note**
-This will apply all migrations including any new ones, and replace the `_prisma_migrations` table and any existing tables locally.
+> [!NOTE]  
+> This will apply all migrations including any new ones, and replace the `_prisma_migrations` table and any existing tables and data locally.
 
 See [Prisma documentation on creating migrations](https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate#create-migrations).
 
@@ -51,8 +51,9 @@ npx prisma generate
 
 1. Create the migration (see above) and make sure it works locally.
 2. Raise a PR and ensure to note that migration has to be deployed manually after the PR is merged.
-3. Connect to the VPN.
-4. To deploy the migration to code, run:
+3. Get deployTools credentials from Janus.
+4. Connect to the VPN.
+5. To deploy the migration to code, run:
 
 ```
 npm -w repocop run migrate:code 
@@ -71,5 +72,5 @@ See [Prisma documentation on migration](https://www.prisma.io/docs/concepts/comp
 ## Running Repocop locally
 
 1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database.
-2. Run `npm -w repocop run migrate:setuplocal` to create the `_prisma_migrations table` in the database. Note: This will replace any existing tables locally.
+2. Run `npm -w repocop run migrate:setuplocal` to create the `_prisma_migrations table` in the database. Note: This will replace any existing tables and data locally.
 3. Start Repocop: `npm -w repocop start`.
