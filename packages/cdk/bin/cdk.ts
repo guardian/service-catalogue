@@ -1,10 +1,10 @@
 import 'source-map-support/register';
-import { GuRootExperimental } from '@guardian/cdk/lib/experimental/constructs/root';
+import { GuRoot } from '@guardian/cdk/lib/constructs/root';
 import { Duration } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { ServiceCatalogue } from '../lib/service-catalogue';
 
-const app = new GuRootExperimental();
+const app = new GuRoot();
 
 new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack: 'deploy',
