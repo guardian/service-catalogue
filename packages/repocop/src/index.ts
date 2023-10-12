@@ -1,4 +1,3 @@
-import { get } from 'http';
 import { PrismaClient } from '@prisma/client';
 import type {
 	github_teams,
@@ -6,33 +5,8 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { getConfig } from './config';
-import {
-	getRepoOwnership,
-	getRepositoryBranches,
-	getRepositoryTeams,
-	getTeams,
-	getUnarchivedRepositories,
-} from './query';
-import { repositoryRuleEvaluation } from './rules/repository';
-
-export async function evaluateRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<repocop_github_repository_rules[]> {
-	const repositories = await getUnarchivedRepositories(
-		client,
-		ignoredRepositoryPrefixes,
-	);
-
-	const branches = await getRepositoryBranches(client, repositories);
-
-	return await Promise.all(
-		repositories.map(async (repo) => {
-			const teams = await getRepositoryTeams(client, repo);
-			return repositoryRuleEvaluation(repo, branches, teams);
-		}),
-	);
-}
+import { getRepoOwnership, getTeams } from './query';
+import { evaluateRepositories } from './rules/repository';
 
 export async function main() {
 	const config = await getConfig();
@@ -76,17 +50,19 @@ export async function main() {
 	const teams = await getTeams(prisma);
 
 	//for every repo without branch protection, get a list of owners from repoOwners like so  { repo: 'repo', owners: ['owner1', 'owner2'] }
-	const repoOwnersList = reposWithoutBranchProtection.map((repo) => {
-		const owners: view_repo_ownership[] = repoOwners.filter(
-			(owner) => owner.full_name === repo.full_name,
-		);
-		return {
-			fullName: repo.repository_01,
-			teamNameSlugs: owners.map((owner) =>
-				findTeamSlugFromId(owner.github_team_id, teams),
-			),
-		};
-	});
+	const repo04WithContactableOwners = reposWithoutBranchProtection
+		.map((repo) => {
+			const owners: view_repo_ownership[] = repoOwners.filter(
+				(owner) => owner.full_name === repo.full_name,
+			);
+			return {
+				fullName: repo.full_name,
+				teamNameSlugs: owners
+					.map((owner) => findTeamSlugFromId(owner.github_team_id, teams))
+					.filter((slug): slug is string => !!slug),
+			};
+		})
+		.filter((repo) => repo.teamNameSlugs.length > 0);
 
 	console.log('Clearing the table');
 	await prisma.repocop_github_repository_rules.deleteMany({});
