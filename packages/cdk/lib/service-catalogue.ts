@@ -1,6 +1,14 @@
 import { GuScheduledLambda } from '@guardian/cdk';
+import type {
+	GuLambdaErrorPercentageMonitoringProps,
+	NoMonitoring,
+} from '@guardian/cdk/lib/constructs/cloudwatch';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
+import {
+	GuAnghammaradTopicParameter,
+	GuStack,
+	GuStringParameter,
+} from '@guardian/cdk/lib/constructs/core';
 import {
 	GuSecurityGroup,
 	GuVpc,
@@ -27,6 +35,8 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
+import { Topic } from 'aws-cdk-lib/aws-sns';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
 import {
 	ParameterDataType,
 	ParameterTier,
@@ -302,18 +312,25 @@ export class ServiceCatalogue extends GuStack {
 			cpu: 1024,
 		};
 
-		const githubCredentials = new SecretsManager(this, 'github-credentials', {
-			secretName: `/${stage}/${stack}/${app}/github-credentials`,
-		});
+		const cloudqueryGithubCredentials = new SecretsManager(
+			this,
+			'github-credentials',
+			{
+				secretName: `/${stage}/${stack}/${app}/github-credentials`,
+			},
+		);
 
 		const githubSecrets: Record<string, Secret> = {
 			GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-				githubCredentials,
+				cloudqueryGithubCredentials,
 				'private-key',
 			),
-			GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
+			GITHUB_APP_ID: Secret.fromSecretsManager(
+				cloudqueryGithubCredentials,
+				'app-id',
+			),
 			GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-				githubCredentials,
+				cloudqueryGithubCredentials,
 				'installation-id',
 			),
 		};
@@ -500,11 +517,23 @@ export class ServiceCatalogue extends GuStack {
 			],
 		});
 
+		const prodMonitoring: GuLambdaErrorPercentageMonitoringProps = {
+			toleratedErrorPercentage: 50,
+			lengthOfEvaluationPeriod: Duration.minutes(1),
+			numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
+			snsTopicName: 'devx-alerts',
+		};
+
+		const codeMonitoring: NoMonitoring = { noMonitoring: true };
+
+		const stageAwareMonitoringConfiguration =
+			stage === 'PROD' ? prodMonitoring : codeMonitoring;
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
 			handler: 'index.main',
-			monitoringConfiguration: { noMonitoring: true },
+			monitoringConfiguration: stageAwareMonitoringConfiguration,
 			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
@@ -525,5 +554,52 @@ export class ServiceCatalogue extends GuStack {
 		);
 
 		db.grantConnect(repocopLambda, 'repocop');
+
+		const branchProtectorGithubCredentials = new SecretsManager(
+			this,
+			'branch-protector-github-app-auth',
+			{
+				secretName: `/${stage}/${stack}/${app}/branch-protector-github-app-secret`,
+			},
+		);
+
+		const anghammaradTopicParameter =
+			GuAnghammaradTopicParameter.getInstance(this);
+
+		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
+			queueName: `branch-protector-queue-${stage}.fifo`,
+			contentBasedDeduplication: true,
+			retentionPeriod: Duration.days(14),
+		});
+
+		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
+			app: 'branch-protector',
+			fileName: 'branch-protector.zip',
+			handler: 'index.main',
+			monitoringConfiguration: stageAwareMonitoringConfiguration,
+			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
+			runtime: Runtime.NODEJS_18_X,
+			environment: {
+				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
+				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
+				QUEUE_URL: branchProtectorQueue.queueUrl,
+			},
+			vpc,
+			timeout: Duration.minutes(1),
+		};
+
+		const branchProtectorLambda = new GuScheduledLambda(
+			this,
+			'branch-protector',
+			branchProtectorLambdaProps,
+		);
+
+		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
+		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
+		Topic.fromTopicArn(
+			this,
+			'anghammarad-arn',
+			anghammaradTopicParameter.valueAsString,
+		).grantPublish(branchProtectorLambda);
 	}
 }

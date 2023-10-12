@@ -1,6 +1,14 @@
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
-import { SSM, SSMClient } from '@aws-sdk/client-ssm';
 import { type StrategyOptions } from '@octokit/auth-app';
+
+//TODO: move to a common place
+export function getEnvOrThrow(key: string): string {
+	const value: string | undefined = process.env[key];
+	if (value === undefined) {
+		throw new Error(`Environment variable ${key} is not set.`);
+	}
+	return value;
+}
 
 export interface Config {
 	/**
@@ -20,19 +28,11 @@ export interface Config {
 	 * SNS topic to use for Anghammarad.
 	 */
 	anghammaradSnsTopic: string;
-}
 
-async function getAnghammaradTopic(region: string): Promise<string> {
-	const ssmClient = new SSMClient({ region: region });
-	const ssm = new SSM(ssmClient);
-	const topic = await ssm.getParameter({
-		Name: '/account/services/anghammarad.topic.arn',
-	});
-
-	if (topic.Parameter === undefined) {
-		throw new Error('Topic not found');
-	}
-	return topic.Parameter.Value!;
+	/**
+	 * SQS queue to read messages from.
+	 */
+	queueUrl: string;
 }
 
 interface GithubAppSecret {
@@ -47,8 +47,7 @@ async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
 	const secretsManager = new SecretsManager();
 
 	const secret = await secretsManager.getSecretValue({
-		SecretId:
-			'/CODE/deploy/service-catalogue/branch-protector-github-app-secret',
+		SecretId: process.env['GITHUB_APP_SECRET'],
 	});
 
 	const secretJson = JSON.parse(secret.SecretString ?? '{}') as GithubAppSecret;
@@ -66,7 +65,8 @@ export async function getConfig() {
 			},
 			installationId: secretJson.installationId,
 		},
-		anghammaradSnsTopic: await getAnghammaradTopic('eu-west-1'),
+		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
+		queueUrl: getEnvOrThrow('QUEUE_URL'),
 	};
 	return config;
 }
