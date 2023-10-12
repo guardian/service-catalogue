@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.122",
-    "@types/aws-lambda": "^8.10.119",
     "prisma": "^5.4.2"
   },
   "scripts": {
