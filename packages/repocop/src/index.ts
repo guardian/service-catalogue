@@ -1,12 +1,42 @@
+import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getConfig } from './config';
 import { getRepoOwnership, getTeams } from './query';
-import { findContactableOwners } from './remediations/repository-04';
+import type { UpdateBranchProtectionEvent } from './remediations/repository-02';
+import { createRepository02Messages } from './remediations/repository-02';
 import { evaluateRepositories } from './rules/repository';
 
-const shuffle = (array: unknown[]): unknown[] => {
-	return array.sort(() => Math.random() - 0.5);
-};
+async function writeEvaluationTable(
+	evaluatedRepos: repocop_github_repository_rules[],
+	prisma: PrismaClient,
+) {
+	console.log('Clearing the table');
+	await prisma.repocop_github_repository_rules.deleteMany({});
+
+	console.log(`Writing ${evaluatedRepos.length} records to table`);
+	await prisma.repocop_github_repository_rules.createMany({
+		data: evaluatedRepos,
+	});
+
+	console.log('Finished writing to table');
+}
+async function writeRepo02Messages(
+	prisma: PrismaClient,
+	evaluatedRepos: repocop_github_repository_rules[],
+) {
+	const repoOwners = await getRepoOwnership(prisma);
+	const teams = await getTeams(prisma);
+
+	const msgs = createRepository02Messages(evaluatedRepos, repoOwners, teams);
+	await notifyAndAddToQueue(msgs);
+}
+
+async function notifyAndAddToQueue(events: UpdateBranchProtectionEvent[]) {
+	// TODO - implement this
+	console.log(events);
+	console.log('Function not implemented!');
+	return Promise.resolve();
+}
 
 export async function main() {
 	const config = await getConfig();
@@ -26,39 +56,11 @@ export async function main() {
 		}),
 	});
 
-	const evaluatedRepos = await evaluateRepositories(
-		prisma,
-		config.ignoredRepositoryPrefixes,
-	);
+	const evaluatedRepos: repocop_github_repository_rules[] =
+		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
 
-	const reposWithoutBranchProtection = evaluatedRepos.filter(
-		(repo) => !repo.repository_02,
-	);
-
-	const repoOwners = await getRepoOwnership(prisma);
-
-	const teams = await getTeams(prisma);
-
-	const repo04WithContactableOwners = reposWithoutBranchProtection
-		.map((repo) => {
-			return {
-				fullName: repo.full_name,
-				teamNameSlugs: findContactableOwners(repo.full_name, repoOwners, teams),
-			};
-		})
-		.filter((repo) => repo.teamNameSlugs.length > 0);
-
-	const allOrFirstFive = Math.min(repo04WithContactableOwners.length, 5);
-
-	shuffle(repo04WithContactableOwners).slice(0, allOrFirstFive);
-
-	console.log('Clearing the table');
-	await prisma.repocop_github_repository_rules.deleteMany({});
-
-	console.log(`Writing ${evaluatedRepos.length} records to table`);
-	await prisma.repocop_github_repository_rules.createMany({
-		data: evaluatedRepos,
-	});
+	await writeEvaluationTable(evaluatedRepos, prisma);
+	await writeRepo02Messages(prisma, evaluatedRepos);
 
 	console.log('Done');
 }

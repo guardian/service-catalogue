@@ -1,5 +1,5 @@
 import type { github_teams, view_repo_ownership } from '@prisma/client';
-import { findContactableOwners } from './repository-04';
+import { findContactableOwners } from './repository-02';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',
