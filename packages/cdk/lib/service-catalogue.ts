@@ -4,7 +4,11 @@ import type {
 	NoMonitoring,
 } from '@guardian/cdk/lib/constructs/cloudwatch';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
-import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
+import {
+	GuAnghammaradTopicParameter,
+	GuStack,
+	GuStringParameter,
+} from '@guardian/cdk/lib/constructs/core';
 import {
 	GuSecurityGroup,
 	GuVpc,
@@ -559,11 +563,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		const anghammaradTopicParameter = StringParameter.fromStringParameterName(
-			this,
-			'anghammarad-topic',
-			'/account/services/anghammarad.topic.arn',
-		);
+		const anghammaradTopicParameter =
+			GuAnghammaradTopicParameter.getInstance(this);
 
 		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
 			queueName: `branch-protector-queue-${stage}.fifo`,
@@ -580,7 +581,7 @@ export class ServiceCatalogue extends GuStack {
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
 				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
-				ANGHAMMARAD: anghammaradTopicParameter.stringValue,
+				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
 				QUEUE_URL: branchProtectorQueue.queueUrl,
 			},
 			vpc,
@@ -598,7 +599,7 @@ export class ServiceCatalogue extends GuStack {
 		Topic.fromTopicArn(
 			this,
 			'anghammarad-arn',
-			anghammaradTopicParameter.stringValue,
+			anghammaradTopicParameter.valueAsString,
 		).grantPublish(branchProtectorLambda);
 	}
 }

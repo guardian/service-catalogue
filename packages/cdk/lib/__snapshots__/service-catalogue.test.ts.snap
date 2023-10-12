@@ -12,6 +12,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuLoggingStreamNameParameter",
       "GuDistributionBucketParameter",
       "GuScheduledLambda",
+      "GuAnghammaradTopicParameter",
       "GuScheduledLambda",
     ],
     "gu:cdk:version": "TEST",
@@ -19,6 +20,11 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
   "Parameters": {
     "ActionsStaticSiteBucketArnParam": {
       "Default": "/INFRA/deploy/cloudquery/actions-static-site-bucket-arn",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "AnghammaradSnsArn": {
+      "Default": "/account/services/anghammarad.topic.arn",
+      "Description": "SSM parameter containing the ARN of the Anghammarad SNS topic",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DistributionBucketName": {
@@ -40,10 +46,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
-    },
-    "anghammaradtopicParameter": {
-      "Default": "/account/services/anghammarad.topic.arn",
-      "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
   "Resources": {
@@ -11494,8 +11496,8 @@ spec:
         },
         "Environment": {
           "Variables": {
-            "ANGHAMMARAD": {
-              "Ref": "anghammaradtopicParameter",
+            "ANGHAMMARAD_SNS_ARN": {
+              "Ref": "AnghammaradSnsArn",
             },
             "APP": "branch-protector",
             "GITHUB_APP_SECRET": {
@@ -11919,7 +11921,7 @@ spec:
               "Action": "sns:Publish",
               "Effect": "Allow",
               "Resource": {
-                "Ref": "anghammaradtopicParameter",
+                "Ref": "AnghammaradSnsArn",
               },
             },
           ],

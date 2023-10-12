@@ -81,9 +81,7 @@ setup_cloudquery() {
 
   GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
-  ANGHAMMARAD=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
-
-  echo "$ANGHAMMARAD"
+  ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
   TOKEN_TEXT="# See https://github.com/settings/tokens?type=beta
 GITHUB_ACCESS_TOKEN=
@@ -93,7 +91,7 @@ SNYK_TOKEN=
 
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 
-ANGHAMMARAD=${ANGHAMMARAD}
+ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 "
 
   echo "Running CloudQuery setup"
