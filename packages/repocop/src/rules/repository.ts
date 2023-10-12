@@ -28,7 +28,7 @@ export function repository02(
 	if (branch === undefined) {
 		return false;
 	} else {
-		return branch.protected!;
+		return branch.protected ?? false;
 	}
 }
 
@@ -82,8 +82,14 @@ export function repositoryRuleEvaluation(
 	allBranches: github_repository_branches[],
 	teams: RepositoryTeam[],
 ): repocop_github_repository_rules {
+	/*
+	Either the fullname, or the org and name, or the org and 'unknown'.
+	The latter should never happen, it's just how the types have been defined.
+	 */
+	const fullName = repo.full_name ?? `${repo.org}/${repo.name ?? 'unknown'}`;
+
 	return {
-		full_name: repo.full_name!,
+		full_name: fullName,
 		repository_01: repository01(repo),
 		repository_02: repository02(repo, allBranches),
 
