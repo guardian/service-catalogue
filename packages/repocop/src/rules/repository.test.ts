@@ -209,7 +209,6 @@ describe('Repository admin access', () => {
 		];
 
 		const actual = repositoryRuleEvaluation(repo, [], teams);
-
 		expect(actual.repository_04).toEqual(false);
 	});
 
@@ -232,7 +231,6 @@ describe('Repository admin access', () => {
 		];
 
 		const actual = repositoryRuleEvaluation(repo, [], teams);
-
 		expect(actual.repository_04).toEqual(true);
 	});
 
@@ -246,7 +244,6 @@ describe('Repository admin access', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_04).toEqual(true);
 	});
 
@@ -269,7 +266,6 @@ describe('Repository admin access', () => {
 			},
 		];
 		const actual = repositoryRuleEvaluation(repo, [], teams);
-
 		expect(actual.repository_04).toEqual(true);
 	});
 
@@ -282,7 +278,6 @@ describe('Repository admin access', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_04).toEqual(false);
 	});
 });
@@ -295,7 +290,6 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_06).toEqual(true);
 	});
 
@@ -308,7 +302,6 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_06).toEqual(false);
 	});
 
@@ -319,7 +312,6 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_06).toEqual(true);
 	});
 
@@ -330,7 +322,6 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_06).toEqual(false);
 	});
 
@@ -341,7 +332,6 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-
 		expect(actual.repository_06).toEqual(false);
 	});
 });
