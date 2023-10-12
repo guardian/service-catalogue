@@ -26,12 +26,12 @@ getDbUrl() {
   allSecrets=$(aws secretsmanager list-secrets --profile deployTools --region eu-west-1 | jq '.SecretList')
   secret_id=$(jq -r --arg stage "$stage" '.[] | select(.Tags[] as $t | any($t.Key=="Stack" and $t.Value=="deploy")) | select(.Tags[] as $t | any($t.Key=="Stage" and $t.Value==$stage)) | select(.Tags[] as $t | any($t.Key=="App" and $t.Value=="service-catalogue")) | select(.Name | test("PostgresInstance")) | .Name' <<< "$allSecrets")
   dbSecretJson=$(aws secretsmanager get-secret-value --secret-id "$secret_id" --profile deployTools --region eu-west-1 | jq -c '[.SecretString | fromjson]')
-  db_usermigration_name=$(jq -r '.[] | .usermigration_name' <<< "$dbSecretJson")
+  db_username=$(jq -r '.[] | .username' <<< "$dbSecretJson")
   db_password=$(jq -r '.[] | .password' <<< "$dbSecretJson")
   db_host=$(jq -r '.[] | .host' <<< "$dbSecretJson")
   db_port=$(jq -r '.[] | .port' <<< "$dbSecretJson")
 
-  export DATABASE_URL="postgresql://$db_usermigration_name:$db_password@$db_host:$db_port/postgres"
+  export DATABASE_URL="postgresql://$db_username:$db_password@$db_host:$db_port/postgres"
 }
 
 note="NOTE: You need to be on the VPN to migrate. \nMigration may fail if the table(s) already exist in the database.\nSee https://www.prisma.io/docs/guides/migrate/production-troubleshooting#failed-migration for how to fix."
