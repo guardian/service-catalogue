@@ -4,6 +4,10 @@ import { getRepoOwnership, getTeams } from './query';
 import { findContactableOwners } from './remediations/repository-04';
 import { evaluateRepositories } from './rules/repository';
 
+const shuffle = (array: unknown[]): unknown[] => {
+	return array.sort(() => Math.random() - 0.5);
+};
+
 export async function main() {
 	const config = await getConfig();
 	const prisma = new PrismaClient({
@@ -22,12 +26,12 @@ export async function main() {
 		}),
 	});
 
-	const data = await evaluateRepositories(
+	const evaluatedRepos = await evaluateRepositories(
 		prisma,
 		config.ignoredRepositoryPrefixes,
 	);
 
-	const reposWithoutBranchProtection = data.filter(
+	const reposWithoutBranchProtection = evaluatedRepos.filter(
 		(repo) => !repo.repository_02,
 	);
 
@@ -44,12 +48,16 @@ export async function main() {
 		})
 		.filter((repo) => repo.teamNameSlugs.length > 0);
 
+	const allOrFirstFive = Math.min(repo04WithContactableOwners.length, 5);
+
+	shuffle(repo04WithContactableOwners).slice(0, allOrFirstFive);
+
 	console.log('Clearing the table');
 	await prisma.repocop_github_repository_rules.deleteMany({});
 
-	console.log(`Writing ${data.length} records to table`);
+	console.log(`Writing ${evaluatedRepos.length} records to table`);
 	await prisma.repocop_github_repository_rules.createMany({
-		data,
+		data: evaluatedRepos,
 	});
 
 	console.log('Done');
