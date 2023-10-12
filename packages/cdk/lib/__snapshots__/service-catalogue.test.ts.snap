@@ -12112,7 +12112,8 @@ spec:
       "Properties": {
         "ContentBasedDeduplication": true,
         "FifoQueue": true,
-        "QueueName": "branch-protector-queue.fifo",
+        "MessageRetentionPeriod": 1209600,
+        "QueueName": "branch-protector-queue-TEST.fifo",
         "Tags": [
           {
             "Key": "gu:cdk:version",

@@ -550,9 +550,9 @@ export class ServiceCatalogue extends GuStack {
 		);
 
 		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
-			queueName: 'branch-protector-queue.fifo',
+			queueName: `branch-protector-queue-${stage}.fifo`,
 			contentBasedDeduplication: true,
-			fifo: true, //defaults to false for some reason
+			retentionPeriod: Duration.days(14),
 		});
 
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
