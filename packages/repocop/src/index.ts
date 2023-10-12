@@ -33,8 +33,11 @@ async function writeRepo02Messages(
 
 async function notifyAndAddToQueue(events: UpdateBranchProtectionEvent[]) {
 	// TODO - implement this
-	console.log(events);
-	console.log('Function not implemented!');
+	console.log('Function not implemented, here are the events:');
+	for (const event of events) {
+		console.log(event);
+	}
+
 	return Promise.resolve();
 }
 
