@@ -13,7 +13,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuDistributionBucketParameter",
       "GuScheduledLambda",
       "GuScheduledLambda",
-      "GuLambdaErrorPercentageAlarm",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -11698,114 +11697,6 @@ spec:
         },
       },
       "Type": "AWS::Lambda::Function",
-    },
-    "branchprotectorErrorPercentageAlarmForLambda873E733D": {
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:sns:",
-                {
-                  "Ref": "AWS::Region",
-                },
-                ":",
-                {
-                  "Ref": "AWS::AccountId",
-                },
-                ":devx-alerts",
-              ],
-            ],
-          },
-        ],
-        "AlarmDescription": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Ref": "branchprotector2BAF8BEE",
-              },
-              " exceeded 50% error rate",
-            ],
-          ],
-        },
-        "AlarmName": {
-          "Fn::Join": [
-            "",
-            [
-              "High error % from ",
-              {
-                "Ref": "branchprotector2BAF8BEE",
-              },
-              " lambda in TEST",
-            ],
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": [
-          {
-            "Expression": "100*m1/m2",
-            "Id": "expr_1",
-            "Label": {
-              "Fn::Join": [
-                "",
-                [
-                  "Error % of ",
-                  {
-                    "Ref": "branchprotector2BAF8BEE",
-                  },
-                ],
-              ],
-            },
-          },
-          {
-            "Id": "m1",
-            "MetricStat": {
-              "Metric": {
-                "Dimensions": [
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "branchprotector2BAF8BEE",
-                    },
-                  },
-                ],
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          {
-            "Id": "m2",
-            "MetricStat": {
-              "Metric": {
-                "Dimensions": [
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "branchprotector2BAF8BEE",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "Threshold": 50,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
     },
     "branchprotectorSecurityGroupD3A8131B": {
       "Properties": {

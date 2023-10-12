@@ -1,4 +1,8 @@
 import { GuScheduledLambda } from '@guardian/cdk';
+import type {
+	GuLambdaErrorPercentageMonitoringProps,
+	NoMonitoring,
+} from '@guardian/cdk/lib/constructs/cloudwatch';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack, GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import {
@@ -509,11 +513,23 @@ export class ServiceCatalogue extends GuStack {
 			],
 		});
 
+		const prodMonitoring: GuLambdaErrorPercentageMonitoringProps = {
+			toleratedErrorPercentage: 50,
+			lengthOfEvaluationPeriod: Duration.minutes(1),
+			numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
+			snsTopicName: 'devx-alerts',
+		};
+
+		const codeMonitoring: NoMonitoring = { noMonitoring: true };
+
+		const stageAwareMonitoringConfiguration =
+			stage === 'PROD' ? prodMonitoring : codeMonitoring;
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
 			handler: 'index.main',
-			monitoringConfiguration: { noMonitoring: true },
+			monitoringConfiguration: stageAwareMonitoringConfiguration,
 			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
@@ -559,12 +575,7 @@ export class ServiceCatalogue extends GuStack {
 			app: 'branch-protector',
 			fileName: 'branch-protector.zip',
 			handler: 'index.main',
-			monitoringConfiguration: {
-				toleratedErrorPercentage: 50,
-				lengthOfEvaluationPeriod: Duration.minutes(1),
-				numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
-				snsTopicName: 'devx-alerts',
-			},
+			monitoringConfiguration: stageAwareMonitoringConfiguration,
 			rules: [{ schedule: Schedule.rate(Duration.days(7)) }],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
