@@ -1,11 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import type {
-	github_teams,
-	repocop_github_repository_rules,
-	view_repo_ownership,
-} from '@prisma/client';
 import { getConfig } from './config';
 import { getRepoOwnership, getTeams } from './query';
+import { findContactableOwners } from './remediations/repository-04';
 import { evaluateRepositories } from './rules/repository';
 
 export async function main() {
@@ -37,29 +33,13 @@ export async function main() {
 
 	const repoOwners = await getRepoOwnership(prisma);
 
-	function findTeamSlugFromId(
-		id: bigint,
-		teams: github_teams[],
-	): string | undefined {
-		const match: github_teams | undefined = teams.find(
-			(team) => team.id === id,
-		);
-		return match?.slug ?? undefined;
-	}
-
 	const teams = await getTeams(prisma);
 
-	//for every repo without branch protection, get a list of owners from repoOwners like so  { repo: 'repo', owners: ['owner1', 'owner2'] }
 	const repo04WithContactableOwners = reposWithoutBranchProtection
 		.map((repo) => {
-			const owners: view_repo_ownership[] = repoOwners.filter(
-				(owner) => owner.full_name === repo.full_name,
-			);
 			return {
 				fullName: repo.full_name,
-				teamNameSlugs: owners
-					.map((owner) => findTeamSlugFromId(owner.github_team_id, teams))
-					.filter((slug): slug is string => !!slug),
+				teamNameSlugs: findContactableOwners(repo.full_name, repoOwners, teams),
 			};
 		})
 		.filter((repo) => repo.teamNameSlugs.length > 0);
