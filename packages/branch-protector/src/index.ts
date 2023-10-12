@@ -15,9 +15,12 @@ async function protectBranch(
 	config: Config,
 	event: UpdateBranchProtectionEvent,
 ) {
-	const owner = event.fullName.split('/')[0]!;
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we are happy to use it here
-	const repo = event.fullName.split('/')[1]!;
+	const [owner, repo] = event.fullName.split('/');
+
+	if (!owner || !repo) {
+		throw new Error(`Invalid repo name: ${event.fullName}`);
+	}
+
 	const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
 	const isProtected = await isBranchProtected(
 		octokit,
