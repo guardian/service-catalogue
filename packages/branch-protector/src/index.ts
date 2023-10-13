@@ -22,21 +22,29 @@ async function protectBranch(
 	}
 
 	const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
-	const isProtected = await isBranchProtected(
+	const branchIsProtected = await isBranchProtected(
 		octokit,
 		owner,
 		repo,
 		defaultBranchName,
 	);
 
-	if (isProtected) {
-		console.log(`${repo}'s default branch is protected. No action required`);
-	} else {
+	console.log(`${repo} branch protection: ${branchIsProtected.toString()}`);
+
+	const stageIsProd = config.stage === 'PROD';
+
+	if (branchIsProtected && stageIsProd) {
+		console.log(`No action required`);
+	} else if (!branchIsProtected && stageIsProd) {
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
+		console.log(`Updated ${repo}'s default branch protection`);
 		for (const slug of event.teamNameSlugs) {
 			await notify(event.fullName, config.anghammaradSnsTopic, slug);
 		}
 		console.log(`Notified teams`);
+	} else {
+		// !stageIsProd
+		console.log(`Detected stage: ${config.stage}. No action taken.`);
 	}
 }
 
