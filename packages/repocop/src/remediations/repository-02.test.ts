@@ -1,5 +1,9 @@
-import type { github_teams, view_repo_ownership } from '@prisma/client';
-import { findContactableOwners } from './repository-02';
+import type {
+	github_teams,
+	repocop_github_repository_rules,
+	view_repo_ownership,
+} from '@prisma/client';
+import { createRepository02Messages } from './repository-02';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',
@@ -38,49 +42,68 @@ const nullTeam: github_teams = {
 };
 
 describe('Team slugs should be findable for every team associated with a repo', () => {
-	test('branch is not main', () => {
+	test('A repository that is owned by a team should be included in the list of messages', () => {
 		const repo = 'guardian/repo1';
-		const owner1: view_repo_ownership = {
+		const evaluatedRepo: repocop_github_repository_rules = {
+			full_name: repo,
+			repository_01: true,
+			repository_02: false,
+			repository_03: true,
+			repository_04: true,
+			repository_05: true,
+			repository_06: true,
+			repository_07: true,
+			evaluated_on: new Date(),
+		};
+
+		const repoOwner: view_repo_ownership = {
 			...nullOwner,
 			full_name: repo,
 			github_team_id: BigInt(1),
 			github_team_name: 'Team One',
 		};
-		const owner2: view_repo_ownership = {
-			...nullOwner,
-			full_name: repo,
-			github_team_id: BigInt(2),
-			github_team_name: 'Team Two',
-		};
-		const owner3: view_repo_ownership = {
-			...nullOwner,
-			full_name: 'guardian/repo3',
-			github_team_id: BigInt(3),
-			github_team_name: 'Team Three',
-		};
 
-		const team1 = {
+		const githubTeam: github_teams = {
 			...nullTeam,
 			id: BigInt(1),
 			slug: 'team-one',
 		};
-		const team2 = {
-			...nullTeam,
-			id: BigInt(2),
-			slug: 'team-two',
+
+		const actual = createRepository02Messages(
+			[evaluatedRepo],
+			[repoOwner],
+			[githubTeam],
+		);
+
+		expect(actual).toEqual([{ fullName: repo, teamNameSlugs: ['team-one'] }]);
+	});
+
+	test('A repository that has no owner should not be in the list of messages', () => {
+		const repo = 'guardian/repo1';
+		const evaluatedRepo: repocop_github_repository_rules = {
+			full_name: repo,
+			repository_01: true,
+			repository_02: false,
+			repository_03: true,
+			repository_04: true,
+			repository_05: true,
+			repository_06: true,
+			repository_07: true,
+			evaluated_on: new Date(),
 		};
-		const team3 = {
+
+		const githubTeam: github_teams = {
 			...nullTeam,
-			id: BigInt(3),
-			slug: 'team-three',
+			id: BigInt(1),
+			slug: 'team-one',
 		};
 
-		const teams: github_teams[] = [team1, team2, team3];
+		const actual = createRepository02Messages(
+			[evaluatedRepo],
+			[],
+			[githubTeam],
+		);
 
-		const owners: view_repo_ownership[] = [owner1, owner2, owner3];
-
-		const actual = findContactableOwners(repo, owners, teams);
-
-		expect(actual).toEqual([team1.slug, team2.slug]);
+		expect(actual.length).toEqual(0);
 	});
 });

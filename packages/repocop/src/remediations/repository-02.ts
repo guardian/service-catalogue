@@ -21,7 +21,7 @@ function findTeamSlugFromId(
 	return match?.slug ?? undefined;
 }
 
-export function findContactableOwners(
+function findContactableOwners(
 	repo: string,
 	allRepoOwners: view_repo_ownership[],
 	teams: github_teams[],
