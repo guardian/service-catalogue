@@ -211,12 +211,7 @@ export class ServiceCatalogue extends GuStack {
 					'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
 				schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(3)),
 				config: awsSourceConfigForOrganisation({
-					tables: [
-						'aws_cloudformation_stacks',
-						'aws_cloudformation_stack_resources',
-						'aws_cloudformation_stack_templates',
-						'aws_cloudformation_template_summaries',
-					],
+					tables: ['aws_cloudformation_*'],
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],

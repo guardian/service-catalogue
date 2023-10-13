@@ -19,7 +19,6 @@ export const standardDenyPolicy =
 		effect: Effect.DENY,
 		resources: ['*'],
 		actions: [
-			'cloudformation:GetTemplate',
 			'dynamodb:GetItem',
 			'dynamodb:BatchGetItem',
 			'dynamodb:Query',
