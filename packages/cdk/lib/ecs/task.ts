@@ -233,6 +233,13 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			securityGroups: [dbAccess],
 			enabled,
+			tags: [
+				{ key: 'Name', value: name },
+				{ key: 'Stack', value: stack },
+				{ key: 'Stage', value: stage },
+				{ key: 'App', value: app },
+				{ key: 'gu:repo', value: thisRepo },
+			],
 		});
 
 		this.sourceConfig = sourceConfig;
