@@ -1,7 +1,7 @@
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getConfig } from './config';
-import { getRepoOwnership, getTeams } from './query';
+import { getRepoOwnership, getTeams, getUnarchivedRepositories } from './query';
 import type { UpdateBranchProtectionEvent } from './remediations/repository-02';
 import { createRepository02Messages } from './remediations/repository-02';
 import { evaluateRepositories } from './rules/repository';
@@ -27,7 +27,20 @@ async function writeRepo02Messages(
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
 
-	const msgs = createRepository02Messages(evaluatedRepos, repoOwners, teams);
+	//repos with a 'production' or 'documentation' topic
+	const productionOrDocs = (await getUnarchivedRepositories(prisma, []))
+		.filter(
+			(repo) =>
+				repo.topics.includes('production') ||
+				repo.topics.includes('documentation'),
+		)
+		.map((repo) => repo.full_name);
+
+	const relevantRepos = evaluatedRepos.filter((repo) =>
+		productionOrDocs.includes(repo.full_name),
+	);
+
+	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams);
 	await notifyAndAddToQueue(msgs);
 }
 
