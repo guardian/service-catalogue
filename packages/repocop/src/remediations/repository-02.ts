@@ -44,6 +44,7 @@ export function createRepository02Messages(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
 	teams: github_teams[],
+	msgCount: number,
 ): UpdateBranchProtectionEvent[] {
 	const reposWithoutBranchProtection = evaluatedRepos.filter(
 		(repo) => !repo.repository_02,
@@ -57,9 +58,11 @@ export function createRepository02Messages(
 		})
 		.filter((repo) => repo.teamNameSlugs.length > 0);
 
-	const allOrFirstFive = Math.min(repo02WithContactableOwners.length, 5);
+	const resultsCount = repo02WithContactableOwners.length;
 
-	return shuffle(repo02WithContactableOwners).slice(0, allOrFirstFive);
+	const sliceLength = Math.min(resultsCount, msgCount);
+
+	return shuffle(repo02WithContactableOwners).slice(0, sliceLength);
 }
 
 // TODO: test this function

@@ -40,7 +40,7 @@ async function writeRepo02Messages(
 		productionOrDocs.includes(repo.full_name),
 	);
 
-	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams);
+	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams, 5);
 	await notifyAndAddToQueue(msgs);
 }
 /*

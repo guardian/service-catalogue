@@ -73,6 +73,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			[evaluatedRepo],
 			[repoOwner],
 			[githubTeam],
+			5,
 		);
 
 		expect(actual).toEqual([{ fullName: repo, teamNameSlugs: ['team-one'] }]);
@@ -102,6 +103,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			[evaluatedRepo],
 			[],
 			[githubTeam],
+			5,
 		);
 
 		expect(actual.length).toEqual(0);
