@@ -38,7 +38,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v22.6.0
+		  version: v22.15.0
 		  tables:
 		    - aws_s3_buckets
 		  destinations:
@@ -70,7 +70,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v22.6.0
+		  version: v22.15.0
 		  tables:
 		    - '*'
 		  skip_tables:
@@ -107,7 +107,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v22.6.0
+		  version: v22.15.0
 		  tables:
 		    - aws_accessanalyzer_analyzers
 		    - aws_accessanalyzer_analyzer_archive_rules
