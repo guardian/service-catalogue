@@ -1,11 +1,14 @@
 import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
+import type { Anghammarad } from '@guardian/anghammarad';
+import { RequestedChannel } from '@guardian/anghammarad';
 import type {
 	github_teams,
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { Config } from '../config';
+
 /*
  * This interface has been copied from packages/branch-protector/src/model.ts
  * The two interfaces should be kept in sync until we can share the interface.
@@ -85,4 +88,45 @@ export async function addMessagesToQueue(
 		Entries: events.map((event) => createEntry(event)),
 	});
 	await sqsClient.send(command);
+}
+
+async function notifyOneTeam(
+	anghammaradClient: Anghammarad,
+	fullName: string,
+	teamSlug: string,
+	config: Config,
+) {
+	await anghammaradClient.notify({
+		subject: 'Hello',
+		message: `Branch protections will be applied to${fullName}. No action required.`,
+		actions: [], //TODO: add link to best practices.
+		target: { GithubTeamSlug: teamSlug },
+		channel: RequestedChannel.PreferHangouts,
+		sourceSystem: 'branch-protector',
+		topicArn: config.anghammaradSnsTopic,
+	});
+
+	console.log(`Notified ${teamSlug} about ${fullName}`);
+}
+
+async function notifyOneRepo(
+	anghammaradClient: Anghammarad,
+	event: UpdateBranchProtectionEvent,
+	config: Config,
+) {
+	for (const slug of event.teamNameSlugs) {
+		await notifyOneTeam(anghammaradClient, event.fullName, slug, config);
+	}
+
+	console.log(`Notified all teams about ${event.fullName}`);
+}
+
+export async function sendNotifications(
+	anghammaradClient: Anghammarad,
+	events: UpdateBranchProtectionEvent[],
+	config: Config,
+): Promise<void> {
+	for (const event of events) {
+		await notifyOneRepo(anghammaradClient, event, config);
+	}
 }

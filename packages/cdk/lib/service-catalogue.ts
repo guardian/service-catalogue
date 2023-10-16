@@ -538,6 +538,9 @@ export class ServiceCatalogue extends GuStack {
 			],
 		});
 
+		const anghammaradTopicParameter =
+			GuAnghammaradTopicParameter.getInstance(this);
+
 		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
 			queueName: `branch-protector-queue-${stage}.fifo`,
 			contentBasedDeduplication: true,
@@ -564,6 +567,7 @@ export class ServiceCatalogue extends GuStack {
 			rules: [{ schedule: Schedule.rate(Duration.days(1)) }],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
+				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 
 				// Set this to 'true' to enable SQL query logging
@@ -593,9 +597,6 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		const anghammaradTopicParameter =
-			GuAnghammaradTopicParameter.getInstance(this);
-
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
 			app: 'branch-protector',
 			fileName: 'branch-protector.zip',
@@ -618,12 +619,15 @@ export class ServiceCatalogue extends GuStack {
 			branchProtectorLambdaProps,
 		);
 
-		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
-		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
-		Topic.fromTopicArn(
+		const anghammaradTopic = Topic.fromTopicArn(
 			this,
 			'anghammarad-arn',
 			anghammaradTopicParameter.valueAsString,
-		).grantPublish(branchProtectorLambda);
+		);
+
+		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
+		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
+		anghammaradTopic.grantPublish(branchProtectorLambda);
+		anghammaradTopic.grantPublish(repocopLambda);
 	}
 }

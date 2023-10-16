@@ -1,9 +1,15 @@
+import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
+import type { Config } from './config';
 import { getConfig } from './config';
 import { getRepoOwnership, getTeams, getUnarchivedRepositories } from './query';
 import type { UpdateBranchProtectionEvent } from './remediations/repository-02';
-import { createRepository02Messages } from './remediations/repository-02';
+import {
+	addMessagesToQueue,
+	createRepository02Messages,
+	sendNotifications,
+} from './remediations/repository-02';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -23,7 +29,10 @@ async function writeEvaluationTable(
 async function writeRepo02Messages(
 	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
+	config: Config,
 ) {
+	const anghammaradClient = new Anghammarad();
+
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
 
@@ -41,17 +50,20 @@ async function writeRepo02Messages(
 	);
 
 	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams, 5);
-	await notifyAndAddToQueue(msgs);
+	await notifyAndAddToQueue(msgs, config, anghammaradClient);
 }
 /*
  *TODO - implement this
  * For CODE, we should add a message to the queue but should never send a notification.
  */
-async function notifyAndAddToQueue(events: UpdateBranchProtectionEvent[]) {
+async function notifyAndAddToQueue(
+	events: UpdateBranchProtectionEvent[],
+	config: Config,
+	anghammaradClient: Anghammarad,
+) {
 	console.log('Function not implemented, here are the events:');
-	for (const event of events) {
-		console.log(event);
-	}
+	await addMessagesToQueue(events, config);
+	await sendNotifications(anghammaradClient, events, config);
 
 	return Promise.resolve();
 }
@@ -78,7 +90,7 @@ export async function main() {
 		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
-	await writeRepo02Messages(prisma, evaluatedRepos);
+	await writeRepo02Messages(prisma, evaluatedRepos, config);
 
 	console.log('Done');
 }
