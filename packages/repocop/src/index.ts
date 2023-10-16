@@ -46,8 +46,6 @@ async function writeRepo02Messages(
 /*
  *TODO - implement this
  * For CODE, we should add a message to the queue but should never send a notification.
- * Similarly, the branch-protector on CODE should log something,but should never update
- * the branch, or send a notification.
  */
 async function notifyAndAddToQueue(events: UpdateBranchProtectionEvent[]) {
 	console.log('Function not implemented, here are the events:');
