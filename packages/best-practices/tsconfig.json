@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "es6",
+    "allowImportingTsExtensions": true
+  },
+  "ts-node": {
+    "esm": true,
+  }
+}
