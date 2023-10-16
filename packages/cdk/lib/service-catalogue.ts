@@ -538,6 +538,12 @@ export class ServiceCatalogue extends GuStack {
 			],
 		});
 
+		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
+			queueName: `branch-protector-queue-${stage}.fifo`,
+			contentBasedDeduplication: true,
+			retentionPeriod: Duration.days(14),
+		});
+
 		const prodMonitoring: GuLambdaErrorPercentageMonitoringProps = {
 			toleratedErrorPercentage: 50,
 			lengthOfEvaluationPeriod: Duration.minutes(1),
@@ -562,6 +568,7 @@ export class ServiceCatalogue extends GuStack {
 
 				// Set this to 'true' to enable SQL query logging
 				QUERY_LOGGING: 'false',
+				QUEUE_URL: branchProtectorQueue.queueUrl,
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
@@ -576,6 +583,8 @@ export class ServiceCatalogue extends GuStack {
 
 		db.grantConnect(repocopLambda, 'repocop');
 
+		branchProtectorQueue.grantSendMessages(repocopLambda);
+
 		const branchProtectorGithubCredentials = new SecretsManager(
 			this,
 			'branch-protector-github-app-auth',
@@ -586,12 +595,6 @@ export class ServiceCatalogue extends GuStack {
 
 		const anghammaradTopicParameter =
 			GuAnghammaradTopicParameter.getInstance(this);
-
-		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
-			queueName: `branch-protector-queue-${stage}.fifo`,
-			contentBasedDeduplication: true,
-			retentionPeriod: Duration.days(14),
-		});
 
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
 			app: 'branch-protector',

@@ -1,9 +1,11 @@
+import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
+import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
 import type {
 	github_teams,
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-
+import type { Config } from '../config';
 /*
  * This interface has been copied from packages/branch-protector/src/model.ts
  * The two interfaces should be kept in sync until we can share the interface.
@@ -58,4 +60,32 @@ export function createRepository02Messages( //TODO: test this function
 	const allOrFirstFive = Math.min(repo02WithContactableOwners.length, 5);
 
 	return shuffle(repo02WithContactableOwners).slice(0, allOrFirstFive);
+}
+
+// TODO: test this function
+function createEntry(
+	message: UpdateBranchProtectionEvent,
+): SendMessageBatchRequestEntry {
+	const messageId = 'repository_02_message';
+	const stringifiedMessage = JSON.stringify(message);
+	const newMessageEntry: SendMessageBatchRequestEntry = {
+		Id: messageId,
+		MessageBody: stringifiedMessage,
+	};
+	return newMessageEntry;
+}
+
+export async function addMessagesToQueue(
+	messages: UpdateBranchProtectionEvent[],
+	config: Config,
+): Promise<void> {
+	const messageStrings: SendMessageBatchRequestEntry[] = messages.map(
+		(message) => createEntry(message),
+	);
+	const sqsClient = new SQSClient({});
+	const command = new SendMessageBatchCommand({
+		QueueUrl: config.queueUrl,
+		Entries: messageStrings,
+	});
+	await sqsClient.send(command);
 }

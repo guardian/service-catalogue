@@ -12767,6 +12767,9 @@ spec:
               ],
             },
             "QUERY_LOGGING": "false",
+            "QUEUE_URL": {
+              "Ref": "branchprotectorqueueEF5856E4",
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -13000,6 +13003,20 @@ spec:
                     },
                     "/repocop",
                   ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "branchprotectorqueueEF5856E4",
+                  "Arn",
                 ],
               },
             },

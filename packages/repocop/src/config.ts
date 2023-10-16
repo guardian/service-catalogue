@@ -24,6 +24,11 @@ export interface Config {
 	 * Repositories that should not be processed, for example, because they are not owned by a team in Product and Engineering.
 	 */
 	ignoredRepositoryPrefixes: string[];
+
+	/**
+	 * SQS queue to send messages to.
+	 */
+	queueUrl: string;
 }
 
 interface DatabaseConfig {
@@ -77,6 +82,7 @@ export async function getConfig(): Promise<Config> {
 		stage: getEnvOrThrow('STAGE'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
+		queueUrl: getEnvOrThrow('QUEUE_URL'),
 		ignoredRepositoryPrefixes: [
 			// Visuals team
 			'guardian/interactive-',
