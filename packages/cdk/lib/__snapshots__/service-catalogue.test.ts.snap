@@ -321,7 +321,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -962,7 +962,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1617,7 +1617,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -2234,7 +2234,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3111,7 +3111,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3570,7 +3570,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4239,7 +4239,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4896,7 +4896,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5490,7 +5490,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6137,7 +6137,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6814,7 +6814,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7631,7 +7631,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8079,7 +8079,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8927,7 +8927,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9374,7 +9374,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10069,7 +10069,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10725,7 +10725,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
