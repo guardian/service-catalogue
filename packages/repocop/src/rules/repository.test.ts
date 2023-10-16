@@ -3,12 +3,7 @@ import type {
 	github_repository_branches,
 } from '@prisma/client';
 import type { RepositoryTeam } from '../query';
-import {
-	repository01,
-	repository02,
-	repository04,
-	repository06,
-} from './repository';
+import { repositoryRuleEvaluation } from './repository';
 
 const nullRepo: github_repositories = {
 	cq_sync_time: null,
@@ -147,7 +142,11 @@ describe('repository_01 should be false when the default branch is not main', ()
 	test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: github_repositories[] = [thePerfectRepo, badRepo];
-		expect(repos.map(repository01)).toEqual([true, false]);
+		const evaluation = repos.map((repo) =>
+			repositoryRuleEvaluation(repo, [], []),
+		);
+
+		expect(evaluation.map((repo) => repo.repository_01)).toEqual([true, false]);
 	});
 });
 
@@ -165,11 +164,13 @@ describe('Repositories should have branch protection', () => {
 			protected: false,
 		};
 
-		const result = repository02(thePerfectRepo, [
-			protectedMainBranch,
-			unprotectedSideBranch,
-		]);
-		expect(result).toEqual(true);
+		const actual = repositoryRuleEvaluation(
+			thePerfectRepo,
+			[protectedMainBranch, unprotectedSideBranch],
+			[],
+		);
+
+		expect(actual.repository_02).toEqual(true);
 	});
 	test('We should get a negative result when the default branch is not protected', () => {
 		const repo: github_repositories = {
@@ -186,7 +187,9 @@ describe('Repositories should have branch protection', () => {
 			protected: false,
 			protection: {},
 		};
-		expect(repository02(repo, [unprotectedMainBranch])).toEqual(false);
+
+		const actual = repositoryRuleEvaluation(repo, [unprotectedMainBranch], []);
+		expect(actual.repository_02).toEqual(false);
 	});
 });
 
@@ -205,7 +208,8 @@ describe('Repository admin access', () => {
 			},
 		];
 
-		expect(repository04(repo, teams)).toEqual(false);
+		const actual = repositoryRuleEvaluation(repo, [], teams);
+		expect(actual.repository_04).toEqual(false);
 	});
 
 	test('Should return true when there is an admin team', () => {
@@ -226,7 +230,8 @@ describe('Repository admin access', () => {
 			},
 		];
 
-		expect(repository04(repo, teams)).toEqual(true);
+		const actual = repositoryRuleEvaluation(repo, [], teams);
+		expect(actual.repository_04).toEqual(true);
 	});
 
 	test(`Should validate repositories with a 'hackday' topic`, () => {
@@ -238,9 +243,8 @@ describe('Repository admin access', () => {
 			topics: ['hackday'],
 		};
 
-		const teams: RepositoryTeam[] = [];
-
-		expect(repository04(repo, teams)).toEqual(true);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_04).toEqual(true);
 	});
 
 	test(`Should evaluate repositories with a 'production' topic`, () => {
@@ -261,8 +265,8 @@ describe('Repository admin access', () => {
 				id: 1234n,
 			},
 		];
-
-		expect(repository04(repo, teams)).toEqual(true);
+		const actual = repositoryRuleEvaluation(repo, [], teams);
+		expect(actual.repository_04).toEqual(true);
 	});
 
 	test(`Should return false if all topics are unrecognised`, () => {
@@ -273,9 +277,8 @@ describe('Repository admin access', () => {
 			topics: ['avocado'],
 		};
 
-		const teams: RepositoryTeam[] = [];
-
-		expect(repository04(repo, teams)).toEqual(false);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_04).toEqual(false);
 	});
 });
 
@@ -286,7 +289,8 @@ describe('Repository topics', () => {
 			topics: ['production'],
 		};
 
-		expect(repository06(repo)).toEqual(true);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_06).toEqual(true);
 	});
 
 	test('Should return false when there are multiple recognised topics', () => {
@@ -297,7 +301,8 @@ describe('Repository topics', () => {
 			topics: ['production', 'hackday'],
 		};
 
-		expect(repository06(repo)).toEqual(false);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_06).toEqual(false);
 	});
 
 	test('Should return true when there is are multiple topics, not all are recognised', () => {
@@ -306,7 +311,8 @@ describe('Repository topics', () => {
 			topics: ['production', 'android'],
 		};
 
-		expect(repository06(repo)).toEqual(true);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_06).toEqual(true);
 	});
 
 	test('Should return false when there are no topics', () => {
@@ -315,7 +321,8 @@ describe('Repository topics', () => {
 			topics: [],
 		};
 
-		expect(repository06(repo)).toEqual(false);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_06).toEqual(false);
 	});
 
 	test('Should return false when there are no recognised topics', () => {
@@ -324,6 +331,7 @@ describe('Repository topics', () => {
 			topics: ['android', 'mobile'],
 		};
 
-		expect(repository06(repo)).toEqual(false);
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.repository_06).toEqual(false);
 	});
 });

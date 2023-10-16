@@ -1,15 +1,21 @@
 import type {
 	github_repositories,
 	github_repository_branches,
+	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { RepositoryTeam } from '../query';
+import {
+	getRepositoryBranches,
+	getRepositoryTeams,
+	getUnarchivedRepositories,
+	type RepositoryTeam,
+} from '../query';
 
 /**
  * Apply the following rule to a GitHub repository:
  *   > The default branch name should be "main".
  */
-export function repository01(repo: github_repositories): boolean {
+function repository01(repo: github_repositories): boolean {
 	return repo.default_branch === 'main';
 }
 
@@ -17,7 +23,7 @@ export function repository01(repo: github_repositories): boolean {
  * Apply the following rule to a GitHub repository:
  *   > Enable branch protection for the default branch, ensuring changes are reviewed before being deployed.
  */
-export function repository02(
+function repository02(
 	repo: github_repositories,
 	branches: github_repository_branches[],
 ): boolean {
@@ -37,7 +43,7 @@ export function repository02(
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
  *   > Repositories without one of the following topics are exempt: production, testing, documentation.
  */
-export function repository04(
+function repository04(
 	repo: github_repositories,
 	teams: RepositoryTeam[],
 ): boolean {
@@ -59,7 +65,7 @@ export function repository04(
  *   > Repositories should have one and only one of the following topics to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
-export function repository06(repo: github_repositories): boolean {
+function repository06(repo: github_repositories): boolean {
 	const validTopics = [
 		'prototype',
 		'learning',
@@ -101,4 +107,23 @@ export function repositoryRuleEvaluation(
 		repository_07: null,
 		evaluated_on: new Date(),
 	};
+}
+
+export async function evaluateRepositories(
+	client: PrismaClient,
+	ignoredRepositoryPrefixes: string[],
+): Promise<repocop_github_repository_rules[]> {
+	const repositories = await getUnarchivedRepositories(
+		client,
+		ignoredRepositoryPrefixes,
+	);
+
+	const branches = await getRepositoryBranches(client, repositories);
+
+	return await Promise.all(
+		repositories.map(async (repo) => {
+			const teams = await getRepositoryTeams(client, repo);
+			return repositoryRuleEvaluation(repo, branches, teams);
+		}),
+	);
 }

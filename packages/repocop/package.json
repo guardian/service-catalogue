@@ -1,25 +1,26 @@
 {
-  "name": "repocop",
-  "version": "1.0.0",
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.122",
-    "prisma": "^5.4.2"
-  },
-  "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
-    "start": "ts-node src/run-locally.ts",
-    "postinstall": "prisma generate",
-    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
-    "migrate:setuplocal": "script/migrate.sh --dev",
-    "migrate:dev": "script/migrate.sh --dev $NAME",
-    "migrate:code": "script/migrate.sh --code",
-    "migrate:prod": "script/migrate.sh --prod"
-  },
-  "prisma": {
-    "schema": "prisma/schema.prisma"
-  },
-  "dependencies": {
-    "@aws-sdk/rds-signer": "^3.423.0",
-    "@prisma/client": "^5.3.1"
-  }
+	"name": "repocop",
+	"version": "1.0.0",
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.122",
+		"prisma": "^5.4.2"
+	},
+	"scripts": {
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+		"start": "ts-node src/run-locally.ts",
+		"postinstall": "prisma generate",
+		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
+		"migrate:setuplocal": "script/migrate.sh --dev",
+		"migrate:dev": "script/migrate.sh --dev $NAME",
+		"migrate:code": "script/migrate.sh --code",
+		"migrate:prod": "script/migrate.sh --prod"
+	},
+	"prisma": {
+		"schema": "prisma/schema.prisma"
+	},
+	"dependencies": {
+		"@aws-sdk/client-sqs": "^3.423.0",
+		"@aws-sdk/rds-signer": "^3.423.0",
+		"@prisma/client": "^5.3.1"
+	}
 }

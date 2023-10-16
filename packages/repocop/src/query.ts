@@ -1,6 +1,7 @@
 import type {
 	github_repositories,
 	github_repository_branches,
+	github_teams,
 	Prisma,
 	PrismaClient,
 	view_repo_ownership,
@@ -43,6 +44,9 @@ export async function getRepositoryBranches(
 
 	return branches;
 }
+
+export const getTeams = async (client: PrismaClient): Promise<github_teams[]> =>
+	await client.github_teams.findMany({});
 
 export type RepositoryTeam = GetFindResult<
 	Prisma.$github_team_repositoriesPayload,
