@@ -197,7 +197,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_accessanalyzer_*
     - aws_securityhub_*
@@ -321,7 +321,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -840,7 +840,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_organization*
   destinations:
@@ -962,7 +962,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1617,7 +1617,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -2234,7 +2234,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3111,7 +3111,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3570,7 +3570,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4239,7 +4239,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4896,7 +4896,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5367,7 +5367,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_autoscaling_groups
   destinations:
@@ -5490,7 +5490,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6014,7 +6014,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_acm*
   destinations:
@@ -6137,7 +6137,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6691,7 +6691,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_cloudformation_*
   destinations:
@@ -6814,7 +6814,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7508,7 +7508,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_cloudwatch_alarms
   destinations:
@@ -7631,7 +7631,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7955,7 +7955,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_inspector_findings
     - aws_inspector2_findings
@@ -8079,7 +8079,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8803,7 +8803,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_elbv1_*
     - aws_elbv2_*
@@ -8927,7 +8927,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9251,7 +9251,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_s3*
   destinations:
@@ -9374,7 +9374,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9898,7 +9898,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.6.0
+  version: v22.15.0
   tables:
     - aws_*
   skip_tables:
@@ -10069,7 +10069,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10725,7 +10725,7 @@ spec:
               },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/hackday-firelens:main",
+            "Image": "ghcr.io/guardian/devx-logs:main",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {

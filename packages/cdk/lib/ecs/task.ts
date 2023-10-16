@@ -29,7 +29,7 @@ const cloudqueryImage = ContainerImage.fromRegistry(
 );
 
 const firelensImage = ContainerImage.fromRegistry(
-	'ghcr.io/guardian/hackday-firelens:main',
+	'ghcr.io/guardian/devx-logs:main',
 );
 
 export interface ScheduledCloudqueryTaskProps
