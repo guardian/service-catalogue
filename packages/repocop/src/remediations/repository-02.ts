@@ -40,7 +40,7 @@ function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
 }
 
-export function createRepository02Messages( //TODO: test this function
+export function createRepository02Messages(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
 	teams: github_teams[],
@@ -66,26 +66,20 @@ export function createRepository02Messages( //TODO: test this function
 function createEntry(
 	message: UpdateBranchProtectionEvent,
 ): SendMessageBatchRequestEntry {
-	const messageId = 'repository_02_message';
-	const stringifiedMessage = JSON.stringify(message);
-	const newMessageEntry: SendMessageBatchRequestEntry = {
-		Id: messageId,
-		MessageBody: stringifiedMessage,
+	return {
+		Id: 'repository_02',
+		MessageBody: JSON.stringify(message),
 	};
-	return newMessageEntry;
 }
 
 export async function addMessagesToQueue(
-	messages: UpdateBranchProtectionEvent[],
+	events: UpdateBranchProtectionEvent[],
 	config: Config,
 ): Promise<void> {
-	const messageStrings: SendMessageBatchRequestEntry[] = messages.map(
-		(message) => createEntry(message),
-	);
 	const sqsClient = new SQSClient({});
 	const command = new SendMessageBatchCommand({
 		QueueUrl: config.queueUrl,
-		Entries: messageStrings,
+		Entries: events.map((event) => createEntry(event)),
 	});
 	await sqsClient.send(command);
 }
