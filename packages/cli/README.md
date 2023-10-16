@@ -7,12 +7,12 @@ There are two primary use-cases:
 
 ### List available tasks
 ```bash
-npm -w cli start list-tasks
+npm -w cli start list-tasks -- --stage [CODE|PROD]
 ```
 
 ### Start a task
 ```bash
-npm -w cli start run-task
+npm -w cli start run-task -- --stage [CODE|PROD] --name [TASK_NAME]
 ```
 
 The full CLI can be described via the `--help` flag:
