@@ -26,16 +26,18 @@ const parseCommandLineArguments = () => {
 							description: 'The Stack tag',
 							type: 'string',
 							demandOption: true,
+							default: 'deploy',
 						})
 						.option('stage', {
 							description: 'The Stage tag',
-							type: 'string',
+							choices: ['CODE', 'PROD'],
 							demandOption: true,
 						})
 						.option('app', {
 							description: 'The App tag',
 							type: 'string',
 							demandOption: true,
+							default: 'service-catalogue',
 						})
 						.option('debug', {
 							description:
@@ -51,16 +53,18 @@ const parseCommandLineArguments = () => {
 						description: 'The Stack tag of the task to run',
 						type: 'string',
 						demandOption: true,
+						default: 'deploy',
 					})
 					.option('stage', {
 						description: 'The Stage tag of the task to run',
-						type: 'string',
+						choices: ['CODE', 'PROD'],
 						demandOption: true,
 					})
 					.option('app', {
 						description: 'The App tag of the task to run',
 						type: 'string',
 						demandOption: true,
+						default: 'service-catalogue',
 					})
 					.option('name', {
 						description: 'The Name tag of the task to run',
@@ -74,16 +78,18 @@ const parseCommandLineArguments = () => {
 						description: 'The Stack tag of the tasks to run',
 						type: 'string',
 						demandOption: true,
+						default: 'deploy',
 					})
 					.option('stage', {
 						description: 'The Stage tag of the tasks to run',
-						type: 'string',
+						choices: ['CODE', 'PROD'],
 						demandOption: true,
 					})
 					.option('app', {
 						description: 'The App tag of the tasks to run',
 						type: 'string',
 						demandOption: true,
+						default: 'service-catalogue',
 					});
 			})
 			.demandCommand(1, '') // just print help
