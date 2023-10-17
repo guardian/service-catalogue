@@ -336,7 +336,7 @@ export class ServiceCatalogue extends GuStack {
 			'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
 		];
 
-		const githubSources: CloudquerySource[] = [
+		const individualGithubSources: CloudquerySource[] = [
 			{
 				name: 'GitHubRepositories',
 				description: 'Collect GitHub repository data',
@@ -399,6 +399,20 @@ export class ServiceCatalogue extends GuStack {
 				additionalCommands: additionalGithubCommands,
 			},
 		];
+
+		const remainingGithubSources: CloudquerySource = {
+			name: 'RemainingGitHubData',
+			description: 'All other GitHub data',
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			config: githubSourceConfig({
+				tables: ['github_*'],
+				skipTables: individualGithubSources.flatMap(
+					(_) => _.config.spec.tables,
+				) as string[],
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+		};
 
 		const fastlyCredentials = new SecretsManager(this, 'fastly-credentials', {
 			secretName: `/${stage}/${stack}/${app}/fastly-credentials`,
@@ -505,7 +519,8 @@ export class ServiceCatalogue extends GuStack {
 			sources: [
 				...individualAwsSources,
 				remainingAwsSources,
-				...githubSources,
+				...individualGithubSources,
+				remainingGithubSources,
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
