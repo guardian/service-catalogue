@@ -31,8 +31,6 @@ async function writeRepo02Messages(
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
 ) {
-	const anghammaradClient = new Anghammarad();
-
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
 
@@ -49,21 +47,22 @@ async function writeRepo02Messages(
 		productionOrDocs.includes(repo.full_name),
 	);
 
-	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams, 5);
+	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams, 2);
+	const anghammaradClient = new Anghammarad();
 	await notifyAndAddToQueue(msgs, config, anghammaradClient);
 }
-/*
- *TODO - For CODE, we should add a message to the queue but should never send a notification.
- */
+
 async function notifyAndAddToQueue(
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
 	anghammaradClient: Anghammarad,
 ) {
 	await addMessagesToQueue(events, config);
-	await sendNotifications(anghammaradClient, events, config);
-
-	return Promise.resolve();
+	if (config.stage === 'PROD') {
+		await sendNotifications(anghammaradClient, events, config);
+	} else {
+		console.log('Messages added to queue but notifications NOT sent');
+	}
 }
 
 export async function main() {

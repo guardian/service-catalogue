@@ -100,7 +100,7 @@ async function notifyOneTeam(
 ) {
 	await anghammaradClient.notify({
 		subject: 'Hello',
-		message: `Branch protections will be applied to${fullName}. No action required.`,
+		message: `Branch protections will be applied to ${fullName}. No action required.`,
 		actions: [], //TODO: add link to best practices.
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
