@@ -406,9 +406,20 @@ export class ServiceCatalogue extends GuStack {
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 			config: githubSourceConfig({
 				tables: ['github_*'],
-				skipTables: individualGithubSources.flatMap(
-					(_) => _.config.spec.tables,
-				) as string[],
+				skipTables: [
+					...(individualGithubSources.flatMap(
+						(_) => _.config.spec.tables,
+					) as string[]),
+
+					// Continue to skip the tables that other tasks had previously skipped as it is unlikely we want them now either.
+					...new Set(
+						(
+							individualGithubSources.flatMap(
+								(_) => _.config.spec.skip_tables,
+							) as string[]
+						).filter((_) => _), // remove any nulls
+					),
+				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
