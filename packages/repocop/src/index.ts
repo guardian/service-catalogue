@@ -53,15 +53,13 @@ async function writeRepo02Messages(
 	await notifyAndAddToQueue(msgs, config, anghammaradClient);
 }
 /*
- *TODO - implement this
- * For CODE, we should add a message to the queue but should never send a notification.
+ *TODO - For CODE, we should add a message to the queue but should never send a notification.
  */
 async function notifyAndAddToQueue(
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
 	anghammaradClient: Anghammarad,
 ) {
-	console.log('Function not implemented, here are the events:');
 	await addMessagesToQueue(events, config);
 	await sendNotifications(anghammaradClient, events, config);
 
