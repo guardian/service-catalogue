@@ -3,7 +3,8 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { createRepository02Messages } from './repository-02';
+import type { UpdateBranchProtectionEvent } from './repository-02';
+import { createEntry, createRepository02Messages } from './repository-02';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',
@@ -107,5 +108,24 @@ describe('Team slugs should be findable for every team associated with a repo', 
 		);
 
 		expect(actual.length).toEqual(0);
+	});
+});
+
+describe('Batch entries should be created for each message', () => {
+	test('The batch ID of the message should contain no special characters', () => {
+		const event1: UpdateBranchProtectionEvent = {
+			fullName: 'guardian/repo-1',
+			teamNameSlugs: ['team-one'],
+		};
+		const event2: UpdateBranchProtectionEvent = {
+			fullName: '!@£$%^&*()l',
+			teamNameSlugs: ['team-two'],
+		};
+
+		const actual1 = createEntry(event1);
+		const actual2 = createEntry(event2);
+
+		expect(actual1.Id).toEqual('guardianrepo1');
+		expect(actual2.Id).toEqual('l');
 	});
 });

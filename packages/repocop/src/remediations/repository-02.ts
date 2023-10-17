@@ -68,13 +68,12 @@ export function createRepository02Messages(
 	return shuffle(repo02WithContactableOwners).slice(0, sliceLength);
 }
 
-// TODO: test this function
-function createEntry(
+export function createEntry(
 	message: UpdateBranchProtectionEvent,
 ): SendMessageBatchRequestEntry {
-	const id = message.fullName.replace(/\W/g, '');
+	const repoNoSpecialCharacters = message.fullName.replace(/\W/g, '');
 	return {
-		Id: id,
+		Id: repoNoSpecialCharacters,
 		MessageBody: JSON.stringify(message),
 		MessageGroupId: 'repocop',
 	};
