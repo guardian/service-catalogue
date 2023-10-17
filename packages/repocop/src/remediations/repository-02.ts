@@ -72,9 +72,11 @@ export function createRepository02Messages(
 function createEntry(
 	message: UpdateBranchProtectionEvent,
 ): SendMessageBatchRequestEntry {
+	const id = message.fullName.replace(/\W/g, '');
 	return {
-		Id: 'repository_02',
+		Id: id,
 		MessageBody: JSON.stringify(message),
+		MessageGroupId: 'repocop',
 	};
 }
 
