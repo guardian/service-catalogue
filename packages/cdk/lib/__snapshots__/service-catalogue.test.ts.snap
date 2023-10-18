@@ -110,7 +110,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
     },
     "CloudquerySourceDelegatedToSecurityAccountScheduledEventRuleC7320B4E": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 22 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -2683,7 +2683,7 @@ spec:
     },
     "CloudquerySourceGitHubIssuesScheduledEventRuleAF7C253C": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 2 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -3345,7 +3345,7 @@ spec:
     },
     "CloudquerySourceGitHubRepositoriesScheduledEventRuleC7F5836E": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 0 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -4683,7 +4683,7 @@ spec:
     },
     "CloudquerySourceGuardianCustomSnykProjectsScheduledEventRule92FBDA90": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 5 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -5310,7 +5310,7 @@ spec:
     },
     "CloudquerySourceOrgWideAutoScalingGroupsScheduledEventRuleC637A0C6": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 0 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -5957,7 +5957,7 @@ spec:
     },
     "CloudquerySourceOrgWideCertificatesScheduledEventRule2D4505F4": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 1 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -7251,7 +7251,7 @@ spec:
     },
     "CloudquerySourceOrgWideCloudwatchAlarmsScheduledEventRuleB72D02A5": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 2 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -7898,7 +7898,7 @@ spec:
     },
     "CloudquerySourceOrgWideInspectorScheduledEventRule0152ABA6": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 3 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -8546,7 +8546,7 @@ spec:
     },
     "CloudquerySourceOrgWideLoadBalancersScheduledEventRule1B13EFF3": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 23 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -9194,7 +9194,7 @@ spec:
     },
     "CloudquerySourceOrgWideS3ScheduledEventRuleB310F050": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 4 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -9841,7 +9841,7 @@ spec:
     },
     "CloudquerySourceRemainingAwsDataScheduledEventRuleAE2A0ED1": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 21 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -10531,7 +10531,7 @@ spec:
     },
     "CloudquerySourceRemainingGitHubDataScheduledEventRule7B8ECB7B": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 4 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -11209,7 +11209,7 @@ spec:
     },
     "CloudquerySourceSnykAllScheduledEventRule73601A00": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 6 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -12598,9 +12598,28 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "branchprotectorbranchprotectorrate7days0565AEC58": {
+    "branchprotectorbranchprotectorcron090AllowEventRuleServiceCataloguebranchprotector0084E4FA7B7052EF": {
       "Properties": {
-        "ScheduleExpression": "rate(7 days)",
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "branchprotector2BAF8BEE",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "branchprotectorbranchprotectorcron090B7083EDC",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "branchprotectorbranchprotectorcron090B7083EDC": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 9 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -12615,25 +12634,6 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
-    },
-    "branchprotectorbranchprotectorrate7days0AllowEventRuleServiceCataloguebranchprotector0084E4FA873714D6": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "branchprotector2BAF8BEE",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "branchprotectorbranchprotectorrate7days0565AEC58",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "branchprotectorgithubappauth4E91892E": {
       "DeletionPolicy": "Delete",
@@ -13042,9 +13042,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repocoprepocoprate1day091058966": {
+    "repocoprepocopcron01504E53EA84": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 15 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -13060,7 +13060,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoprepocoprate1day0AllowEventRuleServiceCataloguerepocop7BEB589276D1514D": {
+    "repocoprepocopcron0150AllowEventRuleServiceCataloguerepocop7BEB58921D341946": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -13072,7 +13072,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repocoprepocoprate1day091058966",
+            "repocoprepocopcron01504E53EA84",
             "Arn",
           ],
         },
