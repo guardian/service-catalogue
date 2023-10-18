@@ -192,7 +192,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'DelegatedToSecurityAccount',
 				description:
 					'Collecting data across the organisation from services delegated to the Security account.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '22' }),
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
 					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
 					concurrency: 2000,
@@ -219,7 +219,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideLoadBalancers',
 				description: 'Collecting load balancer data across the organisation.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '23' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
 				}),
@@ -229,7 +229,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideAutoScalingGroups',
 				description: 'Collecting ASG data across the organisation.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_autoscaling_groups'],
 				}),
@@ -239,7 +239,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideCertificates',
 				description: 'Collecting certificate data across the organisation.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '1' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_acm*'],
 				}),
@@ -250,7 +250,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'OrgWideCloudwatchAlarms',
 				description:
 					'Collecting CloudWatch Alarm data across the organisation.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_cloudwatch_alarms'],
 				}),
@@ -260,7 +260,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideInspector',
 				description: 'Collecting Inspector data across the organisation.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
 				}),
@@ -270,7 +270,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideS3',
 				description: 'Collecting S3 data across the organisation.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_s3*'],
 				}),
@@ -282,7 +282,8 @@ export class ServiceCatalogue extends GuStack {
 		const remainingAwsSources: CloudquerySource = {
 			name: 'RemainingAwsData',
 			description: 'Data fetched across all accounts in the organisation.',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			//this job can take upwards of 7 hours to run, so start late at night
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '21' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
@@ -340,7 +341,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'GitHubRepositories',
 				description: 'Collect GitHub repository data',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 				config: githubSourceConfig({
 					tables: [
 						'github_repositories',
@@ -391,7 +392,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'GitHubIssues',
 				description: 'Collect GitHub issue data (PRs and Issues)',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
 				config: githubSourceConfig({
 					tables: ['github_issues'],
 				}),
@@ -403,7 +404,7 @@ export class ServiceCatalogue extends GuStack {
 		const remainingGithubSources: CloudquerySource = {
 			name: 'RemainingGitHubData',
 			description: 'All other GitHub data',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
 			config: githubSourceConfig({
 				tables: ['github_*'],
 				skipTables: [
@@ -490,7 +491,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'SnykAll',
 				description: 'Collecting all Snyk data, except for projects',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
 				config: snykSourceConfig({
 					tables: [
 						'snyk_dependencies',
@@ -512,7 +513,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'GuardianCustomSnykProjects',
 				description:
 					'Collecting Snyk projects including grouped vulnerabilities and tags',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '5' }),
 				config: guardianSnykSourceConfig({
 					tables: ['snyk_projects'],
 				}),
