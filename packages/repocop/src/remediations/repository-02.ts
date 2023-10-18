@@ -97,10 +97,26 @@ async function notifyOneTeam(
 	teamSlug: string,
 	config: Config,
 ) {
+	const githubUrl = `https://github.com/${fullName}`;
+	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
+	const protectionUrl = `https://github.com/${fullName}/settings/branches`;
+	const actions = [
+		//duplicated in branch protector
+		{ cta: 'Repository', url: githubUrl },
+		{
+			cta: 'Compliance information for repos',
+			url: grafanaUrl,
+		},
+		{
+			cta: 'Branch protections',
+			url: protectionUrl,
+		},
+	];
+
 	await anghammaradClient.notify({
 		subject: 'Repocop branch protection',
 		message: `Branch protections will be applied to ${fullName}. No action is required.`,
-		actions: [], //TODO: add link to best practices.
+		actions,
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: 'branch-protector',
