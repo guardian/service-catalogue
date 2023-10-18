@@ -98,8 +98,8 @@ async function notifyOneTeam(
 	config: Config,
 ) {
 	await anghammaradClient.notify({
-		subject: 'Hello',
-		message: `Branch protections will be applied to ${fullName}. No action required.`,
+		subject: 'Repocop branch protection',
+		message: `Branch protections will be applied to ${fullName}. No action is required.`,
 		actions: [], //TODO: add link to best practices.
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
@@ -115,11 +115,16 @@ async function notifyOneRepo(
 	event: UpdateBranchProtectionEvent,
 	config: Config,
 ) {
-	for (const slug of event.teamNameSlugs) {
-		await notifyOneTeam(anghammaradClient, event.fullName, slug, config);
+	try {
+		await Promise.all(
+			event.teamNameSlugs.map(async (slug) => {
+				await notifyOneTeam(anghammaradClient, event.fullName, slug, config);
+			}),
+		);
+		console.log(`Notified all teams about ${event.fullName}`);
+	} catch (error) {
+		console.error(error);
 	}
-
-	console.log(`Notified all teams about ${event.fullName}`);
 }
 
 export async function sendNotifications(
@@ -127,7 +132,13 @@ export async function sendNotifications(
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
 ): Promise<void> {
-	for (const event of events) {
-		await notifyOneRepo(anghammaradClient, event, config);
+	try {
+		await Promise.all(
+			events.map(async (event) => {
+				await notifyOneRepo(anghammaradClient, event, config);
+			}),
+		);
+	} catch (error) {
+		console.error(error);
 	}
 }
