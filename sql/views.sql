@@ -1,107 +1,12 @@
-CREATE OR REPLACE VIEW aws_accounts AS
-SELECT DISTINCT acc.id,
-                acc.name,
-                acc.email,
-                acc.status,
-                acc.joined_timestamp,
-                COALESCE(ou.name, 'ROOT') AS "organizational_unit"
-FROM aws_organizations_accounts acc
-         LEFT JOIN aws_organizations_account_parents par  ON acc.id = par.id
-         LEFT JOIN aws_organizations_organizational_units ou on par.parent_id = ou.id;
-
-
-CREATE OR REPLACE FUNCTION coalesce_dates(image_creation_time text, instance_launch_time timestamp) RETURNS date
-    LANGUAGE SQL
-    IMMUTABLE
-RETURN coalesce(cast(image_creation_time as date), cast(instance_launch_time as date));
-
-create or replace view view_old_ec2_instances as
-select ac.id                                              as account_id
-     , ac.name                                            as account_name
-     , ec2.instance_id
-     , ec2.state ->> 'Name'                               as state
-     , ec2.tags ->> 'Stack'                               as stack
-     , ec2.tags ->> 'Stage'                               as stage
-     , ec2.tags ->> 'App'                                 as app
-     , ec2.tags ->> 'gu:repo'                             as repo
-     , ec2.region
-     , coalesce_dates(img.creation_date, ec2.launch_time) as creation_or_launch_time
-from aws_ec2_instances ec2
-         left join aws_ec2_images img on ec2.image_id = img.image_id
-         left join aws_accounts ac on ec2.account_id = ac.id
-where (
-        coalesce_dates(img.creation_date, ec2.launch_time) is null
-        or coalesce_dates(img.creation_date, ec2.launch_time) < NOW() - INTERVAL '30 days'
-    )
-  and ec2.state ->> 'Name' = 'running';
-
 /*
-General information about running EC2 instances
-| account_name |  app |  image_id  | instance_id | built_by_amigo | launch_time|
-|--------------|------|------------|-------------|----------------|------------|
-|    account1  | grid | ami-123456 |  i-1234556  |      true      | 2023-06-23 |
- */
-create or replace view view_running_instances as
-with id_and_tags as (select image_id, tags ->> 'BuiltBy' as built_by
-                     from aws_ec2_images
-                     where tags is not null
-                     order by image_id),
-
-     aggregated_images as (select image_id,
-                                  CASE
-                                      WHEN 'amigo' = ANY (array_agg(built_by)) THEN true
-                                      ELSE false
-                                      END as built_by_amigo
-                           from id_and_tags
-                           group by image_id, built_by
-                           order by image_id)
-
-select distinct on (instances.instance_id) accts.name               as account_name,
-                                           instances.tags ->> 'App' as app,
-
-                                           instances.image_id,
-                                           instances.instance_id,
-                                           CASE
-                                               WHEN images.built_by_amigo THEN true
-                                               ELSE false
-                                               END                  as built_by_amigo,
-                                           cast(instances.launch_time as date)
-from aws_ec2_instances instances
-         left join aggregated_images images
-                   on instances.image_id = images.image_id -- instances.account_id=images.account_id
-         left join aws_organizations_accounts accts on instances.account_id = accts.id
-where instances.state ->> 'Name' = 'running'
-order by instances.instance_id, built_by_amigo desc;
-
-/*
- This view destructures snyk_projects on the tags field, creating a layout that is easier to query.
-
- It's shape is:
-   id | org_id | name | repo | commit
+ One file per view to be able to see more easily which sql is missing
+ aws_accouts_view.sql
+ cq_last_synced_view.sal
+ elk_index_to_space_view.sql
+ grafana_cloudwatch_to_internal_infra_view.sql
+ view_old_ec2_instances_view.sql
+ view_repo_ownership_view.sql
+ view_running_instances_view.sql
+ view_snyk_project_tags_view.sql
  */
 
-create or replace view view_snyk_project_tags as
-    --| project1 | key:commit, value:somecommithash |
---| project1 | key:repo, value:guardian/somerepo |
-with all_tags as (select id, jsonb_array_elements(tags) as tags
-                  from snyk_projects),
-
-     -- | project-1 | somecommithash |
-     projects_with_hashes as (select id, tags ->> 'value' as commit
-                              from all_tags
-                              where tags ->> 'key' = 'commit'),
-
--- | project-1 | guardian/somerepo |
-     projects_with_repos as (select id, tags ->> 'value' as repo
-                             from all_tags
-                             where tags ->> 'key' = 'repo')
-
-select p.id,
-       p.org_id,
-       p.name,
-       r.repo,
-       h.commit
-from snyk_projects p
-         left join projects_with_hashes h on p.id = h.id
-         left join projects_with_repos r on p.id = r.id
-order by h.commit;
