@@ -1,9 +1,15 @@
+import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
+import type { Config } from './config';
 import { getConfig } from './config';
 import { getRepoOwnership, getTeams, getUnarchivedRepositories } from './query';
 import type { UpdateBranchProtectionEvent } from './remediations/repository-02';
-import { createRepository02Messages } from './remediations/repository-02';
+import {
+	addMessagesToQueue,
+	createRepository02Messages,
+	sendNotifications,
+} from './remediations/repository-02';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -23,6 +29,7 @@ async function writeEvaluationTable(
 async function writeRepo02Messages(
 	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
+	config: Config,
 ) {
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
@@ -40,20 +47,22 @@ async function writeRepo02Messages(
 		productionOrDocs.includes(repo.full_name),
 	);
 
-	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams);
-	await notifyAndAddToQueue(msgs);
+	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams, 2);
+	const anghammaradClient = new Anghammarad();
+	await notifyAndAddToQueue(msgs, config, anghammaradClient);
 }
-/*
- *TODO - implement this
- * For CODE, we should add a message to the queue but should never send a notification.
- */
-async function notifyAndAddToQueue(events: UpdateBranchProtectionEvent[]) {
-	console.log('Function not implemented, here are the events:');
-	for (const event of events) {
-		console.log(event);
-	}
 
-	return Promise.resolve();
+async function notifyAndAddToQueue(
+	events: UpdateBranchProtectionEvent[],
+	config: Config,
+	anghammaradClient: Anghammarad,
+) {
+	await addMessagesToQueue(events, config);
+	if (config.stage === 'PROD') {
+		await sendNotifications(anghammaradClient, events, config);
+	} else {
+		console.log('Messages added to queue but notifications NOT sent');
+	}
 }
 
 export async function main() {
@@ -78,7 +87,7 @@ export async function main() {
 		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
-	await writeRepo02Messages(prisma, evaluatedRepos);
+	await writeRepo02Messages(prisma, evaluatedRepos, config);
 
 	console.log('Done');
 }

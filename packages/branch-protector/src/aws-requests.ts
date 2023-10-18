@@ -34,7 +34,7 @@ export async function notify(
 ) {
 	const client = new Anghammarad();
 	await client.notify({
-		subject: 'Hello',
+		subject: 'Repocop branch protection',
 		message: `Branch protection has been applied to ${fullRepoName}`,
 		actions: [
 			{

@@ -10,9 +10,9 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuSecurityGroup",
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
+      "GuAnghammaradTopicParameter",
       "GuDistributionBucketParameter",
       "GuScheduledLambda",
-      "GuAnghammaradTopicParameter",
       "GuScheduledLambda",
     ],
     "gu:cdk:version": "TEST",
@@ -12759,6 +12759,9 @@ spec:
         },
         "Environment": {
           "Variables": {
+            "ANGHAMMARAD_SNS_ARN": {
+              "Ref": "AnghammaradSnsArn",
+            },
             "APP": "repocop",
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
@@ -12767,6 +12770,9 @@ spec:
               ],
             },
             "QUERY_LOGGING": "false",
+            "QUEUE_URL": {
+              "Ref": "branchprotectorqueueEF5856E4",
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -13001,6 +13007,27 @@ spec:
                     "/repocop",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "branchprotectorqueueEF5856E4",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "AnghammaradSnsArn",
               },
             },
           ],
