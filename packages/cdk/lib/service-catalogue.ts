@@ -539,6 +539,15 @@ export class ServiceCatalogue extends GuStack {
 			],
 		});
 
+		const anghammaradTopicParameter =
+			GuAnghammaradTopicParameter.getInstance(this);
+
+		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
+			queueName: `branch-protector-queue-${stage}.fifo`,
+			contentBasedDeduplication: true,
+			retentionPeriod: Duration.days(14),
+		});
+
 		const prodMonitoring: GuLambdaErrorPercentageMonitoringProps = {
 			toleratedErrorPercentage: 50,
 			lengthOfEvaluationPeriod: Duration.minutes(1),
@@ -565,10 +574,12 @@ export class ServiceCatalogue extends GuStack {
 			],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
+				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 
 				// Set this to 'true' to enable SQL query logging
 				QUERY_LOGGING: 'false',
+				QUEUE_URL: branchProtectorQueue.queueUrl,
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
@@ -583,6 +594,8 @@ export class ServiceCatalogue extends GuStack {
 
 		db.grantConnect(repocopLambda, 'repocop');
 
+		branchProtectorQueue.grantSendMessages(repocopLambda);
+
 		const branchProtectorGithubCredentials = new SecretsManager(
 			this,
 			'branch-protector-github-app-auth',
@@ -590,15 +603,6 @@ export class ServiceCatalogue extends GuStack {
 				secretName: `/${stage}/${stack}/${app}/branch-protector-github-app-secret`,
 			},
 		);
-
-		const anghammaradTopicParameter =
-			GuAnghammaradTopicParameter.getInstance(this);
-
-		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
-			queueName: `branch-protector-queue-${stage}.fifo`,
-			contentBasedDeduplication: true,
-			retentionPeriod: Duration.days(14),
-		});
 
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
 			app: 'branch-protector',
@@ -627,12 +631,15 @@ export class ServiceCatalogue extends GuStack {
 			branchProtectorLambdaProps,
 		);
 
-		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
-		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
-		Topic.fromTopicArn(
+		const anghammaradTopic = Topic.fromTopicArn(
 			this,
 			'anghammarad-arn',
 			anghammaradTopicParameter.valueAsString,
-		).grantPublish(branchProtectorLambda);
+		);
+
+		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
+		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
+		anghammaradTopic.grantPublish(branchProtectorLambda);
+		anghammaradTopic.grantPublish(repocopLambda);
 	}
 }

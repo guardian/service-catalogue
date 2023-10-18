@@ -7,6 +7,11 @@ export interface Config {
 	stage: string;
 
 	/**
+	 * The ARN of the Anghammarad SNS topic.
+	 */
+	anghammaradSnsTopic: string;
+
+	/**
 	 * The database connection string.
 	 *
 	 * If the `DATABASE_PASSWORD` environment variable is not set, a token (temporary password) will be generated for IAM authentication for RDS.
@@ -24,6 +29,11 @@ export interface Config {
 	 * Repositories that should not be processed, for example, because they are not owned by a team in Product and Engineering.
 	 */
 	ignoredRepositoryPrefixes: string[];
+
+	/**
+	 * SQS queue to send messages to.
+	 */
+	queueUrl: string;
 }
 
 interface DatabaseConfig {
@@ -75,8 +85,10 @@ export async function getConfig(): Promise<Config> {
 
 	return {
 		stage: getEnvOrThrow('STAGE'),
+		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
+		queueUrl: getEnvOrThrow('QUEUE_URL'),
 		ignoredRepositoryPrefixes: [
 			// Visuals team
 			'guardian/interactive-',

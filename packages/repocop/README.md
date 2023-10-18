@@ -14,13 +14,9 @@ database.
 
 All migrations in the `prisma/migrations` subdirectories must be named `migration.sql`.
 
-Prisma will look for the `DATABASE_URL` environment variable in order to carry out migration. It takes the form:
+Prisma will look for the `DATABASE_URL` environment variable in order to carry out migration. 
 
-```
-DATABASE_URL="postgresql://dbuser:dbpassword@hosturl:5432/postgres
-```
-
-The `DATABASE_URL` is set by the npm migration scripts (see below).
+The `DATABASE_URL` is set automatically by the NPM migration scripts for each stage (see below). 
 
 > [!NOTE]  
 > At the moment it is not possible to have more than
