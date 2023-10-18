@@ -550,18 +550,18 @@ export class ServiceCatalogue extends GuStack {
 		const stageAwareMonitoringConfiguration =
 			stage === 'PROD' ? prodMonitoring : codeMonitoring;
 
-		const repocopStageAwareScheduling: Schedule =
-			stage === 'PROD'
-				? Schedule.cron({ minute: '0', hour: '15' })
-				: Schedule.rate(Duration.days(30));
-
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
 			handler: 'index.main',
 			monitoringConfiguration: stageAwareMonitoringConfiguration,
 			//Messages will be picked up by branch protector at 9:00 the next day
-			rules: [{ schedule: repocopStageAwareScheduling }],
+			rules: [
+				{
+					schedule:
+						nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '15' }),
+				},
+			],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
@@ -599,17 +599,17 @@ export class ServiceCatalogue extends GuStack {
 			retentionPeriod: Duration.days(14),
 		});
 
-		const branchProtectorStageAwareScheduling: Schedule =
-			stage === 'PROD'
-				? Schedule.cron({ minute: '0', hour: '9' })
-				: Schedule.rate(Duration.days(30));
-
 		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
 			app: 'branch-protector',
 			fileName: 'branch-protector.zip',
 			handler: 'index.main',
 			monitoringConfiguration: stageAwareMonitoringConfiguration,
-			rules: [{ schedule: branchProtectorStageAwareScheduling }],
+			rules: [
+				{
+					schedule:
+						nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '9' }),
+				},
+			],
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
 				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,

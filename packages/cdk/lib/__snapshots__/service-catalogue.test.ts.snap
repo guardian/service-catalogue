@@ -12598,9 +12598,28 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "branchprotectorbranchprotectorrate30days0991134EB": {
+    "branchprotectorbranchprotectorcron090AllowEventRuleServiceCataloguebranchprotector0084E4FA7B7052EF": {
       "Properties": {
-        "ScheduleExpression": "rate(30 days)",
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "branchprotector2BAF8BEE",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "branchprotectorbranchprotectorcron090B7083EDC",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "branchprotectorbranchprotectorcron090B7083EDC": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 9 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -12615,25 +12634,6 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
-    },
-    "branchprotectorbranchprotectorrate30days0AllowEventRuleServiceCataloguebranchprotector0084E4FA6EB7B026": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "branchprotector2BAF8BEE",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "branchprotectorbranchprotectorrate30days0991134EB",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "branchprotectorgithubappauth4E91892E": {
       "DeletionPolicy": "Delete",
@@ -13015,28 +13015,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repocoprepocoprate30days0AllowEventRuleServiceCataloguerepocop7BEB58923E77B593": {
+    "repocoprepocopcron01504E53EA84": {
       "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "repocop20553EB8",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "repocoprepocoprate30days0CFE03239",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "repocoprepocoprate30days0CFE03239": {
-      "Properties": {
-        "ScheduleExpression": "rate(30 days)",
+        "ScheduleExpression": "cron(0 15 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -13051,6 +13032,25 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
+    },
+    "repocoprepocopcron0150AllowEventRuleServiceCataloguerepocop7BEB58921D341946": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "repocop20553EB8",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "repocoprepocopcron01504E53EA84",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "servicecatalogueCluster5FC34DC5": {
       "Properties": {
