@@ -51,7 +51,8 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
-	skipTables,
+	skipTablesAws,
+	skipTablesGithub,
 	snykSourceConfig,
 } from './ecs/config';
 import {
@@ -287,7 +288,7 @@ export class ServiceCatalogue extends GuStack {
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
-					...skipTables,
+					...skipTablesAws,
 
 					// casting because `config.spec.tables` could be empty, though in reality it never is
 					...(individualAwsSources.flatMap(
@@ -408,6 +409,8 @@ export class ServiceCatalogue extends GuStack {
 			config: githubSourceConfig({
 				tables: ['github_*'],
 				skipTables: [
+					...skipTablesGithub,
+
 					...(individualGithubSources.flatMap(
 						(_) => _.config.spec.tables,
 					) as string[]),
