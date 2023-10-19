@@ -32,16 +32,27 @@ export async function notify(
 	topicArn: string,
 	slug: string,
 ) {
+	const repoUrl = `https://github.com/${fullRepoName}`;
+	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${slug}&var-rule=All&orgId=1`;
+	const protectionUrl = `https://github.com/${fullRepoName}/settings/branches`;
+	const actions = [
+		//duplicated in repocop
+		{ cta: 'Repository', url: repoUrl },
+		{
+			cta: 'Compliance information for repos',
+			url: grafanaUrl,
+		},
+		{
+			cta: 'Branch protections',
+			url: protectionUrl,
+		},
+	];
+
 	const client = new Anghammarad();
 	await client.notify({
 		subject: 'Repocop branch protection',
 		message: `Branch protection has been applied to ${fullRepoName}`,
-		actions: [
-			{
-				cta: 'Check branch protections here',
-				url: `https://github.com/${fullRepoName}/settings/branches`,
-			},
-		],
+		actions,
 		target: { GithubTeamSlug: slug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: 'branch-protector',
