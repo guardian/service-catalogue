@@ -1,30 +1,42 @@
-import { ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
+import type { Message, SQSClient } from '@aws-sdk/client-sqs';
+import {
+	DeleteMessageCommand,
+	ReceiveMessageCommand,
+} from '@aws-sdk/client-sqs';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { Config } from './config';
-import type { UpdateBranchProtectionEvent } from './model';
 
-export async function getEvents(
-	msgCount: number,
+export async function readFromQueue(
 	config: Config,
-): Promise<UpdateBranchProtectionEvent[]> {
-	const command = new ReceiveMessageCommand({
+	msgCount: number,
+	sqs: SQSClient,
+): Promise<Message[]> {
+	const getCommand = new ReceiveMessageCommand({
 		QueueUrl: config.queueUrl,
 		MaxNumberOfMessages: msgCount,
-		WaitTimeSeconds: 20,
+		WaitTimeSeconds: 5,
 	});
 
-	const sqsClient = new SQSClient({});
-
-	const result = await sqsClient.send(command);
+	const result = await sqs.send(getCommand);
 	if (result.Messages === undefined) {
 		console.log('No messages found');
-		return [];
-	} else {
-		const messages = result.Messages.map((msg) => msg.Body)
-			.filter((msg): msg is string => !!msg)
-			.map((msg) => JSON.parse(msg) as UpdateBranchProtectionEvent);
-		return messages;
 	}
+	return result.Messages ?? [];
+}
+
+export async function deleteFromQueue(
+	config: Config,
+	message: Message,
+	sqs: SQSClient,
+) {
+	const deleteCommand = new DeleteMessageCommand({
+		QueueUrl: config.queueUrl,
+		ReceiptHandle: message.ReceiptHandle,
+	});
+
+	await sqs.send(deleteCommand);
+
+	console.log(`Deleted message ${message.MessageId ?? 'unknown'}`);
 }
 
 export async function notify(
