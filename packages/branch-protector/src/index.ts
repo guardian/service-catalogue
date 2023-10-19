@@ -50,13 +50,17 @@ async function protectBranch(
 	}
 }
 
-function createEvents(messages: Message[]): UpdateBranchProtectionEvent[] {
-	const res = messages
-		.map((msg) => msg.Body)
-		.filter((msg): msg is string => !!msg)
-		.map((msg) => JSON.parse(msg) as UpdateBranchProtectionEvent);
-
-	return res;
+async function handleMessage(
+	config: Config,
+	octokit: Octokit,
+	sqs: SQSClient,
+	message: Message,
+) {
+	if (message.Body !== undefined) {
+		const event = JSON.parse(message.Body) as UpdateBranchProtectionEvent;
+		await protectBranch(octokit, config, event);
+	}
+	await deleteFromQueue(config, message, sqs);
 }
 
 export async function main() {
@@ -64,12 +68,8 @@ export async function main() {
 	const octokit: Octokit = await getGithubClient(config);
 	const sqsClient = new SQSClient({});
 
-	const messages = await readFromQueue(config, 1, sqsClient);
-	const events = createEvents(messages);
+	const messages: Message[] = await readFromQueue(config, 1, sqsClient);
 	await Promise.all(
-		events.map(async (event) => await protectBranch(octokit, config, event)),
-	);
-	await Promise.all(
-		messages.map(async (msg) => await deleteFromQueue(config, msg, sqsClient)),
+		messages.map((msg) => handleMessage(config, octokit, sqsClient, msg)),
 	);
 }
