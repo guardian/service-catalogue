@@ -50,10 +50,7 @@ async function protectBranch(
 	}
 }
 
-function createEvents(
-	config: Config,
-	messages: Message[],
-): UpdateBranchProtectionEvent[] {
+function createEvents(messages: Message[]): UpdateBranchProtectionEvent[] {
 	const res = messages
 		.map((msg) => msg.Body)
 		.filter((msg): msg is string => !!msg)
@@ -68,7 +65,7 @@ export async function main() {
 	const sqsClient = new SQSClient({});
 
 	const messages = await readFromQueue(config, 1, sqsClient);
-	const events = createEvents(config, messages);
+	const events = createEvents(messages);
 	await Promise.all(
 		events.map(async (event) => await protectBranch(octokit, config, event)),
 	);
