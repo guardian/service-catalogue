@@ -1,5 +1,7 @@
+import type { Message } from '@aws-sdk/client-sqs';
+import { SQSClient } from '@aws-sdk/client-sqs';
 import type { Octokit } from 'octokit';
-import { getEvents, notify } from './aws-requests';
+import { deleteFromQueue, notify, readFromQueue } from './aws-requests';
 import { getConfig } from './config';
 import type { Config } from './config';
 import {
@@ -48,12 +50,29 @@ async function protectBranch(
 	}
 }
 
+function createEvents(
+	config: Config,
+	messages: Message[],
+): UpdateBranchProtectionEvent[] {
+	const res = messages
+		.map((msg) => msg.Body)
+		.filter((msg): msg is string => !!msg)
+		.map((msg) => JSON.parse(msg) as UpdateBranchProtectionEvent);
+
+	return res;
+}
+
 export async function main() {
 	const config: Config = await getConfig();
 	const octokit: Octokit = await getGithubClient(config);
+	const sqsClient = new SQSClient({});
 
-	const events = await getEvents(1, config);
-	for (const event of events) {
-		await protectBranch(octokit, config, event);
-	}
+	const messages = await readFromQueue(config, 1, sqsClient);
+	const events = createEvents(config, messages);
+	await Promise.all(
+		events.map(async (event) => await protectBranch(octokit, config, event)),
+	);
+	await Promise.all(
+		messages.map(async (msg) => await deleteFromQueue(config, msg, sqsClient)),
+	);
 }
