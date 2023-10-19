@@ -12601,28 +12601,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "branchprotectorbranchprotectorcron090AllowEventRuleServiceCataloguebranchprotector0084E4FA7B7052EF": {
+    "branchprotectorbranchprotectorcron0925039E31676": {
       "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "branchprotector2BAF8BEE",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "branchprotectorbranchprotectorcron090B7083EDC",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "branchprotectorbranchprotectorcron090B7083EDC": {
-      "Properties": {
-        "ScheduleExpression": "cron(0 9 * * ? *)",
+        "ScheduleExpression": "cron(0 9 ? * 2-5 *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -12637,6 +12618,25 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
+    },
+    "branchprotectorbranchprotectorcron09250AllowEventRuleServiceCataloguebranchprotector0084E4FA1DFDAEC7": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "branchprotector2BAF8BEE",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "branchprotectorbranchprotectorcron0925039E31676",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "branchprotectorgithubappauth4E91892E": {
       "DeletionPolicy": "Delete",
