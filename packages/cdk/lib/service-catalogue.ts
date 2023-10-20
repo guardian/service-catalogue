@@ -568,7 +568,7 @@ export class ServiceCatalogue extends GuStack {
 			fileName: 'repocop.zip',
 			handler: 'index.main',
 			monitoringConfiguration: stageAwareMonitoringConfiguration,
-			//Messages will be picked up by branch protector at 9:00 the next day
+			// Messages will be picked up by branch protector at 9:00 the next working day (Tue-Fri)
 			rules: [
 				{
 					schedule:
@@ -615,7 +615,8 @@ export class ServiceCatalogue extends GuStack {
 			rules: [
 				{
 					schedule:
-						nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '9' }),
+						nonProdSchedule ??
+						Schedule.cron({ minute: '0', hour: '9', weekDay: '2-5' }),
 				},
 			],
 			runtime: Runtime.NODEJS_18_X,
