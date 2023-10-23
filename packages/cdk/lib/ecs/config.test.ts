@@ -34,30 +34,30 @@ describe('Config generation, and converting to YAML', () => {
 			tables: ['aws_s3_buckets'],
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: aws
-		  path: cloudquery/aws
-		  version: v22.15.0
-		  tables:
-		    - aws_s3_buckets
-		  destinations:
-		    - postgresql
-		  spec:
-		    regions:
-		      - eu-west-1
-		      - eu-west-2
-		      - us-east-1
-		      - us-east-2
-		      - us-west-1
-		      - ap-southeast-2
-		      - ca-central-1
-		    org:
-		      member_role_name: cloudquery-access
-		      organization_units:
-		        - ou-123
-		"
-	`);
+"kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v22.15.2
+  tables:
+    - aws_s3_buckets
+  destinations:
+    - postgresql
+  spec:
+    regions:
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
+    org:
+      member_role_name: cloudquery-access
+      organization_units:
+        - ou-123
+"
+`);
 	});
 
 	it('Should create an AWS source configuration with skipped tables for the organisation', () => {
@@ -66,32 +66,32 @@ describe('Config generation, and converting to YAML', () => {
 			skipTables: ['aws_s3_buckets'],
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: aws
-		  path: cloudquery/aws
-		  version: v22.15.0
-		  tables:
-		    - '*'
-		  skip_tables:
-		    - aws_s3_buckets
-		  destinations:
-		    - postgresql
-		  spec:
-		    regions:
-		      - eu-west-1
-		      - eu-west-2
-		      - us-east-1
-		      - us-east-2
-		      - us-west-1
-		      - ap-southeast-2
-		      - ca-central-1
-		    org:
-		      member_role_name: cloudquery-access
-		      organization_units:
-		        - ou-123
-		"
-	`);
+"kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v22.15.2
+  tables:
+    - '*'
+  skip_tables:
+    - aws_s3_buckets
+  destinations:
+    - postgresql
+  spec:
+    regions:
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
+    org:
+      member_role_name: cloudquery-access
+      organization_units:
+        - ou-123
+"
+`);
 	});
 
 	it('Should create an AWS source configuration for a single account', () => {
@@ -103,31 +103,31 @@ describe('Config generation, and converting to YAML', () => {
 			],
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: aws
-		  path: cloudquery/aws
-		  version: v22.15.0
-		  tables:
-		    - aws_accessanalyzer_analyzers
-		    - aws_accessanalyzer_analyzer_archive_rules
-		    - aws_accessanalyzer_analyzer_findings
-		  destinations:
-		    - postgresql
-		  spec:
-		    regions:
-		      - eu-west-1
-		      - eu-west-2
-		      - us-east-1
-		      - us-east-2
-		      - us-west-1
-		      - ap-southeast-2
-		      - ca-central-1
-		    accounts:
-		      - id: cq-for-000000000015
-		        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
-		"
-	`);
+"kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v22.15.2
+  tables:
+    - aws_accessanalyzer_analyzers
+    - aws_accessanalyzer_analyzer_archive_rules
+    - aws_accessanalyzer_analyzer_findings
+  destinations:
+    - postgresql
+  spec:
+    regions:
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
+    accounts:
+      - id: cq-for-000000000015
+        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+"
+`);
 	});
 
 	it('Should create a GitHub source configuration', () => {
