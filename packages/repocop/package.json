@@ -21,6 +21,6 @@
 	"dependencies": {
 		"@aws-sdk/client-sqs": "^3.423.0",
 		"@aws-sdk/rds-signer": "^3.429.0",
-		"@prisma/client": "^5.3.1"
+		"@prisma/client": "^5.4.2"
 	}
 }
