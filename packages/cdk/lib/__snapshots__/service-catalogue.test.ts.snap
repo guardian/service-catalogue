@@ -9936,6 +9936,7 @@ spec:
     - aws_xray_groups
     - aws_stepfunctions_map_runs
     - aws_stepfunctions_map_run_executions
+    - aws_stepfunctions_executions
     - aws_organization*
     - aws_accessanalyzer_*
     - aws_securityhub_*
