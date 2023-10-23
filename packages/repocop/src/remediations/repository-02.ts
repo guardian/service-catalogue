@@ -1,5 +1,6 @@
 import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
+import { fromIni } from '@aws-sdk/credential-providers';
 import type { Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
 import type {
@@ -83,7 +84,12 @@ export async function addMessagesToQueue(
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
 ): Promise<void> {
-	const sqsClient = new SQSClient({});
+	const credentials =
+		config.stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
+	const sqsClient = new SQSClient({
+		region: config.region,
+		credentials,
+	});
 	const command = new SendMessageBatchCommand({
 		QueueUrl: config.queueUrl,
 		Entries: events.map((event) => createEntry(event)),

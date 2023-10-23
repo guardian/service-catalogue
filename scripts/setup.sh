@@ -83,6 +83,8 @@ setup_cloudquery() {
 
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
+  QUEUE_URL=$(aws sqs get-queue-url --queue-name branch-protector-queue-CODE.fifo --profile deployTools --region eu-west-1 | jq '.QueueUrl' | tr -d '"')
+
   TOKEN_TEXT="# See https://github.com/settings/tokens?type=beta
 GITHUB_ACCESS_TOKEN=
 
@@ -92,6 +94,8 @@ SNYK_TOKEN=
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
+
+QUEUE_URL=${QUEUE_URL}
 "
 
   echo "Running CloudQuery setup"

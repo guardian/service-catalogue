@@ -1,3 +1,4 @@
+import * as process from 'process';
 import { Signer } from '@aws-sdk/rds-signer';
 
 export interface Config {
@@ -5,6 +6,11 @@ export interface Config {
 	 * The stage of the application, e.g. DEV, CODE, PROD.
 	 */
 	stage: string;
+
+	/**
+	 * The aws region
+	 */
+	region: string;
 
 	/**
 	 * The ARN of the Anghammarad SNS topic.
@@ -34,6 +40,11 @@ export interface Config {
 	 * SQS queue to send messages to.
 	 */
 	queueUrl: string;
+
+	/**
+	 * When running locally flag to enable messaging
+	 */
+	enableMessaging: boolean;
 }
 
 interface DatabaseConfig {
@@ -85,10 +96,12 @@ export async function getConfig(): Promise<Config> {
 
 	return {
 		stage: getEnvOrThrow('STAGE'),
+		region: 'eu-west-1',
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
 		queueUrl: getEnvOrThrow('QUEUE_URL'),
+		enableMessaging: process.env.ENABLE_MESSAGING === 'false' ? false : true,
 		ignoredRepositoryPrefixes: [
 			// Visuals team
 			'guardian/interactive-',

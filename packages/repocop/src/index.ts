@@ -26,7 +26,7 @@ async function writeEvaluationTable(
 
 	console.log('Finished writing to table');
 }
-async function writeRepo02Messages(
+async function notifyBranchProtector(
 	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
@@ -47,22 +47,23 @@ async function writeRepo02Messages(
 		productionOrDocs.includes(repo.full_name),
 	);
 
-	const msgs = createRepository02Messages(relevantRepos, repoOwners, teams, 2);
-	const anghammaradClient = new Anghammarad();
-	await notifyAndAddToQueue(msgs, config, anghammaradClient);
+	const events = createRepository02Messages(
+		relevantRepos,
+		repoOwners,
+		teams,
+		2,
+	);
+	await addMessagesToQueue(events, config);
+
+	return events;
 }
 
-async function notifyAndAddToQueue(
+async function notifyAnghammarad(
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
 	anghammaradClient: Anghammarad,
 ) {
-	await addMessagesToQueue(events, config);
-	if (config.stage === 'PROD') {
-		await sendNotifications(anghammaradClient, events, config);
-	} else {
-		console.log('Messages added to queue but notifications NOT sent');
-	}
+	await sendNotifications(anghammaradClient, events, config);
 }
 
 export async function main() {
@@ -87,7 +88,17 @@ export async function main() {
 		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
-	await writeRepo02Messages(prisma, evaluatedRepos, config);
+	if (config.enableMessaging) {
+		const msgs = await notifyBranchProtector(prisma, evaluatedRepos, config);
+		if (config.stage === 'PROD') {
+			const anghammaradClient = new Anghammarad();
+			await notifyAnghammarad(msgs, config, anghammaradClient);
+		}
+	} else {
+		console.log(
+			'Messaging is not enabled. You can set ENABLE_MESSAGING to enable messaging',
+		);
+	}
 
 	console.log('Done');
 }
