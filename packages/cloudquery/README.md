@@ -20,7 +20,7 @@ It includes:
 ## Setup
 
 1. Get deployTools credentials from Janus
-2. In the project root, run the following, and follow the resulting instructions (you might have to create a directory hooks in .git):
+2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
 ./scripts/setup.sh
@@ -28,7 +28,7 @@ It includes:
 
 ## Running
 
-1. Put your GitHub PAT and Snyk token in the `.env.local` file in  `~/.gu/service_catalogue/` (n.b. DO NOT put them in the repo `.env` file, as you could commit a secret by accident).
+1. Put your GitHub PAT and Snyk token in the `.env.local` file at `~/.gu/service_catalogue/`(n.b. DO NOT put them in the repo `.env` file, as you could commit a secret by accident).
 2. Start Docker
 3. Run:
 
@@ -42,8 +42,7 @@ It includes:
    ./packages/cloudquery/script/start
    ```
 
-   This will start the Docker containers, and CloudQuery will start collecting data. If you are having problems with this
-   step, you might have to update docker-compose.
+   This will start the Docker containers, and CloudQuery will start collecting data.
 
 4. Wait for tables to start being populated. Usually the first tables show up after a few seconds, but this could take
    as long as a minute.
@@ -53,8 +52,6 @@ It includes:
 > **Note**
 > You can also use other Postgres clients, such as `psql` to query the data, or even your IDE!
 
-To configure your db connection, go the RDS in the deploytool account and get the DB Identifier for code or prod, as 
-authentification for the postgres db you can use SecretsmanagerAuth with the arn for the secret.
 ## Links
 
 - [CloudQuery provided Grafana dashboards](https://github.com/cloudquery/cloudquery/tree/main/plugins/source/aws/dashboards)
