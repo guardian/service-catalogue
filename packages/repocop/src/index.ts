@@ -96,7 +96,7 @@ export async function main() {
 		}
 	} else {
 		console.log(
-			'Messaging is not enabled. You can set ENABLE_MESSAGING to enable messaging',
+			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
 		);
 	}
 
