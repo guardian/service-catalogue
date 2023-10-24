@@ -69,8 +69,8 @@ check_credentials() {
   fi
 }
 
-setup_cloudquery() {
-  step "Setting up CloudQuery"
+setup_environment() {
+  step "Setting up Service Catalogue environment"
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
   LOCAL_ENV_FILE_DIR=$HOME/.gu/service_catalogue
@@ -91,14 +91,12 @@ GITHUB_ACCESS_TOKEN=
 # See https://docs.snyk.io/snyk-api-info/authentication-for-api
 SNYK_TOKEN=
 
+"
+  ENV_VAR_TEXT="
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
-
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
-
 QUEUE_URL=${QUEUE_URL}
 "
-
-  echo "Running CloudQuery setup"
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/
   echo "Checking for .env.local file in $LOCAL_ENV_FILE_DIR"
@@ -111,16 +109,21 @@ QUEUE_URL=${QUEUE_URL}
     # Check if file is empty - don't want to overwrite any existing tokens
     if [ "$FILE_SIZE" -gt "$SIZE_THRESHOLD" ]
     then
-      echo "File is not empty. No changes made."
+      echo "File is not empty. Appending required environment variables only"
+      echo "$ENV_VAR_TEXT" >> "$LOCAL_ENV_FILE"
     else
       echo "File is empty, adding token names$"
       echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
+      echo "Appending required environment variables"
+      echo "$ENV_VAR_TEXT" >> "$LOCAL_ENV_FILE"
     fi
   else
-    echo "No .env.local file found - creating it in $LOCAL_ENV_FILE_DIR and adding token names"
+    echo "No .env.local file found - creating it in $LOCAL_ENV_FILE_DIR"
     mkdir -p "$HOME"/.gu/service_catalogue
     touch -a "$LOCAL_ENV_FILE_DIR"/.env.local
+    echo "Adding token names and required environment variables"
     echo "$TOKEN_TEXT" >> "$LOCAL_ENV_FILE"
+    echo "$ENV_VAR_TEXT" >> "$LOCAL_ENV_FILE"
   fi
 
 source "$LOCAL_ENV_FILE"
@@ -151,6 +154,6 @@ setup_hook pre-commit
 check_node_version
 install_dependencies
 check_credentials deployTools
-setup_cloudquery
+setup_environment
 
 echo -e "${cyan}Setup complete${clear} ✅"
