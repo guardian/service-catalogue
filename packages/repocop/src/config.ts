@@ -8,7 +8,7 @@ export interface Config {
 	stage: string;
 
 	/**
-	 * The aws region
+	 * The AWS region.
 	 */
 	region: string;
 
@@ -42,7 +42,7 @@ export interface Config {
 	queueUrl: string;
 
 	/**
-	 * When running locally flag to enable messaging
+	 * Flag to enable messaging when running locally.
 	 */
 	enableMessaging: boolean;
 }
