@@ -3,7 +3,7 @@
 set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR=$(realpath $DIR/../../..)
+ROOT_DIR=$DIR/../../..
 
 MAIN_ENV_FILE=$ROOT_DIR/.env
 LOCAL_ENV_FILE=$HOME/.gu/service_catalogue/.env.local
