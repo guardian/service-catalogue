@@ -14,13 +14,13 @@ database.
 
 All migrations in the `prisma/migrations` subdirectories must be named `migration.sql`.
 
-Prisma will look for the `DATABASE_URL` environment variable in order to carry out migration. 
+Prisma will look for the `DATABASE_URL` environment variable in order to carry out migration.
 
-The `DATABASE_URL` is set automatically by the NPM migration scripts for each stage (see below). 
+The `DATABASE_URL` is set automatically by the NPM migration scripts for each stage (see below).
 
 > [!NOTE]  
 > At the moment it is not possible to have more than
-one `schema.prisma` file.
+> one `schema.prisma` file.
 
 ## Adding new tables locally
 
@@ -28,6 +28,7 @@ To add a new table to the database you need to add a new model to the `schema.pr
 
 1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database.
 2. Apply the migration by running:
+
 ```
 npm -w repocop run migrate:dev [migration-name]
 ```
@@ -52,7 +53,7 @@ npx prisma generate
 5. To deploy the migration to code, run:
 
 ```
-npm -w repocop run migrate:code 
+npm -w repocop run migrate:code
 ```
 
 or to prod, run:
@@ -67,6 +68,16 @@ See [Prisma documentation on migration](https://www.prisma.io/docs/concepts/comp
 
 ## Running Repocop locally
 
+In order for Repocop to run locally, Cloudquery must be running locally and have populated tables for Repocop to query. It can take some time for the Cloudquery tables to populate.
+
+### Running Repocop for the first time
+
 1. [Start Cloudquery](../../packages/cloudquery/README.md) to generate the database.
-2. Run `npm -w repocop run migrate:setuplocal` to create the `_prisma_migrations table` in the database. Note: This will replace any existing tables and data locally.
-3. Start Repocop: `npm -w repocop start`.
+2. Set up Repocop: run `npm -w repocop run migrate:setuplocal` to create the `_prisma_migrations` table in the database.
+3. Wait for at least 15 minutes for the Cloudquery tables to start filling up.
+4. Start Repocop: run `npm -w repocop start`.
+
+### Running Repocop if you have Cloudquery running and a populated database
+
+1. (Optional) Setup Repocop: Run `npm -w repocop run migrate:setuplocal` to create the `_prisma_migrations` table in the database. Note: This will replace any existing Repocop tables and data locally.
+2. Start Repocop: Run `npm -w repocop start`.
