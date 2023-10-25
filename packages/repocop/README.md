@@ -68,7 +68,7 @@ See [Prisma documentation on migration](https://www.prisma.io/docs/concepts/comp
 
 ## Running Repocop locally
 
-In order for Repocop to run locally, Cloudquery must be running locally and have populated tables for Repocop to query. It can take some time for the Cloudquery tables to populate.
+In order for Repocop to run locally, Cloudquery must be running locally and have populated tables for Repocop to query (see below). It can take some time for the Cloudquery tables to populate.
 
 ### Running Repocop for the first time
 
