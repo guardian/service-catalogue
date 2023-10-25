@@ -3,11 +3,11 @@ services:
   postgres:
     image: postgres:14.6
     ports:
-      - "${LOCAL_DB_PORT}:${LOCAL_DB_PORT}"
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
     environment:
-      POSTGRES_DB: ${LOCAL_DB_HOSTNAME}
-      POSTGRES_USER: ${LOCAL_DB_USER}
-      POSTGRES_PASSWORD: ${LOCAL_DB_PASSWORD}
+      POSTGRES_DB: ${DATABASE_HOSTNAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
   cloudquery:
     image: ghcr.io/cloudquery/cloudquery:${CQ_CLI}
     platform: linux/amd64
