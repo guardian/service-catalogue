@@ -9,7 +9,7 @@ plain='\x1B[0m'
 devSetup() {
   echo -e "${bold}Setting up local DATABASE_URL and resetting migrations${plain}"
   source ../../.env
-  export DATABASE_URL="postgresql://$LOCAL_DB_USER:$LOCAL_DB_PASSWORD@$LOCAL_DB_HOSTNAME:$LOCAL_DB_PORT/postgres"
+  export DATABASE_URL="postgresql://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOSTNAME:$DATABASE_PORT/postgres"
   # clear existing local migrations table (if applicable)
   # and apply all migrations
   npx prisma migrate reset --force --schema "prisma/schema.prisma"
