@@ -37,7 +37,19 @@ function findContactableOwners(
 		.map((owner) => findTeamSlugFromId(owner.github_team_id, teams))
 		.filter((slug): slug is string => !!slug);
 
-	return teamSlugs;
+	//return teamSlugs;
+
+	// TODO: remove this when testing over (limits to DevX repos only)
+	const devxTeams = [
+		'developer-experience',
+		'devx-operations',
+		'devx-security',
+		'devx-reliability',
+	];
+	const devxSlugs = teamSlugs.filter((slug): slug is string =>
+		devxTeams.includes(slug),
+	);
+	return devxSlugs;
 }
 
 function shuffle<T>(array: T[]): T[] {
