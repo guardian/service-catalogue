@@ -51,8 +51,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
-	skipTablesAws,
-	skipTablesGithub,
+	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
 import {
@@ -288,7 +287,7 @@ export class ServiceCatalogue extends GuStack {
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
-					...skipTablesAws,
+					...skipTables,
 
 					// casting because `config.spec.tables` could be empty, though in reality it never is
 					...(individualAwsSources.flatMap(
@@ -338,7 +337,7 @@ export class ServiceCatalogue extends GuStack {
 			'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
 		];
 
-		const individualGithubSources: CloudquerySource[] = [
+		const githubSources: CloudquerySource[] = [
 			{
 				name: 'GitHubRepositories',
 				description: 'Collect GitHub repository data',
@@ -401,33 +400,6 @@ export class ServiceCatalogue extends GuStack {
 				additionalCommands: additionalGithubCommands,
 			},
 		];
-
-		const remainingGithubSources: CloudquerySource = {
-			name: 'RemainingGitHubData',
-			description: 'All other GitHub data',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
-			config: githubSourceConfig({
-				tables: ['github_*'],
-				skipTables: [
-					...skipTablesGithub,
-
-					...(individualGithubSources.flatMap(
-						(_) => _.config.spec.tables,
-					) as string[]),
-
-					// Continue to skip the tables that other tasks had previously skipped as it is unlikely we want them now either.
-					...new Set(
-						(
-							individualGithubSources.flatMap(
-								(_) => _.config.spec.skip_tables,
-							) as string[]
-						).filter((_) => _), // remove any nulls
-					),
-				],
-			}),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-		};
 
 		const fastlyCredentials = new SecretsManager(this, 'fastly-credentials', {
 			secretName: `/${stage}/${stack}/${app}/fastly-credentials`,
@@ -534,8 +506,7 @@ export class ServiceCatalogue extends GuStack {
 			sources: [
 				...individualAwsSources,
 				remainingAwsSources,
-				...individualGithubSources,
-				remainingGithubSources,
+				...githubSources,
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
@@ -616,7 +587,7 @@ export class ServiceCatalogue extends GuStack {
 				{
 					schedule:
 						nonProdSchedule ??
-						Schedule.cron({ minute: '0', hour: '9', weekDay: '2-5' }),
+						Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
 				},
 			],
 			runtime: Runtime.NODEJS_18_X,
