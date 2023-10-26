@@ -1,7 +1,5 @@
 /*
  The view aws_accounts
- see prisma migration 20231026134216_view_aws_accounts
- in directory packages/repocop/prisma/migrations
  */
 CREATE OR REPLACE VIEW aws_accounts AS
 SELECT DISTINCT acc.id,

@@ -15897,3 +15897,14 @@ view view_repo_ownership {
 
   @@unique([github_team_id, full_name])
 }
+
+view aws_accounts {
+  id                  String
+  name                String
+  email               String
+  status              String
+  joined_timestamp    DateTime @db.Timestamp(6)
+  organizational_unit String
+
+  @@unique([id, name])
+}
