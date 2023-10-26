@@ -197,7 +197,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_accessanalyzer_*
     - aws_securityhub_*
@@ -840,7 +840,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_organization*
   destinations:
@@ -5367,7 +5367,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_autoscaling_groups
   destinations:
@@ -6014,7 +6014,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_acm*
   destinations:
@@ -6691,7 +6691,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_cloudformation_*
   destinations:
@@ -7508,7 +7508,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_cloudwatch_alarms
   destinations:
@@ -7955,7 +7955,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_inspector_findings
     - aws_inspector2_findings
@@ -8803,7 +8803,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_elbv1_*
     - aws_elbv2_*
@@ -9251,7 +9251,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_s3*
   destinations:
@@ -9898,7 +9898,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v22.15.2
+  version: v22.18.0
   tables:
     - aws_*
   skip_tables:
