@@ -3,9 +3,6 @@
 
  It's shape is:
    id | org_id | name | repo | commit
-
- see prisma migration 20231026185557_snyk_project_tags
- in directory packages/repocop/prisma/migrations
  */
 
 create or replace view view_snyk_project_tags as

@@ -15941,3 +15941,13 @@ view view_running_instances {
 
   @@unique([instance_id])
 }
+
+view view_snyk_project_tags {
+  id     String
+  org_id String
+  name   String
+  repo   String
+  commit String
+
+  @@unique([id])
+}
