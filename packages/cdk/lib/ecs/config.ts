@@ -4,7 +4,6 @@ import { Versions } from './versions';
 export type CloudqueryConfig = {
 	spec: {
 		tables?: string[];
-		skip_tables?: string[];
 		[k: string]: unknown;
 	};
 	[k: string]: unknown;
