@@ -15908,3 +15908,10 @@ view aws_accounts {
 
   @@unique([id, name])
 }
+
+view cp_last_synced {
+  cp_sync_time DateTime @map("_cq_sync_time") @db.Timestamp(6)
+  table_name   String
+
+  @@unique([table_name])
+}
