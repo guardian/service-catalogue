@@ -15915,3 +15915,18 @@ view cp_last_synced {
 
   @@unique([table_name])
 }
+
+view view_old_ec2_instances {
+  account_id              String
+  account_name            String
+  instance_id             String
+  state                   String
+  stack                   String
+  stage                   String
+  app                     String
+  repo                    String
+  region                  String
+  creation_or_launch_time DateTime
+
+  @@unique([instance_id])
+}
