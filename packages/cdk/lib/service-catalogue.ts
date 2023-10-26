@@ -51,8 +51,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
-	skipTablesAws,
-	skipTablesGithub,
+	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
 import {
@@ -168,7 +167,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'DeployToolsListOrgs',
 				description:
-					'Data fetched from the Deploy Tools account (delegated from Root).',
+					'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
 				schedule:
 					nonProdSchedule ??
 					Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
@@ -192,7 +191,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'DelegatedToSecurityAccount',
 				description:
-					'Collecting data across the organisation from services delegated to the Security account.',
+					'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '22' }),
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
 					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
@@ -219,7 +218,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideLoadBalancers',
-				description: 'Collecting load balancer data across the organisation.',
+				description:
+					'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '23' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
@@ -229,7 +229,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideAutoScalingGroups',
-				description: 'Collecting ASG data across the organisation.',
+				description:
+					'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_autoscaling_groups'],
@@ -239,7 +240,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideCertificates',
-				description: 'Collecting certificate data across the organisation.',
+				description:
+					'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '1' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_acm*'],
@@ -250,7 +252,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideCloudwatchAlarms',
 				description:
-					'Collecting CloudWatch Alarm data across the organisation.',
+					'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_cloudwatch_alarms'],
@@ -270,7 +272,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideS3',
-				description: 'Collecting S3 data across the organisation.',
+				description:
+					'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_s3*'],
@@ -280,15 +283,21 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
+		/*
+		This is a catch-all task, collecting all other AWS data.
+		Although we're not using the data for any particular reason, it is still useful to have.
+
+		It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
+		If we identify a table that needs to be updated more often, we should create a dedicated task for it.
+		 */
 		const remainingAwsSources: CloudquerySource = {
 			name: 'RemainingAwsData',
 			description: 'Data fetched across all accounts in the organisation.',
-			//this job can take upwards of 7 hours to run, so start late at night
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '21' }),
+			schedule: nonProdSchedule ?? Schedule.cron({ weekDay: 'MON' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
-					...skipTablesAws,
+					...skipTables,
 
 					// casting because `config.spec.tables` could be empty, though in reality it never is
 					...(individualAwsSources.flatMap(
@@ -338,10 +347,11 @@ export class ServiceCatalogue extends GuStack {
 			'echo $GITHUB_INSTALLATION_ID > /github-installation-id',
 		];
 
-		const individualGithubSources: CloudquerySource[] = [
+		const githubSources: CloudquerySource[] = [
 			{
 				name: 'GitHubRepositories',
-				description: 'Collect GitHub repository data',
+				description:
+					'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 				config: githubSourceConfig({
 					tables: [
@@ -364,7 +374,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'GitHubTeams',
-				description: 'Collect GitHub team data',
+				description:
+					'Collect GitHub team data. Uses include identifying which repositories a team owns.',
 				schedule:
 					nonProdSchedule ??
 					Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
@@ -401,33 +412,6 @@ export class ServiceCatalogue extends GuStack {
 				additionalCommands: additionalGithubCommands,
 			},
 		];
-
-		const remainingGithubSources: CloudquerySource = {
-			name: 'RemainingGitHubData',
-			description: 'All other GitHub data',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
-			config: githubSourceConfig({
-				tables: ['github_*'],
-				skipTables: [
-					...skipTablesGithub,
-
-					...(individualGithubSources.flatMap(
-						(_) => _.config.spec.tables,
-					) as string[]),
-
-					// Continue to skip the tables that other tasks had previously skipped as it is unlikely we want them now either.
-					...new Set(
-						(
-							individualGithubSources.flatMap(
-								(_) => _.config.spec.skip_tables,
-							) as string[]
-						).filter((_) => _), // remove any nulls
-					),
-				],
-			}),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-		};
 
 		const fastlyCredentials = new SecretsManager(this, 'fastly-credentials', {
 			secretName: `/${stage}/${stack}/${app}/fastly-credentials`,
@@ -534,8 +518,7 @@ export class ServiceCatalogue extends GuStack {
 			sources: [
 				...individualAwsSources,
 				remainingAwsSources,
-				...individualGithubSources,
-				remainingGithubSources,
+				...githubSources,
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
@@ -616,7 +599,7 @@ export class ServiceCatalogue extends GuStack {
 				{
 					schedule:
 						nonProdSchedule ??
-						Schedule.cron({ minute: '0', hour: '9', weekDay: '2-5' }),
+						Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
 				},
 			],
 			runtime: Runtime.NODEJS_18_X,
