@@ -344,7 +344,8 @@ export class ServiceCatalogue extends GuStack {
 		const githubSources: CloudquerySource[] = [
 			{
 				name: 'GitHubRepositories',
-				description: 'Collect GitHub repository data',
+				description:
+					'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 				config: githubSourceConfig({
 					tables: [
@@ -367,7 +368,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'GitHubTeams',
-				description: 'Collect GitHub team data',
+				description:
+					'Collect GitHub team data. Uses include identifying which repositories a team owns.',
 				schedule:
 					nonProdSchedule ??
 					Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
