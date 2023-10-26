@@ -616,7 +616,7 @@ export class ServiceCatalogue extends GuStack {
 				{
 					schedule:
 						nonProdSchedule ??
-						Schedule.cron({ minute: '0', hour: '9', weekDay: '2-5' }),
+						Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
 				},
 			],
 			runtime: Runtime.NODEJS_18_X,
