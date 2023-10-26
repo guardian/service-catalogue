@@ -167,7 +167,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'DeployToolsListOrgs',
 				description:
-					'Data fetched from the Deploy Tools account (delegated from Root).',
+					'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
 				schedule:
 					nonProdSchedule ??
 					Schedule.cron({ month: '1', day: '1', hour: '10' }), // Run on the first of the month at 10am
@@ -191,7 +191,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'DelegatedToSecurityAccount',
 				description:
-					'Collecting data across the organisation from services delegated to the Security account.',
+					'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '22' }),
 				config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
 					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
@@ -218,7 +218,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideLoadBalancers',
-				description: 'Collecting load balancer data across the organisation.',
+				description:
+					'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '23' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
@@ -228,7 +229,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideAutoScalingGroups',
-				description: 'Collecting ASG data across the organisation.',
+				description:
+					'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_autoscaling_groups'],
@@ -238,7 +240,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideCertificates',
-				description: 'Collecting certificate data across the organisation.',
+				description:
+					'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '1' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_acm*'],
@@ -249,7 +252,7 @@ export class ServiceCatalogue extends GuStack {
 			{
 				name: 'OrgWideCloudwatchAlarms',
 				description:
-					'Collecting CloudWatch Alarm data across the organisation.',
+					'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_cloudwatch_alarms'],
@@ -269,7 +272,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 			{
 				name: 'OrgWideS3',
-				description: 'Collecting S3 data across the organisation.',
+				description:
+					'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
 				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_s3*'],
