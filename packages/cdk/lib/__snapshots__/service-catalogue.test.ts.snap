@@ -10593,9 +10593,6 @@ spec:
   tables:
     - github_*
   skip_tables:
-    - github_workflow_runs
-    - github_workflow_run_usage
-    - github_workflow_jobs
     - github_repositories
     - github_repository_branches
     - github_workflows

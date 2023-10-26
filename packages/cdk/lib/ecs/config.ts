@@ -269,7 +269,7 @@ export function guardianSnykSourceConfig(
 }
 
 // Tables we are skipping because they are slow and or uninteresting to us.
-export const skipTablesAws = [
+export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
 	'aws_cloudtrail_events',
 	'aws_docdb_cluster_parameter_groups',
@@ -308,11 +308,4 @@ export const skipTablesAws = [
 	'aws_stepfunctions_map_runs',
 	'aws_stepfunctions_map_run_executions',
 	'aws_stepfunctions_executions',
-];
-
-export const skipTablesGithub = [
-	// These require thousands upon thousands of API calls and quickly exhaust our hourly Github API rate limit.
-	'github_workflow_runs',
-	'github_workflow_run_usage',
-	'github_workflow_jobs',
 ];
