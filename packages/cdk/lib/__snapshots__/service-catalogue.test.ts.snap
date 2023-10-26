@@ -9841,7 +9841,7 @@ spec:
     },
     "CloudquerySourceRemainingAwsDataScheduledEventRuleAE2A0ED1": {
       "Properties": {
-        "ScheduleExpression": "cron(0 21 * * ? *)",
+        "ScheduleExpression": "cron(* * ? * MON *)",
         "State": "ENABLED",
         "Targets": [
           {
