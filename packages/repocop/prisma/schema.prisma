@@ -15839,6 +15839,52 @@ model guardian_non_p_and_e_github_teams {
   team_name String @id
 }
 
+model aws_ec2_vpc_endpoint_connections {
+  cq_sync_time               DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name             String?   @map("_cq_source_name")
+  cq_id                      String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id               String?   @map("_cq_parent_id") @db.Uuid
+  account_id                 String
+  region                     String
+  tags                       Json?
+  creation_timestamp         DateTime? @db.Timestamp(6)
+  dns_entries                Json?
+  gateway_load_balancer_arns String[]
+  ip_address_type            String?
+  network_load_balancer_arns String[]
+  service_id                 String?
+  vpc_endpoint_connection_id String
+  vpc_endpoint_id            String?
+  vpc_endpoint_owner         String
+  vpc_endpoint_state         String?
+
+  @@id([account_id, region, vpc_endpoint_connection_id, vpc_endpoint_owner], map: "aws_ec2_vpc_endpoint_connections_cqpk")
+}
+
+model aws_s3_bucket_notification_configurations {
+  cq_sync_time                   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                 String?   @map("_cq_source_name")
+  cq_id                          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id                   String?   @map("_cq_parent_id") @db.Uuid
+  account_id                     String?
+  bucket_arn                     String    @id(map: "aws_s3_bucket_notification_configurations_cqpk")
+  event_bridge_configuration     Json?
+  lambda_function_configurations Json?
+  queue_configurations           Json?
+  topic_configurations           Json?
+}
+
+model aws_s3_bucket_object_lock_configurations {
+  cq_sync_time        DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name      String?   @map("_cq_source_name")
+  cq_id               String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id        String?   @map("_cq_parent_id") @db.Uuid
+  account_id          String?
+  bucket_arn          String    @id(map: "aws_s3_bucket_object_lock_configurations_cqpk")
+  object_lock_enabled String?
+  rule                Json?
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
@@ -15850,4 +15896,58 @@ view view_repo_ownership {
   team_contact_email String?
 
   @@unique([github_team_id, full_name])
+}
+
+view aws_accounts {
+  id                  String
+  name                String
+  email               String
+  status              String
+  joined_timestamp    DateTime @db.Timestamp(6)
+  organizational_unit String
+
+  @@unique([id, name])
+}
+
+view cp_last_synced {
+  cp_sync_time DateTime @map("_cq_sync_time") @db.Timestamp(6)
+  table_name   String
+
+  @@unique([table_name])
+}
+
+view view_old_ec2_instances {
+  account_id              String
+  account_name            String
+  instance_id             String
+  state                   String
+  stack                   String
+  stage                   String
+  app                     String
+  repo                    String
+  region                  String
+  creation_or_launch_time DateTime
+
+  @@unique([instance_id])
+}
+
+view view_running_instances {
+  accountName    String
+  app            String
+  image_id       String
+  instance_id    String
+  built_by_amigo Boolean
+  launch_time    DateTime @db.Date
+
+  @@unique([instance_id])
+}
+
+view view_snyk_project_tags {
+  id     String
+  org_id String
+  name   String
+  repo   String
+  commit String
+
+  @@unique([id])
 }
