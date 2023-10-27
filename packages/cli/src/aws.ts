@@ -163,13 +163,18 @@ const runTaskByArn = async (
 	privateSubnets: string[],
 	securityGroup: string,
 ): Promise<RunTaskCommandOutput> => {
+	const securityGroups = [
+		securityGroup,
+		...(taskArn.includes('RiffRaffData') ? [] : []),
+	];
+
 	const command = new RunTaskCommand({
 		cluster: clusterArn,
 		taskDefinition: taskArn,
 		networkConfiguration: {
 			awsvpcConfiguration: {
 				subnets: privateSubnets,
-				securityGroups: [securityGroup],
+				securityGroups: [securityGroups],
 			},
 		},
 		capacityProviderStrategy: [{ capacityProvider: 'FARGATE' }],

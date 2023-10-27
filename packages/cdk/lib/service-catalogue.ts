@@ -51,6 +51,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
+	riffraffSourcesConfig,
 	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
@@ -157,6 +158,19 @@ export class ServiceCatalogue extends GuStack {
 			tier: ParameterTier.STANDARD,
 			dataType: ParameterDataType.TEXT,
 		});
+
+		const riffRaffDatabaseAccessSecurityGroupParam =
+			StringParameter.valueForStringParameter(
+				this,
+				`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+			);
+
+		const applicationToRiffRaffDatabaseSecurityGroup =
+			GuSecurityGroup.fromSecurityGroupId(
+				this,
+				'RiffRaffDatabaseAccessSecurityGroup',
+				riffRaffDatabaseAccessSecurityGroupParam,
+			);
 
 		const readonlyPolicy = readonlyAccessManagedPolicy(
 			this,
@@ -512,6 +526,45 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
+		const cloudqueryRiffRaffDatabaseCredentials = new SecretsManager(
+			this,
+			'RiffRaffDatabaseCredentials',
+			{
+				secretName: `/${stage}/${stack}/${app}/riffraff-database-credentials`,
+			},
+		);
+
+		const riffRaffDatabaseAddress = StringParameter.valueForStringParameter(
+			this,
+			`/${stage}/deploy/riff-raff/external-database-access-address`,
+		);
+
+		const riffRaffDatabasePort = StringParameter.valueForStringParameter(
+			this,
+			`/${stage}/deploy/riff-raff/external-database-access-port`,
+		);
+
+		const riffRaffSources: CloudquerySource = {
+			name: 'RiffRaffData',
+			description: "Source deployment data directly from riff-raff's database",
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+			config: riffraffSourcesConfig(
+				riffRaffDatabaseAddress,
+				riffRaffDatabasePort,
+			),
+			extraSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
+			secrets: {
+				RIFFRAFF_DB_USERNAME: Secret.fromSecretsManager(
+					cloudqueryRiffRaffDatabaseCredentials,
+					'username',
+				),
+				RIFFRAFF_DB_PASSWORD: Secret.fromSecretsManager(
+					cloudqueryRiffRaffDatabaseCredentials,
+					'password',
+				),
+			},
+		};
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
@@ -524,6 +577,7 @@ export class ServiceCatalogue extends GuStack {
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
+				riffRaffSources,
 			],
 		});
 

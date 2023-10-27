@@ -212,6 +212,35 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 	};
 }
 
+export function riffraffSourcesConfig(
+	riffRaffDBAddress: string,
+	riffRaffDBPort: string,
+): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'postgresql',
+			path: 'cloudquery/postgresql',
+			version: `v3.0.7`,
+			destinations: ['postgresql'],
+			tables: ['riffraff_*'],
+			spec: {
+				connection_string: [
+					'user=${RIFFRAFF_DB_USERNAME}',
+					'password=${RIFFRAFF_DB_PASSWORD}',
+					`host=${riffRaffDBAddress}`,
+					`port=${riffRaffDBPort}`,
+					'dbname=riffraff',
+					// Our riff-raff DB instances use an old SSL certificate that don't work with the version of Go that we use for service-catalogue.
+					// We cannot enable sslmode until we switch to using a different CA authority for riff-raff.
+					// See https://github.com/golang/go/issues/39568
+					'sslmode=verify-ca',
+				].join(' '),
+			},
+		},
+	};
+}
+
 export function snykSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 ): CloudqueryConfig {
