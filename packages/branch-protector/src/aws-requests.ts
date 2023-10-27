@@ -8,10 +8,12 @@ import type { Config } from './config';
 
 export async function readFromQueue(
 	config: Config,
+	msgCount: number,
 	sqs: SQSClient,
 ): Promise<Message[]> {
 	const getCommand = new ReceiveMessageCommand({
 		QueueUrl: config.queueUrl,
+		MaxNumberOfMessages: msgCount,
 		WaitTimeSeconds: 5,
 	});
 
