@@ -4,12 +4,12 @@ import { PrismaClient } from '@prisma/client';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { getRepoOwnership, getTeams, getUnarchivedRepositories } from './query';
-import type { UpdateBranchProtectionEvent } from './remediations/repository-02';
+import type { UpdateBranchProtectionEvent } from './remediations/repository-02-branch_protection';
 import {
 	addMessagesToQueue,
 	createRepository02Messages,
 	sendNotifications,
-} from './remediations/repository-02';
+} from './remediations/repository-02-branch_protection';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(

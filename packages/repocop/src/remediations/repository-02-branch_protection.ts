@@ -63,7 +63,7 @@ export function createRepository02Messages(
 	msgCount: number,
 ): UpdateBranchProtectionEvent[] {
 	const reposWithoutBranchProtection = evaluatedRepos.filter(
-		(repo) => !repo.repository_02,
+		(repo) => !repo.branch_protection,
 	);
 	const repo02WithContactableOwners = reposWithoutBranchProtection
 		.map((repo) => {

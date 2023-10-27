@@ -96,15 +96,14 @@ export function repositoryRuleEvaluation(
 
 	return {
 		full_name: fullName,
-		repository_01: repository01(repo),
-		repository_02: repository02(repo, allBranches),
-
+		default_branch_name: repository01(repo),
+		branch_protection: repository02(repo, allBranches),
 		// TODO - implement these rules
-		repository_03: false,
-		repository_04: repository04(repo, teams),
-		repository_05: null,
-		repository_06: repository06(repo),
-		repository_07: null,
+		team_based_access: false,
+		admin_access: repository04(repo, teams),
+		archiving: null,
+		topics: repository06(repo),
+		contents: null,
 		evaluated_on: new Date(),
 	};
 }
