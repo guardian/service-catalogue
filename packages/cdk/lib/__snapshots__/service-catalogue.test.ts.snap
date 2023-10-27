@@ -314,14 +314,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -955,14 +950,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1610,14 +1600,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -2227,14 +2212,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3104,14 +3084,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3563,14 +3538,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4232,14 +4202,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4889,14 +4854,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5483,14 +5443,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6130,14 +6085,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6807,14 +6757,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7624,14 +7569,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8072,14 +8012,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8920,14 +8855,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9367,14 +9297,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10063,14 +9988,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10719,14 +10639,9 @@ spec:
             ],
             "Essential": true,
             "FirelensConfiguration": {
-              "Options": {
-                "config-file-type": "file",
-                "config-file-value": "/custom.conf",
-                "enable-ecs-log-metadata": "true",
-              },
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:1",
+            "Image": "ghcr.io/guardian/devx-logs:2",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
