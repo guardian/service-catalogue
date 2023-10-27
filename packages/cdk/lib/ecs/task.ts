@@ -5,7 +5,6 @@ import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerImage,
 	FargateTaskDefinition,
-	FirelensConfigFileType,
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDrivers,
@@ -29,7 +28,7 @@ const cloudqueryImage = ContainerImage.fromRegistry(
 );
 
 const firelensImage = ContainerImage.fromRegistry(
-	'ghcr.io/guardian/devx-logs:1',
+	'ghcr.io/guardian/devx-logs:2',
 );
 
 export interface ScheduledCloudqueryTaskProps
@@ -187,11 +186,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			firelensConfig: {
 				type: FirelensLogRouterType.FLUENTBIT,
-				options: {
-					enableECSLogMetadata: true,
-					configFileType: FirelensConfigFileType.FILE,
-					configFileValue: '/custom.conf',
-				},
 			},
 		});
 
