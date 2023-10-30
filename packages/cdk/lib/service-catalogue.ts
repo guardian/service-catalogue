@@ -293,7 +293,9 @@ export class ServiceCatalogue extends GuStack {
 		const remainingAwsSources: CloudquerySource = {
 			name: 'RemainingAwsData',
 			description: 'Data fetched across all accounts in the organisation.',
-			schedule: nonProdSchedule ?? Schedule.cron({ weekDay: 'MON' }),
+			schedule:
+				nonProdSchedule ??
+				Schedule.cron({ minute: '0', hour: '10', weekDay: 'MON' }), // Every Monday, at 10AM UTC
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
