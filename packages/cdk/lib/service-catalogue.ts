@@ -283,11 +283,19 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
+		/*
+		This is a catch-all task, collecting all other AWS data.
+		Although we're not using the data for any particular reason, it is still useful to have.
+
+		It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
+		If we identify a table that needs to be updated more often, we should create a dedicated task for it.
+		 */
 		const remainingAwsSources: CloudquerySource = {
 			name: 'RemainingAwsData',
 			description: 'Data fetched across all accounts in the organisation.',
-			//this job can take upwards of 7 hours to run, so start late at night
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '21' }),
+			schedule:
+				nonProdSchedule ??
+				Schedule.cron({ minute: '0', hour: '10', weekDay: 'MON' }), // Every Monday, at 10AM UTC
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
