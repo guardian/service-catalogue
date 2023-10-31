@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"devDependencies": {
 		"@types/aws-lambda": "^8.10.122",
-		"prisma": "^5.4.2"
+		"prisma": "^5.5.2"
 	},
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
