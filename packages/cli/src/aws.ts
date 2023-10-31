@@ -263,16 +263,17 @@ export const runAllTasks = async (
 
 	const privateSubnets = await getPrivateSubnets(ssmClient);
 	const securityGroup = await getSecurityGroup(ssmClient, stack, stage, app);
+	const riffRaffDBSecurityGroup = await getRiffRaffDBSecurityGroup(
+		ssmClient,
+		stage,
+	);
 
 	return Promise.all(
 		tasks.map((task) =>
-			runTaskByArn(
-				ecsClient,
-				task.arn,
-				cluster.arn,
-				privateSubnets,
+			runTaskByArn(ecsClient, task.arn, cluster.arn, privateSubnets, [
 				securityGroup,
-			),
+				...(task.arn.includes('RiffRaffData') ? [riffRaffDBSecurityGroup] : []),
+			]),
 		),
 	);
 };
