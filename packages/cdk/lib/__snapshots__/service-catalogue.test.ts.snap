@@ -9,8 +9,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuSecurityGroup",
       "GuSecurityGroup",
       "GuStringParameter",
-      "GuStringParameter",
-      "GuStringParameter",
       "GuLoggingStreamNameParameter",
       "GuAnghammaradTopicParameter",
       "GuDistributionBucketParameter",
@@ -44,11 +42,11 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "RiffRaffDatabaseAccessAddressParam": {
+    "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessaddressC96584B6F00A464EAD1953AFF4B05118Parameter": {
       "Default": "/TEST/deploy/riff-raff/external-database-access-address",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "RiffRaffDatabaseAccessPortParam": {
+    "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessportC96584B6F00A464EAD1953AFF4B05118Parameter": {
       "Default": "/TEST/deploy/riff-raff/external-database-access-port",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
@@ -10750,14 +10748,14 @@ spec:
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
       host=",
                     {
-                      "Ref": "RiffRaffDatabaseAccessAddressParam",
+                      "Ref": "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessaddressC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                     " port=",
                     {
-                      "Ref": "RiffRaffDatabaseAccessPortParam",
+                      "Ref": "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessportC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                     " dbname=riffraff
-      sslmode=verify-full
+      sslmode=verify-ca
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
