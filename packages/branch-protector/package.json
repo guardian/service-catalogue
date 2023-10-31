@@ -10,7 +10,7 @@
 	},
 	"author": "guardian",
 	"dependencies": {
-		"@aws-sdk/client-secrets-manager": "^3.429.0",
+		"@aws-sdk/client-secrets-manager": "^3.438.0",
 		"@aws-sdk/client-sqs": "^3.438.0",
 		"@aws-sdk/client-ssm": "^3.438.0",
 		"@aws-sdk/types": "^3.433.0",
