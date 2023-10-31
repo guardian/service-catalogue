@@ -12,7 +12,8 @@ const envOrError = (name: string): string => {
  */
 export const Versions = {
 	CloudqueryCli: envOrError('CQ_CLI'),
-	CloudqueryPostgres: envOrError('CQ_POSTGRES'),
+	CloudqueryPostgresDestination: envOrError('CQ_POSTGRES_DESTINATION'),
+	CloudqueryPostgresSource: envOrError('CQ_POSTGRES_SOURCE'),
 	CloudqueryAws: envOrError('CQ_AWS'),
 	CloudqueryGithub: envOrError('CQ_GITHUB'),
 	CloudqueryFastly: envOrError('CQ_FASTLY'),

@@ -25,7 +25,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			name: 'postgresql',
 			registry: 'github',
 			path: 'cloudquery/postgresql',
-			version: `v${Versions.CloudqueryPostgres}`,
+			version: `v${Versions.CloudqueryPostgresDestination}`,
 			migrate_mode: 'forced',
 			spec: {
 				connection_string: [
@@ -221,7 +221,7 @@ export function riffraffSourcesConfig(
 		spec: {
 			name: 'postgresql',
 			path: 'cloudquery/postgresql',
-			version: `v3.0.7`,
+			version: `v${Versions.CloudqueryPostgresSource}`,
 			destinations: ['postgresql'],
 			tables: ['riffraff_*'],
 			spec: {
@@ -231,8 +231,8 @@ export function riffraffSourcesConfig(
 					`host=${riffRaffDBAddress}`,
 					`port=${riffRaffDBPort}`,
 					'dbname=riffraff',
-					// Our riff-raff DB instances use an old SSL certificate that don't work with the version of Go that we use for service-catalogue.
-					// We cannot enable sslmode until we switch to using a different CA authority for riff-raff.
+					// Ideally we'd use sslmode=verify-full however the certificates used by riff-raffs DB are quite old and don't have any SANs set.
+					// In order to upgrade to verify-full we need to change the CA used by the riff-raff DB.
 					// See https://github.com/golang/go/issues/39568
 					'sslmode=verify-ca',
 				].join(' '),
