@@ -165,6 +165,8 @@ export class ServiceCatalogue extends GuStack {
 				`/${stage}/deploy/riff-raff/external-database-access-security-group`,
 			);
 
+		// Provisioned by RiffRaff to specifically allow applications other than RiffRaff to access its DB
+		// See https://github.com/guardian/deploy-tools-platform/pull/731
 		const applicationToRiffRaffDatabaseSecurityGroup =
 			GuSecurityGroup.fromSecurityGroupId(
 				this,
