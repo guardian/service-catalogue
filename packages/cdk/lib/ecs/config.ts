@@ -212,10 +212,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 	};
 }
 
-export function riffraffSourcesConfig(
-	riffRaffDBAddress: string,
-	riffRaffDBPort: string,
-): CloudqueryConfig {
+export function riffraffSourcesConfig(): CloudqueryConfig {
 	return {
 		kind: 'source',
 		spec: {
@@ -228,8 +225,8 @@ export function riffraffSourcesConfig(
 				connection_string: [
 					'user=${RIFFRAFF_DB_USERNAME}',
 					'password=${RIFFRAFF_DB_PASSWORD}',
-					`host=${riffRaffDBAddress}`,
-					`port=${riffRaffDBPort}`,
+					'host=${RIFFRAFF_DB_HOST}',
+					'port=5432',
 					'dbname=riffraff',
 					// Ideally we'd use sslmode=verify-full however the certificates used by riff-raffs DB are quite old and don't have any SANs set.
 					// In order to upgrade to verify-full we need to change the CA used by the riff-raff DB.

@@ -534,24 +534,11 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		const riffRaffDatabaseAddress = StringParameter.valueForStringParameter(
-			this,
-			`/${stage}/deploy/riff-raff/external-database-access-address`,
-		);
-
-		const riffRaffDatabasePort = StringParameter.valueForStringParameter(
-			this,
-			`/${stage}/deploy/riff-raff/external-database-access-port`,
-		);
-
 		const riffRaffSources: CloudquerySource = {
 			name: 'RiffRaffData',
 			description: "Source deployment data directly from riff-raff's database",
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
-			config: riffraffSourcesConfig(
-				riffRaffDatabaseAddress,
-				riffRaffDatabasePort,
-			),
+			config: riffraffSourcesConfig(),
 			extraSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
 			secrets: {
 				RIFFRAFF_DB_USERNAME: Secret.fromSecretsManager(
@@ -561,6 +548,11 @@ export class ServiceCatalogue extends GuStack {
 				RIFFRAFF_DB_PASSWORD: Secret.fromSecretsManager(
 					cloudqueryRiffRaffDatabaseCredentials,
 					'password',
+				),
+
+				RIFFRAFF_DB_HOST: Secret.fromSecretsManager(
+					cloudqueryRiffRaffDatabaseCredentials,
+					'host',
 				),
 			},
 		};

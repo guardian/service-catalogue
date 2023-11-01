@@ -42,14 +42,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessaddressC96584B6F00A464EAD1953AFF4B05118Parameter": {
-      "Default": "/TEST/deploy/riff-raff/external-database-access-address",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessportC96584B6F00A464EAD1953AFF4B05118Parameter": {
-      "Default": "/TEST/deploy/riff-raff/external-database-access-port",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "SsmParameterValueTESTdeployriffraffexternaldatabaseaccesssecuritygroupC96584B6F00A464EAD1953AFF4B05118Parameter": {
       "Default": "/TEST/deploy/riff-raff/external-database-access-security-group",
       "Type": "AWS::SSM::Parameter::Value<String>",
@@ -10730,11 +10722,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              {
-                "Fn::Join": [
-                  "",
-                  [
-                    "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: postgresql
   path: cloudquery/postgresql
@@ -10746,16 +10734,7 @@ spec:
   spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
-      host=",
-                    {
-                      "Ref": "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessaddressC96584B6F00A464EAD1953AFF4B05118Parameter",
-                    },
-                    " port=",
-                    {
-                      "Ref": "SsmParameterValueTESTdeployriffraffexternaldatabaseaccessportC96584B6F00A464EAD1953AFF4B05118Parameter",
-                    },
-                    " dbname=riffraff
-      sslmode=verify-ca
+      host=\${RIFFRAFF_DB_HOST} port=5432 dbname=riffraff sslmode=verify-ca
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -10768,9 +10747,6 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-                  ],
-                ],
-              },
             ],
             "EntryPoint": [
               "",
@@ -10816,6 +10792,20 @@ spec:
                         "Ref": "RiffRaffDatabaseCredentials2033FD7A",
                       },
                       ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "RIFFRAFF_DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "RiffRaffDatabaseCredentials2033FD7A",
+                      },
+                      ":host::",
                     ],
                   ],
                 },
