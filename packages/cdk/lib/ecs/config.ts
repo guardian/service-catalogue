@@ -25,7 +25,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			name: 'postgresql',
 			registry: 'github',
 			path: 'cloudquery/postgresql',
-			version: `v${Versions.CloudqueryPostgres}`,
+			version: `v${Versions.CloudqueryPostgresDestination}`,
 			migrate_mode: 'forced',
 			spec: {
 				connection_string: [
@@ -207,6 +207,32 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 			],
 			spec: {
 				bucket: bucketName,
+			},
+		},
+	};
+}
+
+export function riffraffSourcesConfig(): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'postgresql',
+			path: 'cloudquery/postgresql',
+			version: `v${Versions.CloudqueryPostgresSource}`,
+			destinations: ['postgresql'],
+			tables: ['riffraff_*'],
+			spec: {
+				connection_string: [
+					'user=${RIFFRAFF_DB_USERNAME}',
+					'password=${RIFFRAFF_DB_PASSWORD}',
+					'host=${RIFFRAFF_DB_HOST}',
+					'port=5432',
+					'dbname=riffraff',
+					// Ideally we'd use sslmode=verify-full however the certificates used by riff-raffs DB are quite old and don't have any SANs set.
+					// In order to upgrade to verify-full we need to change the CA used by the riff-raff DB.
+					// See https://github.com/golang/go/issues/39568
+					'sslmode=verify-ca',
+				].join(' '),
 			},
 		},
 	};

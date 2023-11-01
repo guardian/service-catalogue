@@ -18,7 +18,7 @@ services:
       - ./dev-config/cloudquery.yaml:/dev-config.yaml
     environment:
       AWS_SHARED_CREDENTIALS_FILE: "/.aws/credentials"
-      CQ_POSTGRES: ${CQ_POSTGRES}
+      CQ_POSTGRES_DESTINATION: ${CQ_POSTGRES_DESTINATION}
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       CQ_SNYK: ${CQ_SNYK}

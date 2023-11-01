@@ -58,6 +58,17 @@ export const getSecurityGroup = async (
 	);
 };
 
+export const getRiffRaffDBSecurityGroup = async (
+	client: SSMClient,
+	stage: string,
+): Promise<string> => {
+	return await getSsmParameter(
+		client,
+		// This SSM Parameter has been created in the Riff Raff DB stack
+		`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+	);
+};
+
 export const getEcsClient = () => {
 	return new ECSClient(awsConfig);
 };
@@ -161,7 +172,7 @@ const runTaskByArn = async (
 	taskArn: string,
 	clusterArn: string,
 	privateSubnets: string[],
-	securityGroup: string,
+	securityGroups: string[],
 ): Promise<RunTaskCommandOutput> => {
 	const command = new RunTaskCommand({
 		cluster: clusterArn,
@@ -169,7 +180,7 @@ const runTaskByArn = async (
 		networkConfiguration: {
 			awsvpcConfiguration: {
 				subnets: privateSubnets,
-				securityGroups: [securityGroup],
+				securityGroups: securityGroups,
 			},
 		},
 		capacityProviderStrategy: [{ capacityProvider: 'FARGATE' }],
@@ -211,12 +222,19 @@ export const runOneTask = async (
 	const privateSubnets = await getPrivateSubnets(ssmClient);
 	const securityGroup = await getSecurityGroup(ssmClient, stack, stage, app);
 
+	const securityGroups = [
+		securityGroup,
+		...(task.arn.includes('RiffRaffData')
+			? [await getRiffRaffDBSecurityGroup(ssmClient, stage)]
+			: []),
+	];
+
 	return await runTaskByArn(
 		ecsClient,
 		task.arn,
 		cluster.arn,
 		privateSubnets,
-		securityGroup,
+		securityGroups,
 	);
 };
 
@@ -245,16 +263,17 @@ export const runAllTasks = async (
 
 	const privateSubnets = await getPrivateSubnets(ssmClient);
 	const securityGroup = await getSecurityGroup(ssmClient, stack, stage, app);
+	const riffRaffDBSecurityGroup = await getRiffRaffDBSecurityGroup(
+		ssmClient,
+		stage,
+	);
 
 	return Promise.all(
 		tasks.map((task) =>
-			runTaskByArn(
-				ecsClient,
-				task.arn,
-				cluster.arn,
-				privateSubnets,
+			runTaskByArn(ecsClient, task.arn, cluster.arn, privateSubnets, [
 				securityGroup,
-			),
+				...(task.arn.includes('RiffRaffData') ? [riffRaffDBSecurityGroup] : []),
+			]),
 		),
 	);
 };

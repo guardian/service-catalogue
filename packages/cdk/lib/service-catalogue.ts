@@ -51,6 +51,7 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
+	riffraffSourcesConfig,
 	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
@@ -157,6 +158,21 @@ export class ServiceCatalogue extends GuStack {
 			tier: ParameterTier.STANDARD,
 			dataType: ParameterDataType.TEXT,
 		});
+
+		const riffRaffDatabaseAccessSecurityGroupParam =
+			StringParameter.valueForStringParameter(
+				this,
+				`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+			);
+
+		// Provisioned by RiffRaff to specifically allow applications other than RiffRaff to access its DB
+		// See https://github.com/guardian/deploy-tools-platform/pull/731
+		const applicationToRiffRaffDatabaseSecurityGroup =
+			GuSecurityGroup.fromSecurityGroupId(
+				this,
+				'RiffRaffDatabaseAccessSecurityGroup',
+				riffRaffDatabaseAccessSecurityGroupParam,
+			);
 
 		const readonlyPolicy = readonlyAccessManagedPolicy(
 			this,
@@ -512,6 +528,37 @@ export class ServiceCatalogue extends GuStack {
 			},
 		];
 
+		const cloudqueryRiffRaffDatabaseCredentials = new SecretsManager(
+			this,
+			'RiffRaffDatabaseCredentials',
+			{
+				secretName: `/${stage}/${stack}/${app}/riffraff-database-credentials`,
+			},
+		);
+
+		const riffRaffSources: CloudquerySource = {
+			name: 'RiffRaffData',
+			description: "Source deployment data directly from riff-raff's database",
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+			config: riffraffSourcesConfig(),
+			extraSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
+			secrets: {
+				RIFFRAFF_DB_USERNAME: Secret.fromSecretsManager(
+					cloudqueryRiffRaffDatabaseCredentials,
+					'username',
+				),
+				RIFFRAFF_DB_PASSWORD: Secret.fromSecretsManager(
+					cloudqueryRiffRaffDatabaseCredentials,
+					'password',
+				),
+
+				RIFFRAFF_DB_HOST: Secret.fromSecretsManager(
+					cloudqueryRiffRaffDatabaseCredentials,
+					'host',
+				),
+			},
+		};
+
 		new CloudqueryCluster(this, `${app}Cluster`, {
 			app,
 			vpc,
@@ -524,6 +571,7 @@ export class ServiceCatalogue extends GuStack {
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
+				riffRaffSources,
 			],
 		});
 

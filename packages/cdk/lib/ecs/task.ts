@@ -1,6 +1,7 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Tags } from 'aws-cdk-lib';
+import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerImage,
@@ -92,6 +93,11 @@ export interface ScheduledCloudqueryTaskProps
 	 * Additional commands to run within the ServiceCatalogue container, executed first.
 	 */
 	additionalCommands?: string[];
+
+	/**
+	 * Extra security groups applied to the task for accessing resources such as RiffRaff
+	 */
+	extraSecurityGroups?: ISecurityGroup[];
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -114,6 +120,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			additionalCommands = [],
 			memoryLimitMiB,
 			cpu,
+			extraSecurityGroups,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -225,7 +232,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			scheduledFargateTaskDefinitionOptions: {
 				taskDefinition: task,
 			},
-			securityGroups: [dbAccess],
+			securityGroups: [dbAccess, ...(extraSecurityGroups ?? [])],
 			enabled,
 		});
 

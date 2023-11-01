@@ -1,7 +1,7 @@
 import { GuLoggingStreamNameParameter } from '@guardian/cdk/lib/constructs/core';
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import type { IVpc } from 'aws-cdk-lib/aws-ec2';
+import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import type { Secret } from 'aws-cdk-lib/aws-ecs/lib/container-definition';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
@@ -69,6 +69,11 @@ export interface CloudquerySource {
 	 * The number of cpu units used by the task.
 	 */
 	cpu?: 256 | 512 | 1024 | 2048 | 4096 | 8192 | 16384;
+
+	/**
+	 * Extra security groups applied to the task for accessing resources such as RiffRaff
+	 */
+	extraSecurityGroups?: ISecurityGroup[];
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -146,6 +151,7 @@ export class CloudqueryCluster extends Cluster {
 				additionalCommands,
 				memoryLimitMiB,
 				cpu,
+				extraSecurityGroups,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -158,6 +164,7 @@ export class CloudqueryCluster extends Cluster {
 					additionalCommands,
 					memoryLimitMiB,
 					cpu,
+					extraSecurityGroups,
 				});
 			},
 		);
