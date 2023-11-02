@@ -122,7 +122,7 @@ spec:
   name: 'postgresql'
   registry: 'github'
   path: 'cloudquery/postgresql'
-  version: v${CQ_POSTGRES}
+  version: v${CQ_POSTGRES_DESTINATION}
 
   # Automatically apply migrations whenever plugins are updated.
   # Note: This is not encouraged if risk averse, so we should consider removing this once fully in production.
