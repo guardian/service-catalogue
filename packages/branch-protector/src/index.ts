@@ -41,7 +41,7 @@ async function protectBranch(
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		console.log(`Updated ${repo}'s default branch protection`);
 		for (const slug of event.teamNameSlugs) {
-			await notify(event.fullName, config.anghammaradSnsTopic, slug);
+			await notify(event.fullName, config, slug);
 		}
 		console.log(`Notified teams`);
 	} else {

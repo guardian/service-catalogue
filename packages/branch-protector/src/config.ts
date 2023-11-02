@@ -12,6 +12,11 @@ export function getEnvOrThrow(key: string): string {
 
 export interface Config {
 	/**
+	 * The name of this application.
+	 */
+	app: string;
+
+	/**
 	 * The stage of the application, e.g. DEV, CODE, PROD.
 	 */
 	stage: string;
@@ -57,6 +62,7 @@ async function getGithubAppSecretJson(): Promise<GithubAppSecret> {
 export async function getConfig() {
 	const secretJson = await getGithubAppSecretJson();
 	const config: Config = {
+		app: getEnvOrThrow('APP'),
 		stage: process.env['STAGE'] ?? 'DEV',
 		githubAppConfig: {
 			strategyOptions: {
