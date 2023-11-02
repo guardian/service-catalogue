@@ -69,5 +69,6 @@ export async function notify(
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: 'branch-protector',
 		topicArn: topicArn,
+		threadKey: 'service-catalogue',
 	});
 }
