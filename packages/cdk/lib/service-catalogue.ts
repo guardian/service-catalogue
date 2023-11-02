@@ -297,6 +297,17 @@ export class ServiceCatalogue extends GuStack {
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
 			},
+			{
+				name: 'OrgWideDynamoDB',
+				description:
+					'Collecting DynamoDB data across the organisation. Uses include auditing backup configuration.',
+				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '5' }),
+				config: awsSourceConfigForOrganisation({
+					tables: ['aws_dynamodb*'],
+				}),
+				managedPolicies: [readonlyPolicy],
+				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+			},
 		];
 
 		/*
