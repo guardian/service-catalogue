@@ -107,6 +107,9 @@ export async function addMessagesToQueue(
 		Entries: events.map((event) => createEntry(event)),
 	});
 	await sqsClient.send(command);
+
+	const repoListString = events.map((event) => event.fullName).join(', ');
+	console.log(`Repos added to branch protector queue: ${repoListString}`);
 }
 
 async function notifyOneTeam(
