@@ -138,7 +138,7 @@ const thePerfectRepo: github_repositories = {
 	id: BigInt(1),
 };
 
-describe('repository_01 should be false when the default branch is not main', () => {
+describe('default_branch_name should be false when the default branch is not main', () => {
 	test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: github_repositories[] = [thePerfectRepo, badRepo];
@@ -146,7 +146,10 @@ describe('repository_01 should be false when the default branch is not main', ()
 			repositoryRuleEvaluation(repo, [], []),
 		);
 
-		expect(evaluation.map((repo) => repo.repository_01)).toEqual([true, false]);
+		expect(evaluation.map((repo) => repo.default_branch_name)).toEqual([
+			true,
+			false,
+		]);
 	});
 });
 
@@ -170,7 +173,7 @@ describe('Repositories should have branch protection', () => {
 			[],
 		);
 
-		expect(actual.repository_02).toEqual(true);
+		expect(actual.branch_protection).toEqual(true);
 	});
 	test('We should get a negative result when the default branch is not protected', () => {
 		const repo: github_repositories = {
@@ -189,7 +192,7 @@ describe('Repositories should have branch protection', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [unprotectedMainBranch], []);
-		expect(actual.repository_02).toEqual(false);
+		expect(actual.branch_protection).toEqual(false);
 	});
 });
 
@@ -209,7 +212,7 @@ describe('Repository admin access', () => {
 		];
 
 		const actual = repositoryRuleEvaluation(repo, [], teams);
-		expect(actual.repository_04).toEqual(false);
+		expect(actual.admin_access).toEqual(false);
 	});
 
 	test('Should return true when there is an admin team', () => {
@@ -231,7 +234,7 @@ describe('Repository admin access', () => {
 		];
 
 		const actual = repositoryRuleEvaluation(repo, [], teams);
-		expect(actual.repository_04).toEqual(true);
+		expect(actual.admin_access).toEqual(true);
 	});
 
 	test(`Should validate repositories with a 'hackday' topic`, () => {
@@ -244,7 +247,7 @@ describe('Repository admin access', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_04).toEqual(true);
+		expect(actual.admin_access).toEqual(true);
 	});
 
 	test(`Should evaluate repositories with a 'production' topic`, () => {
@@ -266,7 +269,7 @@ describe('Repository admin access', () => {
 			},
 		];
 		const actual = repositoryRuleEvaluation(repo, [], teams);
-		expect(actual.repository_04).toEqual(true);
+		expect(actual.admin_access).toEqual(true);
 	});
 
 	test(`Should return false if all topics are unrecognised`, () => {
@@ -278,7 +281,7 @@ describe('Repository admin access', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_04).toEqual(false);
+		expect(actual.admin_access).toEqual(false);
 	});
 });
 
@@ -290,7 +293,7 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_06).toEqual(true);
+		expect(actual.topics).toEqual(true);
 	});
 
 	test('Should return false when there are multiple recognised topics', () => {
@@ -302,7 +305,7 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_06).toEqual(false);
+		expect(actual.topics).toEqual(false);
 	});
 
 	test('Should return true when there is are multiple topics, not all are recognised', () => {
@@ -312,7 +315,7 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_06).toEqual(true);
+		expect(actual.topics).toEqual(true);
 	});
 
 	test('Should return false when there are no topics', () => {
@@ -322,7 +325,7 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_06).toEqual(false);
+		expect(actual.topics).toEqual(false);
 	});
 
 	test('Should return false when there are no recognised topics', () => {
@@ -332,6 +335,6 @@ describe('Repository topics', () => {
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [], []);
-		expect(actual.repository_06).toEqual(false);
+		expect(actual.topics).toEqual(false);
 	});
 });

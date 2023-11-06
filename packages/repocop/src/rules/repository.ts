@@ -12,18 +12,18 @@ import {
 } from '../query';
 
 /**
- * Apply the following rule to a GitHub repository:
+ * Evaluate the following rule for a Github repository:
  *   > The default branch name should be "main".
  */
-function repository01(repo: github_repositories): boolean {
+function hasDefaultBranchNameMain(repo: github_repositories): boolean {
 	return repo.default_branch === 'main';
 }
 
 /**
- * Apply the following rule to a GitHub repository:
+ * Evaluate the following rule for a Github repository:
  *   > Enable branch protection for the default branch, ensuring changes are reviewed before being deployed.
  */
-function repository02(
+function hasBranchProtection(
 	repo: github_repositories,
 	branches: github_repository_branches[],
 ): boolean {
@@ -39,11 +39,11 @@ function repository02(
 }
 
 /**
- * Apply the following rule to a GitHub repository:
+ * Evaluate the following rule for a Github repository:
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
  *   > Repositories without one of the following topics are exempt: production, testing, documentation.
  */
-function repository04(
+function hasAdminAccess(
 	repo: github_repositories,
 	teams: RepositoryTeam[],
 ): boolean {
@@ -61,11 +61,11 @@ function repository04(
 	return isExempt || hasAdminTeam;
 }
 /**
- * Apply the following rule to a GitHub repository:
+ * Evaluate the following rule for a Github repository:
  *   > Repositories should have one and only one of the following topics to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
-function repository06(repo: github_repositories): boolean {
+function hasTopics(repo: github_repositories): boolean {
 	const validTopics = [
 		'prototype',
 		'learning',
@@ -96,15 +96,13 @@ export function repositoryRuleEvaluation(
 
 	return {
 		full_name: fullName,
-		repository_01: repository01(repo),
-		repository_02: repository02(repo, allBranches),
-
-		// TODO - implement these rules
-		repository_03: false,
-		repository_04: repository04(repo, teams),
-		repository_05: null,
-		repository_06: repository06(repo),
-		repository_07: null,
+		default_branch_name: hasDefaultBranchNameMain(repo),
+		branch_protection: hasBranchProtection(repo, allBranches),
+		team_based_access: false,
+		admin_access: hasAdminAccess(repo, teams),
+		archiving: null,
+		topics: hasTopics(repo),
+		contents: null,
 		evaluated_on: new Date(),
 	};
 }

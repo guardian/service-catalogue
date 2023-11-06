@@ -3,8 +3,11 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { UpdateBranchProtectionEvent } from './repository-02';
-import { createEntry, createRepository02Messages } from './repository-02';
+import type { UpdateBranchProtectionEvent } from './repository-02-branch_protection';
+import {
+	createEntry,
+	createRepository02Messages,
+} from './repository-02-branch_protection';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',
@@ -47,13 +50,13 @@ describe('Team slugs should be findable for every team associated with a repo', 
 		const repo = 'guardian/repo1';
 		const evaluatedRepo: repocop_github_repository_rules = {
 			full_name: repo,
-			repository_01: true,
-			repository_02: false,
-			repository_03: true,
-			repository_04: true,
-			repository_05: true,
-			repository_06: true,
-			repository_07: true,
+			default_branch_name: true,
+			branch_protection: false,
+			team_based_access: true,
+			admin_access: true,
+			archiving: true,
+			topics: true,
+			contents: true,
 			evaluated_on: new Date(),
 		};
 
@@ -86,13 +89,13 @@ describe('Team slugs should be findable for every team associated with a repo', 
 		const repo = 'guardian/repo1';
 		const evaluatedRepo: repocop_github_repository_rules = {
 			full_name: repo,
-			repository_01: true,
-			repository_02: false,
-			repository_03: true,
-			repository_04: true,
-			repository_05: true,
-			repository_06: true,
-			repository_07: true,
+			default_branch_name: true,
+			branch_protection: false,
+			team_based_access: true,
+			admin_access: true,
+			archiving: true,
+			topics: true,
+			contents: true,
 			evaluated_on: new Date(),
 		};
 
