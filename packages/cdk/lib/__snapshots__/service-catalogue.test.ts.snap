@@ -12019,6 +12019,8 @@ spec:
     - postgresql
   tables:
     - riffraff_*
+  skip_tables:
+    - riffraff_deploy_logs
   spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
