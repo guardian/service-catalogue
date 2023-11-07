@@ -41,15 +41,17 @@ async function protectBranch(
 
 	const stageIsProd = config.stage === 'PROD';
 
-	if (branchIsProtected && stageIsProd) {
-		console.log(`No action required`);
-	} else if (!branchIsProtected && stageIsProd) {
-		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
-		console.log(`Updated ${repo}'s default branch protection`);
-		for (const slug of event.teamNameSlugs) {
-			await notify(event.fullName, config, slug);
+	if (stageIsProd) {
+		if (branchIsProtected) {
+			console.log(`No action required`);
+		} else {
+			await updateBranchProtection(octokit, owner, repo, defaultBranchName);
+			console.log(`Updated ${repo}'s default branch protection`);
+			for (const slug of event.teamNameSlugs) {
+				await notify(event.fullName, config, slug);
+			}
+			console.log(`Notified teams`);
 		}
-		console.log(`Notified teams`);
 	} else {
 		// !stageIsProd
 		console.log(`Detected stage: ${config.stage}. No action taken`);
