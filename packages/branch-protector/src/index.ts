@@ -23,7 +23,13 @@ async function protectBranch(
 		throw new Error(`Invalid repo name: ${event.fullName}`);
 	}
 
-	const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
+	let defaultBranchName = undefined;
+	try {
+		defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
+	} catch (error) {
+		throw new Error(`Could not obtain branch name for repo: ${repo}`);
+	}
+
 	const branchIsProtected = await isBranchProtected(
 		octokit,
 		owner,
@@ -46,7 +52,7 @@ async function protectBranch(
 		console.log(`Notified teams`);
 	} else {
 		// !stageIsProd
-		console.log(`Detected stage: ${config.stage}. No action taken.`);
+		console.log(`Detected stage: ${config.stage}. No action taken`);
 	}
 }
 
@@ -58,7 +64,12 @@ async function handleMessage(
 ) {
 	if (message.Body !== undefined) {
 		const event = JSON.parse(message.Body) as UpdateBranchProtectionEvent;
-		await protectBranch(octokit, config, event);
+		try {
+			await protectBranch(octokit, config, event);
+		} catch (error) {
+			console.error(`Error: branch protection failed for  ${event.fullName}`);
+			console.error(error);
+		}
 	}
 	await deleteFromQueue(config, message, sqs);
 }
