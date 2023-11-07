@@ -42,8 +42,13 @@ export async function updateBranchProtection(
 		allow_force_pushes: false,
 		allow_deletions: false,
 	};
-	await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
-	console.log(`Update of ${repo} successful`);
+	try {
+		await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
+		console.log(`Branch protection successfully applied to ${repo}`);
+	} catch (error) {
+		console.error(`Error: branch protection failed for ${repo}`);
+		console.error(error);
+	}
 }
 
 export async function getDefaultBranchName(
