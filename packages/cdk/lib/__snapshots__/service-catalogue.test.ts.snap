@@ -11055,7 +11055,7 @@ spec:
     },
     "CloudquerySourceRemainingAwsDataScheduledEventRuleAE2A0ED1": {
       "Properties": {
-        "ScheduleExpression": "cron(0 10 ? * MON *)",
+        "ScheduleExpression": "cron(0 16 ? * SAT *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -14020,7 +14020,7 @@ spec:
             "Value": "TEST",
           },
         ],
-        "Timeout": 900,
+        "Timeout": 300,
         "VpcConfig": {
           "SecurityGroupIds": [
             {

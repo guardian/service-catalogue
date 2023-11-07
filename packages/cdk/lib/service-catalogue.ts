@@ -333,7 +333,7 @@ export class ServiceCatalogue extends GuStack {
 			description: 'Data fetched across all accounts in the organisation.',
 			schedule:
 				nonProdSchedule ??
-				Schedule.cron({ minute: '0', hour: '10', weekDay: 'MON' }), // Every Monday, at 10AM UTC
+				Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
@@ -641,7 +641,7 @@ export class ServiceCatalogue extends GuStack {
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
-			timeout: Duration.minutes(15),
+			timeout: Duration.minutes(5),
 		};
 
 		const repocopLambda = new GuScheduledLambda(
