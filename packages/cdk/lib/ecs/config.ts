@@ -221,6 +221,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 			version: `v${Versions.CloudqueryPostgresSource}`,
 			destinations: ['postgresql'],
 			tables: ['riffraff_*'],
+			skip_tables: ['riffraff_deploy_logs'],
 			spec: {
 				connection_string: [
 					'user=${RIFFRAFF_DB_USERNAME}',
