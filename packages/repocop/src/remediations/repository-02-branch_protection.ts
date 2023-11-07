@@ -142,7 +142,7 @@ async function notifyOneTeam(
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: 'branch-protector',
 		topicArn: config.anghammaradSnsTopic,
-		threadKey: 'service-catalogue',
+		threadKey: `service-catalogue-${fullName.replaceAll('/', '-')}`,
 	});
 
 	console.log(`Notified ${teamSlug} about ${fullName}`);
