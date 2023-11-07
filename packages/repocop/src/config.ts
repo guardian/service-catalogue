@@ -3,6 +3,11 @@ import { Signer } from '@aws-sdk/rds-signer';
 
 export interface Config {
 	/**
+	 * The name of this application.
+	 */
+	app: string;
+
+	/**
 	 * The stage of the application, e.g. DEV, CODE, PROD.
 	 */
 	stage: string;
@@ -95,6 +100,7 @@ export async function getConfig(): Promise<Config> {
 	const queryLogging = (process.env['QUERY_LOGGING'] ?? 'false') === 'true';
 
 	return {
+		app: getEnvOrThrow('APP'),
 		stage: getEnvOrThrow('STAGE'),
 		region: 'eu-west-1',
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),

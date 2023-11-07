@@ -47,11 +47,13 @@ export async function deleteFromQueue(
 
 export async function notify(
 	fullRepoName: string,
-	topicArn: string,
-	slug: string,
+	config: Config,
+	teamSlug: string,
 ) {
+	const { app, stage, anghammaradSnsTopic } = config;
+
 	const repoUrl = `https://github.com/${fullRepoName}`;
-	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${slug}&var-rule=All&orgId=1`;
+	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
 	const protectionUrl = `https://github.com/${fullRepoName}/settings/branches`;
 	const actions = [
 		//duplicated in repocop
@@ -68,13 +70,13 @@ export async function notify(
 
 	const client = new Anghammarad();
 	await client.notify({
-		subject: 'Repocop branch protection',
+		subject: `Repocop branch protection (for GitHub team ${teamSlug})`,
 		message: `Branch protection has been applied to ${fullRepoName}`,
 		actions,
-		target: { GithubTeamSlug: slug },
+		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: 'branch-protector',
-		topicArn: topicArn,
+		sourceSystem: `${app} ${stage}`,
+		topicArn: anghammaradSnsTopic,
 		threadKey: `service-catalogue-${fullRepoName.replaceAll('/', '-')}`,
 	});
 }
