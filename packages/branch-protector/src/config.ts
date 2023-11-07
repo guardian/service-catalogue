@@ -72,7 +72,7 @@ export async function getConfig() {
 			installationId: secretJson.installationId,
 		},
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
-		queueUrl: getEnvOrThrow('QUEUE_URL'),
+		queueUrl: getEnvOrThrow('BRANCH_PROT_QUEUE_URL'),
 	};
 	return config;
 }
