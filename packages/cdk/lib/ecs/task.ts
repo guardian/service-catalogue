@@ -163,7 +163,13 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					...additionalCommands,
-					'wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates',
+
+					/*
+					Install the CA bundle for all RDS certificates.
+					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
+					 */
+					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
+
 					`printf '${dump(sourceConfig)}' > /source.yaml`,
 					`printf '${dump(destinationConfig)}' > /destination.yaml`,
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',

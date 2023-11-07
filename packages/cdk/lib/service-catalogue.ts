@@ -33,7 +33,11 @@ import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
-import { DatabaseInstance, DatabaseInstanceEngine } from 'aws-cdk-lib/aws-rds';
+import {
+	CaCertificate,
+	DatabaseInstance,
+	DatabaseInstanceEngine,
+} from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
@@ -121,6 +125,12 @@ export class ServiceCatalogue extends GuStack {
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
 			deletionProtection: rdsDeletionProtection,
+
+			/*
+			This certificate supports automatic rotation.
+			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities
+			 */
+			caCertificate: CaCertificate.RDS_CA_RDS2048_G1,
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
@@ -333,7 +343,7 @@ export class ServiceCatalogue extends GuStack {
 			description: 'Data fetched across all accounts in the organisation.',
 			schedule:
 				nonProdSchedule ??
-				Schedule.cron({ minute: '0', hour: '10', weekDay: 'MON' }), // Every Monday, at 10AM UTC
+				Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_*'],
 				skipTables: [
@@ -641,7 +651,7 @@ export class ServiceCatalogue extends GuStack {
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
-			timeout: Duration.minutes(15),
+			timeout: Duration.minutes(5),
 		};
 
 		const repocopLambda = new GuScheduledLambda(

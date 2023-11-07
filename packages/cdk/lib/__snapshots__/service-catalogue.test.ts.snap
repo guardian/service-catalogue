@@ -197,7 +197,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -835,7 +835,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -1476,7 +1476,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: fastly
   path: cloudquery/fastly
@@ -2077,7 +2077,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+                    "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: galaxies
   path: guardian/galaxies
@@ -2930,7 +2930,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -3377,7 +3377,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4041,7 +4041,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4735,7 +4735,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: guardian-snyk
   path: guardian/snyk-full-project
@@ -5327,7 +5327,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -5969,7 +5969,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -6641,7 +6641,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7453,7 +7453,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7895,7 +7895,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -8537,7 +8537,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -9180,7 +9180,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10023,7 +10023,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10466,7 +10466,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -11055,7 +11055,7 @@ spec:
     },
     "CloudquerySourceRemainingAwsDataScheduledEventRuleAE2A0ED1": {
       "Properties": {
-        "ScheduleExpression": "cron(0 10 ? * MON *)",
+        "ScheduleExpression": "cron(0 16 ? * SAT *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -11108,7 +11108,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12010,7 +12010,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: postgresql
   path: cloudquery/postgresql
@@ -12452,7 +12452,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt -q https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: snyk
   path: cloudquery/snyk
@@ -13093,6 +13093,7 @@ spec:
       "DeletionPolicy": "Snapshot",
       "Properties": {
         "AllocatedStorage": "100",
+        "CACertificateIdentifier": "rds-ca-rsa2048-g1",
         "CopyTagsToSnapshot": true,
         "DBInstanceClass": "db.t4g.small",
         "DBSubnetGroupName": {
@@ -14020,7 +14021,7 @@ spec:
             "Value": "TEST",
           },
         ],
-        "Timeout": 900,
+        "Timeout": 300,
         "VpcConfig": {
           "SecurityGroupIds": [
             {
