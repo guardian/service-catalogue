@@ -64,13 +64,13 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			...nullOwner,
 			full_name: repo,
 			github_team_id: BigInt(1),
-			github_team_name: 'Developer Experience', // TODO: revert this back to 'Team One' once rolled out to entire dept
+			github_team_name: 'Team One',
 		};
 
 		const githubTeam: github_teams = {
 			...nullTeam,
 			id: BigInt(1),
-			slug: 'devx-security', // TODO: revert this back to 'team-one' once rolled out to entire dept
+			slug: 'team-one',
 		};
 
 		const actual = createRepository02Messages(
@@ -80,9 +80,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			5,
 		);
 
-		expect(actual).toEqual([
-			{ fullName: repo, teamNameSlugs: ['devx-security'] }, // TODO: revert this back to 'team-one' once rolled out to entire dept
-		]);
+		expect(actual).toEqual([{ fullName: repo, teamNameSlugs: ['team-one'] }]);
 	});
 
 	test('A repository that has no owner should not be in the list of messages', () => {
