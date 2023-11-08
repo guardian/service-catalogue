@@ -443,7 +443,6 @@ export class ServiceCatalogue extends GuStack {
 						We don't use them as they take a long time to collect, so skip them.
 						See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
 						 */
-						'github_organization_dependabot_alerts',
 						'github_organization_dependabot_secrets',
 					],
 				}),
