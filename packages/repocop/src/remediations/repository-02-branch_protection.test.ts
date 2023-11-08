@@ -3,7 +3,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { UpdateBranchProtectionEvent } from './repository-02-branch_protection';
+import type { UpdateBranchProtectionEvent } from 'common/types';
 import {
 	createEntry,
 	createRepository02Messages,

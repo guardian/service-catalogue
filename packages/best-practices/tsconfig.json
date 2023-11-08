@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.json",
+  "references": [{ "path": "../common" }],
   "compilerOptions": {
     "module": "es6",
     "allowImportingTsExtensions": true
