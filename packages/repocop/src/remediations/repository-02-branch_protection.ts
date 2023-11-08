@@ -8,16 +8,8 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
+import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Config } from '../config';
-
-/*
- * This interface has been copied from packages/branch-protector/src/model.ts
- * The two interfaces should be kept in sync until we can share the interface.
- */
-export interface UpdateBranchProtectionEvent {
-	fullName: string; // in the format of owner/repo-name
-	teamNameSlugs: string[];
-}
 
 function findTeamSlugFromId(
 	id: bigint,

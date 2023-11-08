@@ -1,10 +1,10 @@
 import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
+import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { getRepoOwnership, getTeams, getUnarchivedRepositories } from './query';
-import type { UpdateBranchProtectionEvent } from './remediations/repository-02-branch_protection';
 import {
 	addMessagesToQueue,
 	createRepository02Messages,

@@ -1,5 +1,6 @@
 import type { Message } from '@aws-sdk/client-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
+import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Octokit } from 'octokit';
 import { deleteFromQueue, notify, readFromQueue } from './aws-requests';
 import { getConfig } from './config';
@@ -10,7 +11,6 @@ import {
 	isBranchProtected,
 	updateBranchProtection,
 } from './github-requests';
-import type { UpdateBranchProtectionEvent } from './model';
 
 async function protectBranch(
 	octokit: Octokit,
