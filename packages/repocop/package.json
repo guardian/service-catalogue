@@ -2,8 +2,7 @@
 	"name": "repocop",
 	"version": "1.0.0",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.126",
-		"prisma": "^5.5.2"
+		"@types/aws-lambda": "^8.10.126"
 	},
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
@@ -15,15 +14,11 @@
 		"migrate:code": "script/migrate.sh --code",
 		"migrate:prod": "script/migrate.sh --prod"
 	},
-	"prisma": {
-		"schema": "prisma/schema.prisma"
-	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.438.0",
 		"@aws-sdk/client-sqs": "^3.450.0",
 		"@aws-sdk/rds-signer": "^3.450.0",
 		"@aws-sdk/credential-providers": "^3.444.0",
-		"@prisma/client": "^5.5.2",
 		"@guardian/anghammarad": "^1.8.1"
 	}
 }
