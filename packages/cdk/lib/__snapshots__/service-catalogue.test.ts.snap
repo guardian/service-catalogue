@@ -564,9 +564,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -625,26 +622,6 @@ spec:
                   ],
                 ],
               },
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
             },
             {
               "Action": "sts:AssumeRole",
@@ -1200,9 +1177,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -1265,26 +1239,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -5723,9 +5677,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -5788,26 +5739,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -6365,9 +6296,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -6430,26 +6358,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -7007,9 +6915,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -7072,26 +6977,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -7675,26 +7560,6 @@ spec:
               "Resource": "*",
             },
             {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
-            },
-            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Resource": "arn:aws:iam::*:role/cloudquery-access",
@@ -7760,9 +7625,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -8291,9 +8153,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -8356,26 +8215,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -8935,9 +8774,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -9000,26 +8836,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -9578,9 +9394,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -9643,26 +9456,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -10221,9 +10014,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -10286,26 +10076,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -10863,9 +10633,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -10928,26 +10695,6 @@ spec:
             {
               "Action": "organizations:List*",
               "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
               "Resource": "*",
             },
             {
@@ -11558,9 +11305,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -11619,26 +11363,6 @@ spec:
                   ],
                 ],
               },
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "ec2:GetConsoleOutput",
-                "ec2:GetConsoleScreenshot",
-                "ecr:BatchGetImage",
-                "ecr:GetAuthorizationToken",
-                "ecr:GetDownloadUrlForLayer",
-                "kinesis:Get*",
-                "lambda:GetFunction",
-                "logs:GetLogEvents",
-                "sdb:Select*",
-                "sqs:ReceiveMessage",
-              ],
-              "Effect": "Deny",
-              "Resource": "*",
             },
             {
               "Action": "sts:AssumeRole",
