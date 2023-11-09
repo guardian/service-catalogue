@@ -20,6 +20,13 @@ module.exports = {
 			testMatch: ['<rootDir>/packages/cdk/**/*.test.ts'],
 		},
 		{
+			displayName: 'common',
+			transform: {
+				'^.+\\.tsx?$': 'ts-jest',
+			},
+			testMatch: ['<rootDir>/packages/common/**/*.test.ts'],
+		},
+		{
 			displayName: 'repocop',
 			transform: {
 				'^.+\\.tsx?$': 'ts-jest',

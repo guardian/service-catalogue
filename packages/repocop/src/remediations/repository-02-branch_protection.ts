@@ -8,6 +8,10 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
+import {
+	anghammaradThreadKey,
+	branchProtectionCtas,
+} from 'common/src/functions';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Config } from '../config';
 
@@ -100,31 +104,15 @@ async function notifyOneTeam(
 ) {
 	const { app, stage, anghammaradSnsTopic } = config;
 
-	const githubUrl = `https://github.com/${fullName}`;
-	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
-	const protectionUrl = `https://github.com/${fullName}/settings/branches`;
-	const actions = [
-		//duplicated in branch protector
-		{ cta: 'Repository', url: githubUrl },
-		{
-			cta: 'Compliance information for repos',
-			url: grafanaUrl,
-		},
-		{
-			cta: 'Branch protections',
-			url: protectionUrl,
-		},
-	];
-
 	await anghammaradClient.notify({
 		subject: `Repocop branch protection (for GitHub team ${teamSlug})`,
 		message: `Branch protections will be applied to ${fullName}. No action is required.`,
-		actions,
+		actions: branchProtectionCtas(fullName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: `${app} ${stage}`,
 		topicArn: anghammaradSnsTopic,
-		threadKey: `service-catalogue-${fullName.replaceAll('/', '-')}`,
+		threadKey: anghammaradThreadKey(fullName),
 	});
 
 	console.log(`Notified ${teamSlug} about ${fullName}`);

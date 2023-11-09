@@ -4,6 +4,10 @@ import {
 	ReceiveMessageCommand,
 } from '@aws-sdk/client-sqs';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
+import {
+	anghammaradThreadKey,
+	branchProtectionCtas,
+} from 'common/src/functions';
 import type { Config } from './config';
 
 export async function readFromQueue(
@@ -52,31 +56,15 @@ export async function notify(
 ) {
 	const { app, stage, anghammaradSnsTopic } = config;
 
-	const repoUrl = `https://github.com/${fullRepoName}`;
-	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
-	const protectionUrl = `https://github.com/${fullRepoName}/settings/branches`;
-	const actions = [
-		//duplicated in repocop
-		{ cta: 'Repository', url: repoUrl },
-		{
-			cta: 'Compliance information for repos',
-			url: grafanaUrl,
-		},
-		{
-			cta: 'Branch protections',
-			url: protectionUrl,
-		},
-	];
-
 	const client = new Anghammarad();
 	await client.notify({
 		subject: `Repocop branch protection (for GitHub team ${teamSlug})`,
 		message: `Branch protection has been applied to ${fullRepoName}`,
-		actions,
+		actions: branchProtectionCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: `${app} ${stage}`,
 		topicArn: anghammaradSnsTopic,
-		threadKey: `service-catalogue-${fullRepoName.replaceAll('/', '-')}`,
+		threadKey: anghammaradThreadKey(fullRepoName),
 	});
 }
