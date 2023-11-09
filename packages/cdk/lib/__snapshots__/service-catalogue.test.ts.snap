@@ -13377,7 +13377,7 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "branch-protector",
-            "BRANCH_PROT_QUEUE_URL": {
+            "BRANCH_PROTECTOR_QUEUE_URL": {
               "Ref": "branchprotectorqueueEF5856E4",
             },
             "GITHUB_APP_SECRET": {
@@ -13978,7 +13978,7 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "repocop",
-            "BRANCH_PROT_QUEUE_URL": {
+            "BRANCH_PROTECTOR_QUEUE_URL": {
               "Ref": "branchprotectorqueueEF5856E4",
             },
             "DATABASE_HOSTNAME": {
