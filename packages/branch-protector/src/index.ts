@@ -69,8 +69,8 @@ async function handleMessage(
 		try {
 			await protectBranch(octokit, config, event);
 		} catch (error) {
-			console.error(`Error: branch protection failed for  ${event.fullName}`);
-			console.error(error);
+			console.warn(`Branch protection failed for ${event.fullName}`);
+			console.warn(error);
 		}
 	}
 	await deleteFromQueue(config, message, sqs);
