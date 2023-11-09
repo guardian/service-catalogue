@@ -82,7 +82,7 @@ setup_environment() {
 
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
-  QUEUE_URL=$(aws sqs get-queue-url --queue-name branch-protector-queue-CODE.fifo --profile deployTools --region eu-west-1 | jq '.QueueUrl' | tr -d '"')
+  BRANCH_PROTECTOR_QUEUE_URL=$(aws sqs get-queue-url --queue-name branch-protector-queue-CODE.fifo --profile deployTools --region eu-west-1 | jq '.QueueUrl' | tr -d '"')
 
   github_info_url="https://github.com/settings/tokens?type=beta"
 
@@ -97,7 +97,7 @@ SNYK_TOKEN="
   env_var_text="
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
-QUEUE_URL=${QUEUE_URL}
+BRANCH_PROTECTOR_QUEUE_URL=${BRANCH_PROTECTOR_QUEUE_URL}
 "
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/

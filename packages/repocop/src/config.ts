@@ -106,7 +106,7 @@ export async function getConfig(): Promise<Config> {
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
-		queueUrl: getEnvOrThrow('QUEUE_URL'),
+		queueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
 		enableMessaging: process.env.ENABLE_MESSAGING === 'false' ? false : true,
 		ignoredRepositoryPrefixes: [
 			// Visuals team
