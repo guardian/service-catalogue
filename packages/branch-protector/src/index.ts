@@ -23,7 +23,13 @@ async function protectBranch(
 		throw new Error(`Invalid repo name: ${event.fullName}`);
 	}
 
-	const defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
+	let defaultBranchName = undefined;
+	try {
+		defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
+	} catch (error) {
+		throw new Error(`Could not obtain branch name for repo: ${repo}`);
+	}
+
 	const branchIsProtected = await isBranchProtected(
 		octokit,
 		owner,
@@ -35,18 +41,20 @@ async function protectBranch(
 
 	const stageIsProd = config.stage === 'PROD';
 
-	if (branchIsProtected && stageIsProd) {
-		console.log(`No action required`);
-	} else if (!branchIsProtected && stageIsProd) {
-		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
-		console.log(`Updated ${repo}'s default branch protection`);
-		for (const slug of event.teamNameSlugs) {
-			await notify(event.fullName, config, slug);
+	if (stageIsProd) {
+		if (branchIsProtected) {
+			console.log(`No action required`);
+		} else {
+			await updateBranchProtection(octokit, owner, repo, defaultBranchName);
+			console.log(`Updated ${repo}'s default branch protection`);
+			for (const slug of event.teamNameSlugs) {
+				await notify(event.fullName, config, slug);
+			}
+			console.log(`Notified teams`);
 		}
-		console.log(`Notified teams`);
 	} else {
 		// !stageIsProd
-		console.log(`Detected stage: ${config.stage}. No action taken.`);
+		console.log(`Detected stage: ${config.stage}. No action taken`);
 	}
 }
 
@@ -58,7 +66,12 @@ async function handleMessage(
 ) {
 	if (message.Body !== undefined) {
 		const event = JSON.parse(message.Body) as UpdateBranchProtectionEvent;
-		await protectBranch(octokit, config, event);
+		try {
+			await protectBranch(octokit, config, event);
+		} catch (error) {
+			console.warn(`Branch protection failed for ${event.fullName}`);
+			console.warn(error);
+		}
 	}
 	await deleteFromQueue(config, message, sqs);
 }
