@@ -13377,6 +13377,9 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "branch-protector",
+            "BRANCH_PROTECTOR_QUEUE_URL": {
+              "Ref": "branchprotectorqueueEF5856E4",
+            },
             "GITHUB_APP_SECRET": {
               "Fn::Join": [
                 "-",
@@ -13521,9 +13524,6 @@ spec:
                   },
                 ],
               ],
-            },
-            "QUEUE_URL": {
-              "Ref": "branchprotectorqueueEF5856E4",
             },
             "STACK": "deploy",
             "STAGE": "TEST",
@@ -13978,6 +13978,9 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "repocop",
+            "BRANCH_PROTECTOR_QUEUE_URL": {
+              "Ref": "branchprotectorqueueEF5856E4",
+            },
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
                 "PostgresInstance16DE4286E",
@@ -13985,9 +13988,6 @@ spec:
               ],
             },
             "QUERY_LOGGING": "false",
-            "QUEUE_URL": {
-              "Ref": "branchprotectorqueueEF5856E4",
-            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },

@@ -647,7 +647,7 @@ export class ServiceCatalogue extends GuStack {
 
 				// Set this to 'true' to enable SQL query logging
 				QUERY_LOGGING: 'false',
-				QUEUE_URL: branchProtectorQueue.queueUrl,
+				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
@@ -688,7 +688,7 @@ export class ServiceCatalogue extends GuStack {
 			environment: {
 				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
 				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
-				QUEUE_URL: branchProtectorQueue.queueUrl,
+				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
 			},
 			vpc,
 			timeout: Duration.minutes(1),
