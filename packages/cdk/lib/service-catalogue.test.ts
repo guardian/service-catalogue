@@ -8,6 +8,7 @@ describe('The ServiceCatalogue stack', () => {
 		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
 			stack: 'deploy',
 			stage: 'TEST',
+			withBackup: true,
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();

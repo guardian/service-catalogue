@@ -13134,6 +13134,10 @@ spec:
         "StorageType": "gp2",
         "Tags": [
           {
+            "Key": "devx-backup-enabled",
+            "Value": "true",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },

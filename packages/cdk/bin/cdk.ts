@@ -10,6 +10,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack: 'deploy',
 	stage: 'PROD',
 	env: { region: 'eu-west-1' },
+	withBackup: true,
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
