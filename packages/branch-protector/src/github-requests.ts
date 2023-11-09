@@ -23,7 +23,7 @@ export async function updateBranchProtection(
 	repo: string,
 	branch: string,
 ) {
-	console.log(`Updating ${repo} branch protection`);
+	console.log(`Attempting to apply branch protection to ${repo}`);
 	//https://github.com/guardian/recommendations/blob/main/github.md#branch-protection
 	const branchProtectionParams: UpdateBranchProtectionParams = {
 		owner: owner,

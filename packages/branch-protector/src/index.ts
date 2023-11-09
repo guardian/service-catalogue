@@ -46,7 +46,6 @@ async function protectBranch(
 			console.log(`No action required`);
 		} else {
 			await updateBranchProtection(octokit, owner, repo, defaultBranchName);
-			console.log(`Updated ${repo}'s default branch protection`);
 			for (const slug of event.teamNameSlugs) {
 				await notify(event.fullName, config, slug);
 			}
