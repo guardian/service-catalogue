@@ -8545,6 +8545,7 @@ spec:
   tables:
     - aws_ec2_instances
     - aws_ec2_security_groups
+    - aws_ec2_images
   destinations:
     - postgresql
   spec:
@@ -11166,6 +11167,7 @@ spec:
     - aws_dynamodb*
     - aws_ec2_instances
     - aws_ec2_security_groups
+    - aws_ec2_images
   destinations:
     - postgresql
   concurrency: 2000
