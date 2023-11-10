@@ -5,6 +5,7 @@ import type { Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
 import type {
 	github_teams,
+	PrismaClient,
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -14,6 +15,11 @@ import {
 } from 'common/src/functions';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Config } from '../config';
+import {
+	getRepoOwnership,
+	getTeams,
+	getUnarchivedRepositories,
+} from '../query';
 
 function findTeamSlugFromId(
 	id: bigint,
@@ -40,7 +46,7 @@ function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
 }
 
-export function createRepository02Messages(
+export function createBranchProtectionWarningMessages(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
 	teams: github_teams[],
@@ -49,7 +55,7 @@ export function createRepository02Messages(
 	const reposWithoutBranchProtection = evaluatedRepos.filter(
 		(repo) => !repo.branch_protection,
 	);
-	const repo02WithContactableOwners = reposWithoutBranchProtection
+	const reposWithContactableOwners = reposWithoutBranchProtection
 		.map((repo) => {
 			return {
 				fullName: repo.full_name,
@@ -58,11 +64,11 @@ export function createRepository02Messages(
 		})
 		.filter((repo) => repo.teamNameSlugs.length > 0);
 
-	const resultsCount = repo02WithContactableOwners.length;
+	const resultsCount = reposWithContactableOwners.length;
 
 	const sliceLength = Math.min(resultsCount, msgCount);
 
-	return shuffle(repo02WithContactableOwners).slice(0, sliceLength);
+	return shuffle(reposWithContactableOwners).slice(0, sliceLength);
 }
 
 export function createEntry(
@@ -149,4 +155,44 @@ export async function sendNotifications(
 	} catch (error) {
 		console.error(error);
 	}
+}
+
+export async function notifyBranchProtector(
+	prisma: PrismaClient,
+	evaluatedRepos: repocop_github_repository_rules[],
+	config: Config,
+) {
+	const repoOwners = await getRepoOwnership(prisma);
+	const teams = await getTeams(prisma);
+
+	//repos with a 'production' or 'documentation' topic
+	const productionOrDocs = (await getUnarchivedRepositories(prisma, []))
+		.filter(
+			(repo) =>
+				repo.topics.includes('production') ||
+				repo.topics.includes('documentation'),
+		)
+		.map((repo) => repo.full_name);
+
+	const relevantRepos = evaluatedRepos.filter((repo) =>
+		productionOrDocs.includes(repo.full_name),
+	);
+
+	const events = createBranchProtectionWarningMessages(
+		relevantRepos,
+		repoOwners,
+		teams,
+		3,
+	);
+	await addMessagesToQueue(events, config);
+
+	return events;
+}
+
+export async function notifyAnghammaradBranchProtection(
+	events: UpdateBranchProtectionEvent[],
+	config: Config,
+	anghammaradClient: Anghammarad,
+) {
+	await sendNotifications(anghammaradClient, events, config);
 }
