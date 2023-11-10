@@ -296,6 +296,18 @@ describe('Repository topics', () => {
 		expect(actual.topics).toEqual(true);
 	});
 
+	test(`Should validate repos with an interactive topic`, () => {
+		const repo: github_repositories = {
+			...nullRepo,
+			full_name: 'guardian/service-catalogue',
+			id: 1234n,
+			topics: ['interactive'],
+		};
+
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.topics).toEqual(true);
+	});
+
 	test('Should return false when there are multiple recognised topics', () => {
 		// Having more than one recognised topic creates confusion about how the repo
 		// is being used, and could also confuse repocop.

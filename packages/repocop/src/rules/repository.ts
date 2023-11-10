@@ -73,6 +73,7 @@ function hasTopics(repo: github_repositories): boolean {
 		'testing',
 		'documentation',
 		'production',
+		'interactive',
 	];
 
 	return (
