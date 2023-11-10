@@ -51,7 +51,7 @@ async function notifyBranchProtector(
 		relevantRepos,
 		repoOwners,
 		teams,
-		2,
+		3,
 	);
 	await addMessagesToQueue(events, config);
 
