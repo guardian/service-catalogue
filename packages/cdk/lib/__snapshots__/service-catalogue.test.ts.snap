@@ -11,7 +11,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
       "GuAnghammaradTopicParameter",
-      "GuParameter",
       "GuDistributionBucketParameter",
       "GuLambdaFunction",
       "GuScheduledLambda",
@@ -52,10 +51,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Default": "/account/vpc/primary/id",
       "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
-    },
-    "interactivebucket": {
-      "Description": "The name of the S3 bucket where the interactive content is stored",
-      "Type": "String",
     },
   },
   "Resources": {
@@ -13726,14 +13721,12 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST//index.js",
+          "S3Key": "deploy/TEST//interactive-monitor.zip",
         },
         "Environment": {
           "Variables": {
             "APP": "",
-            "BUCKET": {
-              "Ref": "interactivebucket",
-            },
+            "BUCKET": "???",
             "GITHUB_CREDENTIALS": "???",
             "STACK": "deploy",
             "STAGE": "TEST",
@@ -13885,7 +13878,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST//index.js",
+                      "/deploy/TEST//interactive-monitor.zip",
                     ],
                   ],
                 },
