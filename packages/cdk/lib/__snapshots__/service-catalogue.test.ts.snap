@@ -11,11 +11,11 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
       "GuAnghammaradTopicParameter",
-      "GuDistributionBucketParameter",
-      "GuScheduledLambda",
-      "GuScheduledLambda",
       "GuParameter",
+      "GuDistributionBucketParameter",
       "GuLambdaFunction",
+      "GuScheduledLambda",
+      "GuScheduledLambda",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -13988,6 +13988,9 @@ spec:
                 "Endpoint.Address",
               ],
             },
+            "INTERACTIVE_MONITOR_TOPIC_ARN": {
+              "Ref": "TopicBFC7AF6E",
+            },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
             "STAGE": "TEST",
@@ -14244,6 +14247,13 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "AnghammaradSnsArn",
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "TopicBFC7AF6E",
               },
             },
           ],

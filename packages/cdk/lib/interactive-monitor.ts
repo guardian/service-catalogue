@@ -5,6 +5,7 @@ import { Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 
 export class InteractiveMonitor {
+	public topic: Topic;
 	constructor(guStack: GuStack) {
 		// your class implementation here
 		const topic = new Topic(guStack, 'Topic', {
@@ -34,5 +35,7 @@ export class InteractiveMonitor {
 		});
 
 		topic.addSubscription(new LambdaSubscription(lambda, {}));
+
+		this.topic = topic;
 	}
 }

@@ -610,6 +610,8 @@ export class ServiceCatalogue extends GuStack {
 		const stageAwareMonitoringConfiguration =
 			stage === 'PROD' ? prodMonitoring : codeMonitoring;
 
+		const interactiveMonitor = new InteractiveMonitor(this);
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
@@ -630,6 +632,7 @@ export class ServiceCatalogue extends GuStack {
 				// Set this to 'true' to enable SQL query logging
 				QUERY_LOGGING: 'false',
 				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
+				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitor.topic.topicArn,
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
@@ -692,7 +695,6 @@ export class ServiceCatalogue extends GuStack {
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
 		anghammaradTopic.grantPublish(branchProtectorLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
-
-		new InteractiveMonitor(this);
+		interactiveMonitor.topic.grantPublish(repocopLambda);
 	}
 }
