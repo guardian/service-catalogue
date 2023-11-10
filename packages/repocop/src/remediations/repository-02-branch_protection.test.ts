@@ -5,8 +5,8 @@ import type {
 } from '@prisma/client';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import {
+	createBranchProtectionWarningMessages,
 	createEntry,
-	createRepository02Messages,
 } from './repository-02-branch_protection';
 
 const nullOwner: view_repo_ownership = {
@@ -73,7 +73,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			slug: 'team-one',
 		};
 
-		const actual = createRepository02Messages(
+		const actual = createBranchProtectionWarningMessages(
 			[evaluatedRepo],
 			[repoOwner],
 			[githubTeam],
@@ -103,7 +103,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			slug: 'team-one',
 		};
 
-		const actual = createRepository02Messages(
+		const actual = createBranchProtectionWarningMessages(
 			[evaluatedRepo],
 			[],
 			[githubTeam],
