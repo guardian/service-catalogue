@@ -1,7 +1,7 @@
 # Data Accuracy
 
 ## Status
-Proposed.
+Accepted.
 
 ## Context
 The Guardian Service Catalogue sources data from AWS, GitHub, Snyk etc. using [CloudQuery](02-cloudquery.md).
