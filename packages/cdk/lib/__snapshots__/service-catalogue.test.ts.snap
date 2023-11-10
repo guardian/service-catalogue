@@ -8484,7 +8484,7 @@ spec:
     },
     "CloudquerySourceOrgWideEc2ScheduledEventRule3D54BEFB": {
       "Properties": {
-        "ScheduleExpression": "rate(5 minutes)",
+        "ScheduleExpression": "rate(20 minutes)",
         "State": "ENABLED",
         "Targets": [
           {
