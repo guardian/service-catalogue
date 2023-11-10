@@ -19,6 +19,9 @@ We plan to do this by asking AWS to count the number of resources, and compare t
 
 This ADR outlines options for implementing the second item.
 
+It is also worth noting that this is only part of the data accuracy checks we'll perform.
+We will also look at the age of our data, and the volume of errors in the logs produced by CloudQuery.
+
 ## Positions
 ### 1. [AWS Resource Explorer](https://docs.aws.amazon.com/resource-explorer/latest/userguide/welcome.html)
 AWS Resource Explorer allows one to search resources in an AWS account.
