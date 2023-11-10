@@ -324,7 +324,11 @@ export class ServiceCatalogue extends GuStack {
 					'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
 				schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(5)),
 				config: awsSourceConfigForOrganisation({
-					tables: ['aws_ec2_instances', 'aws_ec2_security_groups'],
+					tables: [
+						'aws_ec2_instances',
+						'aws_ec2_security_groups',
+						'aws_ec2_images',
+					],
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
