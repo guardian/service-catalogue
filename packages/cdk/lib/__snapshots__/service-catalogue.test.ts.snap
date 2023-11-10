@@ -13721,18 +13721,15 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST//interactive-monitor.zip",
+          "S3Key": "deploy/TEST/interactive-monitor/interactive-monitor.zip",
         },
         "Environment": {
           "Variables": {
-            "APP": "",
+            "APP": "interactive-monitor",
             "BUCKET": "???",
             "GITHUB_CREDENTIALS": "???",
             "STACK": "deploy",
             "STAGE": "TEST",
-            "TOPIC_ARN": {
-              "Ref": "TopicBFC7AF6E",
-            },
           },
         },
         "Handler": "index.handler",
@@ -13747,7 +13744,7 @@ spec:
         "Tags": [
           {
             "Key": "App",
-            "Value": "",
+            "Value": "interactive-monitor",
           },
           {
             "Key": "gu:cdk:version",
@@ -13817,7 +13814,7 @@ spec:
         "Tags": [
           {
             "Key": "App",
-            "Value": "",
+            "Value": "interactive-monitor",
           },
           {
             "Key": "gu:cdk:version",
@@ -13878,7 +13875,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST//interactive-monitor.zip",
+                      "/deploy/TEST/interactive-monitor/interactive-monitor.zip",
                     ],
                   ],
                 },
@@ -13899,7 +13896,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/",
+                    ":parameter/TEST/deploy/interactive-monitor",
                   ],
                 ],
               },
@@ -13922,7 +13919,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy//*",
+                    ":parameter/TEST/deploy/interactive-monitor/*",
                   ],
                 ],
               },
