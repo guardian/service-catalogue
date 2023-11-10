@@ -10,6 +10,7 @@ import {
 	createRepository02Messages,
 	sendNotifications,
 } from './remediations/repository-02-branch_protection';
+import { findPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -86,6 +87,11 @@ export async function main() {
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
+
+	const potentialInteractives = findPotentialInteractives(evaluatedRepos);
+	console.log(
+		`Found ${potentialInteractives.length} potential interactives of ${evaluatedRepos.length} evaluated repositories`,
+	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
