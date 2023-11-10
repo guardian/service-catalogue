@@ -66,6 +66,7 @@ import {
 	readonlyAccessManagedPolicy,
 	standardDenyPolicy,
 } from './ecs/policies';
+import { InteractiveMonitor } from './interactive-monitor';
 
 interface ServiceCatalogueProps extends GuStackProps {
 	//TODO add fields for every kind of job to make schedule explicit at a glance.
@@ -710,5 +711,7 @@ export class ServiceCatalogue extends GuStack {
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
 		anghammaradTopic.grantPublish(branchProtectorLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
+
+		new InteractiveMonitor(this);
 	}
 }
