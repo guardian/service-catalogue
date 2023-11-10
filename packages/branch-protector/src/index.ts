@@ -80,7 +80,7 @@ export async function main() {
 	const octokit: Octokit = await getGithubClient(config);
 	const sqsClient = new SQSClient({});
 
-	const messages: Message[] = await readFromQueue(config, 10, sqsClient);
+	const messages: Message[] = await readFromQueue(config, 6, sqsClient);
 	await Promise.all(
 		messages.map((msg) => handleMessage(config, octokit, sqsClient, msg)),
 	);
