@@ -9,6 +9,7 @@ import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getLocalProfile, shuffle } from 'common/src/functions';
 import type { Config } from './config';
+import type { UpdateBranchProtectionEvent } from 'common/types';
 import { getConfig } from './config';
 import {
 	notifyAnghammaradBranchProtection,
@@ -89,7 +90,11 @@ export async function main() {
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
-		const msgs = await notifyBranchProtector(prisma, evaluatedRepos, config);
+		const msgs: UpdateBranchProtectionEvent[] = await notifyBranchProtector(
+			prisma,
+			evaluatedRepos,
+			config,
+		);
 		if (config.stage === 'PROD') {
 			const anghammaradClient = new Anghammarad();
 			await notifyAnghammaradBranchProtection(msgs, config, anghammaradClient);
