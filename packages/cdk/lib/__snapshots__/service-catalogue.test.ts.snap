@@ -8546,6 +8546,9 @@ spec:
     - aws_ec2_instances
     - aws_ec2_security_groups
     - aws_ec2_images
+  skip_tables:
+    - aws_ec2_image_launch_permissions
+    - aws_ec2_image_last_launched_times
   destinations:
     - postgresql
   spec:

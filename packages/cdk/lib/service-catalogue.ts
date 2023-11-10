@@ -329,6 +329,15 @@ export class ServiceCatalogue extends GuStack {
 						'aws_ec2_security_groups',
 						'aws_ec2_images',
 					],
+					skipTables: [
+						/*
+						These are dependent tables of `aws_ec2_images` and are automatically collected.
+						They're not interesting, so skip them here.
+						They'll be collected in the `RemainingAwsData` job.
+						 */
+						'aws_ec2_image_launch_permissions',
+						'aws_ec2_image_last_launched_times',
+					],
 				}),
 				managedPolicies: [readonlyPolicy],
 				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
