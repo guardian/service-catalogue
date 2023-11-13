@@ -7,12 +7,12 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 
 const service = 'interactive-monitor';
 export class InteractiveMonitor {
-	public topic: Topic;
+	public readonly topic: Topic;
 	constructor(guStack: GuStack) {
 		const app = guStack.app ?? 'service-catalogue'; //shouldn't be undefined, but make linter happy
 
 		const topic = new Topic(guStack, 'Topic', {
-			topicName: `${service}-topic`,
+			topicName: `${service}-${guStack.stage}`,
 		});
 
 		const githubCredentials = new Secret(guStack, `${service}-github-app`, {
@@ -32,7 +32,6 @@ export class InteractiveMonitor {
 		});
 
 		topic.addSubscription(new LambdaSubscription(lambda, {}));
-
 		this.topic = topic;
 	}
 }

@@ -13106,7 +13106,7 @@ spec:
             "Value": "TEST",
           },
         ],
-        "TopicName": "interactive-monitor-topic",
+        "TopicName": "interactive-monitor-TEST",
       },
       "Type": "AWS::SNS::Topic",
     },
