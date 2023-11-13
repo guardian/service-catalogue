@@ -3,11 +3,8 @@ import { dump } from 'js-yaml';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
-	fastlySourceConfig,
-	galaxiesSourceConfig,
 	githubSourceConfig,
 	postgresDestinationConfig,
-	snykSourceConfig,
 } from './config';
 
 describe('Config generation, and converting to YAML', () => {
@@ -19,7 +16,7 @@ describe('Config generation, and converting to YAML', () => {
 		  name: postgresql
 		  registry: github
 		  path: cloudquery/postgresql
-		  version: v5.0.6
+		  version: v7.0.1
 		  migrate_mode: forced
 		  spec:
 		    connection_string: >-
@@ -137,7 +134,7 @@ spec:
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v7.4.0
+		  version: v7.4.2
 		  tables:
 		    - github_repositories
 		  destinations:
@@ -151,67 +148,6 @@ spec:
 		        private_key_path: /github-private-key
 		        app_id: \${file:/github-app-id}
 		        installation_id: \${file:/github-installation-id}
-		"
-	`);
-	});
-
-	it('Should create a Fastly source configuration', () => {
-		const config = fastlySourceConfig({ tables: ['*'] });
-		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: fastly
-		  path: cloudquery/fastly
-		  version: v2.1.5
-		  tables:
-		    - '*'
-		  destinations:
-		    - postgresql
-		  concurrency: 1000
-		  spec:
-		    fastly_api_key: \${FASTLY_API_KEY}
-		"
-	`);
-	});
-
-	it('Should create a Galaxies source configuration', () => {
-		const config = galaxiesSourceConfig('my-galaxies-bucket');
-		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: galaxies
-		  path: guardian/galaxies
-		  version: v1.1.0
-		  destinations:
-		    - postgresql
-		  tables:
-		    - galaxies_people_table
-		    - galaxies_teams_table
-		    - galaxies_streams_table
-		    - galaxies_people_profile_info_table
-		  spec:
-		    bucket: my-galaxies-bucket
-		"
-	`);
-	});
-
-	it('Should create a Snyk source configuration', () => {
-		const config = snykSourceConfig({ tables: ['*'] });
-		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: snyk
-		  path: cloudquery/snyk
-		  version: v3.1.5
-		  tables:
-		    - '*'
-		  destinations:
-		    - postgresql
-		  spec:
-		    api_key: \${SNYK_API_KEY}
-		    table_options:
-		      snyk_reporting_issues:
-		        period: 30d
 		"
 	`);
 	});

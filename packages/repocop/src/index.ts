@@ -1,15 +1,12 @@
 import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
-import type { UpdateBranchProtectionEvent } from 'common/types';
-import type { Config } from './config';
 import { getConfig } from './config';
-import { getRepoOwnership, getTeams, getUnarchivedRepositories } from './query';
 import {
-	addMessagesToQueue,
-	createRepository02Messages,
-	sendNotifications,
+	notifyAnghammaradBranchProtection,
+	notifyBranchProtector,
 } from './remediations/repository-02-branch_protection';
+import { findPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -25,45 +22,6 @@ async function writeEvaluationTable(
 	});
 
 	console.log('Finished writing to table');
-}
-async function notifyBranchProtector(
-	prisma: PrismaClient,
-	evaluatedRepos: repocop_github_repository_rules[],
-	config: Config,
-) {
-	const repoOwners = await getRepoOwnership(prisma);
-	const teams = await getTeams(prisma);
-
-	//repos with a 'production' or 'documentation' topic
-	const productionOrDocs = (await getUnarchivedRepositories(prisma, []))
-		.filter(
-			(repo) =>
-				repo.topics.includes('production') ||
-				repo.topics.includes('documentation'),
-		)
-		.map((repo) => repo.full_name);
-
-	const relevantRepos = evaluatedRepos.filter((repo) =>
-		productionOrDocs.includes(repo.full_name),
-	);
-
-	const events = createRepository02Messages(
-		relevantRepos,
-		repoOwners,
-		teams,
-		3,
-	);
-	await addMessagesToQueue(events, config);
-
-	return events;
-}
-
-async function notifyAnghammarad(
-	events: UpdateBranchProtectionEvent[],
-	config: Config,
-	anghammaradClient: Anghammarad,
-) {
-	await sendNotifications(anghammaradClient, events, config);
 }
 
 export async function main() {
@@ -87,12 +45,17 @@ export async function main() {
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
 
+	const potentialInteractives = findPotentialInteractives(evaluatedRepos);
+	console.log(
+		`Found ${potentialInteractives.length} potential interactives of ${evaluatedRepos.length} evaluated repositories`,
+	);
+
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		const msgs = await notifyBranchProtector(prisma, evaluatedRepos, config);
 		if (config.stage === 'PROD') {
 			const anghammaradClient = new Anghammarad();
-			await notifyAnghammarad(msgs, config, anghammaradClient);
+			await notifyAnghammaradBranchProtection(msgs, config, anghammaradClient);
 		}
 	} else {
 		console.log(
