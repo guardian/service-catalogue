@@ -1,3 +1,4 @@
+import type { SNSHandler } from 'aws-lambda';
 import { getGitHubAppConfig, getGithubClient } from 'common/functions';
 import type { GitHubAppConfig } from 'common/types';
 import type { Octokit } from 'octokit';
@@ -18,16 +19,14 @@ async function isFromInteractiveTemplate(
 	);
 }
 
-export async function handler() {
+export const handler: SNSHandler = async (event) => {
+	const message = event.Records[0]!.Sns.Message;
+	console.log('received message', message);
+
 	const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
 	githubAppConfig.strategyOptions.appId;
 
 	const octokit: Octokit = await getGithubClient(githubAppConfig);
 
-	console.log(
-		await isFromInteractiveTemplate(
-			'interactive-cabinet-reshuffle-2022',
-			octokit,
-		),
-	);
-}
+	console.log(await isFromInteractiveTemplate(message, octokit));
+};
