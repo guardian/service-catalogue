@@ -16,7 +16,7 @@ export class InteractiveMonitor {
 		});
 
 		const githubCredentials = new Secret(guStack, `${service}-github-app`, {
-			secretName: `/${guStack.stack}/${guStack.stage}/${app}/${service}-github-app`,
+			secretName: `/${guStack.stage}/${guStack.stack}/${app}/${service}-github-app`,
 		});
 
 		const lambda = new GuLambdaFunction(guStack, service, {

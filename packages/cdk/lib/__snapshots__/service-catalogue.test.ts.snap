@@ -14077,7 +14077,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/deploy/TEST/service-catalogue/interactive-monitor-github-app",
+        "Name": "/TEST/deploy/service-catalogue/interactive-monitor-github-app",
         "Tags": [
           {
             "Key": "gu:cdk:version",
