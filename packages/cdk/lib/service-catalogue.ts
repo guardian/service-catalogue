@@ -302,7 +302,7 @@ export class ServiceCatalogue extends GuStack {
 				name: 'OrgWideEc2',
 				description:
 					'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(5)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(30)),
 				config: awsSourceConfigForOrganisation({
 					tables: [
 						'aws_ec2_instances',
