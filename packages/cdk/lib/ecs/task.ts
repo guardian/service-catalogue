@@ -191,11 +191,14 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				streamPrefix: [stack, stage, app].join('/'),
 				logRetention: RetentionDays.ONE_DAY,
 			}),
+
+			// These will be picked up by https://github.com/guardian/devx-logs
 			environment: {
 				STACK: stack,
 				STAGE: stage,
 				APP: app,
 				GU_REPO: thisRepo,
+				NAME: name,
 			},
 			firelensConfig: {
 				type: FirelensLogRouterType.FLUENTBIT,

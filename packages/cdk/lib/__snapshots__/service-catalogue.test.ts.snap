@@ -315,6 +315,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "DelegatedToSecurityAccount",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -927,6 +931,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "DeployToolsListOrgs",
               },
             ],
             "Essential": true,
@@ -1555,6 +1563,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "FastlyServices",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -2166,6 +2178,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "Galaxies",
               },
             ],
             "Essential": true,
@@ -3039,6 +3055,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "GitHubIssues",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -3492,6 +3512,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "GitHubRepositories",
               },
             ],
             "Essential": true,
@@ -4157,6 +4181,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "GitHubTeams",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -4809,6 +4837,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "GuardianCustomSnykProjects",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -5397,6 +5429,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideAutoScalingGroups",
               },
             ],
             "Essential": true,
@@ -6016,6 +6052,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideCertificates",
               },
             ],
             "Essential": true,
@@ -6665,6 +6705,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideCloudFormation",
               },
             ],
             "Essential": true,
@@ -7455,6 +7499,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideCloudwatchAlarms",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -7873,6 +7921,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideDynamoDB",
               },
             ],
             "Essential": true,
@@ -8495,6 +8547,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideEc2",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -9114,6 +9170,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideInspector",
               },
             ],
             "Essential": true,
@@ -9935,6 +9995,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideLoadBalancers",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -10353,6 +10417,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "OrgWideS3",
               },
             ],
             "Essential": true,
@@ -11025,6 +11093,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "RemainingAwsData",
               },
             ],
             "Essential": true,
@@ -11888,6 +11960,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "NAME",
+                "Value": "RiffRaffData",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -12310,6 +12386,10 @@ spec:
               {
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "NAME",
+                "Value": "SnykAll",
               },
             ],
             "Essential": true,
