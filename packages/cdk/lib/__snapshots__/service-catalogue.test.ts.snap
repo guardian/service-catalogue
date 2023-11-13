@@ -12193,9 +12193,10 @@ spec:
     - snyk_integrations
     - snyk_organizations
     - snyk_organization_members
-    - snyk_organization_provisions
     - snyk_reporting_issues
     - snyk_reporting_latest_issues
+  skip_tables:
+    - snyk_organization_provisions
   destinations:
     - postgresql
   spec:
