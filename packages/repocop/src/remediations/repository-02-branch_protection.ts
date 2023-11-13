@@ -25,7 +25,7 @@ import {
 	findContactableOwners,
 	RemediationApp,
 	sendNotifications,
-} from './shared_functions';
+} from './shared-utilities';
 
 export function createBranchProtectionWarningMessages(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -89,5 +89,10 @@ export async function notifyAnghammaradBranchProtection(
 	config: Config,
 	anghammaradClient: Anghammarad,
 ): Promise<void> {
-	await sendNotifications(anghammaradClient, events, config);
+	await sendNotifications(
+		anghammaradClient,
+		events,
+		config,
+		RemediationApp.BranchProtector,
+	);
 }

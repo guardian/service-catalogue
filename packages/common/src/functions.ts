@@ -78,6 +78,27 @@ export function branchProtectionCtas(
 	];
 }
 
+export function topicProductionCtas(
+	fullRepoName: string,
+	teamSlug: string,
+): Action[] {
+	const githubUrl = `https://github.com/${fullRepoName}`;
+	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
+	const topicsUrl = `https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository`;
+
+	return [
+		{ cta: 'Repository', url: githubUrl },
+		{
+			cta: 'Compliance information for repos',
+			url: grafanaUrl,
+		},
+		{
+			cta: 'How to add a topic',
+			url: topicsUrl,
+		},
+	];
+}
+
 export function anghammaradThreadKey(fullRepoName: string) {
 	return `service-catalogue-${fullRepoName.replaceAll('/', '-')}`;
 }

@@ -5,7 +5,7 @@ import type {
 } from '@prisma/client';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import { createBranchProtectionWarningMessages } from './repository-02-branch_protection';
-import { createEntry } from './shared_functions';
+import { createEntry } from './shared-utilities';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',

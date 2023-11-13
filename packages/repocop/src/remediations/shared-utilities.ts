@@ -1,12 +1,13 @@
 import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
 import { fromIni } from '@aws-sdk/credential-providers';
-import type { Anghammarad } from '@guardian/anghammarad';
+import type { Action, Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { github_teams, view_repo_ownership } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
+	topicProductionCtas,
 } from 'common/src/functions';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Config } from '../config';
@@ -23,6 +24,29 @@ export enum RemediationApp {
 	BranchProtector = 'branchProtector',
 	TopicProduction = 'topicProduction',
 }
+
+export interface AnghammaradMessage {
+	subject: string;
+	message: string;
+	actions: (fullRepoName: string, teamSlug: string) => Action[];
+}
+
+type AnghammaradMessages = {
+	[key in RemediationApp]: AnghammaradMessage;
+};
+
+const anghammaradMessages: AnghammaradMessages = {
+	branchProtector: {
+		subject: 'Repocop branch protection',
+		message: 'Branch protections',
+		actions: branchProtectionCtas,
+	},
+	topicProduction: {
+		subject: 'Repocop topic monitoring',
+		message: "The 'production' topic",
+		actions: topicProductionCtas,
+	},
+};
 
 export function findContactableOwners(
 	repo: string,
@@ -66,7 +90,7 @@ export async function addMessagesToQueue(
 	await sqsClient.send(command);
 
 	const repoListString = events.map((event) => event.fullName).join(', ');
-	console.log(`Repos added to branch protector queue: ${repoListString}`);
+	console.log(`Repos added to ${app} queue: ${repoListString}`);
 }
 
 async function notifyOneTeam(
@@ -74,13 +98,14 @@ async function notifyOneTeam(
 	fullName: string,
 	teamSlug: string,
 	config: Config,
+	anghammaradMessage: AnghammaradMessage,
 ) {
 	const { app, stage, anghammaradSnsTopic } = config;
 
 	await anghammaradClient.notify({
-		subject: `Repocop branch protection (for GitHub team ${teamSlug})`,
-		message: `Branch protections will be applied to ${fullName}. No action is required.`,
-		actions: branchProtectionCtas(fullName, teamSlug),
+		subject: `${anghammaradMessage.subject} (for GitHub team ${teamSlug})`,
+		message: `${anghammaradMessage.message} will be applied to ${fullName}. No action is required.`,
+		actions: anghammaradMessage.actions(fullName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: `${app} ${stage}`,
@@ -95,11 +120,20 @@ async function notifyOneRepo(
 	anghammaradClient: Anghammarad,
 	event: UpdateBranchProtectionEvent,
 	config: Config,
+	remediationApp: RemediationApp,
 ) {
+	const anghammaradMessage: AnghammaradMessage =
+		anghammaradMessages[remediationApp];
 	try {
 		await Promise.all(
 			event.teamNameSlugs.map(async (slug) => {
-				await notifyOneTeam(anghammaradClient, event.fullName, slug, config);
+				await notifyOneTeam(
+					anghammaradClient,
+					event.fullName,
+					slug,
+					config,
+					anghammaradMessage,
+				);
 			}),
 		);
 		console.log(`Notified all teams about ${event.fullName}`);
@@ -112,11 +146,12 @@ export async function sendNotifications(
 	anghammaradClient: Anghammarad,
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
+	remediationApp: RemediationApp,
 ): Promise<void> {
 	try {
 		await Promise.all(
 			events.map(async (event) => {
-				await notifyOneRepo(anghammaradClient, event, config);
+				await notifyOneRepo(anghammaradClient, event, config, remediationApp);
 			}),
 		);
 	} catch (error) {
