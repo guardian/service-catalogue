@@ -84,7 +84,7 @@ export async function addMessagesToQueue(
 		credentials,
 	});
 	const command = new SendMessageBatchCommand({
-		QueueUrl: `config.${app}queueUrl`,
+		QueueUrl: config[`${app}QueueUrl`],
 		Entries: events.map((event) => createEntry(event)),
 	});
 	await sqsClient.send(command);
