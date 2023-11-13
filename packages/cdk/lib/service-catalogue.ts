@@ -519,10 +519,10 @@ export class ServiceCatalogue extends GuStack {
 						'snyk_integrations',
 						'snyk_organizations',
 						'snyk_organization_members',
-						'snyk_organization_provisions',
 						'snyk_reporting_issues',
 						'snyk_reporting_latest_issues',
 					],
+					skipTables: ['snyk_organization_provisions'],
 				}),
 				secrets: {
 					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
