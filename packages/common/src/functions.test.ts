@@ -1,4 +1,9 @@
-import { anghammaradThreadKey, branchProtectionCtas } from './functions';
+import {
+	anghammaradThreadKey,
+	branchProtectionCtas,
+	getEnvOrThrow,
+	parseSecretJson,
+} from './functions';
 
 function isValidUrl(str: string) {
 	try {
@@ -35,5 +40,33 @@ describe('anghammaradThreadKey', () => {
 		const fullRepoName = 'my-org/my-repo';
 		const result = anghammaradThreadKey(fullRepoName);
 		expect(result).toBe('service-catalogue-my-org-my-repo');
+	});
+});
+
+describe('parseSecretJson', () => {
+	it('should parse a valid JSON string', () => {
+		const secretString =
+			'{"installationId":"installation1","clientSecret":"secret1","appId":"app1","base64PrivateKey":"aGVsbG8K"}';
+		const result = parseSecretJson(secretString);
+		expect(result.installationId).toBe('installation1');
+		expect(result.strategyOptions.clientSecret).toBe('secret1');
+		expect(result.strategyOptions.appId).toBe('app1');
+		expect(result.strategyOptions.privateKey).toBe('hello\n');
+	});
+
+	it('should throw an error for an invalid JSON string', () => {
+		const secretString = 'not a JSON string';
+		expect(() => parseSecretJson(secretString)).toThrow();
+	});
+});
+
+describe('getEnvOrThrow', () => {
+	it('should return the value of an existing environment variable', () => {
+		process.env.TEST_VAR = 'test value';
+		expect(getEnvOrThrow('TEST_VAR')).toBe('test value');
+	});
+
+	it('should throw an error for a non-existing environment variable', () => {
+		expect(() => getEnvOrThrow('NON_EXISTING_VAR')).toThrow();
 	});
 });

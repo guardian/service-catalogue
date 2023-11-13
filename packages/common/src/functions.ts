@@ -27,22 +27,20 @@ export function getEnvOrThrow(key: string): string {
 	return value;
 }
 
-async function getGithubAppSecretJson(
-	envVar: string,
-): Promise<GithubAppSecret> {
+async function getGithubAppSecret(envVar: string): Promise<string> {
 	const SecretId = getEnvOrThrow(envVar);
 	const secretsManager = new SecretsManager();
 
 	const secret = await secretsManager.getSecretValue({ SecretId });
-
-	const secretJson = JSON.parse(secret.SecretString ?? '{}') as GithubAppSecret;
-	return secretJson;
+	if (!secret.SecretString) {
+		throw new Error(`Secret ${SecretId} has no SecretString`);
+	} else {
+		return secret.SecretString;
+	}
 }
 
-export async function getGitHubAppConfig(
-	envVar = 'GITHUB_APP_SECRET',
-): Promise<GitHubAppConfig> {
-	const secretJson = await getGithubAppSecretJson(envVar);
+export function parseSecretJson(secretString: string): GitHubAppConfig {
+	const secretJson = JSON.parse(secretString) as GithubAppSecret;
 	const githubAppConfig: GitHubAppConfig = {
 		strategyOptions: {
 			...secretJson,
@@ -50,6 +48,14 @@ export async function getGitHubAppConfig(
 		},
 		installationId: secretJson.installationId,
 	};
+	return githubAppConfig;
+}
+
+export async function getGitHubAppConfig(
+	envVar = 'GITHUB_APP_SECRET',
+): Promise<GitHubAppConfig> {
+	const secretString = await getGithubAppSecret(envVar);
+	const githubAppConfig = parseSecretJson(secretString);
 	return githubAppConfig;
 }
 

@@ -4,7 +4,6 @@ import {
 	type PublishBatchRequestEntry,
 	SNSClient,
 } from '@aws-sdk/client-sns';
-import { fromIni } from '@aws-sdk/credential-providers';
 import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
