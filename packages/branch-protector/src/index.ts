@@ -1,5 +1,6 @@
 import type { Message } from '@aws-sdk/client-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
+import { getGithubClient } from 'common/functions';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Octokit } from 'octokit';
 import { deleteFromQueue, notify, readFromQueue } from './aws-requests';
@@ -7,7 +8,6 @@ import { getConfig } from './config';
 import type { Config } from './config';
 import {
 	getDefaultBranchName,
-	getGithubClient,
 	isBranchProtected,
 	updateBranchProtection,
 } from './github-requests';
@@ -77,7 +77,7 @@ async function handleMessage(
 
 export async function main() {
 	const config: Config = await getConfig();
-	const octokit: Octokit = await getGithubClient(config);
+	const octokit: Octokit = await getGithubClient(config.githubAppConfig);
 	const sqsClient = new SQSClient({});
 
 	const messages: Message[] = await readFromQueue(config, 6, sqsClient);

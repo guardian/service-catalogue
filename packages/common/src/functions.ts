@@ -1,5 +1,57 @@
+import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import { fromIni } from '@aws-sdk/credential-providers';
 import type { Action } from '@guardian/anghammarad';
+import { createAppAuth } from '@octokit/auth-app';
+import { Octokit } from 'octokit';
+import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
+
+export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
+	const auth = createAppAuth(githubAppConfig.strategyOptions);
+
+	const installationAuthentication = await auth({
+		type: 'installation',
+		installationId: githubAppConfig.installationId,
+	});
+
+	const octokit: Octokit = new Octokit({
+		auth: installationAuthentication.token,
+	});
+	return octokit;
+}
+
+export function getEnvOrThrow(key: string): string {
+	const value: string | undefined = process.env[key];
+	if (value === undefined) {
+		throw new Error(`Environment variable ${key} is not set.`);
+	}
+	return value;
+}
+
+async function getGithubAppSecretJson(
+	envVar: string,
+): Promise<GithubAppSecret> {
+	const SecretId = getEnvOrThrow(envVar);
+	const secretsManager = new SecretsManager();
+
+	const secret = await secretsManager.getSecretValue({ SecretId });
+
+	const secretJson = JSON.parse(secret.SecretString ?? '{}') as GithubAppSecret;
+	return secretJson;
+}
+
+export async function getGitHubAppConfig(
+	envVar = 'GITHUB_APP_SECRET',
+): Promise<GitHubAppConfig> {
+	const secretJson = await getGithubAppSecretJson(envVar);
+	const githubAppConfig: GitHubAppConfig = {
+		strategyOptions: {
+			...secretJson,
+			privateKey: atob(secretJson.base64PrivateKey),
+		},
+		installationId: secretJson.installationId,
+	};
+	return githubAppConfig;
+}
 
 export function branchProtectionCtas(
 	fullRepoName: string,

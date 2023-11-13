@@ -633,6 +633,7 @@ export class ServiceCatalogue extends GuStack {
 				QUERY_LOGGING: 'false',
 				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitor.topic.topicArn,
+				GITHUB_APP_SECRET: '???',
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
