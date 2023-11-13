@@ -31,6 +31,7 @@ export class InteractiveMonitor {
 			reservedConcurrentExecutions: 1,
 		});
 
+		githubCredentials.grantRead(lambda);
 		topic.addSubscription(new LambdaSubscription(lambda, {}));
 		this.topic = topic;
 	}

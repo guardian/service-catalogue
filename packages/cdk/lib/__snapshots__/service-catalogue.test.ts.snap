@@ -14046,6 +14046,16 @@ spec:
                 ],
               },
             },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "interactivemonitorgithubapp9777D674",
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
