@@ -9,7 +9,7 @@ import {
 	branchProtectionCtas,
 	topicProductionCtas,
 } from 'common/src/functions';
-import type { UpdateBranchProtectionEvent } from 'common/types';
+import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
 
 function findTeamSlugFromId(
@@ -62,7 +62,7 @@ export function findContactableOwners(
 }
 
 export function createEntry(
-	message: UpdateBranchProtectionEvent,
+	message: UpdateMessageEvent,
 ): SendMessageBatchRequestEntry {
 	const repoNoSpecialCharacters = message.fullName.replace(/\W/g, '');
 	return {
@@ -73,7 +73,7 @@ export function createEntry(
 }
 
 export async function addMessagesToQueue(
-	events: UpdateBranchProtectionEvent[],
+	events: UpdateMessageEvent[],
 	config: Config,
 	app: RemediationApp,
 ): Promise<void> {
@@ -118,7 +118,7 @@ async function notifyOneTeam(
 
 async function notifyOneRepo(
 	anghammaradClient: Anghammarad,
-	event: UpdateBranchProtectionEvent,
+	event: UpdateMessageEvent,
 	config: Config,
 	remediationApp: RemediationApp,
 ) {
@@ -144,7 +144,7 @@ async function notifyOneRepo(
 
 export async function sendNotifications(
 	anghammaradClient: Anghammarad,
-	events: UpdateBranchProtectionEvent[],
+	events: UpdateMessageEvent[],
 	config: Config,
 	remediationApp: RemediationApp,
 ): Promise<void> {

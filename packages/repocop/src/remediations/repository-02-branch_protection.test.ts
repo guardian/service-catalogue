@@ -3,7 +3,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { UpdateBranchProtectionEvent } from 'common/types';
+import type { UpdateMessageEvent } from 'common/types';
 import { createBranchProtectionWarningMessages } from './repository-02-branch_protection';
 import { createEntry } from './shared-utilities';
 
@@ -114,11 +114,11 @@ describe('Team slugs should be findable for every team associated with a repo', 
 
 describe('Batch entries should be created for each message', () => {
 	test('The batch ID of the message should contain no special characters', () => {
-		const event1: UpdateBranchProtectionEvent = {
+		const event1: UpdateMessageEvent = {
 			fullName: 'guardian/repo-1',
 			teamNameSlugs: ['team-one'],
 		};
-		const event2: UpdateBranchProtectionEvent = {
+		const event2: UpdateMessageEvent = {
 			fullName: '!@£$%^&*()l',
 			teamNameSlugs: ['team-two'],
 		};

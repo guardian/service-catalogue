@@ -13,7 +13,7 @@ import {
 	getLocalProfile,
 	shuffle,
 } from 'common/src/functions';
-import type { UpdateBranchProtectionEvent } from 'common/types';
+import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
 import {
 	getRepoOwnership,
@@ -32,7 +32,7 @@ export function createBranchProtectionWarningMessages(
 	repoOwners: view_repo_ownership[],
 	teams: github_teams[],
 	msgCount: number,
-): UpdateBranchProtectionEvent[] {
+): UpdateMessageEvent[] {
 	const reposWithoutBranchProtection = evaluatedRepos.filter(
 		(repo) => !repo.branch_protection,
 	);
@@ -85,7 +85,7 @@ export async function notifyBranchProtector(
 }
 
 export async function notifyAnghammaradBranchProtection(
-	events: UpdateBranchProtectionEvent[],
+	events: UpdateMessageEvent[],
 	config: Config,
 	anghammaradClient: Anghammarad,
 ): Promise<void> {
