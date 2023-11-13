@@ -34,7 +34,6 @@ export async function deleteFromQueue(
 	sqs: SQSClient,
 ) {
 	const messageId = message.MessageId ?? 'unknown';
-	console.log(`Attempting to delete ${messageId} from queue`);
 	const deleteCommand = new DeleteMessageCommand({
 		QueueUrl: config.queueUrl,
 		ReceiptHandle: message.ReceiptHandle,
@@ -44,8 +43,8 @@ export async function deleteFromQueue(
 		await sqs.send(deleteCommand);
 		console.log(`Deleted message ${messageId}`);
 	} catch (error) {
-		console.error(`Error: delete command failed for ${messageId}`);
-		console.error(error);
+		console.warn(`Delete command failed for ${messageId}`);
+		console.warn(error);
 	}
 }
 

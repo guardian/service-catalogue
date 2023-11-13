@@ -63,9 +63,8 @@ import {
 	cloudqueryAccess,
 	listOrgsPolicy,
 	readBucketPolicy,
-	readonlyAccessManagedPolicy,
-	standardDenyPolicy,
 } from './ecs/policies';
+import { InteractiveMonitor } from './interactive-monitor';
 
 interface ServiceCatalogueProps extends GuStackProps {
 	//TODO add fields for every kind of job to make schedule explicit at a glance.
@@ -184,11 +183,6 @@ export class ServiceCatalogue extends GuStack {
 				riffRaffDatabaseAccessSecurityGroupParam,
 			);
 
-		const readonlyPolicy = readonlyAccessManagedPolicy(
-			this,
-			'readonly-managed-policy',
-		);
-
 		const individualAwsSources: CloudquerySource[] = [
 			{
 				name: 'DeployToolsListOrgs',
@@ -207,10 +201,8 @@ export class ServiceCatalogue extends GuStack {
 						'aws_organization*',
 					],
 				}),
-				managedPolicies: [readonlyPolicy],
 				policies: [
 					listOrgsPolicy,
-					standardDenyPolicy,
 					cloudqueryAccess(GuardianAwsAccounts.DeployTools),
 				],
 			},
@@ -223,11 +215,7 @@ export class ServiceCatalogue extends GuStack {
 					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
 					concurrency: 2000,
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [
-					standardDenyPolicy,
-					cloudqueryAccess(GuardianAwsAccounts.Security),
-				],
+				policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
 				memoryLimitMiB: 2048,
 				cpu: 1024,
 			},
@@ -239,8 +227,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_cloudformation_*'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideLoadBalancers',
@@ -250,8 +237,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideAutoScalingGroups',
@@ -261,8 +247,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_autoscaling_groups'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideCertificates',
@@ -272,8 +257,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_acm*'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideCloudwatchAlarms',
@@ -283,8 +267,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_cloudwatch_alarms'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideInspector',
@@ -293,8 +276,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideS3',
@@ -304,8 +286,7 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_s3*'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideDynamoDB',
@@ -315,14 +296,13 @@ export class ServiceCatalogue extends GuStack {
 				config: awsSourceConfigForOrganisation({
 					tables: ['aws_dynamodb*'],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 			{
 				name: 'OrgWideEc2',
 				description:
 					'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(5)),
+				schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(30)),
 				config: awsSourceConfigForOrganisation({
 					tables: [
 						'aws_ec2_instances',
@@ -330,8 +310,7 @@ export class ServiceCatalogue extends GuStack {
 						'aws_ec2_images',
 					],
 				}),
-				managedPolicies: [readonlyPolicy],
-				policies: [listOrgsPolicy, standardDenyPolicy, cloudqueryAccess('*')],
+				policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			},
 		];
 
@@ -364,8 +343,7 @@ export class ServiceCatalogue extends GuStack {
 				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
 				concurrency: 2000,
 			}),
-			managedPolicies: [readonlyPolicy],
-			policies: [standardDenyPolicy, cloudqueryAccess('*')],
+			policies: [cloudqueryAccess('*')],
 
 			// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
 			memoryLimitMiB: 2048,
@@ -632,6 +610,8 @@ export class ServiceCatalogue extends GuStack {
 		const stageAwareMonitoringConfiguration =
 			stage === 'PROD' ? prodMonitoring : codeMonitoring;
 
+		const interactiveMonitor = new InteractiveMonitor(this);
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
@@ -652,6 +632,7 @@ export class ServiceCatalogue extends GuStack {
 				// Set this to 'true' to enable SQL query logging
 				QUERY_LOGGING: 'false',
 				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
+				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitor.topic.topicArn,
 			},
 			vpc,
 			securityGroups: [applicationToPostgresSecurityGroup],
@@ -714,5 +695,6 @@ export class ServiceCatalogue extends GuStack {
 		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
 		anghammaradTopic.grantPublish(branchProtectorLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
+		interactiveMonitor.topic.grantPublish(repocopLambda);
 	}
 }

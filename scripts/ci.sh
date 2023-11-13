@@ -22,11 +22,11 @@ createRepocopZip() {
   )
 }
 
-createBranchProtectorZip() {
-  echo "Creating branch-protector package"
+createZip() {
+  echo "Creating $1 package"
   (
-    cd "$ROOT_DIR/packages/branch-protector/dist"
-    zip -qr branch-protector.zip .
+    cd "$ROOT_DIR/packages/$1/dist"
+    zip -qr "$1".zip .
   )
 }
 
@@ -35,4 +35,4 @@ npm run typecheck & npm run lint
 npm run test
 npm run synth & npm run build
 
-createRepocopZip & createBranchProtectorZip
+createRepocopZip & createZip "branch-protector" & createZip "interactive-monitor"
