@@ -14127,7 +14127,6 @@ spec:
                 "Endpoint.Address",
               ],
             },
-            "GITHUB_APP_SECRET": "???",
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },
