@@ -13734,6 +13734,7 @@ spec:
         },
         "Handler": "index.handler",
         "MemorySize": 512,
+        "ReservedConcurrentExecutions": 1,
         "Role": {
           "Fn::GetAtt": [
             "interactivemonitorServiceRoleC210EED3",

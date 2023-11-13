@@ -1,6 +1,5 @@
 import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
-import { fromIni } from '@aws-sdk/credential-providers';
 import type { Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
 import type {
@@ -12,6 +11,8 @@ import type {
 import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
+	getLocalProfile,
+	shuffle,
 } from 'common/src/functions';
 import type { UpdateBranchProtectionEvent } from 'common/types';
 import type { Config } from '../config';
@@ -40,10 +41,6 @@ function findContactableOwners(
 		.filter((slug): slug is string => !!slug);
 
 	return teamSlugs;
-}
-
-function shuffle<T>(array: T[]): T[] {
-	return array.sort(() => Math.random() - 0.5);
 }
 
 export function createBranchProtectionWarningMessages(
@@ -86,11 +83,9 @@ export async function addMessagesToQueue(
 	events: UpdateBranchProtectionEvent[],
 	config: Config,
 ): Promise<void> {
-	const credentials =
-		config.stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
 	const sqsClient = new SQSClient({
 		region: config.region,
-		credentials,
+		credentials: getLocalProfile(config.stage),
 	});
 	const command = new SendMessageBatchCommand({
 		QueueUrl: config.queueUrl,

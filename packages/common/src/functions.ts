@@ -1,3 +1,4 @@
+import { fromIni } from '@aws-sdk/credential-providers';
 import type { Action } from '@guardian/anghammarad';
 
 export function branchProtectionCtas(
@@ -23,4 +24,12 @@ export function branchProtectionCtas(
 
 export function anghammaradThreadKey(fullRepoName: string) {
 	return `service-catalogue-${fullRepoName.replaceAll('/', '-')}`;
+}
+
+export function shuffle<T>(array: T[]): T[] {
+	return array.sort(() => Math.random() - 0.5);
+}
+
+export function getLocalProfile(stage: string) {
+	return stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
 }

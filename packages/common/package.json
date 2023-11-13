@@ -6,6 +6,7 @@
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects common"
 	},
 	"dependencies": {
-		"@guardian/anghammarad": "^1.8.1"
+		"@guardian/anghammarad": "^1.8.1",
+		"@aws-sdk/credential-providers": "^3.444.0"
 	}
 }

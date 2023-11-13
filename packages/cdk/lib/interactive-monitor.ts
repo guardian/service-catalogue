@@ -22,6 +22,7 @@ export class InteractiveMonitor {
 				BUCKET: '???',
 				GITHUB_CREDENTIALS: '???',
 			},
+			reservedConcurrentExecutions: 1,
 		});
 
 		topic.addSubscription(new LambdaSubscription(lambda, {}));
