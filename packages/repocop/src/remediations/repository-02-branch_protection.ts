@@ -1,5 +1,6 @@
-import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
+import { SQSClient } from '@aws-sdk/client-sqs';
+import { fromIni } from '@aws-sdk/credential-providers';
 import type { Anghammarad } from '@guardian/anghammarad';
 import type {
 	github_teams,
@@ -79,7 +80,21 @@ export async function notifyBranchProtector(
 		teams,
 		3,
 	);
-	await addMessagesToQueue(events, config, RemediationApp.BranchProtector);
+
+	const credentials =
+		config.stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
+
+	const sqsClient = new SQSClient({
+		region: config.region,
+		credentials,
+	});
+
+	await addMessagesToQueue(
+		events,
+		sqsClient,
+		config.branchProtectorQueueUrl,
+		RemediationApp.BranchProtector,
+	);
 
 	return events;
 }

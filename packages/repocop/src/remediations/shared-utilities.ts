@@ -1,6 +1,6 @@
-import { SendMessageBatchCommand, SQSClient } from '@aws-sdk/client-sqs';
+import type { SQSClient } from '@aws-sdk/client-sqs';
+import { SendMessageBatchCommand } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
-import { fromIni } from '@aws-sdk/credential-providers';
 import type { Action, Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { github_teams, view_repo_ownership } from '@prisma/client';
@@ -57,7 +57,6 @@ export function findContactableOwners(
 	const teamSlugs = owners
 		.map((owner) => findTeamSlugFromId(owner.github_team_id, teams))
 		.filter((slug): slug is string => !!slug);
-
 	return teamSlugs;
 }
 
@@ -74,23 +73,25 @@ export function createSqsEntry(
 
 export async function addMessagesToQueue(
 	events: UpdateMessageEvent[],
-	config: Config,
+	sqsClient: SQSClient,
+	queueUrl: string,
 	app: RemediationApp,
 ): Promise<void> {
-	const credentials =
-		config.stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
-	const sqsClient = new SQSClient({
-		region: config.region,
-		credentials,
-	});
-	const command = new SendMessageBatchCommand({
-		QueueUrl: config[`${app}QueueUrl`],
-		Entries: events.map((event) => createSqsEntry(event)),
-	});
-	await sqsClient.send(command);
-
-	const repoListString = events.map((event) => event.fullName).join(', ');
-	console.log(`Repos added to ${app} queue: ${repoListString}`);
+	if (events.length > 0) {
+		const command = new SendMessageBatchCommand({
+			QueueUrl: queueUrl,
+			Entries: events.map((event) => createSqsEntry(event)),
+		});
+		try {
+			await sqsClient.send(command);
+			const repoListString = events.map((event) => event.fullName).join(', ');
+			console.log(`Repos added to ${app} queue: ${repoListString}`);
+		} catch (error) {
+			console.error(error);
+		}
+	} else {
+		console.error(`No ${app} messages to add to queue`);
+	}
 }
 
 async function notifyOneTeam(
