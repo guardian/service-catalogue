@@ -9,8 +9,9 @@ const app = 'interactive-monitor';
 export class InteractiveMonitor {
 	public topic: Topic;
 	constructor(guStack: GuStack) {
+		const { stage } = guStack;
 		const topic = new Topic(guStack, 'Topic', {
-			topicName: `${app}-topic`,
+			topicName: `${app}-topic-${stage}`,
 		});
 
 		const lambda = new GuLambdaFunction(guStack, app, {
