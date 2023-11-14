@@ -17,7 +17,8 @@ const repository: readonly IBestPractice[] = [
 			'Enable branch protection for the default branch, ensuring changes are reviewed before being deployed.',
 		howToCheck:
 			'[Grafana](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1)',
-		howToExempt: 'Archived repositories are exempt.',
+		howToExempt:
+			'Archived repositories are exempt. Repositories without a production or documentation topic are exempt.',
 	},
 	{
 		name: 'Team-based Access',
