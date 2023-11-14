@@ -109,22 +109,8 @@ export async function getConfig(): Promise<Config> {
 		queueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
 		enableMessaging: process.env.ENABLE_MESSAGING === 'false' ? false : true,
 		ignoredRepositoryPrefixes: [
-			// Visuals team
-			'guardian/interactive-',
-			'guardian/interactives-',
-			'guardian/oz-',
-			'guardian/aus-',
-			'guardian/australia-',
-			'guardian/australian-',
-			'guardian/visuals-',
-			'guardian/us-',
-			'guardian/main-media-',
-
-			// ESD team
-			'guardian/esd-',
-
-			// Multimedia team
-			'guardian/pluto-',
+			'guardian/esd-', // ESD team
+			'guardian/pluto-', // Multimedia team
 		],
 	};
 }
