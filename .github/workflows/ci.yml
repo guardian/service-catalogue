@@ -88,12 +88,6 @@ jobs:
       - run: npm ci
       - run: npm run synth
       - run: npm run build
-      - name: build branch-protector artifact
-        working-directory: packages/branch-protector/dist
-        run: zip -qr branch-protector.zip .
-      - name: build interactive-monitor artifact
-        working-directory: packages/interactive-monitor/dist
-        run: zip -qr interactive-monitor.zip .
       - name: build repocop artifact
         working-directory: packages/repocop/dist
         run: |
