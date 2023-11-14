@@ -43,7 +43,7 @@ function hasBranchProtection(
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
  *   > Repositories without one of the following topics are exempt: production, testing, documentation.
  */
-function hasAdminAccess(
+function hasAdminTeam(
 	repo: github_repositories,
 	teams: RepositoryTeam[],
 ): boolean {
@@ -65,7 +65,7 @@ function hasAdminAccess(
  *   > Repositories should have one and only one of the following topics to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
-function hasTopics(repo: github_repositories): boolean {
+function hasStatusTopic(repo: github_repositories): boolean {
 	const validTopics = [
 		'prototype',
 		'learning',
@@ -100,9 +100,9 @@ export function repositoryRuleEvaluation(
 		default_branch_name: hasDefaultBranchNameMain(repo),
 		branch_protection: hasBranchProtection(repo, allBranches),
 		team_based_access: false,
-		admin_access: hasAdminAccess(repo, teams),
+		admin_access: hasAdminTeam(repo, teams),
 		archiving: null,
-		topics: hasTopics(repo),
+		topics: hasStatusTopic(repo),
 		contents: null,
 		evaluated_on: new Date(),
 	};
