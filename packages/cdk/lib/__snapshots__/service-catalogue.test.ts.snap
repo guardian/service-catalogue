@@ -14147,7 +14147,7 @@ spec:
           },
         },
         "Handler": "index.main",
-        "MemorySize": 512,
+        "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
             "repocopServiceRole757D74E8",

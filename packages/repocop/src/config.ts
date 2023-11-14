@@ -142,5 +142,5 @@ async function getDatabaseConnectionString(config: DatabaseConfig) {
 
 	return `postgres://${user}:${encodeURIComponent(
 		dbPassword,
-	)}@${hostname}:${port}/postgres?schema=public&sslmode=verify-full`;
+	)}@${hostname}:${port}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
 }
