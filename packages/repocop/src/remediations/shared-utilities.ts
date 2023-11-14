@@ -61,7 +61,7 @@ export function findContactableOwners(
 	return teamSlugs;
 }
 
-export function createEntry(
+export function createSqsEntry(
 	message: UpdateMessageEvent,
 ): SendMessageBatchRequestEntry {
 	const repoNoSpecialCharacters = message.fullName.replace(/\W/g, '');
@@ -85,7 +85,7 @@ export async function addMessagesToQueue(
 	});
 	const command = new SendMessageBatchCommand({
 		QueueUrl: config[`${app}QueueUrl`],
-		Entries: events.map((event) => createEntry(event)),
+		Entries: events.map((event) => createSqsEntry(event)),
 	});
 	await sqsClient.send(command);
 

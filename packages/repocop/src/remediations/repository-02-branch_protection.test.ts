@@ -5,7 +5,7 @@ import type {
 } from '@prisma/client';
 import type { UpdateMessageEvent } from 'common/types';
 import { createBranchProtectionWarningMessages } from './repository-02-branch_protection';
-import { createEntry } from './shared-utilities';
+import { createSqsEntry } from './shared-utilities';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',
@@ -123,8 +123,8 @@ describe('Batch entries should be created for each message', () => {
 			teamNameSlugs: ['team-two'],
 		};
 
-		const actual1 = createEntry(event1);
-		const actual2 = createEntry(event2);
+		const actual1 = createSqsEntry(event1);
+		const actual2 = createSqsEntry(event2);
 
 		expect(actual1.Id).toEqual('guardianrepo1');
 		expect(actual2.Id).toEqual('l');
