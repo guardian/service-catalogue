@@ -27,7 +27,7 @@ const repository: readonly IBestPractice[] = [
 			'Grant access on a team basis, rather than directly to individuals.',
 		howToCheck: 'Manual. View the repository on https://github.com',
 		howToExempt:
-			'Repositories with one of following topics are exempt: `hackday`, `learning`, `prototype`.',
+			'Repositories with one of following topics are exempt: `hackday`, `learning`, `prototype`, `interactive`.',
 	},
 	{
 		name: 'Admin Access',
