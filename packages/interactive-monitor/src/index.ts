@@ -12,21 +12,25 @@ async function isFromInteractiveTemplate(
 		repo,
 	});
 
-	return (
-		repoData.data.template_repository?.name.includes(
-			'interactive-atom-template',
-		) != null
-	);
+	const prefix = 'interactive-atom-template';
+
+	return repoData.data.template_repository?.name.includes(prefix) ?? false;
 }
 
 export const handler: SNSHandler = async (event) => {
-	const message = event.Records[0]!.Sns.Message;
-	console.log('received message', message);
+	if (event.Records.length !== 1) {
+		throw new Error(
+			`Expected exactly one record, but got ${event.Records.length}`,
+		);
+	} else {
+		const message = event.Records[0]!.Sns.Message;
+		console.log('received message', message);
 
-	const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
-	githubAppConfig.strategyOptions.appId;
+		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
+		githubAppConfig.strategyOptions.appId;
 
-	const octokit: Octokit = await getGithubClient(githubAppConfig);
+		const octokit: Octokit = await getGithubClient(githubAppConfig);
 
-	console.log(await isFromInteractiveTemplate(message, octokit));
+		console.log(await isFromInteractiveTemplate(message, octokit));
+	}
 };
