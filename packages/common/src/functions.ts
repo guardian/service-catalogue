@@ -2,8 +2,8 @@ import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import { fromIni } from '@aws-sdk/credential-providers';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
-import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
 import { Octokit } from 'octokit';
+import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
