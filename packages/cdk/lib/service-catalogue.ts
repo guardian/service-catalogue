@@ -616,6 +616,7 @@ export class ServiceCatalogue extends GuStack {
 			app: 'repocop',
 			fileName: 'repocop.zip',
 			handler: 'index.main',
+			memorySize: 1024,
 			monitoringConfiguration: stageAwareMonitoringConfiguration,
 			// Messages will be picked up by branch protector at 9:00 the next working day (Tue-Fri)
 			rules: [

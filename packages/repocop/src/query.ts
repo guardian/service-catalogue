@@ -72,13 +72,6 @@ export async function getRepositoryTeams(
 		},
 	);
 
-	// `full_name` is typed as nullable, in reality it is not, so the fallback to `id` shouldn't happen
-	const repoIdentifier = repository.full_name ?? repository.id;
-
-	console.debug(
-		`Found ${data.length} teams with access to repository ${repoIdentifier}`,
-	);
-
 	return data;
 }
 
