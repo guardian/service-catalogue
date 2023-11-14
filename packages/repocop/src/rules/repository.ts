@@ -49,7 +49,7 @@ function hasAdminTeam(
 ): boolean {
 	// Repos that have explicitly been classified as these topics are exempt.
 	// Any other repos, regardless of topic, need to be owned by a team, or assigned one of these topics.
-	const exemptedTopics = ['prototype', 'learning', 'hackday'];
+	const exemptedTopics = ['prototype', 'learning', 'hackday', 'interactive'];
 	const isExempt =
 		repo.topics.filter((topic) => exemptedTopics.includes(topic)).length > 0;
 
