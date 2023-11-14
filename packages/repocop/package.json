@@ -20,7 +20,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-sqs": "^3.450.0",
-		"@aws-sdk/rds-signer": "^3.429.0",
+		"@aws-sdk/rds-signer": "^3.450.0",
 		"@aws-sdk/credential-providers": "^3.444.0",
 		"@prisma/client": "^5.5.2",
 		"@guardian/anghammarad": "^1.8.1"
