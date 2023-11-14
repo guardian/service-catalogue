@@ -1,21 +1,5 @@
-import { createAppAuth } from '@octokit/auth-app';
-import { Octokit } from 'octokit';
-import type { Config } from './config';
+import type { Octokit } from 'octokit';
 import type { UpdateBranchProtectionParams } from './model';
-
-export async function getGithubClient(config: Config) {
-	const auth = createAppAuth(config.githubAppConfig.strategyOptions);
-
-	const installationAuthentication = await auth({
-		type: 'installation',
-		installationId: config.githubAppConfig.installationId,
-	});
-
-	const octokit: Octokit = new Octokit({
-		auth: installationAuthentication.token,
-	});
-	return octokit;
-}
 
 export async function updateBranchProtection(
 	octokit: Octokit,

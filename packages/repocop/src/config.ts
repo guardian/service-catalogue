@@ -23,6 +23,11 @@ export interface Config {
 	anghammaradSnsTopic: string;
 
 	/**
+	 * The ARN of the interactive-monitor topic.
+	 */
+	interactiveMonitorSnsTopic: string;
+
+	/**
 	 * The database connection string.
 	 *
 	 * If the `DATABASE_PASSWORD` environment variable is not set, a token (temporary password) will be generated for IAM authentication for RDS.
@@ -104,6 +109,7 @@ export async function getConfig(): Promise<Config> {
 		stage: getEnvOrThrow('STAGE'),
 		region: 'eu-west-1',
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
+		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
 		queueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
