@@ -2,8 +2,8 @@ import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import { fromIni } from '@aws-sdk/credential-providers';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
-import { Octokit } from 'octokit';
 import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
+import { Octokit } from 'octokit';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
@@ -27,8 +27,8 @@ export function getEnvOrThrow(key: string): string {
 	return value;
 }
 
-async function getGithubAppSecret(envVar: string): Promise<string> {
-	const SecretId = getEnvOrThrow(envVar);
+async function getGithubAppSecret(): Promise<string> {
+	const SecretId = getEnvOrThrow('GITHUB_APP_SECRET');
 	const secretsManager = new SecretsManager();
 
 	const secret = await secretsManager.getSecretValue({ SecretId });
@@ -51,10 +51,8 @@ export function parseSecretJson(secretString: string): GitHubAppConfig {
 	return githubAppConfig;
 }
 
-export async function getGitHubAppConfig(
-	envVar = 'GITHUB_APP_SECRET',
-): Promise<GitHubAppConfig> {
-	const secretString = await getGithubAppSecret(envVar);
+export async function getGitHubAppConfig(): Promise<GitHubAppConfig> {
+	const secretString = await getGithubAppSecret();
 	const githubAppConfig = parseSecretJson(secretString);
 	return githubAppConfig;
 }
