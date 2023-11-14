@@ -11,38 +11,102 @@ on:
     branches:
       - main
 jobs:
-  CI:
+  lint:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
-    # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - uses: guardian/actions-read-private-repos@v0.1.1
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+      - run: npm ci
+      - run: npm run lint
+  typecheck:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - uses: guardian/actions-read-private-repos@v0.1.1
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+      - run: npm ci
+      - run: npm run typecheck
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - uses: guardian/actions-read-private-repos@v0.1.1
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+      - run: npm ci
+      - run: npm test
+  CI:
+    needs:
+      - lint
+      - typecheck
+      - test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: '--max_old_space_size=4096'
     permissions:
       # required by aws-actions/configure-aws-credentials
       id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v4
-
-      # Setup AWS credentials to enable uploading to S3 for Riff-Raff.
-      # See https://github.com/aws-actions/configure-aws-credentials
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-
       - uses: guardian/actions-read-private-repos@v0.1.1
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
-
-      - name: Run script/ci
-        run: ./scripts/ci.sh
-
+      - run: npm ci
+      - run: npm run synth
+      - run: npm run build
+      - name: build branch-protector artifact
+        working-directory: packages/branch-protector/dist
+        run: zip -qr branch-protector.zip .
+      - name: build interactive-monitor artifact
+        working-directory: packages/interactive-monitor/dist
+        run: zip -qr interactive-monitor.zip .
+      - name: build repocop artifact
+        working-directory: packages/repocop/dist
+        run: |
+          cp -r $GITHUB_WORKSPACE/packages/repocop/prisma .
+          mkdir -p node_modules
+          cp -r $GITHUB_WORKSPACE/node_modules/@prisma node_modules/@prisma
+          cp -r $GITHUB_WORKSPACE/node_modules/prisma node_modules/prisma
+          cp -r $GITHUB_WORKSPACE/node_modules/.prisma node_modules/.prisma
+          zip -qr repocop.zip .
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          aws-region: eu-west-1
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@v2
         with:
@@ -59,5 +123,3 @@ jobs:
               - packages/branch-protector/dist/branch-protector.zip
             interactive-monitor:
               - packages/interactive-monitor/dist/interactive-monitor.zip
-    env:
-      NODE_OPTIONS: '--max_old_space_size=4096'
