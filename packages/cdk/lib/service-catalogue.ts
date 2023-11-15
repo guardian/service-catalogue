@@ -40,12 +40,12 @@ import {
 } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
-import { Queue } from 'aws-cdk-lib/aws-sqs';
 import {
 	ParameterDataType,
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { BranchProtector } from './branch-protector';
 import type { CloudquerySource } from './ecs/cluster';
 import { CloudqueryCluster } from './ecs/cluster';
 import {
@@ -592,12 +592,6 @@ export class ServiceCatalogue extends GuStack {
 		const anghammaradTopicParameter =
 			GuAnghammaradTopicParameter.getInstance(this);
 
-		const branchProtectorQueue = new Queue(this, 'branch-protector-queue', {
-			queueName: `branch-protector-queue-${stage}.fifo`,
-			contentBasedDeduplication: true,
-			retentionPeriod: Duration.days(14),
-		});
-
 		const prodMonitoring: GuLambdaErrorPercentageMonitoringProps = {
 			toleratedErrorPercentage: 50,
 			lengthOfEvaluationPeriod: Duration.minutes(1),
@@ -611,6 +605,21 @@ export class ServiceCatalogue extends GuStack {
 			stage === 'PROD' ? prodMonitoring : codeMonitoring;
 
 		const interactiveMonitor = new InteractiveMonitor(this);
+
+		const anghammaradTopic = Topic.fromTopicArn(
+			this,
+			'anghammarad-arn',
+			anghammaradTopicParameter.valueAsString,
+		);
+
+		const branchProtector = new BranchProtector(
+			this,
+			stageAwareMonitoringConfiguration,
+			nonProdSchedule ??
+				Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
+			vpc,
+			anghammaradTopic,
+		);
 
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
@@ -632,7 +641,7 @@ export class ServiceCatalogue extends GuStack {
 
 				// Set this to 'true' to enable SQL query logging
 				QUERY_LOGGING: 'false',
-				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
+				BRANCH_PROTECTOR_QUEUE_URL: branchProtector.queue.queueUrl,
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitor.topic.topicArn,
 			},
 			vpc,
@@ -648,53 +657,8 @@ export class ServiceCatalogue extends GuStack {
 
 		db.grantConnect(repocopLambda, 'repocop');
 
-		branchProtectorQueue.grantSendMessages(repocopLambda);
+		branchProtector.queue.grantSendMessages(repocopLambda);
 
-		const branchProtectorGithubCredentials = new SecretsManager(
-			this,
-			'branch-protector-github-app-auth',
-			{
-				secretName: `/${stage}/${stack}/${app}/branch-protector-github-app-secret`,
-			},
-		);
-
-		const branchProtectorLambdaProps: GuScheduledLambdaProps = {
-			app: 'branch-protector',
-			fileName: 'branch-protector.zip',
-			handler: 'index.main',
-			monitoringConfiguration: stageAwareMonitoringConfiguration,
-			rules: [
-				{
-					schedule:
-						nonProdSchedule ??
-						Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
-				},
-			],
-			runtime: Runtime.NODEJS_18_X,
-			environment: {
-				GITHUB_APP_SECRET: branchProtectorGithubCredentials.secretName,
-				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
-				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
-			},
-			vpc,
-			timeout: Duration.minutes(1),
-		};
-
-		const branchProtectorLambda = new GuScheduledLambda(
-			this,
-			'branch-protector',
-			branchProtectorLambdaProps,
-		);
-
-		const anghammaradTopic = Topic.fromTopicArn(
-			this,
-			'anghammarad-arn',
-			anghammaradTopicParameter.valueAsString,
-		);
-
-		branchProtectorQueue.grantConsumeMessages(branchProtectorLambda);
-		branchProtectorGithubCredentials.grantRead(branchProtectorLambda);
-		anghammaradTopic.grantPublish(branchProtectorLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitor.topic.grantPublish(repocopLambda);
 	}
