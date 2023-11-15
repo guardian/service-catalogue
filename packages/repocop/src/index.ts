@@ -48,7 +48,7 @@ async function sendPotentialInteractives(
 
 	const PublishBatchRequestEntries = potentialInteractives.map(
 		(repo): PublishBatchRequestEntry => ({
-			Id: repo,
+			Id: repo.replace(/\W/g, ''),
 			Message: repo,
 		}),
 	);
