@@ -23,14 +23,26 @@ export const handler: SNSHandler = async (event) => {
 			`Expected exactly one record, but got ${event.Records.length}`,
 		);
 	} else {
-		const message = event.Records[0]!.Sns.Message;
-		console.log('received message', message);
+		const repo = event.Records[0]!.Sns.Message;
+		const owner = 'guardian';
+		console.log('received repo', repo);
 
 		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
 		githubAppConfig.strategyOptions.appId;
 
 		const octokit: Octokit = await getGithubClient(githubAppConfig);
 
-		console.log(await isFromInteractiveTemplate(message, octokit));
+		const isInteractive = await isFromInteractiveTemplate(repo, octokit);
+		const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
+			.names;
+
+		if (isInteractive) {
+			console.log(`${repo}is from interactive template`);
+			const names = topics.concat(['interactive']);
+			await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
+			console.log(`added interactive topic to ${repo}`);
+		} else {
+			console.log(`${repo}is not from interactive template`);
+		}
 	}
 };
