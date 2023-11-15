@@ -8,7 +8,7 @@ async function isFromInteractiveTemplate(
 	repo: string,
 	octokit: Octokit,
 ): Promise<boolean> {
-	console.log('retreiving repo data');
+	console.log('retrieving repo data');
 	const repoData = await octokit.rest.repos.get({
 		owner: 'guardian',
 		repo,

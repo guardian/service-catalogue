@@ -1,4 +1,4 @@
-export interface Config {
+interface Config {
 	/**
 	 * The stage to run in.
 	 */
