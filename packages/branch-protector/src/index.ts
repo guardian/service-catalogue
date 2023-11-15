@@ -1,7 +1,7 @@
 import type { Message } from '@aws-sdk/client-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { getGithubClient } from 'common/functions';
-import type { UpdateBranchProtectionEvent } from 'common/types';
+import type { UpdateMessageEvent } from 'common/types';
 import type { Octokit } from 'octokit';
 import { deleteFromQueue, notify, readFromQueue } from './aws-requests';
 import { getConfig } from './config';
@@ -15,7 +15,7 @@ import {
 async function protectBranch(
 	octokit: Octokit,
 	config: Config,
-	event: UpdateBranchProtectionEvent,
+	event: UpdateMessageEvent,
 ) {
 	const [owner, repo] = event.fullName.split('/');
 
@@ -64,7 +64,7 @@ async function handleMessage(
 	message: Message,
 ) {
 	if (message.Body !== undefined) {
-		const event = JSON.parse(message.Body) as UpdateBranchProtectionEvent;
+		const event = JSON.parse(message.Body) as UpdateMessageEvent;
 		try {
 			await protectBranch(octokit, config, event);
 		} catch (error) {

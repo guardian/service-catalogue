@@ -7,8 +7,7 @@ export type GithubAppSecret = {
 	clientSecret: string;
 	installationId: string;
 };
-
-export interface UpdateBranchProtectionEvent {
+export interface UpdateMessageEvent {
 	fullName: string; // in the format of owner/repo-name
 	teamNameSlugs: string[];
 }

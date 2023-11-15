@@ -47,9 +47,14 @@ export interface Config {
 	ignoredRepositoryPrefixes: string[];
 
 	/**
-	 * SQS queue to send messages to.
+	 * SQS queue to send branch protector messages to.
 	 */
-	queueUrl: string;
+	branchProtectorQueueUrl: string;
+
+	/**
+	 * SQS queue to send topic 'production' messages to.
+	 */
+	topicProductionQueueUrl: string;
 
 	/**
 	 * Flag to enable messaging when running locally.
@@ -112,7 +117,9 @@ export async function getConfig(): Promise<Config> {
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
-		queueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
+		branchProtectorQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
+		topicProductionQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'), // TODO: remove this
+		// topicProductionQueueUrl: getEnvOrThrow('TOPIC_PRODUCTION_QUEUE_URL'), // TODO: produce this
 		enableMessaging: process.env.ENABLE_MESSAGING === 'false' ? false : true,
 		ignoredRepositoryPrefixes: [
 			'guardian/esd-', // ESD team

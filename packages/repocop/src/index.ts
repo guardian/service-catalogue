@@ -8,6 +8,7 @@ import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getLocalProfile, shuffle } from 'common/src/functions';
+import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -47,7 +48,7 @@ async function sendPotentialInteractives(
 
 	const PublishBatchRequestEntries = potentialInteractives.map(
 		(repo): PublishBatchRequestEntry => ({
-			Id: repo,
+			Id: repo.replace(/\W/g, ''),
 			Message: repo,
 		}),
 	);
@@ -89,7 +90,11 @@ export async function main() {
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
-		const msgs = await notifyBranchProtector(prisma, evaluatedRepos, config);
+		const msgs: UpdateMessageEvent[] = await notifyBranchProtector(
+			prisma,
+			evaluatedRepos,
+			config,
+		);
 		if (config.stage === 'PROD') {
 			const anghammaradClient = new Anghammarad();
 			await notifyAnghammaradBranchProtection(msgs, config, anghammaradClient);
