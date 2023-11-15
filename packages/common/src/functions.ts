@@ -78,7 +78,7 @@ export function branchProtectionCtas(
 	];
 }
 
-export function topicProductionCtas(
+export function topicMonitoringProductionTagCtas(
 	fullRepoName: string,
 	teamSlug: string,
 ): Action[] {

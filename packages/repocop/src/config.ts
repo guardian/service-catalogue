@@ -54,7 +54,7 @@ export interface Config {
 	/**
 	 * SQS queue to send topic 'production' messages to.
 	 */
-	topicProductionQueueUrl: string;
+	topicMonitoringProductionTagQueueUrl: string;
 
 	/**
 	 * Flag to enable messaging when running locally.
@@ -118,8 +118,10 @@ export async function getConfig(): Promise<Config> {
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
 		branchProtectorQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
-		topicProductionQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'), // TODO: remove this
-		// topicProductionQueueUrl: getEnvOrThrow('TOPIC_PRODUCTION_QUEUE_URL'), // TODO: produce this
+		topicMonitoringProductionTagQueueUrl: getEnvOrThrow(
+			'BRANCH_PROTECTOR_QUEUE_URL',
+		), // TODO: remove this
+		// topicMonitoringProductionTagQueueUrl: getEnvOrThrow('TOPIC_MONITORING_PRODUCTION_TAG_QUEUE_URL'), // TODO: produce this
 		enableMessaging: process.env.ENABLE_MESSAGING === 'false' ? false : true,
 		ignoredRepositoryPrefixes: [
 			'guardian/esd-', // ESD team

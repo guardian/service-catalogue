@@ -7,14 +7,14 @@ import type { github_teams, view_repo_ownership } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
-	topicProductionCtas,
+	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
 
 export enum RemediationApp {
 	BranchProtector = 'branchProtector',
-	TopicProduction = 'topicProduction',
+	TopicMonitoringProductionTag = 'topicMonitoringProductionTag',
 }
 
 export interface AnghammaradMessage {
@@ -33,10 +33,10 @@ const anghammaradMessages: AnghammaradMessages = {
 		message: 'Branch protections',
 		actions: branchProtectionCtas,
 	},
-	topicProduction: {
+	topicMonitoringProductionTag: {
 		subject: 'Repocop topic monitoring',
 		message: "The 'production' topic",
-		actions: topicProductionCtas,
+		actions: topicMonitoringProductionTagCtas,
 	},
 };
 
