@@ -158,6 +158,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
 				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
 			},
+			dockerLabels: {
+				Stack: stack,
+				Stage: stage,
+				App: app,
+				Name: name,
+			},
 			command: [
 				'/bin/sh',
 				'-c',

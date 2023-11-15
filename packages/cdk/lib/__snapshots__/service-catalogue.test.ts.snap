@@ -234,6 +234,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "DelegatedToSecurityAccount",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -847,6 +853,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "DeployToolsListOrgs",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -1460,6 +1472,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "FastlyServices",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -2086,6 +2104,12 @@ spec:
                 ],
               },
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "Galaxies",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -2916,6 +2940,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubIssues",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -3370,6 +3400,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubRepositories",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -4034,6 +4070,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubTeams",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -4714,6 +4756,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GuardianCustomSnykProjects",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -5317,6 +5365,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideAutoScalingGroups",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -5936,6 +5990,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCertificates",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -6585,6 +6645,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCloudFormation",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -7374,6 +7440,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCloudwatchAlarms",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -7793,6 +7865,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideDynamoDB",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -8414,6 +8492,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideEc2",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -9034,6 +9118,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideInspector",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -9854,6 +9944,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideLoadBalancers",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -10273,6 +10369,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideS3",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -10945,6 +11047,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "RemainingAwsData",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -11765,6 +11873,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "RiffRaffData",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
@@ -12217,6 +12331,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "SnykAll",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
             "EntryPoint": [
               "",
             ],
