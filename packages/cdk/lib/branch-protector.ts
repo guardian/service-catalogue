@@ -7,7 +7,7 @@ import type {
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Schedule } from 'aws-cdk-lib/aws-events';
+import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import type { ITopic } from 'aws-cdk-lib/aws-sns';
@@ -20,7 +20,7 @@ export class BranchProtector {
 		monitoringConfiguration:
 			| NoMonitoring
 			| GuLambdaErrorPercentageMonitoringProps,
-		nonProdSchedule: Schedule | undefined,
+		schedule: Schedule,
 		vpc: IVpc,
 		anghammaradTopic: ITopic,
 	) {
@@ -43,9 +43,7 @@ export class BranchProtector {
 			monitoringConfiguration,
 			rules: [
 				{
-					schedule:
-						nonProdSchedule ??
-						Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
+					schedule,
 				},
 			],
 			runtime: Runtime.NODEJS_18_X,
