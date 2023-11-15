@@ -1,4 +1,3 @@
-import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { fromIni } from '@aws-sdk/credential-providers';
 import type { Anghammarad } from '@guardian/anghammarad';
@@ -8,12 +7,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import {
-	anghammaradThreadKey,
-	branchProtectionCtas,
-	getLocalProfile,
-	shuffle,
-} from 'common/src/functions';
+import { shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
 import {
@@ -27,10 +21,6 @@ import {
 	RemediationApp,
 	sendNotifications,
 } from './shared-utilities';
-
-function shuffle<T>(array: T[]): T[] {
-	return array.sort(() => Math.random() - 0.5);
-}
 
 export function createBranchProtectionWarningMessageEvents(
 	evaluatedRepos: repocop_github_repository_rules[],

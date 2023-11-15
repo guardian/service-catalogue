@@ -8,8 +8,8 @@ import { Anghammarad } from '@guardian/anghammarad';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getLocalProfile, shuffle } from 'common/src/functions';
-import type { Config } from './config';
 import type { UpdateMessageEvent } from 'common/types';
+import type { Config } from './config';
 import { getConfig } from './config';
 import {
 	notifyAnghammaradBranchProtection,
