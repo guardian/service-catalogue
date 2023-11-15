@@ -28,7 +28,11 @@ import {
 	sendNotifications,
 } from './shared-utilities';
 
-export function createBranchProtectionWarningMessages(
+function shuffle<T>(array: T[]): T[] {
+	return array.sort(() => Math.random() - 0.5);
+}
+
+export function createBranchProtectionWarningMessageEvents(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
 	teams: github_teams[],
@@ -74,12 +78,13 @@ export async function notifyBranchProtector(
 		productionOrDocs.includes(repo.full_name),
 	);
 
-	const events = createBranchProtectionWarningMessages(
-		relevantRepos,
-		repoOwners,
-		teams,
-		3,
-	);
+	const branchProtectionWarningMessages =
+		createBranchProtectionWarningMessageEvents(
+			relevantRepos,
+			repoOwners,
+			teams,
+			3,
+		);
 
 	const credentials =
 		config.stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
@@ -90,13 +95,13 @@ export async function notifyBranchProtector(
 	});
 
 	await addMessagesToQueue(
-		events,
+		branchProtectionWarningMessages,
 		sqsClient,
 		config.branchProtectorQueueUrl,
 		RemediationApp.BranchProtector,
 	);
 
-	return events;
+	return branchProtectionWarningMessages;
 }
 
 export async function notifyAnghammaradBranchProtection(

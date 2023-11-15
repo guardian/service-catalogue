@@ -12,14 +12,6 @@ import {
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
 
-function findTeamSlugFromId(
-	id: bigint,
-	teams: github_teams[],
-): string | undefined {
-	const match: github_teams | undefined = teams.find((team) => team.id === id);
-	return match?.slug ?? undefined;
-}
-
 export enum RemediationApp {
 	BranchProtector = 'branchProtector',
 	TopicProduction = 'topicProduction',
@@ -47,6 +39,14 @@ const anghammaradMessages: AnghammaradMessages = {
 		actions: topicProductionCtas,
 	},
 };
+
+function findTeamSlugFromId(
+	id: bigint,
+	teams: github_teams[],
+): string | undefined {
+	const match: github_teams | undefined = teams.find((team) => team.id === id);
+	return match?.slug ?? undefined;
+}
 
 export function findContactableOwners(
 	repo: string,
