@@ -27,6 +27,7 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { FastlySources } from './cloudquery-sources/fastly-sources';
 import { GalaxiesSources } from './cloudquery-sources/galaxies-sources';
 import { RiffRaffSources } from './cloudquery-sources/riff-raff-sources';
 import { SnykSources } from './cloudquery-sources/snyk-sources';
@@ -34,7 +35,6 @@ import { CloudqueryCluster, type CloudquerySource } from './ecs/cluster';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
-	fastlySourceConfig,
 	githubSourceConfig,
 	skipTables,
 } from './ecs/config';
@@ -376,36 +376,15 @@ export class CloudQuery {
 			},
 		];
 
-		const fastlyCredentials = new SecretsManager(
+		const fastlySources = new FastlySources(
 			guStack,
-			'fastly-credentials',
-			{
-				secretName: `/${guStack.stage}/${guStack.stack}/${app}/fastly-credentials`,
-			},
+			nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 		);
 
-		const fastlySources: CloudquerySource[] = [
-			{
-				name: 'FastlyServices',
-				description: 'Fastly services data',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
-				config: fastlySourceConfig({
-					tables: [
-						'fastly_services',
-						'fastly_service_versions',
-						'fastly_service_backends',
-						'fastly_service_domains',
-						'fastly_service_health_checks',
-					],
-				}),
-				secrets: {
-					FASTLY_API_KEY: Secret.fromSecretsManager(
-						fastlyCredentials,
-						'api-key',
-					),
-				},
-			},
-		];
+		const galaxiesSources = new GalaxiesSources(
+			guStack,
+			nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+		);
 
 		const riffRaffSources = new RiffRaffSources(
 			guStack,
@@ -420,11 +399,8 @@ export class CloudQuery {
 				...individualAwsSources,
 				remainingAwsSources,
 				...githubSources,
-				...fastlySources,
-				...new GalaxiesSources(
-					guStack,
-					nonProdSchedule ?? Schedule.rate(Duration.days(1)),
-				).sources,
+				...fastlySources.sources,
+				...galaxiesSources.sources,
 				...new SnykSources(guStack, nonProdSchedule).sources,
 				riffRaffSources.sources,
 			],
