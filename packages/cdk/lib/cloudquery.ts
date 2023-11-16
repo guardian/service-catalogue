@@ -390,6 +390,7 @@ export class CloudQuery {
 		const riffRaffSources = new RiffRaffSources(
 			guStack,
 			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+			app,
 		);
 		new CloudqueryCluster(guStack, `${app}Cluster`, {
 			app,
