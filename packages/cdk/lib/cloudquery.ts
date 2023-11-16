@@ -6,9 +6,9 @@ import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
+	type IVpc,
 	Peer,
 	Port,
-	type IVpc,
 } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';

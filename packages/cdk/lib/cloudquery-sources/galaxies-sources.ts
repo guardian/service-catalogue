@@ -1,6 +1,6 @@
 import {
-	GuStringParameter,
 	type GuStack,
+	GuStringParameter,
 } from '@guardian/cdk/lib/constructs/core';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
