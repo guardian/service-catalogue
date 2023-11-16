@@ -119,6 +119,8 @@ export class CloudQuery {
 			app,
 		);
 
+		const snykSources = new SnykSources(guStack, app, nonProdSchedule);
+
 		const githubSources = new GithubSources(guStack, app, nonProdSchedule);
 
 		new CloudqueryCluster(guStack, `${app}Cluster`, {
@@ -132,7 +134,7 @@ export class CloudQuery {
 				...githubSources.sources,
 				...fastlySources.sources,
 				...galaxiesSources.sources,
-				...new SnykSources(guStack, app, nonProdSchedule).sources,
+				...snykSources.sources,
 				riffRaffSources.sources,
 			],
 		});
