@@ -21,9 +21,12 @@ async function isFromInteractiveTemplate(
 
 export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
-	if (event.Records.length !== 1) {
+	if (
+		event.Records.length !== 1 ||
+		!event.Records[0]!.Sns.Message.split('/')[1]
+	) {
 		throw new Error(
-			`Expected exactly one record, but got ${event.Records.length}`,
+			`Failed to process SNS message: ${JSON.stringify(event, null, 2)}`,
 		);
 	} else {
 		const repo = event.Records[0]!.Sns.Message.split('/')[1]!;
