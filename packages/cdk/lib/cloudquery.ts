@@ -31,6 +31,7 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { RiffRaffSources } from './cloudquery-sources/riff-raff-sources';
 import { CloudqueryCluster, type CloudquerySource } from './ecs/cluster';
 import {
 	awsSourceConfigForAccount,
@@ -39,7 +40,6 @@ import {
 	galaxiesSourceConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
-	riffraffSourcesConfig,
 	skipTables,
 	snykSourceConfig,
 } from './ecs/config';
@@ -486,52 +486,10 @@ export class CloudQuery {
 			},
 		];
 
-		const riffRaffDatabaseAccessSecurityGroupParam =
-			StringParameter.valueForStringParameter(
-				guStack,
-				`/${guStack.stage}/deploy/riff-raff/external-database-access-security-group`,
-			);
-
-		// Provisioned by RiffRaff to specifically allow applications other than RiffRaff to access its DB
-		// See https://github.com/guardian/deploy-tools-platform/pull/731
-		const applicationToRiffRaffDatabaseSecurityGroup =
-			GuSecurityGroup.fromSecurityGroupId(
-				guStack,
-				'RiffRaffDatabaseAccessSecurityGroup',
-				riffRaffDatabaseAccessSecurityGroupParam,
-			);
-
-		const cloudqueryRiffRaffDatabaseCredentials = new SecretsManager(
+		const riffRaffSources = new RiffRaffSources(
 			guStack,
-			'RiffRaffDatabaseCredentials',
-			{
-				secretName: `/${guStack.stage}/${guStack.stack}/${app}/riffraff-database-credentials`,
-			},
+			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 		);
-
-		const riffRaffSources: CloudquerySource = {
-			name: 'RiffRaffData',
-			description: "Source deployment data directly from riff-raff's database",
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
-			config: riffraffSourcesConfig(),
-			extraSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
-			secrets: {
-				RIFFRAFF_DB_USERNAME: Secret.fromSecretsManager(
-					cloudqueryRiffRaffDatabaseCredentials,
-					'username',
-				),
-				RIFFRAFF_DB_PASSWORD: Secret.fromSecretsManager(
-					cloudqueryRiffRaffDatabaseCredentials,
-					'password',
-				),
-
-				RIFFRAFF_DB_HOST: Secret.fromSecretsManager(
-					cloudqueryRiffRaffDatabaseCredentials,
-					'host',
-				),
-			},
-		};
-
 		new CloudqueryCluster(guStack, `${app}Cluster`, {
 			app,
 			vpc,
@@ -544,7 +502,7 @@ export class CloudQuery {
 				...fastlySources,
 				...galaxiesSources,
 				...snykSources,
-				riffRaffSources,
+				riffRaffSources.sources,
 			],
 		});
 
