@@ -1,9 +1,5 @@
-import {
-	GuStringParameter,
-	type GuStack,
-} from '@guardian/cdk/lib/constructs/core';
+import { type GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import {
 	GuardianAwsAccounts,
 	GuardianPrivateNetworks,
@@ -31,6 +27,7 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { GalaxiesSources } from './cloudquery-sources/galaxies-sources';
 import { RiffRaffSources } from './cloudquery-sources/riff-raff-sources';
 import { SnykSources } from './cloudquery-sources/snyk-sources';
 import { CloudqueryCluster, type CloudquerySource } from './ecs/cluster';
@@ -38,15 +35,10 @@ import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
 	fastlySourceConfig,
-	galaxiesSourceConfig,
 	githubSourceConfig,
 	skipTables,
 } from './ecs/config';
-import {
-	cloudqueryAccess,
-	listOrgsPolicy,
-	readBucketPolicy,
-} from './ecs/policies';
+import { cloudqueryAccess, listOrgsPolicy } from './ecs/policies';
 
 export class CloudQuery {
 	public readonly db: DatabaseInstance;
@@ -415,36 +407,6 @@ export class CloudQuery {
 			},
 		];
 
-		// The bucket in which the Galaxies data lives.
-		const actionsStaticSiteBucketArn = new GuStringParameter(
-			guStack,
-			'ActionsStaticSiteBucketArnParam',
-			{
-				fromSSM: true,
-				default: '/INFRA/deploy/cloudquery/actions-static-site-bucket-arn',
-			},
-		).valueAsString;
-
-		const actionsStaticSiteBucket = GuS3Bucket.fromBucketArn(
-			guStack,
-			'ActionsStaticSiteBucket',
-			actionsStaticSiteBucketArn,
-		);
-
-		const galaxiesSources: CloudquerySource[] = [
-			{
-				name: 'Galaxies',
-				description: 'Galaxies data',
-				schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
-				policies: [
-					readBucketPolicy(
-						`${actionsStaticSiteBucket.bucketArn}/galaxies.gutools.co.uk/data/*`,
-					),
-				],
-				config: galaxiesSourceConfig(actionsStaticSiteBucket.bucketName),
-			},
-		];
-
 		const riffRaffSources = new RiffRaffSources(
 			guStack,
 			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
@@ -459,7 +421,10 @@ export class CloudQuery {
 				remainingAwsSources,
 				...githubSources,
 				...fastlySources,
-				...galaxiesSources,
+				...new GalaxiesSources(
+					guStack,
+					nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+				).sources,
 				...new SnykSources(guStack, nonProdSchedule).sources,
 				riffRaffSources.sources,
 			],
