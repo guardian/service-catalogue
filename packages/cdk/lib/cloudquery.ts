@@ -32,6 +32,7 @@ import {
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
 import { RiffRaffSources } from './cloudquery-sources/riff-raff-sources';
+import { SnykSources } from './cloudquery-sources/snyk-sources';
 import { CloudqueryCluster, type CloudquerySource } from './ecs/cluster';
 import {
 	awsSourceConfigForAccount,
@@ -39,9 +40,7 @@ import {
 	fastlySourceConfig,
 	galaxiesSourceConfig,
 	githubSourceConfig,
-	guardianSnykSourceConfig,
 	skipTables,
-	snykSourceConfig,
 } from './ecs/config';
 import {
 	cloudqueryAccess,
@@ -446,46 +445,6 @@ export class CloudQuery {
 			},
 		];
 
-		const snykCredentials = new SecretsManager(guStack, 'snyk-credentials', {
-			secretName: `/${guStack.stage}/${guStack.stack}/${app}/snyk-credentials`,
-		});
-
-		const snykSources: CloudquerySource[] = [
-			{
-				name: 'SnykAll',
-				description: 'Collecting all Snyk data, except for projects',
-				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
-				config: snykSourceConfig({
-					tables: [
-						'snyk_dependencies',
-						'snyk_groups',
-						'snyk_group_members',
-						'snyk_integrations',
-						'snyk_organizations',
-						'snyk_organization_members',
-						'snyk_reporting_issues',
-						'snyk_reporting_latest_issues',
-					],
-					skipTables: ['snyk_organization_provisions'],
-				}),
-				secrets: {
-					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
-				},
-			},
-			{
-				name: 'GuardianCustomSnykProjects',
-				description:
-					'Collecting Snyk projects including grouped vulnerabilities and tags',
-				schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '5' }),
-				config: guardianSnykSourceConfig({
-					tables: ['snyk_projects'],
-				}),
-				secrets: {
-					SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
-				},
-			},
-		];
-
 		const riffRaffSources = new RiffRaffSources(
 			guStack,
 			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
@@ -501,7 +460,7 @@ export class CloudQuery {
 				...githubSources,
 				...fastlySources,
 				...galaxiesSources,
-				...snykSources,
+				...new SnykSources(guStack, nonProdSchedule).sources,
 				riffRaffSources.sources,
 			],
 		});
