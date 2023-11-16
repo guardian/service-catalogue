@@ -379,6 +379,7 @@ export class CloudQuery {
 		const fastlySources = new FastlySources(
 			guStack,
 			nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			app,
 		);
 
 		const galaxiesSources = new GalaxiesSources(
@@ -401,7 +402,7 @@ export class CloudQuery {
 				...githubSources,
 				...fastlySources.sources,
 				...galaxiesSources.sources,
-				...new SnykSources(guStack, nonProdSchedule).sources,
+				...new SnykSources(guStack, app, nonProdSchedule).sources,
 				riffRaffSources.sources,
 			],
 		});

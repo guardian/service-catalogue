@@ -7,8 +7,7 @@ import { guardianSnykSourceConfig, snykSourceConfig } from '../ecs/config';
 
 export class SnykSources {
 	public readonly sources: CloudquerySource[];
-	constructor(guStack: GuStack, nonProdSchedule?: Schedule) {
-		const app = guStack.app ?? 'service-catalogue';
+	constructor(guStack: GuStack, app: string, nonProdSchedule?: Schedule) {
 		const snykCredentials = new SecretsManager(guStack, 'snyk-credentials', {
 			secretName: `/${guStack.stage}/${guStack.stack}/${app}/snyk-credentials`,
 		});

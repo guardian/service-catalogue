@@ -7,8 +7,7 @@ import { fastlySourceConfig } from '../ecs/config';
 
 export class FastlySources {
 	public readonly sources: CloudquerySource[];
-	constructor(guStack: GuStack, schedule: Schedule) {
-		const app = guStack.app ?? 'service-catalogue';
+	constructor(guStack: GuStack, schedule: Schedule, app: string) {
 		const fastlyCredentials = new SecretsManager(
 			guStack,
 			'fastly-credentials',
