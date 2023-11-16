@@ -6,11 +6,11 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
     "gu:cdk:constructs": [
       "GuSubnetListParameter",
       "GuVpcParameter",
+      "GuAnghammaradTopicParameter",
       "GuSecurityGroup",
       "GuSecurityGroup",
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
-      "GuAnghammaradTopicParameter",
       "GuDistributionBucketParameter",
       "GuLambdaFunction",
       "GuScheduledLambda",
