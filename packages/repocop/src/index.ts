@@ -68,7 +68,7 @@ async function sendPotentialInteractives(
 
 	const strList = somePotentialInteractives.join(', ');
 	console.log(
-		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}}`,
+		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}`,
 	);
 	const cmd = new PublishBatchCommand(batchCommandInput);
 	await new SNSClient({
