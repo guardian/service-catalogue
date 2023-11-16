@@ -1,4 +1,3 @@
-import { GuScheduledLambda } from '@guardian/cdk';
 import type {
 	GuLambdaErrorPercentageMonitoringProps,
 	NoMonitoring,
@@ -15,7 +14,6 @@ import {
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import type { GuScheduledLambdaProps } from '@guardian/cdk/lib/patterns/scheduled-lambda';
 import {
 	GuardianAwsAccounts,
 	GuardianPrivateNetworks,
@@ -31,7 +29,6 @@ import {
 } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import {
 	CaCertificate,
@@ -65,6 +62,7 @@ import {
 	readBucketPolicy,
 } from './ecs/policies';
 import { InteractiveMonitor } from './interactive-monitor';
+import { Repocop } from './repocop';
 
 interface ServiceCatalogueProps extends GuStackProps {
 	//TODO add fields for every kind of job to make schedule explicit at a glance.
@@ -621,45 +619,16 @@ export class ServiceCatalogue extends GuStack {
 			anghammaradTopic,
 		);
 
-		const repocopLampdaProps: GuScheduledLambdaProps = {
-			app: 'repocop',
-			fileName: 'repocop.zip',
-			handler: 'index.main',
-			memorySize: 1024,
-			monitoringConfiguration: stageAwareMonitoringConfiguration,
-			// Messages will be picked up by branch protector at 9:00 the next working day (Tue-Fri)
-			rules: [
-				{
-					schedule:
-						nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '15' }),
-				},
-			],
-			runtime: Runtime.NODEJS_18_X,
-			environment: {
-				ANGHAMMARAD_SNS_ARN: anghammaradTopicParameter.valueAsString,
-				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
-
-				// Set this to 'true' to enable SQL query logging
-				QUERY_LOGGING: 'false',
-				BRANCH_PROTECTOR_QUEUE_URL: branchProtector.queue.queueUrl,
-				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitor.topic.topicArn,
-			},
-			vpc,
-			securityGroups: [applicationToPostgresSecurityGroup],
-			timeout: Duration.minutes(5),
-		};
-
-		const repocopLambda = new GuScheduledLambda(
+		new Repocop(
 			this,
-			'repocop',
-			repocopLampdaProps,
+			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '15' }),
+			anghammaradTopic,
+			db,
+			stageAwareMonitoringConfiguration,
+			vpc,
+			branchProtector.queue,
+			interactiveMonitor.topic,
+			applicationToPostgresSecurityGroup,
 		);
-
-		db.grantConnect(repocopLambda, 'repocop');
-
-		branchProtector.queue.grantSendMessages(repocopLambda);
-
-		anghammaradTopic.grantPublish(repocopLambda);
-		interactiveMonitor.topic.grantPublish(repocopLambda);
 	}
 }
