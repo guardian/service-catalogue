@@ -41,16 +41,20 @@ async function sendPotentialInteractives(
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
 ) {
-	const snsBatchMaximum = 10;
 	const potentialInteractives = shuffle(
 		findPotentialInteractives(evaluatedRepos),
-	).slice(0, snsBatchMaximum);
+	);
+	const snsBatchMaximum = Math.min(potentialInteractives.length, 10);
+	const somePotentialInteractives = potentialInteractives.slice(
+		0,
+		snsBatchMaximum,
+	);
 
 	console.log(
 		`Found ${potentialInteractives.length} potential interactives of ${evaluatedRepos.length} evaluated repositories`,
 	);
 
-	const PublishBatchRequestEntries = potentialInteractives.map(
+	const PublishBatchRequestEntries = somePotentialInteractives.map(
 		(repo): PublishBatchRequestEntry => ({
 			Id: repo.replace(/\W/g, ''),
 			Message: repo,
@@ -62,7 +66,10 @@ async function sendPotentialInteractives(
 		PublishBatchRequestEntries,
 	};
 
-	console.log('Sending SNS batch');
+	const strList = somePotentialInteractives.join(', ');
+	console.log(
+		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}}`,
+	);
 	const cmd = new PublishBatchCommand(batchCommandInput);
 	await new SNSClient({
 		region: config.region,

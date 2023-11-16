@@ -26,7 +26,7 @@ export const handler: SNSHandler = async (event) => {
 			`Expected exactly one record, but got ${event.Records.length}`,
 		);
 	} else {
-		const repo = event.Records[0]!.Sns.Message;
+		const repo = event.Records[0]!.Sns.Message.split('/')[1]!;
 		const owner = 'guardian';
 		console.log('received repo', repo);
 		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
