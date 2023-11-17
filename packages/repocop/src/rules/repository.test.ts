@@ -154,17 +154,22 @@ describe('default_branch_name should be false when the default branch is not mai
 });
 
 describe('Repositories should have branch protection', () => {
+	const unprotectedMainBranch: github_repository_branches = {
+		...nullBranch,
+		repository_id: BigInt(1),
+		name: 'main',
+		protected: false,
+		protection: {},
+	};
+	const protectedMainBranch: github_repository_branches = {
+		...unprotectedMainBranch,
+		protected: true,
+	};
+
 	test('We should get an affirmative result when the default branch is protected', () => {
-		const protectedMainBranch: github_repository_branches = {
-			...nullBranch,
-			repository_id: BigInt(1),
-			name: 'main',
-			protected: true,
-		};
 		const unprotectedSideBranch: github_repository_branches = {
-			...protectedMainBranch,
+			...unprotectedMainBranch,
 			name: 'side-branch',
-			protected: false,
 		};
 
 		const actual = repositoryRuleEvaluation(
@@ -175,24 +180,31 @@ describe('Repositories should have branch protection', () => {
 
 		expect(actual.branch_protection).toEqual(true);
 	});
-	test('We should get a negative result when the default branch is not protected', () => {
+	test('We should get a negative result when the default branch of a production repo is not protected', () => {
+		const actual = repositoryRuleEvaluation(
+			thePerfectRepo,
+			[unprotectedMainBranch],
+			[],
+		);
+		expect(actual.branch_protection).toEqual(false);
+	});
+	test('Repos with no branches do not need protecting, and should be considered protected', () => {
 		const repo: github_repositories = {
-			...nullRepo,
-			full_name: 'repo1',
-			default_branch: 'default',
-			id: BigInt(1),
+			...thePerfectRepo,
+			default_branch: null,
 		};
 
-		const unprotectedMainBranch: github_repository_branches = {
-			...nullBranch,
-			repository_id: BigInt(1),
-			name: 'default',
-			protected: false,
-			protection: {},
+		const actual = repositoryRuleEvaluation(repo, [], []);
+		expect(actual.branch_protection).toEqual(true);
+	});
+	test('Repos with exempted topics should be considered adequately protected, even if they have an unprotected main branch', () => {
+		const repo: github_repositories = {
+			...thePerfectRepo,
+			topics: ['hackday'],
 		};
 
 		const actual = repositoryRuleEvaluation(repo, [unprotectedMainBranch], []);
-		expect(actual.branch_protection).toEqual(false);
+		expect(actual.branch_protection).toEqual(true);
 	});
 });
 
