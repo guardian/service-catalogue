@@ -5,7 +5,7 @@ import {
 	SNSClient,
 } from '@aws-sdk/client-sns';
 import type { repocop_github_repository_rules } from '@prisma/client';
-import { getLocalProfile, shuffle } from 'common/functions';
+import { getLocalProfile, shuffle } from 'common/src/functions';
 import type { Config } from '../config';
 
 export function findPotentialInteractives(
