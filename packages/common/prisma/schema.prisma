@@ -2596,8 +2596,6 @@ model aws_cloudformation_stacks {
   stack_id                      String?
   stack_status_reason           String?
   timeout_in_minutes            BigInt?
-
-  @@ignore
 }
 
 model aws_cloudformation_template_summaries {
