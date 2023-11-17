@@ -1,28 +1,17 @@
-import {
-	PublishBatchCommand,
-	type PublishBatchCommandInput,
-	type PublishBatchRequestEntry,
-	SNSClient,
-} from '@aws-sdk/client-sns';
 import { Anghammarad } from '@guardian/anghammarad';
 import type {
 	github_repositories,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
-import { getLocalProfile, shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
-import type { Config } from './config';
 import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
 import {
 	notifyAnghammaradBranchProtection,
 	notifyBranchProtector,
 } from './remediations/repository-02-branch_protection';
-import {
-	createBatchEntry,
-	findPotentialInteractives,
-} from './remediations/repository-06-topic-monitor-interactive';
+import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -38,43 +27,6 @@ async function writeEvaluationTable(
 	});
 
 	console.log('Finished writing to table');
-}
-
-async function sendPotentialInteractives(
-	evaluatedRepos: repocop_github_repository_rules[],
-	config: Config,
-) {
-	const potentialInteractives = shuffle(
-		findPotentialInteractives(evaluatedRepos),
-	);
-	const snsBatchMaximum = Math.min(potentialInteractives.length, 10);
-	const somePotentialInteractives = potentialInteractives.slice(
-		0,
-		snsBatchMaximum,
-	);
-
-	console.log(
-		`Found ${potentialInteractives.length} potential interactives of ${evaluatedRepos.length} evaluated repositories`,
-	);
-
-	const PublishBatchRequestEntries = somePotentialInteractives.map(
-		(repo): PublishBatchRequestEntry => createBatchEntry(repo),
-	);
-
-	const batchCommandInput: PublishBatchCommandInput = {
-		TopicArn: config.interactiveMonitorSnsTopic,
-		PublishBatchRequestEntries,
-	};
-
-	const strList = somePotentialInteractives.join(', ');
-	console.log(
-		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}`,
-	);
-	const cmd = new PublishBatchCommand(batchCommandInput);
-	await new SNSClient({
-		region: config.region,
-		credentials: getLocalProfile(config.stage),
-	}).send(cmd);
 }
 
 export async function main() {
