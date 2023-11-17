@@ -5,12 +5,16 @@ import {
 	SNSClient,
 } from '@aws-sdk/client-sns';
 import { Anghammarad } from '@guardian/anghammarad';
-import type { repocop_github_repository_rules } from '@prisma/client';
+import type {
+	github_repositories,
+	repocop_github_repository_rules,
+} from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getLocalProfile, shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
+import { getUnarchivedRepositories } from './query';
 import {
 	notifyAnghammaradBranchProtection,
 	notifyBranchProtector,
@@ -84,8 +88,11 @@ export async function main() {
 		}),
 	});
 
+	const unarchivedRepositories: github_repositories[] =
+		await getUnarchivedRepositories(prisma, config.ignoredRepositoryPrefixes);
+
 	const evaluatedRepos: repocop_github_repository_rules[] =
-		await evaluateRepositories(prisma, config.ignoredRepositoryPrefixes);
+		await evaluateRepositories(prisma, unarchivedRepositories);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
@@ -94,6 +101,7 @@ export async function main() {
 			prisma,
 			evaluatedRepos,
 			config,
+			unarchivedRepositories,
 		);
 		if (config.stage === 'PROD') {
 			const anghammaradClient = new Anghammarad();
