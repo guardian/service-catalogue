@@ -19,7 +19,10 @@ import {
 	notifyAnghammaradBranchProtection,
 	notifyBranchProtector,
 } from './remediations/repository-02-branch_protection';
-import { findPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
+import {
+	createBatchEntry,
+	findPotentialInteractives,
+} from './remediations/repository-06-topic-monitor-interactive';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -55,10 +58,7 @@ async function sendPotentialInteractives(
 	);
 
 	const PublishBatchRequestEntries = somePotentialInteractives.map(
-		(repo): PublishBatchRequestEntry => ({
-			Id: repo.replace(/\W/g, ''),
-			Message: repo,
-		}),
+		(repo): PublishBatchRequestEntry => createBatchEntry(repo),
 	);
 
 	const batchCommandInput: PublishBatchCommandInput = {
