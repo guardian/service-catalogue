@@ -4,6 +4,7 @@ import { Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
+	ContainerDependencyCondition,
 	ContainerImage,
 	FargateTaskDefinition,
 	FireLensLogDriver,
@@ -22,6 +23,7 @@ import type { Topic } from 'aws-cdk-lib/aws-sns';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
+import { singletonPolicies } from './policies';
 import { Versions } from './versions';
 
 const cloudqueryImage = ContainerImage.fromRegistry(
@@ -30,6 +32,10 @@ const cloudqueryImage = ContainerImage.fromRegistry(
 
 const firelensImage = ContainerImage.fromRegistry(
 	'ghcr.io/guardian/devx-logs:2',
+);
+
+const awsImage = ContainerImage.fromRegistry(
+	'public.ecr.aws/amazonlinux/amazonlinux:latest',
 );
 
 export interface ScheduledCloudqueryTaskProps
@@ -98,6 +104,12 @@ export interface ScheduledCloudqueryTaskProps
 	 * Extra security groups applied to the task for accessing resources such as RiffRaff
 	 */
 	extraSecurityGroups?: ISecurityGroup[];
+
+	/**
+	 * Run this task as a singleton?
+	 * Useful to help avoid overlapping runs.
+	 */
+	runAsSingleton: boolean;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -121,6 +133,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			memoryLimitMiB,
 			cpu,
 			extraSecurityGroups,
+			runAsSingleton,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -149,7 +162,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			throw new Error('DB Secret is missing');
 		}
 
-		task.addContainer(`${id}Container`, {
+		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: cloudqueryImage,
 			entryPoint: [''],
 			secrets: {
@@ -190,6 +203,58 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				},
 			}),
 		});
+
+		if (runAsSingleton) {
+			const singletonTask = task.addContainer(`${id}AwsCli`, {
+				image: awsImage,
+				entryPoint: [''],
+				command: [
+					'/bin/bash',
+					'-c',
+					[
+						// Install jq to handle JSON, and awscli to query ECS
+						'yum install -y -q jq awscli',
+
+						// Who am I?
+						`ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster')`,
+						`ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family')`,
+						`ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN')`,
+
+						// How many more of me are there?
+						`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
+
+						// If there's more than one, then I don't need to be here.
+						'[[ ${RUNNING} -gt 1 ]] && aws ecs stop-task --cluster $ECS_CLUSTER --task $ECS_TASK_ARN --no-cli-pager 1> /dev/null',
+
+						// I'm the only one, let's go on.
+						'exit 0',
+					].join(';'),
+				],
+				logging: new FireLensLogDriver({
+					options: {
+						Name: `kinesis_streams`,
+						region,
+						stream: loggingStreamName,
+						retry_limit: '2',
+					},
+				}),
+
+				/*
+				A container listed as a dependency of another cannot be marked as essential.
+				Below, we describe a dependency such that CloudQuery will only start if the singleton step succeeds.
+			 	*/
+				essential: false,
+			});
+
+			cloudqueryTask.addContainerDependencies({
+				container: singletonTask,
+				condition: ContainerDependencyCondition.SUCCESS,
+			});
+
+			singletonPolicies(cluster).forEach((policy) =>
+				task.addToTaskRolePolicy(policy),
+			);
+		}
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
 			image: firelensImage,

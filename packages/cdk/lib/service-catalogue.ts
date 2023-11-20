@@ -310,6 +310,7 @@ export class ServiceCatalogue extends GuStack {
 					],
 				}),
 				policies: [listOrgsPolicy, cloudqueryAccess('*')],
+				runAsSingleton: true,
 			},
 		];
 
