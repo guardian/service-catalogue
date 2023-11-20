@@ -10,37 +10,31 @@ async function isFromInteractiveTemplate(
 	owner: string,
 	octokit: Octokit,
 ): Promise<boolean> {
-	console.log('retrieving repo data');
 	const repoData = await octokit.rest.repos.get({
 		owner,
 		repo,
 	});
-
 	const prefix = 'interactive-atom-template';
-	console.log('checking if repo is from interactive template');
 	return repoData.data.template_repository?.name.includes(prefix) ?? false;
 }
 
 async function applyTopics(repo: string, owner: string, octokit: Octokit) {
+	console.log(`Applying interactive topic to ${repo}`);
 	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
 		.names;
-	console.log(`${repo} is from interactive template`);
 	const names = topics.concat(['interactive']);
 	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
-	console.log(`added interactive topic to ${repo}`);
 }
 
 async function assessRepo(repo: string, owner: string, config: Config) {
-	console.log('received repo', repo);
 	const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
 	const octokit: Octokit = await getGithubClient(githubAppConfig);
-
 	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
 
 	if (isInteractive && config.stage === 'PROD') {
 		await applyTopics(repo, owner, octokit);
 	} else {
-		console.log('No action taken');
+		console.log(`No action taken for ${repo}`);
 	}
 }
 
