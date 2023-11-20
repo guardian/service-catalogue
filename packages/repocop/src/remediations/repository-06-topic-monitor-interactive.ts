@@ -61,5 +61,5 @@ export async function sendPotentialInteractives(
 		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}`,
 	);
 	const cmd = new PublishBatchCommand(batchCommandInput);
-	await new SNSClient(awsClientConfig).send(cmd);
+	await new SNSClient(awsClientConfig(config.stage)).send(cmd);
 }

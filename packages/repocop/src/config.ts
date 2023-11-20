@@ -99,12 +99,17 @@ export async function getConfig(): Promise<Config> {
 
 	const queryLogging = (process.env['QUERY_LOGGING'] ?? 'false') === 'true';
 
+	const stage = getEnvOrThrow('STAGE');
+
 	return {
 		app: getEnvOrThrow('APP'),
-		stage: getEnvOrThrow('STAGE'),
+		stage,
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
-		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
+		databaseConnectionString: await getDatabaseConnectionString(
+			stage,
+			databaseConfig,
+		),
 		withQueryLogging: queryLogging,
 		branchProtectorQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
 		topicMonitoringProductionTagQueueUrl: getEnvOrThrow(
@@ -119,7 +124,7 @@ export async function getConfig(): Promise<Config> {
 	};
 }
 
-async function getRdsToken(config: DatabaseConfig) {
+async function getRdsToken(stage: string, config: DatabaseConfig) {
 	console.log('Generating RDS token');
 
 	const { hostname, port, user } = config;
@@ -128,15 +133,18 @@ async function getRdsToken(config: DatabaseConfig) {
 		hostname,
 		port,
 		username: user,
-		...awsClientConfig,
+		...awsClientConfig(stage),
 	});
 
 	return await signer.getAuthToken();
 }
 
-async function getDatabaseConnectionString(config: DatabaseConfig) {
+async function getDatabaseConnectionString(
+	stage: string,
+	config: DatabaseConfig,
+) {
 	const { user, password, hostname, port } = config;
-	const dbPassword = password ?? (await getRdsToken(config));
+	const dbPassword = password ?? (await getRdsToken(stage, config));
 
 	return `postgres://${user}:${encodeURIComponent(
 		dbPassword,

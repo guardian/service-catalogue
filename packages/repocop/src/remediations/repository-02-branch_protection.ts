@@ -74,7 +74,7 @@ export async function notifyBranchProtector(
 			3,
 		);
 
-	const sqsClient = new SQSClient(awsClientConfig);
+	const sqsClient = new SQSClient(awsClientConfig(config.stage));
 
 	await addMessagesToQueue(
 		branchProtectionWarningMessages,

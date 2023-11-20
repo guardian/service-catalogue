@@ -15,7 +15,7 @@ interface EcsResourceTags {
 }
 
 export const getSsmClient = () => {
-	return new SSMClient(awsClientConfig);
+	return new SSMClient(awsClientConfig('DEV'));
 };
 
 const getSsmParameter = async (client: SSMClient, path: string) => {
@@ -65,7 +65,7 @@ export const getRiffRaffDBSecurityGroup = async (
 };
 
 export const getEcsClient = () => {
-	return new ECSClient(awsClientConfig);
+	return new ECSClient(awsClientConfig('DEV'));
 };
 
 const listResourceTags = async (
