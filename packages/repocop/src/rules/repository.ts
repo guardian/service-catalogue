@@ -26,12 +26,16 @@ function hasBranchProtection(
 	repo: github_repositories,
 	branches: github_repository_branches[],
 ): boolean {
+	const exempt = !(
+		repo.topics.includes('production') || repo.topics.includes('documentation')
+	);
+
 	const branch = branches.find(
 		(branch) =>
 			branch.repository_id === repo.id && branch.name === repo.default_branch,
 	);
-	if (branch === undefined) {
-		return false;
+	if (exempt || branch === undefined) {
+		return true;
 	} else {
 		return branch.protected ?? false;
 	}
