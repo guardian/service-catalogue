@@ -21,28 +21,31 @@ async function isFromInteractiveTemplate(
 
 export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
-	if (event.Records.length !== 1) {
+
+	const [snsEventRecord] = event.Records; // get the first item via array destructuring
+
+	if (event.Records.length !== 1 || !snsEventRecord) {
 		throw new Error(
 			`Expected exactly one record, but got ${event.Records.length}`,
 		);
+	}
+
+	const repo = snsEventRecord.Sns.Message;
+	const owner = 'guardian';
+	console.log('received repo', repo);
+	const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
+	const octokit: Octokit = await getGithubClient(githubAppConfig);
+
+	const isInteractive = await isFromInteractiveTemplate(repo, octokit);
+	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
+		.names;
+
+	if (isInteractive && config.stage === 'PROD') {
+		console.log(`${repo}is from interactive template`);
+		const names = topics.concat(['interactive']);
+		await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
+		console.log(`added interactive topic to ${repo}`);
 	} else {
-		const repo = event.Records[0]!.Sns.Message;
-		const owner = 'guardian';
-		console.log('received repo', repo);
-		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
-		const octokit: Octokit = await getGithubClient(githubAppConfig);
-
-		const isInteractive = await isFromInteractiveTemplate(repo, octokit);
-		const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
-			.names;
-
-		if (isInteractive && config.stage === 'PROD') {
-			console.log(`${repo}is from interactive template`);
-			const names = topics.concat(['interactive']);
-			await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
-			console.log(`added interactive topic to ${repo}`);
-		} else {
-			console.log('No action taken');
-		}
+		console.log('No action taken');
 	}
 };
