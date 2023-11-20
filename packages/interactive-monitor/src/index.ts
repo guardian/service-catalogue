@@ -26,7 +26,6 @@ async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 
 export async function assessRepo(repo: string, owner: string, stage: string) {
 	const octokit = await stageAwareOctokit(stage);
-	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
 
 	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
 	const onProd = stage === 'PROD';
@@ -36,7 +35,7 @@ export async function assessRepo(repo: string, owner: string, stage: string) {
 		const reason =
 			(!isInteractive ? ' Repo not from interactive template.' : '') +
 			(!onProd ? ' Not running on PROD.' : '');
-		console.log('No action takenfor ${repo}.' + reason);
+		console.log(`No action taken for ${repo}.` + reason);
 	}
 }
 

@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
 import { homedir } from 'os';
+import { config } from 'dotenv';
 import { assessRepo } from './index';
 
 config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
