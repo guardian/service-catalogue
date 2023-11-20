@@ -20,6 +20,7 @@ jobs:
       # required by aws-actions/configure-aws-credentials
       id-token: write
       contents: read
+      pull-requests: write # required by guardian/actions-riff-raff
     steps:
       - uses: actions/checkout@v4
 
@@ -44,9 +45,10 @@ jobs:
         run: ./scripts/ci.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@v2
+        uses: guardian/actions-riff-raff@v3
         with:
           app: service-catalogue
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
           projectName: deploy::service-catalogue
           configPath: packages/cdk/cdk.out/riff-raff.yaml
