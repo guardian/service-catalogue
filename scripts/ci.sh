@@ -7,7 +7,7 @@ ROOT_DIR=$(realpath "${DIR}/..")
 createRepocopZip() {
   echo "Creating repocop package"
   # Copy the Prisma schema file to the dist directory
-  cp -r "$ROOT_DIR/packages/repocop/prisma" "$ROOT_DIR/packages/repocop/dist"
+  cp -r "$ROOT_DIR/packages/common/prisma" "$ROOT_DIR/packages/repocop/dist"
 
   # Copy the generated Prisma client
   mkdir -p "$ROOT_DIR/packages/repocop/dist/node_modules"
