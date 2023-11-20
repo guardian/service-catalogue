@@ -1,25 +1,17 @@
-import {
-	PublishBatchCommand,
-	type PublishBatchCommandInput,
-	type PublishBatchRequestEntry,
-	SNSClient,
-} from '@aws-sdk/client-sns';
 import { Anghammarad } from '@guardian/anghammarad';
 import type {
 	github_repositories,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
-import { getLocalProfile, shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
-import type { Config } from './config';
 import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
 import {
 	notifyAnghammaradBranchProtection,
 	notifyBranchProtector,
 } from './remediations/repository-02-branch_protection';
-import { findPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
+import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -35,39 +27,6 @@ async function writeEvaluationTable(
 	});
 
 	console.log('Finished writing to table');
-}
-
-async function sendPotentialInteractives(
-	evaluatedRepos: repocop_github_repository_rules[],
-	config: Config,
-) {
-	const snsBatchMaximum = 10;
-	const potentialInteractives = shuffle(
-		findPotentialInteractives(evaluatedRepos),
-	).slice(0, snsBatchMaximum);
-
-	console.log(
-		`Found ${potentialInteractives.length} potential interactives of ${evaluatedRepos.length} evaluated repositories`,
-	);
-
-	const PublishBatchRequestEntries = potentialInteractives.map(
-		(repo): PublishBatchRequestEntry => ({
-			Id: repo.replace(/\W/g, ''),
-			Message: repo,
-		}),
-	);
-
-	const batchCommandInput: PublishBatchCommandInput = {
-		TopicArn: config.interactiveMonitorSnsTopic,
-		PublishBatchRequestEntries,
-	};
-
-	console.log('Sending SNS batch');
-	const cmd = new PublishBatchCommand(batchCommandInput);
-	await new SNSClient({
-		region: config.region,
-		credentials: getLocalProfile(config.stage),
-	}).send(cmd);
 }
 
 export async function main() {
