@@ -1,5 +1,6 @@
 import * as process from 'process';
 import { Signer } from '@aws-sdk/rds-signer';
+import { awsClientConfig } from 'common/aws';
 import { getEnvOrThrow } from 'common/functions';
 
 export interface Config {
@@ -12,11 +13,6 @@ export interface Config {
 	 * The stage of the application, e.g. DEV, CODE, PROD.
 	 */
 	stage: string;
-
-	/**
-	 * The AWS region.
-	 */
-	region: string;
 
 	/**
 	 * The ARN of the Anghammarad SNS topic.
@@ -106,7 +102,6 @@ export async function getConfig(): Promise<Config> {
 	return {
 		app: getEnvOrThrow('APP'),
 		stage: getEnvOrThrow('STAGE'),
-		region: 'eu-west-1',
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
 		databaseConnectionString: await getDatabaseConnectionString(databaseConfig),
@@ -133,7 +128,7 @@ async function getRdsToken(config: DatabaseConfig) {
 		hostname,
 		port,
 		username: user,
-		region: 'eu-west-1',
+		...awsClientConfig,
 	});
 
 	return await signer.getAuthToken();
