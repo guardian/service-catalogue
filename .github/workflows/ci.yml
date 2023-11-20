@@ -59,5 +59,7 @@ jobs:
               - packages/branch-protector/dist/branch-protector.zip
             interactive-monitor:
               - packages/interactive-monitor/dist/interactive-monitor.zip
+            data-audit:
+              - packages/data-audit/dist/data-audit.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

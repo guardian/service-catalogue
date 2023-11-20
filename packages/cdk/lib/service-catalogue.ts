@@ -43,6 +43,7 @@ import {
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
 import { BranchProtector } from './branch-protector';
+import { addDataAuditLambda } from './data-audit';
 import type { CloudquerySource } from './ecs/cluster';
 import { CloudqueryCluster } from './ecs/cluster';
 import {
@@ -630,5 +631,7 @@ export class ServiceCatalogue extends GuStack {
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
 		);
+
+		addDataAuditLambda(this);
 	}
 }
