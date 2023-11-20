@@ -58,13 +58,13 @@ export async function getGitHubAppConfig(): Promise<GitHubAppConfig> {
 }
 
 export async function stageAwareOctokit(stage: string) {
-	if (stage === 'DEV') {
-		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
-		return new Octokit({ auth: token });
-	} else {
+	if (stage === 'CODE' || stage === 'PROD') {
 		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
 		const octokit: Octokit = await getGithubClient(githubAppConfig);
 		return octokit;
+	} else {
+		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
+		return new Octokit({ auth: token });
 	}
 }
 
