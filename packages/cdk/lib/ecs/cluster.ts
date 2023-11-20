@@ -74,6 +74,14 @@ export interface CloudquerySource {
 	 * Extra security groups applied to the task for accessing resources such as RiffRaff
 	 */
 	extraSecurityGroups?: ISecurityGroup[];
+
+	/**
+	 * Run this task as a singleton?
+	 * Useful to help avoid overlapping runs.
+	 *
+	 * @default false
+	 */
+	runAsSingleton?: boolean;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -152,6 +160,7 @@ export class CloudqueryCluster extends Cluster {
 				memoryLimitMiB,
 				cpu,
 				extraSecurityGroups,
+				runAsSingleton = false,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -165,6 +174,7 @@ export class CloudqueryCluster extends Cluster {
 					memoryLimitMiB,
 					cpu,
 					extraSecurityGroups,
+					runAsSingleton,
 				});
 			},
 		);
