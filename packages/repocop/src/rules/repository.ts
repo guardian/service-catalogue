@@ -7,7 +7,6 @@ import type {
 import {
 	getRepositoryBranches,
 	getRepositoryTeams,
-	getUnarchivedRepositories,
 	type RepositoryTeam,
 } from '../query';
 
@@ -110,15 +109,9 @@ export function repositoryRuleEvaluation(
 
 export async function evaluateRepositories(
 	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
+	repositories: github_repositories[],
 ): Promise<repocop_github_repository_rules[]> {
-	const repositories = await getUnarchivedRepositories(
-		client,
-		ignoredRepositoryPrefixes,
-	);
-
 	const branches = await getRepositoryBranches(client, repositories);
-
 	return await Promise.all(
 		repositories.map(async (repo) => {
 			const teams = await getRepositoryTeams(client, repo);

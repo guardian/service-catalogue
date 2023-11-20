@@ -2,6 +2,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 import { fromIni } from '@aws-sdk/credential-providers';
 import type { Anghammarad } from '@guardian/anghammarad';
 import type {
+	github_repositories,
 	github_teams,
 	PrismaClient,
 	repocop_github_repository_rules,
@@ -10,11 +11,7 @@ import type {
 import { shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
-import {
-	getRepoOwnership,
-	getTeams,
-	getUnarchivedRepositories,
-} from '../query';
+import { getRepoOwnership, getTeams } from '../query';
 import {
 	addMessagesToQueue,
 	findContactableOwners,
@@ -51,12 +48,13 @@ export async function notifyBranchProtector(
 	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
+	unarchivedRepositories: github_repositories[],
 ) {
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
 
 	//repos with a 'production' or 'documentation' topic
-	const productionOrDocs = (await getUnarchivedRepositories(prisma, []))
+	const productionOrDocs = unarchivedRepositories
 		.filter(
 			(repo) =>
 				repo.topics.includes('production') ||
