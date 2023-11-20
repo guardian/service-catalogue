@@ -3,6 +3,7 @@ import {
 	paginateListAccounts,
 } from '@aws-sdk/client-organizations';
 import type { PrismaClient } from '@prisma/client';
+import AWS from 'aws-sdk';
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import type { Config } from './config';
@@ -12,6 +13,13 @@ function numberOfAwsAccountsFromDatabase(
 	client: PrismaClient,
 ): Promise<number> {
 	return client.aws_accounts.count();
+}
+
+async function getNumberOfBuckets() {
+	const s3 = new AWS.S3();
+	const buckets = await s3.listBuckets().promise();
+	if (buckets.Buckets) return buckets.Buckets.length;
+	return 0;
 }
 
 async function numberOfAwsAccountsFromAws(config: Config): Promise<number> {
@@ -41,4 +49,7 @@ export async function main() {
 	console.log(
 		`${status} AWS accounts check. DB: ${totalFromDb} AWS: ${totalFromAws}`,
 	);
+
+	const numberOfBuckets = await getNumberOfBuckets();
+	console.log(`The number of buckets is: ${numberOfBuckets}`);
 }
