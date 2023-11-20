@@ -5,7 +5,8 @@ import {
 	SNSClient,
 } from '@aws-sdk/client-sns';
 import type { repocop_github_repository_rules } from '@prisma/client';
-import { getLocalProfile, shuffle } from 'common/src/functions';
+import { awsClientConfig } from 'common/src/aws';
+import { shuffle } from 'common/src/functions';
 import type { Config } from '../config';
 
 export function findPotentialInteractives(
@@ -60,8 +61,5 @@ export async function sendPotentialInteractives(
 		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}`,
 	);
 	const cmd = new PublishBatchCommand(batchCommandInput);
-	await new SNSClient({
-		region: config.region,
-		credentials: getLocalProfile(config.stage),
-	}).send(cmd);
+	await new SNSClient(awsClientConfig).send(cmd);
 }

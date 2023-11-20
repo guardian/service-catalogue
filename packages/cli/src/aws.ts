@@ -7,20 +7,15 @@ import {
 	RunTaskCommand,
 } from '@aws-sdk/client-ecs';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
-import { fromIni } from '@aws-sdk/credential-providers';
+import { awsClientConfig } from 'common/aws';
 
 interface EcsResourceTags {
 	arn: string;
 	[key: string]: string;
 }
 
-const awsConfig = {
-	region: 'eu-west-1',
-	credentials: fromIni({ profile: 'deployTools' }),
-};
-
 export const getSsmClient = () => {
-	return new SSMClient(awsConfig);
+	return new SSMClient(awsClientConfig);
 };
 
 const getSsmParameter = async (client: SSMClient, path: string) => {
@@ -70,7 +65,7 @@ export const getRiffRaffDBSecurityGroup = async (
 };
 
 export const getEcsClient = () => {
-	return new ECSClient(awsConfig);
+	return new ECSClient(awsClientConfig);
 };
 
 const listResourceTags = async (

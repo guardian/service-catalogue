@@ -1,5 +1,6 @@
 import type { Message } from '@aws-sdk/client-sqs';
 import { SQSClient } from '@aws-sdk/client-sqs';
+import { awsClientConfig } from 'common/aws';
 import { getGithubClient } from 'common/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Octokit } from 'octokit';
@@ -78,7 +79,7 @@ async function handleMessage(
 export async function main() {
 	const config: Config = await getConfig();
 	const octokit: Octokit = await getGithubClient(config.githubAppConfig);
-	const sqsClient = new SQSClient({});
+	const sqsClient = new SQSClient(awsClientConfig);
 
 	const messages: Message[] = await readFromQueue(config, 6, sqsClient);
 	await Promise.all(

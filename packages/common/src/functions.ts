@@ -1,5 +1,4 @@
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
-import { fromIni } from '@aws-sdk/credential-providers';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from 'octokit';
@@ -116,8 +115,4 @@ export function anghammaradThreadKey(fullRepoName: string) {
 
 export function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
-}
-
-export function getLocalProfile(stage: string) {
-	return stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
 }
