@@ -57,6 +57,17 @@ export async function getGitHubAppConfig(): Promise<GitHubAppConfig> {
 	return githubAppConfig;
 }
 
+export async function stageAwareOctokit(stage: string) {
+	if (stage === 'DEV') {
+		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
+		return new Octokit({ auth: token });
+	} else {
+		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
+		const octokit: Octokit = await getGithubClient(githubAppConfig);
+		return octokit;
+	}
+}
+
 export function branchProtectionCtas(
 	fullRepoName: string,
 	teamSlug: string,

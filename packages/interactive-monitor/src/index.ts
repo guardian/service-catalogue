@@ -1,8 +1,6 @@
 import type { SNSHandler } from 'aws-lambda';
-import { getGitHubAppConfig, getGithubClient } from 'common/functions';
-import type { GitHubAppConfig } from 'common/types';
+import { stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
-import type { Config } from './config';
 import { getConfig } from './config';
 
 async function isFromInteractiveTemplate(
@@ -30,17 +28,20 @@ async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 	console.log(`added interactive topic to ${repo}`);
 }
 
-async function assessRepo(repo: string, owner: string, config: Config) {
-	console.log('received repo', repo);
-	const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
-	const octokit: Octokit = await getGithubClient(githubAppConfig);
+export async function assessRepo(repo: string, owner: string, stage: string) {
+	console.log('Received repo', repo);
+
+	const octokit = await stageAwareOctokit(stage);
 
 	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
-
-	if (isInteractive && config.stage === 'PROD') {
+	const onProd = stage === 'PROD';
+	if (isInteractive && onProd) {
 		await applyTopics(repo, owner, octokit);
 	} else {
-		console.log('No action taken');
+		const reason =
+			(!isInteractive ? ' Repo not from interactive template.' : '') +
+			(!onProd ? ' Not running on PROD.' : '');
+		console.log('No action taken.' + reason);
 	}
 }
 
@@ -48,7 +49,7 @@ export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
 	const owner = 'guardian';
 	const events = event.Records.map(
-		async (record) => await assessRepo(record.Sns.Message, owner, config),
+		async (record) => await assessRepo(record.Sns.Message, owner, config.stage),
 	);
 	await Promise.all(events);
 };
