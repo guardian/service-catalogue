@@ -43,9 +43,8 @@ import {
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
 import { BranchProtector } from './branch-protector';
-import { addDataAuditLambda } from './data-audit';
-import type { CloudquerySource } from './ecs/cluster';
-import { CloudqueryCluster } from './ecs/cluster';
+import type { CloudquerySource } from './cloudquery/ecs/cluster';
+import { CloudqueryCluster } from './cloudquery/ecs/cluster';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
@@ -56,12 +55,13 @@ import {
 	riffraffSourcesConfig,
 	skipTables,
 	snykSourceConfig,
-} from './ecs/config';
+} from './cloudquery/ecs/config';
 import {
 	cloudqueryAccess,
 	listOrgsPolicy,
 	readBucketPolicy,
-} from './ecs/policies';
+} from './cloudquery/ecs/policies';
+import { addDataAuditLambda } from './data-audit';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Repocop } from './repocop';
 
