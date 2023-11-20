@@ -1,5 +1,6 @@
 import * as process from 'process';
 import { Signer } from '@aws-sdk/rds-signer';
+import { getEnvOrThrow } from 'common/functions';
 
 export interface Config {
 	/**
@@ -90,13 +91,6 @@ interface DatabaseConfig {
 	password?: string;
 }
 
-function getEnvOrThrow(key: string): string {
-	const value = process.env[key];
-	if (value === undefined) {
-		throw new Error(`Environment variable ${key} is not set`);
-	}
-	return value;
-}
 export async function getConfig(): Promise<Config> {
 	const databaseConfig: DatabaseConfig = {
 		hostname: getEnvOrThrow('DATABASE_HOSTNAME'),
