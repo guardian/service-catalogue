@@ -16,14 +16,16 @@ export function findPotentialInteractives(
 		.map((repo) => repo.full_name);
 }
 
-export function createBatchEntry(string: string): PublishBatchRequestEntry {
-	const shortString = string.split('/')[1];
-	if (!shortString) {
-		throw new Error(`Invalid repo name: ${string}`);
+export function createBatchEntry(
+	fullRepoName: string,
+): PublishBatchRequestEntry {
+	const shortName = fullRepoName.split('/')[1];
+	if (!shortName) {
+		throw new Error(`Invalid repo name: ${fullRepoName}`);
 	}
 	return {
-		Id: shortString.replace(/\W/g, ''),
-		Message: shortString,
+		Id: shortName.replace(/\W/g, ''),
+		Message: shortName,
 	};
 }
 

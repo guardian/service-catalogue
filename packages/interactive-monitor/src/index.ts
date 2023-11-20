@@ -24,7 +24,7 @@ async function isFromInteractiveTemplate(
 async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
 		.names;
-	console.log(`${repo}is from interactive template`);
+	console.log(`${repo} is from interactive template`);
 	const names = topics.concat(['interactive']);
 	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
 	console.log(`added interactive topic to ${repo}`);
