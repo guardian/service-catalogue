@@ -8,30 +8,25 @@ async function isFromInteractiveTemplate(
 	owner: string,
 	octokit: Octokit,
 ): Promise<boolean> {
-	console.log('retrieving repo data');
 	const repoData = await octokit.rest.repos.get({
 		owner,
 		repo,
 	});
-
 	const prefix = 'interactive-atom-template';
-	console.log('checking if repo is from interactive template');
 	return repoData.data.template_repository?.name.includes(prefix) ?? false;
 }
 
 async function applyTopics(repo: string, owner: string, octokit: Octokit) {
+	console.log(`Applying interactive topic to ${repo}`);
 	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
 		.names;
-	console.log(`${repo} is from interactive template`);
 	const names = topics.concat(['interactive']);
 	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
-	console.log(`added interactive topic to ${repo}`);
 }
 
 export async function assessRepo(repo: string, owner: string, stage: string) {
-	console.log('Received repo', repo);
-
 	const octokit = await stageAwareOctokit(stage);
+	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
 
 	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
 	const onProd = stage === 'PROD';
@@ -41,7 +36,7 @@ export async function assessRepo(repo: string, owner: string, stage: string) {
 		const reason =
 			(!isInteractive ? ' Repo not from interactive template.' : '') +
 			(!onProd ? ' Not running on PROD.' : '');
-		console.log('No action taken.' + reason);
+		console.log('No action takenfor ${repo}.' + reason);
 	}
 }
 
