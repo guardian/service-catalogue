@@ -7,7 +7,7 @@ export async function updateBranchProtection(
 	repo: string,
 	branch: string,
 ) {
-	console.log(`Attempting to apply branch protection to ${repo}`);
+	console.log(`Applying branch protection to ${repo}`);
 	//https://github.com/guardian/recommendations/blob/main/github.md#branch-protection
 	const branchProtectionParams: UpdateBranchProtectionParams = {
 		owner: owner,
@@ -28,7 +28,6 @@ export async function updateBranchProtection(
 	};
 	try {
 		await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
-		console.log(`Branch protection successfully applied to ${repo}`);
 	} catch (error) {
 		console.error(`Error: branch protection failed for ${repo}`);
 		console.error(error);
