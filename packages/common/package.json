@@ -11,12 +11,12 @@
 		"@guardian/anghammarad": "^1.8.1",
 		"@aws-sdk/credential-providers": "^3.444.0",
 		"@octokit/auth-app": "^6.0.1",
-		"octokit": "^3.1.1",
+		"octokit": "^3.1.2",
         "@prisma/client": "^5.5.2"
     },
 	"devDependencies": {
       "prisma": "^5.5.2",
-      "@octokit/types": "^12.0.0"
+      "@octokit/types": "^12.3.0"
 	},
   "prisma": {
     "schema": "prisma/schema.prisma"
