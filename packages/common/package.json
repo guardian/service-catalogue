@@ -16,7 +16,7 @@
     },
 	"devDependencies": {
       "prisma": "^5.5.2",
-      "@octokit/types": "^12.0.0"
+      "@octokit/types": "^12.3.0"
 	},
   "prisma": {
     "schema": "prisma/schema.prisma"
