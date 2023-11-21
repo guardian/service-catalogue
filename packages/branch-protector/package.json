@@ -15,6 +15,6 @@
 		"@aws-sdk/types": "^3.433.0",
 		"@guardian/anghammarad": "^1.8.1",
 		"@octokit/types": "^12.3.0",
-		"octokit": "^3.1.1"
+		"octokit": "^3.1.2"
 	}
 }
