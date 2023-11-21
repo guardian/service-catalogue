@@ -1,5 +1,4 @@
 import { SQSClient } from '@aws-sdk/client-sqs';
-import { fromIni } from '@aws-sdk/credential-providers';
 import type { Anghammarad } from '@guardian/anghammarad';
 import type {
 	github_repositories,
@@ -8,6 +7,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
+import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
@@ -74,13 +74,7 @@ export async function notifyBranchProtector(
 			3,
 		);
 
-	const credentials =
-		config.stage === 'DEV' ? fromIni({ profile: 'deployTools' }) : undefined;
-
-	const sqsClient = new SQSClient({
-		region: config.region,
-		credentials,
-	});
+	const sqsClient = new SQSClient(awsClientConfig(config.stage));
 
 	await addMessagesToQueue(
 		branchProtectionWarningMessages,
