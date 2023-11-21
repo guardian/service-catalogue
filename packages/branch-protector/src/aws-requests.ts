@@ -43,7 +43,7 @@ export async function deleteFromQueue(
 		await sqs.send(deleteCommand);
 		console.log(`Deleted message ${messageId}`);
 	} catch (error) {
-		console.warn(`Delete command failed for ${messageId}`);
+		console.warn(`Delete failed for ${messageId}`);
 		console.warn(error);
 	}
 }
@@ -57,8 +57,8 @@ export async function notify(
 
 	const client = new Anghammarad();
 	await client.notify({
-		subject: `Repocop branch protection (for GitHub team ${teamSlug})`,
-		message: `Branch protection has been applied to ${fullRepoName}`,
+		subject: `RepoCop branch protections (for GitHub team ${teamSlug})`,
+		message: `Branch protections have been applied to ${fullRepoName}`,
 		actions: branchProtectionCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,

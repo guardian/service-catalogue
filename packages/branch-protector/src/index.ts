@@ -28,7 +28,7 @@ async function protectBranch(
 	try {
 		defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
 	} catch (error) {
-		throw new Error(`Could not obtain branch name for repo: ${repo}`);
+		throw new Error(`Could not find default branch for repo: ${repo}`);
 	}
 
 	const branchIsProtected = await isBranchProtected(
@@ -38,23 +38,19 @@ async function protectBranch(
 		defaultBranchName,
 	);
 
-	console.log(`${repo} branch protection: ${branchIsProtected.toString()}`);
-
 	const stageIsProd = config.stage === 'PROD';
 
-	if (stageIsProd) {
-		if (branchIsProtected) {
-			console.log(`No action required`);
-		} else {
-			await updateBranchProtection(octokit, owner, repo, defaultBranchName);
-			for (const slug of event.teamNameSlugs) {
-				await notify(event.fullName, config, slug);
-			}
-			console.log(`Notified teams`);
+	if (stageIsProd && !branchIsProtected) {
+		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
+		for (const slug of event.teamNameSlugs) {
+			await notify(event.fullName, config, slug);
 		}
+		console.log(`Notified teams ${event.teamNameSlugs.join(', ')}}`);
 	} else {
-		// !stageIsProd
-		console.log(`Detected stage: ${config.stage}. No action taken`);
+		const reason =
+			(branchIsProtected ? ' Branch is already protected.' : '') +
+			(!stageIsProd ? ' Not running on PROD.' : '');
+		console.log(`No action required. ${reason}`);
 	}
 }
 
