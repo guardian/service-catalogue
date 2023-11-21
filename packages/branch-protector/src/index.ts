@@ -48,7 +48,7 @@ async function protectBranch(
 		console.log(`Notified teams ${event.teamNameSlugs.join(', ')}}`);
 	} else {
 		const reason =
-			(branchIsProtected ? ' Branch is already protected' : '') +
+			(branchIsProtected ? ' Branch is already protected.' : '') +
 			(!stageIsProd ? ' Not running on PROD.' : '');
 		console.log(`No action required. ${reason}`);
 	}
