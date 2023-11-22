@@ -73,7 +73,7 @@ export async function main() {
 		);
 	}
 
-	await findReposInProdWithoutProductionTopic(prisma, config);
+	await findReposInProdWithoutProductionTopic(prisma, unarchivedRepositories);
 
 	console.log('Done');
 }

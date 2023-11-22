@@ -7,6 +7,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
+import type { AWSCloudformationTag } from 'common/types';
 
 export async function getUnarchivedRepositories(
 	client: PrismaClient,
@@ -83,4 +84,48 @@ export async function getRepoOwnership(
 	console.log(`Found ${data.length} repo ownership records.`);
 
 	return data;
+}
+
+export async function findProdCfnStackTags(client: PrismaClient) {
+	const cfnStackTags = await client.aws_cloudformation_stacks.findMany({
+		where: {
+			OR: [
+				{
+					tags: {
+						path: ['Stage'],
+						equals: 'PROD',
+					},
+				},
+				{
+					tags: {
+						path: ['Stage'],
+						equals: 'INFRA',
+					},
+				},
+			],
+			AND: [
+				{
+					tags: {
+						path: ['gu:repo'],
+						string_starts_with: 'guardian/',
+					},
+				},
+			],
+			NOT: [
+				{
+					tags: {
+						path: ['Stack'],
+						equals: 'playground', // we are filtering out Developer Playground repos for now as they shouldn't be in production anyway - Cloudformation stacks with a Stack tag of 'playground' get deployed into the Developer Playground account
+					},
+				},
+			],
+		},
+		select: {
+			tags: true,
+		},
+	});
+
+	const tags = cfnStackTags.map((tag) => tag.tags as AWSCloudformationTag);
+
+	return tags;
 }

@@ -1,56 +1,12 @@
-import type { PrismaClient } from '@prisma/client';
-import type { JsonValue } from '@prisma/client/runtime/library';
-import type { Config } from '../config';
-import { getUnarchivedRepositories } from '../query';
-
-async function findProdStacks(client: PrismaClient): Promise<string[]> {
-	console.log('Discovering stacks with PROD or INFRA tags');
-	const stacks = await client.aws_cloudformation_stacks.findMany({
-		where: {
-			OR: [
-				{
-					tags: {
-						path: ['Stage'],
-						equals: 'PROD',
-					},
-				},
-				{
-					tags: {
-						path: ['Stage'],
-						equals: 'INFRA',
-					},
-				},
-			],
-			NOT: [{ account_id: 'TODO' }],
-		},
-	});
-	console.log(`Found ${stacks.length} stacks in PROD or INFRA`);
-	const stackTags: JsonValue[] = stacks.map((stack) => stack.tags);
-	const repoNames: string[] = [];
-	const filtered = stackTags.filter((tags) => {
-		const tagValues = tags?.valueOf();
-		type TagKey = keyof typeof tagValues;
-		const guRepoKey = 'gu:repo' as TagKey;
-		return Object.hasOwnProperty.call(tagValues, guRepoKey);
-	});
-	filtered.map((tags) => {
-		const tagValues = tags?.valueOf();
-		type TagKey = keyof typeof tagValues;
-		const guRepoKey = 'gu:repo' as TagKey;
-		tagValues &&
-			tagValues[guRepoKey] !== 'unknown' &&
-			repoNames.push(tagValues[guRepoKey]);
-	});
-	return repoNames;
-}
+import type { github_repositories, PrismaClient } from '@prisma/client';
+import { findProdCfnStackTags } from '../query';
 
 export async function findReposInProdWithoutProductionTopic(
 	prisma: PrismaClient,
-	config: Config,
+	unarchivedRepos: github_repositories[],
 ) {
-	const reposWithoutProductionTopic = (
-		await getUnarchivedRepositories(prisma, config.ignoredRepositoryPrefixes)
-	)
+	console.log('Discovering Cloudformation stacks with PROD or INFRA tags');
+	const reposWithoutProductionTopic = unarchivedRepos
 		.filter(
 			(repo) =>
 				!repo.topics.includes('production') &&
@@ -61,15 +17,22 @@ export async function findReposInProdWithoutProductionTopic(
 	console.log(
 		`Found ${reposWithoutProductionTopic.length} repositories without a production topic`,
 	);
-	const reposWithProdStacks = await findProdStacks(prisma);
+
+	const repoTagsWithProdStacks = await findProdCfnStackTags(prisma);
 	console.log(
-		`Found ${reposWithProdStacks.length} repos with a PROD or INFRA stack`,
+		`Found ${repoTagsWithProdStacks.length} repos with a PROD or INFRA Cloudformation stack`,
 	);
+
+	const guReposWithProdCfnStacks: Array<string | undefined> =
+		repoTagsWithProdStacks.map((tag) => tag['gu:repo']);
+
 	const reposInProdWithoutProductionTopic = reposWithoutProductionTopic.filter(
-		(repo) => repo && reposWithProdStacks.includes(repo),
+		(repoName) => repoName && guReposWithProdCfnStacks.includes(repoName),
 	);
+
 	console.log(
-		`Found ${reposInProdWithoutProductionTopic.length} repos without a production tag that have a PROD or INFRA stack`,
+		`Found ${reposInProdWithoutProductionTopic.length} repos without a production tag that have a PROD or INFRA Cloudformation Stage tag`,
 	);
+	reposInProdWithoutProductionTopic.map((repoName) => console.log(repoName));
 	return reposInProdWithoutProductionTopic;
 }
