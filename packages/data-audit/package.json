@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\"",
     "start": "APP=data-audit ts-node src/run-locally.ts",
     "prebuild": "rm -rf dist",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk",
-    "postbuild": "cd dist && zip -r data-audit.zip ."
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma"
   }
 }
