@@ -37,7 +37,7 @@ export async function getConfig(): Promise<Config> {
 	const databaseConfig: DatabaseConfig =
 		stage === 'DEV'
 			? await getDevDatabaseConfig()
-			: await getDatabaseConfig(stage, 'data-audit');
+			: await getDatabaseConfig(stage, 'dataaudit');
 
 	const queryLogging = (process.env['QUERY_LOGGING'] ?? 'false') === 'true';
 

@@ -194,6 +194,10 @@ export class ServiceCatalogue extends GuStack {
 			applicationToPostgresSecurityGroup,
 		);
 
-		addDataAuditLambda(this);
+		addDataAuditLambda(this, {
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+		});
 	}
 }
