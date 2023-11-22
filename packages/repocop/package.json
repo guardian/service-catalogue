@@ -16,7 +16,6 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.438.0",
-		"@aws-sdk/client-sqs": "^3.450.0",
-		"@aws-sdk/rds-signer": "^3.450.0"
+		"@aws-sdk/client-sqs": "^3.450.0"
 	}
 }
