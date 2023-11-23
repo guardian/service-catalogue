@@ -62,25 +62,30 @@ migrateDeploy() {
   continueMigrate "$stage"
 }
 
-# Read in input stage(s)
+stageAwareMigration() {
+  if [ "$stage" == "--dev" ]
+  then
+    devSetup
+    if [ -n "$migration_name" ]
+    then
+      migrateDEV "$migration_name"
+    else
+      :
+    fi
+  elif [ "$stage" == "--code" ]
+  then
+    migrateDeploy "CODE"
+  elif [ "$stage" == "--prod" ]
+  then
+    migrateDeploy "PROD"
+  else
+    echo -e "Stage '$stage' not recognised, please try again."
+  fi
+}
+
+(
 stage=$1
 migration_name=$2
-
-if [ "$stage" == "--dev" ]
-then
-  devSetup
-  if [ -n "$migration_name" ]
-  then
-    migrateDEV "$migration_name"
-  else
-    :
-  fi
-elif [ "$stage" == "--code" ]
-then
-  migrateDeploy "CODE"
-elif [ "$stage" == "--prod" ]
-then
-  migrateDeploy "PROD"
-else
-  echo -e "Stage '$stage' not recognised, please try again."
-fi
+  cd ../common
+  stageAwareMigration "$stage" "$migration_name"
+)
