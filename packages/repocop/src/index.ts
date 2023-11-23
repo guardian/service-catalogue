@@ -1,16 +1,11 @@
-import { Anghammarad } from '@guardian/anghammarad';
 import type {
 	github_repositories,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
-import type { UpdateMessageEvent } from 'common/types';
 import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
-import {
-	notifyAnghammaradBranchProtection,
-	notifyBranchProtector,
-} from './remediations/repository-02-branch_protection';
+import { notifyBranchProtector } from './remediations/repository-02-branch_protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { findReposInProdWithoutProductionTopic } from './remediations/repository-06-topic-monitor-production';
 import { evaluateRepositories } from './rules/repository';
@@ -57,16 +52,12 @@ export async function main() {
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
-		const msgs: UpdateMessageEvent[] = await notifyBranchProtector(
+		await notifyBranchProtector(
 			prisma,
 			evaluatedRepos,
 			config,
 			unarchivedRepositories,
 		);
-		if (config.stage === 'PROD') {
-			const anghammaradClient = new Anghammarad();
-			await notifyAnghammaradBranchProtection(msgs, config, anghammaradClient);
-		}
 	} else {
 		console.log(
 			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
