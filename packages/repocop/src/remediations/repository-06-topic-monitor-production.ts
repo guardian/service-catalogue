@@ -24,7 +24,9 @@ export async function findReposInProdWithoutProductionTopic(
 	);
 
 	const guReposWithProdCfnStacks: Array<string | undefined> =
-		repoTagsWithProdStacks.map((tag) => tag['gu:repo']);
+		repoTagsWithProdStacks
+			.map((tag) => tag['gu:repo'])
+			.filter((r) => !!r) as string[];
 
 	const reposInProdWithoutProductionTopic = reposWithoutProductionTopic.filter(
 		(repoName) => repoName && guReposWithProdCfnStacks.includes(repoName),
@@ -33,6 +35,6 @@ export async function findReposInProdWithoutProductionTopic(
 	console.log(
 		`Found ${reposInProdWithoutProductionTopic.length} repos without a production tag that have a PROD or INFRA Cloudformation Stage tag`,
 	);
-	reposInProdWithoutProductionTopic.map((repoName) => console.log(repoName));
+
 	return reposInProdWithoutProductionTopic;
 }
