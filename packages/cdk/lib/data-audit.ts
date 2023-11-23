@@ -6,6 +6,7 @@ import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import { listOrgsPolicy } from './cloudquery/ecs/policies';
 
 interface DataAuditProps {
 	vpc: IVpc;
@@ -38,4 +39,5 @@ export function addDataAuditLambda(scope: GuStack, props: DataAuditProps) {
 	});
 
 	db.grantConnect(lambda, 'dataaudit');
+	lambda.addToRolePolicy(listOrgsPolicy);
 }
