@@ -76,13 +76,13 @@ export function branchProtectionCtas(
 	const protectionUrl = `https://github.com/${fullRepoName}/settings/branches`;
 
 	return [
-		{ cta: 'Repository', url: githubUrl },
+		{ cta: `View ${fullRepoName} on GitHub`, url: githubUrl },
 		{
-			cta: 'Compliance information for repos',
+			cta: `View compliance data for repositories owned by ${teamSlug}`,
 			url: grafanaUrl,
 		},
 		{
-			cta: 'Branch protections',
+			cta: `View branch protection settings for ${fullRepoName}`,
 			url: protectionUrl,
 		},
 	];
