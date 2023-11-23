@@ -1,4 +1,5 @@
 import { Signer } from '@aws-sdk/rds-signer';
+import { PrismaClient } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
 import { getEnvOrThrow } from 'common/functions';
 
@@ -19,6 +20,20 @@ export interface DatabaseConfig {
 	 * When not defined, a token (temporary password) will be generated for IAM authentication for RDS.
 	 */
 	password?: string;
+}
+
+export interface PrismaConfig {
+	/**
+	 * The database connection string.
+	 */
+	databaseConnectionString: string;
+
+	/**
+	 * Whether to configure Prisma to log the SQL queries being executed.
+	 *
+	 * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/logging
+	 */
+	withQueryLogging: boolean;
 }
 
 const databasePort = 5432;
@@ -72,4 +87,22 @@ export function getDatabaseConnectionString(config: DatabaseConfig) {
 	return `postgres://${user}:${encodeURIComponent(
 		password,
 	)}@${hostname}:${databasePort}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
+}
+
+export function getPrismaClient(config: PrismaConfig): PrismaClient {
+	return new PrismaClient({
+		datasources: {
+			db: {
+				url: config.databaseConnectionString,
+			},
+		},
+		...(config.withQueryLogging && {
+			log: [
+				{
+					emit: 'stdout',
+					level: 'query',
+				},
+			],
+		}),
+	});
 }
