@@ -16,9 +16,7 @@ export function getReposWithoutProductionTopic(
 		.filter((name) => !!name) as string[];
 }
 
-export function getGuReposWithProdCfnStacks(
-	tags: AWSCloudformationTag[],
-): string[] {
+export function getGuRepoNames(tags: AWSCloudformationTag[]): string[] {
 	return tags.map((tag) => tag['gu:repo']).filter((r) => !!r) as string[];
 }
 
@@ -43,12 +41,13 @@ export async function findReposInProdWithoutProductionTopic(
 	);
 
 	const repoTagsWithProdCfnStacks = await findProdCfnStackTags(prisma);
-	console.log(
-		`Found ${repoTagsWithProdCfnStacks.length} repos with a PROD or INFRA Cloudformation stack`,
+
+	const guReposWithProdCfnStacks: string[] = getGuRepoNames(
+		repoTagsWithProdCfnStacks,
 	);
 
-	const guReposWithProdCfnStacks: string[] = getGuReposWithProdCfnStacks(
-		repoTagsWithProdCfnStacks,
+	console.log(
+		`Found ${guReposWithProdCfnStacks.length} repos with a PROD or INFRA Cloudformation stack`,
 	);
 
 	const reposInProdWithoutProductionTopic =
