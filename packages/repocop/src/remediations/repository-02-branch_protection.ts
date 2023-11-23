@@ -87,8 +87,6 @@ async function protectBranch(
 		throw new Error(`Invalid repo name: ${event.fullName}`);
 	}
 
-	console.log(`Protecting ${repo}`);
-
 	let defaultBranchName = undefined;
 	try {
 		defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
@@ -115,6 +113,6 @@ async function protectBranch(
 		const reason =
 			(branchIsProtected ? ' Branch is already protected.' : '') +
 			(!stageIsProd ? ' Not running on PROD.' : '');
-		console.log(`No action required. ${reason}`);
+		console.log(`No action required for ${repo}. ${reason}`);
 	}
 }
