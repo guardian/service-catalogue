@@ -14257,35 +14257,6 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
-    "branchprotectorqueueEF5856E4": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "ContentBasedDeduplication": true,
-        "FifoQueue": true,
-        "MessageRetentionPeriod": 1209600,
-        "QueueName": "branch-protector-queue-TEST.fifo",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::SQS::Queue",
-      "UpdateReplacePolicy": "Delete",
-    },
     "fastlycredentialsF42D3C80": {
       "DeletionPolicy": "Delete",
       "Properties": {
