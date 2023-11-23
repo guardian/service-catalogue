@@ -23,10 +23,9 @@ export async function findReposInProdWithoutProductionTopic(
 		`Found ${repoTagsWithProdStacks.length} repos with a PROD or INFRA Cloudformation stack`,
 	);
 
-	const guReposWithProdCfnStacks: Array<string | undefined> =
-		repoTagsWithProdStacks
-			.map((tag) => tag['gu:repo'])
-			.filter((r) => !!r) as string[];
+	const guReposWithProdCfnStacks: string[] = repoTagsWithProdStacks
+		.map((tag) => tag['gu:repo'])
+		.filter((r) => !!r) as string[];
 
 	const reposInProdWithoutProductionTopic = reposWithoutProductionTopic.filter(
 		(repoName) => repoName && guReposWithProdCfnStacks.includes(repoName),
