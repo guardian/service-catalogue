@@ -173,14 +173,7 @@ export class ServiceCatalogue extends GuStack {
 			anghammaradTopicParameter.valueAsString,
 		);
 
-		const branchProtector = new BranchProtector(
-			this,
-			stageAwareMonitoringConfiguration,
-			nonProdSchedule ??
-				Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
-			vpc,
-			anghammaradTopic,
-		);
+		const branchProtector = new BranchProtector(this);
 
 		new Repocop(
 			this,
