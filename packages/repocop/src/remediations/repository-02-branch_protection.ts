@@ -87,6 +87,8 @@ async function protectBranch(
 		throw new Error(`Invalid repo name: ${event.fullName}`);
 	}
 
+	console.log(`Protecting ${repo}`);
+
 	let defaultBranchName = undefined;
 	try {
 		defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
