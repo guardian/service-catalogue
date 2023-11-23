@@ -21,7 +21,7 @@ createLambdaWithPrisma() {
   # Create a zip file of the dist directory
   (
     cd "$ROOT_DIR/packages/$name/dist"
-    zip -qr $name.zip .
+    zip -qr "$name".zip .
   )
 }
 

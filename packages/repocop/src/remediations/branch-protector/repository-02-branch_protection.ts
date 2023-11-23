@@ -8,15 +8,15 @@ import type {
 import { shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Octokit } from 'octokit';
-import type { Config } from '../config';
-import { getRepoOwnership, getTeams } from '../query';
+import type { Config } from '../../config';
+import { getRepoOwnership, getTeams } from '../../query';
+import { findContactableOwners } from '../shared-utilities';
 import { notify } from './aws-requests';
 import {
 	getDefaultBranchName,
 	isBranchProtected,
 	updateBranchProtection,
 } from './github-requests';
-import { findContactableOwners } from './shared-utilities';
 
 export function createBranchProtectionEvents(
 	evaluatedRepos: repocop_github_repository_rules[],

@@ -3,7 +3,7 @@ import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
 } from 'common/src/functions';
-import type { Config } from '../config';
+import type { Config } from '../../config';
 
 export async function notify(
 	fullRepoName: string,
