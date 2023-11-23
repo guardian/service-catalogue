@@ -192,6 +192,7 @@ export class ServiceCatalogue extends GuStack {
 			branchProtector.queue,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
+			branchProtector.githubCredentials,
 		);
 
 		addDataAuditLambda(this, {

@@ -15,6 +15,7 @@ import { Queue } from 'aws-cdk-lib/aws-sqs';
 
 export class BranchProtector {
 	public readonly queue: Queue;
+	public githubCredentials: Secret;
 	constructor(
 		guStack: GuStack,
 		monitoringConfiguration:
@@ -63,5 +64,6 @@ export class BranchProtector {
 		anghammaradTopic.grantPublish(lambda);
 
 		this.queue = queue;
+		this.githubCredentials = githubCredentials;
 	}
 }

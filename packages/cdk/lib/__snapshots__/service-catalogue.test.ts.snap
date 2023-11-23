@@ -15258,6 +15258,9 @@ spec:
                 "Endpoint.Address",
               ],
             },
+            "GITHUB_APP_SECRET": {
+              "Ref": "branchprotectorgithubappauth4E91892E",
+            },
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },
@@ -15496,6 +15499,16 @@ spec:
                     "/repocop",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "branchprotectorgithubappauth4E91892E",
               },
             },
             {
