@@ -48,11 +48,6 @@ export interface Config {
 	ignoredRepositoryPrefixes: string[];
 
 	/**
-	 * SQS queue to send branch protector messages to.
-	 */
-	branchProtectorQueueUrl: string;
-
-	/**
 	 * SQS queue to send topic 'production' messages to.
 	 */
 	topicMonitoringProductionTagQueueUrl: string;
@@ -80,7 +75,6 @@ export async function getConfig(): Promise<Config> {
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
-		branchProtectorQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
 		topicMonitoringProductionTagQueueUrl: getEnvOrThrow(
 			'BRANCH_PROTECTOR_QUEUE_URL',
 		), // TODO: remove this

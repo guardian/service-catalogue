@@ -182,7 +182,6 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			stageAwareMonitoringConfiguration,
 			vpc,
-			branchProtector.queue,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
 			branchProtector.githubCredentials,

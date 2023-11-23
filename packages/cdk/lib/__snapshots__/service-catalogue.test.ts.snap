@@ -14757,9 +14757,6 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "repocop",
-            "BRANCH_PROTECTOR_QUEUE_URL": {
-              "Ref": "branchprotectorqueueEF5856E4",
-            },
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
                 "PostgresInstance16DE4286E",
@@ -15017,20 +15014,6 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "branchprotectorgithubappauth4E91892E",
-              },
-            },
-            {
-              "Action": [
-                "sqs:SendMessage",
-                "sqs:GetQueueAttributes",
-                "sqs:GetQueueUrl",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "branchprotectorqueueEF5856E4",
-                  "Arn",
-                ],
               },
             },
             {
