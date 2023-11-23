@@ -1,6 +1,10 @@
 import * as process from 'process';
-import { Signer } from '@aws-sdk/rds-signer';
-import { awsClientConfig } from 'common/aws';
+import {
+	getDatabaseConfig,
+	getDatabaseConnectionString,
+	getDevDatabaseConfig,
+} from 'common/database';
+import type { DatabaseConfig } from 'common/database';
 import { getEnvOrThrow } from 'common/functions';
 
 export interface Config {
@@ -59,57 +63,22 @@ export interface Config {
 	enableMessaging: boolean;
 }
 
-interface DatabaseConfig {
-	/**
-	 * The hostname of the database.
-	 */
-	hostname: string;
-
-	/**
-	 * The database user.
-	 *
-	 * @default repocop
-	 */
-	user: string;
-
-	/**
-	 * The database port.
-	 *
-	 * @default 5432
-	 */
-	port: number;
-
-	/**
-	 * The database password.
-	 *
-	 * When not defined, a token (temporary password) will be generated for IAM authentication for RDS.
-	 */
-	password?: string;
-}
-
 export async function getConfig(): Promise<Config> {
-	const databaseConfig: DatabaseConfig = {
-		hostname: getEnvOrThrow('DATABASE_HOSTNAME'),
-		user: process.env['DATABASE_USER'] ?? 'repocop',
-		port: process.env['DATABASE_PORT']
-			? parseInt(process.env['DATABASE_PORT'])
-			: 5432,
-		password: process.env['DATABASE_PASSWORD'],
-	};
-
 	const queryLogging = (process.env['QUERY_LOGGING'] ?? 'false') === 'true';
 
 	const stage = getEnvOrThrow('STAGE');
+
+	const databaseConfig: DatabaseConfig =
+		stage === 'DEV'
+			? await getDevDatabaseConfig()
+			: await getDatabaseConfig(stage, 'repocop');
 
 	return {
 		app: getEnvOrThrow('APP'),
 		stage,
 		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
-		databaseConnectionString: await getDatabaseConnectionString(
-			stage,
-			databaseConfig,
-		),
+		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
 		branchProtectorQueueUrl: getEnvOrThrow('BRANCH_PROTECTOR_QUEUE_URL'),
 		topicMonitoringProductionTagQueueUrl: getEnvOrThrow(
@@ -122,31 +91,4 @@ export async function getConfig(): Promise<Config> {
 			'guardian/pluto-', // Multimedia team
 		],
 	};
-}
-
-async function getRdsToken(stage: string, config: DatabaseConfig) {
-	console.log('Generating RDS token');
-
-	const { hostname, port, user } = config;
-
-	const signer = new Signer({
-		hostname,
-		port,
-		username: user,
-		...awsClientConfig(stage),
-	});
-
-	return await signer.getAuthToken();
-}
-
-async function getDatabaseConnectionString(
-	stage: string,
-	config: DatabaseConfig,
-) {
-	const { user, password, hostname, port } = config;
-	const dbPassword = password ?? (await getRdsToken(stage, config));
-
-	return `postgres://${user}:${encodeURIComponent(
-		dbPassword,
-	)}@${hostname}:${port}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
 }
