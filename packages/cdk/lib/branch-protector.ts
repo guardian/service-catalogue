@@ -6,9 +6,13 @@ export class BranchProtector {
 	constructor(guStack: GuStack) {
 		const { stack, stage } = guStack;
 		const app = 'branch-protector';
-		const githubCredentials = new Secret(guStack, `${app}-github-app-auth`, {
-			secretName: `/${stage}/${stack}/service-catalogue/${app}-github-app-secret`,
-		});
+		const githubCredentials = new Secret(
+			guStack,
+			`branch-protector-github-app-auth`,
+			{
+				secretName: `/${stage}/${stack}/service-catalogue/branch-protector-github-app-secret`,
+			},
+		);
 		this.githubCredentials = githubCredentials;
 	}
 }
