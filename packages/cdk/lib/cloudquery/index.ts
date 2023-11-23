@@ -104,6 +104,16 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			name: 'AwsCostExplorer',
+			description:
+				'Collecting Aws Cost Explorer Information. This is usefull for reservations',
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(7)),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_costexplorer_*'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		},
+		{
 			name: 'OrgWideLoadBalancers',
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
