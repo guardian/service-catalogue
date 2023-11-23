@@ -1,4 +1,7 @@
-import { fromIni } from '@aws-sdk/credential-providers';
+import {
+	fromIni,
+	fromTemporaryCredentials,
+} from '@aws-sdk/credential-providers';
 import type { AwsCredentialIdentityProvider } from '@smithy/types';
 
 interface AwsClientConfig {
@@ -6,7 +9,10 @@ interface AwsClientConfig {
 	credentials?: AwsCredentialIdentityProvider;
 }
 
-export function awsClientConfig(stage: string): AwsClientConfig {
+export function awsClientConfig(
+	stage: string,
+	roleArn?: string,
+): AwsClientConfig {
 	return {
 		/*
 		Whilst this _should_ be dynamic, in reality we only use this region, so hardcode it.
@@ -22,5 +28,16 @@ export function awsClientConfig(stage: string): AwsClientConfig {
 		...(stage === 'DEV' && {
 			credentials: fromIni({ profile: 'deployTools' }),
 		}),
+
+		/*
+		If not DEV, and a roleArn is provided, assume that role.
+		Cannot do this in DEV as Janus credentials deny role assumptions.
+		 */
+		...(stage !== 'DEV' &&
+			roleArn && {
+				credentials: fromTemporaryCredentials({
+					params: { RoleArn: roleArn },
+				}),
+			}),
 	};
 }
