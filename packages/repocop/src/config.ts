@@ -75,9 +75,7 @@ export async function getConfig(): Promise<Config> {
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
-		topicMonitoringProductionTagQueueUrl: getEnvOrThrow(
-			'BRANCH_PROTECTOR_QUEUE_URL',
-		), // TODO: remove this
+		topicMonitoringProductionTagQueueUrl: '???', // TODO: remove this
 		// topicMonitoringProductionTagQueueUrl: getEnvOrThrow('TOPIC_MONITORING_PRODUCTION_TAG_QUEUE_URL'), // TODO: produce this
 		enableMessaging: process.env.ENABLE_MESSAGING === 'false' ? false : true,
 		ignoredRepositoryPrefixes: [
