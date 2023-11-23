@@ -1,5 +1,4 @@
 import { SQSClient } from '@aws-sdk/client-sqs';
-import type { Anghammarad } from '@guardian/anghammarad';
 import type {
 	github_repositories,
 	github_teams,
@@ -16,7 +15,6 @@ import {
 	addMessagesToQueue,
 	findContactableOwners,
 	RemediationApp,
-	sendNotifications,
 } from './shared-utilities';
 
 export function createBranchProtectionWarningMessageEvents(
@@ -84,17 +82,4 @@ export async function notifyBranchProtector(
 	);
 
 	return branchProtectionWarningMessages;
-}
-
-export async function notifyAnghammaradBranchProtection(
-	events: UpdateMessageEvent[],
-	config: Config,
-	anghammaradClient: Anghammarad,
-): Promise<void> {
-	await sendNotifications(
-		anghammaradClient,
-		events,
-		config,
-		RemediationApp.BranchProtector,
-	);
 }

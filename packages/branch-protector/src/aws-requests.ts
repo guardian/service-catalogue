@@ -58,7 +58,9 @@ export async function notify(
 	const client = new Anghammarad();
 	await client.notify({
 		subject: `RepoCop branch protections (for GitHub team ${teamSlug})`,
-		message: `Branch protections have been applied to ${fullRepoName}`,
+		message:
+			`Branch protections have been applied to ${fullRepoName}. ` +
+			`CI checks and at least one approval will now be required before merging to the default branch.`,
 		actions: branchProtectionCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
