@@ -31,6 +31,10 @@ async function numberOfAwsAccountsFromAws(config: Config): Promise<number> {
 	return total;
 }
 
+function numberOfBucketsFromDatabase(client: PrismaClient): Promise<number> {
+	return client.aws_s3_buckets.count();
+}
+
 async function numberOfBucketsFromAws(config: Config): Promise<number> {
 	const client = new S3Client(awsClientConfig(config.stage));
 	const command = new ListBucketsCommand({});
@@ -51,5 +55,12 @@ export async function main() {
 	);
 
 	const numberOfBuckets = await numberOfBucketsFromAws(config);
-	console.log(`The number of buckets is: ${numberOfBuckets}`);
+	const numberOfBucketsFromDb = await numberOfBucketsFromDatabase(prismClient);
+
+	const bucketStatus =
+		numberOfBuckets === numberOfBucketsFromDb ? 'PASS' : 'FAIL';
+
+	console.log(
+		`${bucketStatus} AWS S3 bucket check. DB: ${numberOfBucketsFromDb} AWS: ${numberOfBuckets}`,
+	);
 }
