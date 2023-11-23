@@ -3,7 +3,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { createBranchProtectionEvents } from './repository-02-branch_protection';
+import { createBranchProtectionEvents } from './branch-protection';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',

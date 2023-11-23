@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import { stageAwareOctokit } from 'common/functions';
 import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
-import { protectBranches } from './remediations/branch-protector/repository-02-branch_protection';
+import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { findReposInProdWithoutProductionTopic } from './remediations/repository-06-topic-monitor-production';
 import { evaluateRepositories } from './rules/repository';
