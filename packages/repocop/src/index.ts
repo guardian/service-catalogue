@@ -3,9 +3,10 @@ import type {
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
+import { stageAwareOctokit } from 'common/functions';
 import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
-import { notifyBranchProtector } from './remediations/repository-02-branch_protection';
+import { protectBranches } from './remediations/repository-02-branch_protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { findReposInProdWithoutProductionTopic } from './remediations/repository-06-topic-monitor-production';
 import { evaluateRepositories } from './rules/repository';
@@ -52,11 +53,13 @@ export async function main() {
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
-		await notifyBranchProtector(
+		const octokit = await stageAwareOctokit(config.stage);
+		await protectBranches(
 			prisma,
 			evaluatedRepos,
 			config,
 			unarchivedRepositories,
+			octokit,
 		);
 	} else {
 		console.log(

@@ -1,4 +1,3 @@
-import { SQSClient } from '@aws-sdk/client-sqs';
 import type {
 	github_repositories,
 	github_teams,
@@ -6,18 +5,20 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
+import type { Octokit } from 'octokit';
 import type { Config } from '../config';
 import { getRepoOwnership, getTeams } from '../query';
+import { notify } from './aws-requests';
 import {
-	addMessagesToQueue,
-	findContactableOwners,
-	RemediationApp,
-} from './shared-utilities';
+	getDefaultBranchName,
+	isBranchProtected,
+	updateBranchProtection,
+} from './github-requests';
+import { findContactableOwners } from './shared-utilities';
 
-export function createBranchProtectionWarningMessageEvents(
+export function createBranchProtectionEvents(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
 	teams: github_teams[],
@@ -42,11 +43,12 @@ export function createBranchProtectionWarningMessageEvents(
 	return shuffle(reposWithContactableOwners).slice(0, sliceLength);
 }
 
-export async function notifyBranchProtector(
+export async function protectBranches(
 	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
 	unarchivedRepositories: github_repositories[],
+	octokit: Octokit,
 ) {
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
@@ -64,22 +66,53 @@ export async function notifyBranchProtector(
 		productionOrDocs.includes(repo.full_name),
 	);
 
-	const branchProtectionWarningMessages =
-		createBranchProtectionWarningMessageEvents(
-			relevantRepos,
-			repoOwners,
-			teams,
-			3,
-		);
+	const branchProtectionEvents: UpdateMessageEvent[] =
+		createBranchProtectionEvents(relevantRepos, repoOwners, teams, 5);
 
-	const sqsClient = new SQSClient(awsClientConfig(config.stage));
+	await Promise.all(
+		branchProtectionEvents.map((event) =>
+			protectBranch(octokit, config, event),
+		),
+	);
+}
 
-	await addMessagesToQueue(
-		branchProtectionWarningMessages,
-		sqsClient,
-		config.branchProtectorQueueUrl,
-		RemediationApp.BranchProtector,
+async function protectBranch(
+	octokit: Octokit,
+	config: Config,
+	event: UpdateMessageEvent,
+) {
+	const [owner, repo] = event.fullName.split('/');
+
+	if (!owner || !repo) {
+		throw new Error(`Invalid repo name: ${event.fullName}`);
+	}
+
+	let defaultBranchName = undefined;
+	try {
+		defaultBranchName = await getDefaultBranchName(owner, repo, octokit);
+	} catch (error) {
+		throw new Error(`Could not find default branch for repo: ${repo}`);
+	}
+
+	const branchIsProtected = await isBranchProtected(
+		octokit,
+		owner,
+		repo,
+		defaultBranchName,
 	);
 
-	return branchProtectionWarningMessages;
+	const stageIsProd = config.stage === 'PROD';
+
+	if (stageIsProd && !branchIsProtected) {
+		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
+		for (const slug of event.teamNameSlugs) {
+			await notify(event.fullName, config, slug);
+		}
+		console.log(`Notified teams ${event.teamNameSlugs.join(', ')}}`);
+	} else {
+		const reason =
+			(branchIsProtected ? ' Branch is already protected.' : '') +
+			(!stageIsProd ? ' Not running on PROD.' : '');
+		console.log(`No action required. ${reason}`);
+	}
 }

@@ -3,7 +3,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { createBranchProtectionWarningMessageEvents } from './repository-02-branch_protection';
+import { createBranchProtectionEvents } from './repository-02-branch_protection';
 
 const nullOwner: view_repo_ownership = {
 	full_name: '',
@@ -69,7 +69,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			slug: 'team-one',
 		};
 
-		const actual = createBranchProtectionWarningMessageEvents(
+		const actual = createBranchProtectionEvents(
 			[evaluatedRepo],
 			[repoOwner],
 			[githubTeam],
@@ -99,7 +99,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			slug: 'team-one',
 		};
 
-		const actual = createBranchProtectionWarningMessageEvents(
+		const actual = createBranchProtectionEvents(
 			[evaluatedRepo],
 			[],
 			[githubTeam],
