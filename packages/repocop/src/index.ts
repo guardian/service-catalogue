@@ -7,6 +7,7 @@ import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
 import { notifyBranchProtector } from './remediations/repository-02-branch_protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
+import { findReposInProdWithoutProductionTopic } from './remediations/repository-06-topic-monitor-production';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -62,6 +63,8 @@ export async function main() {
 			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
 		);
 	}
+
+	await findReposInProdWithoutProductionTopic(prisma, unarchivedRepositories);
 
 	console.log('Done');
 }

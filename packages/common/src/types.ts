@@ -16,3 +16,5 @@ export type GitHubAppConfig = {
 	strategyOptions: StrategyOptions;
 	installationId: string;
 };
+
+export type AWSCloudformationTag = Record<string, string>;
