@@ -33,7 +33,7 @@ async function numberOfAwsAccountsFromAws(config: Config): Promise<number> {
 	for await (const page of paginateListAccounts(
 		{
 			client,
-			pageSize: 10,
+			pageSize: 20,
 		},
 		{},
 	)) {
