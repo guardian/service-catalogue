@@ -20,6 +20,6 @@ export async function main() {
 		}),
 	});
 
-	const awsAccounts = await prisma.aws_accounts.findMany();
-	console.log(`There are ${awsAccounts.length} AWS accounts in the database`);
+	const awsAccounts = await prisma.aws_accounts.count();
+	console.log(`There are ${awsAccounts} AWS accounts in the database`);
 }
