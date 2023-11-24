@@ -1,4 +1,4 @@
-import type { ListObjectsCommandInput } from '@aws-sdk/client-s3';
+import type { _Object, ListObjectsCommandInput } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 import type { SNSHandler } from 'aws-lambda';
@@ -58,7 +58,11 @@ async function getConfigJsonFromGithub(
 	}
 }
 
-async function findInS3(s3: S3Client, bucket: string, prefix: string) {
+async function findInS3(
+	s3: S3Client,
+	bucket: string,
+	prefix: string,
+): Promise<_Object[] | undefined> {
 	const input: ListObjectsCommandInput = {
 		Bucket: bucket,
 		Prefix: `atoms/${prefix}`,
@@ -75,7 +79,7 @@ async function isLiveInteractive(
 	owner: string,
 	repo: string,
 	bucket: string,
-) {
+): Promise<boolean> {
 	const configJson = await getConfigJsonFromGithub(octokit, repo, owner);
 	if (configJson === undefined) {
 		return false;
@@ -98,21 +102,17 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const s3 = new S3Client({ region: 'us-east-1' });
 	const { stage, bucket } = config;
 
-	const file = await getConfigJsonFromGithub(octokit, repo, owner);
-	const configJsonExists = file !== undefined;
-	console.log(`Found config.json for ${repo}: ${configJsonExists.toString()}`);
-
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
 	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo, bucket);
 	const onProd = stage === 'PROD';
+	console.log(`Detected stage: ${stage}`);
+
 	if ((isFromTemplate || foundInS3) && onProd) {
 		await applyTopics(repo, owner, octokit);
 	} else {
-		const reason =
-			(!isFromTemplate ? ' Repo not from interactive template.' : '') +
-			(!foundInS3 ? ' Could not find in S3.' : '') +
-			(!onProd ? ' Not running on PROD.' : '');
-		console.log(`No action taken for ${repo}.` + reason);
+		console.log(`No action taken for ${repo}.`);
+		console.log('Artifacts found in S3: ', foundInS3);
+		console.log('Repo is from interactive template: ', isFromTemplate);
 	}
 }
 
