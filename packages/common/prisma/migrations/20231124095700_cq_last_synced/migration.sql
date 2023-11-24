@@ -10,9 +10,9 @@ DECLARE
     selected_table_names record;
     selected_sync_times record;
 BEGIN
-    FOR selected_table_names IN SELECT DISTINCT table_name FROM information_schema.columns WHERE COLUMN_NAME IN ('_cq_sync_time')
+    FOR selected_table_names IN SELECT DISTINCT information_schema.columns.table_name FROM information_schema.columns WHERE COLUMN_NAME IN ('_cq_sync_time')
         LOOP
-            EXECUTE format('SELECT _cq_sync_time FROM %I LIMIT 1', tbl.table_name) INTO selected_sync_times;
+            EXECUTE format('SELECT _cq_sync_time FROM %I LIMIT 1', selected_table_names.table_name) INTO selected_sync_times;
             table_name := selected_table_names.table_name;
             _cq_sync_time := selected_sync_times._cq_sync_time;
             RETURN NEXT;
