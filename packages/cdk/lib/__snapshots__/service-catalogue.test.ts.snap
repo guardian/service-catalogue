@@ -11,6 +11,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
       "GuAnghammaradTopicParameter",
+      "GuParameter",
       "GuDistributionBucketParameter",
       "GuLambdaFunction",
       "GuScheduledLambda",
@@ -46,6 +47,10 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
     "SsmParameterValueTESTdeployriffraffexternaldatabaseaccesssecuritygroupC96584B6F00A464EAD1953AFF4B05118Parameter": {
       "Default": "/TEST/deploy/riff-raff/external-database-access-security-group",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "TESTdeployservicecatalogueinteractivebucket": {
+      "Description": "The bucket to check for interactive artifacts",
+      "Type": "String",
     },
     "VpcId": {
       "Default": "/account/vpc/primary/id",
@@ -14331,7 +14336,9 @@ spec:
         "Environment": {
           "Variables": {
             "APP": "interactive-monitor",
-            "BUCKET": "???",
+            "BUCKET": {
+              "Ref": "TESTdeployservicecatalogueinteractivebucket",
+            },
             "GITHUB_APP_SECRET": {
               "Fn::Join": [
                 "-",

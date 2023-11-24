@@ -102,6 +102,8 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const s3 = new S3Client({ region: 'us-east-1' });
 	const { stage, bucket } = config;
 
+	console.log(`Bucket: ${bucket}`);
+
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
 	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo, bucket);
 	const onProd = stage === 'PROD';
