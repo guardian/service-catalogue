@@ -60,11 +60,10 @@ async function getConfigJsonFromGithub(
 
 async function findInS3(
 	s3: S3Client,
-	bucket: string,
 	prefix: string,
 ): Promise<_Object[] | undefined> {
 	const input: ListObjectsCommandInput = {
-		Bucket: bucket,
+		Bucket: 'gdn-cdn',
 		Prefix: `atoms/${prefix}`,
 		MaxKeys: 1,
 	};
@@ -78,13 +77,12 @@ async function isLiveInteractive(
 	s3: S3Client,
 	owner: string,
 	repo: string,
-	bucket: string,
 ): Promise<boolean> {
 	const configJson = await getConfigJsonFromGithub(octokit, repo, owner);
 	if (configJson === undefined) {
 		return false;
 	} else {
-		const s3Response = await findInS3(s3, bucket, configJson.path);
+		const s3Response = await findInS3(s3, configJson.path);
 		return s3Response !== undefined;
 	}
 }
@@ -100,12 +98,10 @@ async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 export async function assessRepo(repo: string, owner: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
 	const s3 = new S3Client({ region: 'us-east-1' });
-	const { stage, bucket } = config;
-
-	console.log(`Bucket: ${bucket}`);
+	const { stage } = config;
 
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
-	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo, bucket);
+	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo);
 	const onProd = stage === 'PROD';
 	console.log(`Detected stage: ${stage}`);
 

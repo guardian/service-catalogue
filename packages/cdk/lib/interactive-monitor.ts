@@ -1,4 +1,4 @@
-import { GuParameter, type GuStack } from '@guardian/cdk/lib/constructs/core';
+import { type GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -19,22 +19,12 @@ export class InteractiveMonitor {
 			secretName: `/${stage}/${stack}/${app}/${service}-github-app`,
 		});
 
-		const bucketParameter = new GuParameter(
-			guStack,
-			`${stage}/${stack}/${app}/interactive-bucket`,
-			{
-				description: 'The bucket to check for interactive artifacts',
-				type: 'String',
-			},
-		);
-
 		const lambda = new GuLambdaFunction(guStack, service, {
 			app: service,
 			fileName: `${service}.zip`,
 			handler: 'index.handler',
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
-				BUCKET: bucketParameter.valueAsString,
 				GITHUB_APP_SECRET: githubCredentials.secretName,
 			},
 			reservedConcurrentExecutions: 1,
