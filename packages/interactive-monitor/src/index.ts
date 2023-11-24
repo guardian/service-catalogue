@@ -2,7 +2,7 @@ import type { _Object, ListObjectsCommandInput } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { SNSHandler } from 'aws-lambda';
 import { awsClientConfig } from 'common/aws';
-import { stageAwareOctokit } from 'common/functions';
+import { applyTopics, stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -82,14 +82,6 @@ async function s3PathIsInConfig(
 	} else {
 		return !!(await findInS3(s3, `${s3Prefix ?? ''}/${parsedConfig.path}`));
 	}
-}
-
-async function applyTopics(repo: string, owner: string, octokit: Octokit) {
-	console.log(`Applying interactive topic to ${repo}`);
-	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
-		.names;
-	const names = topics.concat(['interactive']);
-	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
 }
 
 export async function assessRepo(repo: string, owner: string, config: Config) {

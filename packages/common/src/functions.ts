@@ -116,3 +116,16 @@ export function anghammaradThreadKey(fullRepoName: string) {
 export function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
 }
+
+export async function applyTopics(
+	repo: string,
+	owner: string,
+	octokit: Octokit,
+	topic: string,
+) {
+	console.log(`Applying ${topic} topic to ${repo}`);
+	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
+		.names;
+	const names = topics.concat([topic]);
+	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
+}

@@ -4,6 +4,7 @@ import { nullRepo } from '../rules/repository.test';
 import {
 	getGuRepoNames,
 	getReposWithoutProductionTopic,
+	removeGuardian,
 } from './repository-06-topic-monitor-production';
 
 describe('getReposWithoutProductionTopic', () => {
@@ -65,5 +66,13 @@ describe('getGuRepoNames', () => {
 
 		const result: string[] = getGuRepoNames(cfnTags);
 		expect(result).toEqual(['guardian/repo-1']);
+	});
+});
+
+describe('removeGuardian', () => {
+	it('should strip "guardian/" from the full repo name', () => {
+		const fullRepoName = 'guardian/repo-1';
+		const result: string = removeGuardian(fullRepoName);
+		expect(result).toEqual('repo-1');
 	});
 });

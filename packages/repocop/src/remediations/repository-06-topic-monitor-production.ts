@@ -1,5 +1,7 @@
 import type { github_repositories, PrismaClient } from '@prisma/client';
+import { applyTopics } from 'common/functions';
 import type { AWSCloudformationTag } from 'common/types';
+import type { Octokit } from 'octokit';
 import { findProdCfnStackTags } from '../query';
 
 export function getReposWithoutProductionTopic(
@@ -29,7 +31,7 @@ export function getReposInProdWithoutProductionTopic(
 	);
 }
 
-export async function findReposInProdWithoutProductionTopic(
+async function findReposInProdWithoutProductionTopic(
 	prisma: PrismaClient,
 	unarchivedRepos: github_repositories[],
 ) {
@@ -61,4 +63,28 @@ export async function findReposInProdWithoutProductionTopic(
 	);
 
 	return reposInProdWithoutProductionTopic;
+}
+
+export function removeGuardian(fullRepoName: string): string {
+	const reponame = fullRepoName.split('/')[1];
+	return reponame ?? '';
+}
+
+export async function applyProductionTopic(
+	prisma: PrismaClient,
+	unarchivedRepos: github_repositories[],
+	octokit: Octokit,
+): Promise<void> {
+	const repos: string[] = await findReposInProdWithoutProductionTopic(
+		prisma,
+		unarchivedRepos,
+	);
+	const reponames = repos.map((repo) => removeGuardian(repo));
+	const owner = 'guardian'; // TODO: make this DRYer
+
+	await Promise.all(
+		reponames.map((reponame) =>
+			applyTopics(reponame, owner, octokit, 'production'),
+		),
+	);
 }
