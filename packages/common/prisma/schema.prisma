@@ -12801,8 +12801,6 @@ model aws_s3_buckets {
   restrict_public_buckets Boolean?
   tags                    Json?
   ownership_controls      String[]
-
-  @@ignore
 }
 
 model aws_s3_multi_region_access_points {
