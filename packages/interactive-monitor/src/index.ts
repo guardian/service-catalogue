@@ -7,6 +7,18 @@ import type { Octokit } from 'octokit';
 import type { Config } from './config';
 import { getConfig } from './config';
 
+type ContentResponse =
+	RestEndpointMethodTypes['repos']['getContent']['response'];
+
+interface FileMetadata {
+	name: string;
+	content: string;
+}
+
+interface ConfigJsonFile {
+	path: string;
+}
+
 async function isFromInteractiveTemplate(
 	repo: string,
 	owner: string,
@@ -18,18 +30,6 @@ async function isFromInteractiveTemplate(
 	});
 	const prefix = 'interactive-atom-template';
 	return repoData.data.template_repository?.name.includes(prefix) ?? false;
-}
-
-type ContentResponse =
-	RestEndpointMethodTypes['repos']['getContent']['response'];
-
-interface FileMetadata {
-	name: string;
-	content: string;
-}
-
-interface ConfigJsonFile {
-	path: string;
 }
 
 function decodeFile(response: ContentResponse): ConfigJsonFile {
