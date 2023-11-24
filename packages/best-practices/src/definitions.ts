@@ -1,4 +1,4 @@
-import type { IAllBestPractice, IBestPractice } from './types.ts';
+import type { IAllBestPractice, IBestPractice } from './types';
 
 const repository: readonly IBestPractice[] = [
 	{
