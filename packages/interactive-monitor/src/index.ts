@@ -1,7 +1,10 @@
+import type { ListObjectsCommandInput } from '@aws-sdk/client-s3';
+import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 import type { SNSHandler } from 'aws-lambda';
 import { stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
+import type { Config } from './config';
 import { getConfig } from './config';
 
 async function isFromInteractiveTemplate(
@@ -55,6 +58,33 @@ async function getConfigJsonFromGithub(
 	}
 }
 
+async function findInS3(s3: S3Client, bucket: string, prefix: string) {
+	const input: ListObjectsCommandInput = {
+		Bucket: bucket,
+		Prefix: `atoms/${prefix}`,
+		MaxKeys: 1,
+	};
+	const command = new ListObjectsCommand(input);
+	const response = await s3.send(command);
+	return response.Contents;
+}
+
+async function isLiveInteractive(
+	octokit: Octokit,
+	s3: S3Client,
+	owner: string,
+	repo: string,
+	bucket: string,
+) {
+	const configJson = await getConfigJsonFromGithub(octokit, repo, owner);
+	if (configJson === undefined) {
+		return false;
+	} else {
+		const s3Response = await findInS3(s3, bucket, configJson.path);
+		return s3Response !== undefined;
+	}
+}
+
 async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 	console.log(`Applying interactive topic to ${repo}`);
 	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
@@ -63,22 +93,24 @@ async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
 }
 
-export async function assessRepo(repo: string, owner: string, stage: string) {
-	const octokit = await stageAwareOctokit(stage);
+export async function assessRepo(repo: string, owner: string, config: Config) {
+	const octokit = await stageAwareOctokit(config.stage);
+	const s3 = new S3Client({ region: 'us-east-1' });
+	const { stage, bucket } = config;
 
 	const file = await getConfigJsonFromGithub(octokit, repo, owner);
 	const configJsonExists = file !== undefined;
+	console.log(`Found config.json for ${repo}: ${configJsonExists.toString()}`);
 
-	const isInteractive = await isFromInteractiveTemplate(repo, owner, octokit);
+	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
+	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo, bucket);
 	const onProd = stage === 'PROD';
-	if (isInteractive && onProd) {
+	if ((isFromTemplate || foundInS3) && onProd) {
 		await applyTopics(repo, owner, octokit);
-	} else if (configJsonExists && onProd) {
-		console.log(`Found potential s3 path for ${repo}`);
-		console.log('TODO: search s3 for path');
 	} else {
 		const reason =
-			(!isInteractive ? ' Repo not from interactive template.' : '') +
+			(!isFromTemplate ? ' Repo not from interactive template.' : '') +
+			(!foundInS3 ? ' Could not find in S3.' : '') +
 			(!onProd ? ' Not running on PROD.' : '');
 		console.log(`No action taken for ${repo}.` + reason);
 	}
@@ -88,7 +120,7 @@ export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
 	const owner = 'guardian';
 	const events = event.Records.map(
-		async (record) => await assessRepo(record.Sns.Message, owner, config.stage),
+		async (record) => await assessRepo(record.Sns.Message, owner, config),
 	);
 	await Promise.all(events);
 };
