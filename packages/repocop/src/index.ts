@@ -1,9 +1,9 @@
 import type {
 	github_repositories,
 	PrismaClient,
+	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import { PrismaClient } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { stageAwareOctokit } from 'common/functions';
 import { getConfig } from './config';
