@@ -1,8 +1,9 @@
 import type {
 	github_repositories,
+	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import { PrismaClient } from '@prisma/client';
+import { getPrismaClient } from 'common/database';
 import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
 import { notifyBranchProtector } from './remediations/repository-02-branch_protection';
@@ -27,21 +28,7 @@ async function writeEvaluationTable(
 
 export async function main() {
 	const config = await getConfig();
-	const prisma = new PrismaClient({
-		datasources: {
-			db: {
-				url: config.databaseConnectionString,
-			},
-		},
-		...(config.withQueryLogging && {
-			log: [
-				{
-					emit: 'stdout',
-					level: 'query',
-				},
-			],
-		}),
-	});
+	const prisma = getPrismaClient(config);
 
 	const unarchivedRepositories: github_repositories[] =
 		await getUnarchivedRepositories(prisma, config.ignoredRepositoryPrefixes);
