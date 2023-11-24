@@ -11,6 +11,14 @@ on:
   push:
     branches:
       - main
+
+# Ensure we only ever have one build running at a time.
+# If we push twice in quick succession, the first build will be stopped once the second starts.
+# This avoids any race conditions.
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   CI:
     timeout-minutes: 15
