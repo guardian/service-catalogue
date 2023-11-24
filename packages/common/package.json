@@ -2,7 +2,6 @@
 	"name": "common",
 	"version": "0.0.0",
 	"scripts": {
-		"typecheck": "tsc",
 		"postinstall": "prisma generate",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects common"
 	},
