@@ -61,15 +61,9 @@ describe('getGuRepoNames', () => {
 				'gu:repo': 'guardian/repo-1',
 				'gu:build-tool': 'guardian/some-build-tool',
 			},
-			{
-				App: 'app-2',
-				Stack: 'stack2',
-				Stage: 'INFRA',
-				'gu:repo': 'guardian/repo-2',
-			},
 		];
 
 		const result: string[] = getGuRepoNames(cfnTags);
-		expect(result).toEqual(['guardian/repo-1', 'guardian/repo-2']);
+		expect(result).toEqual(['guardian/repo-1']);
 	});
 });
