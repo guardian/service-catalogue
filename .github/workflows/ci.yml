@@ -58,8 +58,6 @@ jobs:
               - packages/cdk/cdk.out
             repocop:
               - packages/repocop/dist/repocop.zip
-            branch-protector:
-              - packages/branch-protector/dist/branch-protector.zip
             interactive-monitor:
               - packages/interactive-monitor/dist/interactive-monitor.zip
             data-audit:

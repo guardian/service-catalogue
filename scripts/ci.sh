@@ -21,7 +21,7 @@ createLambdaWithPrisma() {
   # Create a zip file of the dist directory
   (
     cd "$ROOT_DIR/packages/$name/dist"
-    zip -qr $name.zip .
+    zip -qr "$name".zip .
   )
 }
 
@@ -38,7 +38,6 @@ npm run typecheck & npm run lint
 npm run test
 npm run synth & npm run build
 
-createZip "branch-protector" & \
-  createZip "interactive-monitor" & \
+createZip "interactive-monitor" & \
   createLambdaWithPrisma "repocop" & \
   createLambdaWithPrisma "data-audit"

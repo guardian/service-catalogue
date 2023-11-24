@@ -9,8 +9,8 @@ import type { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import type { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import type { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
-import type { Queue } from 'aws-cdk-lib/aws-sqs';
 
 export class Repocop {
 	constructor(
@@ -22,9 +22,9 @@ export class Repocop {
 			| NoMonitoring
 			| GuLambdaErrorPercentageMonitoringProps,
 		vpc: IVpc,
-		branchProtectorQueue: Queue,
 		interactiveMonitorTopic: Topic,
 		dbSecurityGroup: SecurityGroup,
+		githubAppSecret: Secret,
 	) {
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
@@ -38,9 +38,8 @@ export class Repocop {
 				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				DATABASE_HOSTNAME: cloudqueryDB.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
-				// Messages sent to branch protector will be picked up at 9:00 the next working day (Tue-Fri)
-				BRANCH_PROTECTOR_QUEUE_URL: branchProtectorQueue.queueUrl,
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitorTopic.topicArn,
+				GITHUB_APP_SECRET: githubAppSecret.secretArn,
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],
@@ -55,8 +54,7 @@ export class Repocop {
 
 		cloudqueryDB.grantConnect(repocopLambda, 'repocop');
 
-		branchProtectorQueue.grantSendMessages(repocopLambda);
-
+		githubAppSecret.grantRead(repocopLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
 	}

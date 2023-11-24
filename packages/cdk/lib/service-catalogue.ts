@@ -29,13 +29,13 @@ import {
 	DatabaseInstance,
 	DatabaseInstanceEngine,
 } from 'aws-cdk-lib/aws-rds';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import {
 	ParameterDataType,
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
-import { BranchProtector } from './branch-protector';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { InteractiveMonitor } from './interactive-monitor';
@@ -173,13 +173,12 @@ export class ServiceCatalogue extends GuStack {
 			anghammaradTopicParameter.valueAsString,
 		);
 
-		const branchProtector = new BranchProtector(
+		const githubCredentials = new Secret(
 			this,
-			stageAwareMonitoringConfiguration,
-			nonProdSchedule ??
-				Schedule.cron({ minute: '0', hour: '9', weekDay: 'TUE-FRI' }),
-			vpc,
-			anghammaradTopic,
+			`branch-protector-github-app-auth`,
+			{
+				secretName: `/${stage}/${stack}/service-catalogue/branch-protector-github-app-secret`,
+			},
 		);
 
 		new Repocop(
@@ -189,9 +188,9 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			stageAwareMonitoringConfiguration,
 			vpc,
-			branchProtector.queue,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
+			githubCredentials,
 		);
 
 		addDataAuditLambda(this, {
