@@ -10,13 +10,13 @@ export class InteractiveMonitor {
 	public readonly topic: Topic;
 	constructor(guStack: GuStack) {
 		const app = guStack.app ?? 'service-catalogue'; //shouldn't be undefined, but make linter happy
-
+		const { stage, stack } = guStack;
 		const topic = new Topic(guStack, 'Topic', {
-			topicName: `${service}-${guStack.stage}`,
+			topicName: `${service}-${stage}`,
 		});
 
 		const githubCredentials = new Secret(guStack, `${service}-github-app`, {
-			secretName: `/${guStack.stage}/${guStack.stack}/${app}/${service}-github-app`,
+			secretName: `/${stage}/${stack}/${app}/${service}-github-app`,
 		});
 
 		const lambda = new GuLambdaFunction(guStack, service, {
@@ -25,7 +25,6 @@ export class InteractiveMonitor {
 			handler: 'index.handler',
 			runtime: Runtime.NODEJS_18_X,
 			environment: {
-				BUCKET: '???',
 				GITHUB_APP_SECRET: githubCredentials.secretName,
 			},
 			reservedConcurrentExecutions: 1,

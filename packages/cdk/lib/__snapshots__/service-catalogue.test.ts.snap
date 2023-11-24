@@ -14331,7 +14331,6 @@ spec:
         "Environment": {
           "Variables": {
             "APP": "interactive-monitor",
-            "BUCKET": "???",
             "GITHUB_APP_SECRET": {
               "Fn::Join": [
                 "-",
