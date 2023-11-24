@@ -37,7 +37,7 @@ export async function findReposInProdWithoutProductionTopic(
 	const reposWithoutProductionTopic: string[] =
 		getReposWithoutProductionTopic(unarchivedRepos);
 	console.log(
-		`Found ${reposWithoutProductionTopic.length} repositories without a production topic`,
+		`Found ${reposWithoutProductionTopic.length} repositories without a production or interactive topic`,
 	);
 
 	const repoTagsWithProdCfnStacks = await findProdCfnStackTags(prisma);
