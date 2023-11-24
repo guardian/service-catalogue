@@ -1,5 +1,5 @@
 import process from 'process';
-import type { DatabaseConfig } from 'common/database';
+import type { DatabaseConfig, PrismaConfig } from 'common/database';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
@@ -7,7 +7,7 @@ import {
 } from 'common/database';
 import { getEnvOrThrow } from 'common/functions';
 
-export interface Config {
+export interface Config extends PrismaConfig {
 	/**
 	 * The name of this application.
 	 */
@@ -17,18 +17,6 @@ export interface Config {
 	 * The stage of the application, e.g. DEV, CODE, PROD.
 	 */
 	stage: string;
-
-	/**
-	 * The database connection string.
-	 */
-	databaseConnectionString: string;
-
-	/**
-	 * Whether to configure Prisma to log the SQL queries being executed.
-	 *
-	 * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/logging
-	 */
-	withQueryLogging: boolean;
 }
 
 export async function getConfig(): Promise<Config> {

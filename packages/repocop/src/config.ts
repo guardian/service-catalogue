@@ -4,10 +4,10 @@ import {
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
 } from 'common/database';
-import type { DatabaseConfig } from 'common/database';
+import type { DatabaseConfig, PrismaConfig } from 'common/database';
 import { getEnvOrThrow } from 'common/functions';
 
-export interface Config {
+export interface Config extends PrismaConfig {
 	/**
 	 * The name of this application.
 	 */
@@ -27,20 +27,6 @@ export interface Config {
 	 * The ARN of the interactive-monitor topic.
 	 */
 	interactiveMonitorSnsTopic: string;
-
-	/**
-	 * The database connection string.
-	 *
-	 * If the `DATABASE_PASSWORD` environment variable is not set, a token (temporary password) will be generated for IAM authentication for RDS.
-	 */
-	databaseConnectionString: string;
-
-	/**
-	 * Whether to configure Prisma to log the SQL queries being executed.
-	 *
-	 * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/logging
-	 */
-	withQueryLogging: boolean;
 
 	/**
 	 * Repositories that should not be processed, for example, because they are not owned by a team in Product and Engineering.
