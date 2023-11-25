@@ -5,7 +5,7 @@
 		"@types/aws-lambda": "^8.10.126"
 	},
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
 		"start": "APP=repocop ts-node src/run-locally.ts",
 		"postinstall": "prisma generate",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
