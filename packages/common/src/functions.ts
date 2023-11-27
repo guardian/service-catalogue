@@ -93,13 +93,17 @@ export function topicMonitoringProductionTagCtas(
 	teamSlug: string,
 ): Action[] {
 	const githubUrl = `https://github.com/${fullRepoName}`;
+	const bestPracticesUrl =
+		'https://github.com/guardian/service-catalogue/blob/main/packages/best-practices/best-practices.md';
 	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
-	const topicsUrl = `https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository`;
+	const topicsUrl =
+		'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository';
 
 	return [
 		{ cta: 'Repository', url: githubUrl },
+		{ cta: 'Best practices', url: bestPracticesUrl },
 		{
-			cta: 'Compliance information for repos',
+			cta: 'Repocop compliance dashboard',
 			url: grafanaUrl,
 		},
 		{

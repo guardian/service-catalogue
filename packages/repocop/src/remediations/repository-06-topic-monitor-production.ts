@@ -1,8 +1,36 @@
+import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { github_repositories, PrismaClient } from '@prisma/client';
-import { applyTopics } from 'common/functions';
+import {
+	anghammaradThreadKey,
+	applyTopics,
+	topicMonitoringProductionTagCtas,
+} from 'common/functions';
 import type { AWSCloudformationTag } from 'common/types';
 import type { Octokit } from 'octokit';
-import { findProdCfnStackTags } from '../query';
+import type { Config } from '../config';
+import { findProdCfnStackTags, getRepoOwnership, getTeams } from '../query';
+import { findContactableOwners } from './shared-utilities';
+
+async function notifyOneTeam(
+	fullRepoName: string,
+	config: Config,
+	teamSlug: string,
+) {
+	const { app, stage, anghammaradSnsTopic } = config;
+	const client = new Anghammarad();
+	await client.notify({
+		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
+		message:
+			`The production topic has applied to ${fullRepoName} as it appears to have a PROD or INFRA stack in AWS.` +
+			`Repositories should have one of the following topics, to help understand what is in production: production, testing, documentation, hackday, prototype, learning, interactive`,
+		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
+		target: { GithubTeamSlug: teamSlug },
+		channel: RequestedChannel.PreferHangouts,
+		sourceSystem: `${app} ${stage}`,
+		topicArn: anghammaradSnsTopic,
+		threadKey: anghammaradThreadKey(fullRepoName),
+	});
+}
 
 export function getReposWithoutProductionTopic(
 	unarchivedRepos: github_repositories[],
@@ -70,21 +98,51 @@ export function removeGuardian(fullRepoName: string): string {
 	return reponame ?? '';
 }
 
-export async function applyProductionTopic(
+async function applyProductionTopicToOneRepoAndMessageTeams(
+	repoName: string,
+	teamNameSlugs: string[],
+	octokit: Octokit,
+	config: Config,
+) {
+	const owner = 'guardian';
+	const topic = 'production';
+	await applyTopics(repoName, owner, octokit, topic);
+	for (const teamNameSlug of teamNameSlugs) {
+		await notifyOneTeam(`${owner}/repoName`, config, teamNameSlug);
+	}
+}
+
+export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
 	unarchivedRepos: github_repositories[],
 	octokit: Octokit,
+	config: Config,
 ): Promise<void> {
-	const repos: string[] = await findReposInProdWithoutProductionTopic(
+	const fullRepoNames: string[] = await findReposInProdWithoutProductionTopic(
 		prisma,
 		unarchivedRepos,
 	);
-	const reponames = repos.map((repo) => removeGuardian(repo));
-	const owner = 'guardian'; // TODO: make this DRYer
+
+	const repoOwners = await getRepoOwnership(prisma);
+	const teams = await getTeams(prisma);
+
+	const reposWithContactableOwners = fullRepoNames
+		.map((fullRepoName) => {
+			return {
+				fullName: fullRepoName,
+				teamNameSlugs: findContactableOwners(fullRepoName, repoOwners, teams),
+			};
+		})
+		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
 	await Promise.all(
-		reponames.map((reponame) =>
-			applyTopics(reponame, owner, octokit, 'production'),
+		reposWithContactableOwners.map((repo) =>
+			applyProductionTopicToOneRepoAndMessageTeams(
+				repo.fullName,
+				repo.teamNameSlugs,
+				octokit,
+				config,
+			),
 		),
 	);
 }
