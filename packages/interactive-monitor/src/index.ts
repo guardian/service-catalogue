@@ -78,15 +78,13 @@ async function s3PathIsInConfig(
 	owner: string,
 	repo: string,
 	path: string,
+	prefix?: string,
 ): Promise<boolean> {
 	const configJson = await getConfigJsonFromGithub(octokit, repo, owner, path);
 	if (configJson === undefined) {
 		return false;
 	} else {
-		const s3Response1 = !!(await findInS3(s3, `atoms/${configJson.path}`));
-		const s3Response2 = !!(await findInS3(s3, configJson.path));
-
-		return s3Response1 || s3Response2;
+		return !!(await findInS3(s3, `${prefix ?? ''}/${configJson.path}`));
 	}
 }
 
@@ -112,6 +110,7 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 		owner,
 		repo,
 		'config.json',
+		'atoms',
 	);
 	const foundInS3Json = await s3PathIsInConfig(
 		octokit,
