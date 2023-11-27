@@ -37,7 +37,10 @@ export async function sendPotentialInteractives(
 	const potentialInteractives = shuffle(
 		findPotentialInteractives(evaluatedRepos),
 	);
-	const snsBatchMaximum = Math.min(potentialInteractives.length, 10);
+	const snsBatchMaximum = Math.min(
+		potentialInteractives.length,
+		config.stage === 'PROD' ? 10 : 1,
+	);
 	const somePotentialInteractives = potentialInteractives.slice(
 		0,
 		snsBatchMaximum,
