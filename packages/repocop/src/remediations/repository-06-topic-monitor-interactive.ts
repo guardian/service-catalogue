@@ -1,10 +1,4 @@
-import {
-	PublishBatchCommand,
-	type PublishBatchCommandInput,
-	type PublishBatchRequestEntry,
-	PublishCommand,
-	SNSClient,
-} from '@aws-sdk/client-sns';
+import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
