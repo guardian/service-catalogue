@@ -2,6 +2,7 @@ import {
 	PublishBatchCommand,
 	type PublishBatchCommandInput,
 	type PublishBatchRequestEntry,
+	PublishCommand,
 	SNSClient,
 } from '@aws-sdk/client-sns';
 import type { repocop_github_repository_rules } from '@prisma/client';
@@ -15,19 +16,6 @@ export function findPotentialInteractives(
 	return evaluatedRepos
 		.filter((repo) => !repo.topics)
 		.map((repo) => repo.full_name);
-}
-
-export function createBatchEntry(
-	fullRepoName: string,
-): PublishBatchRequestEntry {
-	const shortName = fullRepoName.split('/')[1];
-	if (!shortName) {
-		throw new Error(`Invalid repo name: ${fullRepoName}`);
-	}
-	return {
-		Id: shortName.replace(/\W/g, ''),
-		Message: shortName,
-	};
 }
 
 export async function sendPotentialInteractives(
@@ -47,19 +35,14 @@ export async function sendPotentialInteractives(
 		`Found ${potentialInteractives.length} potential interactives of ${evaluatedRepos.length} evaluated repositories`,
 	);
 
-	const PublishBatchRequestEntries = somePotentialInteractives.map(
-		(repo): PublishBatchRequestEntry => createBatchEntry(repo),
-	);
-
-	const batchCommandInput: PublishBatchCommandInput = {
+	const publishRequestEntry = new PublishCommand({
+		Message: JSON.stringify(somePotentialInteractives),
 		TopicArn: config.interactiveMonitorSnsTopic,
-		PublishBatchRequestEntries,
-	};
+	});
 
 	const strList = somePotentialInteractives.join(', ');
 	console.log(
 		`Sending ${snsBatchMaximum} potential interactives to SNS. ${strList}`,
 	);
-	const cmd = new PublishBatchCommand(batchCommandInput);
-	await new SNSClient(awsClientConfig(config.stage)).send(cmd);
+	await new SNSClient(awsClientConfig(config.stage)).send(publishRequestEntry);
 }

@@ -117,8 +117,13 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
 	const owner = 'guardian';
-	const events = event.Records.map(
-		async (record) => await assessRepo(record.Sns.Message, owner, config),
+	console.log(JSON.stringify(event.Records));
+	const events = event.Records.map(async (record) =>
+		Promise.all(
+			(JSON.parse(record.Sns.Message) as string[]).map(
+				async (repo) => await assessRepo(repo, owner, config),
+			),
+		),
 	);
 	await Promise.all(events);
 };
