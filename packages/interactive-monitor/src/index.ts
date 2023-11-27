@@ -54,7 +54,6 @@ async function getConfigJsonFromGithub(
 		});
 		return decodeFile(configFile);
 	} catch (e) {
-		console.log(`No ${path} found for ${repo}`);
 		return undefined;
 	}
 }
@@ -84,9 +83,8 @@ async function s3PathIsInConfig(
 	if (configJson === undefined) {
 		return false;
 	} else {
-		const s3Response1 =
-			(await findInS3(s3, 'atoms/' + configJson.path)) !== undefined;
-		const s3Response2 = (await findInS3(s3, configJson.path)) !== undefined;
+		const s3Response1 = !!(await findInS3(s3, `atoms/${configJson.path}`));
+		const s3Response2 = !!(await findInS3(s3, configJson.path));
 
 		return s3Response1 || s3Response2;
 	}
