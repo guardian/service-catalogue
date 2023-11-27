@@ -82,8 +82,6 @@ setup_environment() {
 
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
-  BRANCH_PROTECTOR_QUEUE_URL=$(aws sqs get-queue-url --queue-name branch-protector-queue-CODE.fifo --profile deployTools --region eu-west-1 | jq '.QueueUrl' | tr -d '"')
-
   INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile deployTools --region eu-west-1 --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
 
   github_info_url="https://github.com/settings/tokens?type=beta"
@@ -99,7 +97,6 @@ SNYK_TOKEN="
   env_var_text="
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
-BRANCH_PROTECTOR_QUEUE_URL=${BRANCH_PROTECTOR_QUEUE_URL}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
 "
 
