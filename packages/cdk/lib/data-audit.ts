@@ -35,7 +35,7 @@ export function addDataAuditLambda(scope: GuStack, props: DataAuditProps) {
 				schedule: Schedule.rate(Duration.days(1)),
 			},
 		],
-		runtime: Runtime.NODEJS_18_X,
+		runtime: Runtime.NODEJS_20_X,
 	});
 
 	db.grantConnect(lambda, 'dataaudit');

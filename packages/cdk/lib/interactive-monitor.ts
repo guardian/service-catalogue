@@ -23,7 +23,7 @@ export class InteractiveMonitor {
 			app: service,
 			fileName: `${service}.zip`,
 			handler: 'index.handler',
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			environment: {
 				GITHUB_APP_SECRET: githubCredentials.secretName,
 			},
