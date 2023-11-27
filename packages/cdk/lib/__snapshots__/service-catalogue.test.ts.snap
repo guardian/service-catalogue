@@ -12161,6 +12161,11 @@ spec:
               },
             },
             {
+              "Action": "organizations:List*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Resource": "arn:aws:iam::*:role/cloudquery-access",
