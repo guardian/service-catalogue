@@ -39,7 +39,7 @@ export async function sendPotentialInteractives(
 	);
 	const snsBatchMaximum = Math.min(
 		potentialInteractives.length,
-		config.stage === 'PROD' ? 10 : 1,
+		config.stage === 'PROD' ? 5 : 1,
 	);
 	const somePotentialInteractives = potentialInteractives.slice(
 		0,
