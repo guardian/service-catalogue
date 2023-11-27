@@ -44,16 +44,16 @@ async function getConfigJsonFromGithub(
 	octokit: Octokit,
 	repo: string,
 	owner: string,
+	path: string,
 ): Promise<ConfigJsonFile | undefined> {
 	try {
 		const configFile: ContentResponse = await octokit.rest.repos.getContent({
 			owner,
 			repo,
-			path: 'config.json',
+			path,
 		});
 		return decodeFile(configFile);
 	} catch (e) {
-		console.log(`No config.json found for ${repo}`);
 		return undefined;
 	}
 }
@@ -64,7 +64,7 @@ async function findInS3(
 ): Promise<_Object[] | undefined> {
 	const input: ListObjectsCommandInput = {
 		Bucket: 'gdn-cdn',
-		Prefix: `atoms/${prefix}`,
+		Prefix: `${prefix}`,
 		MaxKeys: 1,
 	};
 	const command = new ListObjectsCommand(input);
@@ -72,18 +72,21 @@ async function findInS3(
 	return response.Contents;
 }
 
-async function isLiveInteractive(
+async function s3PathIsInConfig(
 	octokit: Octokit,
 	s3: S3Client,
 	owner: string,
 	repo: string,
+	path: string,
 ): Promise<boolean> {
-	const configJson = await getConfigJsonFromGithub(octokit, repo, owner);
+	const configJson = await getConfigJsonFromGithub(octokit, repo, owner, path);
 	if (configJson === undefined) {
 		return false;
 	} else {
-		const s3Response = await findInS3(s3, configJson.path);
-		return s3Response !== undefined;
+		const s3Response1 = !!(await findInS3(s3, `atoms/${configJson.path}`));
+		const s3Response2 = !!(await findInS3(s3, configJson.path));
+
+		return s3Response1 || s3Response2;
 	}
 }
 
@@ -101,16 +104,30 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const { stage } = config;
 
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
-	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo);
 	const onProd = stage === 'PROD';
 	console.log(`Detected stage: ${stage}`);
+	const foundInConfigJson = await s3PathIsInConfig(
+		octokit,
+		s3,
+		owner,
+		repo,
+		'config.json',
+	);
+	const foundInS3Json = await s3PathIsInConfig(
+		octokit,
+		s3,
+		owner,
+		repo,
+		'cfg/s3.json',
+	);
+	const foundInS3 = foundInConfigJson || foundInS3Json;
 
 	if ((isFromTemplate || foundInS3) && onProd) {
 		await applyTopics(repo, owner, octokit);
 	} else {
 		console.log(`No action taken for ${repo}.`);
-		console.log('Artifacts found in S3: ', foundInS3);
-		console.log('Repo is from interactive template: ', isFromTemplate);
+		console.log(`${repo}: Artifacts found in S3: `, foundInS3);
+		console.log(`${repo}: from interactive template: `, isFromTemplate);
 	}
 }
 

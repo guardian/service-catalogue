@@ -21,8 +21,12 @@ export async function sendPotentialInteractives(
 	)
 		.map((repo) => repo.split('/')[1])
 		.filter((repo) => repo !== undefined) as string[];
+	);
+	const snsBatchMaximum = Math.min(
+		potentialInteractives.length,
+		config.stage === 'PROD' ? 5 : 1,
+	);
 
-	const snsBatchMaximum = Math.min(potentialInteractives.length, 10);
 	const somePotentialInteractives = potentialInteractives.slice(
 		0,
 		snsBatchMaximum,
