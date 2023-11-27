@@ -16,9 +16,12 @@ export async function sendPotentialInteractives(
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
 ) {
-	const potentialInteractives = shuffle(
+	const potentialInteractives: string[] = shuffle(
 		findPotentialInteractives(evaluatedRepos),
-	);
+	)
+		.map((repo) => repo.split('/')[1])
+		.filter((repo) => repo !== undefined) as string[];
+
 	const snsBatchMaximum = Math.min(potentialInteractives.length, 10);
 	const somePotentialInteractives = potentialInteractives.slice(
 		0,
