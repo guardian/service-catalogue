@@ -5,7 +5,7 @@
  */
 import * as fs from 'fs';
 import { markdownTable } from 'markdown-table';
-import { AllBestPractices } from './definitions.ts';
+import { AllBestPractices } from './definitions';
 
 const markdownFilepath = './best-practices.md';
 
