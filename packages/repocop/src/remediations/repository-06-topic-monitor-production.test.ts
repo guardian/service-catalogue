@@ -13,7 +13,7 @@ describe('getReposWithoutProductionTopic', () => {
 		expect(result).toEqual([]);
 	});
 
-	it('should return only repositories without production or interactive tags and without "interactive" in the repo name', () => {
+	it('should return only repositories without production or interactive topics and without "interactive" in the repo name', () => {
 		const unarchivedRepos: github_repositories[] = [
 			{
 				...nullRepo,
