@@ -44,16 +44,17 @@ async function getConfigJsonFromGithub(
 	octokit: Octokit,
 	repo: string,
 	owner: string,
+	path: string,
 ): Promise<ConfigJsonFile | undefined> {
 	try {
 		const configFile: ContentResponse = await octokit.rest.repos.getContent({
 			owner,
 			repo,
-			path: 'config.json',
+			path,
 		});
 		return decodeFile(configFile);
 	} catch (e) {
-		console.log(`No config.json found for ${repo}`);
+		console.log(`No ${path} found for ${repo}`);
 		return undefined;
 	}
 }
@@ -72,13 +73,18 @@ async function findInS3(
 	return response.Contents;
 }
 
-async function isLiveInteractive(
+async function s3PathIsInConfig(
 	octokit: Octokit,
 	s3: S3Client,
 	owner: string,
 	repo: string,
 ): Promise<boolean> {
-	const configJson = await getConfigJsonFromGithub(octokit, repo, owner);
+	const configJson = await getConfigJsonFromGithub(
+		octokit,
+		repo,
+		owner,
+		'config.json',
+	);
 	if (configJson === undefined) {
 		return false;
 	} else {
@@ -101,7 +107,7 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const { stage } = config;
 
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
-	const foundInS3 = await isLiveInteractive(octokit, s3, owner, repo);
+	const foundInS3 = await s3PathIsInConfig(octokit, s3, owner, repo);
 	const onProd = stage === 'PROD';
 	console.log(`Detected stage: ${stage}`);
 
