@@ -2,6 +2,7 @@ import type { _Object, ListObjectsCommandInput } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 import type { SNSHandler } from 'aws-lambda';
+import { awsClientConfig } from 'common/aws';
 import { stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from './config';
@@ -100,7 +101,8 @@ async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 
 export async function assessRepo(repo: string, owner: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
-	const s3 = new S3Client({ region: 'us-east-1' });
+	const awsConfig = awsClientConfig(config.stage);
+	const s3 = new S3Client({ ...awsConfig, region: 'us-east-1' });
 	const { stage } = config;
 
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
