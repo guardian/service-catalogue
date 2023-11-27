@@ -15,11 +15,9 @@ export interface DatabaseConfig {
 	user: string;
 
 	/**
-	 * The database password.
-	 *
-	 * When not defined, a token (temporary password) will be generated for IAM authentication for RDS.
+	 * The database password for the provided user.
 	 */
-	password?: string;
+	password: string;
 }
 
 export interface PrismaConfig {
@@ -38,15 +36,13 @@ export interface PrismaConfig {
 
 const databasePort = 5432;
 
-async function getRdsToken(stage: string, config: DatabaseConfig) {
+async function getRdsToken(stage: string, hostname: string, username: string) {
 	console.log('Generating RDS token');
-
-	const { hostname, user } = config;
 
 	const signer = new Signer({
 		hostname,
 		port: databasePort,
-		username: user,
+		username,
 		...awsClientConfig(stage),
 	});
 
@@ -66,7 +62,7 @@ export async function getDatabaseConfig(
 	user: string,
 ): Promise<DatabaseConfig> {
 	const hostname = getEnvOrThrow('DATABASE_HOSTNAME');
-	const password = await getRdsToken(stage, { hostname, user });
+	const password = await getRdsToken(stage, hostname, user);
 
 	return {
 		hostname,
@@ -77,12 +73,6 @@ export async function getDatabaseConfig(
 
 export function getDatabaseConnectionString(config: DatabaseConfig) {
 	const { user, password, hostname } = config;
-
-	if (!password) {
-		throw new Error(
-			'Unable to create a database connection string without password',
-		);
-	}
 
 	return `postgres://${user}:${encodeURIComponent(
 		password,
