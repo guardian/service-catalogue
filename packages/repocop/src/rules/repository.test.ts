@@ -5,7 +5,7 @@ import type {
 import type { RepositoryTeam } from '../query';
 import { repositoryRuleEvaluation } from './repository';
 
-const nullRepo: github_repositories = {
+export const nullRepo: github_repositories = {
 	cq_sync_time: null,
 	cq_source_name: null,
 	cq_id: '',
