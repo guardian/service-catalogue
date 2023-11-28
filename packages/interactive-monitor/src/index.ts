@@ -4,10 +4,9 @@ import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-meth
 import type { SNSHandler } from 'aws-lambda';
 import { stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
-import type { SourceFile } from 'typescript';
-import { createSourceFile, ScriptKind, ScriptTarget } from 'typescript';
 import type { Config } from './config';
 import { getConfig } from './config';
+import { getPathFromConfigFile, parseFileToJS } from './js-parser';
 
 type ContentResponse =
 	RestEndpointMethodTypes['repos']['getContent']['response'];
@@ -107,6 +106,31 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const onProd = stage === 'PROD';
 	console.log(`Detected stage: ${stage}`);
 
+	async function tryToParseJsConfig(
+		octokit: Octokit,
+		repo: string,
+	): Promise<string | undefined> {
+		const configFile: ContentResponse = await octokit.rest.repos.getContent({
+			owner: 'guardian',
+			repo,
+			path: 'project.config.js',
+		});
+
+		const parsedFile = parseFileToJS(
+			atob((configFile.data as FileMetadata).content),
+		);
+		if (!parsedFile) {
+			return;
+		}
+		const path = getPathFromConfigFile(parsedFile);
+		return path;
+	}
+	const pathFromJsConfig = await tryToParseJsConfig(octokit, repo);
+	const foundInJs = !!(await findInS3(
+		s3,
+		`atoms/${pathFromJsConfig ?? 'fakepath'}`,
+	));
+
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
 	const foundInConfigJson = await s3PathIsInConfig(
 		octokit,
@@ -122,12 +146,14 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 		repo,
 		'cfg/s3.json',
 	);
-	const foundInS3 = foundInConfigJson || foundInS3Json;
+
+	const foundInS3 = foundInJs || foundInConfigJson || foundInS3Json;
 
 	if ((isFromTemplate || foundInS3) && onProd) {
 		await applyTopics(repo, owner, octokit);
 	} else {
 		console.log(`No action taken for ${repo}.`);
+		console.log(`${repo}: Found in JS config: `, foundInJs);
 		console.log(`${repo}: Artifacts found in S3: `, foundInS3);
 		console.log(`${repo}: from interactive template: `, isFromTemplate);
 	}
