@@ -211,7 +211,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const awsOtelColletorTask = task.addContainer(
 			`${id}AWSOTELCollectorSidecar`,
 			{
-				containerName: 'aws-otel-collector',
 				image: awsOtelCollectorImage,
 				command: ['--config=/etc/ecs/ecs-default-config.yaml'],
 				logging: LogDrivers.awsLogs({
