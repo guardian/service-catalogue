@@ -208,17 +208,22 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			}),
 		});
 
-		task.addContainer(`${id}AWSOTELCollectorSidecar`, {
-			containerName: 'aws-otel-collector',
-			image: awsOtelCollectorImage,
-			logging: new FireLensLogDriver({
-				options: {
-					Name: `kinesis_streams`,
-					region,
-					stream: loggingStreamName,
-					retry_limit: '2',
-				},
-			}),
+		const awsOtelColletorTask = task.addContainer(
+			`${id}AWSOTELCollectorSidecar`,
+			{
+				containerName: 'aws-otel-collector',
+				image: awsOtelCollectorImage,
+				logging: LogDrivers.awsLogs({
+					streamPrefix: [stack, stage, app].join('/'),
+					logRetention: RetentionDays.ONE_DAY,
+				}),
+			},
+		);
+
+		cloudqueryTask.addContainerDependencies({
+			container: awsOtelColletorTask,
+			// TODO: ContainerDepdendencyCondition.HEALTHY - Need to add a healthcheck to awsOtelCollector
+			condition: ContainerDependencyCondition.START,
 		});
 
 		if (runAsSingleton) {

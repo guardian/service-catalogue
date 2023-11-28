@@ -205,6 +205,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "AwsCostExplorer",
@@ -279,16 +285,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorSidecarLogGroup418ED865",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -375,6 +380,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorSidecarLogGroup418ED865": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsCostExplorer",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerFirelensLogGroup0D0D76FF": {
       "DeletionPolicy": "Retain",
@@ -549,6 +584,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorSidecarLogGroup418ED865",
+                  "Arn",
+                ],
               },
             },
             {
@@ -820,6 +868,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorSidecarLogGroup8111E84E": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "DelegatedToSecurityAccount",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountFirelensLogGroupEC2CB8DA": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -895,6 +973,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "DelegatedToSecurityAccount",
@@ -969,16 +1053,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorSidecarLogGroup8111E84E",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -1209,6 +1292,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorSidecarLogGroup8111E84E",
+                  "Arn",
+                ],
               },
             },
             {
@@ -1475,6 +1571,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorSidecarLogGroupFFA2C36D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "DeployToolsListOrgs",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsFirelensLogGroup27F2A6EA": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -1547,6 +1673,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -1622,16 +1754,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorSidecarLogGroupFFA2C36D",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -1862,6 +1993,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorSidecarLogGroupFFA2C36D",
+                  "Arn",
+                ],
               },
             },
             {
@@ -2133,6 +2277,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorSidecarLogGroup7E6DEA2D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "FastlyServices",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesFirelensLogGroupF5954401": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -2198,6 +2372,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2287,16 +2467,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorSidecarLogGroup7E6DEA2D",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -2498,6 +2677,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorSidecarLogGroup7E6DEA2D",
+                  "Arn",
+                ],
               },
             },
             {
@@ -2863,6 +3055,12 @@ spec:
                 ],
               },
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "Galaxies",
@@ -2937,16 +3135,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorSidecarLogGroupDBF329E8",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -3033,6 +3230,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorSidecarLogGroupDBF329E8": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "Galaxies",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesFirelensLogGroupB5272E0D": {
       "DeletionPolicy": "Retain",
@@ -3207,6 +3434,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorSidecarLogGroupDBF329E8",
+                  "Arn",
+                ],
               },
             },
             {
@@ -3483,6 +3723,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorSidecarLogGroup3F937B29": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubIssues",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesFirelensLogGroupE9112ED9": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -3676,6 +3946,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
+                  "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorSidecarLogGroup3F937B29",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesFirelensLogGroupE9112ED9",
                   "Arn",
                 ],
@@ -3730,6 +4013,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -3847,16 +4136,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorSidecarLogGroup3F937B29",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -4223,6 +4511,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "GitHubRepositories",
@@ -4339,16 +4633,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorSidecarLogGroup11B6D5F4",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -4435,6 +4728,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorSidecarLogGroup11B6D5F4": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubRepositories",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D": {
       "DeletionPolicy": "Retain",
@@ -4619,6 +4942,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorSidecarLogGroup11B6D5F4",
+                  "Arn",
+                ],
               },
             },
             {
@@ -4925,6 +5261,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "GitHubTeams",
@@ -5041,16 +5383,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorSidecarLogGroup6748DD1F",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -5137,6 +5478,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorSidecarLogGroup6748DD1F": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubTeams",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsFirelensLogGroup8B1FFADC": {
       "DeletionPolicy": "Retain",
@@ -5321,6 +5692,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorSidecarLogGroup6748DD1F",
+                  "Arn",
+                ],
               },
             },
             {
@@ -5582,6 +5966,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorSidecarLogGroupFA85E254": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GuardianCustomSnykProjects",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsFirelensLogGroup405A0620": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -5642,6 +6056,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -5731,16 +6151,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorSidecarLogGroupFA85E254",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -5981,6 +6400,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorSidecarLogGroupFA85E254",
+                  "Arn",
+                ],
               },
             },
             {
@@ -6286,6 +6718,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "OrgWideAutoScalingGroups",
@@ -6360,16 +6798,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorSidecarLogGroup31811318",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -6456,6 +6893,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorSidecarLogGroup31811318": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideAutoScalingGroups",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsFirelensLogGroup5F30203D": {
       "DeletionPolicy": "Retain",
@@ -6630,6 +7097,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorSidecarLogGroup31811318",
+                  "Arn",
+                ],
               },
             },
             {
@@ -6945,6 +7425,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "OrgWideCertificates",
@@ -7019,16 +7505,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorSidecarLogGroup77807F1E",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -7115,6 +7600,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorSidecarLogGroup77807F1E": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideCertificates",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesFirelensLogGroup3FA5384C": {
       "DeletionPolicy": "Retain",
@@ -7289,6 +7804,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorSidecarLogGroup77807F1E",
+                  "Arn",
+                ],
               },
             },
             {
@@ -7560,6 +8088,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorSidecarLogGroupC540B136": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideCloudFormation",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationFirelensLogGroup36609B15": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -7633,6 +8191,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -7708,16 +8272,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorSidecarLogGroupC540B136",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -7948,6 +8511,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorSidecarLogGroupC540B136",
+                  "Arn",
+                ],
               },
             },
             {
@@ -8219,6 +8795,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorSidecarLogGroupB5F5E0A3": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideCloudwatchAlarms",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsFirelensLogGroup5A8CFBF6": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -8402,6 +9008,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorSidecarLogGroupB5F5E0A3",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsFirelensLogGroup5A8CFBF6",
                   "Arn",
                 ],
@@ -8462,6 +9081,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -8537,16 +9162,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorSidecarLogGroupB5F5E0A3",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -8922,6 +9546,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "OrgWideDynamoDB",
@@ -8996,16 +9626,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorSidecarLogGroupFBB14C8E",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -9092,6 +9721,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorSidecarLogGroupFBB14C8E": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideDynamoDB",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBFirelensLogGroup6E2D315C": {
       "DeletionPolicy": "Retain",
@@ -9266,6 +9925,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorSidecarLogGroupFBB14C8E",
+                  "Arn",
+                ],
               },
             },
             {
@@ -9585,6 +10257,10 @@ spec:
             ],
             "DependsOn": [
               {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+              {
                 "Condition": "SUCCESS",
                 "ContainerName": "CloudquerySource-OrgWideEc2AwsCli",
               },
@@ -9663,16 +10339,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorSidecarLogGroupE2EE27DA",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -9785,6 +10460,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorSidecarLogGroupE2EE27DA": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideEc2",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2FirelensLogGroup5214B9E0": {
       "DeletionPolicy": "Retain",
@@ -9959,6 +10664,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorSidecarLogGroupE2EE27DA",
+                  "Arn",
+                ],
               },
             },
             {
@@ -10304,6 +11022,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "OrgWideInspector",
@@ -10378,16 +11102,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorSidecarLogGroup8F65C038",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -10474,6 +11197,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorSidecarLogGroup8F65C038": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideInspector",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorFirelensLogGroupCDA3721C": {
       "DeletionPolicy": "Retain",
@@ -10648,6 +11401,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorSidecarLogGroup8F65C038",
+                  "Arn",
+                ],
               },
             },
             {
@@ -10919,6 +11685,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorSidecarLogGroup9E06B7BB": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideLoadBalancers",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersFirelensLogGroupC2738C36": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -11102,6 +11898,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorSidecarLogGroup9E06B7BB",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersFirelensLogGroupC2738C36",
                   "Arn",
                 ],
@@ -11163,6 +11972,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11238,16 +12053,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorSidecarLogGroup9E06B7BB",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -11623,6 +12437,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "OrgWideS3",
@@ -11697,16 +12517,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorSidecarLogGroupB3219B25",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -11793,6 +12612,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorSidecarLogGroupB3219B25": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "OrgWideS3",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3FirelensLogGroupF8BCB6DF": {
       "DeletionPolicy": "Retain",
@@ -11967,6 +12816,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorSidecarLogGroupB3219B25",
+                  "Arn",
+                ],
               },
             },
             {
@@ -12336,6 +13198,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "RemainingAwsData",
@@ -12410,16 +13278,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorSidecarLogGroup6671E637",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -12506,6 +13373,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorSidecarLogGroup6671E637": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "RemainingAwsData",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataFirelensLogGroupBC28DA66": {
       "DeletionPolicy": "Retain",
@@ -12680,6 +13577,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorSidecarLogGroup6671E637",
+                  "Arn",
+                ],
               },
             },
             {
@@ -12954,6 +13864,36 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorSidecarLogGroup609A2179": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "RiffRaffData",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataFirelensLogGroup55CB2F37": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -13147,6 +14087,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
+                  "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorSidecarLogGroup609A2179",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
                   "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataFirelensLogGroup55CB2F37",
                   "Arn",
                 ],
@@ -13198,6 +14151,12 @@ spec:
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13315,16 +14274,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorSidecarLogGroup609A2179",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -13689,6 +14647,12 @@ spec:
       dbname=postgres sslmode=verify-full
 ' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "aws-otel-collector",
+              },
+            ],
             "DockerLabels": {
               "App": "service-catalogue",
               "Name": "SnykAll",
@@ -13777,16 +14741,15 @@ spec:
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
-              "LogDriver": "awsfirelens",
+              "LogDriver": "awslogs",
               "Options": {
-                "Name": "kinesis_streams",
-                "region": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorSidecarLogGroupBBE6C71D",
+                },
+                "awslogs-region": {
                   "Ref": "AWS::Region",
                 },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
             "Name": "aws-otel-collector",
@@ -13873,6 +14836,36 @@ spec:
         },
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorSidecarLogGroupBBE6C71D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "SnykAll",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllFirelensLogGroupB81AA085": {
       "DeletionPolicy": "Retain",
@@ -14057,6 +15050,19 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorSidecarLogGroupBBE6C71D",
+                  "Arn",
+                ],
               },
             },
             {
