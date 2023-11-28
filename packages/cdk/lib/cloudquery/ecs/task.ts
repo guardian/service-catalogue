@@ -216,7 +216,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				logRetention: RetentionDays.ONE_DAY,
 			}),
 			healthCheck: {
-				command: ['curl -f http://localhost:13133/healthcheck || exit 1'],
+				command: ['CMD', './healthcheck'],
 				interval: Duration.seconds(5),
 			},
 		});

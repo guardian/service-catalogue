@@ -288,8 +288,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -1068,8 +1068,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -1781,8 +1781,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -2506,8 +2506,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -3186,8 +3186,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -4199,8 +4199,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -4708,8 +4708,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -5470,8 +5470,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -6250,8 +6250,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -6909,8 +6909,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -7628,8 +7628,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -8407,8 +8407,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -9309,8 +9309,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -9785,8 +9785,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -10510,8 +10510,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -11285,8 +11285,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -12248,8 +12248,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -12724,8 +12724,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -13497,8 +13497,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -14505,8 +14505,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -14984,8 +14984,8 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD-SHELL",
-                "curl -f http://localhost:13133/healthcheck || exit 1",
+                "CMD",
+                "./healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
