@@ -42,6 +42,10 @@ const awsOtelCollectorImage = ContainerImage.fromRegistry(
 	'public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0',
 );
 
+const tashOtelTestImage = ContainerImage.fromRegistry(
+	'ghcr.io/ashcorr/trace-test-container:latest',
+);
+
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
@@ -225,6 +229,21 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			container: awsOtelColletorTask,
 			condition: ContainerDependencyCondition.HEALTHY,
 		});
+
+		if (name == 'OrgWideS3') {
+			const ashOtelTestContainer = task.addContainer(`${id}TestContainer`, {
+				image: tashOtelTestImage,
+				logging: LogDrivers.awsLogs({
+					streamPrefix: [stack, stage, app].join('/'),
+					logRetention: RetentionDays.ONE_DAY,
+				}),
+			});
+
+			cloudqueryTask.addContainerDependencies({
+				container: ashOtelTestContainer,
+				condition: ContainerDependencyCondition.HEALTHY,
+			});
+		}
 
 		if (runAsSingleton) {
 			const singletonTask = task.addContainer(`${id}AwsCli`, {
