@@ -208,7 +208,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-AwsCostExplorerAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-AwsCostExplorerAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -289,7 +289,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -300,7 +300,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorSidecarLogGroup418ED865",
+                  "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorLogGroup620E4430",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -308,7 +308,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-AwsCostExplorerAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-AwsCostExplorerAWSOTELCollector",
           },
           {
             "Environment": [
@@ -393,7 +393,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorSidecarLogGroup418ED865": {
+    "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorLogGroup620E4430": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -606,7 +606,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorSidecarLogGroup418ED865",
+                  "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerAWSOTELCollectorLogGroup620E4430",
                   "Arn",
                 ],
               },
@@ -880,7 +880,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorSidecarLogGroup8111E84E": {
+    "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorLogGroupE9E23DB7": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -988,7 +988,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-DelegatedToSecurityAccountAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-DelegatedToSecurityAccountAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -1069,7 +1069,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -1080,7 +1080,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorSidecarLogGroup8111E84E",
+                  "Ref": "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorLogGroupE9E23DB7",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -1088,7 +1088,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-DelegatedToSecurityAccountAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-DelegatedToSecurityAccountAWSOTELCollector",
           },
           {
             "Environment": [
@@ -1326,7 +1326,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorSidecarLogGroup8111E84E",
+                  "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionCloudquerySourceDelegatedToSecurityAccountAWSOTELCollectorLogGroupE9E23DB7",
                   "Arn",
                 ],
               },
@@ -1595,7 +1595,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorSidecarLogGroupFFA2C36D": {
+    "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorLogGroup74F2B7E2": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -1701,7 +1701,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-DeployToolsListOrgsAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-DeployToolsListOrgsAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -1782,7 +1782,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -1793,7 +1793,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorSidecarLogGroupFFA2C36D",
+                  "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorLogGroup74F2B7E2",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -1801,7 +1801,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-DeployToolsListOrgsAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-DeployToolsListOrgsAWSOTELCollector",
           },
           {
             "Environment": [
@@ -2039,7 +2039,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorSidecarLogGroupFFA2C36D",
+                  "CloudquerySourceDeployToolsListOrgsTaskDefinitionCloudquerySourceDeployToolsListOrgsAWSOTELCollectorLogGroup74F2B7E2",
                   "Arn",
                 ],
               },
@@ -2313,7 +2313,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorSidecarLogGroup7E6DEA2D": {
+    "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorLogGroup27ED6F61": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -2412,7 +2412,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-FastlyServicesAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-FastlyServicesAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -2507,7 +2507,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -2518,7 +2518,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorSidecarLogGroup7E6DEA2D",
+                  "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorLogGroup27ED6F61",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -2526,7 +2526,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-FastlyServicesAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-FastlyServicesAWSOTELCollector",
           },
           {
             "Environment": [
@@ -2735,7 +2735,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorSidecarLogGroup7E6DEA2D",
+                  "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesAWSOTELCollectorLogGroup27ED6F61",
                   "Arn",
                 ],
               },
@@ -3106,7 +3106,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-GalaxiesAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-GalaxiesAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -3187,7 +3187,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -3198,7 +3198,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorSidecarLogGroupDBF329E8",
+                  "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorLogGroup595CF880",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -3206,7 +3206,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-GalaxiesAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-GalaxiesAWSOTELCollector",
           },
           {
             "Environment": [
@@ -3291,7 +3291,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorSidecarLogGroupDBF329E8": {
+    "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorLogGroup595CF880": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -3504,7 +3504,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorSidecarLogGroupDBF329E8",
+                  "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesAWSOTELCollectorLogGroup595CF880",
                   "Arn",
                 ],
               },
@@ -3783,7 +3783,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorSidecarLogGroup3F937B29": {
+    "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorLogGroup5E8F46DC": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -4006,7 +4006,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorSidecarLogGroup3F937B29",
+                  "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorLogGroup5E8F46DC",
                   "Arn",
                 ],
               },
@@ -4077,7 +4077,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-GitHubIssuesAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-GitHubIssuesAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -4200,7 +4200,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -4211,7 +4211,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorSidecarLogGroup3F937B29",
+                  "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesAWSOTELCollectorLogGroup5E8F46DC",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -4219,7 +4219,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-GitHubIssuesAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-GitHubIssuesAWSOTELCollector",
           },
           {
             "Environment": [
@@ -4586,7 +4586,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-GitHubRepositoriesAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-GitHubRepositoriesAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -4709,7 +4709,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -4720,7 +4720,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorSidecarLogGroup11B6D5F4",
+                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorLogGroup3275D5BB",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -4728,7 +4728,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-GitHubRepositoriesAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-GitHubRepositoriesAWSOTELCollector",
           },
           {
             "Environment": [
@@ -4813,7 +4813,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorSidecarLogGroup11B6D5F4": {
+    "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorLogGroup3275D5BB": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -5036,7 +5036,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorSidecarLogGroup11B6D5F4",
+                  "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesAWSOTELCollectorLogGroup3275D5BB",
                   "Arn",
                 ],
               },
@@ -5348,7 +5348,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-GitHubTeamsAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-GitHubTeamsAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -5471,7 +5471,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -5482,7 +5482,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorSidecarLogGroup6748DD1F",
+                  "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorLogGroupF77EF061",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -5490,7 +5490,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-GitHubTeamsAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-GitHubTeamsAWSOTELCollector",
           },
           {
             "Environment": [
@@ -5575,7 +5575,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorSidecarLogGroup6748DD1F": {
+    "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorLogGroupF77EF061": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -5798,7 +5798,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorSidecarLogGroup6748DD1F",
+                  "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsAWSOTELCollectorLogGroupF77EF061",
                   "Arn",
                 ],
               },
@@ -6062,7 +6062,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorSidecarLogGroupFA85E254": {
+    "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorLogGroup88345075": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -6156,7 +6156,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-GuardianCustomSnykProjectsAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-GuardianCustomSnykProjectsAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -6251,7 +6251,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -6262,7 +6262,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorSidecarLogGroupFA85E254",
+                  "Ref": "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorLogGroup88345075",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -6270,7 +6270,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-GuardianCustomSnykProjectsAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-GuardianCustomSnykProjectsAWSOTELCollector",
           },
           {
             "Environment": [
@@ -6518,7 +6518,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorSidecarLogGroupFA85E254",
+                  "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionCloudquerySourceGuardianCustomSnykProjectsAWSOTELCollectorLogGroup88345075",
                   "Arn",
                 ],
               },
@@ -6829,7 +6829,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideAutoScalingGroupsAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideAutoScalingGroupsAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -6910,7 +6910,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -6921,7 +6921,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorSidecarLogGroup31811318",
+                  "Ref": "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorLogGroup7674E258",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -6929,7 +6929,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideAutoScalingGroupsAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideAutoScalingGroupsAWSOTELCollector",
           },
           {
             "Environment": [
@@ -7014,7 +7014,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorSidecarLogGroup31811318": {
+    "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorLogGroup7674E258": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -7227,7 +7227,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorSidecarLogGroup31811318",
+                  "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceOrgWideAutoScalingGroupsAWSOTELCollectorLogGroup7674E258",
                   "Arn",
                 ],
               },
@@ -7548,7 +7548,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideCertificatesAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideCertificatesAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -7629,7 +7629,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -7640,7 +7640,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorSidecarLogGroup77807F1E",
+                  "Ref": "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorLogGroup67804F74",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -7648,7 +7648,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideCertificatesAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideCertificatesAWSOTELCollector",
           },
           {
             "Environment": [
@@ -7733,7 +7733,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorSidecarLogGroup77807F1E": {
+    "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorLogGroup67804F74": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -7946,7 +7946,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorSidecarLogGroup77807F1E",
+                  "CloudquerySourceOrgWideCertificatesTaskDefinitionCloudquerySourceOrgWideCertificatesAWSOTELCollectorLogGroup67804F74",
                   "Arn",
                 ],
               },
@@ -8220,7 +8220,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorSidecarLogGroupC540B136": {
+    "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorLogGroup06035C4F": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -8327,7 +8327,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideCloudFormationAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideCloudFormationAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -8408,7 +8408,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -8419,7 +8419,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorSidecarLogGroupC540B136",
+                  "Ref": "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorLogGroup06035C4F",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -8427,7 +8427,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideCloudFormationAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideCloudFormationAWSOTELCollector",
           },
           {
             "Environment": [
@@ -8665,7 +8665,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorSidecarLogGroupC540B136",
+                  "CloudquerySourceOrgWideCloudFormationTaskDefinitionCloudquerySourceOrgWideCloudFormationAWSOTELCollectorLogGroup06035C4F",
                   "Arn",
                 ],
               },
@@ -8939,7 +8939,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorSidecarLogGroupB5F5E0A3": {
+    "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorLogGroup05559A05": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -9152,7 +9152,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorSidecarLogGroupB5F5E0A3",
+                  "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorLogGroup05559A05",
                   "Arn",
                 ],
               },
@@ -9229,7 +9229,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideCloudwatchAlarmsAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideCloudwatchAlarmsAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -9310,7 +9310,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -9321,7 +9321,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorSidecarLogGroupB5F5E0A3",
+                  "Ref": "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceOrgWideCloudwatchAlarmsAWSOTELCollectorLogGroup05559A05",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -9329,7 +9329,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsAWSOTELCollector",
           },
           {
             "Environment": [
@@ -9705,7 +9705,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideDynamoDBAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideDynamoDBAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -9786,7 +9786,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -9797,7 +9797,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorSidecarLogGroupFBB14C8E",
+                  "Ref": "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorLogGroupB8DA6DB1",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -9805,7 +9805,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideDynamoDBAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideDynamoDBAWSOTELCollector",
           },
           {
             "Environment": [
@@ -9890,7 +9890,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorSidecarLogGroupFBB14C8E": {
+    "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorLogGroupB8DA6DB1": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -10103,7 +10103,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorSidecarLogGroupFBB14C8E",
+                  "CloudquerySourceOrgWideDynamoDBTaskDefinitionCloudquerySourceOrgWideDynamoDBAWSOTELCollectorLogGroupB8DA6DB1",
                   "Arn",
                 ],
               },
@@ -10426,7 +10426,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideEc2AWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideEc2AWSOTELCollector",
               },
               {
                 "Condition": "SUCCESS",
@@ -10511,7 +10511,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -10522,7 +10522,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorSidecarLogGroupE2EE27DA",
+                  "Ref": "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorLogGroupC32E699A",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -10530,7 +10530,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideEc2AWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideEc2AWSOTELCollector",
           },
           {
             "Command": [
@@ -10641,7 +10641,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorSidecarLogGroupE2EE27DA": {
+    "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorLogGroupC32E699A": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -10854,7 +10854,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorSidecarLogGroupE2EE27DA",
+                  "CloudquerySourceOrgWideEc2TaskDefinitionCloudquerySourceOrgWideEc2AWSOTELCollectorLogGroupC32E699A",
                   "Arn",
                 ],
               },
@@ -11205,7 +11205,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideInspectorAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideInspectorAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -11286,7 +11286,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -11297,7 +11297,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorSidecarLogGroup8F65C038",
+                  "Ref": "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorLogGroupF1A3A697",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -11305,7 +11305,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideInspectorAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideInspectorAWSOTELCollector",
           },
           {
             "Environment": [
@@ -11390,7 +11390,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorSidecarLogGroup8F65C038": {
+    "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorLogGroupF1A3A697": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -11603,7 +11603,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorSidecarLogGroup8F65C038",
+                  "CloudquerySourceOrgWideInspectorTaskDefinitionCloudquerySourceOrgWideInspectorAWSOTELCollectorLogGroupF1A3A697",
                   "Arn",
                 ],
               },
@@ -11877,7 +11877,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorSidecarLogGroup9E06B7BB": {
+    "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorLogGroup50B5503B": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -12090,7 +12090,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorSidecarLogGroup9E06B7BB",
+                  "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorLogGroup50B5503B",
                   "Arn",
                 ],
               },
@@ -12168,7 +12168,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideLoadBalancersAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideLoadBalancersAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -12249,7 +12249,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -12260,7 +12260,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorSidecarLogGroup9E06B7BB",
+                  "Ref": "CloudquerySourceOrgWideLoadBalancersTaskDefinitionCloudquerySourceOrgWideLoadBalancersAWSOTELCollectorLogGroup50B5503B",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -12268,7 +12268,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideLoadBalancersAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideLoadBalancersAWSOTELCollector",
           },
           {
             "Environment": [
@@ -12644,7 +12644,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideS3AWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-OrgWideS3AWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -12725,7 +12725,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -12736,7 +12736,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorSidecarLogGroupB3219B25",
+                  "Ref": "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorLogGroup8A1A7D25",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -12744,7 +12744,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-OrgWideS3AWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-OrgWideS3AWSOTELCollector",
           },
           {
             "Environment": [
@@ -12829,7 +12829,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorSidecarLogGroupB3219B25": {
+    "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorLogGroup8A1A7D25": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -13042,7 +13042,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorSidecarLogGroupB3219B25",
+                  "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorLogGroup8A1A7D25",
                   "Arn",
                 ],
               },
@@ -13417,7 +13417,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-RemainingAwsDataAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-RemainingAwsDataAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -13498,7 +13498,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -13509,7 +13509,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorSidecarLogGroup6671E637",
+                  "Ref": "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorLogGroupB15D2CA5",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -13517,7 +13517,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-RemainingAwsDataAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-RemainingAwsDataAWSOTELCollector",
           },
           {
             "Environment": [
@@ -13602,7 +13602,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorSidecarLogGroup6671E637": {
+    "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorLogGroupB15D2CA5": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -13815,7 +13815,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorSidecarLogGroup6671E637",
+                  "CloudquerySourceRemainingAwsDataTaskDefinitionCloudquerySourceRemainingAwsDataAWSOTELCollectorLogGroupB15D2CA5",
                   "Arn",
                 ],
               },
@@ -14092,7 +14092,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorSidecarLogGroup609A2179": {
+    "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorLogGroupE0980E98": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -14315,7 +14315,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorSidecarLogGroup609A2179",
+                  "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorLogGroupE0980E98",
                   "Arn",
                 ],
               },
@@ -14383,7 +14383,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-RiffRaffDataAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-RiffRaffDataAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -14506,7 +14506,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -14517,7 +14517,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorSidecarLogGroup609A2179",
+                  "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataAWSOTELCollectorLogGroupE0980E98",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -14525,7 +14525,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-RiffRaffDataAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-RiffRaffDataAWSOTELCollector",
           },
           {
             "Environment": [
@@ -14890,7 +14890,7 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-SnykAllAWSOTELCollectorSidecar",
+                "ContainerName": "CloudquerySource-SnykAllAWSOTELCollector",
               },
             ],
             "DockerLabels": {
@@ -14985,7 +14985,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD-SHELL",
-                "/healthcheck",
+                "curl -f http://localhost:13133/healthcheck || exit 1",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -14996,7 +14996,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorSidecarLogGroupBBE6C71D",
+                  "Ref": "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorLogGroup66291C68",
                 },
                 "awslogs-region": {
                   "Ref": "AWS::Region",
@@ -15004,7 +15004,7 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
-            "Name": "CloudquerySource-SnykAllAWSOTELCollectorSidecar",
+            "Name": "CloudquerySource-SnykAllAWSOTELCollector",
           },
           {
             "Environment": [
@@ -15089,7 +15089,7 @@ spec:
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
-    "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorSidecarLogGroupBBE6C71D": {
+    "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorLogGroup66291C68": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -15312,7 +15312,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorSidecarLogGroupBBE6C71D",
+                  "CloudquerySourceSnykAllTaskDefinitionCloudquerySourceSnykAllAWSOTELCollectorLogGroup66291C68",
                   "Arn",
                 ],
               },

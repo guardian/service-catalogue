@@ -208,21 +208,18 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			}),
 		});
 
-		const awsOtelColletorTask = task.addContainer(
-			`${id}AWSOTELCollectorSidecar`,
-			{
-				image: awsOtelCollectorImage,
-				command: ['--config=/etc/ecs/ecs-default-config.yaml'],
-				logging: LogDrivers.awsLogs({
-					streamPrefix: [stack, stage, app].join('/'),
-					logRetention: RetentionDays.ONE_DAY,
-				}),
-				healthCheck: {
-					command: ['/healthcheck'],
-					interval: Duration.seconds(5),
-				},
+		const awsOtelColletorTask = task.addContainer(`${id}AWSOTELCollector`, {
+			image: awsOtelCollectorImage,
+			command: ['--config=/etc/ecs/ecs-default-config.yaml'],
+			logging: LogDrivers.awsLogs({
+				streamPrefix: [stack, stage, app].join('/'),
+				logRetention: RetentionDays.ONE_DAY,
+			}),
+			healthCheck: {
+				command: ['curl -f http://localhost:13133/healthcheck || exit 1'],
+				interval: Duration.seconds(5),
 			},
-		);
+		});
 
 		cloudqueryTask.addContainerDependencies({
 			container: awsOtelColletorTask,
