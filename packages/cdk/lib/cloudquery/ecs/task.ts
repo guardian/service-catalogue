@@ -1,6 +1,6 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { Tags } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
@@ -217,13 +217,16 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					streamPrefix: [stack, stage, app].join('/'),
 					logRetention: RetentionDays.ONE_DAY,
 				}),
+				healthCheck: {
+					command: ['/healthcheck'],
+					interval: Duration.seconds(5),
+				},
 			},
 		);
 
 		cloudqueryTask.addContainerDependencies({
 			container: awsOtelColletorTask,
-			// TODO: ContainerDepdendencyCondition.HEALTHY - Need to add a healthcheck to awsOtelCollector
-			condition: ContainerDependencyCondition.START,
+			condition: ContainerDependencyCondition.HEALTHY,
 		});
 
 		if (runAsSingleton) {

@@ -207,7 +207,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-AwsCostExplorerAWSOTELCollectorSidecar",
               },
             ],
@@ -286,6 +286,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -978,7 +987,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-DelegatedToSecurityAccountAWSOTELCollectorSidecar",
               },
             ],
@@ -1057,6 +1066,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -1682,7 +1700,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-DeployToolsListOrgsAWSOTELCollectorSidecar",
               },
             ],
@@ -1761,6 +1779,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -2384,7 +2411,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-FastlyServicesAWSOTELCollectorSidecar",
               },
             ],
@@ -2477,6 +2504,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -3069,7 +3105,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GalaxiesAWSOTELCollectorSidecar",
               },
             ],
@@ -3148,6 +3184,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -4031,7 +4076,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubIssuesAWSOTELCollectorSidecar",
               },
             ],
@@ -4152,6 +4197,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -4531,7 +4585,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubRepositoriesAWSOTELCollectorSidecar",
               },
             ],
@@ -4652,6 +4706,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -5284,7 +5347,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubTeamsAWSOTELCollectorSidecar",
               },
             ],
@@ -5405,6 +5468,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -6083,7 +6155,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GuardianCustomSnykProjectsAWSOTELCollectorSidecar",
               },
             ],
@@ -6176,6 +6248,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -6747,7 +6828,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideAutoScalingGroupsAWSOTELCollectorSidecar",
               },
             ],
@@ -6826,6 +6907,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -7457,7 +7547,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideCertificatesAWSOTELCollectorSidecar",
               },
             ],
@@ -7536,6 +7626,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -8227,7 +8326,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideCloudFormationAWSOTELCollectorSidecar",
               },
             ],
@@ -8306,6 +8405,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -9120,7 +9228,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideCloudwatchAlarmsAWSOTELCollectorSidecar",
               },
             ],
@@ -9199,6 +9307,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -9587,7 +9704,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideDynamoDBAWSOTELCollectorSidecar",
               },
             ],
@@ -9666,6 +9783,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -10299,7 +10425,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideEc2AWSOTELCollectorSidecar",
               },
               {
@@ -10382,6 +10508,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -11069,7 +11204,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideInspectorAWSOTELCollectorSidecar",
               },
             ],
@@ -11148,6 +11283,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -12023,7 +12167,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideLoadBalancersAWSOTELCollectorSidecar",
               },
             ],
@@ -12102,6 +12246,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -12490,7 +12643,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideS3AWSOTELCollectorSidecar",
               },
             ],
@@ -12569,6 +12722,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -13254,7 +13416,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-RemainingAwsDataAWSOTELCollectorSidecar",
               },
             ],
@@ -13333,6 +13495,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -14211,7 +14382,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-RiffRaffDataAWSOTELCollectorSidecar",
               },
             ],
@@ -14332,6 +14503,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
@@ -14709,7 +14889,7 @@ spec:
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-SnykAllAWSOTELCollectorSidecar",
               },
             ],
@@ -14802,6 +14982,15 @@ spec:
               "--config=/etc/ecs/ecs-default-config.yaml",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD-SHELL",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
