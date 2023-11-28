@@ -101,9 +101,9 @@ export function topicMonitoringProductionTagCtas(
 
 	return [
 		{ cta: 'Repository', url: githubUrl },
-		{ cta: 'Best practices', url: bestPracticesUrl },
+		{ cta: 'Best practice rules', url: bestPracticesUrl },
 		{
-			cta: 'Repocop compliance dashboard',
+			cta: `View compliance data for repositories owned by ${teamSlug}`,
 			url: grafanaUrl,
 		},
 		{

@@ -1,10 +1,10 @@
-// import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
+import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { github_repositories, PrismaClient } from '@prisma/client';
-// import {
-// 	anghammaradThreadKey,
-// 	applyTopics,
-// 	topicMonitoringProductionTagCtas,
-// } from 'common/src/functions';
+import {
+	anghammaradThreadKey,
+	applyTopics,
+	topicMonitoringProductionTagCtas,
+} from 'common/src/functions';
 import type {
 	AWSCloudformationStack,
 	AWSCloudformationTag,
@@ -15,26 +15,27 @@ import type { Config } from '../config';
 import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
 import { findContactableOwners } from './shared-utilities';
 
-// async function notifyOneTeam(
-// 	fullRepoName: string,
-// 	config: Config,
-// 	teamSlug: string,
-// ) {
-// 	const { app, stage, anghammaradSnsTopic } = config;
-// 	const client = new Anghammarad();
-// 	await client.notify({
-// 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
-// 		message:
-// 			`The production topic has applied to ${fullRepoName} as it appears to have a PROD or INFRA stack in AWS.` +
-// 			`Repositories should have one of the following topics, to help understand what is in production: production, testing, documentation, hackday, prototype, learning, interactive`,
-// 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
-// 		target: { GithubTeamSlug: teamSlug },
-// 		channel: RequestedChannel.PreferHangouts,
-// 		sourceSystem: `${app} ${stage}`,
-// 		topicArn: anghammaradSnsTopic,
-// 		threadKey: anghammaradThreadKey(fullRepoName),
-// 	});
-// }
+async function notifyOneTeam(
+	fullRepoName: string,
+	config: Config,
+	teamSlug: string,
+) {
+	const { app, stage, anghammaradSnsTopic } = config;
+	const client = new Anghammarad();
+	await client.notify({
+		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
+		message:
+			`The production topic has applied to ${fullRepoName} as it appears to have a PROD or INFRA stack in AWS.` +
+			`Repositories should have one of the following topics, to help understand what is in production: production, testing, documentation, hackday, prototype, learning, interactive` +
+			`Visit the links below to learn more.`,
+		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
+		target: { GithubTeamSlug: teamSlug },
+		channel: RequestedChannel.PreferHangouts,
+		sourceSystem: `${app} ${stage}`,
+		topicArn: anghammaradSnsTopic,
+		threadKey: anghammaradThreadKey(fullRepoName),
+	});
+}
 
 export function getRepoNamesWithoutProductionTopic(
 	unarchivedRepos: github_repositories[],
@@ -68,12 +69,12 @@ async function findReposInProdWithoutProductionTopic(
 	prisma: PrismaClient,
 	unarchivedRepos: github_repositories[],
 ) {
-	console.log('Discovering Cloudformation stacks with PROD or INFRA tags');
+	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
 	console.log(
-		`Found ${repoNamesWithoutProductionTopic.length} repositories without a production or interactive topic`,
+		`Found ${repoNamesWithoutProductionTopic.length} repositories without a production or interactive topic.`,
 	);
 
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
@@ -93,7 +94,7 @@ async function findReposInProdWithoutProductionTopic(
 		});
 
 	console.log(
-		`Found ${guRepoStacks.length} repos with a PROD or INFRA Cloudformation stack`,
+		`Found ${guRepoStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
 	);
 
 	const reposInProdWithoutProductionTopic: GuRepoStack[] =
@@ -103,7 +104,7 @@ async function findReposInProdWithoutProductionTopic(
 		);
 
 	console.log(
-		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/ INFRA Cloudformation Stage tag`,
+		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/ INFRA Cloudformation Stage tag.`,
 	);
 
 	reposInProdWithoutProductionTopic.map((stack) =>
@@ -125,19 +126,19 @@ export function removeGuardian(fullRepoName: string): string {
 	return reponame ?? '';
 }
 
-// async function applyProductionTopicToOneRepoAndMessageTeams(
-// 	repoName: string,
-// 	teamNameSlugs: string[],
-// 	octokit: Octokit,
-// 	config: Config,
-// ) {
-// 	const owner = 'guardian';
-// 	const topic = 'production';
-// 	await applyTopics(repoName, owner, octokit, topic);
-// 	for (const teamNameSlug of teamNameSlugs) {
-// 		await notifyOneTeam(`${owner}/repoName`, config, teamNameSlug);
-// 	}
-// }
+async function applyProductionTopicToOneRepoAndMessageTeams(
+	repoName: string,
+	teamNameSlugs: string[],
+	octokit: Octokit,
+	config: Config,
+) {
+	const owner = 'guardian';
+	const topic = 'production';
+	await applyTopics(repoName, owner, octokit, topic);
+	for (const teamNameSlug of teamNameSlugs) {
+		await notifyOneTeam(`${owner}/repoName`, config, teamNameSlug);
+	}
+}
 
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
@@ -164,23 +165,24 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	console.log(`stage is ${config.stage}`);
 	console.log(
-		`Found ${reposWithContactableOwners.length} repos with contactable owners`,
+		`Found ${reposWithContactableOwners.length} repos with contactable owners.`,
 	);
 	reposWithContactableOwners.map((repo) => console.log(repo));
 
 	if (config.stage === 'PROD') {
-		console.log('In PROD');
-		// await Promise.all(
-		// 	reposWithContactableOwners.map((repo) =>
-		// 		applyProductionTopicToOneRepoAndMessageTeams(
-		// 			repo.fullName,
-		// 			repo.teamNameSlugs,
-		// 			octokit,
-		// 			config,
-		// 		),
-		// 	),
-		// );
+		console.log(
+			`Applying production topic to ${reposWithContactableOwners.length} repos and messaging their teams.`,
+		);
+		await Promise.all(
+			reposWithContactableOwners.map((repo) =>
+				applyProductionTopicToOneRepoAndMessageTeams(
+					repo.fullName,
+					repo.teamNameSlugs,
+					octokit,
+					config,
+				),
+			),
+		);
 	}
 }
