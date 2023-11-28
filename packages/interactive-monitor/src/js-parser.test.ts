@@ -6,7 +6,6 @@ describe('getPathFromConfigFile', () => {
             title: "Iran protests",
             path: "2022/10/iran-protests"}`;
 		const file1 = parseFileToJS(rawFile1);
-		//get the path from the source file
 		expect(getPathFromConfigFile(file1!)).toEqual('2022/10/iran-protests');
 
 		const rawFile2 = String.raw`export default {

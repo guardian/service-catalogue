@@ -26,7 +26,7 @@ export function parseFileToJS(input: string): SourceFile | undefined {
 export function getPathFromConfigFile(
 	sourceFile: SourceFile,
 ): string | undefined {
-	const lines = sourceFile.statements[0]?.getText().split('"'); //[3];
+	const lines = sourceFile.statements[0]?.getText().split('"');
 	if (!lines) {
 		return;
 	}
