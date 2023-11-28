@@ -211,6 +211,14 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		task.addContainer(`${id}AWSOTELCollectorSidecar`, {
 			containerName: 'aws-otel-collector',
 			image: awsOtelCollectorImage,
+			logging: new FireLensLogDriver({
+				options: {
+					Name: `kinesis_streams`,
+					region,
+					stream: loggingStreamName,
+					retry_limit: '2',
+				},
+			}),
 		});
 
 		if (runAsSingleton) {

@@ -278,6 +278,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -577,6 +590,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -941,6 +968,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -1210,6 +1250,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -1567,6 +1621,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -1836,6 +1903,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -2205,6 +2286,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -2484,6 +2578,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -2828,6 +2936,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -3127,6 +3248,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -3711,6 +3846,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -3810,6 +3958,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -4176,6 +4338,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -4485,6 +4660,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -4851,6 +5040,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -5160,6 +5362,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -5514,6 +5730,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -5793,6 +6022,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -6116,6 +6359,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -6415,6 +6671,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -6748,6 +7018,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -7047,6 +7330,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -7410,6 +7707,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -7679,6 +7989,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -8212,6 +8536,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -8402,6 +8739,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -8644,6 +8995,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -8943,6 +9307,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -9284,6 +9662,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -9609,6 +10000,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -9972,6 +10377,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -10271,6 +10689,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -10805,6 +11237,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -10904,6 +11349,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -11237,6 +11696,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -11536,6 +12008,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -11923,6 +12409,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -12222,6 +12721,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -12801,6 +13314,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -12900,6 +13426,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -13236,6 +13776,19 @@ spec:
           {
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
             "Name": "aws-otel-collector",
           },
           {
@@ -13545,6 +14098,20 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
