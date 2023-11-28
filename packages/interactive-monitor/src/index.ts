@@ -119,9 +119,9 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 
 	async function foundInS3(): Promise<boolean> {
 		return (
-			(await foundInJs()) ||
 			(await foundInConfigJson()) ||
-			(await foundInS3Json())
+			(await foundInS3Json()) ||
+			(await foundInJs())
 		);
 	}
 
