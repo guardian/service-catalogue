@@ -177,6 +177,8 @@ spec:
     - aws_costexplorer_*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -272,6 +274,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -833,6 +840,8 @@ spec:
     - aws_securityhub_*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   concurrency: 2000
   spec:
     regions:
@@ -928,6 +937,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -1453,6 +1467,8 @@ spec:
     - aws_organization*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -1547,6 +1563,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -2182,6 +2203,11 @@ spec:
             ],
           },
           {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
+          },
+          {
             "Environment": [
               {
                 "Name": "STACK",
@@ -2798,6 +2824,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -3678,6 +3709,11 @@ spec:
             ],
           },
           {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
+          },
+          {
             "Environment": [
               {
                 "Name": "STACK",
@@ -4136,6 +4172,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -4808,6 +4849,11 @@ spec:
             ],
           },
           {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
+          },
+          {
             "Environment": [
               {
                 "Name": "STACK",
@@ -5466,6 +5512,11 @@ spec:
             ],
           },
           {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
+          },
+          {
             "Environment": [
               {
                 "Name": "STACK",
@@ -5964,6 +6015,8 @@ spec:
     - aws_autoscaling_groups
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -6059,6 +6112,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -6589,6 +6647,8 @@ spec:
     - aws_acm*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -6684,6 +6744,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -7244,6 +7309,8 @@ spec:
     - aws_cloudformation_*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -7339,6 +7406,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -8039,6 +8111,8 @@ spec:
     - aws_cloudwatch_alarms
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -8134,6 +8208,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -8464,6 +8543,8 @@ spec:
     - aws_dynamodb*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -8559,6 +8640,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -9091,6 +9177,8 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -9192,6 +9280,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Command": [
@@ -9778,6 +9871,8 @@ spec:
     - aws_inspector2_findings
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -9873,6 +9968,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -10604,6 +10704,8 @@ spec:
     - aws_elbv2_*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -10699,6 +10801,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -11029,6 +11136,8 @@ spec:
     - aws_s3*
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -11124,6 +11233,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -11707,6 +11821,8 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
+  otel_endpoint: aws-otel-collector:4318
+  otel_endpoint_insecure: true
   concurrency: 2000
   spec:
     regions:
@@ -11803,6 +11919,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [
@@ -12678,6 +12799,11 @@ spec:
             ],
           },
           {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
+          },
+          {
             "Environment": [
               {
                 "Name": "STACK",
@@ -13106,6 +13232,11 @@ spec:
                 },
               },
             ],
+          },
+          {
+            "Essential": true,
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "Name": "aws-otel-collector",
           },
           {
             "Environment": [

@@ -38,6 +38,10 @@ const awsImage = ContainerImage.fromRegistry(
 	'public.ecr.aws/amazonlinux/amazonlinux:latest',
 );
 
+const awsOtelCollectorImage = ContainerImage.fromRegistry(
+	'public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0',
+);
+
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
@@ -202,6 +206,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					retry_limit: '2',
 				},
 			}),
+		});
+
+		task.addContainer(`${id}AWSOTELCollectorSidecar`, {
+			containerName: 'aws-otel-collector',
+			image: awsOtelCollectorImage,
 		});
 
 		if (runAsSingleton) {
