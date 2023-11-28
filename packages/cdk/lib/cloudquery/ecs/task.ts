@@ -239,8 +239,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				}),
 			});
 
-			cloudqueryTask.addContainerDependencies({
-				container: ashOtelTestContainer,
+			ashOtelTestContainer.addContainerDependencies({
+				container: awsOtelColletorTask,
 				condition: ContainerDependencyCondition.HEALTHY,
 			});
 		}

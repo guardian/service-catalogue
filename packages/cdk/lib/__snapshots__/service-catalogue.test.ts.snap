@@ -12646,10 +12646,6 @@ spec:
                 "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideS3AWSOTELCollector",
               },
-              {
-                "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideS3TestContainer",
-              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12751,6 +12747,12 @@ spec:
             "Name": "CloudquerySource-OrgWideS3AWSOTELCollector",
           },
           {
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-OrgWideS3AWSOTELCollector",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/ashcorr/trace-test-container:latest",
             "LogConfiguration": {
