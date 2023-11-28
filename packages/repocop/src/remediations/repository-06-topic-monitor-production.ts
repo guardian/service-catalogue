@@ -4,7 +4,7 @@ import {
 	anghammaradThreadKey,
 	applyTopics,
 	topicMonitoringProductionTagCtas,
-} from 'common/functions';
+} from 'common/src/functions';
 import type { AWSCloudformationTag } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../config';
