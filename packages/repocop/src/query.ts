@@ -7,7 +7,10 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
-import type { AWSCloudformationTag } from 'common/types';
+import type {
+	AWSCloudformationStack,
+	AWSCloudformationTag,
+} from 'common/types';
 
 export async function getUnarchivedRepositories(
 	client: PrismaClient,
@@ -86,8 +89,10 @@ export async function getRepoOwnership(
 	return data;
 }
 
-export async function findProdCfnStackTags(client: PrismaClient) {
-	const cfnStackTags = await client.aws_cloudformation_stacks.findMany({
+export async function findProdCfnStacks(
+	client: PrismaClient,
+): Promise<AWSCloudformationStack[]> {
+	const cfnStacks = await client.aws_cloudformation_stacks.findMany({
 		where: {
 			OR: [
 				{
@@ -122,10 +127,16 @@ export async function findProdCfnStackTags(client: PrismaClient) {
 		},
 		select: {
 			tags: true,
+			stack_name: true,
+			creation_time: true,
 		},
 	});
 
-	const tags = cfnStackTags.map((tag) => tag.tags as AWSCloudformationTag);
+	const stacks = cfnStacks.map((stack) => ({
+		stackName: stack.stack_name,
+		tags: stack.tags as AWSCloudformationTag,
+		creationTime: stack.creation_time,
+	}));
 
-	return tags;
+	return stacks;
 }

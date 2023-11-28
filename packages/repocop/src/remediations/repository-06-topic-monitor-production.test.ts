@@ -2,15 +2,16 @@ import type { github_repositories } from '@prisma/client';
 import type { AWSCloudformationTag } from 'common/types';
 import { nullRepo } from '../rules/repository.test';
 import {
-	getGuRepoNames,
-	getReposWithoutProductionTopic,
+	getGuRepoName,
+	getRepoNamesWithoutProductionTopic,
 	removeGuardian,
 } from './repository-06-topic-monitor-production';
 
 describe('getReposWithoutProductionTopic', () => {
 	it('should return an empty array when unarchivedRepos array is empty', () => {
 		const unarchivedRepos: github_repositories[] = [];
-		const result: string[] = getReposWithoutProductionTopic(unarchivedRepos);
+		const result: string[] =
+			getRepoNamesWithoutProductionTopic(unarchivedRepos);
 		expect(result).toEqual([]);
 	});
 
@@ -41,31 +42,34 @@ describe('getReposWithoutProductionTopic', () => {
 			},
 		];
 
-		const result: string[] = getReposWithoutProductionTopic(unarchivedRepos);
+		const result: string[] =
+			getRepoNamesWithoutProductionTopic(unarchivedRepos);
 		expect(result).toEqual(['guardian/repo-good-1', 'guardian/repo-good-2']);
 	});
 });
 
 describe('getGuRepoNames', () => {
-	it('should return an empty array when tags array is empty', () => {
-		const cfnTags: AWSCloudformationTag[] = [];
-		const result: string[] = getGuRepoNames(cfnTags);
-		expect(result).toEqual([]);
+	it('should return undefined if the "gu:repo" tag value is not present', () => {
+		const cfnTag: AWSCloudformationTag = {
+			App: 'app-1',
+			Stack: 'stack1',
+			Stage: 'PROD',
+			'gu:build-tool': 'guardian/some-build-tool',
+		};
+		const result: string | undefined = getGuRepoName(cfnTag);
+		expect(result).toEqual(undefined);
 	});
 
 	it('should return only the "gu:repo" tag value', () => {
-		const cfnTags: AWSCloudformationTag[] = [
-			{
-				App: 'app-1',
-				Stack: 'stack1',
-				Stage: 'PROD',
-				'gu:repo': 'guardian/repo-1',
-				'gu:build-tool': 'guardian/some-build-tool',
-			},
-		];
-
-		const result: string[] = getGuRepoNames(cfnTags);
-		expect(result).toEqual(['guardian/repo-1']);
+		const cfnTag: AWSCloudformationTag = {
+			App: 'app-1',
+			Stack: 'stack1',
+			Stage: 'PROD',
+			'gu:repo': 'guardian/repo-1',
+			'gu:build-tool': 'guardian/some-build-tool',
+		};
+		const result: string | undefined = getGuRepoName(cfnTag);
+		expect(result).toEqual('guardian/repo-1');
 	});
 });
 

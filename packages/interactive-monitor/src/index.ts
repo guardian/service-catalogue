@@ -128,7 +128,7 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	}
 
 	if ((isFromTemplate || (await foundInS3())) && onProd) {
-		await applyTopics(repo, owner, octokit);
+		await applyTopics(repo, owner, octokit, 'interactive');
 	} else {
 		console.log(`No action taken for ${repo}.`);
 	}
