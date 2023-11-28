@@ -117,12 +117,15 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 		return await s3PathIsInConfig(octokit, s3, owner, repo, 'cfg/s3.json');
 	}
 
-	const foundInS3 =
-		(await foundInJs()) ||
-		(await foundInConfigJson()) ||
-		(await foundInS3Json());
+	async function foundInS3(): Promise<boolean> {
+		return (
+			(await foundInJs()) ||
+			(await foundInConfigJson()) ||
+			(await foundInS3Json())
+		);
+	}
 
-	if ((isFromTemplate || foundInS3) && onProd) {
+	if ((isFromTemplate || (await foundInS3())) && onProd) {
 		await applyTopics(repo, owner, octokit);
 	} else {
 		console.log(`No action taken for ${repo}.`);
