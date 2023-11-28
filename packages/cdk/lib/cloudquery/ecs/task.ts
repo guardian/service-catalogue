@@ -213,6 +213,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			{
 				containerName: 'aws-otel-collector',
 				image: awsOtelCollectorImage,
+				command: ['--config=/etc/ecs/ecs-default-config.yaml'],
 				logging: LogDrivers.awsLogs({
 					streamPrefix: [stack, stage, app].join('/'),
 					logRetention: RetentionDays.ONE_DAY,

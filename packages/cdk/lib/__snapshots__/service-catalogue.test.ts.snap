@@ -282,6 +282,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -1050,6 +1053,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -1751,6 +1757,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -2464,6 +2473,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -3132,6 +3144,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -4133,6 +4148,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -4630,6 +4648,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -5380,6 +5401,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -6148,6 +6172,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -6795,6 +6822,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -7502,6 +7532,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -8269,6 +8302,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -9159,6 +9195,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -9623,6 +9662,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -10336,6 +10378,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -11099,6 +11144,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -12050,6 +12098,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -12514,6 +12565,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -13275,6 +13329,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -14271,6 +14328,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
@@ -14738,6 +14798,9 @@ spec:
             ],
           },
           {
+            "Command": [
+              "--config=/etc/ecs/ecs-default-config.yaml",
+            ],
             "Essential": true,
             "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
             "LogConfiguration": {
