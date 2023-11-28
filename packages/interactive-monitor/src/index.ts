@@ -4,6 +4,8 @@ import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-meth
 import type { SNSHandler } from 'aws-lambda';
 import { stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
+import type { SourceFile } from 'typescript';
+import { createSourceFile, ScriptKind, ScriptTarget } from 'typescript';
 import type { Config } from './config';
 import { getConfig } from './config';
 
@@ -102,10 +104,10 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
 	const s3 = new S3Client({ region: 'us-east-1' });
 	const { stage } = config;
-
-	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
 	const onProd = stage === 'PROD';
 	console.log(`Detected stage: ${stage}`);
+
+	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
 	const foundInConfigJson = await s3PathIsInConfig(
 		octokit,
 		s3,

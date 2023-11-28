@@ -36,5 +36,12 @@ module.exports = {
 			],
 			testMatch: ['<rootDir>/packages/repocop/**/*.test.ts'],
 		},
+		{
+			displayName: 'interactive-monitor',
+			transform: {
+				'^.+\\.tsx?$': 'ts-jest',
+			},
+			testMatch: ['<rootDir>/packages/interactive-monitor/**/*.test.ts'],
+		},
 	],
 };
