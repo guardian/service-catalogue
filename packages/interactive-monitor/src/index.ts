@@ -77,14 +77,19 @@ async function s3PathIsInConfig(
 	s3: S3Client,
 	owner: string,
 	repo: string,
-	path: string,
-	prefix?: string,
+	gitHubFile: string,
+	s3Prefix?: string,
 ): Promise<boolean> {
-	const configJson = await getConfigJsonFromGithub(octokit, repo, owner, path);
-	if (configJson === undefined) {
+	const parsedConfig = await getConfigJsonFromGithub(
+		octokit,
+		repo,
+		owner,
+		gitHubFile,
+	);
+	if (parsedConfig === undefined) {
 		return false;
 	} else {
-		return !!(await findInS3(s3, `${prefix ?? ''}/${configJson.path}`));
+		return !!(await findInS3(s3, `${s3Prefix ?? ''}/${parsedConfig.path}`));
 	}
 }
 
