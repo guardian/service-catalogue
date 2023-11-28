@@ -1,24 +1,12 @@
 import type { _Object, ListObjectsCommandInput } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
-import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 import type { SNSHandler } from 'aws-lambda';
 import { stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from './config';
 import { getConfig } from './config';
-import { getPathFromConfigFile, parseFileToJS } from './js-parser';
-
-type ContentResponse =
-	RestEndpointMethodTypes['repos']['getContent']['response'];
-
-interface FileMetadata {
-	name: string;
-	content: string;
-}
-
-interface ConfigJsonFile {
-	path: string;
-}
+import { tryToParseJsConfig } from './js-parser';
+import type { ConfigJsonFile, ContentResponse, FileMetadata } from './types';
 
 async function isFromInteractiveTemplate(
 	repo: string,
@@ -82,12 +70,15 @@ async function s3PathIsInConfig(
 ): Promise<boolean> {
 	const configJson = await getConfigJsonFromGithub(octokit, repo, owner, path);
 	if (configJson === undefined) {
+		console.log(`${repo}: Found in ${path}: `, false);
 		return false;
 	} else {
 		const s3Response1 = !!(await findInS3(s3, `atoms/${configJson.path}`));
 		const s3Response2 = !!(await findInS3(s3, configJson.path));
+		const result = s3Response1 || s3Response2;
+		console.log(`${repo}: Found in ${path}: `, result);
 
-		return s3Response1 || s3Response2;
+		return result;
 	}
 }
 
@@ -106,56 +97,35 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const onProd = stage === 'PROD';
 	console.log(`Detected stage: ${stage}`);
 
-	async function tryToParseJsConfig(
-		octokit: Octokit,
-		repo: string,
-	): Promise<string | undefined> {
-		const configFile: ContentResponse = await octokit.rest.repos.getContent({
-			owner: 'guardian',
-			repo,
-			path: 'project.config.js',
-		});
-
-		const parsedFile = parseFileToJS(
-			atob((configFile.data as FileMetadata).content),
-		);
-		if (!parsedFile) {
-			return;
+	async function foundInJs(): Promise<boolean> {
+		const path = await tryToParseJsConfig(octokit, repo);
+		if (!path) {
+			console.log(`${repo}: Found in JS config: `, false);
+			return false;
 		}
-		const path = getPathFromConfigFile(parsedFile);
-		return path;
+		const object = await findInS3(s3, `atoms/${path}`);
+		const foundObject = !!object;
+		console.log(`${repo}: Found in JS config: `, foundObject);
+		return foundObject;
 	}
-	const pathFromJsConfig = await tryToParseJsConfig(octokit, repo);
-	const foundInJs = !!(await findInS3(
-		s3,
-		`atoms/${pathFromJsConfig ?? 'fakepath'}`,
-	));
-
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
-	const foundInConfigJson = await s3PathIsInConfig(
-		octokit,
-		s3,
-		owner,
-		repo,
-		'config.json',
-	);
-	const foundInS3Json = await s3PathIsInConfig(
-		octokit,
-		s3,
-		owner,
-		repo,
-		'cfg/s3.json',
-	);
 
-	const foundInS3 = foundInJs || foundInConfigJson || foundInS3Json;
+	async function foundInConfigJson() {
+		return await s3PathIsInConfig(octokit, s3, owner, repo, 'config.json');
+	}
+	async function foundInS3Json() {
+		return await s3PathIsInConfig(octokit, s3, owner, repo, 'cfg/s3.json');
+	}
+
+	const foundInS3 =
+		(await foundInJs()) ||
+		(await foundInConfigJson()) ||
+		(await foundInS3Json());
 
 	if ((isFromTemplate || foundInS3) && onProd) {
 		await applyTopics(repo, owner, octokit);
 	} else {
 		console.log(`No action taken for ${repo}.`);
-		console.log(`${repo}: Found in JS config: `, foundInJs);
-		console.log(`${repo}: Artifacts found in S3: `, foundInS3);
-		console.log(`${repo}: from interactive template: `, isFromTemplate);
 	}
 }
 

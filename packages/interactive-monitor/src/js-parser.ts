@@ -1,9 +1,11 @@
+import type { Octokit } from 'octokit';
 import {
 	createSourceFile,
 	ScriptKind,
 	ScriptTarget,
 	type SourceFile,
 } from 'typescript';
+import type { ContentResponse, FileMetadata } from './types';
 
 export function parseFileToJS(input: string): SourceFile | undefined {
 	try {
@@ -34,4 +36,28 @@ export function getPathFromConfigFile(
 	}
 	const path = lines[pathIndex + 1];
 	return path;
+}
+
+export async function tryToParseJsConfig(
+	octokit: Octokit,
+	repo: string,
+): Promise<string | undefined> {
+	try {
+		const configFile: ContentResponse = await octokit.rest.repos.getContent({
+			owner: 'guardian',
+			repo,
+			path: 'project.config.js',
+		});
+
+		const parsedFile = parseFileToJS(
+			atob((configFile.data as FileMetadata).content),
+		);
+		if (!parsedFile) {
+			return;
+		}
+		const path = getPathFromConfigFile(parsedFile);
+		return path;
+	} catch (e) {
+		return;
+	}
 }
