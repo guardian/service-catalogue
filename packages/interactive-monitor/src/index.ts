@@ -2,7 +2,7 @@ import type { _Object, ListObjectsCommandInput } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { SNSHandler } from 'aws-lambda';
 import { awsClientConfig } from 'common/aws';
-import { stageAwareOctokit } from 'common/functions';
+import { applyTopics, stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -84,14 +84,6 @@ async function s3PathIsInConfig(
 	}
 }
 
-async function applyTopics(repo: string, owner: string, octokit: Octokit) {
-	console.log(`Applying interactive topic to ${repo}`);
-	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
-		.names;
-	const names = topics.concat(['interactive']);
-	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
-}
-
 export async function assessRepo(repo: string, owner: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
 	const awsConfig = awsClientConfig(config.stage);
@@ -136,7 +128,7 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	}
 
 	if ((isFromTemplate || (await foundInS3())) && onProd) {
-		await applyTopics(repo, owner, octokit);
+		await applyTopics(repo, owner, octokit, 'interactive');
 	} else {
 		console.log(`No action taken for ${repo}.`);
 	}

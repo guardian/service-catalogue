@@ -18,3 +18,13 @@ export type GitHubAppConfig = {
 };
 
 export type AWSCloudformationTag = Record<string, string>;
+
+export interface AWSCloudformationStack {
+	stackName: string | null;
+	tags: AWSCloudformationTag;
+	creationTime: Date | null;
+}
+
+export interface GuRepoStack extends AWSCloudformationStack {
+	guRepoName: string;
+}

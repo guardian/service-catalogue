@@ -9,7 +9,7 @@ import { getConfig } from './config';
 import { getUnarchivedRepositories } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
-import { findReposInProdWithoutProductionTopic } from './remediations/repository-06-topic-monitor-production';
+import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
 import { evaluateRepositories } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -48,13 +48,17 @@ export async function main() {
 			unarchivedRepositories,
 			octokit,
 		);
+		await applyProductionTopicAndMessageTeams(
+			prisma,
+			unarchivedRepositories,
+			octokit,
+			config,
+		);
 	} else {
 		console.log(
 			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
 		);
 	}
-
-	await findReposInProdWithoutProductionTopic(prisma, unarchivedRepositories);
 
 	console.log('Done');
 }

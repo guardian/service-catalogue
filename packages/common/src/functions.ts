@@ -93,13 +93,17 @@ export function topicMonitoringProductionTagCtas(
 	teamSlug: string,
 ): Action[] {
 	const githubUrl = `https://github.com/${fullRepoName}`;
+	const bestPracticesUrl =
+		'https://github.com/guardian/service-catalogue/blob/main/packages/best-practices/best-practices.md';
 	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
-	const topicsUrl = `https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository`;
+	const topicsUrl =
+		'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository';
 
 	return [
 		{ cta: 'Repository', url: githubUrl },
+		{ cta: 'Best practice rules', url: bestPracticesUrl },
 		{
-			cta: 'Compliance information for repos',
+			cta: `View compliance data for repositories owned by ${teamSlug}`,
 			url: grafanaUrl,
 		},
 		{
@@ -115,4 +119,17 @@ export function anghammaradThreadKey(fullRepoName: string) {
 
 export function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
+}
+
+export async function applyTopics(
+	repo: string,
+	owner: string,
+	octokit: Octokit,
+	topic: string,
+) {
+	console.log(`Applying ${topic} topic to ${repo}`);
+	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
+		.names;
+	const names = topics.concat([topic]);
+	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
 }
