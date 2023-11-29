@@ -8,6 +8,7 @@ import {
 } from '@aws-sdk/client-ecs';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import { awsClientConfig } from 'common/aws.js';
+import terminalLink from 'terminal-link';
 
 interface EcsResourceTags {
 	arn: string;
@@ -191,7 +192,7 @@ export const runOneTask = async (
 	stage: string,
 	app: string,
 	name: string,
-): Promise<URL[]> => {
+): Promise<void> => {
 	const tasks = (await listTasks(ecsClient, stack, stage, app)).filter(
 		(taskDescription) => taskDescription['Name'] === name,
 	);
@@ -236,7 +237,7 @@ export const runOneTask = async (
 		?.map((t) => t.taskArn)
 		.filter(Boolean) as string[];
 
-	return taskArns.map((taskArn) => getLogsUrl(app, stage, taskArn));
+	taskArns.map((taskArn) => printLogsUrl(app, stage, taskArn));
 };
 
 export const runAllTasks = async (
@@ -245,7 +246,7 @@ export const runAllTasks = async (
 	stack: string,
 	stage: string,
 	app: string,
-): Promise<URL[]> => {
+): Promise<void> => {
 	const tasks = await listTasks(ecsClient, stack, stage, app);
 
 	if (tasks.length === 0) {
@@ -282,11 +283,18 @@ export const runAllTasks = async (
 		.flatMap((r) => r.tasks?.map((t) => t.taskArn))
 		.filter(Boolean) as string[];
 
-	return taskArns.map((taskArn) => getLogsUrl(app, stage, taskArn));
+	taskArns.map((taskArn) => printLogsUrl(app, stage, taskArn));
 };
 
-function getLogsUrl(app: string, stage: string, taskDefinition: string): URL {
-	return new URL(
-		`https://logs.gutools.co.uk/s/devx/app/discover#/?_a=(columns:!(table,resources,errors,client,message,error))&_g=(filters:!((query:(match_phrase:(app:${app}))),(query:(match_phrase:(stage:${stage}))),(query:(match_phrase:(ecs_task_arn:'${taskDefinition}')))))`,
-	);
+function printLogsUrl(app: string, stage: string, taskDefinition: string) {
+	const url = `https://logs.gutools.co.uk/s/devx/app/discover#/?_a=(columns:!(table,resources,errors,client,message,error))&_g=(filters:!((query:(match_phrase:(app:${app}))),(query:(match_phrase:(stage:${stage}))),(query:(match_phrase:(ecs_task_arn:'${taskDefinition}')))))`;
+
+	terminalLink.isSupported
+		? console.log(
+				terminalLink(
+					'✅ View logs (Note: ECS takes a few seconds to start)',
+					url,
+				),
+		  )
+		: console.log(url);
 }

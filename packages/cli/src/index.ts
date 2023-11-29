@@ -147,10 +147,12 @@ parseCommandLineArguments()
 		}
 	})
 	.then((commandResponse) => {
-		if (typeof commandResponse === 'number') {
-			process.exitCode = commandResponse;
-		} else {
-			console.log(JSON.stringify(commandResponse, null, 2));
+		if (commandResponse) {
+			if (typeof commandResponse === 'number') {
+				process.exitCode = commandResponse;
+			} else {
+				console.log(JSON.stringify(commandResponse, null, 2));
+			}
 		}
 	})
 	.catch((err) => {
