@@ -48,7 +48,7 @@ describe('getReposWithoutProductionTopic', () => {
 	});
 });
 
-describe('getGuRepoNames', () => {
+describe('getGuRepoName', () => {
 	it('should return undefined if the "gu:repo" tag value is not present', () => {
 		const cfnTag: AWSCloudformationTag = {
 			App: 'app-1',
