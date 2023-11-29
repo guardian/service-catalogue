@@ -66,19 +66,20 @@ async function s3PathIsInConfig(
 	s3: S3Client,
 	owner: string,
 	repo: string,
-	path: string,
+	gitHubFile: string,
+	s3Prefix?: string,
 ): Promise<boolean> {
-	const configJson = await getConfigJsonFromGithub(octokit, repo, owner, path);
-	if (configJson === undefined) {
-		console.log(`${repo}: Found in ${path}: `, false);
+	const parsedConfig = await getConfigJsonFromGithub(
+		octokit,
+		repo,
+		owner,
+		gitHubFile,
+	);
+	if (parsedConfig === undefined) {
+		console.log(`${repo}: Found in ${gitHubFile}: `, false);
 		return false;
 	} else {
-		const s3Response1 = !!(await findInS3(s3, `atoms/${configJson.path}`));
-		const s3Response2 = !!(await findInS3(s3, configJson.path));
-		const result = s3Response1 || s3Response2;
-		console.log(`${repo}: Found in ${path}: `, result);
-
-		return result;
+		return !!(await findInS3(s3, `${s3Prefix ?? ''}/${parsedConfig.path}`));
 	}
 }
 
@@ -111,7 +112,14 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
 
 	async function foundInConfigJson() {
-		return await s3PathIsInConfig(octokit, s3, owner, repo, 'config.json');
+		return await s3PathIsInConfig(
+			octokit,
+			s3,
+			owner,
+			repo,
+			'config.json',
+			'atoms',
+		);
 	}
 	async function foundInS3Json() {
 		return await s3PathIsInConfig(octokit, s3, owner, repo, 'cfg/s3.json');

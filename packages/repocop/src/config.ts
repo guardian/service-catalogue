@@ -42,6 +42,11 @@ export interface Config extends PrismaConfig {
 	 * Flag to enable messaging when running locally.
 	 */
 	enableMessaging: boolean;
+
+	/**
+	 * The number of repositories to send to the interactive monitor for evaluation.
+	 */
+	interactivesCount: number;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -68,5 +73,6 @@ export async function getConfig(): Promise<Config> {
 			'guardian/esd-', // ESD team
 			'guardian/pluto-', // Multimedia team
 		],
+		interactivesCount: stage === 'PROD' ? 8 : 1,
 	};
 }
