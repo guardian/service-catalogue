@@ -84,6 +84,24 @@ function hasStatusTopic(repo: github_repositories): boolean {
 	);
 }
 
+function isMaintained(repo: github_repositories): boolean {
+	const mostRecentChange: Date | undefined =
+		[repo.created_at, repo.updated_at, repo.pushed_at]
+			.filter((d) => !!d)
+			.sort()
+			.reverse()[0] ?? undefined;
+
+	if (mostRecentChange === undefined) {
+		// This will only happen if there was a problem with the GH API,
+		// so pass for now and try to catch it again tomorrow
+		return true;
+	}
+	const now = new Date();
+	const twoYearsAgo = new Date();
+	twoYearsAgo.setFullYear(now.getFullYear() - 2);
+	return mostRecentChange > twoYearsAgo;
+}
+
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
@@ -104,7 +122,7 @@ export function repositoryRuleEvaluation(
 		branch_protection: hasBranchProtection(repo, allBranches),
 		team_based_access: false,
 		admin_access: hasAdminTeam(repo, teams),
-		archiving: null,
+		archiving: isMaintained(repo),
 		topics: hasStatusTopic(repo),
 		contents: null,
 		evaluated_on: new Date(),
