@@ -83,41 +83,6 @@ async function s3PathIsInConfig(
 	}
 }
 
-// Using early returns to minimise the number of calls to S3 so we can avoid rate limiting
-async function pathHasBeenFoundInS3(
-	octokit: Octokit,
-	s3: S3Client,
-	repo: string,
-	owner: string,
-): Promise<boolean> {
-	const foundInConfigJson = await s3PathIsInConfig(
-		octokit,
-		s3,
-		owner,
-		repo,
-		'config.json',
-		'atoms',
-	);
-
-	if (foundInConfigJson) {
-		return true;
-	}
-
-	const foundInS3Json = await s3PathIsInConfig(
-		octokit,
-		s3,
-		owner,
-		repo,
-		'cfg/s3.json',
-	);
-
-	if (foundInS3Json) {
-		return true;
-	}
-
-	return false;
-}
-
 async function applyTopics(repo: string, owner: string, octokit: Octokit) {
 	console.log(`Applying interactive topic to ${repo}`);
 	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
