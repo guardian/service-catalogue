@@ -5,7 +5,7 @@ import {
 	listTasks,
 	runAllTasks,
 	runOneTask,
-} from './aws';
+} from './aws.js';
 
 const Commands = {
 	list: 'list-tasks',
@@ -15,7 +15,7 @@ const Commands = {
 
 const parseCommandLineArguments = () => {
 	return Promise.resolve(
-		yargs
+		yargs(process.argv.slice(2))
 			.usage('$0 COMMAND [args]')
 			.command(
 				Commands.list,

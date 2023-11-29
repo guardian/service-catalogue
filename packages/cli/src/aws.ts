@@ -7,7 +7,7 @@ import {
 	RunTaskCommand,
 } from '@aws-sdk/client-ecs';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
-import { awsClientConfig } from 'common/aws';
+import { awsClientConfig } from 'common/aws.js';
 
 interface EcsResourceTags {
 	arn: string;
