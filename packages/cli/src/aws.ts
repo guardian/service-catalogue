@@ -191,7 +191,7 @@ export const runOneTask = async (
 	stage: string,
 	app: string,
 	name: string,
-): Promise<RunTaskCommandOutput> => {
+): Promise<URL[]> => {
 	const tasks = (await listTasks(ecsClient, stack, stage, app)).filter(
 		(taskDescription) => taskDescription['Name'] === name,
 	);
@@ -224,13 +224,19 @@ export const runOneTask = async (
 			: []),
 	];
 
-	return await runTaskByArn(
+	const response = await runTaskByArn(
 		ecsClient,
 		task.arn,
 		cluster.arn,
 		privateSubnets,
 		securityGroups,
 	);
+
+	const taskArns: string[] = response.tasks
+		?.map((t) => t.taskArn)
+		.filter(Boolean) as string[];
+
+	return taskArns.map((taskArn) => getLogsUrl(app, stage, taskArn));
 };
 
 export const runAllTasks = async (
@@ -239,7 +245,7 @@ export const runAllTasks = async (
 	stack: string,
 	stage: string,
 	app: string,
-): Promise<RunTaskCommandOutput[]> => {
+): Promise<URL[]> => {
 	const tasks = await listTasks(ecsClient, stack, stage, app);
 
 	if (tasks.length === 0) {
@@ -263,7 +269,7 @@ export const runAllTasks = async (
 		stage,
 	);
 
-	return Promise.all(
+	const result = await Promise.all(
 		tasks.map((task) =>
 			runTaskByArn(ecsClient, task.arn, cluster.arn, privateSubnets, [
 				securityGroup,
@@ -271,4 +277,16 @@ export const runAllTasks = async (
 			]),
 		),
 	);
+
+	const taskArns = result
+		.flatMap((r) => r.tasks?.map((t) => t.taskArn))
+		.filter(Boolean) as string[];
+
+	return taskArns.map((taskArn) => getLogsUrl(app, stage, taskArn));
 };
+
+function getLogsUrl(app: string, stage: string, taskDefinition: string): URL {
+	return new URL(
+		`https://logs.gutools.co.uk/s/devx/app/discover#/?_a=(columns:!(table,resources,errors,client,message,error))&_g=(filters:!((query:(match_phrase:(app:${app}))),(query:(match_phrase:(stage:${stage}))),(query:(match_phrase:(ecs_task_arn:'${taskDefinition}')))))`,
+	);
+}
