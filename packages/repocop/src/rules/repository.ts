@@ -84,22 +84,24 @@ function hasStatusTopic(repo: github_repositories): boolean {
 	);
 }
 
-function isMaintained(repo: github_repositories): boolean {
-	const mostRecentChange: Date | undefined =
+function mostRecentChange(repo: github_repositories): Date | undefined {
+	return (
 		[repo.created_at, repo.updated_at, repo.pushed_at]
 			.filter((d) => !!d)
 			.sort()
-			.reverse()[0] ?? undefined;
+			.reverse()[0] ?? undefined
+	);
+}
 
-	if (mostRecentChange === undefined) {
-		// This will only happen if there was a problem with the GH API,
-		// so pass for now and try to catch it again tomorrow
-		return true;
-	}
+function isMaintained(repo: github_repositories): boolean {
+	const update: Date | undefined = mostRecentChange(repo);
+	//avoid false positives if no dates are available for now
+	const recentlyUpdated = (update ?? new Date()) > new Date('2021-01-01');
+	const isInteractive = repo.topics.includes('interactive');
 	const now = new Date();
 	const twoYearsAgo = new Date();
 	twoYearsAgo.setFullYear(now.getFullYear() - 2);
-	return mostRecentChange > twoYearsAgo;
+	return isInteractive || recentlyUpdated;
 }
 
 /**
