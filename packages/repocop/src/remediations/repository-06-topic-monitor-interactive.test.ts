@@ -1,8 +1,5 @@
 import type { repocop_github_repository_rules } from '@prisma/client';
-import {
-	createBatchEntry,
-	findPotentialInteractives,
-} from './repository-06-topic-monitor-interactive';
+import { findPotentialInteractives } from './repository-06-topic-monitor-interactive';
 
 describe('findPotentialInteractives', () => {
 	it('should return an empty array when evaluatedRepos is empty', () => {
@@ -32,20 +29,5 @@ describe('findPotentialInteractives', () => {
 
 		const result = findPotentialInteractives(evaluatedRepos);
 		expect(result).toEqual(['org/repo3']);
-	});
-});
-
-describe('createBatchEntry', () => {
-	it('should return a valid PublishBatchRequestEntry for a full repo name', () => {
-		const message = 'guardian/my-repo';
-		const result = createBatchEntry(message);
-		expect(result.Message).toEqual('my-repo');
-		expect(result.Id).toEqual('myrepo');
-	});
-	it('should throw an error for a short repo name', () => {
-		const message = 'my-repo';
-		expect(() => createBatchEntry(message)).toThrowError(
-			'Invalid repo name: my-repo',
-		);
 	});
 });
