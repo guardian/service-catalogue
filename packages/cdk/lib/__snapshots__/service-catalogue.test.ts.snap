@@ -4846,7 +4846,7 @@ spec:
             "Name": "CloudquerySource-GitHubTeamsFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "8192",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceGitHubTeamsTaskDefinitionExecutionRole9DEDACFD",
@@ -4854,7 +4854,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubTeamsTaskDefinition5CFD9707",
-        "Memory": "512",
+        "Memory": "16384",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
