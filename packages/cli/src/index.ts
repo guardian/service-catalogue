@@ -5,7 +5,7 @@ import {
 	listTasks,
 	runAllTasks,
 	runOneTask,
-} from './aws';
+} from './aws.js';
 
 const Commands = {
 	list: 'list-tasks',
@@ -15,7 +15,7 @@ const Commands = {
 
 const parseCommandLineArguments = () => {
 	return Promise.resolve(
-		yargs
+		yargs(process.argv.slice(2))
 			.usage('$0 COMMAND [args]')
 			.command(
 				Commands.list,
@@ -147,10 +147,12 @@ parseCommandLineArguments()
 		}
 	})
 	.then((commandResponse) => {
-		if (typeof commandResponse === 'number') {
-			process.exitCode = commandResponse;
-		} else {
-			console.log(JSON.stringify(commandResponse, null, 2));
+		if (commandResponse) {
+			if (typeof commandResponse === 'number') {
+				process.exitCode = commandResponse;
+			} else {
+				console.log(JSON.stringify(commandResponse, null, 2));
+			}
 		}
 	})
 	.catch((err) => {
