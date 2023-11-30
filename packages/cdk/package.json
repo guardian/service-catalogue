@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
-    "synth": "DOTENV_CONFIG_PATH=../../.env cdk synth --path-metadata false --version-reporting false"},
+    "synth": "cdk synth --path-metadata false --version-reporting false"
+  },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@guardian/cdk": "52.2.1",
