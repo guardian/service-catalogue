@@ -44,8 +44,9 @@ const repository: readonly IBestPractice[] = [
 		owner:
 			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
 		description: 'Repositories that are no longer used should be archived.',
-		howToCheck: 'Manual. View the repository on https://github.com',
-		howToExempt: 'N/A',
+		howToCheck:
+			'DevX may contact you to discuss archiving if your repo has been inactive for over two years.',
+		howToExempt: 'Repositories with an `interactive` topic are exempt.',
 	},
 	{
 		name: 'Topics',

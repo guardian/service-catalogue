@@ -43,6 +43,16 @@ continueMigrate() {
     if [ "$answer" != "${answer#[Yy]}" ] ;then
         echo "$stage migration in progress..."
         getDbUrl "$stage"
+
+        if [ "$migration_name" == "--from-start" ]; then
+          echo "Migrating from the very start. This requires the _prisma_migrations table to not exist, and will fail if it does."
+
+          # Baseline the database
+          # See https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate/add-prisma-migrate-to-a-project#baseline-your-production-environment
+          npx prisma migrate resolve --applied 0_init
+        fi
+
+        # Apply remaining migrations
         npx prisma migrate deploy
     else
         echo "Exiting without migrating, goodbye."
@@ -59,25 +69,19 @@ migrateDeploy() {
   stage=$1
   echo -e "$note"
   migrateWarning "$stage"
-  continueMigrate "$stage"
+  continueMigrate "$stage" "$fromStart"
 }
 
 stageAwareMigration() {
-  if [ "$stage" == "--dev" ]
-  then
+  if [ "$stage" == "--dev" ]; then
     devSetup
-    if [ -n "$migration_name" ]
-    then
+    if [ -n "$migration_name" ]; then
       migrateDEV "$migration_name"
-    else
-      :
     fi
-  elif [ "$stage" == "--code" ]
-  then
-    migrateDeploy "CODE"
-  elif [ "$stage" == "--prod" ]
-  then
-    migrateDeploy "PROD"
+  elif [ "$stage" == "--code" ]; then
+    migrateDeploy "CODE" "$migration_name"
+  elif [ "$stage" == "--prod" ]; then
+    migrateDeploy "PROD" "$migration_name"
   else
     echo -e "Stage '$stage' not recognised, please try again."
   fi

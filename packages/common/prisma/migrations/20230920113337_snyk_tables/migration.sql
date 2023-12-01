@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "snyk_dependencies" (
+CREATE TABLE IF NOT EXISTS "snyk_dependencies" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE "snyk_dependencies" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_group_members" (
+CREATE TABLE IF NOT EXISTS "snyk_group_members" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE "snyk_group_members" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_groups" (
+CREATE TABLE IF NOT EXISTS "snyk_groups" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE "snyk_groups" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_integrations" (
+CREATE TABLE IF NOT EXISTS "snyk_integrations" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE "snyk_integrations" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_organization_members" (
+CREATE TABLE IF NOT EXISTS "snyk_organization_members" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE "snyk_organization_members" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_organization_provisions" (
+CREATE TABLE IF NOT EXISTS "snyk_organization_provisions" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE "snyk_organization_provisions" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_organizations" (
+CREATE TABLE IF NOT EXISTS "snyk_organizations" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE "snyk_organizations" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_projects" (
+CREATE TABLE IF NOT EXISTS "snyk_projects" (
     "_cq_source_name" TEXT,
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_id" UUID NOT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE "snyk_projects" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_reporting_issues" (
+CREATE TABLE IF NOT EXISTS "snyk_reporting_issues" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -152,7 +152,7 @@ CREATE TABLE "snyk_reporting_issues" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_reporting_latest_issues" (
+CREATE TABLE IF NOT EXISTS "snyk_reporting_latest_issues" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -171,31 +171,31 @@ CREATE TABLE "snyk_reporting_latest_issues" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_dependencies__cq_id_key" ON "snyk_dependencies"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_dependencies__cq_id_key" ON "snyk_dependencies"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_group_members__cq_id_key" ON "snyk_group_members"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_group_members__cq_id_key" ON "snyk_group_members"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_groups__cq_id_key" ON "snyk_groups"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_groups__cq_id_key" ON "snyk_groups"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_integrations__cq_id_key" ON "snyk_integrations"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_integrations__cq_id_key" ON "snyk_integrations"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_organization_members__cq_id_key" ON "snyk_organization_members"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_organization_members__cq_id_key" ON "snyk_organization_members"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_organization_provisions__cq_id_key" ON "snyk_organization_provisions"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_organization_provisions__cq_id_key" ON "snyk_organization_provisions"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_organizations__cq_id_key" ON "snyk_organizations"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_organizations__cq_id_key" ON "snyk_organizations"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_projects__cq_id_key" ON "snyk_projects"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_projects__cq_id_key" ON "snyk_projects"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_reporting_issues__cq_id_key" ON "snyk_reporting_issues"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_reporting_issues__cq_id_key" ON "snyk_reporting_issues"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_reporting_latest_issues__cq_id_key" ON "snyk_reporting_latest_issues"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_reporting_latest_issues__cq_id_key" ON "snyk_reporting_latest_issues"("_cq_id");

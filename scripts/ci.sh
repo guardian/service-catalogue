@@ -27,10 +27,21 @@ createLambdaWithPrisma() {
 
 createZip() {
   echo "Creating $1 package"
+
   (
     cd "$ROOT_DIR/packages/$1/dist"
     zip -qr "$1".zip .
   )
+}
+
+verifyMarkdown() {
+  npm run generate -w best-practices
+
+  if [[ $(git status -z) == *"packages/best-practices/best-practices.md"* ]]; then
+    echo "Best practices markdown file is out of date. Please regenerate the project and commit the changes."
+    exit 1
+  fi
+
 }
 
 npm ci
@@ -38,6 +49,7 @@ npm run typecheck & npm run lint
 npm run test
 npm run synth & npm run build
 
-createZip "interactive-monitor" & \
+verifyMarkdown & \
+  createZip "interactive-monitor" & \
   createLambdaWithPrisma "repocop" & \
   createLambdaWithPrisma "data-audit"
