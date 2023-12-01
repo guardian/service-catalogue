@@ -70,6 +70,14 @@ const repository: readonly IBestPractice[] = [
 		howToCheck: 'Manual. View the repository on https://github.com',
 		howToExempt: 'N/A',
 	},
+	{
+		name: 'Stacks',
+		owner: devXSecurity,
+		description:
+			'Archived repositories should not have corresponding stacks on AWS.',
+		howToCheck: 'Manual. View the repository on https://github.com',
+		howToExempt: 'N/A',
+	},
 ] as const satisfies readonly IBestPractice[];
 
 const aws: readonly IBestPractice[] = [
