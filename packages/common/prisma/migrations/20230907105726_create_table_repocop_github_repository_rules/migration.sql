@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS repocop_github_repository_rules;
+
 -- CreateTable
 CREATE TABLE "repocop_github_repository_rules" (
     "full_name" TEXT NOT NULL,

@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "galaxies_people_profile_info_table" (
+CREATE TABLE IF NOT EXISTS "galaxies_people_profile_info_table" (
     "_cq_source_name" TEXT,
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_id" UUID NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE "galaxies_people_profile_info_table" (
 );
 
 -- CreateTable
-CREATE TABLE "galaxies_people_table" (
+CREATE TABLE IF NOT EXISTS "galaxies_people_table" (
     "_cq_source_name" TEXT,
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_id" UUID NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE "galaxies_people_table" (
 );
 
 -- CreateTable
-CREATE TABLE "galaxies_streams_table" (
+CREATE TABLE IF NOT EXISTS "galaxies_streams_table" (
     "_cq_source_name" TEXT,
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_id" UUID NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE "galaxies_streams_table" (
 );
 
 -- CreateTable
-CREATE TABLE "galaxies_teams_table" (
+CREATE TABLE IF NOT EXISTS "galaxies_teams_table" (
     "_cq_source_name" TEXT,
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_id" UUID NOT NULL,

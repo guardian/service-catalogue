@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS guardian_production_status;
+
 -- The Guardian has six recognised production statuses for repositories.
 -- Here they are enumerated and prioritised
 create table guardian_production_status

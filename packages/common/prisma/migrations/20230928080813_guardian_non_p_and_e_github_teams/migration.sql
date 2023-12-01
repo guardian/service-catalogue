@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS guardian_non_p_and_e_github_teams;
+
 /*
  A lot of best practice recommendations and expectations only apply to repos
  that are owned by P&E or are otherwise uncategorised. This is a list of github
