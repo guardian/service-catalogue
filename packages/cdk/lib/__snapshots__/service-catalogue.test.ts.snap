@@ -283,7 +283,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -1063,7 +1063,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -1776,7 +1776,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -2501,7 +2501,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -3181,7 +3181,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -4194,7 +4194,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -4703,7 +4703,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -5465,7 +5465,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -6245,7 +6245,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -6904,7 +6904,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -7623,7 +7623,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -8402,7 +8402,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -9304,7 +9304,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -9780,7 +9780,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -10505,7 +10505,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -11280,7 +11280,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -12243,7 +12243,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -12719,7 +12719,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -13558,7 +13558,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -14566,7 +14566,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -15045,7 +15045,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-default-config.yaml",
+              "--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
