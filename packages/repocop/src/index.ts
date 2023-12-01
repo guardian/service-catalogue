@@ -5,12 +5,17 @@ import type {
 } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { stageAwareOctokit } from 'common/functions';
+import type { Config } from './config';
 import { getConfig } from './config';
-import { getUnarchivedRepositories } from './query';
+import {
+	getArchivedRepositories,
+	getStacks,
+	getUnarchivedRepositories,
+} from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
-import { evaluateRepositories } from './rules/repository';
+import { evaluateRepositories, findStacks } from './rules/repository';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -25,6 +30,24 @@ async function writeEvaluationTable(
 	});
 
 	console.log('Finished writing to table');
+}
+
+async function findArchivedReposWithStacks(
+	prisma: PrismaClient,
+	config: Config,
+): Promise<RepoAndStack[]> {
+	const archivedRepos = await getArchivedRepositories(
+		prisma,
+		config.ignoredRepositoryPrefixes,
+	);
+
+	const stacks = await getStacks(prisma);
+
+	const reposWithStacks = archivedRepos
+		.map((repo) => findStacks(repo, stacks))
+		.filter((result) => !!result && result.stacks.length > 0) as RepoAndStack[];
+
+	return reposWithStacks;
 }
 
 export async function main() {
@@ -43,6 +66,11 @@ export async function main() {
 
 	console.log(
 		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepositories.length}.`,
+	);
+
+	console.log(
+		'Archived repos with potentially active stacks:',
+		(await findArchivedReposWithStacks(prisma, config)).slice(0, 10),
 	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);

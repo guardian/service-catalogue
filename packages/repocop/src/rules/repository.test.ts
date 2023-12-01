@@ -4,7 +4,7 @@ import type {
 	github_repository_branches,
 } from '@prisma/client';
 import type { RepositoryTeam } from '../query';
-import { hasAStack, repositoryRuleEvaluation } from './repository';
+import { findStacks, repositoryRuleEvaluation } from './repository';
 
 export const nullRepo: github_repositories = {
 	cq_sync_time: null,
@@ -440,24 +440,24 @@ describe('Repository maintenance', () => {
 
 describe('Repositories with related stacks on AWS', () => {
 	test('should be findable if a stack has a matching tag', () => {
+		console.log('THIS IS THE FAILING TEST');
+		const full_name = 'guardian/repo1';
 		const tags = {
-			App: 'myApp',
-			Stack: 'myStack',
-			Stage: 'CODE',
-			'gu:repo': 'guardian/repo1',
-			'gu:build-tool': 'unknown',
+			'gu:repo': full_name,
 		};
 		const exampleRepo: github_repositories = {
 			...thePerfectRepo,
-			full_name: 'guardian/repo1',
+			full_name,
 			name: 'repo1',
 		};
 		const stack: aws_cloudformation_stacks = {
 			...nullStack,
+			stack_name: 'mystack',
 			tags,
 		};
-		// hasAStack(thePerfectRepo, [stack]);
-		expect(hasAStack(exampleRepo, [stack])).toEqual(true);
+		console.log(findStacks(exampleRepo, [stack]));
+		const result = findStacks(exampleRepo, [stack])?.stacks.length;
+		expect(result).toEqual(1);
 	});
 	test('should be findable if the repo name is part of the stack name', () => {
 		const exampleRepo: github_repositories = {
@@ -469,7 +469,8 @@ describe('Repositories with related stacks on AWS', () => {
 			...nullStack,
 			stack_name: 'mystack-repo1-PROD',
 		};
-		expect(hasAStack(exampleRepo, [stack])).toEqual(true);
+		const result = findStacks(exampleRepo, [stack])?.stacks.length;
+		expect(result).toEqual(1);
 	});
 });
 
@@ -496,6 +497,7 @@ describe('Repositories without any related stacks on AWS', () => {
 			...nullStack,
 			stack_name: 'mystack-someOtherRepo-PROD',
 		};
-		expect(hasAStack(exampleRepo, [stack1, stack2])).toEqual(false);
+		const result = findStacks(exampleRepo, [stack1, stack2])?.stacks.length;
+		expect(result).toEqual(0);
 	});
 });

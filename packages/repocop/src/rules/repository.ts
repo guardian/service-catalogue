@@ -5,7 +5,10 @@ import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { AWSCloudformationTag } from 'common/types';
+import type {
+	AWSCloudformationStack,
+	AWSCloudformationTag,
+} from 'common/types';
 import {
 	getRepositoryBranches,
 	getRepositoryTeams,
@@ -112,34 +115,50 @@ function isMaintained(repo: github_repositories): boolean {
 
 function awsTagExists(
 	key: string,
-	value: string,
-	tags: AWSCloudformationTag,
+	value: string | null,
+	tags: AWSCloudformationTag | null,
 ): boolean {
-	return tags[key] === value;
+	console.log(tags);
+	if (value === null || tags === null) {
+		return false;
+	} else {
+		return tags[key] === value;
+	}
 }
 /**
  * Evaluate the following rule for a Github repository:
  *   > Archived repositories should not have corresponding stacks on AWS.
  */
-export function hasAStack(
+export function findStacks(
 	repo: github_repositories,
 	stacks: aws_cloudformation_stacks[],
-): boolean {
-	const x = stacks.map((stack) => ({
+): RepoAndStack | undefined {
+	const parsedStacks: AWSCloudformationStack[] = stacks.map((stack) => ({
 		stackName: stack.stack_name,
 		tags: stack.tags as AWSCloudformationTag,
 		creationTime: stack.creation_time,
 	}));
 
-	console.log(x[0]);
+	if (repo.name === null || repo.full_name === null) {
+		return undefined;
+	} else {
+		const stackMatches = parsedStacks.filter((stack) => {
+			//in reality these are never null, but the types don't know that
+			const stackName = stack.stackName ?? '';
+			return (
+				stackName.includes(repo.name!) ||
+				awsTagExists('gu:repo', repo.full_name, stack.tags)
+			);
+		});
+		const stackNames = stackMatches
+			.map((stack) => stack.stackName)
+			.filter((s) => !!s) as string[];
 
-	const stackMatch = x.find((stack) => {
-		return (
-			stack.stackName?.includes(repo.name!) ??
-			awsTagExists('gu:repo', repo.full_name!, stack.tags)
-		);
-	});
-	return stackMatch !== undefined;
+		return {
+			full_name: repo.full_name,
+			stacks: stackNames,
+		};
+	}
 }
 
 /**
