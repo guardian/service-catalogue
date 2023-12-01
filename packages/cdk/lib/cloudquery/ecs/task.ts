@@ -208,25 +208,31 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			}),
 		});
 
-		const awsOtelColletorTask = task.addContainer(`${id}AWSOTELCollector`, {
-			image: awsOtelCollectorImage,
-			command: [
-				'--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml',
-			],
-			logging: LogDrivers.awsLogs({
-				streamPrefix: [stack, stage, app].join('/'),
-				logRetention: RetentionDays.ONE_DAY,
-			}),
-			healthCheck: {
-				command: ['CMD', './healthcheck'],
-				interval: Duration.seconds(5),
-			},
-		});
+		if (name === 'GithubTeams') {
+			const awsOtelColletorTask = task.addContainer(`${id}AWSOTELCollector`, {
+				image: awsOtelCollectorImage,
+				command: [
+					'--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml',
+				],
+				logging: new FireLensLogDriver({
+					options: {
+						Name: `kinesis_streams`,
+						region,
+						stream: loggingStreamName,
+						retry_limit: '2',
+					},
+				}),
+				healthCheck: {
+					command: ['CMD', './healthcheck'],
+					interval: Duration.seconds(5),
+				},
+			});
 
-		cloudqueryTask.addContainerDependencies({
-			container: awsOtelColletorTask,
-			condition: ContainerDependencyCondition.HEALTHY,
-		});
+			cloudqueryTask.addContainerDependencies({
+				container: awsOtelColletorTask,
+				condition: ContainerDependencyCondition.HEALTHY,
+			});
+		}
 
 		if (runAsSingleton) {
 			const singletonTask = task.addContainer(`${id}AwsCli`, {
