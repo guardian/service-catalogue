@@ -8,6 +8,7 @@ import {
 } from '@aws-sdk/client-ecs';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import { awsClientConfig } from 'common/aws.js';
+import { getCentralElkLink } from 'common/logs';
 import terminalLink from 'terminal-link';
 
 interface EcsResourceTags {
@@ -287,7 +288,14 @@ export const runAllTasks = async (
 };
 
 function printLogsUrl(app: string, stage: string, taskDefinition: string) {
-	const url = `https://logs.gutools.co.uk/s/devx/app/discover#/?_a=(columns:!(table,resources,errors,client,message,error))&_g=(filters:!((query:(match_phrase:(app:${app}))),(query:(match_phrase:(stage:${stage}))),(query:(match_phrase:(ecs_task_arn:'${taskDefinition}')))))`;
+	const url = getCentralElkLink({
+		filters: {
+			app,
+			stage,
+			ecs_task_arn: taskDefinition,
+		},
+		columns: ['table', 'resources', 'errors', 'client', 'message', 'error'],
+	});
 
 	terminalLink.isSupported
 		? console.log(
