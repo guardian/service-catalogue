@@ -85,22 +85,26 @@ function hasStatusTopic(repo: github_repositories): boolean {
 }
 
 function mostRecentChange(repo: github_repositories): Date | undefined {
-	return (
-		[repo.created_at, repo.updated_at, repo.pushed_at]
-			.filter((d) => !!d)
-			.sort()
-			.reverse()[0] ?? undefined
-	);
+	const definiteDates: Date[] = [
+		repo.created_at,
+		repo.updated_at,
+		repo.pushed_at,
+	].filter((d) => !!d) as Date[];
+
+	const sortedDates = definiteDates.sort((a, b) => b.getTime() - a.getTime());
+	return sortedDates[0] ?? undefined;
 }
 
 function isMaintained(repo: github_repositories): boolean {
 	const update: Date | undefined = mostRecentChange(repo);
-	//avoid false positives if no dates are available for now
-	const recentlyUpdated = (update ?? new Date()) > new Date('2021-01-01');
-	const isInteractive = repo.topics.includes('interactive');
 	const now = new Date();
 	const twoYearsAgo = new Date();
 	twoYearsAgo.setFullYear(now.getFullYear() - 2);
+	//avoid false positives and use current moment if no dates are available for now
+	//a repo always has a created_at date, so this is unlikely to happen unless something is wrong with cloudquery
+	const recentlyUpdated = (update ?? new Date()) > twoYearsAgo;
+	const isInteractive = repo.topics.includes('interactive');
+
 	return isInteractive || recentlyUpdated;
 }
 
