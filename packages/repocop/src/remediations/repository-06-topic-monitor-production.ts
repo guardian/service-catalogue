@@ -127,16 +127,17 @@ export function removeGuardian(fullRepoName: string): string {
 }
 
 async function applyProductionTopicToOneRepoAndMessageTeams(
-	repoName: string,
+	fullRepoName: string,
 	teamNameSlugs: string[],
 	octokit: Octokit,
 	config: Config,
 ) {
 	const owner = 'guardian';
 	const topic = 'production';
-	await applyTopics(repoName, owner, octokit, topic);
+	const shortRepoName = removeGuardian(fullRepoName);
+	await applyTopics(shortRepoName, owner, octokit, topic);
 	for (const teamNameSlug of teamNameSlugs) {
-		await notifyOneTeam(`${owner}/repoName`, config, teamNameSlug);
+		await notifyOneTeam(fullRepoName, config, teamNameSlug);
 	}
 }
 

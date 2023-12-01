@@ -84,6 +84,30 @@ function hasStatusTopic(repo: github_repositories): boolean {
 	);
 }
 
+function mostRecentChange(repo: github_repositories): Date | undefined {
+	const definiteDates: Date[] = [
+		repo.created_at,
+		repo.updated_at,
+		repo.pushed_at,
+	].filter((d) => !!d) as Date[];
+
+	const sortedDates = definiteDates.sort((a, b) => b.getTime() - a.getTime());
+	return sortedDates[0] ?? undefined;
+}
+
+function isMaintained(repo: github_repositories): boolean {
+	const update: Date | undefined = mostRecentChange(repo);
+	const now = new Date();
+	const twoYearsAgo = new Date();
+	twoYearsAgo.setFullYear(now.getFullYear() - 2);
+	//avoid false positives and use current moment if no dates are available for now
+	//a repo always has a created_at date, so this is unlikely to happen unless something is wrong with cloudquery
+	const recentlyUpdated = (update ?? new Date()) > twoYearsAgo;
+	const isInteractive = repo.topics.includes('interactive');
+
+	return isInteractive || recentlyUpdated;
+}
+
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
@@ -104,7 +128,7 @@ export function repositoryRuleEvaluation(
 		branch_protection: hasBranchProtection(repo, allBranches),
 		team_based_access: false,
 		admin_access: hasAdminTeam(repo, teams),
-		archiving: null,
+		archiving: isMaintained(repo),
 		topics: hasStatusTopic(repo),
 		contents: null,
 		evaluated_on: new Date(),
