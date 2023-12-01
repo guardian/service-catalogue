@@ -183,7 +183,7 @@ export class CloudqueryCluster extends Cluster {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
 					name,
-					managedPolicies: managedPolicies,
+					managedPolicies,
 					policies: [logShippingPolicy, monitoringPolicy, ...policies],
 					schedule,
 					sourceConfig: config,

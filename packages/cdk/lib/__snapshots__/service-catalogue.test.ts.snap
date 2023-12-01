@@ -12798,29 +12798,6 @@ spec:
             "Name": "CloudquerySource-OrgWideS3AWSOTELCollector",
           },
           {
-            "DependsOn": [
-              {
-                "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-OrgWideS3AWSOTELCollector",
-              },
-            ],
-            "Essential": true,
-            "Image": "ghcr.io/ashcorr/trace-test-container:latest",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3TestContainerLogGroup644951E0",
-                },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
-              },
-            },
-            "Name": "CloudquerySource-OrgWideS3TestContainer",
-          },
-          {
             "Environment": [
               {
                 "Name": "STACK",
@@ -12934,36 +12911,6 @@ spec:
       "UpdateReplacePolicy": "Retain",
     },
     "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3FirelensLogGroupF8BCB6DF": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "OrgWideS3",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3TestContainerLogGroup644951E0": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -13147,19 +13094,6 @@ spec:
               "Resource": {
                 "Fn::GetAtt": [
                   "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3AWSOTELCollectorLogGroup8A1A7D25",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceOrgWideS3TaskDefinitionCloudquerySourceOrgWideS3TestContainerLogGroup644951E0",
                   "Arn",
                 ],
               },
