@@ -1,9 +1,11 @@
 import type {
+	aws_cloudformation_stacks,
 	github_repositories,
 	github_repository_branches,
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
+import type { AWSCloudformationTag } from 'common/types';
 import {
 	getRepositoryBranches,
 	getRepositoryTeams,
@@ -106,6 +108,38 @@ function isMaintained(repo: github_repositories): boolean {
 	const isInteractive = repo.topics.includes('interactive');
 
 	return isInteractive || recentlyUpdated;
+}
+
+function awsTagExists(
+	key: string,
+	value: string,
+	tags: AWSCloudformationTag,
+): boolean {
+	return tags[key] === value;
+}
+/**
+ * Evaluate the following rule for a Github repository:
+ *   > Archived repositories should not have corresponding stacks on AWS.
+ */
+export function hasAStack(
+	repo: github_repositories,
+	stacks: aws_cloudformation_stacks[],
+): boolean {
+	const x = stacks.map((stack) => ({
+		stackName: stack.stack_name,
+		tags: stack.tags as AWSCloudformationTag,
+		creationTime: stack.creation_time,
+	}));
+
+	console.log(x[0]);
+
+	const stackMatch = x.find((stack) => {
+		return (
+			stack.stackName?.includes(repo.name!) ??
+			awsTagExists('gu:repo', repo.full_name!, stack.tags)
+		);
+	});
+	return stackMatch !== undefined;
 }
 
 /**
