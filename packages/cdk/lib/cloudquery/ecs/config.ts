@@ -60,7 +60,7 @@ export function awsSourceConfig(
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
-			otel_endpoint: 'localhost:4318',
+			otel_endpoint: '0.0.0.0:4318',
 			otel_endpoint_insecure: true,
 			concurrency,
 			spec: {

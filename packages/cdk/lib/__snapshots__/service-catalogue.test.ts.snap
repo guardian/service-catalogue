@@ -177,7 +177,7 @@ spec:
     - aws_costexplorer_*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -722,7 +722,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -961,7 +960,7 @@ spec:
     - aws_securityhub_*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   concurrency: 2000
   spec:
@@ -1446,7 +1445,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -1679,7 +1677,7 @@ spec:
     - aws_organization*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -2163,7 +2161,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -2902,7 +2899,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -3636,7 +3632,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -4410,7 +4405,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -5176,7 +5170,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -5942,7 +5935,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -6666,7 +6658,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -6834,7 +6825,7 @@ spec:
     - aws_autoscaling_groups
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -7379,7 +7370,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -7557,7 +7547,7 @@ spec:
     - aws_acm*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -8102,7 +8092,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -8340,7 +8329,7 @@ spec:
     - aws_cloudformation_*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -8825,7 +8814,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -9246,7 +9234,7 @@ spec:
     - aws_cloudwatch_alarms
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -9509,7 +9497,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -9726,7 +9713,7 @@ spec:
     - aws_dynamodb*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -10271,7 +10258,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -10451,7 +10437,7 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -11055,7 +11041,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -11234,7 +11219,7 @@ spec:
     - aws_inspector2_findings
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -11779,7 +11764,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -12201,7 +12185,7 @@ spec:
     - aws_elbv2_*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -12503,7 +12487,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -12681,7 +12664,7 @@ spec:
     - aws_s3*
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -13292,7 +13275,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -13523,7 +13505,7 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
-  otel_endpoint: localhost:4318
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   concurrency: 2000
   spec:
@@ -14069,7 +14051,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -14838,7 +14819,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",
@@ -15574,7 +15554,6 @@ spec:
                 "xray:GetSamplingRules",
                 "xray:GetSamplingTargets",
                 "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters",
               ],
               "Effect": "Allow",
               "Resource": "*",

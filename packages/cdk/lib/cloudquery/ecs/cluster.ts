@@ -140,7 +140,6 @@ export class CloudqueryCluster extends Cluster {
 				'xray:GetSamplingRules',
 				'xray:GetSamplingTargets',
 				'xray:GetSamplingStatisticSummaries',
-				'ssm:GetParameters',
 			],
 			effect: Effect.ALLOW,
 			resources: ['*'],
