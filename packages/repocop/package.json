@@ -12,7 +12,9 @@
 		"migrate:setuplocal": "script/migrate.sh --dev",
 		"migrate:dev": "script/migrate.sh --dev $NAME",
 		"migrate:code": "script/migrate.sh --code",
-		"migrate:prod": "script/migrate.sh --prod"
+		"migrate:prod": "script/migrate.sh --prod",
+		"migrate:code:from-start": "script/migrate.sh --code --from-start",
+		"migrate:prod:from-start": "script/migrate.sh --prod --from-start"
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.438.0",
