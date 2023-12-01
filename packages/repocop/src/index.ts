@@ -37,6 +37,14 @@ export async function main() {
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		await evaluateRepositories(prisma, unarchivedRepositories);
 
+	const unmaintinedReposCount = evaluatedRepos.filter(
+		(repo) => repo.archiving === false,
+	).length;
+
+	console.log(
+		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepositories.length}.`,
+	);
+
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);

@@ -362,3 +362,43 @@ describe('Repository topics', () => {
 		expect(actual.topics).toEqual(false);
 	});
 });
+
+describe('Repository maintenance', () => {
+	test('should have happened at some point in the last two years', () => {
+		const recentRepo: github_repositories = {
+			...nullRepo,
+			created_at: new Date(),
+		};
+
+		const oldRepo: github_repositories = {
+			...nullRepo,
+			created_at: new Date('2019-01-01'),
+		};
+
+		const recentEval = repositoryRuleEvaluation(recentRepo, [], []);
+		const oldEval = repositoryRuleEvaluation(oldRepo, [], []);
+		expect(recentEval.archiving).toEqual(true);
+		expect(oldEval.archiving).toEqual(false);
+	});
+	test('should be based only on the most recent date provided', () => {
+		const recentlyUpdatedRepo: github_repositories = {
+			...nullRepo,
+			updated_at: new Date(),
+			//these two dates are more than two years in the past, but should be
+			//ignored because the updated_at date is more recent
+			created_at: new Date('2019-01-01'),
+			pushed_at: new Date('2020-01-01'),
+		};
+
+		const actual = repositoryRuleEvaluation(recentlyUpdatedRepo, [], []);
+		expect(actual.archiving).toEqual(true);
+	});
+	test('is not a concern if no dates are found', () => {
+		const recentlyUpdatedRepo: github_repositories = {
+			...nullRepo,
+		};
+
+		const actual = repositoryRuleEvaluation(recentlyUpdatedRepo, [], []);
+		expect(actual.archiving).toEqual(true);
+	});
+});
