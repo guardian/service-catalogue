@@ -650,20 +650,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -722,6 +708,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -1370,20 +1374,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -1442,6 +1432,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "sts:AssumeRole",
@@ -2083,20 +2091,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -2155,6 +2149,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -2818,20 +2830,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -2890,6 +2888,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",
@@ -3548,20 +3564,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -3620,6 +3622,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "s3:GetObject",
@@ -4318,20 +4338,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -4390,6 +4396,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",
@@ -5080,20 +5104,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -5152,6 +5162,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",
@@ -5842,20 +5870,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -5914,6 +5928,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",
@@ -6562,20 +6594,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -6634,6 +6652,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",
@@ -7271,20 +7307,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -7343,6 +7365,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -7990,20 +8030,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -8062,6 +8088,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -8709,20 +8753,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -8781,6 +8811,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -9449,6 +9497,24 @@ spec:
               },
             },
             {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
               "Action": "organizations:List*",
               "Effect": "Allow",
               "Resource": "*",
@@ -9519,20 +9585,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -10147,20 +10199,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -10219,6 +10257,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -10898,20 +10954,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -10999,6 +11041,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -11647,20 +11707,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -11719,6 +11765,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -12367,20 +12431,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -12439,6 +12489,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -13152,20 +13220,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -13224,6 +13278,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -13925,20 +13997,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -13997,6 +14055,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "organizations:List*",
@@ -14690,20 +14766,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -14762,6 +14824,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",
@@ -15422,20 +15502,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -15494,6 +15560,24 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "rds-db:connect",

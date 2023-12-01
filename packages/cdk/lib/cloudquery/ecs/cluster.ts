@@ -6,7 +6,7 @@ import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import type { Secret } from 'aws-cdk-lib/aws-ecs/lib/container-definition';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
-import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import { EmailSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
@@ -127,15 +127,30 @@ export class CloudqueryCluster extends Cluster {
 			resourceName: loggingStreamName,
 		});
 
+		const monitoringPolicy = new PolicyStatement({
+			actions: [
+				'logs:PutLogEvents',
+				'logs:CreateLogGroup',
+				'logs:CreateLogStream',
+				'logs:DescribeLogStreams',
+				'logs:DescribeLogGroups',
+				'logs:PutRetentionPolicy',
+				'xray:PutTraceSegments',
+				'xray:PutTelemetryRecords',
+				'xray:GetSamplingRules',
+				'xray:GetSamplingTargets',
+				'xray:GetSamplingStatisticSummaries',
+				'ssm:GetParameters',
+			],
+			effect: Effect.ALLOW,
+			resources: ['*'],
+		});
+
 		const logShippingPolicy = new PolicyStatement({
 			actions: ['kinesis:Describe*', 'kinesis:Put*'],
 			effect: Effect.ALLOW,
 			resources: [loggingStreamArn],
 		});
-
-		const tracesShippingPolicy = ManagedPolicy.fromAwsManagedPolicyName(
-			'AWSXrayWriteOnlyAccess',
-		);
 
 		const topic = new Topic(scope, 'CloudQueryAlertTopic');
 
@@ -169,8 +184,8 @@ export class CloudqueryCluster extends Cluster {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
 					name,
-					managedPolicies: [tracesShippingPolicy, ...managedPolicies],
-					policies: [logShippingPolicy, ...policies],
+					managedPolicies: managedPolicies,
+					policies: [logShippingPolicy, monitoringPolicy, ...policies],
 					schedule,
 					sourceConfig: config,
 					secrets,
