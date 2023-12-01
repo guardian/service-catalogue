@@ -118,7 +118,6 @@ function awsTagExists(
 	value: string | null,
 	tags: AWSCloudformationTag | null,
 ): boolean {
-	console.log(tags);
 	if (value === null || tags === null) {
 		return false;
 	} else {
@@ -144,7 +143,7 @@ export function findStacks(
 	} else {
 		const stackMatches = parsedStacks.filter((stack) => {
 			//in reality these are never null, but the types don't know that
-			const stackName = stack.stackName ?? '';
+			const stackName = stack.stackName ?? ''; //make this better at handling nulls
 			return (
 				stackName.includes(repo.name!) ||
 				awsTagExists('gu:repo', repo.full_name, stack.tags)

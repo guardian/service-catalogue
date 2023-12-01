@@ -36,6 +36,7 @@ async function findArchivedReposWithStacks(
 	prisma: PrismaClient,
 	config: Config,
 ): Promise<RepoAndStack[]> {
+	//TODO exclude repos where we have found a match for unarchived repos.
 	const archivedRepos = await getArchivedRepositories(
 		prisma,
 		config.ignoredRepositoryPrefixes,
