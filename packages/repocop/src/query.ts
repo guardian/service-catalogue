@@ -17,6 +17,7 @@ export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ) {
+	console.log('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
 			NOT: [
@@ -36,21 +37,10 @@ export async function getUnarchivedRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<github_repositories[]> {
-	console.log('Discovering repositories');
-	const repositories = await client.github_repositories.findMany({
-		where: {
-			archived: false,
-
-			NOT: [
-				{
-					OR: ignoredRepositoryPrefixes.map((prefix) => {
-						return { full_name: { startsWith: prefix } };
-					}),
-				},
-			],
-		},
-	});
-	console.log(`Found ${repositories.length} repositories`);
+	const repositories = (
+		await getRepositories(client, ignoredRepositoryPrefixes)
+	).filter((r) => !r.archived);
+	console.log(`Found ${repositories.length} unarchived repositories`);
 
 	return repositories;
 }
@@ -59,21 +49,10 @@ export async function getArchivedRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<github_repositories[]> {
-	console.log('Discovering repositories');
-	const repositories = await client.github_repositories.findMany({
-		where: {
-			archived: true,
-
-			NOT: [
-				{
-					OR: ignoredRepositoryPrefixes.map((prefix) => {
-						return { full_name: { startsWith: prefix } };
-					}),
-				},
-			],
-		},
-	});
-	console.log(`Found ${repositories.length} repositories`);
+	const repositories = (
+		await getRepositories(client, ignoredRepositoryPrefixes)
+	).filter((r) => r.archived);
+	console.log(`Found ${repositories.length} archived repositories`);
 
 	return repositories;
 }
