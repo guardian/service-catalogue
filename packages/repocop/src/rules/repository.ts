@@ -109,12 +109,19 @@ function isMaintained(repo: github_repositories): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
+//TODO find somehwere else to put this
+export interface RepoAndStatus {
+	full_name: string | null;
+	name: string | null;
+	archived: boolean | null;
+}
+
 /**
  * Evaluate the following rule for a Github repository:
  *   > Archived repositories should not have corresponding stacks on AWS.
  */
 export function findStacks(
-	repo: github_repositories,
+	repo: RepoAndStatus,
 	stacks: GuRepoStack[],
 ): RepoAndStack | undefined {
 	if (repo.name === null || repo.full_name === null) {

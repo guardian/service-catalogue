@@ -1,20 +1,25 @@
 import type {
+	aws_cloudformation_stacks,
 	github_repositories,
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { stageAwareOctokit } from 'common/functions';
+import type { GuRepoStack } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
 	getArchivedRepositories,
+	getRepositories,
 	getStacks,
 	getUnarchivedRepositories,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
+import { parseTagsFromStack } from './remediations/shared-utilities';
+import type { RepoAndStatus } from './rules/repository';
 import { evaluateRepositories, findStacks } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -35,20 +40,32 @@ async function writeEvaluationTable(
 async function findArchivedReposWithStacks(
 	prisma: PrismaClient,
 	config: Config,
-): Promise<RepoAndStack[]> {
-	//TODO exclude repos where we have found a match for unarchived repos.
-	const archivedRepos = await getArchivedRepositories(
-		prisma,
-		config.ignoredRepositoryPrefixes,
+) {
+	const allRepos: RepoAndStatus[] = (
+		await getRepositories(prisma, config.ignoredRepositoryPrefixes)
+	).map((repo) => ({
+		full_name: repo.full_name,
+		name: repo.name,
+		archived: repo.archived,
+	}));
+
+	const stacks: GuRepoStack[] = (await getStacks(prisma)).map((stack) =>
+		parseTagsFromStack(stack),
 	);
 
-	const stacks = await getStacks(prisma);
+	//TODO exclude repos where we have found a match for unarchived repos.
+	const archivedRepos = allRepos.filter((repo) => repo.archived);
+	const unarchivedRepos = allRepos.filter((repo) => !repo.archived);
 
-	const reposWithStacks = archivedRepos
-		.map((repo) => findStacks(repo, stacks))
+	const stacksWithoutAnUnarchivedRepoMatch = stacks.filter((stack) =>
+		unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
+	);
+
+	const archivedReposWithPotentialStacks = archivedRepos
+		.map((repo) => findStacks(repo, stacksWithoutAnUnarchivedRepoMatch))
 		.filter((result) => !!result && result.stacks.length > 0) as RepoAndStack[];
 
-	return reposWithStacks;
+	return archivedReposWithPotentialStacks;
 }
 
 export async function main() {
