@@ -1,8 +1,8 @@
 import type {
-	aws_cloudformation_stacks,
 	github_repositories,
 	github_repository_branches,
 } from '@prisma/client';
+import type { GuRepoStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
 import { findStacks, repositoryRuleEvaluation } from './repository';
 
@@ -129,40 +129,6 @@ const nullBranch: github_repository_branches = {
 	name: '',
 	commit: null,
 	protected: null,
-};
-
-const nullStack: aws_cloudformation_stacks = {
-	cq_sync_time: null,
-	cq_source_name: null,
-	cq_id: '',
-	cq_parent_id: null,
-	account_id: null,
-	region: null,
-	id: null,
-	arn: '',
-	tags: null,
-	creation_time: null,
-	stack_name: null,
-	stack_status: null,
-	capabilities: [],
-	change_set_id: null,
-	deletion_time: null,
-	description: null,
-	disable_rollback: null,
-	drift_information: null,
-	enable_termination_protection: null,
-	last_updated_time: null,
-	notification_arns: [],
-	outputs: null,
-	parameters: null,
-	parent_id: null,
-	retain_except_on_create: null,
-	role_arn: null,
-	rollback_configuration: null,
-	root_id: null,
-	stack_id: null,
-	stack_status_reason: null,
-	timeout_in_minutes: null,
 };
 
 const thePerfectRepo: github_repositories = {
@@ -450,9 +416,10 @@ describe('Repositories with related stacks on AWS', () => {
 			full_name,
 			name: 'repo1',
 		};
-		const stack: aws_cloudformation_stacks = {
-			...nullStack,
-			stack_name: 'mystack',
+		const stack: GuRepoStack = {
+			stackName: 'mystack',
+			guRepoName: full_name,
+			creationTime: new Date(),
 			tags,
 		};
 		console.log(findStacks(exampleRepo, [stack]));
@@ -465,9 +432,11 @@ describe('Repositories with related stacks on AWS', () => {
 			full_name: 'guardian/repo1',
 			name: 'repo1',
 		};
-		const stack: aws_cloudformation_stacks = {
-			...nullStack,
-			stack_name: 'mystack-repo1-PROD',
+		const stack: GuRepoStack = {
+			stackName: 'mystack-repo1-PROD',
+			tags: {},
+			guRepoName: undefined,
+			creationTime: new Date(),
 		};
 		const result = findStacks(exampleRepo, [stack])?.stacks.length;
 		expect(result).toEqual(1);
@@ -489,13 +458,20 @@ describe('Repositories without any related stacks on AWS', () => {
 			'gu:build-tool': 'unknown',
 		};
 
-		const stack1: aws_cloudformation_stacks = {
-			...nullStack,
+		const stack1: GuRepoStack = {
+			stackName: 'stack1',
 			tags,
+			guRepoName: 'guardian/someOtherRepo',
+			creationTime: new Date(),
 		};
-		const stack2: aws_cloudformation_stacks = {
-			...nullStack,
-			stack_name: 'mystack-someOtherRepo-PROD',
+		const stack2: GuRepoStack = {
+			stackName: 'stack2',
+			tags: {
+				...tags,
+				Stage: 'PROD',
+			},
+			guRepoName: 'guardian/someOtherRepo',
+			creationTime: new Date(),
 		};
 		const result = findStacks(exampleRepo, [stack1, stack2])?.stacks.length;
 		expect(result).toEqual(0);

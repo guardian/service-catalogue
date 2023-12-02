@@ -13,6 +13,25 @@ import type {
 	AWSCloudformationTag,
 } from 'common/types';
 
+export async function getRepositories(
+	client: PrismaClient,
+	ignoredRepositoryPrefixes: string[],
+) {
+	const repositories = await client.github_repositories.findMany({
+		where: {
+			NOT: [
+				{
+					OR: ignoredRepositoryPrefixes.map((prefix) => {
+						return { full_name: { startsWith: prefix } };
+					}),
+				},
+			],
+		},
+	});
+
+	return repositories;
+}
+
 export async function getUnarchivedRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],

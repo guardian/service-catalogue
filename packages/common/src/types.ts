@@ -26,5 +26,5 @@ export interface AWSCloudformationStack {
 }
 
 export interface GuRepoStack extends AWSCloudformationStack {
-	guRepoName: string;
+	guRepoName: string | undefined;
 }

@@ -1,14 +1,10 @@
 import type {
-	aws_cloudformation_stacks,
 	github_repositories,
 	github_repository_branches,
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type {
-	AWSCloudformationStack,
-	AWSCloudformationTag,
-} from 'common/types';
+import type { GuRepoStack } from 'common/types';
 import {
 	getRepositoryBranches,
 	getRepositoryTeams,
@@ -113,40 +109,23 @@ function isMaintained(repo: github_repositories): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
-function awsTagExists(
-	key: string,
-	value: string | null,
-	tags: AWSCloudformationTag | null,
-): boolean {
-	if (value === null || tags === null) {
-		return false;
-	} else {
-		return tags[key] === value;
-	}
-}
 /**
  * Evaluate the following rule for a Github repository:
  *   > Archived repositories should not have corresponding stacks on AWS.
  */
 export function findStacks(
 	repo: github_repositories,
-	stacks: aws_cloudformation_stacks[],
+	stacks: GuRepoStack[],
 ): RepoAndStack | undefined {
-	const parsedStacks: AWSCloudformationStack[] = stacks.map((stack) => ({
-		stackName: stack.stack_name,
-		tags: stack.tags as AWSCloudformationTag,
-		creationTime: stack.creation_time,
-	}));
-
 	if (repo.name === null || repo.full_name === null) {
 		return undefined;
 	} else {
-		const stackMatches = parsedStacks.filter((stack) => {
-			//in reality these are never null, but the types don't know that
-			const stackName = stack.stackName ?? ''; //make this better at handling nulls
+		const stackMatches = stacks.filter((stack) => {
 			return (
-				stackName.includes(repo.name!) ||
-				awsTagExists('gu:repo', repo.full_name, stack.tags)
+				!!repo.name &&
+				!!stack.stackName &&
+				(stack.guRepoName === repo.full_name ||
+					stack.stackName.includes(repo.name))
 			);
 		});
 		const stackNames = stackMatches
