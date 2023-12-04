@@ -49,9 +49,9 @@ async function findArchivedReposWithStacks(
 		archived: repo.archived,
 	}));
 
-	const stacks: GuRepoStack[] = (await getStacks(prisma)).map((stack) =>
-		parseTagsFromStack(stack),
-	);
+	const stacks: GuRepoStack[] = (await getStacks(prisma))
+		.map((stack) => parseTagsFromStack(stack))
+		.filter((stack) => stack.tags['Stack'] === 'playground'); //ignore playground stacks for now.
 
 	//TODO exclude repos where we have found a match for unarchived repos.
 	const archivedRepos = allRepos.filter((repo) => repo.archived);
