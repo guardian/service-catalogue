@@ -104,17 +104,6 @@ async function findReposInProdWithoutProductionTopic(
 		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/ INFRA Cloudformation Stage tag.`,
 	);
 
-	reposInProdWithoutProductionTopic.map((stack) =>
-		console.log(
-			'repo:',
-			stack.guRepoName,
-			'stack:',
-			stack.stackName,
-			'stack created on:',
-			stack.creationTime,
-		),
-	);
-
 	return reposInProdWithoutProductionTopic;
 }
 
@@ -166,7 +155,6 @@ export async function applyProductionTopicAndMessageTeams(
 	console.log(
 		`Found ${reposWithContactableOwners.length} repos with contactable owners.`,
 	);
-	reposWithContactableOwners.map((repo) => console.log(repo));
 
 	if (config.stage === 'PROD') {
 		console.log(

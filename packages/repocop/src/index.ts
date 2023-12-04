@@ -46,7 +46,9 @@ export async function main() {
 	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
-	if (config.enableMessaging) {
+
+	const isWeekday = new Date().getDay() > 0 && new Date().getDay() < 6;
+	if (config.enableMessaging && isWeekday) {
 		await sendPotentialInteractives(evaluatedRepos, config);
 		const octokit = await stageAwareOctokit(config.stage);
 		await protectBranches(
@@ -64,7 +66,7 @@ export async function main() {
 		);
 	} else {
 		console.log(
-			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
+			'To enable messaging, ENABLE_MESSAGING must be true, and it must be a weekday.',
 		);
 	}
 
