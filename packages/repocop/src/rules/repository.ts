@@ -163,6 +163,7 @@ export function hasSufficientDependencyTracking(
 		.map((project) => parseSnykTags(project))
 		.map((p) => p.repo);
 
+	//TODO check the commit and branch tags too
 	const repoIsOnSnyk =
 		!!repo.full_name && allReposOnSnyk.includes(repo.full_name);
 
