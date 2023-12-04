@@ -95,7 +95,6 @@ export async function addMessagesToQueue(
 	}
 }
 
-//TODO double check this doesnt error if the tag is missing
 export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
 	return tag['gu:repo'];
 }
