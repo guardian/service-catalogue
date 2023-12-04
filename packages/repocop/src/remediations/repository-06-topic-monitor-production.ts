@@ -158,7 +158,11 @@ export async function applyProductionTopicAndMessageTeams(
 
 	if (config.stage === 'PROD') {
 		console.log(
-			`Applying production topic to ${reposWithContactableOwners.length} repos and messaging their teams.`,
+			`Applying production topic to ${
+				reposWithContactableOwners.length
+			} repos, ${reposWithContactableOwners.join(
+				',',
+			)} and messaging their teams.`,
 		);
 		await Promise.all(
 			reposWithContactableOwners.map((repo) =>
