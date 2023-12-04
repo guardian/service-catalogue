@@ -4,8 +4,8 @@ import type { AwsCloudFormationStack, Repository } from '../types';
 import {
 	evaluateOneRepo,
 	findStacks,
-	hasSufficientDependencyTracking,
 	parseSnykTags,
+	verifyDependencyTracking,
 } from './repository';
 
 const nullBranch: github_repository_branches = {
@@ -430,44 +430,68 @@ describe('Dependency tracking', () => {
 		org_id: null,
 	};
 
+	const supportedLanguages = ['JavaScript'];
+	const snykSupportedLanguages = ['Scala'];
+	const unsupportedLanguages = ['Julia'];
+
 	test('should be happy if all languages are supported, and the repo is on snyk', () => {
 		const repo: Repository = {
 			...nullRepo,
+			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
 		const project: snyk_projects = {
 			...nullSnykProject,
 			tags: [{ key: 'repo', value: 'guardian/some-repo' }],
 		};
-		const actual = hasSufficientDependencyTracking(
-			repo,
-			['JavaScript'],
-			[project],
-		);
+		const actual = verifyDependencyTracking(repo, supportedLanguages, [
+			project,
+		]);
 		expect(actual).toEqual(true);
 	});
 	test('should be happy if all languages are supported by dependabot, even if the repo is not on snyk', () => {
 		const repo: Repository = {
 			...nullRepo,
+			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasSufficientDependencyTracking(repo, ['JavaScript'], []);
+		const actual = verifyDependencyTracking(repo, supportedLanguages, []);
 		expect(actual).toEqual(true);
 	});
 	test('should be unhappy if a project is not on snyk, and uses a language dependabot does not support', () => {
 		const repo: Repository = {
 			...nullRepo,
+			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasSufficientDependencyTracking(repo, ['Scala'], []);
+		const actual = verifyDependencyTracking(repo, snykSupportedLanguages, []);
 		expect(actual).toEqual(false);
 	});
 	test('should be unhappy if a project is on snyk, and uses a language not supported by snyk', () => {
 		const repo: Repository = {
 			...nullRepo,
+			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasSufficientDependencyTracking(repo, ['Julia'], []);
+		const actual = verifyDependencyTracking(repo, unsupportedLanguages, []);
+		expect(actual).toEqual(false);
+	});
+	test('should be happy if a repository has been archived', () => {
+		const repo: Repository = {
+			...nullRepo,
+			archived: true,
+			full_name: 'guardian/some-repo',
+		};
+		const actual = verifyDependencyTracking(repo, unsupportedLanguages, []);
+		expect(actual).toEqual(false);
+	});
+	test('should be happy if a repository has a non-production tag', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: [],
+			full_name: 'guardian/some-repo',
+		};
+		const actual = verifyDependencyTracking(repo, unsupportedLanguages, []);
 		expect(actual).toEqual(false);
 	});
 });

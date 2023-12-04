@@ -129,11 +129,15 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 	return snykTags;
 }
 
-export function hasSufficientDependencyTracking(
-	repo: github_repositories,
+export function verifyDependencyTracking(
+	repo: Repository,
 	languages: string[],
 	snyk_projects: snyk_projects[],
 ): boolean {
+	if (!repo.topics.includes('production') || repo.archived) {
+		return true;
+	}
+
 	const supportedDependabotLanguages = [
 		'C#',
 		'Go',
@@ -179,7 +183,6 @@ export function hasSufficientDependencyTracking(
 		return containsOnlyDependabotSupportedLanguages;
 	}
 }
-
 /**
  * Evaluate the following rule for a Github repository:
  *   > Archived repositories should not have corresponding stacks on AWS.
