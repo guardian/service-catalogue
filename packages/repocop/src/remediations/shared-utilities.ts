@@ -13,8 +13,8 @@ import {
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
 import type {
+	AWSCloudformationStack,
 	AWSCloudformationTag,
-	GuRepoStack,
 	UpdateMessageEvent,
 } from 'common/types';
 import type { Config } from '../config';
@@ -101,7 +101,7 @@ export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
 
 export function parseTagsFromStack(
 	stack: aws_cloudformation_stacks,
-): GuRepoStack {
+): AWSCloudformationStack {
 	return {
 		stackName: stack.stack_name,
 		tags: stack.tags as AWSCloudformationTag,

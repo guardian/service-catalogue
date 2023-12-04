@@ -4,7 +4,7 @@ import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { GuRepoStack } from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import {
 	getRepositoryBranches,
 	getRepositoryTeams,
@@ -122,7 +122,7 @@ export interface RepoAndStatus {
  */
 export function findStacks(
 	repo: RepoAndStatus,
-	stacks: GuRepoStack[],
+	stacks: AWSCloudformationStack[],
 ): RepoAndStack | undefined {
 	if (repo.name === null || repo.full_name === null) {
 		return undefined;

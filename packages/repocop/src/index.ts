@@ -5,7 +5,7 @@ import type {
 } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { stageAwareOctokit } from 'common/functions';
-import type { GuRepoStack } from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { getRepositories, getStacks, getUnarchivedRepositories } from './query';
@@ -43,7 +43,7 @@ async function findArchivedReposWithStacks(
 		archived: repo.archived,
 	}));
 
-	const stacks: GuRepoStack[] = (await getStacks(prisma))
+	const stacks: AWSCloudformationStack[] = (await getStacks(prisma))
 		.map((s) => parseTagsFromStack(s))
 		.filter((s) => !(s.tags['Stack'] === 'playground')); //ignore playground stacks for now.
 

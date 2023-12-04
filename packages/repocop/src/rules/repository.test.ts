@@ -2,7 +2,7 @@ import type {
 	github_repositories,
 	github_repository_branches,
 } from '@prisma/client';
-import type { GuRepoStack } from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
 import { findStacks, repositoryRuleEvaluation } from './repository';
 
@@ -415,7 +415,7 @@ describe('Repositories with related stacks on AWS', () => {
 			full_name,
 			name: 'repo1',
 		};
-		const stack: GuRepoStack = {
+		const stack: AWSCloudformationStack = {
 			stackName: 'mystack',
 			guRepoName: full_name,
 			creationTime: new Date(),
@@ -431,10 +431,9 @@ describe('Repositories with related stacks on AWS', () => {
 			full_name: 'guardian/repo1',
 			name: 'repo1',
 		};
-		const stack: GuRepoStack = {
+		const stack: AWSCloudformationStack = {
 			stackName: 'mystack-repo1-PROD',
 			tags: {},
-			guRepoName: undefined,
 			creationTime: new Date(),
 		};
 		const result = findStacks(exampleRepo, [stack])?.stacks.length;
@@ -457,13 +456,13 @@ describe('Repositories without any related stacks on AWS', () => {
 			'gu:build-tool': 'unknown',
 		};
 
-		const stack1: GuRepoStack = {
+		const stack1: AWSCloudformationStack = {
 			stackName: 'stack1',
 			tags,
 			guRepoName: 'guardian/someOtherRepo',
 			creationTime: new Date(),
 		};
-		const stack2: GuRepoStack = {
+		const stack2: AWSCloudformationStack = {
 			stackName: 'stack2',
 			tags: {
 				...tags,

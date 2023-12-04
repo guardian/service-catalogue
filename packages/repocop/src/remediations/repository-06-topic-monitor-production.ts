@@ -5,7 +5,7 @@ import {
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type { AWSCloudformationStack, GuRepoStack } from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../config';
 import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
@@ -46,9 +46,9 @@ export function getRepoNamesWithoutProductionTopic(
 
 export function getReposInProdWithoutProductionTopic(
 	reposWithoutProductionTopic: string[],
-	guRepoStacks: GuRepoStack[],
-): GuRepoStack[] {
-	return guRepoStacks.filter((stack) => {
+	awsStacks: AWSCloudformationStack[],
+): AWSCloudformationStack[] {
+	return awsStacks.filter((stack) => {
 		const guRepoName = stack.guRepoName;
 		return !!guRepoName && reposWithoutProductionTopic.includes(guRepoName);
 	});
@@ -69,7 +69,7 @@ async function findReposInProdWithoutProductionTopic(
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
 
-	const guRepoStacks: GuRepoStack[] = cfnStacksWithProdInfraTags
+	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
 		.filter(
 			(stack: AWSCloudformationStack) =>
 				getGuRepoName(stack.tags) !== undefined,
@@ -83,13 +83,13 @@ async function findReposInProdWithoutProductionTopic(
 		});
 
 	console.log(
-		`Found ${guRepoStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+		`Found ${awsStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
 	);
 
-	const reposInProdWithoutProductionTopic: GuRepoStack[] =
+	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			guRepoStacks,
+			awsStacks,
 		);
 
 	console.log(
@@ -136,10 +136,8 @@ export async function applyProductionTopicAndMessageTeams(
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: GuRepoStack[] = await findReposInProdWithoutProductionTopic(
-		prisma,
-		unarchivedRepos,
-	);
+	const repos: AWSCloudformationStack[] =
+		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
 	const fullRepoNames = repos
 		.map((repo) => repo.guRepoName)
