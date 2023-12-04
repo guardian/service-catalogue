@@ -406,7 +406,6 @@ describe('Repository maintenance', () => {
 
 describe('Repositories with related stacks on AWS', () => {
 	test('should be findable if a stack has a matching tag', () => {
-		console.log('THIS IS THE FAILING TEST');
 		const full_name = 'guardian/repo1';
 		const tags = {
 			'gu:repo': full_name,

@@ -1,5 +1,4 @@
 import type {
-	aws_cloudformation_stacks,
 	github_repositories,
 	PrismaClient,
 	repocop_github_repository_rules,
@@ -9,12 +8,7 @@ import { stageAwareOctokit } from 'common/functions';
 import type { GuRepoStack } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
-import {
-	getArchivedRepositories,
-	getRepositories,
-	getStacks,
-	getUnarchivedRepositories,
-} from './query';
+import { getRepositories, getStacks, getUnarchivedRepositories } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';

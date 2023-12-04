@@ -99,7 +99,6 @@ export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
 	return tag['gu:repo'];
 }
 
-//TODO test this
 export function parseTagsFromStack(
 	stack: aws_cloudformation_stacks,
 ): GuRepoStack {
