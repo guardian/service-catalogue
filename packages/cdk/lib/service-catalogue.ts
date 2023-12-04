@@ -190,9 +190,15 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
+		const prodSchedule = Schedule.cron({
+			weekDay: 'MON-FRI',
+			hour: '15',
+			minute: '0',
+		});
+
 		new Repocop(
 			this,
-			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '15' }),
+			nonProdSchedule ?? prodSchedule,
 			anghammaradTopic,
 			db,
 			repocopMonitoringConfiguration,
