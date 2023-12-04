@@ -66,6 +66,6 @@ export async function getConfig(): Promise<Config> {
 			'guardian/esd-', // ESD team
 			'guardian/pluto-', // Multimedia team
 		],
-		interactivesCount: stage === 'PROD' ? 8 : 1,
+		interactivesCount: stage === 'PROD' ? 15 : 1,
 	};
 }
