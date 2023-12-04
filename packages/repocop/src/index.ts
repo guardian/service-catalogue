@@ -48,7 +48,8 @@ export async function main() {
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	await sendPotentialInteractives(evaluatedRepos, config);
 
-	const isWeekday = new Date().getDay() > 0 && new Date().getDay() < 6;
+	const today = new Date();
+	const isWeekday = today.getDay() > 0 && today.getDay() < 6;
 	if (config.enableMessaging && isWeekday) {
 		const octokit = await stageAwareOctokit(config.stage);
 		await protectBranches(
