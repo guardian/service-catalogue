@@ -36,6 +36,12 @@ export async function migrateRdsDatabase(
 		`Performing a database migration in ${stage} fromStart=${fromStart.toString()}`,
 	);
 
+	const connectedToVpn = await isConnectedToVpn();
+
+	if (!connectedToVpn) {
+		throw new Error('Not connected to VPN');
+	}
+
 	console.log('Fetching database connection details from AWS Secrets Manager');
 	const dbConfig = await getRdsConfig(client, stage);
 	const connectionString = getDatabaseConnectionString(dbConfig);
@@ -55,4 +61,12 @@ export async function migrateRdsDatabase(
 	console.log(stdout);
 
 	return Promise.resolve(0);
+}
+
+async function isConnectedToVpn(): Promise<boolean> {
+	console.log('Checking if connected to VPN');
+
+	const { stdout } = await $`ifconfig`;
+	const connected = stdout.includes('10.249.');
+	return Promise.resolve(connected);
 }
