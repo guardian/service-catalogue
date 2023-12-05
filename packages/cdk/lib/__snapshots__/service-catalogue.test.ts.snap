@@ -15022,9 +15022,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repocoprepocopcron01504E53EA84": {
+    "repocoprepocopcron015MONFRI02BD16E22": {
       "Properties": {
-        "ScheduleExpression": "cron(0 15 * * ? *)",
+        "ScheduleExpression": "cron(0 15 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -15040,7 +15040,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoprepocopcron0150AllowEventRuleServiceCataloguerepocop7BEB58921D341946": {
+    "repocoprepocopcron015MONFRI0AllowEventRuleServiceCataloguerepocop7BEB5892F4DF00FA": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -15052,7 +15052,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repocoprepocopcron01504E53EA84",
+            "repocoprepocopcron015MONFRI02BD16E22",
             "Arn",
           ],
         },
