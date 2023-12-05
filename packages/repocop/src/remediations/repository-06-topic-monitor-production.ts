@@ -70,9 +70,6 @@ async function findReposInProdWithoutProductionTopic(
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
-	console.log(
-		`Found ${repoNamesWithoutProductionTopic.length} repositories without a production or interactive topic.`,
-	);
 
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
@@ -90,10 +87,6 @@ async function findReposInProdWithoutProductionTopic(
 			};
 		});
 
-	console.log(
-		`Found ${guRepoStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
-	);
-
 	const reposInProdWithoutProductionTopic: GuRepoStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
@@ -101,18 +94,7 @@ async function findReposInProdWithoutProductionTopic(
 		);
 
 	console.log(
-		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/ INFRA Cloudformation Stage tag.`,
-	);
-
-	reposInProdWithoutProductionTopic.map((stack) =>
-		console.log(
-			'repo:',
-			stack.guRepoName,
-			'stack:',
-			stack.stackName,
-			'stack created on:',
-			stack.creationTime,
-		),
+		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/INFRA Cloudformation Stage tag.`,
 	);
 
 	return reposInProdWithoutProductionTopic;
@@ -163,14 +145,11 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	console.log(
-		`Found ${reposWithContactableOwners.length} repos with contactable owners.`,
-	);
-	reposWithContactableOwners.map((repo) => console.log(repo));
-
 	if (config.stage === 'PROD') {
 		console.log(
-			`Applying production topic to ${reposWithContactableOwners.length} repos and messaging their teams.`,
+			`Applying production topic to ${reposWithContactableOwners.join(
+				',',
+			)} and messaging their owners.`,
 		);
 		await Promise.all(
 			reposWithContactableOwners.map((repo) =>

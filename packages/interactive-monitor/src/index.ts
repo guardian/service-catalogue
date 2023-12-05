@@ -90,7 +90,6 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	const s3 = new S3Client({ ...awsConfig, region: 'us-east-1' });
 	const { stage } = config;
 	const onProd = stage === 'PROD';
-	console.log(`Detected stage: ${stage}`);
 
 	async function foundInJs(): Promise<boolean> {
 		const path = await tryToParseJsConfig(octokit, repo);
@@ -137,6 +136,7 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
 	const owner = 'guardian';
+	console.log(`Detected stage: ${config.stage}`);
 	const events = event.Records.map(async (record) =>
 		Promise.all(
 			(JSON.parse(record.Sns.Message) as string[]).map(
