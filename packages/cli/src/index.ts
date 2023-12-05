@@ -102,6 +102,11 @@ const parseCommandLineArguments = () => {
 						choices: ['DEV', 'CODE', 'PROD'],
 						demandOption: true,
 					})
+					.option('confirm', {
+						description: 'Confirm that you want to run the migration',
+						type: 'boolean',
+						default: false,
+					})
 					.option('fromStart', {
 						description:
 							'Apply migrations from the very start. Requires the _prisma_migrations table to be removed.',
@@ -160,7 +165,7 @@ parseCommandLineArguments()
 				);
 			}
 			case Commands.migrate: {
-				const { stage, fromStart } = argv;
+				const { stage, confirm, fromStart } = argv;
 
 				switch (stage) {
 					case 'DEV': {
@@ -172,6 +177,7 @@ parseCommandLineArguments()
 						return migrateRdsDatabase(
 							stage as string,
 							secretsManagerClient,
+							confirm as boolean,
 							fromStart as boolean,
 						);
 					}

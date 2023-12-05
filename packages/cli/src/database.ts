@@ -30,6 +30,7 @@ export async function migrateDevDatabase(): Promise<number> {
 export async function migrateRdsDatabase(
 	stage: string,
 	client: SecretsManagerClient,
+	confirmed: boolean,
 	fromStart: boolean,
 ): Promise<number> {
 	console.log(
@@ -48,6 +49,16 @@ export async function migrateRdsDatabase(
 
 	console.log('Setting DATABASE_URL');
 	process.env.DATABASE_URL = connectionString;
+
+	if (!confirmed) {
+		// See https://www.prisma.io/docs/reference/api-reference/command-reference#migrate-status
+		console.log(`Running prisma migrate status`);
+		const { stdout } = await $`npx -w common prisma migrate status`;
+		console.log(stdout);
+
+		console.log('If this looks correct, re-run with --confirm');
+		return Promise.resolve(0);
+	}
 
 	if (fromStart) {
 		console.log(`Running prisma migrate resolve --applied 0_init`);
