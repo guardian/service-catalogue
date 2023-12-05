@@ -41,13 +41,19 @@ verifyMarkdown() {
     echo "Best practices markdown file is out of date. Please regenerate the project and commit the changes."
     exit 1
   fi
+}
 
+checkPrismaSchema() {
+  npm -w cli start migrate -- --stage DEV
+  git diff --exit-code packages/common/prisma/schema.prisma
 }
 
 npm ci
 npm run typecheck & npm run lint
 npm run test
 npm run synth & npm run build
+
+checkPrismaSchema
 
 verifyMarkdown & \
   createZip "interactive-monitor" & \
