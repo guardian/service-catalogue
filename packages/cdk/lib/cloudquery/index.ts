@@ -409,6 +409,7 @@ export function addCloudqueryEcsCluster(
 			secrets: {
 				SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
 			},
+			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'GuardianCustomSnykProjects',
