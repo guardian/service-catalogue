@@ -163,13 +163,16 @@ export function verifyDependencyTracking(
 		'Visual Basic .NET',
 	].concat(supportedDependabotLanguages);
 
-	const allReposOnSnyk = snyk_projects
-		.map((project) => parseSnykTags(project))
-		.map((p) => p.repo);
+	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
 
-	//TODO check the commit and branch tags too
-	const repoIsOnSnyk =
-		!!repo.full_name && allReposOnSnyk.includes(repo.full_name);
+	const matchingSnykProject = allProjectTags.find(
+		(allProjectTags) =>
+			!!repo.full_name &&
+			allProjectTags.repo == repo.full_name &&
+			allProjectTags.branch === repo.default_branch,
+	);
+
+	const repoIsOnSnyk = !!matchingSnykProject;
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
