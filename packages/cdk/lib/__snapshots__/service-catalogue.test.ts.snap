@@ -4749,7 +4749,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "13107MiB",
               },
             ],
             "Essential": true,
