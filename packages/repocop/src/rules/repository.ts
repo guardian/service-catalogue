@@ -166,10 +166,10 @@ export function verifyDependencyTracking(
 	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
 
 	const matchingSnykProject = allProjectTags.find(
-		(allProjectTags) =>
+		(tags) =>
 			!!repo.full_name &&
-			allProjectTags.repo == repo.full_name &&
-			allProjectTags.branch === repo.default_branch,
+			tags.repo == repo.full_name &&
+			tags.branch === repo.default_branch,
 	);
 
 	const repoIsOnSnyk = !!matchingSnykProject;
