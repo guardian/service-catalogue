@@ -13,7 +13,7 @@ import { protectBranches } from './remediations/branch-protector/branch-protecti
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
 import { parseTagsFromStack } from './remediations/shared-utilities';
-import type { RepoAndStatus } from './rules/repository';
+import type { RepoAndArchiveStatus } from './rules/repository';
 import { evaluateRepositories, findStacks } from './rules/repository';
 
 async function writeEvaluationTable(
@@ -31,33 +31,45 @@ async function writeEvaluationTable(
 	console.log('Finished writing to table');
 }
 
+function toRepoAndArchiveStatus(
+	repo: github_repositories,
+): RepoAndArchiveStatus | undefined {
+	if (!repo.archived || !repo.name || !repo.full_name) {
+		return undefined;
+	} else {
+		return {
+			archived: repo.archived,
+			name: repo.name,
+			full_name: repo.full_name,
+		};
+	}
+}
+
 async function findArchivedReposWithStacks(
 	prisma: PrismaClient,
 	config: Config,
 ) {
-	const allRepos: RepoAndStatus[] = (
+	const allRepos = (
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes)
-	).map((repo) => ({
-		full_name: repo.full_name,
-		name: repo.name,
-		archived: repo.archived,
-	}));
+	)
+		.map((r) => toRepoAndArchiveStatus(r))
+		.filter((r) => !!r) as RepoAndArchiveStatus[];
 
-	const stacks: AWSCloudformationStack[] = (await getStacks(prisma))
+	const stacks = (await getStacks(prisma))
 		.map((s) => parseTagsFromStack(s))
-		.filter((s) => !(s.tags['Stack'] === 'playground')); //ignore playground stacks for now.
+		.filter((s) => !(s.tags['Stack'] !== 'playground')); //ignore playground stacks for now.
 
-	//TODO exclude repos where we have found a match for unarchived repos.
 	const archivedRepos = allRepos.filter((repo) => repo.archived);
 	const unarchivedRepos = allRepos.filter((repo) => !repo.archived);
 
-	const stacksWithoutAnUnarchivedRepoMatch = stacks.filter((stack) =>
-		unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
-	);
+	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
+		stacks.filter((stack) =>
+			unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
+		);
 
-	const archivedReposWithPotentialStacks = archivedRepos
+	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
 		.map((repo) => findStacks(repo, stacksWithoutAnUnarchivedRepoMatch))
-		.filter((result) => !!result && result.stacks.length > 0) as RepoAndStack[];
+		.filter((result) => result.stacks.length > 0);
 
 	return archivedReposWithPotentialStacks;
 }

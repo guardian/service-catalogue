@@ -110,10 +110,10 @@ function isMaintained(repo: github_repositories): boolean {
 }
 
 //TODO find somehwere else to put this
-export interface RepoAndStatus {
-	full_name: string | null;
-	name: string | null;
-	archived: boolean | null;
+export interface RepoAndArchiveStatus {
+	full_name: string;
+	name: string;
+	archived: boolean;
 }
 
 /**
@@ -121,29 +121,24 @@ export interface RepoAndStatus {
  *   > Archived repositories should not have corresponding stacks on AWS.
  */
 export function findStacks(
-	repo: RepoAndStatus,
+	repo: RepoAndArchiveStatus,
 	stacks: AWSCloudformationStack[],
-): RepoAndStack | undefined {
-	if (repo.name === null || repo.full_name === null) {
-		return undefined;
-	} else {
-		const stackMatches = stacks.filter((stack) => {
-			return (
-				!!repo.name &&
-				!!stack.stackName &&
-				(stack.guRepoName === repo.full_name ||
-					stack.stackName.includes(repo.name))
-			);
-		});
-		const stackNames = stackMatches
-			.map((stack) => stack.stackName)
-			.filter((s) => !!s) as string[];
+): RepoAndStack {
+	const stackMatches = stacks.filter((stack) => {
+		return (
+			!!stack.stackName &&
+			(stack.guRepoName === repo.full_name ||
+				stack.stackName.includes(repo.name))
+		);
+	});
+	const stackNames = stackMatches
+		.map((stack) => stack.stackName)
+		.filter((s) => !!s) as string[];
 
-		return {
-			full_name: repo.full_name,
-			stacks: stackNames,
-		};
-	}
+	return {
+		full_name: repo.full_name,
+		stacks: stackNames,
+	};
 }
 
 /**

@@ -4,6 +4,7 @@ import type {
 } from '@prisma/client';
 import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
+import type { RepoAndArchiveStatus } from './repository';
 import { findStacks, repositoryRuleEvaluation } from './repository';
 
 export const nullRepo: github_repositories = {
@@ -410,10 +411,10 @@ describe('Repositories with related stacks on AWS', () => {
 		const tags = {
 			'gu:repo': full_name,
 		};
-		const exampleRepo: github_repositories = {
-			...thePerfectRepo,
+		const repo: RepoAndArchiveStatus = {
 			full_name,
 			name: 'repo1',
+			archived: false,
 		};
 		const stack: AWSCloudformationStack = {
 			stackName: 'mystack',
@@ -421,33 +422,35 @@ describe('Repositories with related stacks on AWS', () => {
 			creationTime: new Date(),
 			tags,
 		};
-		console.log(findStacks(exampleRepo, [stack]));
-		const result = findStacks(exampleRepo, [stack])?.stacks.length;
+		console.log(findStacks(repo, [stack]));
+		const result = findStacks(repo, [stack]).stacks.length;
 		expect(result).toEqual(1);
 	});
 	test('should be findable if the repo name is part of the stack name', () => {
-		const exampleRepo: github_repositories = {
-			...thePerfectRepo,
+		const repo: RepoAndArchiveStatus = {
 			full_name: 'guardian/repo1',
 			name: 'repo1',
+			archived: false,
 		};
+
 		const stack: AWSCloudformationStack = {
 			stackName: 'mystack-repo1-PROD',
 			tags: {},
 			creationTime: new Date(),
 		};
-		const result = findStacks(exampleRepo, [stack])?.stacks.length;
+		const result = findStacks(repo, [stack]).stacks.length;
 		expect(result).toEqual(1);
 	});
 });
 
 describe('Repositories without any related stacks on AWS', () => {
 	test('should not be findable', () => {
-		const exampleRepo: github_repositories = {
-			...thePerfectRepo,
+		const repo = {
 			full_name: 'guardian/someRepo',
-			name: 'repo1',
+			name: 'someRepo',
+			archived: false,
 		};
+
 		const tags = {
 			App: 'myApp',
 			Stack: 'myStack',
@@ -471,7 +474,7 @@ describe('Repositories without any related stacks on AWS', () => {
 			guRepoName: 'guardian/someOtherRepo',
 			creationTime: new Date(),
 		};
-		const result = findStacks(exampleRepo, [stack1, stack2])?.stacks.length;
+		const result = findStacks(repo, [stack1, stack2]).stacks.length;
 		expect(result).toEqual(0);
 	});
 });

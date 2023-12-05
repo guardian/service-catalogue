@@ -16,7 +16,7 @@ import type {
 export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
-) {
+): Promise<github_repositories[]> {
 	console.log('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
