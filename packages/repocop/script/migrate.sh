@@ -6,21 +6,6 @@ red='\x1B[0;31m'
 bold='\x1B[1m'
 plain='\x1B[0m'
 
-devSetup() {
-  echo -e "${bold}Setting up local DATABASE_URL and resetting migrations${plain}"
-  source ../../.env
-  export DATABASE_URL="postgresql://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOSTNAME:$DATABASE_PORT/postgres"
-  # clear existing local migrations table (if applicable)
-  # and apply all migrations
-  npx prisma migrate reset --force --schema "prisma/schema.prisma"
-}
-
-migrateDEV() {
-  migration_name=$1
-  echo -e "${bold}Creating migration $migration_name${plain}"
-  npx prisma migrate dev --name "$migration_name"
-}
-
 getDbUrl() {
   stage=$1
   allSecrets=$(aws secretsmanager list-secrets --profile deployTools --region eu-west-1 | jq '.SecretList')
@@ -73,12 +58,7 @@ migrateDeploy() {
 }
 
 stageAwareMigration() {
-  if [ "$stage" == "--dev" ]; then
-    devSetup
-    if [ -n "$migration_name" ]; then
-      migrateDEV "$migration_name"
-    fi
-  elif [ "$stage" == "--code" ]; then
+  if [ "$stage" == "--code" ]; then
     migrateDeploy "CODE" "$migration_name"
   elif [ "$stage" == "--prod" ]; then
     migrateDeploy "PROD" "$migration_name"

@@ -6,11 +6,13 @@ import {
 	runAllTasks,
 	runOneTask,
 } from './aws.js';
+import { migrateDatabase } from './database';
 
 const Commands = {
 	list: 'list-tasks',
 	run: 'run-task',
 	runAll: 'run-all-tasks',
+	migrate: 'migrate',
 };
 
 const parseCommandLineArguments = () => {
@@ -92,6 +94,13 @@ const parseCommandLineArguments = () => {
 						default: 'service-catalogue',
 					});
 			})
+			.command(Commands.migrate, 'Run database migrations', (yargs) => {
+				yargs.option('stage', {
+					description: 'The Stage tag of the tasks to run',
+					choices: ['DEV', 'CODE', 'PROD'],
+					demandOption: true,
+				});
+			})
 			.demandCommand(1, '') // just print help
 			.help()
 			.alias('h', 'help').argv,
@@ -141,6 +150,10 @@ parseCommandLineArguments()
 					stage as string,
 					app as string,
 				);
+			}
+			case Commands.migrate: {
+				const { stage } = argv;
+				return migrateDatabase(stage as string);
 			}
 			default:
 				throw new Error(`Unknown command ${command ?? ''}`);
