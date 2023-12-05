@@ -483,7 +483,7 @@ describe('Dependency tracking', () => {
 			full_name: 'guardian/some-repo',
 		};
 		const actual = verifyDependencyTracking(repo, unsupportedLanguages, []);
-		expect(actual).toEqual(false);
+		expect(actual).toEqual(true);
 	});
 	test('should be happy if a repository has a non-production tag', () => {
 		const repo: Repository = {
@@ -492,6 +492,6 @@ describe('Dependency tracking', () => {
 			full_name: 'guardian/some-repo',
 		};
 		const actual = verifyDependencyTracking(repo, unsupportedLanguages, []);
-		expect(actual).toEqual(false);
+		expect(actual).toEqual(true);
 	});
 });
