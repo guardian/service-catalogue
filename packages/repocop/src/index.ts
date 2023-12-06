@@ -57,10 +57,10 @@ function findArchivedReposWithStacks(
 ) {
 	const archivedRepos: RepoAndArchiveStatus[] = archivedRepositories
 		.map((repo) => toRepoAndArchiveStatus(repo))
-		.filter((r) => !!r) as RepoAndArchiveStatus[];
+		.filter((r): r is RepoAndArchiveStatus => !!r);
 	const unarchivedRepos = unarchivedRepositories
 		.map((repo) => toRepoAndArchiveStatus(repo))
-		.filter((r) => !!r) as RepoAndArchiveStatus[];
+		.filter((r): r is RepoAndArchiveStatus => !!r);
 
 	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
 		stacks.filter((stack) =>
