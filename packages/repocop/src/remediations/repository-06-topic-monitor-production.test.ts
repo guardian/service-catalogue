@@ -1,9 +1,6 @@
 import type { github_repositories } from '@prisma/client';
 import { nullRepo } from '../rules/repository.test';
-import {
-	getRepoNamesWithoutProductionTopic,
-	removeGuardian,
-} from './repository-06-topic-monitor-production';
+import { getRepoNamesWithoutProductionTopic } from './repository-06-topic-monitor-production';
 
 describe('getReposWithoutProductionTopic', () => {
 	it('should return an empty array when unarchivedRepos array is empty', () => {
@@ -43,13 +40,5 @@ describe('getReposWithoutProductionTopic', () => {
 		const result: string[] =
 			getRepoNamesWithoutProductionTopic(unarchivedRepos);
 		expect(result).toEqual(['guardian/repo-good-1', 'guardian/repo-good-2']);
-	});
-});
-
-describe('removeGuardian', () => {
-	it('should strip "guardian/" from the full repo name', () => {
-		const fullRepoName = 'guardian/repo-1';
-		const result: string = removeGuardian(fullRepoName);
-		expect(result).toEqual('repo-1');
 	});
 });

@@ -4,6 +4,7 @@ import {
 	createSqsEntry,
 	getGuRepoName,
 	parseTagsFromStack,
+	removeRepoOwner,
 } from './shared-utilities';
 
 const nullStack: aws_cloudformation_stacks = {
@@ -112,5 +113,13 @@ describe('Parsing the tags from an aws_cloudformation_stacks_object', () => {
 		const result = parseTagsFromStack(stack);
 
 		expect(result.guRepoName).toBeUndefined();
+	});
+});
+
+describe('removeRepoOwner', () => {
+	it('should strip "guardian/" from the full repo name', () => {
+		const fullRepoName = 'guardian/repo-1';
+		const result: string = removeRepoOwner(fullRepoName);
+		expect(result).toEqual('repo-1');
 	});
 });

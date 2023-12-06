@@ -3,6 +3,7 @@ import type { repocop_github_repository_rules } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
 import type { Config } from '../config';
+import { removeRepoOwner } from './shared-utilities';
 
 export function findPotentialInteractives(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -19,8 +20,8 @@ export async function sendPotentialInteractives(
 	const potentialInteractives: string[] = shuffle(
 		findPotentialInteractives(evaluatedRepos),
 	)
-		.map((repo) => repo.split('/')[1])
-		.filter((repo) => repo !== undefined) as string[];
+		.map((repo) => removeRepoOwner(repo))
+		.filter((repo) => repo !== '');
 
 	const snsBatchMaximum = Math.min(
 		potentialInteractives.length,

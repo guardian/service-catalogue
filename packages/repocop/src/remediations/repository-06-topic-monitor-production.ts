@@ -9,7 +9,11 @@ import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../config';
 import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
-import { findContactableOwners, getGuRepoName } from './shared-utilities';
+import {
+	findContactableOwners,
+	getGuRepoName,
+	removeRepoOwner,
+} from './shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,
@@ -107,11 +111,6 @@ async function findReposInProdWithoutProductionTopic(
 	return reposInProdWithoutProductionTopic;
 }
 
-export function removeGuardian(fullRepoName: string): string {
-	const reponame = fullRepoName.split('/')[1];
-	return reponame ?? '';
-}
-
 async function applyProductionTopicToOneRepoAndMessageTeams(
 	fullRepoName: string,
 	teamNameSlugs: string[],
@@ -120,7 +119,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 ): Promise<void> {
 	const owner = 'guardian';
 	const topic = 'production';
-	const shortRepoName = removeGuardian(fullRepoName);
+	const shortRepoName = removeRepoOwner(fullRepoName);
 	await applyTopics(shortRepoName, owner, octokit, topic);
 	for (const teamNameSlug of teamNameSlugs) {
 		await notifyOneTeam(fullRepoName, config, teamNameSlug);
