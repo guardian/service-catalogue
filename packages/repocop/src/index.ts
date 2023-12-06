@@ -98,7 +98,7 @@ export async function main() {
 
 	console.log(
 		'Archived repos with live stacks, first 10 results:',
-		(await findArchivedReposWithStacks(prisma, config)).slice(0, 10),
+		archivedWithStacks.slice(0, 10),
 	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
