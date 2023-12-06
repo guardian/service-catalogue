@@ -23,11 +23,11 @@ function toRepository(r: github_repositories): Repository | undefined {
 			name: r.name,
 			full_name: r.full_name,
 			topics: r.topics,
-			updated_at: r.updated_at, //empty repos don't have an updated_at
-			pushed_at: r.pushed_at, //empty repos don't have a pushed_at
+			updated_at: r.updated_at,
+			pushed_at: r.pushed_at,
 			created_at: r.created_at,
 			id: r.id,
-			default_branch: r.default_branch, //wiki repos don't have a default branch
+			default_branch: r.default_branch,
 		};
 	}
 }
