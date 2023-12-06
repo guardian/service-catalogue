@@ -18,6 +18,7 @@ import {
 
 async function notifyOneTeam(
 	fullRepoName: string,
+	stackName: string,
 	config: Config,
 	teamSlug: string,
 ) {
@@ -26,10 +27,9 @@ async function notifyOneTeam(
 	await client.notify({
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
 		message:
-			`The 'production' topic has applied to ${fullRepoName}.` +
-			' This is because it has been associated with a live PROD or INFRA stack that is over three months old.' +
-			' Repositories should have one of the following topics, to help understand what is in production:' +
-			` 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'.` +
+			`The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}. ` +
+			' This is because stack is over three months old and has PROD or INFRA tags.' +
+			` Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.` +
 			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
@@ -114,6 +114,7 @@ async function findReposInProdWithoutProductionTopic(
 
 async function applyProductionTopicToOneRepoAndMessageTeams(
 	fullRepoName: string,
+	stackName: string,
 	teamNameSlugs: string[],
 	octokit: Octokit,
 	config: Config,
@@ -123,7 +124,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	const shortRepoName = removeRepoOwner(fullRepoName);
 	await applyTopics(shortRepoName, owner, octokit, topic);
 	for (const teamNameSlug of teamNameSlugs) {
-		await notifyOneTeam(fullRepoName, config, teamNameSlug);
+		await notifyOneTeam(fullRepoName, stackName, config, teamNameSlug);
 	}
 }
 
@@ -136,21 +137,29 @@ export async function applyProductionTopicAndMessageTeams(
 	const repos: AWSCloudformationStack[] =
 		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
-	const fullRepoNames = repos
+	const repoAndStackNames = repos
 		.filter((repo) => !!repo.guRepoName)
+		.filter((repo) => !!repo.stackName)
 		.map((repo) => {
-			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions  -- we have already filtered out undefined values
-			return `${repo.guRepoName}`;
+			return { fullRepoName: repo.guRepoName, stackName: repo.stackName };
 		});
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
 
-	const reposWithContactableOwners = fullRepoNames
-		.map((fullRepoName) => {
+	const reposWithContactableOwners = repoAndStackNames
+		.map((names) => {
+			const fullRepoName = names.fullRepoName ?? '';
+			const stackName = names.stackName ?? '';
+			const teamNameSlugs = findContactableOwners(
+				fullRepoName,
+				repoOwners,
+				teams,
+			);
 			return {
 				fullName: fullRepoName,
-				teamNameSlugs: findContactableOwners(fullRepoName, repoOwners, teams),
+				stackName: stackName,
+				teamNameSlugs: teamNameSlugs,
 			};
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
@@ -160,6 +169,7 @@ export async function applyProductionTopicAndMessageTeams(
 			reposWithContactableOwners.map((repo) =>
 				applyProductionTopicToOneRepoAndMessageTeams(
 					repo.fullName,
+					repo.stackName,
 					repo.teamNameSlugs,
 					octokit,
 					config,
