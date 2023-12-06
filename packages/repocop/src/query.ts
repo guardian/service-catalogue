@@ -33,30 +33,6 @@ export async function getRepositories(
 	return repositories;
 }
 
-export async function getUnarchivedRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<github_repositories[]> {
-	const repositories = (
-		await getRepositories(client, ignoredRepositoryPrefixes)
-	).filter((r) => !r.archived);
-	console.log(`Found ${repositories.length} unarchived repositories`);
-
-	return repositories;
-}
-
-export async function getArchivedRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<github_repositories[]> {
-	const repositories = (
-		await getRepositories(client, ignoredRepositoryPrefixes)
-	).filter((r) => r.archived);
-	console.log(`Found ${repositories.length} archived repositories`);
-
-	return repositories;
-}
-
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
 export async function getRepositoryBranches(
 	client: PrismaClient,

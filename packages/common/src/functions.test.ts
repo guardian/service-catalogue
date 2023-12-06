@@ -76,8 +76,8 @@ describe('partitioning an array', () => {
 	it('should split it into two arrays based on a predicate', () => {
 		const input = [1, 2, 1, 3, 1, 4];
 		const predicate = (x: number) => x === 1;
-		const split = partition(input, predicate);
-		expect(split.positive).toEqual([1, 1, 1]);
-		expect(split.negative).toEqual([2, 3, 4]);
+		const [truthy, falsy] = partition(input, predicate);
+		expect(truthy).toEqual([1, 1, 1]);
+		expect(falsy).toEqual([2, 3, 4]);
 	});
 });

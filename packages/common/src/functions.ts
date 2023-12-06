@@ -2,11 +2,7 @@ import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from 'octokit';
-import type {
-	GitHubAppConfig,
-	GithubAppSecret,
-	PredicateSplit,
-} from 'common/types';
+import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
@@ -128,7 +124,7 @@ export function shuffle<T>(array: T[]): T[] {
 export function partition<T>(
 	array: T[],
 	predicate: (value: T) => boolean,
-): PredicateSplit<T> {
+): [T[], T[]] {
 	const truthy: T[] = [];
 	const falsy: T[] = [];
 	array.forEach((value) => {
@@ -138,10 +134,7 @@ export function partition<T>(
 			falsy.push(value);
 		}
 	});
-	return {
-		positive: truthy,
-		negative: falsy,
-	};
+	return [truthy, falsy];
 }
 
 export async function applyTopics(

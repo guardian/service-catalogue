@@ -1,10 +1,5 @@
 import { type StrategyOptions } from '@octokit/auth-app';
 
-export interface PredicateSplit<T> {
-	positive: T[];
-	negative: T[];
-}
-
 export type GithubAppSecret = {
 	appId: string;
 	base64PrivateKey: string;
