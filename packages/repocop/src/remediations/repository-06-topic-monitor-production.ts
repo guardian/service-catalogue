@@ -20,7 +20,12 @@ async function notifyOneTeam(
 	const client = new Anghammarad();
 	await client.notify({
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
-		message: `The 'production' topic has applied to ${fullRepoName} as it appears to have a PROD or INFRA stack in AWS. Repositories should have one of the following topics, to help understand what is in production: 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'. Visit the links below to learn more about topics and how to add/remove them if you need to.`,
+		message:
+			`The 'production' topic has applied to ${fullRepoName}.` +
+			' This is because it has been associated with a live PROD or INFRA stack that is over three months old.' +
+			' Repositories should have one of the following topics, to help understand what is in production:' +
+			` 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'.` +
+			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
@@ -49,8 +54,10 @@ export function getReposInProdWithoutProductionTopic(
 	awsStacks: AWSCloudformationStack[],
 ): AWSCloudformationStack[] {
 	return awsStacks.filter((stack) => {
-		const guRepoName = stack.guRepoName;
-		return !!guRepoName && reposWithoutProductionTopic.includes(guRepoName);
+		if (!stack.guRepoName) {
+			return false;
+		}
+		return reposWithoutProductionTopic.includes(stack.guRepoName);
 	});
 }
 
@@ -66,10 +73,14 @@ async function findReposInProdWithoutProductionTopic(
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
 
+	const threeMonthsAgo = new Date();
+	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
 		.filter(
 			(stack: AWSCloudformationStack) =>
-				getGuRepoName(stack.tags) !== undefined,
+				getGuRepoName(stack.tags) !== undefined &&
+				!!stack.creationTime &&
+				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
 		)
 		.map((stack: AWSCloudformationStack) => {
 			const guRepoName = getGuRepoName(stack.tags) as string;
@@ -126,8 +137,11 @@ export async function applyProductionTopicAndMessageTeams(
 		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
 	const fullRepoNames = repos
-		.map((repo) => repo.guRepoName)
-		.filter((name) => !!name) as string[];
+		.filter((repo) => !!repo.guRepoName)
+		.map((repo) => {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions  -- we have already filtered out undefined values
+			return `${repo.guRepoName}`;
+		});
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
