@@ -23,6 +23,6 @@ There are lots of ways of writing/making queries to the database, depending on w
 
 Our guidelines for interacting with the database are:
 
-- Only make one call to the database per table
-- Make all calls to the database at the beginning or end of the lambda
-- To reduce memory usage, when creating the query function, only select the columns you need. You can always come back later and select more if you need them.
+1. Only make one call to the database per table
+2. Make all calls to the database at the beginning or end of the lambda
+3. To reduce memory usage, when creating the query function, only select the columns you need. You can always come back later and select more if you need them.
