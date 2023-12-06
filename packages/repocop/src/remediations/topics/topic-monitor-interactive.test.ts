@@ -1,5 +1,5 @@
 import type { repocop_github_repository_rules } from '@prisma/client';
-import { findPotentialInteractives } from './repository-06-topic-monitor-interactive';
+import { findPotentialInteractives } from './topic-monitor-interactive';
 
 describe('findPotentialInteractives', () => {
 	it('should return an empty array when evaluatedRepos is empty', () => {
