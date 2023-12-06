@@ -18,7 +18,17 @@ function toRepository(r: github_repositories): Repository | undefined {
 	if (!r.archived || !r.name || !r.full_name || !r.created_at || !r.id) {
 		return undefined;
 	} else {
-		return r as Repository;
+		return {
+			archived: r.archived,
+			name: r.name,
+			full_name: r.full_name,
+			topics: r.topics,
+			updated_at: r.updated_at,
+			pushed_at: r.pushed_at,
+			created_at: r.created_at,
+			id: r.id,
+			default_branch: r.default_branch,
+		};
 	}
 }
 
