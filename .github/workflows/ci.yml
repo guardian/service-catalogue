@@ -54,7 +54,7 @@ jobs:
         run: ./scripts/ci.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@v3
+        uses: guardian/actions-riff-raff@aa/whats-on 
         with:
           app: service-catalogue
           githubToken: ${{ secrets.GITHUB_TOKEN }}
