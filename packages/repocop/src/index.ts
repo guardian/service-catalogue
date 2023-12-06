@@ -92,8 +92,12 @@ export async function main() {
 		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepositories.length}.`,
 	);
 
+	const archivedWithStacks = await findArchivedReposWithStacks(prisma, config);
+
+	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
+
 	console.log(
-		'Archived repos with potentially active stacks:',
+		'Archived repos with live stacks, first 10 results:',
 		(await findArchivedReposWithStacks(prisma, config)).slice(0, 10),
 	);
 
