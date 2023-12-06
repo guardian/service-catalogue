@@ -2,7 +2,7 @@ import type { Account } from '@aws-sdk/client-organizations';
 import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { PrismaClient } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
-import type { Audit } from './types';
+import type { Audit } from './database';
 
 function numberOfBucketsFromDatabase(client: PrismaClient): Promise<number> {
 	return client.aws_s3_buckets.count();
@@ -38,11 +38,11 @@ export async function auditS3Buckets(
 	accounts: Account[],
 	stage: string,
 ): Promise<Audit> {
-	const db = await numberOfBucketsFromDatabase(prismaClient);
-	const aws = await numberOfBucketsFromAws(stage, accounts);
+	const cloudquery = await numberOfBucketsFromDatabase(prismaClient);
+	const vendor = await numberOfBucketsFromAws(stage, accounts);
 	return {
 		name: 'AWS S3 buckets',
-		db,
-		aws,
+		cloudquery,
+		vendor,
 	};
 }

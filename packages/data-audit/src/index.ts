@@ -7,7 +7,7 @@ import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { auditAwsAccounts } from './audit/aws-accounts';
 import { auditS3Buckets } from './audit/aws-s3-buckets';
-import { auditResult } from './audit/types';
+import { saveAudits } from './audit/database';
 import { getConfig } from './config';
 
 async function getAwsAccounts(stage: string) {
@@ -46,6 +46,5 @@ export async function main() {
 		config.stage,
 	);
 
-	console.log(auditResult(awsAccountAudit));
-	console.log(auditResult(awsS3BucketAudit));
+	await saveAudits(prismaClient, [awsAccountAudit, awsS3BucketAudit]);
 }
