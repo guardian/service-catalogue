@@ -3,6 +3,14 @@ import { getDatabaseConnectionString } from 'common/database';
 import { $ } from 'execa';
 import { getRdsConfig } from './aws';
 
+/**
+ * Performs a Prisma migration against the local database.
+ *
+ * It will:
+ * 1. Reset the database, deleting all tables (and data)
+ * 2. Apply all migrations to re-create all tables
+ * 3. Update the schema.prisma file to reflect the database schema
+ */
 export async function migrateDevDatabase(): Promise<number> {
 	console.log('Performing a database migration in DEV');
 
