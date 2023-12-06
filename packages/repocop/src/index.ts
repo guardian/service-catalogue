@@ -39,13 +39,13 @@ async function writeEvaluationTable(
 function toRepoAndArchiveStatus(
 	repo: github_repositories,
 ): RepoAndArchiveStatus | undefined {
-	if (!repo.archived || !repo.name || !repo.full_name) {
+	if ([repo.archived, repo.name, repo.full_name].includes(null)) {
 		return undefined;
 	} else {
 		return {
-			archived: repo.archived,
-			name: repo.name,
-			fullName: repo.full_name,
+			archived: repo.archived!,
+			name: repo.name!,
+			fullName: repo.full_name!,
 		};
 	}
 }
@@ -55,12 +55,12 @@ function findArchivedReposWithStacks(
 	unarchivedRepositories: github_repositories[],
 	stacks: AWSCloudformationStack[],
 ) {
-	const archivedRepos: RepoAndArchiveStatus[] = archivedRepositories.map(
-		(repo) => toRepoAndArchiveStatus(repo),
-	) as RepoAndArchiveStatus[];
-	const unarchivedRepos = unarchivedRepositories.map((repo) =>
-		toRepoAndArchiveStatus(repo),
-	) as RepoAndArchiveStatus[];
+	const archivedRepos: RepoAndArchiveStatus[] = archivedRepositories
+		.map((repo) => toRepoAndArchiveStatus(repo))
+		.filter((r) => r === undefined) as RepoAndArchiveStatus[];
+	const unarchivedRepos = unarchivedRepositories
+		.map((repo) => toRepoAndArchiveStatus(repo))
+		.filter((r) => r === undefined) as RepoAndArchiveStatus[];
 
 	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
 		stacks.filter((stack) =>
