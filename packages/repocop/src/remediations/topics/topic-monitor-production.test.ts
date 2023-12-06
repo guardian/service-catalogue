@@ -1,6 +1,6 @@
 import type { github_repositories } from '@prisma/client';
-import { nullRepo } from '../rules/repository.test';
-import { getRepoNamesWithoutProductionTopic } from './repository-06-topic-monitor-production';
+import { nullRepo } from '../../rules/repository.test';
+import { getRepoNamesWithoutProductionTopic } from './topic-monitor-production';
 
 describe('getReposWithoutProductionTopic', () => {
 	it('should return an empty array when unarchivedRepos array is empty', () => {

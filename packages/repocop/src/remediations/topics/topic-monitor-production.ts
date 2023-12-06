@@ -7,13 +7,13 @@ import {
 } from 'common/src/functions';
 import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
-import type { Config } from '../config';
-import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
+import type { Config } from '../../config';
+import { findProdCfnStacks, getRepoOwnership, getTeams } from '../../query';
 import {
 	findContactableOwners,
 	getGuRepoName,
 	removeRepoOwner,
-} from './shared-utilities';
+} from '../shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,

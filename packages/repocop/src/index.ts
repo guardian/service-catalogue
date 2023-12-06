@@ -15,9 +15,9 @@ import {
 	getStacks,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
-import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
-import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
 import { parseTagsFromStack } from './remediations/shared-utilities';
+import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
+import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import { evaluateRepositories, findStacks } from './rules/repository';
 import type { RepoAndArchiveStatus, RepoAndStack } from './types';
 
