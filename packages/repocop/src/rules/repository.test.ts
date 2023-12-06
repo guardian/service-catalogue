@@ -5,7 +5,7 @@ import type {
 import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
 import type { RepoAndArchiveStatus } from '../types';
-import { findStacks, evaluateOneRepo } from './repository';
+import { evaluateOneRepo, findStacks } from './repository';
 
 export const nullRepo: github_repositories = {
 	cq_sync_time: null,
