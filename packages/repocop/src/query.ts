@@ -30,6 +30,7 @@ export async function getRepositories(
 		},
 	});
 
+	console.log(`Found ${repositories.length} repositories`);
 	return repositories;
 }
 
