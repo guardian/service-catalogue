@@ -30,30 +30,7 @@ export async function getRepositories(
 		},
 	});
 
-	return repositories;
-}
-
-export async function getUnarchivedRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<github_repositories[]> {
-	const repositories = (
-		await getRepositories(client, ignoredRepositoryPrefixes)
-	).filter((r) => !r.archived);
-	console.log(`Found ${repositories.length} unarchived repositories`);
-
-	return repositories;
-}
-
-export async function getArchivedRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<github_repositories[]> {
-	const repositories = (
-		await getRepositories(client, ignoredRepositoryPrefixes)
-	).filter((r) => r.archived);
-	console.log(`Found ${repositories.length} archived repositories`);
-
+	console.log(`Found ${repositories.length} repositories`);
 	return repositories;
 }
 
@@ -84,16 +61,12 @@ export type RepositoryTeam = GetFindResult<
 
 export async function getRepositoryTeams(
 	client: PrismaClient,
-	repository: github_repositories,
 ): Promise<RepositoryTeam[]> {
 	const data: RepositoryTeam[] = await client.github_team_repositories.findMany(
 		{
 			select: {
 				id: true,
 				role_name: true,
-			},
-			where: {
-				id: repository.id,
 			},
 		},
 	);

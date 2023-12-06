@@ -121,6 +121,22 @@ export function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
 }
 
+export function partition<T>(
+	array: T[],
+	predicate: (value: T) => boolean,
+): [T[], T[]] {
+	const truthy: T[] = [];
+	const falsy: T[] = [];
+	array.forEach((value) => {
+		if (predicate(value)) {
+			truthy.push(value);
+		} else {
+			falsy.push(value);
+		}
+	});
+	return [truthy, falsy];
+}
+
 export async function applyTopics(
 	repo: string,
 	owner: string,
