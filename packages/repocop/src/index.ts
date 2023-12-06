@@ -39,13 +39,13 @@ async function writeEvaluationTable(
 function toRepoAndArchiveStatus(
 	repo: github_repositories,
 ): RepoAndArchiveStatus | undefined {
-	if ([repo.archived, repo.name, repo.full_name].includes(null)) {
+	if (!repo.archived || !repo.name || !repo.full_name) {
 		return undefined;
 	} else {
 		return {
-			archived: repo.archived!,
-			name: repo.name!,
-			fullName: repo.full_name!,
+			archived: repo.archived,
+			name: repo.name,
+			fullName: repo.full_name,
 		};
 	}
 }
