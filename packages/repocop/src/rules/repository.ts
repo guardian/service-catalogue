@@ -1,15 +1,10 @@
 import type {
 	github_repositories,
 	github_repository_branches,
-	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import type { AWSCloudformationStack } from 'common/types';
-import {
-	getRepositoryBranches,
-	getRepositoryTeams,
-	type RepositoryTeam,
-} from '../query';
+import { type RepositoryTeam } from '../query';
 import type { RepoAndArchiveStatus, RepoAndStack } from '../types';
 
 /**
@@ -162,15 +157,14 @@ export function repositoryRuleEvaluation(
 	};
 }
 
-export async function evaluateRepositories(
-	client: PrismaClient,
+//TODO test this
+export function evaluateRepositories(
 	repositories: github_repositories[],
-): Promise<repocop_github_repository_rules[]> {
-	const branches = await getRepositoryBranches(client, repositories);
-	return await Promise.all(
-		repositories.map(async (repo) => {
-			const teams = await getRepositoryTeams(client, repo);
-			return repositoryRuleEvaluation(repo, branches, teams);
-		}),
-	);
+	branches: github_repository_branches[],
+	teams: RepositoryTeam[],
+): repocop_github_repository_rules[] {
+	return repositories.map((repo) => {
+		const teamsForRepo = teams.filter((team) => team.id === repo.id);
+		return repositoryRuleEvaluation(repo, branches, teamsForRepo);
+	});
 }

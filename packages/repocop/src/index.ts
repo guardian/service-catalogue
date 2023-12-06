@@ -8,7 +8,12 @@ import { partition, stageAwareOctokit } from 'common/functions';
 import type { AWSCloudformationStack } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
-import { getRepositories, getStacks } from './query';
+import {
+	getRepositories,
+	getRepositoryBranches,
+	getRepositoryTeams,
+	getStacks,
+} from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
@@ -45,15 +50,11 @@ function toRepoAndArchiveStatus(
 	}
 }
 
-async function findArchivedReposWithStacks(
-	prisma: PrismaClient,
+function findArchivedReposWithStacks(
 	archivedRepositories: github_repositories[],
 	unarchivedRepositories: github_repositories[],
+	stacks: AWSCloudformationStack[],
 ) {
-	const stacks = (await getStacks(prisma))
-		.map((s) => parseTagsFromStack(s))
-		.filter((s) => !(s.tags['Stack'] !== 'playground')); //ignore playground stacks for now.
-
 	const archivedRepos: RepoAndArchiveStatus[] = archivedRepositories.map(
 		(repo) => toRepoAndArchiveStatus(repo),
 	) as RepoAndArchiveStatus[];
@@ -77,26 +78,31 @@ export async function main() {
 	const config: Config = await getConfig();
 	const prisma = getPrismaClient(config);
 
-	const [unarchivedRepositories, archivedRepositories] = partition(
+	const [unarchivedRepos, archivedRepos] = partition(
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes),
 		(repo) => !repo.archived,
 	);
+	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
+	const teams = await getRepositoryTeams(prisma);
+	const stacks: AWSCloudformationStack[] = (await getStacks(prisma))
+		.map((s) => parseTagsFromStack(s))
+		.filter((s) => !(s.tags['Stack'] !== 'playground')); //ignore playground stacks for now.
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
-		await evaluateRepositories(prisma, unarchivedRepositories);
+		evaluateRepositories(unarchivedRepos, branches, teams);
 
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
 
 	console.log(
-		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepositories.length}.`,
+		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
 
-	const archivedWithStacks = await findArchivedReposWithStacks(
-		prisma,
-		archivedRepositories,
-		unarchivedRepositories,
+	const archivedWithStacks = findArchivedReposWithStacks(
+		archivedRepos,
+		unarchivedRepos,
+		stacks,
 	);
 
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
@@ -114,12 +120,12 @@ export async function main() {
 			prisma,
 			evaluatedRepos,
 			config,
-			unarchivedRepositories,
+			unarchivedRepos,
 			octokit,
 		);
 		await applyProductionTopicAndMessageTeams(
 			prisma,
-			unarchivedRepositories,
+			unarchivedRepos,
 			octokit,
 			config,
 		);

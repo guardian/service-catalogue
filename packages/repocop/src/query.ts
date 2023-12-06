@@ -61,16 +61,12 @@ export type RepositoryTeam = GetFindResult<
 
 export async function getRepositoryTeams(
 	client: PrismaClient,
-	repository: github_repositories,
 ): Promise<RepositoryTeam[]> {
 	const data: RepositoryTeam[] = await client.github_team_repositories.findMany(
 		{
 			select: {
 				id: true,
 				role_name: true,
-			},
-			where: {
-				id: repository.id,
 			},
 		},
 	);
