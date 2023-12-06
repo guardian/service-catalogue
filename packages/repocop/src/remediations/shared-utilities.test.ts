@@ -117,7 +117,7 @@ describe('Parsing the tags from an aws_cloudformation_stacks_object', () => {
 });
 
 describe('removeRepoOwner', () => {
-	it('should strip "guardian/" from the full repo name', () => {
+	it('should strip the owner from the full repo name', () => {
 		const fullRepoName = 'guardian/repo-1';
 		const result: string = removeRepoOwner(fullRepoName);
 		expect(result).toEqual('repo-1');
