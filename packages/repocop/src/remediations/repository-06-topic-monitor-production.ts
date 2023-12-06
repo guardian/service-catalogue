@@ -77,10 +77,14 @@ async function findReposInProdWithoutProductionTopic(
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
 
+	const threeMonthsAgo = new Date();
+	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 	const guRepoStacks: GuRepoStack[] = cfnStacksWithProdInfraTags
 		.filter(
 			(stack: AWSCloudformationStack) =>
-				getGuRepoName(stack.tags) !== undefined,
+				getGuRepoName(stack.tags) !== undefined &&
+				!!stack.creationTime &&
+				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
 		)
 		.map((stack: AWSCloudformationStack) => {
 			const guRepoName = getGuRepoName(stack.tags) as string;
