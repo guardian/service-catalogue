@@ -12,7 +12,13 @@ Migrations are located in [../packages/common/prisma/migrations](../packages/com
 Prisma tracks the migration history in the `_prisma_migrations` table in the database.
 
 ## Creating a new migration
-See https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate#create-migrations for the recommended process to create a migration in DEV.
+See https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate#create-migrations for the recommended process for developing a migration.
+
+To create a migration file, run:
+
+```bash
+npx -w common prisma migrate dev --create-only --name [name]
+```
 
 Once you have a draft migration, apply it via:
 

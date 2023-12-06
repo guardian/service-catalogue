@@ -1,9 +1,5 @@
 import type { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import {
-	getDatabaseConnectionString,
-	getDevDatabaseConfig,
-} from 'common/database';
-import { config } from 'dotenv';
+import { getDatabaseConnectionString } from 'common/database';
 import { $ } from 'execa';
 import { getRdsConfig } from './aws';
 
@@ -13,12 +9,6 @@ export async function migrateDevDatabase(): Promise<number> {
 	console.log(
 		'Fetching database connection details from .env file at the root of the repository',
 	);
-	config({ path: `../../.env` });
-	const dbConfig = await getDevDatabaseConfig();
-	const connectionString = getDatabaseConnectionString(dbConfig);
-
-	console.log('Setting DATABASE_URL');
-	process.env.DATABASE_URL = connectionString;
 
 	console.log(`Running prisma migrate reset --force`);
 	const { stdout } = await $`npx -w common prisma migrate reset --force`;
