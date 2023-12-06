@@ -30,26 +30,6 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write # required by guardian/actions-riff-raff
-
-    services:
-      # See https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
-      postgres:
-        image: postgres:14.6-alpine
-
-        # Keep these in sync with `.env` file at the repository root
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: not_at_all_secret
-          POSTGRES_DB: postgres
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - uses: actions/checkout@v4
 
@@ -92,3 +72,55 @@ jobs:
               - packages/data-audit/dist/data-audit.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
+
+  db-migration:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+    permissions:
+      contents: read
+
+    env:
+      NODE_OPTIONS: '--max_old_space_size=4096'
+
+    services:
+      # See https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
+      postgres:
+        image: postgres:14.6-alpine
+
+        # Keep these in sync with `.env` file at the repository root
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: not_at_all_secret
+          POSTGRES_DB: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - uses: guardian/actions-read-private-repos@v0.1.1
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: perform a DEV database migration
+        run: npm -w cli start migrate -- --stage DEV
+
+      - name: check schema.prisma file hasn't changed
+        run: git diff --exit-code packages/common/prisma/schema.prisma
