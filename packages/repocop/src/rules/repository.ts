@@ -163,8 +163,9 @@ export function evaluateRepositories(
 	branches: github_repository_branches[],
 	teams: RepositoryTeam[],
 ): repocop_github_repository_rules[] {
-	return repositories.map((repo) => {
-		const teamsForRepo = teams.filter((team) => team.id === repo.id);
-		return evaluateOneRepo(repo, branches, teamsForRepo);
+	return repositories.map((r) => {
+		const teamsForRepo = teams.filter((t) => t.id === r.id);
+		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
+		return evaluateOneRepo(r, branchesForRepo, teamsForRepo);
 	});
 }
