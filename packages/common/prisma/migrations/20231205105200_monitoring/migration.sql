@@ -83,7 +83,7 @@ BEGIN
         -- Unfortunately we rely on rows existing in a table in order to know when it was last synced
         -- in a future iteration we may want to consider adding a rule to require that some tables have data
         -- to be considered "in sync"
-        cloudquery_table_status.in_sync := coalesce(last_sync, NOW()) >=
+        cloudquery_table_status.in_sync := COALESCE(last_sync, NOW()) >=
             CASE
                 WHEN table_to_check.frequency = 'DAILY'  THEN NOW() - INTERVAL '36' HOUR
                 WHEN table_to_check.frequency = 'WEEKLY' THEN NOW() - INTERVAL '8'  DAY
