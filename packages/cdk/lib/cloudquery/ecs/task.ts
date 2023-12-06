@@ -130,7 +130,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			enabled,
 			secrets,
 			additionalCommands = [],
-			memoryLimitMiB,
+			memoryLimitMiB = 512,
 			cpu,
 			extraSecurityGroups,
 			runAsSingleton,
@@ -165,6 +165,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: cloudqueryImage,
 			entryPoint: [''],
+			environment: {
+				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
+			},
 			secrets: {
 				...secrets,
 				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
