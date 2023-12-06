@@ -24,7 +24,12 @@ async function notifyOneTeam(
 	const client = new Anghammarad();
 	await client.notify({
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
-		message: `The 'production' topic has applied to ${fullRepoName} as it appears to have a PROD or INFRA stack in AWS. Repositories should have one of the following topics, to help understand what is in production: 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'. Visit the links below to learn more about topics and how to add/remove them if you need to.`,
+		message:
+			`The 'production' topic has applied to ${fullRepoName}.` +
+			' This is because it has been associated with a live PROD or INFRA stack that is over three months old.' +
+			' Repositories should have one of the following topics, to help understand what is in production:' +
+			` 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'.` +
+			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
