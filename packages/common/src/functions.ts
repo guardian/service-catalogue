@@ -2,7 +2,11 @@ import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from 'octokit';
-import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
+import type {
+	GitHubAppConfig,
+	GithubAppSecret,
+	PredicateSplit,
+} from 'common/types';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
@@ -119,6 +123,25 @@ export function anghammaradThreadKey(fullRepoName: string) {
 
 export function shuffle<T>(array: T[]): T[] {
 	return array.sort(() => Math.random() - 0.5);
+}
+
+export function partition<T>(
+	array: T[],
+	predicate: (value: T) => boolean,
+): PredicateSplit<T> {
+	const truthy: T[] = [];
+	const falsy: T[] = [];
+	array.forEach((value) => {
+		if (predicate(value)) {
+			truthy.push(value);
+		} else {
+			falsy.push(value);
+		}
+	});
+	return {
+		positive: truthy,
+		negative: falsy,
+	};
 }
 
 export async function applyTopics(

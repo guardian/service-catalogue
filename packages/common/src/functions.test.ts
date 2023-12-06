@@ -3,6 +3,7 @@ import {
 	branchProtectionCtas,
 	getEnvOrThrow,
 	parseSecretJson,
+	partition,
 } from './functions';
 
 function isValidUrl(str: string) {
@@ -68,5 +69,15 @@ describe('getEnvOrThrow', () => {
 
 	it('should throw an error for a non-existing environment variable', () => {
 		expect(() => getEnvOrThrow('NON_EXISTING_VAR')).toThrow();
+	});
+});
+
+describe('partitioning an array', () => {
+	it('should split it into two arrays based on a predicate', () => {
+		const input = [1, 2, 1, 3, 1, 4];
+		const predicate = (x: number) => x === 1;
+		const split = partition(input, predicate);
+		expect(split.positive).toEqual([1, 1, 1]);
+		expect(split.negative).toEqual([2, 3, 4]);
 	});
 });
