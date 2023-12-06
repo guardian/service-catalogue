@@ -54,8 +54,10 @@ export function getReposInProdWithoutProductionTopic(
 	awsStacks: AWSCloudformationStack[],
 ): AWSCloudformationStack[] {
 	return awsStacks.filter((stack) => {
-		const guRepoName = stack.guRepoName;
-		return !!guRepoName && reposWithoutProductionTopic.includes(guRepoName);
+		if (!stack.guRepoName) {
+			return false;
+		}
+		return reposWithoutProductionTopic.includes(stack.guRepoName);
 	});
 }
 
@@ -77,6 +79,7 @@ async function findReposInProdWithoutProductionTopic(
 		.filter(
 			(stack: AWSCloudformationStack) =>
 				getGuRepoName(stack.tags) !== undefined &&
+				!!stack.creationTime &&
 				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
 		)
 		.map((stack: AWSCloudformationStack) => {
@@ -134,8 +137,11 @@ export async function applyProductionTopicAndMessageTeams(
 		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
 	const fullRepoNames = repos
-		.map((repo) => repo.guRepoName)
-		.filter((name) => !!name) as string[];
+		.filter((repo) => !!repo.guRepoName)
+		.map((repo) => {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions  -- we have already filtered out undefined values
+			return `${repo.guRepoName}`;
+		});
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
