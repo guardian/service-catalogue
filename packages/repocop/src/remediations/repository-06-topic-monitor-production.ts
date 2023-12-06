@@ -5,15 +5,11 @@ import {
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type {
-	AWSCloudformationStack,
-	AWSCloudformationTag,
-	GuRepoStack,
-} from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../config';
 import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
-import { findContactableOwners } from './shared-utilities';
+import { findContactableOwners, getGuRepoName } from './shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,
@@ -48,17 +44,13 @@ export function getRepoNamesWithoutProductionTopic(
 		.filter((name) => !!name) as string[];
 }
 
-export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
-	return tag['gu:repo'];
-}
-
 export function getReposInProdWithoutProductionTopic(
 	reposWithoutProductionTopic: string[],
-	guRepoStacks: GuRepoStack[],
-): GuRepoStack[] {
-	return guRepoStacks.filter((stack) => {
-		const guRepoName: string = stack.guRepoName;
-		return reposWithoutProductionTopic.includes(guRepoName);
+	awsStacks: AWSCloudformationStack[],
+): AWSCloudformationStack[] {
+	return awsStacks.filter((stack) => {
+		const guRepoName = stack.guRepoName;
+		return !!guRepoName && reposWithoutProductionTopic.includes(guRepoName);
 	});
 }
 
@@ -74,7 +66,7 @@ async function findReposInProdWithoutProductionTopic(
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
 
-	const guRepoStacks: GuRepoStack[] = cfnStacksWithProdInfraTags
+	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
 		.filter(
 			(stack: AWSCloudformationStack) =>
 				getGuRepoName(stack.tags) !== undefined,
@@ -87,10 +79,14 @@ async function findReposInProdWithoutProductionTopic(
 			};
 		});
 
-	const reposInProdWithoutProductionTopic: GuRepoStack[] =
+	console.log(
+		`Found ${awsStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+	);
+
+	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			guRepoStacks,
+			awsStacks,
 		);
 
 	console.log(
@@ -110,7 +106,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	teamNameSlugs: string[],
 	octokit: Octokit,
 	config: Config,
-) {
+): Promise<void> {
 	const owner = 'guardian';
 	const topic = 'production';
 	const shortRepoName = removeGuardian(fullRepoName);
@@ -126,12 +122,12 @@ export async function applyProductionTopicAndMessageTeams(
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: GuRepoStack[] = await findReposInProdWithoutProductionTopic(
-		prisma,
-		unarchivedRepos,
-	);
+	const repos: AWSCloudformationStack[] =
+		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
-	const fullRepoNames = repos.map((repo) => repo.guRepoName);
+	const fullRepoNames = repos
+		.map((repo) => repo.guRepoName)
+		.filter((name) => !!name) as string[];
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);

@@ -4,11 +4,13 @@ import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
+import type { AWSCloudformationStack } from 'common/types';
 import {
 	getRepositoryBranches,
 	getRepositoryTeams,
 	type RepositoryTeam,
 } from '../query';
+import type { RepoAndArchiveStatus, RepoAndStack } from '../types';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -106,6 +108,31 @@ function isMaintained(repo: github_repositories): boolean {
 	const isInteractive = repo.topics.includes('interactive');
 
 	return isInteractive || recentlyUpdated;
+}
+
+/**
+ * Evaluate the following rule for a Github repository:
+ *   > Archived repositories should not have corresponding stacks on AWS.
+ */
+export function findStacks(
+	repo: RepoAndArchiveStatus,
+	stacks: AWSCloudformationStack[],
+): RepoAndStack {
+	const stackMatches = stacks.filter((stack) => {
+		return (
+			!!stack.stackName &&
+			(stack.guRepoName === repo.fullName ||
+				stack.stackName.includes(repo.name))
+		);
+	});
+	const stackNames = stackMatches
+		.map((stack) => stack.stackName)
+		.filter((s) => !!s) as string[];
+
+	return {
+		fullName: repo.fullName,
+		stacks: stackNames,
+	};
 }
 
 /**

@@ -1,8 +1,6 @@
 import type { github_repositories } from '@prisma/client';
-import type { AWSCloudformationTag } from 'common/types';
 import { nullRepo } from '../rules/repository.test';
 import {
-	getGuRepoName,
 	getRepoNamesWithoutProductionTopic,
 	removeGuardian,
 } from './repository-06-topic-monitor-production';
@@ -45,31 +43,6 @@ describe('getReposWithoutProductionTopic', () => {
 		const result: string[] =
 			getRepoNamesWithoutProductionTopic(unarchivedRepos);
 		expect(result).toEqual(['guardian/repo-good-1', 'guardian/repo-good-2']);
-	});
-});
-
-describe('getGuRepoName', () => {
-	it('should return undefined if the "gu:repo" tag value is not present', () => {
-		const cfnTag: AWSCloudformationTag = {
-			App: 'app-1',
-			Stack: 'stack1',
-			Stage: 'PROD',
-			'gu:build-tool': 'guardian/some-build-tool',
-		};
-		const result: string | undefined = getGuRepoName(cfnTag);
-		expect(result).toEqual(undefined);
-	});
-
-	it('should return only the "gu:repo" tag value', () => {
-		const cfnTag: AWSCloudformationTag = {
-			App: 'app-1',
-			Stack: 'stack1',
-			Stage: 'PROD',
-			'gu:repo': 'guardian/repo-1',
-			'gu:build-tool': 'guardian/some-build-tool',
-		};
-		const result: string | undefined = getGuRepoName(cfnTag);
-		expect(result).toEqual('guardian/repo-1');
 	});
 });
 

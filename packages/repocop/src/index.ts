@@ -5,12 +5,16 @@ import type {
 } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { stageAwareOctokit } from 'common/functions';
+import type { AWSCloudformationStack } from 'common/types';
+import type { Config } from './config';
 import { getConfig } from './config';
-import { getUnarchivedRepositories } from './query';
+import { getRepositories, getStacks, getUnarchivedRepositories } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
-import { evaluateRepositories } from './rules/repository';
+import { parseTagsFromStack } from './remediations/shared-utilities';
+import { evaluateRepositories, findStacks } from './rules/repository';
+import type { RepoAndArchiveStatus, RepoAndStack } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -25,6 +29,49 @@ async function writeEvaluationTable(
 	});
 
 	console.log('Finished writing to table');
+}
+
+function toRepoAndArchiveStatus(
+	repo: github_repositories,
+): RepoAndArchiveStatus | undefined {
+	if (!repo.archived || !repo.name || !repo.full_name) {
+		return undefined;
+	} else {
+		return {
+			archived: repo.archived,
+			name: repo.name,
+			fullName: repo.full_name,
+		};
+	}
+}
+
+async function findArchivedReposWithStacks(
+	prisma: PrismaClient,
+	config: Config,
+) {
+	const allRepos = (
+		await getRepositories(prisma, config.ignoredRepositoryPrefixes)
+	)
+		.map((r) => toRepoAndArchiveStatus(r))
+		.filter((r) => !!r) as RepoAndArchiveStatus[];
+
+	const stacks = (await getStacks(prisma))
+		.map((s) => parseTagsFromStack(s))
+		.filter((s) => !(s.tags['Stack'] !== 'playground')); //ignore playground stacks for now.
+
+	const archivedRepos = allRepos.filter((repo) => repo.archived);
+	const unarchivedRepos = allRepos.filter((repo) => !repo.archived);
+
+	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
+		stacks.filter((stack) =>
+			unarchivedRepos.some((repo) => !(repo.fullName === stack.guRepoName)),
+		);
+
+	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
+		.map((repo) => findStacks(repo, stacksWithoutAnUnarchivedRepoMatch))
+		.filter((result) => result.stacks.length > 0);
+
+	return archivedReposWithPotentialStacks;
 }
 
 export async function main() {
@@ -43,6 +90,15 @@ export async function main() {
 
 	console.log(
 		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepositories.length}.`,
+	);
+
+	const archivedWithStacks = await findArchivedReposWithStacks(prisma, config);
+
+	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
+
+	console.log(
+		'Archived repos with live stacks, first 10 results:',
+		archivedWithStacks.slice(0, 10),
 	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
