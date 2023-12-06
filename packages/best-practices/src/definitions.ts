@@ -1,9 +1,15 @@
 import type { IAllBestPractice, IBestPractice } from './types';
 
+const devXSecurity =
+	'[DevX Security](https://github.com/orgs/guardian/teams/devx-security)';
+const devXOperations =
+	'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)';
+const guardian = '[@guardian](https://github.com/orgs/guardian/teams/all)';
+
 const repository: readonly IBestPractice[] = [
 	{
 		name: 'Default Branch Name',
-		owner: '[@guardian](https://github.com/orgs/guardian/teams/all)',
+		owner: guardian,
 		description:
 			'The default branch name should be `main`.<br>See the [master-to-main tool](https://github.com/guardian/master-to-main/blob/main/migrating.md).',
 		howToCheck:
@@ -12,7 +18,7 @@ const repository: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Branch Protection',
-		owner: '[@guardian](https://github.com/orgs/guardian/teams/all)',
+		owner: guardian,
 		description:
 			'Enable branch protection for the default branch, ensuring changes are reviewed before being deployed.',
 		howToCheck:
@@ -22,7 +28,7 @@ const repository: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Team-based Access',
-		owner: '[@guardian](https://github.com/orgs/guardian/teams/all)',
+		owner: guardian,
 		description:
 			'Grant access on a team basis, rather than directly to individuals.',
 		howToCheck: 'Manual. View the repository on https://github.com',
@@ -31,7 +37,7 @@ const repository: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Admin Access',
-		owner: '[@guardian](https://github.com/orgs/guardian/teams/all)',
+		owner: guardian,
 		description:
 			'Grant at least one GitHub team Admin access - typically, the dev team that own the project.',
 		howToCheck:
@@ -41,8 +47,7 @@ const repository: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Archiving',
-		owner:
-			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
+		owner: devXOperations,
 		description: 'Repositories that are no longer used should be archived.',
 		howToCheck:
 			'DevX may contact you to discuss archiving if your repo has been inactive for over two years.',
@@ -50,8 +55,7 @@ const repository: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Topics',
-		owner:
-			'[DevX Security](https://github.com/orgs/guardian/teams/devx-security)',
+		owner: devXSecurity,
 		description:
 			'Repositories should have one of the following topics, to help understand what is in production. `production`, `testing`, `documentation`, `hackday`, `prototype`, `learning`, `interactive`',
 		howToCheck:
@@ -60,10 +64,17 @@ const repository: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Contents',
-		owner:
-			'[DevX Security](https://github.com/orgs/guardian/teams/devx-security)',
+		owner: devXSecurity,
 		description:
 			'Never commit secret information. Avoid private information in public repositories.',
+		howToCheck: 'Manual. View the repository on https://github.com',
+		howToExempt: 'N/A',
+	},
+	{
+		name: 'Stacks',
+		owner: devXSecurity,
+		description:
+			'Archived repositories should not have corresponding stacks on AWS.',
 		howToCheck: 'Manual. View the repository on https://github.com',
 		howToExempt: 'N/A',
 	},
@@ -72,8 +83,7 @@ const repository: readonly IBestPractice[] = [
 const aws: readonly IBestPractice[] = [
 	{
 		name: 'Resource Tagging',
-		owner:
-			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
+		owner: devXOperations,
 		description:
 			'AWS resources should be tagged (where supported) with `Stack`, `Stage`, and `App`.<br>This aids service discovery, and cost allocation.',
 		howToCheck: 'TBD',
@@ -84,8 +94,7 @@ const aws: readonly IBestPractice[] = [
 const galaxiesPerson: readonly IBestPractice[] = [
 	{
 		name: 'GitHub Usernames',
-		owner:
-			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
+		owner: devXOperations,
 		description:
 			'Developers should update their [Galaxies profiles](https://forms.gle/7Yye3KfHefgYqg3c7) with their GitHub usernames',
 		howToCheck: 'View on Galaxies',
@@ -97,8 +106,7 @@ const galaxiesPerson: readonly IBestPractice[] = [
 const galaxiesTeam: readonly IBestPractice[] = [
 	{
 		name: 'Github Team',
-		owner:
-			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
+		owner: devXOperations,
 		description:
 			'Teams should have their GitHub team names in their galaxies entry',
 		howToCheck:
@@ -107,8 +115,7 @@ const galaxiesTeam: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Team Emails',
-		owner:
-			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
+		owner: devXOperations,
 		description: 'A team on Galaxies should have an email address entry',
 		howToCheck:
 			'Check in [this file](https://github.com/guardian/galaxies/blob/main/shared/data/teams.ts) in the Galaxies repo',
@@ -116,8 +123,7 @@ const galaxiesTeam: readonly IBestPractice[] = [
 	},
 	{
 		name: 'Team Channels',
-		owner:
-			'[DevX Operations](https://github.com/orgs/guardian/teams/devx-operations)',
+		owner: devXOperations,
 		description:
 			'A team on Galaxies should have a public chat channel key listed',
 		howToCheck:

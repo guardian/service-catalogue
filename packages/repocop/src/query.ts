@@ -1,4 +1,5 @@
 import type {
+	aws_cloudformation_stacks,
 	github_repositories,
 	github_repository_branches,
 	github_teams,
@@ -12,15 +13,13 @@ import type {
 	AWSCloudformationTag,
 } from 'common/types';
 
-export async function getUnarchivedRepositories(
+export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<github_repositories[]> {
 	console.log('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
-			archived: false,
-
 			NOT: [
 				{
 					OR: ignoredRepositoryPrefixes.map((prefix) => {
@@ -30,7 +29,30 @@ export async function getUnarchivedRepositories(
 			],
 		},
 	});
-	console.log(`Found ${repositories.length} repositories`);
+
+	return repositories;
+}
+
+export async function getUnarchivedRepositories(
+	client: PrismaClient,
+	ignoredRepositoryPrefixes: string[],
+): Promise<github_repositories[]> {
+	const repositories = (
+		await getRepositories(client, ignoredRepositoryPrefixes)
+	).filter((r) => !r.archived);
+	console.log(`Found ${repositories.length} unarchived repositories`);
+
+	return repositories;
+}
+
+export async function getArchivedRepositories(
+	client: PrismaClient,
+	ignoredRepositoryPrefixes: string[],
+): Promise<github_repositories[]> {
+	const repositories = (
+		await getRepositories(client, ignoredRepositoryPrefixes)
+	).filter((r) => r.archived);
+	console.log(`Found ${repositories.length} archived repositories`);
 
 	return repositories;
 }
@@ -87,6 +109,12 @@ export async function getRepoOwnership(
 	console.log(`Found ${data.length} repo ownership records.`);
 
 	return data;
+}
+
+export async function getStacks(
+	client: PrismaClient,
+): Promise<aws_cloudformation_stacks[]> {
+	return await client.aws_cloudformation_stacks.findMany({});
 }
 
 export async function findProdCfnStacks(

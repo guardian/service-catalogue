@@ -1,16 +1,19 @@
 import yargs from 'yargs';
 import {
 	getEcsClient,
+	getSecretsManagerClient,
 	getSsmClient,
 	listTasks,
 	runAllTasks,
 	runOneTask,
 } from './aws.js';
+import { migrateDevDatabase, migrateRdsDatabase } from './database';
 
 const Commands = {
 	list: 'list-tasks',
 	run: 'run-task',
 	runAll: 'run-all-tasks',
+	migrate: 'migrate',
 };
 
 const parseCommandLineArguments = () => {
@@ -92,6 +95,25 @@ const parseCommandLineArguments = () => {
 						default: 'service-catalogue',
 					});
 			})
+			.command(Commands.migrate, 'Run database migrations', (yargs) => {
+				yargs
+					.option('stage', {
+						description: 'Which stage to migrate',
+						choices: ['DEV', 'CODE', 'PROD'],
+						demandOption: true,
+					})
+					.option('confirm', {
+						description: 'Confirm that you want to run the migration',
+						type: 'boolean',
+						default: false,
+					})
+					.option('fromStart', {
+						description:
+							'Apply migrations from the very start. Requires the _prisma_migrations table to be removed.',
+						type: 'boolean',
+						default: false,
+					});
+			})
 			.demandCommand(1, '') // just print help
 			.help()
 			.alias('h', 'help').argv,
@@ -141,6 +163,27 @@ parseCommandLineArguments()
 					stage as string,
 					app as string,
 				);
+			}
+			case Commands.migrate: {
+				const { stage, confirm, fromStart } = argv;
+
+				switch (stage) {
+					case 'DEV': {
+						return migrateDevDatabase();
+					}
+					case 'CODE':
+					case 'PROD': {
+						const secretsManagerClient = getSecretsManagerClient();
+						return migrateRdsDatabase(
+							stage as string,
+							secretsManagerClient,
+							confirm as boolean,
+							fromStart as boolean,
+						);
+					}
+					default:
+						throw new Error(`Unsupported stage: ${stage as string}`);
+				}
 			}
 			default:
 				throw new Error(`Unknown command ${command ?? ''}`);

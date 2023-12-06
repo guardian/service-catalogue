@@ -2,8 +2,10 @@ import type {
 	github_repositories,
 	github_repository_branches,
 } from '@prisma/client';
+import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
-import { repositoryRuleEvaluation } from './repository';
+import type { RepoAndArchiveStatus } from '../types';
+import { findStacks, repositoryRuleEvaluation } from './repository';
 
 export const nullRepo: github_repositories = {
 	cq_sync_time: null,
@@ -400,5 +402,79 @@ describe('Repository maintenance', () => {
 
 		const actual = repositoryRuleEvaluation(recentlyUpdatedRepo, [], []);
 		expect(actual.archiving).toEqual(true);
+	});
+});
+
+describe('Repositories with related stacks on AWS', () => {
+	test('should be findable if a stack has a matching tag', () => {
+		const full_name = 'guardian/repo1';
+		const tags = {
+			'gu:repo': full_name,
+		};
+		const repo: RepoAndArchiveStatus = {
+			fullName: full_name,
+			name: 'repo1',
+			archived: false,
+		};
+		const stack: AWSCloudformationStack = {
+			stackName: 'mystack',
+			guRepoName: full_name,
+			creationTime: new Date(),
+			tags,
+		};
+		console.log(findStacks(repo, [stack]));
+		const result = findStacks(repo, [stack]).stacks.length;
+		expect(result).toEqual(1);
+	});
+	test('should be findable if the repo name is part of the stack name', () => {
+		const repo: RepoAndArchiveStatus = {
+			fullName: 'guardian/repo1',
+			name: 'repo1',
+			archived: false,
+		};
+
+		const stack: AWSCloudformationStack = {
+			stackName: 'mystack-repo1-PROD',
+			tags: {},
+			creationTime: new Date(),
+		};
+		const result = findStacks(repo, [stack]).stacks.length;
+		expect(result).toEqual(1);
+	});
+});
+
+describe('Repositories without any related stacks on AWS', () => {
+	test('should not be findable', () => {
+		const repo: RepoAndArchiveStatus = {
+			fullName: 'guardian/someRepo',
+			name: 'someRepo',
+			archived: false,
+		};
+
+		const tags = {
+			App: 'myApp',
+			Stack: 'myStack',
+			Stage: 'CODE',
+			'gu:repo': 'guardian/someOtherRepo',
+			'gu:build-tool': 'unknown',
+		};
+
+		const stack1: AWSCloudformationStack = {
+			stackName: 'stack1',
+			tags,
+			guRepoName: 'guardian/someOtherRepo',
+			creationTime: new Date(),
+		};
+		const stack2: AWSCloudformationStack = {
+			stackName: 'stack2',
+			tags: {
+				...tags,
+				Stage: 'PROD',
+			},
+			guRepoName: 'guardian/someOtherRepo',
+			creationTime: new Date(),
+		};
+		const result = findStacks(repo, [stack1, stack2]).stacks.length;
+		expect(result).toEqual(0);
 	});
 });

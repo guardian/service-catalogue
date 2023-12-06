@@ -5,15 +5,11 @@ import {
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type {
-	AWSCloudformationStack,
-	AWSCloudformationTag,
-	GuRepoStack,
-} from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../config';
 import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
-import { findContactableOwners } from './shared-utilities';
+import { findContactableOwners, getGuRepoName } from './shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,
@@ -53,17 +49,13 @@ export function getRepoNamesWithoutProductionTopic(
 		.filter((name) => !!name) as string[];
 }
 
-export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
-	return tag['gu:repo'];
-}
-
 export function getReposInProdWithoutProductionTopic(
 	reposWithoutProductionTopic: string[],
-	guRepoStacks: GuRepoStack[],
-): GuRepoStack[] {
-	return guRepoStacks.filter((stack) => {
-		const guRepoName: string = stack.guRepoName;
-		return reposWithoutProductionTopic.includes(guRepoName);
+	awsStacks: AWSCloudformationStack[],
+): AWSCloudformationStack[] {
+	return awsStacks.filter((stack) => {
+		const guRepoName = stack.guRepoName;
+		return !!guRepoName && reposWithoutProductionTopic.includes(guRepoName);
 	});
 }
 
@@ -75,20 +67,16 @@ async function findReposInProdWithoutProductionTopic(
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
-	console.log(
-		`Found ${repoNamesWithoutProductionTopic.length} repositories without a production or interactive topic.`,
-	);
 
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
 
 	const threeMonthsAgo = new Date();
 	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-	const guRepoStacks: GuRepoStack[] = cfnStacksWithProdInfraTags
+	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
 		.filter(
 			(stack: AWSCloudformationStack) =>
 				getGuRepoName(stack.tags) !== undefined &&
-				!!stack.creationTime &&
 				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
 		)
 		.map((stack: AWSCloudformationStack) => {
@@ -100,28 +88,17 @@ async function findReposInProdWithoutProductionTopic(
 		});
 
 	console.log(
-		`Found ${guRepoStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+		`Found ${awsStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
 	);
 
-	const reposInProdWithoutProductionTopic: GuRepoStack[] =
+	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			guRepoStacks,
+			awsStacks,
 		);
 
 	console.log(
-		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/ INFRA Cloudformation Stage tag.`,
-	);
-
-	reposInProdWithoutProductionTopic.map((stack) =>
-		console.log(
-			'repo:',
-			stack.guRepoName,
-			'stack:',
-			stack.stackName,
-			'stack created on:',
-			stack.creationTime,
-		),
+		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/INFRA Cloudformation Stage tag.`,
 	);
 
 	return reposInProdWithoutProductionTopic;
@@ -137,7 +114,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	teamNameSlugs: string[],
 	octokit: Octokit,
 	config: Config,
-) {
+): Promise<void> {
 	const owner = 'guardian';
 	const topic = 'production';
 	const shortRepoName = removeGuardian(fullRepoName);
@@ -153,12 +130,12 @@ export async function applyProductionTopicAndMessageTeams(
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: GuRepoStack[] = await findReposInProdWithoutProductionTopic(
-		prisma,
-		unarchivedRepos,
-	);
+	const repos: AWSCloudformationStack[] =
+		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
-	const fullRepoNames = repos.map((repo) => repo.guRepoName);
+	const fullRepoNames = repos
+		.map((repo) => repo.guRepoName)
+		.filter((name) => !!name) as string[];
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
@@ -172,15 +149,7 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	console.log(
-		`Found ${reposWithContactableOwners.length} repos with contactable owners.`,
-	);
-	reposWithContactableOwners.map((repo) => console.log(repo));
-
 	if (config.stage === 'PROD') {
-		console.log(
-			`Applying production topic to ${reposWithContactableOwners.length} repos and messaging their teams.`,
-		);
 		await Promise.all(
 			reposWithContactableOwners.map((repo) =>
 				applyProductionTopicToOneRepoAndMessageTeams(
