@@ -1,5 +1,4 @@
 import type {
-	github_repositories,
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
@@ -19,7 +18,7 @@ import { parseTagsFromStack } from './remediations/shared-utilities';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import { evaluateRepositories, findStacks } from './rules/repository';
-import type { RepoAndArchiveStatus, RepoAndStack } from './types';
+import type { RepoAndStack, Repository } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -36,35 +35,17 @@ async function writeEvaluationTable(
 	console.log('Finished writing to table');
 }
 
-function toRepoAndArchiveStatus(
-	repo: github_repositories,
-): RepoAndArchiveStatus | undefined {
-	if (!repo.archived || !repo.name || !repo.full_name) {
-		return undefined;
-	} else {
-		return {
-			archived: repo.archived,
-			name: repo.name,
-			fullName: repo.full_name,
-		};
-	}
-}
-
 function findArchivedReposWithStacks(
-	archivedRepositories: github_repositories[],
-	unarchivedRepositories: github_repositories[],
+	archivedRepositories: Repository[],
+	unarchivedRepositories: Repository[],
 	stacks: AWSCloudformationStack[],
 ) {
-	const archivedRepos: RepoAndArchiveStatus[] = archivedRepositories
-		.map((repo) => toRepoAndArchiveStatus(repo))
-		.filter((r): r is RepoAndArchiveStatus => !!r);
-	const unarchivedRepos = unarchivedRepositories
-		.map((repo) => toRepoAndArchiveStatus(repo))
-		.filter((r): r is RepoAndArchiveStatus => !!r);
+	const archivedRepos = archivedRepositories;
+	const unarchivedRepos = unarchivedRepositories;
 
 	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
 		stacks.filter((stack) =>
-			unarchivedRepos.some((repo) => !(repo.fullName === stack.guRepoName)),
+			unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
 		);
 
 	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos

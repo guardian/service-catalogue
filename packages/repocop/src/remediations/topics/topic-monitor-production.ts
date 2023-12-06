@@ -1,5 +1,5 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type { github_repositories, PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	applyTopics,
@@ -9,6 +9,7 @@ import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
 import { findProdCfnStacks, getRepoOwnership, getTeams } from '../../query';
+import type { Repository } from '../../types';
 import {
 	findContactableOwners,
 	getGuRepoName,
@@ -40,7 +41,7 @@ async function notifyOneTeam(
 }
 
 export function getRepoNamesWithoutProductionTopic(
-	unarchivedRepos: github_repositories[],
+	unarchivedRepos: Repository[],
 ): string[] {
 	return unarchivedRepos
 		.filter(
@@ -49,8 +50,8 @@ export function getRepoNamesWithoutProductionTopic(
 				!repo.topics.includes('interactive'),
 		)
 		.map((repo) => repo.full_name)
-		.filter((name) => !name?.includes('interactive'))
-		.filter((name) => !!name) as string[];
+		.filter((name) => !name.includes('interactive'))
+		.filter((name) => !!name);
 }
 
 export function getReposInProdWithoutProductionTopic(
@@ -67,7 +68,7 @@ export function getReposInProdWithoutProductionTopic(
 
 async function findReposInProdWithoutProductionTopic(
 	prisma: PrismaClient,
-	unarchivedRepos: github_repositories[],
+	unarchivedRepos: Repository[],
 ) {
 	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
@@ -128,7 +129,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
-	unarchivedRepos: github_repositories[],
+	unarchivedRepos: Repository[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
