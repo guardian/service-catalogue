@@ -4,7 +4,7 @@ import type {
 } from '@prisma/client';
 import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
-import type { RepoAndArchiveStatus } from './repository';
+import type { RepoAndArchiveStatus } from '../types';
 import { findStacks, repositoryRuleEvaluation } from './repository';
 
 export const nullRepo: github_repositories = {

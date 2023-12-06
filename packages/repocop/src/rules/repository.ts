@@ -10,6 +10,7 @@ import {
 	getRepositoryTeams,
 	type RepositoryTeam,
 } from '../query';
+import type { RepoAndArchiveStatus, RepoAndStack } from '../types';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -107,13 +108,6 @@ function isMaintained(repo: github_repositories): boolean {
 	const isInteractive = repo.topics.includes('interactive');
 
 	return isInteractive || recentlyUpdated;
-}
-
-//TODO find somehwere else to put this
-export interface RepoAndArchiveStatus {
-	full_name: string;
-	name: string;
-	archived: boolean;
 }
 
 /**

@@ -13,8 +13,8 @@ import { protectBranches } from './remediations/branch-protector/branch-protecti
 import { sendPotentialInteractives } from './remediations/repository-06-topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/repository-06-topic-monitor-production';
 import { parseTagsFromStack } from './remediations/shared-utilities';
-import type { RepoAndArchiveStatus } from './rules/repository';
 import { evaluateRepositories, findStacks } from './rules/repository';
+import type { RepoAndArchiveStatus, RepoAndStack } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
