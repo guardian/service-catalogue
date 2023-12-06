@@ -86,7 +86,7 @@ export async function main() {
 	const teams = await getRepositoryTeams(prisma);
 	const stacks: AWSCloudformationStack[] = (await getStacks(prisma))
 		.map((s) => parseTagsFromStack(s))
-		.filter((s) => !(s.tags['Stack'] !== 'playground')); //ignore playground stacks for now.
+		.filter((s) => s.tags['Stack'] !== 'playground'); //ignore playground stacks for now.
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(unarchivedRepos, branches, teams);
