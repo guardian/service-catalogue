@@ -5,7 +5,7 @@ import type {
 import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
 import type { RepoAndArchiveStatus } from '../types';
-import { findStacks, repositoryRuleEvaluation } from './repository';
+import { findStacks, evaluateOneRepo } from './repository';
 
 export const nullRepo: github_repositories = {
 	cq_sync_time: null,
@@ -144,9 +144,7 @@ describe('default_branch_name should be false when the default branch is not mai
 	test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: github_repositories[] = [thePerfectRepo, badRepo];
-		const evaluation = repos.map((repo) =>
-			repositoryRuleEvaluation(repo, [], []),
-		);
+		const evaluation = repos.map((repo) => evaluateOneRepo(repo, [], []));
 
 		expect(evaluation.map((repo) => repo.default_branch_name)).toEqual([
 			true,
@@ -174,7 +172,7 @@ describe('Repositories should have branch protection', () => {
 			name: 'side-branch',
 		};
 
-		const actual = repositoryRuleEvaluation(
+		const actual = evaluateOneRepo(
 			thePerfectRepo,
 			[protectedMainBranch, unprotectedSideBranch],
 			[],
@@ -183,11 +181,7 @@ describe('Repositories should have branch protection', () => {
 		expect(actual.branch_protection).toEqual(true);
 	});
 	test('We should get a negative result when the default branch of a production repo is not protected', () => {
-		const actual = repositoryRuleEvaluation(
-			thePerfectRepo,
-			[unprotectedMainBranch],
-			[],
-		);
+		const actual = evaluateOneRepo(thePerfectRepo, [unprotectedMainBranch], []);
 		expect(actual.branch_protection).toEqual(false);
 	});
 	test('Repos with no branches do not need protecting, and should be considered protected', () => {
@@ -196,7 +190,7 @@ describe('Repositories should have branch protection', () => {
 			default_branch: null,
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.branch_protection).toEqual(true);
 	});
 	test('Repos with exempted topics should be considered adequately protected, even if they have an unprotected main branch', () => {
@@ -205,7 +199,7 @@ describe('Repositories should have branch protection', () => {
 			topics: ['hackday'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [unprotectedMainBranch], []);
+		const actual = evaluateOneRepo(repo, [unprotectedMainBranch], []);
 		expect(actual.branch_protection).toEqual(true);
 	});
 });
@@ -225,7 +219,7 @@ describe('Repository admin access', () => {
 			},
 		];
 
-		const actual = repositoryRuleEvaluation(repo, [], teams);
+		const actual = evaluateOneRepo(repo, [], teams);
 		expect(actual.admin_access).toEqual(false);
 	});
 
@@ -247,7 +241,7 @@ describe('Repository admin access', () => {
 			},
 		];
 
-		const actual = repositoryRuleEvaluation(repo, [], teams);
+		const actual = evaluateOneRepo(repo, [], teams);
 		expect(actual.admin_access).toEqual(true);
 	});
 
@@ -260,7 +254,7 @@ describe('Repository admin access', () => {
 			topics: ['hackday'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.admin_access).toEqual(true);
 	});
 
@@ -282,7 +276,7 @@ describe('Repository admin access', () => {
 				id: 1234n,
 			},
 		];
-		const actual = repositoryRuleEvaluation(repo, [], teams);
+		const actual = evaluateOneRepo(repo, [], teams);
 		expect(actual.admin_access).toEqual(true);
 	});
 
@@ -294,7 +288,7 @@ describe('Repository admin access', () => {
 			topics: ['avocado'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.admin_access).toEqual(false);
 	});
 });
@@ -306,7 +300,7 @@ describe('Repository topics', () => {
 			topics: ['production'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.topics).toEqual(true);
 	});
 
@@ -318,7 +312,7 @@ describe('Repository topics', () => {
 			topics: ['interactive'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.topics).toEqual(true);
 	});
 
@@ -330,7 +324,7 @@ describe('Repository topics', () => {
 			topics: ['production', 'hackday'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.topics).toEqual(false);
 	});
 
@@ -340,7 +334,7 @@ describe('Repository topics', () => {
 			topics: ['production', 'android'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.topics).toEqual(true);
 	});
 
@@ -350,7 +344,7 @@ describe('Repository topics', () => {
 			topics: [],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.topics).toEqual(false);
 	});
 
@@ -360,7 +354,7 @@ describe('Repository topics', () => {
 			topics: ['android', 'mobile'],
 		};
 
-		const actual = repositoryRuleEvaluation(repo, [], []);
+		const actual = evaluateOneRepo(repo, [], []);
 		expect(actual.topics).toEqual(false);
 	});
 });
@@ -377,8 +371,8 @@ describe('Repository maintenance', () => {
 			created_at: new Date('2019-01-01'),
 		};
 
-		const recentEval = repositoryRuleEvaluation(recentRepo, [], []);
-		const oldEval = repositoryRuleEvaluation(oldRepo, [], []);
+		const recentEval = evaluateOneRepo(recentRepo, [], []);
+		const oldEval = evaluateOneRepo(oldRepo, [], []);
 		expect(recentEval.archiving).toEqual(true);
 		expect(oldEval.archiving).toEqual(false);
 	});
@@ -392,7 +386,7 @@ describe('Repository maintenance', () => {
 			pushed_at: new Date('2020-01-01'),
 		};
 
-		const actual = repositoryRuleEvaluation(recentlyUpdatedRepo, [], []);
+		const actual = evaluateOneRepo(recentlyUpdatedRepo, [], []);
 		expect(actual.archiving).toEqual(true);
 	});
 	test('is not a concern if no dates are found', () => {
@@ -400,7 +394,7 @@ describe('Repository maintenance', () => {
 			...nullRepo,
 		};
 
-		const actual = repositoryRuleEvaluation(recentlyUpdatedRepo, [], []);
+		const actual = evaluateOneRepo(recentlyUpdatedRepo, [], []);
 		expect(actual.archiving).toEqual(true);
 	});
 });

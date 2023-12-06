@@ -133,7 +133,7 @@ export function findStacks(
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
-export function repositoryRuleEvaluation(
+export function evaluateOneRepo(
 	repo: github_repositories,
 	allBranches: github_repository_branches[],
 	teams: RepositoryTeam[],
@@ -165,6 +165,6 @@ export function evaluateRepositories(
 ): repocop_github_repository_rules[] {
 	return repositories.map((repo) => {
 		const teamsForRepo = teams.filter((team) => team.id === repo.id);
-		return repositoryRuleEvaluation(repo, branches, teamsForRepo);
+		return evaluateOneRepo(repo, branches, teamsForRepo);
 	});
 }
