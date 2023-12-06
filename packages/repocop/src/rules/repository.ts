@@ -157,7 +157,6 @@ export function evaluateOneRepo(
 	};
 }
 
-//TODO test this
 export function evaluateRepositories(
 	repositories: github_repositories[],
 	branches: github_repository_branches[],
