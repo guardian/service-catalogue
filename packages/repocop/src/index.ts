@@ -40,7 +40,7 @@ function toRepoAndArchiveStatus(
 		return {
 			archived: repo.archived,
 			name: repo.name,
-			full_name: repo.full_name,
+			fullName: repo.full_name,
 		};
 	}
 }
@@ -64,7 +64,7 @@ async function findArchivedReposWithStacks(
 
 	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
 		stacks.filter((stack) =>
-			unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
+			unarchivedRepos.some((repo) => !(repo.fullName === stack.guRepoName)),
 		);
 
 	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos

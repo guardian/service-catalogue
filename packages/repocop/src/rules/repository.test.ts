@@ -412,7 +412,7 @@ describe('Repositories with related stacks on AWS', () => {
 			'gu:repo': full_name,
 		};
 		const repo: RepoAndArchiveStatus = {
-			full_name,
+			fullName: full_name,
 			name: 'repo1',
 			archived: false,
 		};
@@ -428,7 +428,7 @@ describe('Repositories with related stacks on AWS', () => {
 	});
 	test('should be findable if the repo name is part of the stack name', () => {
 		const repo: RepoAndArchiveStatus = {
-			full_name: 'guardian/repo1',
+			fullName: 'guardian/repo1',
 			name: 'repo1',
 			archived: false,
 		};
@@ -445,8 +445,8 @@ describe('Repositories with related stacks on AWS', () => {
 
 describe('Repositories without any related stacks on AWS', () => {
 	test('should not be findable', () => {
-		const repo = {
-			full_name: 'guardian/someRepo',
+		const repo: RepoAndArchiveStatus = {
+			fullName: 'guardian/someRepo',
 			name: 'someRepo',
 			archived: false,
 		};

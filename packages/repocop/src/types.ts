@@ -1,10 +1,10 @@
 export interface RepoAndStack {
-	full_name: string;
+	fullName: string;
 	stacks: string[];
 }
 
 export interface RepoAndArchiveStatus {
-	full_name: string;
+	fullName: string;
 	name: string;
 	archived: boolean;
 }

@@ -121,7 +121,7 @@ export function findStacks(
 	const stackMatches = stacks.filter((stack) => {
 		return (
 			!!stack.stackName &&
-			(stack.guRepoName === repo.full_name ||
+			(stack.guRepoName === repo.fullName ||
 				stack.stackName.includes(repo.name))
 		);
 	});
@@ -130,7 +130,7 @@ export function findStacks(
 		.filter((s) => !!s) as string[];
 
 	return {
-		full_name: repo.full_name,
+		fullName: repo.fullName,
 		stacks: stackNames,
 	};
 }
