@@ -175,3 +175,8 @@ export async function sendNotifications(
 		console.error(error);
 	}
 }
+
+export function removeRepoOwner(fullRepoName: string): string {
+	const reponame = fullRepoName.split('/')[1];
+	return reponame ?? '';
+}
