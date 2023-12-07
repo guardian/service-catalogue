@@ -1,6 +1,5 @@
 import type {
 	aws_cloudformation_stacks,
-	github_repositories,
 	github_repository_branches,
 	github_teams,
 	Prisma,
@@ -13,24 +12,6 @@ import type {
 	AWSCloudformationTag,
 } from 'common/types';
 import type { Repository } from './types';
-
-function toRepository(r: github_repositories): Repository | undefined {
-	if (!r.archived || !r.name || !r.full_name || !r.created_at || !r.id) {
-		return undefined;
-	} else {
-		return {
-			archived: r.archived,
-			name: r.name,
-			full_name: r.full_name,
-			topics: r.topics,
-			updated_at: r.updated_at,
-			pushed_at: r.pushed_at,
-			created_at: r.created_at,
-			id: r.id,
-			default_branch: r.default_branch,
-		};
-	}
-}
 
 export async function getRepositories(
 	client: PrismaClient,
@@ -50,9 +31,7 @@ export async function getRepositories(
 	});
 
 	console.log(`Found ${repositories.length} repositories`);
-	return repositories
-		.map((repo) => toRepository(repo))
-		.filter((r): r is Repository => !!r);
+	return repositories.map((r) => r as Repository);
 }
 
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
