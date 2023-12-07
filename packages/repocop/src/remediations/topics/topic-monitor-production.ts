@@ -12,7 +12,8 @@ import { getRepoOwnership, getTeams } from '../../query';
 import type { Repository } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
-interface AnghammaradMessageText {
+const MONTHS = 3;
+interface AnghammaradTextFields {
 	subject: string;
 	message: string;
 }
@@ -21,12 +22,13 @@ export function createMessage(
 	fullRepoName: string,
 	stackName: string,
 	teamSlug: string,
+	months: number,
 ) {
 	return {
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
 		message:
 			`The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}. ` +
-			' This is because stack is over three months old and has PROD or INFRA tags.' +
+			` This is because stack is over ${months} months old and has PROD or INFRA tags.` +
 			` Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.` +
 			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
 	};
@@ -36,13 +38,13 @@ async function notifyOneTeam(
 	fullRepoName: string,
 	config: Config,
 	teamSlug: string,
-	message: AnghammaradMessageText,
+	messageTextFields: AnghammaradTextFields,
 ) {
 	const { app, stage, anghammaradSnsTopic } = config;
 	const client = new Anghammarad();
 	await client.notify({
-		subject: message.subject,
-		message: message.message,
+		subject: messageTextFields.subject,
+		message: messageTextFields.message,
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
@@ -106,20 +108,18 @@ export function findReposInProdWithoutProductionTopic(
 
 	const prodStacks: AWSCloudformationStack[] = stacks.filter(isProdStack);
 
-	const threeMonths = new Date();
-	threeMonths.setMonth(threeMonths.getMonth() - 3);
-	const prodStacksOverThreeMonths: AWSCloudformationStack[] = prodStacks.filter(
-		(stack) => stackIsOlderThan(stack, threeMonths),
-	);
-
+	const numberOfMonths = new Date();
+	numberOfMonths.setMonth(numberOfMonths.getMonth() - MONTHS);
+	const prodStacksOverNumberOfMonths: AWSCloudformationStack[] =
+		prodStacks.filter((stack) => stackIsOlderThan(stack, numberOfMonths));
 	console.log(
-		`Found ${prodStacksOverThreeMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over three months old.`,
+		`Found ${prodStacksOverNumberOfMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
 	);
 
 	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			prodStacksOverThreeMonths,
+			prodStacksOverNumberOfMonths,
 		);
 
 	console.log(
@@ -148,9 +148,15 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 		);
 	}
 	for (const teamNameSlug of teamNameSlugs) {
-		const messageText = createMessage(fullRepoName, stackName, teamNameSlug);
+		const messageText = createMessage(
+			fullRepoName,
+			stackName,
+			teamNameSlug,
+			MONTHS,
+		);
 		console.log('Production topic monitor message text: ');
 		console.log(messageText);
+		// have to check the stage again here as we're in the loop
 		if (stage === 'PROD') {
 			await notifyOneTeam(fullRepoName, config, teamNameSlug, messageText);
 		}
