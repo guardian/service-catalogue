@@ -108,10 +108,10 @@ export function findReposInProdWithoutProductionTopic(
 
 	const prodStacks: AWSCloudformationStack[] = stacks.filter(isProdStack);
 
-	const numberOfMonths = new Date();
-	numberOfMonths.setMonth(numberOfMonths.getMonth() - MONTHS);
+	const cutoffDate = new Date();
+	cutoffDate.setMonth(cutoffDate.getMonth() - MONTHS);
 	const prodStacksOverNumberOfMonths: AWSCloudformationStack[] =
-		prodStacks.filter((stack) => stackIsOlderThan(stack, numberOfMonths));
+		prodStacks.filter((stack) => stackIsOlderThan(stack, cutoffDate));
 	console.log(
 		`Found ${prodStacksOverNumberOfMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
 	);
