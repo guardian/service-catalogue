@@ -1,5 +1,5 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type { PrismaClient } from '@prisma/client';
+import type { aws_cloudformation_stacks, PrismaClient } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	applyTopics,
@@ -8,11 +8,12 @@ import {
 import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import { findProdCfnStacks, getRepoOwnership, getTeams } from '../../query';
+import { getRepoOwnership, getStacks, getTeams } from '../../query';
 import type { Repository } from '../../types';
 import {
 	findContactableOwners,
 	getGuRepoName,
+	parseTagsFromStack,
 	removeRepoOwner,
 } from '../shared-utilities';
 
@@ -66,6 +67,16 @@ export function getReposInProdWithoutProductionTopic(
 	});
 }
 
+//TODO test this
+function isProdStack(stack: AWSCloudformationStack) {
+	return (
+		!!stack.tags.Stage &&
+		(stack.tags.Stage === 'PROD' || stack.tags.Stage === 'INFRA') &&
+		stack.tags.Stack !== 'playground' && // Ignore playground stacks
+		!!stack.guRepoName
+	);
+}
+
 async function findReposInProdWithoutProductionTopic(
 	prisma: PrismaClient,
 	unarchivedRepos: Repository[],
@@ -75,8 +86,11 @@ async function findReposInProdWithoutProductionTopic(
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
 
-	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
-		await findProdCfnStacks(prisma);
+	const stacks: aws_cloudformation_stacks[] = await getStacks(prisma);
+
+	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] = stacks
+		.map(parseTagsFromStack)
+		.filter(isProdStack);
 
 	const threeMonthsAgo = new Date();
 	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
