@@ -1,6 +1,5 @@
 import type {
 	aws_cloudformation_stacks,
-	github_repositories,
 	github_repository_branches,
 	github_teams,
 	Prisma,
@@ -12,11 +11,12 @@ import type {
 	AWSCloudformationStack,
 	AWSCloudformationTag,
 } from 'common/types';
+import type { Repository } from './types';
 
 export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
-): Promise<github_repositories[]> {
+): Promise<Repository[]> {
 	console.log('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
@@ -31,13 +31,13 @@ export async function getRepositories(
 	});
 
 	console.log(`Found ${repositories.length} repositories`);
-	return repositories;
+	return repositories.map((r) => r as Repository);
 }
 
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
 export async function getRepositoryBranches(
 	client: PrismaClient,
-	repos: github_repositories[],
+	repos: Repository[],
 ): Promise<github_repository_branches[]> {
 	const branches = await client.github_repository_branches.findMany({
 		where: {

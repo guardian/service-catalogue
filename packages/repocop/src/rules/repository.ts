@@ -1,17 +1,16 @@
 import type {
-	github_repositories,
 	github_repository_branches,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import type { AWSCloudformationStack } from 'common/types';
 import { type RepositoryTeam } from '../query';
-import type { RepoAndArchiveStatus, RepoAndStack } from '../types';
+import type { RepoAndStack, Repository } from '../types';
 
 /**
  * Evaluate the following rule for a Github repository:
  *   > The default branch name should be "main".
  */
-function hasDefaultBranchNameMain(repo: github_repositories): boolean {
+function hasDefaultBranchNameMain(repo: Repository): boolean {
 	return repo.default_branch === 'main';
 }
 
@@ -20,7 +19,7 @@ function hasDefaultBranchNameMain(repo: github_repositories): boolean {
  *   > Enable branch protection for the default branch, ensuring changes are reviewed before being deployed.
  */
 function hasBranchProtection(
-	repo: github_repositories,
+	repo: Repository,
 	branches: github_repository_branches[],
 ): boolean {
 	const exempt = !(
@@ -43,10 +42,7 @@ function hasBranchProtection(
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
  *   > Repositories without one of the following topics are exempt: production, testing, documentation.
  */
-function hasAdminTeam(
-	repo: github_repositories,
-	teams: RepositoryTeam[],
-): boolean {
+function hasAdminTeam(repo: Repository, teams: RepositoryTeam[]): boolean {
 	// Repos that have explicitly been classified as these topics are exempt.
 	// Any other repos, regardless of topic, need to be owned by a team, or assigned one of these topics.
 	const exemptedTopics = ['prototype', 'learning', 'hackday', 'interactive'];
@@ -65,7 +61,7 @@ function hasAdminTeam(
  *   > Repositories should have one and only one of the following topics to help understand what is in production.
  *   > Repositories owned only by non-P&E teams are exempt.
  */
-function hasStatusTopic(repo: github_repositories): boolean {
+function hasStatusTopic(repo: Repository): boolean {
 	const validTopics = [
 		'prototype',
 		'learning',
@@ -81,18 +77,18 @@ function hasStatusTopic(repo: github_repositories): boolean {
 	);
 }
 
-function mostRecentChange(repo: github_repositories): Date | undefined {
+function mostRecentChange(repo: Repository): Date | undefined {
 	const definiteDates: Date[] = [
 		repo.created_at,
 		repo.updated_at,
 		repo.pushed_at,
-	].filter((d) => !!d) as Date[];
+	].filter((d): d is Date => !!d);
 
 	const sortedDates = definiteDates.sort((a, b) => b.getTime() - a.getTime());
 	return sortedDates[0] ?? undefined;
 }
 
-function isMaintained(repo: github_repositories): boolean {
+function isMaintained(repo: Repository): boolean {
 	const update: Date | undefined = mostRecentChange(repo);
 	const now = new Date();
 	const twoYearsAgo = new Date();
@@ -110,13 +106,13 @@ function isMaintained(repo: github_repositories): boolean {
  *   > Archived repositories should not have corresponding stacks on AWS.
  */
 export function findStacks(
-	repo: RepoAndArchiveStatus,
+	repo: Repository,
 	stacks: AWSCloudformationStack[],
 ): RepoAndStack {
 	const stackMatches = stacks.filter((stack) => {
 		return (
 			!!stack.stackName &&
-			(stack.guRepoName === repo.fullName ||
+			(stack.guRepoName === repo.full_name ||
 				stack.stackName.includes(repo.name))
 		);
 	});
@@ -125,7 +121,7 @@ export function findStacks(
 		.filter((s) => !!s) as string[];
 
 	return {
-		fullName: repo.fullName,
+		fullName: repo.full_name,
 		stacks: stackNames,
 	};
 }
@@ -134,7 +130,7 @@ export function findStacks(
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
 export function evaluateOneRepo(
-	repo: github_repositories,
+	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: RepositoryTeam[],
 ): repocop_github_repository_rules {
@@ -142,7 +138,7 @@ export function evaluateOneRepo(
 	Either the fullname, or the org and name, or the org and 'unknown'.
 	The latter should never happen, it's just how the types have been defined.
 	 */
-	const fullName = repo.full_name ?? `${repo.org}/${repo.name ?? 'unknown'}`;
+	const fullName = repo.full_name;
 
 	return {
 		full_name: fullName,
@@ -158,7 +154,7 @@ export function evaluateOneRepo(
 }
 
 export function evaluateRepositories(
-	repositories: github_repositories[],
+	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: RepositoryTeam[],
 ): repocop_github_repository_rules[] {

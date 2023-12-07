@@ -1,5 +1,4 @@
 import type {
-	github_repositories,
 	github_teams,
 	PrismaClient,
 	repocop_github_repository_rules,
@@ -10,6 +9,7 @@ import type { UpdateMessageEvent } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
 import { getRepoOwnership, getTeams } from '../../query';
+import type { Repository } from '../../types';
 import { findContactableOwners } from '../shared-utilities';
 import { notify } from './aws-requests';
 import {
@@ -47,7 +47,7 @@ export async function protectBranches(
 	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
-	unarchivedRepositories: github_repositories[],
+	unarchivedRepositories: Repository[],
 	octokit: Octokit,
 ) {
 	const repoOwners = await getRepoOwnership(prisma);

@@ -1,17 +1,17 @@
-import type { github_repositories } from '@prisma/client';
 import { nullRepo } from '../../rules/repository.test';
+import type { Repository } from '../../types';
 import { getRepoNamesWithoutProductionTopic } from './topic-monitor-production';
 
 describe('getReposWithoutProductionTopic', () => {
 	it('should return an empty array when unarchivedRepos array is empty', () => {
-		const unarchivedRepos: github_repositories[] = [];
+		const unarchivedRepos: Repository[] = [];
 		const result: string[] =
 			getRepoNamesWithoutProductionTopic(unarchivedRepos);
 		expect(result).toEqual([]);
 	});
 
 	it('should return only repositories without production or interactive topics and without "interactive" in the repo name', () => {
-		const unarchivedRepos: github_repositories[] = [
+		const unarchivedRepos: Repository[] = [
 			{
 				...nullRepo,
 				full_name: 'guardian/repo-bad-1',
