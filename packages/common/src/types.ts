@@ -23,8 +23,5 @@ export interface AWSCloudformationStack {
 	stackName: string | null;
 	tags: AWSCloudformationTag;
 	creationTime: Date | null;
-}
-
-export interface GuRepoStack extends AWSCloudformationStack {
-	guRepoName: string;
+	guRepoName?: string;
 }

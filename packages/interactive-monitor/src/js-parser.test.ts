@@ -5,8 +5,11 @@ describe('getPathFromConfigFile', () => {
 		const rawFile1 = String.raw`export default {
             title: "Iran protests",
             path: "2022/10/iran-protests"}`;
-		const file1 = parseFileToJS(rawFile1);
-		expect(getPathFromConfigFile(file1!)).toEqual('2022/10/iran-protests');
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- content provided above, so can be sure this is never `undefined`
+		const file1 = parseFileToJS(rawFile1)!;
+
+		expect(getPathFromConfigFile(file1)).toEqual('2022/10/iran-protests');
 
 		const rawFile2 = String.raw`export default {
             title: "Some Title",
@@ -18,19 +21,29 @@ describe('getPathFromConfigFile', () => {
             },
             path: "2022/10/some-title",
         };`;
-		const file2 = parseFileToJS(rawFile2);
-		const result = getPathFromConfigFile(file2!);
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- content provided above, so can be sure this is never `undefined`
+		const file2 = parseFileToJS(rawFile2)!;
+
+		const result = getPathFromConfigFile(file2);
 		expect(result).toEqual('2022/10/some-title');
 	});
 	it('should return undefined if the JS file is invalid', () => {
 		const rawFile = String.raw`export default {
 		    title: "Iran protests",
 		    asdf: "2022/10/iran-protests"}`;
-		const file = parseFileToJS(rawFile);
-		expect(getPathFromConfigFile(file!)).toBeUndefined();
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- content provided above, so can be sure this is never `undefined`
+		const file = parseFileToJS(rawFile)!;
+
+		expect(getPathFromConfigFile(file)).toBeUndefined();
 	});
 	it('should return undefined if the JS file is empty', () => {
-		const file = parseFileToJS('');
-		expect(getPathFromConfigFile(file!)).toBeUndefined();
+		const rawFile = '';
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- content provided above, so can be sure this is never `undefined`
+		const file = parseFileToJS(rawFile)!;
+
+		expect(getPathFromConfigFile(file)).toBeUndefined();
 	});
 });

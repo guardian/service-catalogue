@@ -41,7 +41,6 @@ verifyMarkdown() {
     echo "Best practices markdown file is out of date. Please regenerate the project and commit the changes."
     exit 1
   fi
-
 }
 
 npm ci

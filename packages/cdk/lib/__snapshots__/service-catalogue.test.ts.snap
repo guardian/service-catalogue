@@ -212,6 +212,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -868,6 +874,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "1638MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -1487,6 +1499,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -2105,6 +2123,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -2737,6 +2761,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -3574,6 +3604,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -4033,6 +4069,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -4704,6 +4746,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "13107MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -4846,7 +4894,7 @@ spec:
             "Name": "CloudquerySource-GitHubTeamsFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "8192",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceGitHubTeamsTaskDefinitionExecutionRole9DEDACFD",
@@ -4854,7 +4902,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubTeamsTaskDefinition5CFD9707",
-        "Memory": "512",
+        "Memory": "16384",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -5389,6 +5437,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -5998,6 +6052,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -6623,6 +6683,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -7278,6 +7344,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -8074,6 +8146,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -8498,6 +8576,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -9131,6 +9215,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -9812,6 +9902,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -10639,6 +10735,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -11063,6 +11165,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -11742,6 +11850,12 @@ spec:
             },
             "EntryPoint": [
               "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "1638MiB",
+              },
             ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
@@ -12574,6 +12688,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -13032,6 +13152,12 @@ spec:
             "EntryPoint": [
               "",
             ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "819MiB",
+              },
+            ],
             "Essential": true,
             "Image": "ghcr.io/cloudquery/cloudquery:3.28.0",
             "LogConfiguration": {
@@ -13154,7 +13280,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceSnykAllTaskDefinitionBFF67A0E",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -15022,9 +15148,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repocoprepocopcron01504E53EA84": {
+    "repocoprepocopcron015MONFRI02BD16E22": {
       "Properties": {
-        "ScheduleExpression": "cron(0 15 * * ? *)",
+        "ScheduleExpression": "cron(0 15 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -15040,7 +15166,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoprepocopcron0150AllowEventRuleServiceCataloguerepocop7BEB58921D341946": {
+    "repocoprepocopcron015MONFRI0AllowEventRuleServiceCataloguerepocop7BEB5892F4DF00FA": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -15052,7 +15178,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repocoprepocopcron01504E53EA84",
+            "repocoprepocopcron015MONFRI02BD16E22",
             "Arn",
           ],
         },

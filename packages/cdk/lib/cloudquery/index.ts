@@ -317,6 +317,8 @@ export function addCloudqueryEcsCluster(
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 16384,
+			cpu: 8192,
 		},
 		{
 			name: 'GitHubIssues',
@@ -409,6 +411,7 @@ export function addCloudqueryEcsCluster(
 			secrets: {
 				SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
 			},
+			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'GuardianCustomSnykProjects',

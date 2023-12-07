@@ -1,19 +1,20 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type { github_repositories, PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type {
-	AWSCloudformationStack,
-	AWSCloudformationTag,
-	GuRepoStack,
-} from 'common/types';
+import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
-import type { Config } from '../config';
-import { findProdCfnStacks, getRepoOwnership, getTeams } from '../query';
-import { findContactableOwners } from './shared-utilities';
+import type { Config } from '../../config';
+import { findProdCfnStacks, getRepoOwnership, getTeams } from '../../query';
+import type { Repository } from '../../types';
+import {
+	findContactableOwners,
+	getGuRepoName,
+	removeRepoOwner,
+} from '../shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,
@@ -25,9 +26,11 @@ async function notifyOneTeam(
 	await client.notify({
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
 		message:
-			`The production topic has applied to ${fullRepoName} as it appears to have a PROD or INFRA stack in AWS.` +
-			`Repositories should have one of the following topics, to help understand what is in production: production, testing, documentation, hackday, prototype, learning, interactive` +
-			`Visit the links below to learn more.`,
+			`The 'production' topic has applied to ${fullRepoName}.` +
+			' This is because it has been associated with a live PROD or INFRA stack that is over three months old.' +
+			' Repositories should have one of the following topics, to help understand what is in production:' +
+			` 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'.` +
+			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
@@ -38,7 +41,7 @@ async function notifyOneTeam(
 }
 
 export function getRepoNamesWithoutProductionTopic(
-	unarchivedRepos: github_repositories[],
+	unarchivedRepos: Repository[],
 ): string[] {
 	return unarchivedRepos
 		.filter(
@@ -47,43 +50,42 @@ export function getRepoNamesWithoutProductionTopic(
 				!repo.topics.includes('interactive'),
 		)
 		.map((repo) => repo.full_name)
-		.filter((name) => !name?.includes('interactive'))
-		.filter((name) => !!name) as string[];
-}
-
-export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
-	return tag['gu:repo'];
+		.filter((name) => !name.includes('interactive'))
+		.filter((name) => !!name);
 }
 
 export function getReposInProdWithoutProductionTopic(
 	reposWithoutProductionTopic: string[],
-	guRepoStacks: GuRepoStack[],
-): GuRepoStack[] {
-	return guRepoStacks.filter((stack) => {
-		const guRepoName: string = stack.guRepoName;
-		return reposWithoutProductionTopic.includes(guRepoName);
+	awsStacks: AWSCloudformationStack[],
+): AWSCloudformationStack[] {
+	return awsStacks.filter((stack) => {
+		if (!stack.guRepoName) {
+			return false;
+		}
+		return reposWithoutProductionTopic.includes(stack.guRepoName);
 	});
 }
 
 async function findReposInProdWithoutProductionTopic(
 	prisma: PrismaClient,
-	unarchivedRepos: github_repositories[],
+	unarchivedRepos: Repository[],
 ) {
 	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
-	console.log(
-		`Found ${repoNamesWithoutProductionTopic.length} repositories without a production or interactive topic.`,
-	);
 
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
 		await findProdCfnStacks(prisma);
 
-	const guRepoStacks: GuRepoStack[] = cfnStacksWithProdInfraTags
+	const threeMonthsAgo = new Date();
+	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
 		.filter(
 			(stack: AWSCloudformationStack) =>
-				getGuRepoName(stack.tags) !== undefined,
+				getGuRepoName(stack.tags) !== undefined &&
+				!!stack.creationTime &&
+				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
 		)
 		.map((stack: AWSCloudformationStack) => {
 			const guRepoName = getGuRepoName(stack.tags) as string;
@@ -94,36 +96,20 @@ async function findReposInProdWithoutProductionTopic(
 		});
 
 	console.log(
-		`Found ${guRepoStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+		`Found ${awsStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
 	);
 
-	const reposInProdWithoutProductionTopic: GuRepoStack[] =
+	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			guRepoStacks,
+			awsStacks,
 		);
 
 	console.log(
-		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/ INFRA Cloudformation Stage tag.`,
-	);
-
-	reposInProdWithoutProductionTopic.map((stack) =>
-		console.log(
-			'repo:',
-			stack.guRepoName,
-			'stack:',
-			stack.stackName,
-			'stack created on:',
-			stack.creationTime,
-		),
+		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/INFRA Cloudformation Stage tag.`,
 	);
 
 	return reposInProdWithoutProductionTopic;
-}
-
-export function removeGuardian(fullRepoName: string): string {
-	const reponame = fullRepoName.split('/')[1];
-	return reponame ?? '';
 }
 
 async function applyProductionTopicToOneRepoAndMessageTeams(
@@ -131,10 +117,10 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	teamNameSlugs: string[],
 	octokit: Octokit,
 	config: Config,
-) {
+): Promise<void> {
 	const owner = 'guardian';
 	const topic = 'production';
-	const shortRepoName = removeGuardian(fullRepoName);
+	const shortRepoName = removeRepoOwner(fullRepoName);
 	await applyTopics(shortRepoName, owner, octokit, topic);
 	for (const teamNameSlug of teamNameSlugs) {
 		await notifyOneTeam(fullRepoName, config, teamNameSlug);
@@ -143,16 +129,19 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
-	unarchivedRepos: github_repositories[],
+	unarchivedRepos: Repository[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: GuRepoStack[] = await findReposInProdWithoutProductionTopic(
-		prisma,
-		unarchivedRepos,
-	);
+	const repos: AWSCloudformationStack[] =
+		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
 
-	const fullRepoNames = repos.map((repo) => repo.guRepoName);
+	const fullRepoNames = repos
+		.filter((repo) => !!repo.guRepoName)
+		.map((repo) => {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions  -- we have already filtered out undefined values
+			return `${repo.guRepoName}`;
+		});
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
@@ -166,15 +155,7 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	console.log(
-		`Found ${reposWithContactableOwners.length} repos with contactable owners.`,
-	);
-	reposWithContactableOwners.map((repo) => console.log(repo));
-
 	if (config.stage === 'PROD') {
-		console.log(
-			`Applying production topic to ${reposWithContactableOwners.length} repos and messaging their teams.`,
-		);
 		await Promise.all(
 			reposWithContactableOwners.map((repo) =>
 				applyProductionTopicToOneRepoAndMessageTeams(

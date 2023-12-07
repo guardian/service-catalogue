@@ -36,6 +36,7 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
+import { getCentralElkLink } from 'common/src/logs';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { InteractiveMonitor } from './interactive-monitor';
@@ -153,17 +154,25 @@ export class ServiceCatalogue extends GuStack {
 		const anghammaradTopicParameter =
 			GuAnghammaradTopicParameter.getInstance(this);
 
-		const prodMonitoring: GuLambdaErrorPercentageMonitoringProps = {
+		const repocopProdMonitoring: GuLambdaErrorPercentageMonitoringProps = {
 			toleratedErrorPercentage: 50,
 			lengthOfEvaluationPeriod: Duration.minutes(1),
 			numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
 			snsTopicName: 'devx-alerts',
+			alarmDescription: `RepoCop error percentage is too high. Find the logs here ${getCentralElkLink(
+				{
+					filters: {
+						stage,
+						app: 'repocop',
+					},
+				},
+			)}`,
 		};
 
-		const codeMonitoring: NoMonitoring = { noMonitoring: true };
+		const repocopCodeMonitoring: NoMonitoring = { noMonitoring: true };
 
-		const stageAwareMonitoringConfiguration =
-			stage === 'PROD' ? prodMonitoring : codeMonitoring;
+		const repocopMonitoringConfiguration =
+			stage === 'PROD' ? repocopProdMonitoring : repocopCodeMonitoring;
 
 		const interactiveMonitor = new InteractiveMonitor(this);
 
@@ -181,12 +190,18 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
+		const prodSchedule = Schedule.cron({
+			weekDay: 'MON-FRI',
+			hour: '15',
+			minute: '0',
+		});
+
 		new Repocop(
 			this,
-			nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '15' }),
+			nonProdSchedule ?? prodSchedule,
 			anghammaradTopic,
 			db,
-			stageAwareMonitoringConfiguration,
+			repocopMonitoringConfiguration,
 			vpc,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
