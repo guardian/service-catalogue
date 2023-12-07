@@ -144,7 +144,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 		await applyTopics(shortRepoName, owner, octokit, topic);
 	} else {
 		console.log(
-			`Would have applied the ${topic} topic to ${shortRepoName} with stack ${stackName} owned by ${owner}`,
+			`Would have applied the ${topic} topic to ${shortRepoName} with stack ${stackName} if stage was PROD.`,
 		);
 	}
 	for (const teamNameSlug of teamNameSlugs) {
