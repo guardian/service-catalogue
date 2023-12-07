@@ -69,17 +69,17 @@ describe('getReposWithoutProductionTopic', () => {
 });
 
 describe('getReposInProdWithoutProductionTopic', () => {
-	it('should return an empty array when reposWithoutProductionTopic array is empty', () => {
+	it('should return an empty array when no repos are provided', () => {
 		const result: AWSCloudformationStack[] =
 			findReposInProdWithoutProductionTopic([], [myRepoProdStack]);
 		expect(result).toEqual([]);
 	});
-	it('should return an empty array when stacks array is empty', () => {
+	it('should return an empty array when no stacks are provided', () => {
 		const result: AWSCloudformationStack[] =
 			findReposInProdWithoutProductionTopic([myRepo], []);
 		expect(result).toEqual([]);
 	});
-	it('should return an empty array there are no stacks with a matching guRepoName', () => {
+	it('should return an empty array there are no stacks with a guRepoName', () => {
 		const stack: AWSCloudformationStack = {
 			...myRepoProdStack,
 			guRepoName: undefined,
@@ -100,10 +100,7 @@ describe('getReposInProdWithoutProductionTopic', () => {
 	it('should return an empty array when a stack has a matching repo name but no matching stage tags', () => {
 		const myRepoCodeStack: AWSCloudformationStack = {
 			...myRepoProdStack,
-			guRepoName: 'guardian/repo-bad',
-			tags: {
-				Stage: 'CODE',
-			},
+			tags: { Stage: 'CODE' },
 		};
 		const result: AWSCloudformationStack[] =
 			findReposInProdWithoutProductionTopic([myRepo], [myRepoCodeStack]);
@@ -119,9 +116,7 @@ describe('getReposInProdWithoutProductionTopic', () => {
 	it('should return a value when a stack has a matching repo name and an INFRA Stage tag', () => {
 		const myRepoInfraStack: AWSCloudformationStack = {
 			...myRepoProdStack,
-			tags: {
-				Stage: 'INFRA',
-			},
+			tags: { Stage: 'INFRA' },
 		};
 		const result: AWSCloudformationStack[] =
 			findReposInProdWithoutProductionTopic([myRepo], [myRepoInfraStack]);
@@ -130,9 +125,7 @@ describe('getReposInProdWithoutProductionTopic', () => {
 	it('should not return a value if a stack has a stage of CODE', () => {
 		const myRepoCodeStack: AWSCloudformationStack = {
 			...myRepoProdStack,
-			tags: {
-				Stage: 'CODE',
-			},
+			tags: { Stage: 'CODE' },
 		};
 		const result: AWSCloudformationStack[] =
 			findReposInProdWithoutProductionTopic([myRepo], [myRepoCodeStack]);
@@ -141,9 +134,7 @@ describe('getReposInProdWithoutProductionTopic', () => {
 	it('should not return a value if a stack has a stage of playground', () => {
 		const myRepoPlaygroundStack: AWSCloudformationStack = {
 			...myRepoProdStack,
-			tags: {
-				Stage: 'playground',
-			},
+			tags: { Stage: 'playground' },
 		};
 		const result: AWSCloudformationStack[] =
 			findReposInProdWithoutProductionTopic([myRepo], [myRepoPlaygroundStack]);
