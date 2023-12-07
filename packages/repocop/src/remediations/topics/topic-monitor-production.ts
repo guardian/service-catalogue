@@ -5,11 +5,10 @@ import {
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
 import { getRepoOwnership, getTeams } from '../../query';
-import type { Repository } from '../../types';
+import type { AwsCloudFormationStack, Repository } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 const MONTHS = 3;
@@ -70,56 +69,55 @@ export function getRepoNamesWithoutProductionTopic(
 
 export function getReposInProdWithoutProductionTopic(
 	reposWithoutProductionTopic: string[],
-	awsStacks: AWSCloudformationStack[],
-): AWSCloudformationStack[] {
+	awsStacks: AwsCloudFormationStack[],
+): AwsCloudFormationStack[] {
 	return awsStacks.filter((stack) => {
-		if (!stack.guRepoName) {
+		if (!stack.tags['gu:repo']) {
 			return false;
 		}
-		return reposWithoutProductionTopic.includes(stack.guRepoName);
+		return reposWithoutProductionTopic.includes(stack.tags['gu:repo']);
 	});
 }
 
-function isProdStack(stack: AWSCloudformationStack) {
+function isProdStack(stack: AwsCloudFormationStack) {
 	return (
 		!!stack.tags.Stage &&
 		(stack.tags.Stage === 'PROD' || stack.tags.Stage === 'INFRA') &&
 		stack.tags.Stack !== 'playground' && // Ignore playground stacks
-		!!stack.guRepoName
+		!!stack.tags['gu:repo']
 	);
 }
 
-function stackIsOlderThan(stack: AWSCloudformationStack, date: Date) {
-	if (!stack.creationTime) {
-		return false;
-	} else {
-		return stack.creationTime < date;
-	}
+function stackIsOlderThan(stack: AwsCloudFormationStack, date: Date) {
+	return stack.creation_time < date;
 }
 
 export function findReposInProdWithoutProductionTopic(
 	unarchivedRepos: Repository[],
-	stacks: AWSCloudformationStack[],
-): AWSCloudformationStack[] {
+	stacks: AwsCloudFormationStack[],
+): AwsCloudFormationStack[] {
 	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
 
-	const prodStacks: AWSCloudformationStack[] = stacks.filter(isProdStack);
+	const prodStacks = stacks.filter(isProdStack);
 
+	const threeMonths = new Date();
+	threeMonths.setMonth(threeMonths.getMonth() - 3);
 	const cutoffDate = new Date();
 	cutoffDate.setMonth(cutoffDate.getMonth() - MONTHS);
-	const prodStacksOverNumberOfMonths: AWSCloudformationStack[] =
-		prodStacks.filter((stack) => stackIsOlderThan(stack, cutoffDate));
+	const oldProdStacks: AwsCloudFormationStack[] = prodStacks.filter((stack) =>
+		stackIsOlderThan(stack, cutoffDate),
+	);
 	console.log(
-		`Found ${prodStacksOverNumberOfMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
+		`Found ${oldProdStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
 	);
 
-	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
+	const reposInProdWithoutProductionTopic =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			prodStacksOverNumberOfMonths,
+			oldProdStacks,
 		);
 
 	console.log(
@@ -166,20 +164,17 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
 	unarchivedRepos: Repository[],
-	stacks: AWSCloudformationStack[],
+	stacks: AwsCloudFormationStack[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: AWSCloudformationStack[] = findReposInProdWithoutProductionTopic(
-		unarchivedRepos,
-		stacks,
-	);
+	const repos = findReposInProdWithoutProductionTopic(unarchivedRepos, stacks);
 
 	const repoAndStackNames = repos
-		.filter((repo) => !!repo.guRepoName)
-		.filter((repo) => !!repo.stackName)
+		.filter((repo) => !!repo.tags['gu:repo'])
+		.filter((repo) => !!repo.stack_name)
 		.map((repo) => {
-			return { fullRepoName: repo.guRepoName, stackName: repo.stackName };
+			return { fullRepoName: repo.tags['gu:repo'], stackName: repo.stack_name };
 		});
 
 	const repoOwners = await getRepoOwnership(prisma);
@@ -188,7 +183,7 @@ export async function applyProductionTopicAndMessageTeams(
 	const reposWithContactableOwners = repoAndStackNames
 		.map((names) => {
 			const fullRepoName = names.fullRepoName ?? '';
-			const stackName = names.stackName ?? '';
+			const stackName = names.stackName;
 			const teamNameSlugs = findContactableOwners(
 				fullRepoName,
 				repoOwners,

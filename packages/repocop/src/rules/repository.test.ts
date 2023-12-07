@@ -1,7 +1,6 @@
 import type { github_repository_branches } from '@prisma/client';
-import type { AWSCloudformationStack } from 'common/types';
 import type { RepositoryTeam } from '../query';
-import type { Repository } from '../types';
+import type { AwsCloudFormationStack, Repository } from '../types';
 import { evaluateOneRepo, findStacks } from './repository';
 
 const nullBranch: github_repository_branches = {
@@ -310,10 +309,9 @@ describe('Repositories with related stacks on AWS', () => {
 			name: 'repo1',
 			archived: false,
 		};
-		const stack: AWSCloudformationStack = {
-			stackName: 'mystack',
-			guRepoName: full_name,
-			creationTime: new Date(),
+		const stack: AwsCloudFormationStack = {
+			stack_name: 'mystack',
+			creation_time: new Date(),
 			tags,
 		};
 		console.log(findStacks(repo, [stack]));
@@ -328,10 +326,10 @@ describe('Repositories with related stacks on AWS', () => {
 			archived: false,
 		};
 
-		const stack: AWSCloudformationStack = {
-			stackName: 'mystack-repo1-PROD',
+		const stack: AwsCloudFormationStack = {
+			stack_name: 'mystack-repo1-PROD',
 			tags: {},
-			creationTime: new Date(),
+			creation_time: new Date(),
 		};
 		const result = findStacks(repo, [stack]).stacks.length;
 		expect(result).toEqual(1);
@@ -355,20 +353,18 @@ describe('Repositories without any related stacks on AWS', () => {
 			'gu:build-tool': 'unknown',
 		};
 
-		const stack1: AWSCloudformationStack = {
-			stackName: 'stack1',
-			tags,
-			guRepoName: 'guardian/someOtherRepo',
-			creationTime: new Date(),
+		const stack1: AwsCloudFormationStack = {
+			stack_name: 'stack1',
+			tags: { 'gu:repo': 'guardian/someOtherRepo' },
+			creation_time: new Date(),
 		};
-		const stack2: AWSCloudformationStack = {
-			stackName: 'stack2',
+		const stack2: AwsCloudFormationStack = {
+			stack_name: 'stack2',
 			tags: {
 				...tags,
 				Stage: 'PROD',
 			},
-			guRepoName: 'guardian/someOtherRepo',
-			creationTime: new Date(),
+			creation_time: new Date(),
 		};
 		const result = findStacks(repo, [stack1, stack2]).stacks.length;
 		expect(result).toEqual(0);

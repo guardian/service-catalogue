@@ -4,7 +4,6 @@ import type {
 } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
-import type { AWSCloudformationStack } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -17,7 +16,7 @@ import { protectBranches } from './remediations/branch-protector/branch-protecti
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import { evaluateRepositories, findStacks } from './rules/repository';
-import type { RepoAndStack, Repository } from './types';
+import type { AwsCloudFormationStack, RepoAndStack, Repository } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -37,14 +36,16 @@ async function writeEvaluationTable(
 function findArchivedReposWithStacks(
 	archivedRepositories: Repository[],
 	unarchivedRepositories: Repository[],
-	stacks: AWSCloudformationStack[],
+	stacks: AwsCloudFormationStack[],
 ) {
 	const archivedRepos = archivedRepositories;
 	const unarchivedRepos = unarchivedRepositories;
 
-	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
+	const stacksWithoutAnUnarchivedRepoMatch: AwsCloudFormationStack[] =
 		stacks.filter((stack) =>
-			unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
+			unarchivedRepos.some(
+				(repo) => !(repo.full_name === stack.tags['gu:repo']),
+			),
 		);
 
 	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
@@ -64,9 +65,9 @@ export async function main() {
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const teams = await getRepositoryTeams(prisma);
-	const nonPlaygroundStacks: AWSCloudformationStack[] = (
+	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
-	).filter((s) => s.tags['Stack'] !== 'playground');
+	).filter((s) => s.tags.Stack !== 'playground');
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(unarchivedRepos, branches, teams);

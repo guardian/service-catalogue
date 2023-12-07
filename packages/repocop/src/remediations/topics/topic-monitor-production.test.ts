@@ -1,18 +1,17 @@
-import type { AWSCloudformationStack } from 'common/types';
 import { nullRepo } from '../../rules/repository.test';
-import type { Repository } from '../../types';
+import type { AwsCloudFormationStack, Repository } from '../../types';
 import {
 	findReposInProdWithoutProductionTopic,
 	getRepoNamesWithoutProductionTopic,
 } from './topic-monitor-production';
 
-const myRepoProdStack: AWSCloudformationStack = {
-	stackName: 'hello-my-repo-PROD',
-	creationTime: new Date('2021-01-01'),
+const myRepoProdStack: AwsCloudFormationStack = {
+	stack_name: 'hello-my-repo-PROD',
+	creation_time: new Date('2021-01-01'),
 	tags: {
 		Stage: 'PROD',
+		'gu:repo': 'guardian/my-repo',
 	},
-	guRepoName: 'guardian/my-repo',
 };
 
 const myRepo: Repository = {
@@ -70,85 +69,82 @@ describe('getReposWithoutProductionTopic', () => {
 
 describe('getReposInProdWithoutProductionTopic', () => {
 	it('should return an empty array when no repos are provided', () => {
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([], [myRepoProdStack]);
+		const result = findReposInProdWithoutProductionTopic([], [myRepoProdStack]);
 		expect(result).toEqual([]);
 	});
 	it('should return an empty array when no stacks are provided', () => {
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], []);
+		const result = findReposInProdWithoutProductionTopic([myRepo], []);
 		expect(result).toEqual([]);
 	});
 	it('should return an empty array there are no stacks with a guRepoName', () => {
-		const stack: AWSCloudformationStack = {
+		const stack: AwsCloudFormationStack = {
 			...myRepoProdStack,
-			guRepoName: undefined,
+			tags: { Stage: 'PROD' },
 		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [stack]);
+		const result = findReposInProdWithoutProductionTopic([myRepo], [stack]);
 		expect(result).toEqual([]);
 	});
 	it('should return an empty when a stack is tagged with a different repo', () => {
-		const yourStack: AWSCloudformationStack = {
+		const yourStack = {
 			...myRepoProdStack,
-			guRepoName: 'guardian/a-different-repo',
+			tags: { ...myRepoProdStack.tags, 'gu:repo': 'guardian/another-repo' },
 		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [yourStack]);
-		expect(result).toEqual([]);
-	});
-	it('should return an empty array when a stack has a matching repo name but no matching stage tags', () => {
-		const myRepoCodeStack: AWSCloudformationStack = {
-			...myRepoProdStack,
-			tags: { Stage: 'CODE' },
-		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [myRepoCodeStack]);
+		const result = findReposInProdWithoutProductionTopic([myRepo], [yourStack]);
 		expect(result).toEqual([]);
 	});
 
 	//The next four tests are examining the behaviour of isProdStack(), which is not exported
 	it('should return a value when a stack has a matching repo name and a PROD Stage tag', () => {
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [myRepoProdStack]);
+		const result = findReposInProdWithoutProductionTopic(
+			[myRepo],
+			[myRepoProdStack],
+		);
 		expect(result).toEqual([myRepoProdStack]);
 	});
 	it('should return a value when a stack has a matching repo name and an INFRA Stage tag', () => {
-		const myRepoInfraStack: AWSCloudformationStack = {
+		const myRepoInfraStack = {
 			...myRepoProdStack,
-			tags: { Stage: 'INFRA' },
+			tags: { ...myRepoProdStack.tags, Stage: 'INFRA' },
 		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [myRepoInfraStack]);
+		const result = findReposInProdWithoutProductionTopic(
+			[myRepo],
+			[myRepoInfraStack],
+		);
 		expect(result).toEqual([myRepoInfraStack]);
 	});
-	it('should not return a value if a stack has a stage of CODE', () => {
-		const myRepoCodeStack: AWSCloudformationStack = {
+	it('should not return a value if a stack has a matching repo name but a stage of CODE', () => {
+		const myRepoCodeStack = {
 			...myRepoProdStack,
-			tags: { Stage: 'CODE' },
+			tags: { ...myRepoProdStack.tags, Stage: 'CODE' },
 		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [myRepoCodeStack]);
+		const result = findReposInProdWithoutProductionTopic(
+			[myRepo],
+			[myRepoCodeStack],
+		);
 		expect(result).toEqual([]);
 	});
 	it('should not return a value if a stack has a stage of playground', () => {
-		const myRepoPlaygroundStack: AWSCloudformationStack = {
+		const myRepoPlaygroundStack = {
 			...myRepoProdStack,
-			tags: { Stage: 'playground' },
+			tags: { ...myRepoProdStack.tags, Stack: 'playground' },
 		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [myRepoPlaygroundStack]);
+		const result = findReposInProdWithoutProductionTopic(
+			[myRepo],
+			[myRepoPlaygroundStack],
+		);
 		expect(result).toEqual([]);
 	});
 
 	//This tests the behaviour of stackIsOlderThan(), which is not exported
 	it('should not return a value if a stack was created less than 3 months ago', () => {
-		const myRepoProdStackNew: AWSCloudformationStack = {
+		const myRepoProdStackNew: AwsCloudFormationStack = {
 			...myRepoProdStack,
-			creationTime: new Date(),
+			creation_time: new Date(),
 		};
-		const result: AWSCloudformationStack[] =
-			findReposInProdWithoutProductionTopic([myRepo], [myRepoProdStackNew]);
+		const result = findReposInProdWithoutProductionTopic(
+			[myRepo],
+			[myRepoProdStackNew],
+		);
 		expect(result).toEqual([]);
 	});
 });
