@@ -77,16 +77,15 @@ function isProdStack(stack: AWSCloudformationStack) {
 	);
 }
 
-async function findReposInProdWithoutProductionTopic(
-	prisma: PrismaClient,
+//TODO test this as it is no longer async
+function findReposInProdWithoutProductionTopic(
 	unarchivedRepos: Repository[],
-) {
+	stacks: aws_cloudformation_stacks[],
+): AWSCloudformationStack[] {
 	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
-
-	const stacks: aws_cloudformation_stacks[] = await getStacks(prisma);
 
 	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] = stacks
 		.map(parseTagsFromStack)
@@ -148,8 +147,11 @@ export async function applyProductionTopicAndMessageTeams(
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: AWSCloudformationStack[] =
-		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
+	const stacks: aws_cloudformation_stacks[] = await getStacks(prisma);
+	const repos: AWSCloudformationStack[] = findReposInProdWithoutProductionTopic(
+		unarchivedRepos,
+		stacks,
+	);
 
 	const repoAndStackNames = repos
 		.filter((repo) => !!repo.guRepoName)
