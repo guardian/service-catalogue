@@ -3,20 +3,12 @@ import { SendMessageBatchCommand } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
 import type { Action, Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
-import type {
-	aws_cloudformation_stacks,
-	github_teams,
-	view_repo_ownership,
-} from '@prisma/client';
+import type { github_teams, view_repo_ownership } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type {
-	AWSCloudformationStack,
-	AWSCloudformationTag,
-	UpdateMessageEvent,
-} from 'common/types';
+import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
 
 export enum RemediationApp {
@@ -93,21 +85,6 @@ export async function addMessagesToQueue(
 	} else {
 		console.error(`No ${app} messages to add to queue`);
 	}
-}
-
-export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
-	return tag['gu:repo'];
-}
-
-export function parseTagsFromStack(
-	stack: aws_cloudformation_stacks,
-): AWSCloudformationStack {
-	return {
-		stackName: stack.stack_name,
-		tags: stack.tags as AWSCloudformationTag,
-		creationTime: stack.creation_time,
-		guRepoName: getGuRepoName(stack.tags as AWSCloudformationTag),
-	};
 }
 
 async function notifyOneTeam(

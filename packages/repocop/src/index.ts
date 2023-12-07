@@ -14,7 +14,6 @@ import {
 	getStacks,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
-import { parseTagsFromStack } from './remediations/shared-utilities';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import { evaluateRepositories, findStacks } from './rules/repository';
@@ -65,9 +64,9 @@ export async function main() {
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const teams = await getRepositoryTeams(prisma);
-	const stacks: AWSCloudformationStack[] = (await getStacks(prisma))
-		.map((s) => parseTagsFromStack(s))
-		.filter((s) => s.tags['Stack'] !== 'playground'); //ignore playground stacks for now.
+	const nonPlaygroundStacks: AWSCloudformationStack[] = (
+		await getStacks(prisma)
+	).filter((s) => s.tags['Stack'] !== 'playground');
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(unarchivedRepos, branches, teams);
@@ -83,7 +82,7 @@ export async function main() {
 	const archivedWithStacks = findArchivedReposWithStacks(
 		archivedRepos,
 		unarchivedRepos,
-		stacks,
+		nonPlaygroundStacks,
 	);
 
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
@@ -107,6 +106,7 @@ export async function main() {
 		await applyProductionTopicAndMessageTeams(
 			prisma,
 			unarchivedRepos,
+			nonPlaygroundStacks,
 			octokit,
 			config,
 		);

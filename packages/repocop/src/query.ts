@@ -84,60 +84,25 @@ export async function getRepoOwnership(
 	return data;
 }
 
-export async function getStacks(
-	client: PrismaClient,
-): Promise<aws_cloudformation_stacks[]> {
-	return await client.aws_cloudformation_stacks.findMany({});
+function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
+	return tag['gu:repo'];
 }
 
-export async function findProdCfnStacks(
-	client: PrismaClient,
-): Promise<AWSCloudformationStack[]> {
-	const cfnStacks = await client.aws_cloudformation_stacks.findMany({
-		where: {
-			OR: [
-				{
-					tags: {
-						path: ['Stage'],
-						equals: 'PROD',
-					},
-				},
-				{
-					tags: {
-						path: ['Stage'],
-						equals: 'INFRA',
-					},
-				},
-			],
-			AND: [
-				{
-					tags: {
-						path: ['gu:repo'],
-						string_starts_with: 'guardian/',
-					},
-				},
-			],
-			NOT: [
-				{
-					tags: {
-						path: ['Stack'],
-						equals: 'playground', // we are filtering out Developer Playground repos for now as they shouldn't be in production anyway - Cloudformation stacks with a Stack tag of 'playground' get deployed into the Developer Playground account
-					},
-				},
-			],
-		},
-		select: {
-			tags: true,
-			stack_name: true,
-			creation_time: true,
-		},
-	});
-
-	const stacks = cfnStacks.map((stack) => ({
+export function parseTagsFromStack(
+	stack: aws_cloudformation_stacks,
+): AWSCloudformationStack {
+	return {
 		stackName: stack.stack_name,
 		tags: stack.tags as AWSCloudformationTag,
 		creationTime: stack.creation_time,
-	}));
+		guRepoName: getGuRepoName(stack.tags as AWSCloudformationTag),
+	};
+}
 
-	return stacks;
+export async function getStacks(
+	client: PrismaClient,
+): Promise<AWSCloudformationStack[]> {
+	return (await client.aws_cloudformation_stacks.findMany({})).map(
+		parseTagsFromStack,
+	);
 }

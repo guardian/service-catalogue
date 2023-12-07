@@ -8,13 +8,9 @@ import {
 import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import { findProdCfnStacks, getRepoOwnership, getTeams } from '../../query';
+import { getRepoOwnership, getTeams } from '../../query';
 import type { Repository } from '../../types';
-import {
-	findContactableOwners,
-	getGuRepoName,
-	removeRepoOwner,
-} from '../shared-utilities';
+import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,
@@ -66,43 +62,48 @@ export function getReposInProdWithoutProductionTopic(
 	});
 }
 
-async function findReposInProdWithoutProductionTopic(
-	prisma: PrismaClient,
+function isProdStack(stack: AWSCloudformationStack) {
+	return (
+		!!stack.tags.Stage &&
+		(stack.tags.Stage === 'PROD' || stack.tags.Stage === 'INFRA') &&
+		stack.tags.Stack !== 'playground' && // Ignore playground stacks
+		!!stack.guRepoName
+	);
+}
+
+function stackIsOlderThan(stack: AWSCloudformationStack, date: Date) {
+	if (!stack.creationTime) {
+		return false;
+	} else {
+		return stack.creationTime < date;
+	}
+}
+
+export function findReposInProdWithoutProductionTopic(
 	unarchivedRepos: Repository[],
-) {
+	stacks: AWSCloudformationStack[],
+): AWSCloudformationStack[] {
 	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
 
-	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
-		await findProdCfnStacks(prisma);
+	const prodStacks: AWSCloudformationStack[] = stacks.filter(isProdStack);
 
-	const threeMonthsAgo = new Date();
-	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
-		.filter(
-			(stack: AWSCloudformationStack) =>
-				getGuRepoName(stack.tags) !== undefined &&
-				!!stack.creationTime &&
-				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
-		)
-		.map((stack: AWSCloudformationStack) => {
-			const guRepoName = getGuRepoName(stack.tags) as string;
-			return {
-				...stack,
-				guRepoName,
-			};
-		});
+	const threeMonths = new Date();
+	threeMonths.setMonth(threeMonths.getMonth() - 3);
+	const prodStacksOverThreeMonths: AWSCloudformationStack[] = prodStacks.filter(
+		(stack) => stackIsOlderThan(stack, threeMonths),
+	);
 
 	console.log(
-		`Found ${awsStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+		`Found ${prodStacksOverThreeMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
 	);
 
 	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			awsStacks,
+			prodStacksOverThreeMonths,
 		);
 
 	console.log(
@@ -131,11 +132,14 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
 	unarchivedRepos: Repository[],
+	stacks: AWSCloudformationStack[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: AWSCloudformationStack[] =
-		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
+	const repos: AWSCloudformationStack[] = findReposInProdWithoutProductionTopic(
+		unarchivedRepos,
+		stacks,
+	);
 
 	const repoAndStackNames = repos
 		.filter((repo) => !!repo.guRepoName)
