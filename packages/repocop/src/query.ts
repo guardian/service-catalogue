@@ -7,10 +7,6 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
-import type {
-	AWSCloudformationStack,
-	AWSCloudformationTag,
-} from 'common/types';
 import type { Repository } from './types';
 
 export async function getRepositories(

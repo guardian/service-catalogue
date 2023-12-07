@@ -95,7 +95,7 @@ export async function addMessagesToQueue(
 	}
 }
 
-export function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
+function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
 	return tag['gu:repo'];
 }
 

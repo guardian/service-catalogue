@@ -1,8 +1,7 @@
 import type { aws_cloudformation_stacks } from '@prisma/client';
-import type { AWSCloudformationTag, UpdateMessageEvent } from 'common/types';
+import type { UpdateMessageEvent } from 'common/types';
 import {
 	createSqsEntry,
-	getGuRepoName,
 	parseTagsFromStack,
 	removeRepoOwner,
 } from './shared-utilities';
@@ -60,32 +59,8 @@ describe('Batch entries should be created for each message', () => {
 	});
 });
 
-describe('getGuRepoName', () => {
-	it('should return undefined if the "gu:repo" tag value is not present', () => {
-		const cfnTag: AWSCloudformationTag = {
-			App: 'app-1',
-			Stack: 'stack1',
-			Stage: 'PROD',
-			'gu:build-tool': 'guardian/some-build-tool',
-		};
-		const result: string | undefined = getGuRepoName(cfnTag);
-		expect(result).toEqual(undefined);
-	});
-
-	it('should return only the "gu:repo" tag value', () => {
-		const cfnTag: AWSCloudformationTag = {
-			App: 'app-1',
-			Stack: 'stack1',
-			Stage: 'PROD',
-			'gu:repo': 'guardian/repo-1',
-			'gu:build-tool': 'guardian/some-build-tool',
-		};
-		const result: string | undefined = getGuRepoName(cfnTag);
-		expect(result).toEqual('guardian/repo-1');
-	});
-});
-
 describe('Parsing the tags from an aws_cloudformation_stacks_object', () => {
+	//These tests test the behaviour of getGuRepoName() under the hood, which is not exported
 	it('should grab the repo name if it exists', () => {
 		const stack: aws_cloudformation_stacks = {
 			...nullStack,
