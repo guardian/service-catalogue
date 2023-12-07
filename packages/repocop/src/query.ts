@@ -81,6 +81,6 @@ export async function getStacks(
 	client: PrismaClient,
 ): Promise<AwsCloudFormationStack[]> {
 	return (await client.aws_cloudformation_stacks.findMany({})).map(
-		(s) => s as AwsCloudFormationStack,
+		(stack) => stack as AwsCloudFormationStack,
 	);
 }
