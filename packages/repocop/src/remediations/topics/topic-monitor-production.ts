@@ -105,21 +105,19 @@ export function findReposInProdWithoutProductionTopic(
 
 	const threeMonths = new Date();
 	threeMonths.setMonth(threeMonths.getMonth() - 3);
-	const prodStacksOverThreeMonths = prodStacks.filter((stack) =>
-		stackIsOlderThan(stack, threeMonths),
-	);
 	const cutoffDate = new Date();
 	cutoffDate.setMonth(cutoffDate.getMonth() - MONTHS);
-	const prodStacksOverNumberOfMonths: AWSCloudformationStack[] =
-		prodStacks.filter((stack) => stackIsOlderThan(stack, cutoffDate));
+	const oldProdStacks: AwsCloudFormationStack[] = prodStacks.filter((stack) =>
+		stackIsOlderThan(stack, cutoffDate),
+	);
 	console.log(
-		`Found ${prodStacksOverNumberOfMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
+		`Found ${oldProdStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
 	);
 
 	const reposInProdWithoutProductionTopic =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			prodStacksOverNumberOfMonths,
+			oldProdStacks,
 		);
 
 	console.log(
