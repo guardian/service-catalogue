@@ -1,4 +1,5 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import { AWS_REGIONS } from 'common/src/aws';
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {
@@ -62,17 +63,7 @@ export function awsSourceConfig(
 			destinations: ['postgresql'],
 			concurrency,
 			spec: {
-				regions: [
-					// All regions we support.
-					// See https://github.com/guardian/infosec-platform/blob/main/policies/DenyAccessToNonApprovedRegions.json
-					'eu-west-1',
-					'eu-west-2',
-					'us-east-1',
-					'us-east-2',
-					'us-west-1',
-					'ap-southeast-2',
-					'ca-central-1',
-				],
+				regions: AWS_REGIONS,
 				...extraConfig,
 			},
 		},
