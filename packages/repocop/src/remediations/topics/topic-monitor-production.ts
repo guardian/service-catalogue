@@ -12,21 +12,37 @@ import { getRepoOwnership, getTeams } from '../../query';
 import type { Repository } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
-async function notifyOneTeam(
+interface AnghammaradMessageText {
+	subject: string;
+	message: string;
+}
+
+export function createMessage(
 	fullRepoName: string,
 	stackName: string,
-	config: Config,
 	teamSlug: string,
 ) {
-	const { app, stage, anghammaradSnsTopic } = config;
-	const client = new Anghammarad();
-	await client.notify({
+	return {
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
 		message:
 			`The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}. ` +
 			' This is because stack is over three months old and has PROD or INFRA tags.' +
 			` Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.` +
 			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
+	};
+}
+
+async function notifyOneTeam(
+	fullRepoName: string,
+	config: Config,
+	teamSlug: string,
+	message: AnghammaradMessageText,
+) {
+	const { app, stage, anghammaradSnsTopic } = config;
+	const client = new Anghammarad();
+	await client.notify({
+		subject: message.subject,
+		message: message.message,
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
@@ -97,7 +113,7 @@ export function findReposInProdWithoutProductionTopic(
 	);
 
 	console.log(
-		`Found ${prodStacksOverThreeMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+		`Found ${prodStacksOverThreeMonths.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over three months old.`,
 	);
 
 	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
@@ -123,9 +139,21 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	const owner = 'guardian';
 	const topic = 'production';
 	const shortRepoName = removeRepoOwner(fullRepoName);
-	await applyTopics(shortRepoName, owner, octokit, topic);
+	const { stage } = config;
+	if (stage === 'PROD') {
+		await applyTopics(shortRepoName, owner, octokit, topic);
+	} else {
+		console.log(
+			`Would have applied the ${topic} topic to ${shortRepoName} with stack ${stackName} owned by ${owner}`,
+		);
+	}
 	for (const teamNameSlug of teamNameSlugs) {
-		await notifyOneTeam(fullRepoName, stackName, config, teamNameSlug);
+		const messageText = createMessage(fullRepoName, stackName, teamNameSlug);
+		console.log('Production topic monitor message text: ');
+		console.log(messageText);
+		if (stage === 'PROD') {
+			await notifyOneTeam(fullRepoName, config, teamNameSlug, messageText);
+		}
 	}
 }
 
@@ -168,17 +196,19 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	if (config.stage === 'PROD') {
-		await Promise.all(
-			reposWithContactableOwners.map((repo) =>
-				applyProductionTopicToOneRepoAndMessageTeams(
-					repo.fullName,
-					repo.stackName,
-					repo.teamNameSlugs,
-					octokit,
-					config,
-				),
+	console.log(
+		`Found ${reposWithContactableOwners.length} repos with contactable owners for addition of the production topic`,
+	);
+
+	await Promise.all(
+		reposWithContactableOwners.map((repo) =>
+			applyProductionTopicToOneRepoAndMessageTeams(
+				repo.fullName,
+				repo.stackName,
+				repo.teamNameSlugs,
+				octokit,
+				config,
 			),
-		);
-	}
+		),
+	);
 }
