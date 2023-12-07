@@ -9,7 +9,6 @@ const myRepoProdStack: AwsCloudFormationStack = {
 	stack_name: 'hello-my-repo-PROD',
 	creation_time: new Date('2021-01-01'),
 	tags: {
-		Stack: 'hello',
 		Stage: 'PROD',
 		'gu:repo': 'guardian/my-repo',
 	},
@@ -93,17 +92,6 @@ describe('getReposInProdWithoutProductionTopic', () => {
 		const result = findReposInProdWithoutProductionTopic([myRepo], [yourStack]);
 		expect(result).toEqual([]);
 	});
-	it('should return an empty array when a stack has a matching repo name but no matching stage tags', () => {
-		const myRepoCodeStack = {
-			...myRepoProdStack,
-			tags: { Stage: 'CODE', 'gu:repo': 'guardian/my-repo' },
-		};
-		const result = findReposInProdWithoutProductionTopic(
-			[myRepo],
-			[myRepoCodeStack],
-		);
-		expect(result).toEqual([]);
-	});
 
 	//The next four tests are examining the behaviour of isProdStack(), which is not exported
 	it('should return a value when a stack has a matching repo name and a PROD Stage tag', () => {
@@ -124,7 +112,7 @@ describe('getReposInProdWithoutProductionTopic', () => {
 		);
 		expect(result).toEqual([myRepoInfraStack]);
 	});
-	it('should not return a value if a stack has a stage of CODE', () => {
+	it('should not return a value if a stack has a matching repo name but a stage of CODE', () => {
 		const myRepoCodeStack = {
 			...myRepoProdStack,
 			tags: { ...myRepoProdStack.tags, Stage: 'CODE' },
