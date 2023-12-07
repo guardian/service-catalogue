@@ -1,6 +1,10 @@
+import type { AWSCloudformationStack } from 'common/types';
 import { nullRepo } from '../../rules/repository.test';
 import type { Repository } from '../../types';
-import { getRepoNamesWithoutProductionTopic } from './topic-monitor-production';
+import {
+	getRepoNamesWithoutProductionTopic,
+	isProdStack,
+} from './topic-monitor-production';
 
 describe('getReposWithoutProductionTopic', () => {
 	it('should return an empty array when unarchivedRepos array is empty', () => {
@@ -40,5 +44,42 @@ describe('getReposWithoutProductionTopic', () => {
 		const result: string[] =
 			getRepoNamesWithoutProductionTopic(unarchivedRepos);
 		expect(result).toEqual(['guardian/repo-good-1', 'guardian/repo-good-2']);
+	});
+});
+
+describe('isProdStack', () => {
+	const prodStack: AWSCloudformationStack = {
+		stackName: 'stack-name',
+		creationTime: new Date('2021-01-01'),
+		tags: {
+			Stage: 'PROD',
+		},
+		guRepoName: 'guardian/repo',
+	};
+	it('should return true when stack has Stage tag of PROD or INFRA and a guRepoName', () => {
+		expect(isProdStack(prodStack)).toBe(true);
+	});
+	it('should return false when stack has Stage tag of PROD or INFRA but no guRepoName', () => {
+		const stack: AWSCloudformationStack = {
+			...prodStack,
+			guRepoName: undefined,
+		};
+		expect(isProdStack(stack)).toBe(false);
+	});
+	it('should return false when stack has no Stage tag', () => {
+		const stack: AWSCloudformationStack = {
+			...prodStack,
+			tags: {},
+		};
+		expect(isProdStack(stack)).toBe(false);
+	});
+	it('should return false when stack has Stage tag of CODE', () => {
+		const stack: AWSCloudformationStack = {
+			...prodStack,
+			tags: {
+				Stage: 'CODE',
+			},
+		};
+		expect(isProdStack(stack)).toBe(true);
 	});
 });

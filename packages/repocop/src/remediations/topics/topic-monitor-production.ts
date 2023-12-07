@@ -67,8 +67,7 @@ export function getReposInProdWithoutProductionTopic(
 	});
 }
 
-//TODO test this
-function isProdStack(stack: AWSCloudformationStack) {
+export function isProdStack(stack: AWSCloudformationStack) {
 	return (
 		!!stack.tags.Stage &&
 		(stack.tags.Stage === 'PROD' || stack.tags.Stage === 'INFRA') &&
