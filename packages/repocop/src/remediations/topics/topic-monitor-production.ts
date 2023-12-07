@@ -8,13 +8,9 @@ import {
 import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import { getRepoOwnership, getStacks, getTeams } from '../../query';
+import { getRepoOwnership, getTeams } from '../../query';
 import type { Repository } from '../../types';
-import {
-	findContactableOwners,
-	parseTagsFromStack,
-	removeRepoOwner,
-} from '../shared-utilities';
+import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 async function notifyOneTeam(
 	fullRepoName: string,
@@ -136,12 +132,10 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
 	unarchivedRepos: Repository[],
+	stacks: AWSCloudformationStack[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const stacks: AWSCloudformationStack[] = (await getStacks(prisma)).map(
-		parseTagsFromStack,
-	);
 	const repos: AWSCloudformationStack[] = findReposInProdWithoutProductionTopic(
 		unarchivedRepos,
 		stacks,

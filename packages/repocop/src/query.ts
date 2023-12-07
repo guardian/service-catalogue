@@ -7,6 +7,10 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
+import type {
+	AWSCloudformationStack,
+	AWSCloudformationTag,
+} from 'common/types';
 import type { Repository } from './types';
 
 export async function getRepositories(
@@ -80,8 +84,25 @@ export async function getRepoOwnership(
 	return data;
 }
 
+function getGuRepoName(tag: AWSCloudformationTag): string | undefined {
+	return tag['gu:repo'];
+}
+
+export function parseTagsFromStack(
+	stack: aws_cloudformation_stacks,
+): AWSCloudformationStack {
+	return {
+		stackName: stack.stack_name,
+		tags: stack.tags as AWSCloudformationTag,
+		creationTime: stack.creation_time,
+		guRepoName: getGuRepoName(stack.tags as AWSCloudformationTag),
+	};
+}
+
 export async function getStacks(
 	client: PrismaClient,
-): Promise<aws_cloudformation_stacks[]> {
-	return await client.aws_cloudformation_stacks.findMany({});
+): Promise<AWSCloudformationStack[]> {
+	return (await client.aws_cloudformation_stacks.findMany({})).map(
+		parseTagsFromStack,
+	);
 }
