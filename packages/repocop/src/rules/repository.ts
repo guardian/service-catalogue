@@ -2,9 +2,12 @@ import type {
 	github_repository_branches,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { AWSCloudformationStack } from 'common/types';
 import { type RepositoryTeam } from '../query';
-import type { RepoAndStack, Repository } from '../types';
+import type {
+	AwsCloudFormationStack,
+	RepoAndStack,
+	Repository,
+} from '../types';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -107,18 +110,18 @@ function isMaintained(repo: Repository): boolean {
  */
 export function findStacks(
 	repo: Repository,
-	stacks: AWSCloudformationStack[],
+	stacks: AwsCloudFormationStack[],
 ): RepoAndStack {
 	const stackMatches = stacks.filter((stack) => {
 		return (
-			!!stack.stackName &&
-			(stack.guRepoName === repo.full_name ||
-				stack.stackName.includes(repo.name))
+			!!stack.stack_name &&
+			(stack.tags['gu:repo'] === repo.full_name ||
+				stack.stack_name.includes(repo.name))
 		);
 	});
 	const stackNames = stackMatches
-		.map((stack) => stack.stackName)
-		.filter((s) => !!s) as string[];
+		.map((stack) => stack.stack_name)
+		.filter((s) => !!s);
 
 	return {
 		fullName: repo.full_name,
