@@ -12,12 +12,10 @@ interface AwsClientConfig {
 export function awsClientConfig(
 	stage: string,
 	roleArn?: string,
+	region = 'eu-west-1',
 ): AwsClientConfig {
 	return {
-		/*
-		Whilst this _should_ be dynamic, in reality we only use this region, so hardcode it.
-	 	*/
-		region: 'eu-west-1',
+		region,
 
 		/*
 		If DEV (i.e. running locally), get credentials from the ini file.

@@ -9583,8 +9583,6 @@ model aws_lambda_functions {
   configuration        Json?
   tags                 Json?
   result_metadata      Json?
-
-  @@ignore
 }
 
 model aws_lambda_layer_version_policies {
