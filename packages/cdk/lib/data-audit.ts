@@ -36,6 +36,7 @@ export function addDataAuditLambda(scope: GuStack, props: DataAuditProps) {
 			},
 		],
 		runtime: Runtime.NODEJS_20_X,
+		timeout: Duration.minutes(10),
 	});
 
 	db.grantConnect(lambda, 'dataaudit');
