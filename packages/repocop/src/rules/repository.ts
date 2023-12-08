@@ -154,9 +154,9 @@ export function verifyDependencyTracking(
 		return true;
 	}
 
-	const untestedLanguages = ['HTML', 'CSS', 'Shell'];
+	const ignoredLanguages = ['HTML', 'CSS', 'Shell'];
 
-	const supportedDependabotLanguages = [
+	const commonSupportedLanguages = [
 		'C#',
 		'Go',
 		'Java',
@@ -164,9 +164,8 @@ export function verifyDependencyTracking(
 		'Python',
 		'Swift',
 		'TypeScript',
-	].concat(untestedLanguages);
-
-	const supportedSnykLanguages = [
+	];
+	const snykOnlySupportedLanguages = [
 		'C',
 		'C++',
 		'Apex',
@@ -179,7 +178,15 @@ export function verifyDependencyTracking(
 		'Scala',
 		'Objective-C',
 		'Visual Basic .NET',
-	].concat(supportedDependabotLanguages);
+	];
+
+	const supportedDependabotLanguages = ignoredLanguages.concat(
+		commonSupportedLanguages,
+	);
+
+	const supportedSnykLanguages = ignoredLanguages
+		.concat(commonSupportedLanguages)
+		.concat(snykOnlySupportedLanguages);
 
 	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
 
