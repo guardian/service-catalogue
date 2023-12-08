@@ -4,21 +4,24 @@ import type {
 } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
-import type { AWSCloudformationStack } from 'common/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryTeams,
+	getSnykProjects,
 	getStacks,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
-import { parseTagsFromStack } from './remediations/shared-utilities';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
-import { evaluateRepositories, findStacks } from './rules/repository';
-import type { RepoAndStack, Repository } from './types';
+import {
+	evaluateRepositories,
+	findStacks,
+	isTracked,
+} from './rules/repository';
+import type { AwsCloudFormationStack, RepoAndStack, Repository } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -38,14 +41,16 @@ async function writeEvaluationTable(
 function findArchivedReposWithStacks(
 	archivedRepositories: Repository[],
 	unarchivedRepositories: Repository[],
-	stacks: AWSCloudformationStack[],
+	stacks: AwsCloudFormationStack[],
 ) {
 	const archivedRepos = archivedRepositories;
 	const unarchivedRepos = unarchivedRepositories;
 
-	const stacksWithoutAnUnarchivedRepoMatch: AWSCloudformationStack[] =
+	const stacksWithoutAnUnarchivedRepoMatch: AwsCloudFormationStack[] =
 		stacks.filter((stack) =>
-			unarchivedRepos.some((repo) => !(repo.full_name === stack.guRepoName)),
+			unarchivedRepos.some(
+				(repo) => !(repo.full_name === stack.tags['gu:repo']),
+			),
 		);
 
 	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
@@ -65,10 +70,10 @@ export async function main() {
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const teams = await getRepositoryTeams(prisma);
-	const stacks: AWSCloudformationStack[] = (await getStacks(prisma))
-		.map((s) => parseTagsFromStack(s))
-		.filter((s) => s.tags['Stack'] !== 'playground'); //ignore playground stacks for now.
-
+	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
+		await getStacks(prisma)
+	).filter((s) => s.tags.Stack !== 'playground');
+	const snykProjects = await getSnykProjects(prisma);
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(unarchivedRepos, branches, teams);
 
@@ -83,7 +88,7 @@ export async function main() {
 	const archivedWithStacks = findArchivedReposWithStacks(
 		archivedRepos,
 		unarchivedRepos,
-		stacks,
+		nonPlaygroundStacks,
 	);
 
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
@@ -93,10 +98,16 @@ export async function main() {
 		archivedWithStacks.slice(0, 10),
 	);
 
+	const octokit = await stageAwareOctokit(config.stage);
+	unarchivedRepos
+		.filter((r) => r.topics.includes('production'))
+		.slice(0, 10)
+		.map((r) => isTracked(octokit, r, snykProjects));
+
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
-		const octokit = await stageAwareOctokit(config.stage);
+
 		await protectBranches(
 			prisma,
 			evaluatedRepos,
@@ -107,6 +118,7 @@ export async function main() {
 		await applyProductionTopicAndMessageTeams(
 			prisma,
 			unarchivedRepos,
+			nonPlaygroundStacks,
 			octokit,
 			config,
 		);

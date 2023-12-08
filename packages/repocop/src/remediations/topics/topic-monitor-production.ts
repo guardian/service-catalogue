@@ -5,32 +5,45 @@ import {
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
-import type { AWSCloudformationStack } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import { findProdCfnStacks, getRepoOwnership, getTeams } from '../../query';
-import type { Repository } from '../../types';
-import {
-	findContactableOwners,
-	getGuRepoName,
-	removeRepoOwner,
-} from '../shared-utilities';
+import { getRepoOwnership, getTeams } from '../../query';
+import type { AwsCloudFormationStack, Repository } from '../../types';
+import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
+
+const MONTHS = 3;
+interface AnghammaradTextFields {
+	subject: string;
+	message: string;
+}
+
+export function createMessage(
+	fullRepoName: string,
+	stackName: string,
+	teamSlug: string,
+	months: number,
+) {
+	return {
+		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
+		message:
+			`The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}. ` +
+			` This is because stack is over ${months} months old and has PROD or INFRA tags.` +
+			` Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.` +
+			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
+	};
+}
 
 async function notifyOneTeam(
 	fullRepoName: string,
 	config: Config,
 	teamSlug: string,
+	messageTextFields: AnghammaradTextFields,
 ) {
 	const { app, stage, anghammaradSnsTopic } = config;
 	const client = new Anghammarad();
 	await client.notify({
-		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
-		message:
-			`The 'production' topic has applied to ${fullRepoName}.` +
-			' This is because it has been associated with a live PROD or INFRA stack that is over three months old.' +
-			' Repositories should have one of the following topics, to help understand what is in production:' +
-			` 'production', 'testing', 'documentation', 'hackday', 'prototype', 'learning', 'interactive'.` +
-			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
+		subject: messageTextFields.subject,
+		message: messageTextFields.message,
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
@@ -56,53 +69,55 @@ export function getRepoNamesWithoutProductionTopic(
 
 export function getReposInProdWithoutProductionTopic(
 	reposWithoutProductionTopic: string[],
-	awsStacks: AWSCloudformationStack[],
-): AWSCloudformationStack[] {
+	awsStacks: AwsCloudFormationStack[],
+): AwsCloudFormationStack[] {
 	return awsStacks.filter((stack) => {
-		if (!stack.guRepoName) {
+		if (!stack.tags['gu:repo']) {
 			return false;
 		}
-		return reposWithoutProductionTopic.includes(stack.guRepoName);
+		return reposWithoutProductionTopic.includes(stack.tags['gu:repo']);
 	});
 }
 
-async function findReposInProdWithoutProductionTopic(
-	prisma: PrismaClient,
+function isProdStack(stack: AwsCloudFormationStack) {
+	return (
+		!!stack.tags.Stage &&
+		(stack.tags.Stage === 'PROD' || stack.tags.Stage === 'INFRA') &&
+		stack.tags.Stack !== 'playground' && // Ignore playground stacks
+		!!stack.tags['gu:repo']
+	);
+}
+
+function stackIsOlderThan(stack: AwsCloudFormationStack, date: Date) {
+	return stack.creation_time < date;
+}
+
+export function findReposInProdWithoutProductionTopic(
 	unarchivedRepos: Repository[],
-) {
+	stacks: AwsCloudFormationStack[],
+): AwsCloudFormationStack[] {
 	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
 
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
 
-	const cfnStacksWithProdInfraTags: AWSCloudformationStack[] =
-		await findProdCfnStacks(prisma);
+	const prodStacks = stacks.filter(isProdStack);
 
-	const threeMonthsAgo = new Date();
-	threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-	const awsStacks: AWSCloudformationStack[] = cfnStacksWithProdInfraTags
-		.filter(
-			(stack: AWSCloudformationStack) =>
-				getGuRepoName(stack.tags) !== undefined &&
-				!!stack.creationTime &&
-				stack.creationTime < threeMonthsAgo, // Only consider stacks created more than 3 months ago, allowing a grace period for prototypes to mature
-		)
-		.map((stack: AWSCloudformationStack) => {
-			const guRepoName = getGuRepoName(stack.tags) as string;
-			return {
-				...stack,
-				guRepoName,
-			};
-		});
-
+	const threeMonths = new Date();
+	threeMonths.setMonth(threeMonths.getMonth() - 3);
+	const cutoffDate = new Date();
+	cutoffDate.setMonth(cutoffDate.getMonth() - MONTHS);
+	const oldProdStacks: AwsCloudFormationStack[] = prodStacks.filter((stack) =>
+		stackIsOlderThan(stack, cutoffDate),
+	);
 	console.log(
-		`Found ${awsStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA.`,
+		`Found ${oldProdStacks.length} Cloudformation stacks with a Stage tag of PROD or INFRA that are over ${MONTHS} months old.`,
 	);
 
-	const reposInProdWithoutProductionTopic: AWSCloudformationStack[] =
+	const reposInProdWithoutProductionTopic =
 		getReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
-			awsStacks,
+			oldProdStacks,
 		);
 
 	console.log(
@@ -114,6 +129,7 @@ async function findReposInProdWithoutProductionTopic(
 
 async function applyProductionTopicToOneRepoAndMessageTeams(
 	fullRepoName: string,
+	stackName: string,
 	teamNameSlugs: string[],
 	octokit: Octokit,
 	config: Config,
@@ -121,50 +137,79 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	const owner = 'guardian';
 	const topic = 'production';
 	const shortRepoName = removeRepoOwner(fullRepoName);
-	await applyTopics(shortRepoName, owner, octokit, topic);
+	const { stage } = config;
+	if (stage === 'PROD') {
+		await applyTopics(shortRepoName, owner, octokit, topic);
+	} else {
+		console.log(
+			`Would have applied the ${topic} topic to ${shortRepoName} with stack ${stackName} if stage was PROD.`,
+		);
+	}
 	for (const teamNameSlug of teamNameSlugs) {
-		await notifyOneTeam(fullRepoName, config, teamNameSlug);
+		const messageText = createMessage(
+			fullRepoName,
+			stackName,
+			teamNameSlug,
+			MONTHS,
+		);
+		console.log('Production topic monitor message text: ');
+		console.log(messageText);
+		// have to check the stage again here as we're in the loop
+		if (stage === 'PROD') {
+			await notifyOneTeam(fullRepoName, config, teamNameSlug, messageText);
+		}
 	}
 }
 
 export async function applyProductionTopicAndMessageTeams(
 	prisma: PrismaClient,
 	unarchivedRepos: Repository[],
+	stacks: AwsCloudFormationStack[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const repos: AWSCloudformationStack[] =
-		await findReposInProdWithoutProductionTopic(prisma, unarchivedRepos);
+	const repos = findReposInProdWithoutProductionTopic(unarchivedRepos, stacks);
 
-	const fullRepoNames = repos
-		.filter((repo) => !!repo.guRepoName)
+	const repoAndStackNames = repos
+		.filter((repo) => !!repo.tags['gu:repo'])
+		.filter((repo) => !!repo.stack_name)
 		.map((repo) => {
-			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions  -- we have already filtered out undefined values
-			return `${repo.guRepoName}`;
+			return { fullRepoName: repo.tags['gu:repo'], stackName: repo.stack_name };
 		});
 
 	const repoOwners = await getRepoOwnership(prisma);
 	const teams = await getTeams(prisma);
 
-	const reposWithContactableOwners = fullRepoNames
-		.map((fullRepoName) => {
+	const reposWithContactableOwners = repoAndStackNames
+		.map((names) => {
+			const fullRepoName = names.fullRepoName ?? '';
+			const stackName = names.stackName;
+			const teamNameSlugs = findContactableOwners(
+				fullRepoName,
+				repoOwners,
+				teams,
+			);
 			return {
 				fullName: fullRepoName,
-				teamNameSlugs: findContactableOwners(fullRepoName, repoOwners, teams),
+				stackName: stackName,
+				teamNameSlugs: teamNameSlugs,
 			};
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	if (config.stage === 'PROD') {
-		await Promise.all(
-			reposWithContactableOwners.map((repo) =>
-				applyProductionTopicToOneRepoAndMessageTeams(
-					repo.fullName,
-					repo.teamNameSlugs,
-					octokit,
-					config,
-				),
+	console.log(
+		`Found ${reposWithContactableOwners.length} repos with contactable owners for addition of the production topic`,
+	);
+
+	await Promise.all(
+		reposWithContactableOwners.map((repo) =>
+			applyProductionTopicToOneRepoAndMessageTeams(
+				repo.fullName,
+				repo.stackName,
+				repo.teamNameSlugs,
+				octokit,
+				config,
 			),
-		);
-	}
+		),
+	);
 }
