@@ -10,12 +10,17 @@ import {
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryTeams,
+	getSnykProjects,
 	getStacks,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
-import { evaluateRepositories, findStacks } from './rules/repository';
+import {
+	evaluateRepositories,
+	findStacks,
+	isTracked,
+} from './rules/repository';
 import type { AwsCloudFormationStack, RepoAndStack, Repository } from './types';
 
 async function writeEvaluationTable(
@@ -68,7 +73,7 @@ export async function main() {
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
-
+	const snykProjects = await getSnykProjects(prisma);
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(unarchivedRepos, branches, teams);
 
@@ -93,10 +98,16 @@ export async function main() {
 		archivedWithStacks.slice(0, 10),
 	);
 
+	const octokit = await stageAwareOctokit(config.stage);
+	unarchivedRepos
+		.filter((r) => r.topics.includes('production'))
+		.slice(0, 10)
+		.map((r) => isTracked(octokit, r, snykProjects));
+
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
-		const octokit = await stageAwareOctokit(config.stage);
+
 		await protectBranches(
 			prisma,
 			evaluatedRepos,

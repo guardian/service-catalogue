@@ -3,6 +3,7 @@ import type {
 	github_teams,
 	Prisma,
 	PrismaClient,
+	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
@@ -83,4 +84,10 @@ export async function getStacks(
 	return (await client.aws_cloudformation_stacks.findMany({})).map(
 		(stack) => stack as AwsCloudFormationStack,
 	);
+}
+
+export async function getSnykProjects(
+	client: PrismaClient,
+): Promise<snyk_projects[]> {
+	return (await client.snyk_projects.findMany({})).map((project) => project);
 }

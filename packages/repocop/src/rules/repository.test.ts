@@ -430,7 +430,7 @@ describe('Dependency tracking', () => {
 		org_id: null,
 	};
 
-	const supportedLanguages = ['JavaScript'];
+	const fullySupportedLanguages = ['JavaScript'];
 	const snykSupportedLanguages = ['Scala'];
 	const unsupportedLanguages = ['Julia'];
 
@@ -444,7 +444,7 @@ describe('Dependency tracking', () => {
 			...nullSnykProject,
 			tags: [{ key: 'repo', value: 'guardian/some-repo' }],
 		};
-		const actual = verifyDependencyTracking(repo, supportedLanguages, [
+		const actual = verifyDependencyTracking(repo, fullySupportedLanguages, [
 			project,
 		]);
 		expect(actual).toEqual(true);
@@ -455,7 +455,7 @@ describe('Dependency tracking', () => {
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = verifyDependencyTracking(repo, supportedLanguages, []);
+		const actual = verifyDependencyTracking(repo, fullySupportedLanguages, []);
 		expect(actual).toEqual(true);
 	});
 	test('should be unhappy if a project is not on snyk, and uses a language dependabot does not support', () => {
