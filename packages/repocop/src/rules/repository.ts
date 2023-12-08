@@ -153,6 +153,8 @@ export function verifyDependencyTracking(
 		return true;
 	}
 
+	const untestedLanguages = ['HTML', 'CSS', 'Shell'];
+
 	const supportedDependabotLanguages = [
 		'C#',
 		'Go',
@@ -161,7 +163,7 @@ export function verifyDependencyTracking(
 		'Python',
 		'Swift',
 		'TypeScript',
-	];
+	].concat(untestedLanguages);
 
 	const supportedSnykLanguages = [
 		'C',
