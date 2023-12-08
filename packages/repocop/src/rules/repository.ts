@@ -130,6 +130,7 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 	return snykTags;
 }
 
+//TODO - create a CQ plugin to retrieve languages from the repo, reducing our reliance on the GitHub API
 export async function getRepoLanguages(octokit: Octokit, repo: Repository) {
 	const languages = await octokit.paginate(
 		octokit.rest.repos.listLanguages,
@@ -184,6 +185,8 @@ export function verifyDependencyTracking(
 
 	const matchingSnykProject = allProjectTags.find(
 		(tags) =>
+			//TODO - this is a close enough match for now, but in the future we should use commit hashes
+			//to make sure the projects are in sync
 			!!repo.full_name &&
 			tags.repo == repo.full_name &&
 			tags.branch === repo.default_branch,
