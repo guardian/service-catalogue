@@ -15843,6 +15843,13 @@ model audit_results {
   vendor_total     Int
 }
 
+model cloudquery_table_frequency {
+  table_name String?
+  frequency  String?
+
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
