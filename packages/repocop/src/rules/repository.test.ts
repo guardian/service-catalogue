@@ -1,7 +1,12 @@
-import type { github_repository_branches } from '@prisma/client';
+import type { github_repository_branches, snyk_projects } from '@prisma/client';
 import type { RepositoryTeam } from '../query';
 import type { AwsCloudFormationStack, Repository } from '../types';
-import { evaluateOneRepo, findStacks } from './repository';
+import {
+	evaluateOneRepo,
+	findStacks,
+	hasSufficientDependencyTracking,
+	parseSnykTags,
+} from './repository';
 
 const nullBranch: github_repository_branches = {
 	cq_sync_time: null,
@@ -368,5 +373,101 @@ describe('Repositories without any related stacks on AWS', () => {
 		};
 		const result = findStacks(repo, [stack1, stack2]).stacks.length;
 		expect(result).toEqual(0);
+	});
+});
+
+describe('Snyk tags', () => {
+	const nullSnykProject: snyk_projects = {
+		cq_source_name: null,
+		cq_sync_time: null,
+		cq_id: '',
+		cq_parent_id: null,
+		id: '',
+		name: null,
+		origin: null,
+		issue_counts_by_severity: null,
+		tags: null,
+		org_id: null,
+	};
+
+	test('should be retrievable if they are commit, repo, or branch', () => {
+		const project: snyk_projects = {
+			...nullSnykProject,
+			tags: [
+				{ key: 'commit', value: '1234' },
+				{ key: 'repo', value: 'guardian/some-repo' },
+				{ key: 'branch', value: 'main' },
+			],
+		};
+		const tags = parseSnykTags(project);
+		expect(tags.commit).toEqual('1234');
+		expect(tags.repo).toEqual('guardian/some-repo');
+		expect(tags.branch).toEqual('main');
+	});
+	test('should not be defined if they do not exist', () => {
+		const project: snyk_projects = {
+			...nullSnykProject,
+			tags: [{ key: 'commit', value: '1234' }],
+		};
+		const tags = parseSnykTags(project);
+		expect(tags.commit).toEqual('1234');
+		expect(tags.repo).toBeUndefined();
+		expect(tags.branch).toBeUndefined();
+	});
+});
+
+describe('Dependency tracking', () => {
+	const nullSnykProject: snyk_projects = {
+		cq_source_name: null,
+		cq_sync_time: null,
+		cq_id: '',
+		cq_parent_id: null,
+		id: '',
+		name: null,
+		origin: null,
+		issue_counts_by_severity: null,
+		tags: null,
+		org_id: null,
+	};
+
+	test('should be happy if all languages are supported, and the repo is on snyk', () => {
+		const repo: Repository = {
+			...nullRepo,
+			full_name: 'guardian/some-repo',
+		};
+		const project: snyk_projects = {
+			...nullSnykProject,
+			tags: [{ key: 'repo', value: 'guardian/some-repo' }],
+		};
+		const actual = hasSufficientDependencyTracking(
+			repo,
+			['JavaScript'],
+			[project],
+		);
+		expect(actual).toEqual(true);
+	});
+	test('should be happy if all languages are supported by dependabot, even if the repo is not on snyk', () => {
+		const repo: Repository = {
+			...nullRepo,
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasSufficientDependencyTracking(repo, ['JavaScript'], []);
+		expect(actual).toEqual(true);
+	});
+	test('should be unhappy if a project is not on snyk, and uses a language dependabot does not support', () => {
+		const repo: Repository = {
+			...nullRepo,
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasSufficientDependencyTracking(repo, ['Scala'], []);
+		expect(actual).toEqual(false);
+	});
+	test('should be unhappy if a project is on snyk, and uses a language not supported by snyk', () => {
+		const repo: Repository = {
+			...nullRepo,
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasSufficientDependencyTracking(repo, ['Julia'], []);
+		expect(actual).toEqual(false);
 	});
 });

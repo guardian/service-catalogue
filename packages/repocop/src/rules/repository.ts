@@ -1,6 +1,7 @@
 import type {
 	github_repository_branches,
 	repocop_github_repository_rules,
+	snyk_projects,
 } from '@prisma/client';
 import { type RepositoryTeam } from '../query';
 import type {
@@ -102,6 +103,80 @@ function isMaintained(repo: Repository): boolean {
 	const isInteractive = repo.topics.includes('interactive');
 
 	return isInteractive || recentlyUpdated;
+}
+
+interface SnykTags {
+	commit?: string;
+	branch?: string;
+	repo?: string;
+}
+
+export function parseSnykTags(snyk_projects: snyk_projects) {
+	interface TagValues {
+		key: string;
+		value: string;
+	}
+
+	const tagString = JSON.stringify(snyk_projects.tags);
+	const tags = JSON.parse(tagString) as TagValues[];
+
+	const snykTags: SnykTags = {
+		commit: tags.find((tag) => tag.key === 'commit')?.value,
+		branch: tags.find((tag) => tag.key === 'branch')?.value,
+		repo: tags.find((tag) => tag.key === 'repo')?.value,
+	};
+
+	return snykTags;
+}
+
+export function hasSufficientDependencyTracking(
+	repo: github_repositories,
+	languages: string[],
+	snyk_projects: snyk_projects[],
+): boolean {
+	const supportedDependabotLanguages = [
+		'C#',
+		'Go',
+		'Java',
+		'JavaScript',
+		'Python',
+		'Swift',
+		'TypeScript',
+	];
+
+	const supportedSnykLanguages = [
+		'C',
+		'C++',
+		'Apex',
+		'Bazel',
+		'Elixir',
+		'Kotlin',
+		'PHP',
+		'Ruby',
+		'Rust',
+		'Scala',
+		'Objective-C',
+		'Visual Basic .NET',
+	].concat(supportedDependabotLanguages);
+
+	const allReposOnSnyk = snyk_projects
+		.map((project) => parseSnykTags(project))
+		.map((p) => p.repo);
+
+	const repoIsOnSnyk =
+		!!repo.full_name && allReposOnSnyk.includes(repo.full_name);
+
+	if (repoIsOnSnyk) {
+		const containsOnlySnykSupportedLanguages = languages.every((language) =>
+			supportedSnykLanguages.includes(language),
+		);
+		return containsOnlySnykSupportedLanguages;
+	} else {
+		const containsOnlyDependabotSupportedLanguages = languages.every(
+			(language) => supportedDependabotLanguages.includes(language),
+		);
+		return containsOnlyDependabotSupportedLanguages;
+	}
 }
 
 /**
