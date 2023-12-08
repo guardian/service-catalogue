@@ -1,7 +1,9 @@
 import type {
 	github_repository_branches,
 	repocop_github_repository_rules,
+	snyk_projects,
 } from '@prisma/client';
+import type { Octokit } from 'octokit';
 import { type RepositoryTeam } from '../query';
 import type {
 	AwsCloudFormationStack,
@@ -103,6 +105,136 @@ function isMaintained(repo: Repository): boolean {
 
 	return isInteractive || recentlyUpdated;
 }
+
+interface SnykTags {
+	commit?: string;
+	branch?: string;
+	repo?: string;
+}
+
+export function parseSnykTags(snyk_projects: snyk_projects) {
+	interface TagValues {
+		key: string;
+		value: string;
+	}
+
+	const tagString = JSON.stringify(snyk_projects.tags);
+	const tags = JSON.parse(tagString) as TagValues[];
+
+	const snykTags: SnykTags = {
+		commit: tags.find((tag) => tag.key === 'commit')?.value,
+		branch: tags.find((tag) => tag.key === 'branch')?.value,
+		repo: tags.find((tag) => tag.key === 'repo')?.value,
+	};
+
+	return snykTags;
+}
+
+//TODO - create a CQ plugin to retrieve languages from the repo, reducing our reliance on the GitHub API
+export async function getRepoLanguages(octokit: Octokit, repo: Repository) {
+	const languages = await octokit.paginate(
+		octokit.rest.repos.listLanguages,
+		{
+			owner: 'guardian',
+			repo: repo.name,
+		},
+		(response) => {
+			return Object.keys(response.data);
+		},
+	);
+	return languages;
+}
+
+export function verifyDependencyTracking(
+	repo: Repository,
+	languages: string[],
+	snyk_projects: snyk_projects[],
+): boolean {
+	if (!repo.topics.includes('production') || repo.archived) {
+		return true;
+	}
+
+	const ignoredLanguages = ['HTML', 'CSS', 'Shell'];
+
+	const commonSupportedLanguages = [
+		'C#',
+		'Go',
+		'Java',
+		'JavaScript',
+		'Python',
+		'Swift',
+		'TypeScript',
+	];
+	const snykOnlySupportedLanguages = [
+		'C',
+		'C++',
+		'Apex',
+		'Bazel',
+		'Elixir',
+		'Kotlin',
+		'PHP',
+		'Ruby',
+		'Rust',
+		'Scala',
+		'Objective-C',
+		'Visual Basic .NET',
+	];
+
+	const supportedDependabotLanguages = ignoredLanguages.concat(
+		commonSupportedLanguages,
+	);
+
+	const supportedSnykLanguages = ignoredLanguages
+		.concat(commonSupportedLanguages)
+		.concat(snykOnlySupportedLanguages);
+
+	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
+
+	const matchingSnykProject = allProjectTags.find(
+		(tags) =>
+			//TODO - this is a close enough match for now, but in the future we should use commit hashes
+			//to make sure the projects are in sync
+			!!repo.full_name &&
+			tags.repo == repo.full_name &&
+			tags.branch === repo.default_branch,
+	);
+
+	const repoIsOnSnyk = !!matchingSnykProject;
+
+	if (repoIsOnSnyk) {
+		const containsOnlySnykSupportedLanguages = languages.every((language) =>
+			supportedSnykLanguages.includes(language),
+		);
+		return containsOnlySnykSupportedLanguages;
+	} else {
+		const containsOnlyDependabotSupportedLanguages = languages.every(
+			(language) => supportedDependabotLanguages.includes(language),
+		);
+		return containsOnlyDependabotSupportedLanguages;
+	}
+}
+
+/**
+ * Evaluate the following rule for a Github repository:
+ *   > Production repositories should have dependency tracking enabled.
+ */
+
+export const isTracked = async (
+	octokit: Octokit,
+	repo: Repository,
+	snyk_projects: snyk_projects[],
+) => {
+	const isExempt = !repo.topics.includes('production') || repo.archived;
+	if (isExempt) {
+		return true;
+	}
+
+	const languages = await getRepoLanguages(octokit, repo);
+	console.log(`${repo.name} has languages: `, languages);
+	const isVerified = verifyDependencyTracking(repo, languages, snyk_projects);
+	console.log(`${repo.name} has valid dependency tracking: `, isVerified);
+	return isVerified;
+};
 
 /**
  * Evaluate the following rule for a Github repository:
