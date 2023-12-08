@@ -89,5 +89,5 @@ export async function getStacks(
 export async function getSnykProjects(
 	client: PrismaClient,
 ): Promise<snyk_projects[]> {
-	return (await client.snyk_projects.findMany({})).map((project) => project);
+	return await client.snyk_projects.findMany({});
 }
