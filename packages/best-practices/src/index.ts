@@ -26,6 +26,7 @@ const tableHeaderRow = [
 	'Description',
 	'How to check compliance',
 	'How to exempt',
+	'Remediation',
 	'ID', // This will be auto-generated
 ];
 

@@ -10,11 +10,12 @@ const repository: readonly IBestPractice[] = [
 	{
 		name: 'Default Branch Name',
 		owner: guardian,
-		description:
-			'The default branch name should be `main`.<br>See the [master-to-main tool](https://github.com/guardian/master-to-main/blob/main/migrating.md).',
+		description: 'The default branch name should be `main`.',
 		howToCheck:
 			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=default_branch_name)',
 		howToExempt: 'Archived repositories are exempt.',
+		remediation:
+			'Manual - see [How to rename an existing branch](https://github.com/github/renaming#renaming-existing-branches)',
 	},
 	{
 		name: 'Branch Protection',
@@ -25,6 +26,8 @@ const repository: readonly IBestPractice[] = [
 			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=branch_protection)',
 		howToExempt:
 			'Archived repositories are exempt. Repositories without a production or documentation topic are exempt.',
+		remediation:
+			'Repocop applies branch protection automatically in batches - teams informed via Anghammarad',
 	},
 	{
 		name: 'Team-based Access',
@@ -34,6 +37,7 @@ const repository: readonly IBestPractice[] = [
 		howToCheck: 'Manual. View the repository on https://github.com',
 		howToExempt:
 			'Repositories with one of following topics are exempt: `hackday`, `learning`, `prototype`, `interactive`.',
+		remediation: 'Manual',
 	},
 	{
 		name: 'Admin Access',
@@ -44,6 +48,7 @@ const repository: readonly IBestPractice[] = [
 			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=admin_access)',
 		howToExempt:
 			'Repositories with one of following topics are exempt: `hackday`, `learning`, `prototype`. Archived repositories are exempt.',
+		remediation: 'Manual',
 	},
 	{
 		name: 'Archiving',
@@ -52,6 +57,8 @@ const repository: readonly IBestPractice[] = [
 		howToCheck:
 			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=archiving)',
 		howToExempt: 'Repositories with an `interactive` topic are exempt.',
+		remediation:
+			'Manual - DevX may contact you to discuss archiving if your repo has been inactive for over two years',
 	},
 	{
 		name: 'Topics',
@@ -61,6 +68,7 @@ const repository: readonly IBestPractice[] = [
 		howToCheck:
 			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=topics)',
 		howToExempt: 'Archived repositories are exempt.',
+		remediation: `Mainly manual - Repocop may automatically apply the 'production' topic to repos that are found to have a stack in AWS with PROD/INFRA tags - teams informed via Anghammarad`,
 	},
 	{
 		name: 'Contents',
@@ -69,6 +77,7 @@ const repository: readonly IBestPractice[] = [
 			'Never commit secret information. Avoid private information in public repositories.',
 		howToCheck: 'Manual. View the repository on https://github.com',
 		howToExempt: 'N/A',
+		remediation: 'Manual removal',
 	},
 	{
 		name: 'Stacks',
@@ -77,6 +86,7 @@ const repository: readonly IBestPractice[] = [
 			'Archived repositories should not have corresponding stacks on AWS.',
 		howToCheck: 'Manual. View the repository on https://github.com',
 		howToExempt: 'N/A',
+		remediation: 'Manual removal of stack on AWS',
 	},
 ] as const satisfies readonly IBestPractice[];
 
@@ -88,6 +98,8 @@ const aws: readonly IBestPractice[] = [
 			'AWS resources should be tagged (where supported) with `Stack`, `Stage`, and `App`.<br>This aids service discovery, and cost allocation.',
 		howToCheck: 'TBD',
 		howToExempt: 'N/A',
+		remediation:
+			'Migration to [Guardian CDK](https://github.com/guardian/cdk/blob/main/docs/migration-guide.md)',
 	},
 ] as const satisfies readonly IBestPractice[];
 
@@ -95,11 +107,13 @@ const galaxiesPerson: readonly IBestPractice[] = [
 	{
 		name: 'GitHub Usernames',
 		owner: devXOperations,
-		description:
-			'Developers should update their [Galaxies profiles](https://forms.gle/7Yye3KfHefgYqg3c7) with their GitHub usernames',
+		description: `Each developer's Galaxies profile should contain their GitHub username`,
 		howToCheck: 'View on Galaxies',
 		howToExempt:
 			'Your Galaxies role is something other than an engineer/data analyst',
+
+		remediation:
+			'Use [Galaxies profile update form](https://forms.gle/7Yye3KfHefgYqg3c7)',
 	},
 ];
 
@@ -108,10 +122,11 @@ const galaxiesTeam: readonly IBestPractice[] = [
 		name: 'Github Team',
 		owner: devXOperations,
 		description:
-			'Teams should have their GitHub team names in their galaxies entry',
+			'Teams should have their GitHub team names in their Galaxies entry',
 		howToCheck:
 			'Check in [this file](https://github.com/guardian/galaxies/blob/main/shared/data/teams.ts) in the Galaxies repo',
 		howToExempt: "Teams that don't use GitHub are exempt",
+		remediation: 'Manual via PR',
 	},
 	{
 		name: 'Team Emails',
@@ -120,6 +135,7 @@ const galaxiesTeam: readonly IBestPractice[] = [
 		howToCheck:
 			'Check in [this file](https://github.com/guardian/galaxies/blob/main/shared/data/teams.ts) in the Galaxies repo',
 		howToExempt: 'N/A',
+		remediation: 'Manual via PR',
 	},
 	{
 		name: 'Team Channels',
@@ -131,6 +147,7 @@ const galaxiesTeam: readonly IBestPractice[] = [
 		//We rely on this information this for repocop alerts, so only teams that have repos are relevant at this stage
 		howToExempt:
 			"It's generally good practice to do this, but teams that don't use GitHub are exempt",
+		remediation: 'Manual via PR',
 	},
 ] as const satisfies readonly IBestPractice[];
 

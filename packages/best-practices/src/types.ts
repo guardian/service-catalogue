@@ -29,6 +29,11 @@ export interface IBestPractice {
 	 * How to exempt from the best practice.
 	 */
 	howToExempt: string;
+
+	/**
+	 * How to remediate and become compliant
+	 */
+	remediation: string;
 }
 
 /**
