@@ -13,7 +13,7 @@ const repository: readonly IBestPractice[] = [
 		description:
 			'The default branch name should be `main`.<br>See the [master-to-main tool](https://github.com/guardian/master-to-main/blob/main/migrating.md).',
 		howToCheck:
-			'[Grafana](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1)',
+			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=default_branch_name)',
 		howToExempt: 'Archived repositories are exempt.',
 	},
 	{
@@ -22,7 +22,7 @@ const repository: readonly IBestPractice[] = [
 		description:
 			'Enable branch protection for the default branch, ensuring changes are reviewed before being deployed.',
 		howToCheck:
-			'[Grafana](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1)',
+			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=branch_protection)',
 		howToExempt:
 			'Archived repositories are exempt. Repositories without a production or documentation topic are exempt.',
 	},
@@ -41,7 +41,7 @@ const repository: readonly IBestPractice[] = [
 		description:
 			'Grant at least one GitHub team Admin access - typically, the dev team that own the project.',
 		howToCheck:
-			'[Grafana](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1)',
+			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=admin_access)',
 		howToExempt:
 			'Repositories with one of following topics are exempt: `hackday`, `learning`, `prototype`. Archived repositories are exempt.',
 	},
@@ -50,7 +50,7 @@ const repository: readonly IBestPractice[] = [
 		owner: devXOperations,
 		description: 'Repositories that are no longer used should be archived.',
 		howToCheck:
-			'DevX may contact you to discuss archiving if your repo has been inactive for over two years.',
+			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=archiving)',
 		howToExempt: 'Repositories with an `interactive` topic are exempt.',
 	},
 	{
@@ -59,7 +59,7 @@ const repository: readonly IBestPractice[] = [
 		description:
 			'Repositories should have one of the following topics, to help understand what is in production. `production`, `testing`, `documentation`, `hackday`, `prototype`, `learning`, `interactive`',
 		howToCheck:
-			'[Grafana](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1)',
+			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=topics)',
 		howToExempt: 'Archived repositories are exempt.',
 	},
 	{

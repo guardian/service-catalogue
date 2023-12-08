@@ -21,12 +21,12 @@ if (!file.includes(startMark) || !file.includes(endMark)) {
 }
 
 const tableHeaderRow = [
-	'ID', // This will be auto-generated
 	'Name',
 	'Owner',
 	'Description',
 	'How to check compliance',
 	'How to exempt',
+	'ID', // This will be auto-generated
 ];
 
 const markdownContent = Object.entries(AllBestPractices).flatMap(
@@ -39,7 +39,7 @@ const markdownContent = Object.entries(AllBestPractices).flatMap(
 				.toUpperCase();
 
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-assignment -- testing
-			return [id, ...Object.values(row)];
+			return [...Object.values(row), id];
 		});
 
 		const table = markdownTable([tableHeaderRow, ...tableRows]);
