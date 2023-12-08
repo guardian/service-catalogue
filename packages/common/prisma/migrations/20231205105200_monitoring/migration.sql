@@ -1,16 +1,14 @@
-CREATE SCHEMA IF NOT EXISTS monitoring;
-
 -- This migration creates a bit more of a robust solution of this function.
-DROP FUNCTION public.cq_last_synced();
+DROP FUNCTION cq_last_synced();
 
 -- List of all tables to monitor for out of sync issues
 -- Ideally we could generate this list automatically, but for now its hardcoded
-DROP TABLE IF EXISTS  monitoring.cloudquery_table_frequency;
-CREATE TABLE monitoring.cloudquery_table_frequency (
+DROP TABLE IF EXISTS  cloudquery_table_frequency;
+CREATE TABLE cloudquery_table_frequency (
      table_name TEXT,
      frequency TEXT
 );
-INSERT INTO monitoring.cloudquery_table_frequency(table_name, frequency) VALUES
+INSERT INTO cloudquery_table_frequency(table_name, frequency) VALUES
     -- AWS
     ('aws_s3_%', 'DAILY'),
     ('aws_accessanalyzer_%', 'DAILY'),
@@ -61,7 +59,7 @@ INSERT INTO monitoring.cloudquery_table_frequency(table_name, frequency) VALUES
 
 -- Check the last sync time of all tables defined by cloudquery_table_frequency
 -- and verify that their last sync time matches their frequency
-CREATE OR REPLACE FUNCTION monitoring.cloudquery_table_status()
+CREATE OR REPLACE FUNCTION cloudquery_table_status()
     RETURNS TABLE(table_name text, last_sync timestamp, frequency text, in_sync boolean) AS
 $$
 DECLARE
@@ -71,7 +69,7 @@ BEGIN
     FOR table_to_check IN
         SELECT DISTINCT information_schema.columns.table_name, ctf.frequency
         FROM information_schema.columns
-        INNER JOIN monitoring.cloudquery_table_frequency ctf on columns.table_name LIKE ctf.table_name
+        INNER JOIN cloudquery_table_frequency ctf on columns.table_name LIKE ctf.table_name
         ORDER BY information_schema.columns.table_name
     LOOP
         EXECUTE format('SELECT _cq_sync_time FROM %I LIMIT 1', table_to_check.table_name) INTO last_sync;
