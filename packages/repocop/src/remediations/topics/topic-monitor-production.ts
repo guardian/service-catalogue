@@ -1,5 +1,9 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type { PrismaClient } from '@prisma/client';
+import type {
+	github_teams,
+	PrismaClient,
+	view_repo_ownership,
+} from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	applyTopics,
@@ -7,7 +11,6 @@ import {
 } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import { getRepoOwnership, getTeams } from '../../query';
 import type { AwsCloudFormationStack, Repository } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
@@ -162,9 +165,10 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 }
 
 export async function applyProductionTopicAndMessageTeams(
-	prisma: PrismaClient,
+	teams: github_teams[],
 	unarchivedRepos: Repository[],
 	stacks: AwsCloudFormationStack[],
+	repoOwners: view_repo_ownership[],
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
@@ -176,9 +180,6 @@ export async function applyProductionTopicAndMessageTeams(
 		.map((repo) => {
 			return { fullRepoName: repo.tags['gu:repo'], stackName: repo.stack_name };
 		});
-
-	const repoOwners = await getRepoOwnership(prisma);
-	const teams = await getTeams(prisma);
 
 	const reposWithContactableOwners = repoAndStackNames
 		.map((names) => {

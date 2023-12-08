@@ -44,15 +44,13 @@ export function createBranchProtectionEvents(
 }
 
 export async function protectBranches(
-	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
+	repoOwners: view_repo_ownership[],
+	teams: github_teams[],
 	config: Config,
 	unarchivedRepositories: Repository[],
 	octokit: Octokit,
 ) {
-	const repoOwners = await getRepoOwnership(prisma);
-	const teams = await getTeams(prisma);
-
 	//repos with a 'production' or 'documentation' topic
 	const productionOrDocs = unarchivedRepositories
 		.filter(

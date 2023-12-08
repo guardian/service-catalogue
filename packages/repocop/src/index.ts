@@ -7,11 +7,13 @@ import { partition, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
+	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryTeams,
 	getSnykProjects,
 	getStacks,
+	getTeams,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
@@ -69,13 +71,13 @@ export async function main() {
 		(repo) => !repo.archived,
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
-	const teams = await getRepositoryTeams(prisma);
+	const repoTeams = await getRepositoryTeams(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykProjects = await getSnykProjects(prisma);
 	const evaluatedRepos: repocop_github_repository_rules[] =
-		evaluateRepositories(unarchivedRepos, branches, teams);
+		evaluateRepositories(unarchivedRepos, branches, repoTeams);
 
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
@@ -108,17 +110,22 @@ export async function main() {
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
 
+		const repoOwners = await getRepoOwnership(prisma);
+		const teams = await getTeams(prisma);
+
 		await protectBranches(
-			prisma,
 			evaluatedRepos,
+			repoOwners,
+			teams,
 			config,
 			unarchivedRepos,
 			octokit,
 		);
 		await applyProductionTopicAndMessageTeams(
-			prisma,
+			teams,
 			unarchivedRepos,
 			nonPlaygroundStacks,
+			repoOwners,
 			octokit,
 			config,
 		);
