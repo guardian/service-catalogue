@@ -15836,11 +15836,11 @@ model guardian_non_p_and_e_github_teams {
 }
 
 model audit_results {
-  evaluated_on DateTime
-  name         String   @id
-  success      Boolean
-  cloudquery   Int
-  vendor       Int
+  evaluated_on     DateTime
+  name             String   @id
+  success          Boolean
+  cloudquery_total Int
+  vendor_total     Int
 }
 
 view view_repo_ownership {

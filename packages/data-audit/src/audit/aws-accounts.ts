@@ -16,7 +16,7 @@ export async function auditAwsAccounts(
 	const vendor = accountIds.length;
 	return {
 		name: 'AWS Accounts',
-		cloudquery,
-		vendor,
+		cloudquery_total: cloudquery,
+		vendor_total: vendor,
 	};
 }

@@ -42,7 +42,7 @@ export async function auditS3Buckets(
 	const vendor = await numberOfBucketsFromAws(stage, accounts);
 	return {
 		name: 'AWS S3 buckets',
-		cloudquery,
-		vendor,
+		cloudquery_total: cloudquery,
+		vendor_total: vendor,
 	};
 }
