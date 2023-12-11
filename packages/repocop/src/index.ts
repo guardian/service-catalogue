@@ -20,10 +20,9 @@ import { sendPotentialInteractives } from './remediations/topics/topic-monitor-i
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import {
 	evaluateRepositories,
-	findStacks,
-	isTracked,
+	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack, RepoAndStack, Repository } from './types';
+import type { AwsCloudFormationStack } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -38,28 +37,6 @@ async function writeEvaluationTable(
 	});
 
 	console.log('Finished writing to table');
-}
-
-function findArchivedReposWithStacks(
-	archivedRepositories: Repository[],
-	unarchivedRepositories: Repository[],
-	stacks: AwsCloudFormationStack[],
-) {
-	const archivedRepos = archivedRepositories;
-	const unarchivedRepos = unarchivedRepositories;
-
-	const stacksWithoutAnUnarchivedRepoMatch: AwsCloudFormationStack[] =
-		stacks.filter((stack) =>
-			unarchivedRepos.some(
-				(repo) => !(repo.full_name === stack.tags['gu:repo']),
-			),
-		);
-
-	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
-		.map((repo) => findStacks(repo, stacksWithoutAnUnarchivedRepoMatch))
-		.filter((result) => result.stacks.length > 0);
-
-	return archivedReposWithPotentialStacks;
 }
 
 export async function main() {
@@ -79,32 +56,16 @@ export async function main() {
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(unarchivedRepos, branches, repoTeams);
 
-	const unmaintinedReposCount = evaluatedRepos.filter(
-		(repo) => repo.archiving === false,
-	).length;
-
-	console.log(
-		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepos.length}.`,
-	);
-
-	const archivedWithStacks = findArchivedReposWithStacks(
-		archivedRepos,
-		unarchivedRepos,
-		nonPlaygroundStacks,
-	);
-
-	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
-
-	console.log(
-		'Archived repos with live stacks, first 10 results:',
-		archivedWithStacks.slice(0, 10),
-	);
-
 	const octokit = await stageAwareOctokit(config.stage);
-	unarchivedRepos
-		.filter((r) => r.topics.includes('production'))
-		.slice(0, 10)
-		.map((r) => isTracked(octokit, r, snykProjects));
+
+	testExperimentalRepocopFeatures(
+		octokit,
+		evaluatedRepos,
+		unarchivedRepos,
+		archivedRepos,
+		nonPlaygroundStacks,
+		snykProjects,
+	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {

@@ -261,6 +261,63 @@ export function findStacks(
 	};
 }
 
+function findArchivedReposWithStacks(
+	archivedRepositories: Repository[],
+	unarchivedRepositories: Repository[],
+	stacks: AwsCloudFormationStack[],
+) {
+	const archivedRepos = archivedRepositories;
+	const unarchivedRepos = unarchivedRepositories;
+
+	const stacksWithoutAnUnarchivedRepoMatch: AwsCloudFormationStack[] =
+		stacks.filter((stack) =>
+			unarchivedRepos.some(
+				(repo) => !(repo.full_name === stack.tags['gu:repo']),
+			),
+		);
+
+	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
+		.map((repo) => findStacks(repo, stacksWithoutAnUnarchivedRepoMatch))
+		.filter((result) => result.stacks.length > 0);
+
+	return archivedReposWithPotentialStacks;
+}
+
+export function testExperimentalRepocopFeatures(
+	octokit: Octokit,
+	evaluatedRepos: repocop_github_repository_rules[],
+	unarchivedRepos: Repository[],
+	archivedRepos: Repository[],
+	nonPlaygroundStacks: AwsCloudFormationStack[],
+	snykProjects: snyk_projects[],
+) {
+	const unmaintinedReposCount = evaluatedRepos.filter(
+		(repo) => repo.archiving === false,
+	).length;
+
+	console.log(
+		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepos.length}.`,
+	);
+
+	const archivedWithStacks = findArchivedReposWithStacks(
+		archivedRepos,
+		unarchivedRepos,
+		nonPlaygroundStacks,
+	);
+
+	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
+
+	console.log(
+		'Archived repos with live stacks, first 10 results:',
+		archivedWithStacks.slice(0, 10),
+	);
+
+	unarchivedRepos
+		.filter((r) => r.topics.includes('production'))
+		.slice(0, 10)
+		.map((r) => isTracked(octokit, r, snykProjects));
+}
+
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */

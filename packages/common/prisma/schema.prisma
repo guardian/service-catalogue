@@ -15835,6 +15835,14 @@ model guardian_non_p_and_e_github_teams {
   team_name String @id
 }
 
+model audit_results {
+  evaluated_on     DateTime
+  name             String   @id
+  success          Boolean
+  cloudquery_total Int
+  vendor_total     Int
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
