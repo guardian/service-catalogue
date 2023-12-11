@@ -1,12 +1,15 @@
 import type {
 	aws_cloudformation_stacks,
 	github_repositories,
+	github_teams,
 } from '@prisma/client';
 
 export interface RepoAndStack {
 	fullName: string;
 	stacks: string[];
 }
+
+type TeamFields = Pick<github_teams, 'slug' | 'id' | 'name'>;
 
 type RepositoryFields = Pick<
 	github_repositories,
