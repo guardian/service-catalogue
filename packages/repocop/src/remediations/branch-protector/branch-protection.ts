@@ -1,6 +1,4 @@
 import type {
-	github_teams,
-	PrismaClient,
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -8,8 +6,7 @@ import { shuffle } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import { getRepoOwnership, getTeams } from '../../query';
-import type { Repository } from '../../types';
+import type { Repository, Team } from '../../types';
 import { findContactableOwners } from '../shared-utilities';
 import { notify } from './aws-requests';
 import {
@@ -21,7 +18,7 @@ import {
 export function createBranchProtectionEvents(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
-	teams: github_teams[],
+	teams: Team[],
 	msgCount: number,
 ): UpdateMessageEvent[] {
 	const reposWithoutBranchProtection = evaluatedRepos.filter(
@@ -44,15 +41,13 @@ export function createBranchProtectionEvents(
 }
 
 export async function protectBranches(
-	prisma: PrismaClient,
 	evaluatedRepos: repocop_github_repository_rules[],
+	repoOwners: view_repo_ownership[],
+	teams: Team[],
 	config: Config,
 	unarchivedRepositories: Repository[],
 	octokit: Octokit,
 ) {
-	const repoOwners = await getRepoOwnership(prisma);
-	const teams = await getTeams(prisma);
-
 	//repos with a 'production' or 'documentation' topic
 	const productionOrDocs = unarchivedRepositories
 		.filter(
