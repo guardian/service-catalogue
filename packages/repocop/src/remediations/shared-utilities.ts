@@ -1,6 +1,4 @@
 import type { view_repo_ownership } from '@prisma/client';
-import type { UpdateMessageEvent } from 'common/types';
-import type { Config } from '../config';
 import type { Team } from '../types';
 
 function findTeamSlugFromId(id: bigint, teams: Team[]): string | undefined {
