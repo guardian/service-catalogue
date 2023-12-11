@@ -11,6 +11,6 @@
   "dependencies": {
     "@aws-sdk/client-organizations": "^3.454.0",
     "@aws-sdk/client-s3": "^3.454.0",
-    "@aws-sdk/client-sts": "^3.454.0"
+    "@aws-sdk/client-sts": "^3.470.0"
   }
 }
