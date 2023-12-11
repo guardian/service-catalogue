@@ -13,3 +13,6 @@ CREATE USER dataaudit WITH LOGIN;
 GRANT USAGE ON SCHEMA public to dataaudit;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO dataaudit;
 GRANT rds_iam TO dataaudit;
+
+-- This table is created via a Prisma migration
+GRANT ALL ON public.audit_results TO dataaudit;

@@ -1,6 +1,6 @@
 import type { Account } from '@aws-sdk/client-organizations';
 import type { PrismaClient } from '@prisma/client';
-import type { Audit } from './types';
+import type { Audit } from './database';
 
 function numberOfAwsAccountsFromDatabase(
 	client: PrismaClient,
@@ -12,11 +12,11 @@ export async function auditAwsAccounts(
 	prismaClient: PrismaClient,
 	accountIds: Account[],
 ): Promise<Audit> {
-	const db = await numberOfAwsAccountsFromDatabase(prismaClient);
-	const aws = accountIds.length;
+	const cloudquery = await numberOfAwsAccountsFromDatabase(prismaClient);
+	const vendor = accountIds.length;
 	return {
 		name: 'AWS Accounts',
-		db,
-		aws,
+		cloudquery_total: cloudquery,
+		vendor_total: vendor,
 	};
 }
