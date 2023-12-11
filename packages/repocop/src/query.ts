@@ -44,11 +44,9 @@ export async function getRepositoryBranches(
 }
 
 export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
-	const teams = await client.github_teams.findMany({});
-	console.log(`Found ${teams.length} teams.`);
-	const parsedTeams = teams.map((t) => t as Team);
-	console.log(`Parsed ${parsedTeams.length} teams.`);
-	return parsedTeams;
+	const teams = (await client.github_teams.findMany({})).map((t) => t as Team);
+	console.log(`Parsed ${teams.length} teams.`);
+	return teams;
 };
 
 export type RepositoryTeam = GetFindResult<
