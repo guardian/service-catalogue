@@ -27,6 +27,8 @@ export interface CloudquerySource {
 
 	/**
 	 * The rate at which to collect data.
+	 *
+	 * If this schedule is daily or weekly you should add an equivalent entry to the `cloudquery_table_frequency` table.
 	 */
 	schedule: Schedule;
 
