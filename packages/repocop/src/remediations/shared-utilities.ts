@@ -3,13 +3,14 @@ import { SendMessageBatchCommand } from '@aws-sdk/client-sqs';
 import type { SendMessageBatchRequestEntry } from '@aws-sdk/client-sqs/dist-types/models/models_0';
 import type { Action, Anghammarad } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
-import type { github_teams, view_repo_ownership } from '@prisma/client';
+import type { view_repo_ownership } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
 import type { UpdateMessageEvent } from 'common/types';
 import type { Config } from '../config';
+import type { Team } from '../types';
 
 export enum RemediationApp {
 	TopicMonitoringProductionTag = 'topicMonitoringProductionTag',
@@ -33,18 +34,15 @@ const anghammaradMessages: AnghammaradMessages = {
 	},
 };
 
-function findTeamSlugFromId(
-	id: bigint,
-	teams: github_teams[],
-): string | undefined {
-	const match: github_teams | undefined = teams.find((team) => team.id === id);
+function findTeamSlugFromId(id: bigint, teams: Team[]): string | undefined {
+	const match: Team | undefined = teams.find((team) => team.id === id);
 	return match?.slug ?? undefined;
 }
 
 export function findContactableOwners(
 	repo: string,
 	allRepoOwners: view_repo_ownership[],
-	teams: github_teams[],
+	teams: Team[],
 ): string[] {
 	const owners = allRepoOwners.filter((owner) => owner.full_name === repo);
 	const teamSlugs = owners

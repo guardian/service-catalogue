@@ -1,9 +1,5 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type {
-	github_teams,
-	PrismaClient,
-	view_repo_ownership,
-} from '@prisma/client';
+import type { view_repo_ownership } from '@prisma/client';
 import {
 	anghammaradThreadKey,
 	applyTopics,
@@ -11,7 +7,7 @@ import {
 } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import type { AwsCloudFormationStack, Repository } from '../../types';
+import type { AwsCloudFormationStack, Repository, Team } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 const MONTHS = 3;
@@ -165,7 +161,7 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 }
 
 export async function applyProductionTopicAndMessageTeams(
-	teams: github_teams[],
+	teams: Team[],
 	unarchivedRepos: Repository[],
 	stacks: AwsCloudFormationStack[],
 	repoOwners: view_repo_ownership[],

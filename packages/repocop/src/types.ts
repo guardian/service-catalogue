@@ -11,6 +11,12 @@ export interface RepoAndStack {
 
 type TeamFields = Pick<github_teams, 'slug' | 'id' | 'name'>;
 
+export interface Team extends TeamFields {
+	slug: NonNullable<TeamFields['slug']>;
+	id: NonNullable<TeamFields['id']>;
+	name: NonNullable<TeamFields['name']>;
+}
+
 type RepositoryFields = Pick<
 	github_repositories,
 	| 'archived'

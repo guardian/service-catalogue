@@ -1,13 +1,12 @@
 import type {
 	github_repository_branches,
-	github_teams,
 	Prisma,
 	PrismaClient,
 	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GetFindResult } from '@prisma/client/runtime/library';
-import type { AwsCloudFormationStack, Repository } from './types';
+import type { AwsCloudFormationStack, Repository, Team } from './types';
 
 export async function getRepositories(
 	client: PrismaClient,
@@ -44,8 +43,8 @@ export async function getRepositoryBranches(
 	return branches;
 }
 
-export const getTeams = async (client: PrismaClient): Promise<github_teams[]> =>
-	await client.github_teams.findMany({});
+export const getTeams = async (client: PrismaClient): Promise<Team[]> =>
+	(await client.github_teams.findMany({})).map((t) => t as Team);
 
 export type RepositoryTeam = GetFindResult<
 	Prisma.$github_team_repositoriesPayload,
