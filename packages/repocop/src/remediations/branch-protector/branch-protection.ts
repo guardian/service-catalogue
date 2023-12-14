@@ -98,7 +98,7 @@ async function protectBranch(
 
 	const stageIsProd = config.stage === 'PROD';
 
-	if (stageIsProd && !branchIsProtected && config.branchProtectionEnabled) {
+	if (stageIsProd && !branchIsProtected) {
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		for (const slug of event.teamNameSlugs) {
 			await notify(event.fullName, config, slug);
