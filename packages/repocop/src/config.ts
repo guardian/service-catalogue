@@ -72,6 +72,6 @@ export async function getConfig(): Promise<Config> {
 			'guardian/pluto-', // Multimedia team
 		],
 		interactivesCount: stage === 'PROD' ? 15 : 1,
-		branchProtectionEnabled: process.env.BRANCH_PROTECTION_ENABLED === 'false',
+		branchProtectionEnabled: process.env.BRANCH_PROTECTION_ENABLED === 'true',
 	};
 }
