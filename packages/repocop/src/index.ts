@@ -74,14 +74,16 @@ export async function main() {
 		const repoOwners = await getRepoOwnership(prisma);
 		const teams = await getTeams(prisma);
 
-		await protectBranches(
-			evaluatedRepos,
-			repoOwners,
-			teams,
-			config,
-			unarchivedRepos,
-			octokit,
-		);
+		if (config.branchProtectionEnabled) {
+			await protectBranches(
+				evaluatedRepos,
+				repoOwners,
+				teams,
+				config,
+				unarchivedRepos,
+				octokit,
+			);
+		}
 		await applyProductionTopicAndMessageTeams(
 			teams,
 			unarchivedRepos,

@@ -42,6 +42,11 @@ export interface Config extends PrismaConfig {
 	 * The number of repositories to send to the interactive monitor for evaluation.
 	 */
 	interactivesCount: number;
+
+	/**
+	 * Flag to enable branch protection.
+	 */
+	branchProtectionEnabled: boolean;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -67,5 +72,6 @@ export async function getConfig(): Promise<Config> {
 			'guardian/pluto-', // Multimedia team
 		],
 		interactivesCount: stage === 'PROD' ? 15 : 1,
+		branchProtectionEnabled: process.env.BRANCH_PROTECTION_ENABLED === 'true',
 	};
 }
