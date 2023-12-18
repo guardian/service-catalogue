@@ -317,8 +317,8 @@ export function addCloudqueryEcsCluster(
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 8192,
-			cpu: 4096,
+			memoryLimitMiB: 4096,
+			cpu: 2048,
 		},
 		{
 			name: 'GitHubIssues',
