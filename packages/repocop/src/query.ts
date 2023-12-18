@@ -47,7 +47,15 @@ export async function getRepositoryBranches(
 }
 
 export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
-	const teams = (await client.github_teams.findMany({})).map((t) => t as Team);
+	const teams = (
+		await client.github_teams.findMany({
+			select: {
+				slug: true,
+				id: true,
+				name: true,
+			},
+		})
+	).map((t) => t as Team);
 	console.log(`Parsed ${teams.length} teams.`);
 	return teams;
 };
@@ -55,7 +63,13 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 export async function getTeamRepositories(
 	client: PrismaClient,
 ): Promise<TeamRepository[]> {
-	const data = await client.github_team_repositories.findMany({});
+	const data = await client.github_team_repositories.findMany({
+		select: {
+			id: true,
+			role_name: true,
+			team_id: true,
+		},
+	});
 	return data.map((t) => t as TeamRepository);
 }
 
@@ -70,9 +84,15 @@ export async function getRepoOwnership(
 export async function getStacks(
 	client: PrismaClient,
 ): Promise<AwsCloudFormationStack[]> {
-	return (await client.aws_cloudformation_stacks.findMany({})).map(
-		(stack) => stack as AwsCloudFormationStack,
-	);
+	return (
+		await client.aws_cloudformation_stacks.findMany({
+			select: {
+				stack_name: true,
+				tags: true,
+				creation_time: true,
+			},
+		})
+	).map((stack) => stack as AwsCloudFormationStack);
 }
 
 export async function getSnykProjects(
