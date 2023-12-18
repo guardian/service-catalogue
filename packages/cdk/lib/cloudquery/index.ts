@@ -183,6 +183,26 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			name: 'OrgWideRDS',
+			description:
+				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_rds*'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		},
+		{
+			name: 'OrgWideBackup',
+			description:
+				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '7' }),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_backup*'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		},
+		{
 			name: 'OrgWideEc2',
 			description:
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
