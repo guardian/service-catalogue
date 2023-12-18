@@ -23,11 +23,11 @@ export function createMessage(
 	months: number,
 ) {
 	return {
-		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
+		subject: `Repository topic monitoring (for GitHub team ${teamSlug})`,
 		message:
-			`The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}. ` +
-			` This is because stack is over ${months} months old and has PROD or INFRA tags.` +
-			` Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.` +
+			`The 'production' topic has been applied to ${fullRepoName}, as it's been linked to the stack: ${stackName}.\n` +
+			` DevX automatically applies this topic to repositories linked to PROD/INFRA stacks older than ${months}\n` +
+			" Repositories with PROD or INFRA stacks should have a 'production' topic to help with security." +
 			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
 	};
 }
