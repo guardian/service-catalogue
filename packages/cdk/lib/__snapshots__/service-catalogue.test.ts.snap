@@ -13755,7 +13755,7 @@ spec:
             "Value": "TEST",
           },
         ],
-        "Timeout": 30,
+        "Timeout": 600,
         "VpcConfig": {
           "SecurityGroupIds": [
             {
