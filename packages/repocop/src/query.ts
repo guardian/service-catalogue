@@ -52,7 +52,7 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 	return teams;
 };
 
-export async function getRepositoryTeams(
+export async function getTeamRepositories(
 	client: PrismaClient,
 ): Promise<TeamRepository[]> {
 	const data = await client.github_team_repositories.findMany({});
