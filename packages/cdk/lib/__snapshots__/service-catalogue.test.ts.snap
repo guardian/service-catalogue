@@ -4749,7 +4749,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "13107MiB",
+                "Value": "3276MiB",
               },
             ],
             "Essential": true,
@@ -4894,7 +4894,7 @@ spec:
             "Name": "CloudquerySource-GitHubTeamsFirelens",
           },
         ],
-        "Cpu": "8192",
+        "Cpu": "2048",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceGitHubTeamsTaskDefinitionExecutionRole9DEDACFD",
@@ -4902,7 +4902,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubTeamsTaskDefinition5CFD9707",
-        "Memory": "16384",
+        "Memory": "4096",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
