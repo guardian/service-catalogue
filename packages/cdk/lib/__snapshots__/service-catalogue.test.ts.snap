@@ -6646,7 +6646,9 @@ spec:
   path: cloudquery/aws
   version: v22.18.0
   tables:
-    - aws_backup*
+    - aws_backup_protected_resources
+    - aws_backup_vaults
+    - aws_backup_vault_recovery_points
   destinations:
     - postgresql
   spec:
@@ -11959,7 +11961,10 @@ spec:
   path: cloudquery/aws
   version: v22.18.0
   tables:
-    - aws_rds*
+    - aws_rds_instances
+    - aws_rds_clusters
+    - aws_rds_db_snapshots
+    - aws_rds_cluster_snapshots
   destinations:
     - postgresql
   spec:
@@ -13072,8 +13077,13 @@ spec:
     - aws_inspector2_findings
     - aws_s3*
     - aws_dynamodb*
-    - aws_rds*
-    - aws_backup*
+    - aws_rds_instances
+    - aws_rds_clusters
+    - aws_rds_db_snapshots
+    - aws_rds_cluster_snapshots
+    - aws_backup_protected_resources
+    - aws_backup_vaults
+    - aws_backup_vault_recovery_points
     - aws_ec2_instances
     - aws_ec2_security_groups
     - aws_ec2_images
