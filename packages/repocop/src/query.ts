@@ -1,12 +1,15 @@
 import type {
 	github_repository_branches,
-	Prisma,
 	PrismaClient,
 	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { GetFindResult } from '@prisma/client/runtime/library';
-import type { AwsCloudFormationStack, Repository, Team } from './types';
+import type {
+	AwsCloudFormationStack,
+	Repository,
+	Team,
+	TeamRepository,
+} from './types';
 
 export async function getRepositories(
 	client: PrismaClient,
@@ -44,32 +47,30 @@ export async function getRepositoryBranches(
 }
 
 export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
-	const teams = (await client.github_teams.findMany({})).map((t) => t as Team);
+	const teams = (
+		await client.github_teams.findMany({
+			select: {
+				slug: true,
+				id: true,
+				name: true,
+			},
+		})
+	).map((t) => t as Team);
 	console.log(`Parsed ${teams.length} teams.`);
 	return teams;
 };
 
-export type RepositoryTeam = GetFindResult<
-	Prisma.$github_team_repositoriesPayload,
-	{
-		select: { role_name: boolean; id: boolean };
-		where: { id: bigint };
-	}
->;
-
-export async function getRepositoryTeams(
+export async function getTeamRepositories(
 	client: PrismaClient,
-): Promise<RepositoryTeam[]> {
-	const data: RepositoryTeam[] = await client.github_team_repositories.findMany(
-		{
-			select: {
-				id: true,
-				role_name: true,
-			},
+): Promise<TeamRepository[]> {
+	const data = await client.github_team_repositories.findMany({
+		select: {
+			id: true,
+			role_name: true,
+			team_id: true,
 		},
-	);
-
-	return data;
+	});
+	return data.map((t) => t as TeamRepository);
 }
 
 export async function getRepoOwnership(
@@ -83,9 +84,15 @@ export async function getRepoOwnership(
 export async function getStacks(
 	client: PrismaClient,
 ): Promise<AwsCloudFormationStack[]> {
-	return (await client.aws_cloudformation_stacks.findMany({})).map(
-		(stack) => stack as AwsCloudFormationStack,
-	);
+	return (
+		await client.aws_cloudformation_stacks.findMany({
+			select: {
+				stack_name: true,
+				tags: true,
+				creation_time: true,
+			},
+		})
+	).map((stack) => stack as AwsCloudFormationStack);
 }
 
 export async function getSnykProjects(

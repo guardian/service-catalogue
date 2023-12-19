@@ -1,6 +1,9 @@
 import type { github_repository_branches, snyk_projects } from '@prisma/client';
-import type { RepositoryTeam } from '../query';
-import type { AwsCloudFormationStack, Repository } from '../types';
+import type {
+	AwsCloudFormationStack,
+	Repository,
+	TeamRepository,
+} from '../types';
 import {
 	evaluateOneRepo,
 	findStacks,
@@ -115,10 +118,11 @@ describe('Repository admin access', () => {
 			id: 1234n,
 		};
 
-		const teams: RepositoryTeam[] = [
+		const teams: TeamRepository[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,
+				team_id: 1n,
 			},
 		];
 
@@ -133,14 +137,16 @@ describe('Repository admin access', () => {
 			id: 1234n,
 		};
 
-		const teams: RepositoryTeam[] = [
+		const teams: TeamRepository[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,
+				team_id: 1n,
 			},
 			{
 				role_name: 'admin',
 				id: 1234n,
+				team_id: 2n,
 			},
 		];
 
@@ -169,14 +175,16 @@ describe('Repository admin access', () => {
 			topics: ['production'],
 		};
 
-		const teams: RepositoryTeam[] = [
+		const teams: TeamRepository[] = [
 			{
 				role_name: 'read-only',
 				id: 1234n,
+				team_id: 1n,
 			},
 			{
 				role_name: 'admin',
 				id: 1234n,
+				team_id: 2n,
 			},
 		];
 		const actual = evaluateOneRepo(repo, [], teams);
