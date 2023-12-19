@@ -188,7 +188,12 @@ export function addCloudqueryEcsCluster(
 				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
 			config: awsSourceConfigForOrganisation({
-				tables: ['aws_rds_instances', 'aws_rds_clusters', 'aws_rds_db_snapshots', 'aws_rds_cluster_snapshots'],
+				tables: [
+					'aws_rds_instances',
+					'aws_rds_clusters',
+					'aws_rds_db_snapshots',
+					'aws_rds_cluster_snapshots',
+				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -198,7 +203,11 @@ export function addCloudqueryEcsCluster(
 				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '7' }),
 			config: awsSourceConfigForOrganisation({
-				tables: ['aws_backup_protected_resources', 'aws_backup_vaults', 'aws_backup_vault_recovery_points'],
+				tables: [
+					'aws_backup_protected_resources',
+					'aws_backup_vaults',
+					'aws_backup_vault_recovery_points',
+				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
