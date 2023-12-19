@@ -1,3 +1,4 @@
+import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 export const listOrgsPolicy = new PolicyStatement({
@@ -35,10 +36,15 @@ export const readBucketPolicy = (...resources: string[]): PolicyStatement => {
 	});
 };
 
-export function singletonPolicy() {
+export function singletonPolicy(cluster: Cluster) {
 	return new PolicyStatement({
 		effect: Effect.ALLOW,
 		resources: ['*'],
+		conditions: {
+			StringEquals: {
+				'ecs:cluster': cluster.clusterArn,
+			},
+		},
 		actions: ['ecs:ListTasks'],
 	});
 }

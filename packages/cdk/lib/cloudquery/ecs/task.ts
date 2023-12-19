@@ -251,7 +251,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				condition: ContainerDependencyCondition.SUCCESS,
 			});
 
-			task.addToTaskRolePolicy(singletonPolicy());
+			task.addToTaskRolePolicy(singletonPolicy(cluster));
 		}
 
 		task.addFirelensLogRouter(`${id}Firelens`, {

@@ -10270,6 +10270,16 @@ spec:
           "Statement": [
             {
               "Action": "ecs:ListTasks",
+              "Condition": {
+                "StringEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
               "Effect": "Allow",
               "Resource": "*",
             },
