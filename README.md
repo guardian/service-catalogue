@@ -11,8 +11,8 @@ about.
 
 ## Purpose
 
-The Guardian has hundreds of EC2, lambda, and other services in AWS, 
-each built from one of thousands of GitHub repositories, 
+The Guardian has hundreds of EC2 instances, Lambda functions, and other resources in
+AWS, each built from one of thousands of GitHub repositories, 
 by one of many P&E teams.
 
 Some of the questions Service Catalogue aims to answer include:
