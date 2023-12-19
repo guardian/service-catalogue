@@ -9920,7 +9920,7 @@ spec:
             "Command": [
               "/bin/bash",
               "-c",
-              "yum install -y -q jq awscli;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} -gt 1 ]] && aws ecs stop-task --cluster $ECS_CLUSTER --task $ECS_TASK_ARN --no-cli-pager 1> /dev/null;exit 0",
+              "yum install -y -q jq awscli;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[ \${RUNNING} -gt 1 ] && exit 114 || exit 0",
             ],
             "EntryPoint": [
               "",
@@ -10272,30 +10272,6 @@ spec:
               "Action": "ecs:ListTasks",
               "Effect": "Allow",
               "Resource": "*",
-            },
-            {
-              "Action": "ecs:StopTask",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":task/",
-                    {
-                      "Ref": "servicecatalogueCluster5FC34DC5",
-                    },
-                    "/*",
-                  ],
-                ],
-              },
             },
             {
               "Action": [
