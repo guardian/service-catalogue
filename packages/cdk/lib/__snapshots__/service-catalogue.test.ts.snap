@@ -3607,7 +3607,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -3760,7 +3760,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubIssuesTaskDefinition750BB414",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -7981,7 +7981,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -8092,7 +8092,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceOrgWideCloudFormationTaskDefinitionC6E96023",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -10539,7 +10539,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -10650,7 +10650,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceOrgWideInspectorTaskDefinition280F3CC7",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
