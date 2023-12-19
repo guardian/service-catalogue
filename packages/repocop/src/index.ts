@@ -10,9 +10,9 @@ import {
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
-	getRepositoryTeams,
 	getSnykProjects,
 	getStacks,
+	getTeamRepositories,
 	getTeams,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
@@ -48,7 +48,7 @@ export async function main() {
 		(repo) => !repo.archived,
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
-	const repoTeams = await getRepositoryTeams(prisma);
+	const repoTeams = await getTeamRepositories(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
