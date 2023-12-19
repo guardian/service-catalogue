@@ -102,6 +102,7 @@ export function addCloudqueryEcsCluster(
 				tables: ['aws_cloudformation_*'],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'AwsCostExplorer',
@@ -161,6 +162,7 @@ export function addCloudqueryEcsCluster(
 				tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'OrgWideS3',
@@ -358,6 +360,7 @@ export function addCloudqueryEcsCluster(
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 1024,
 		},
 	];
 
