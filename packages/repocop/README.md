@@ -5,11 +5,6 @@ It is deployed as an AWS Lambda.
 
 See the [Grafana dashboard](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1) for a definition of the rules and how they are met.
 
-Migration history is held in the `packages/common/prisma/migrations` directory in this repository and the `_prisma_migrations` table in the
-database.
-
-For more details, see the [Prisma Migrations](../common/README.md).
-
 ## Running RepoCop locally
 
 Prerequisites:
