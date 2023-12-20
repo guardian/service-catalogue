@@ -15877,6 +15877,8 @@ view view_old_ec2_instances {
   account_name            String
   instance_id             String
   state                   String
+  stack                   String
+  stage                   String
   app                     String
   repo                    String
   region                  String
@@ -15888,12 +15890,13 @@ view view_old_ec2_instances {
 view view_running_instances {
   account_name   String?
   app            String
+  stack          String
+  stage          String
   image_id       String
   instance_id    String
   built_by_amigo Boolean
   launch_time    DateTime @db.Timestamp(6)
-  stack          String
-  stage          String
+  type           String
 
   @@ignore
 }

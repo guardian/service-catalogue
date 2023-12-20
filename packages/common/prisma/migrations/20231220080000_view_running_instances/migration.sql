@@ -2,7 +2,8 @@
  The view below is used to to indentify the instance types of all running EC2 instances in the environment.
  Providing account name, instance type, app name, instance id, and launch time.
  */
-create or replace view view_running_instances as
+DROP VIEW IF EXISTS view_running_instances;
+create view view_running_instances as
 with id_and_tags as (select image_id, tags ->> 'BuiltBy' as built_by
                      from aws_ec2_images
                      where tags is not null
@@ -19,6 +20,8 @@ with id_and_tags as (select image_id, tags ->> 'BuiltBy' as built_by
 
 select distinct on (instances.instance_id) accts.name               as account_name,
                                            instances.tags ->> 'App' as app,
+                                           instances.tags ->> 'Stack' as stack,
+                                           instances.tags ->> 'Stage' as stage,
                                            instances.image_id,
                                            instances.instance_id,
                                            CASE
@@ -26,9 +29,7 @@ select distinct on (instances.instance_id) accts.name               as account_n
                                                ELSE false
                                                END                  as built_by_amigo,
                                            instances.launch_time,
-                                           instances.instance_type as type,
-                                           instances.tags ->> 'Stack' as stack,
-                                           instances.tags ->> 'Stage' as stage
+                                           instances.instance_type as type
 from aws_ec2_instances instances
          left join aggregated_images images
                    on instances.image_id = images.image_id -- instances.account_id=images.account_id
