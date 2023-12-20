@@ -9583,8 +9583,6 @@ model aws_lambda_functions {
   configuration        Json?
   tags                 Json?
   result_metadata      Json?
-
-  @@ignore
 }
 
 model aws_lambda_layer_version_policies {
@@ -15833,6 +15831,21 @@ model guardian_production_status {
 
 model guardian_non_p_and_e_github_teams {
   team_name String @id
+}
+
+model audit_results {
+  evaluated_on     DateTime
+  name             String   @id
+  success          Boolean
+  cloudquery_total Int
+  vendor_total     Int
+}
+
+model cloudquery_table_frequency {
+  table_name String?
+  frequency  String?
+
+  @@ignore
 }
 
 view view_repo_ownership {

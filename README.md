@@ -1,7 +1,8 @@
 # The Product & Engineering Service Catalogue
 
-A set of APIs cataloging services deployed via AWS CloudFormation, and their
-related metadata.
+A database of information from AWS, GitHub, Synk, and other sources,
+Service Catalogue aims to provide a picture of the Guardian's estate, 
+broken down by Product & Engineering (P&E) team.
 
 In contrast with [Prism](https://github.com/guardian/prism), which collects data
 from a subset of AWS resources, Service Catalogue offers a more complete picture
@@ -10,50 +11,45 @@ about.
 
 ## Purpose
 
-The Guardian has hundreds of EC2, lambda, and other services in AWS, each is
-built from one of thousands of GitHub repositories, by one of many Product &
-Engineering (P&E) teams.
+The Guardian has hundreds of EC2, lambda, and other services in AWS, 
+each built from one of thousands of GitHub repositories, 
+by one of many P&E teams.
 
-We want to be able to answer the following questions:
-
+Some of the questions Service Catalogue aims to answer include:
 - For P&E teams:
-
   - Which services do I own?
   - Which services follow DevX best practice/use tooling?
-  - What does each service cost?
   - Which repo do services come from?
   - What is my service reliability? (time since last incident)
-
 - For the Developer Experience stream:
   - What proportion of all services follow best practice/use tooling?
   - What kinds of technologies are different streams using?
-  - What services are costing us the most money?
   - Which teams are struggling with reliability and need more support?
   - Which services belong to specific P&E product teams
 
-## Services
+Pricing information is not yet available in Service Catalogue,
+therefore, we're unable to answer questions such as:
+- What does each service cost?
+- What services are costing us the most money?
 
-The following packages form part of Service Catalogue.
+## How does it work?
 
-### 1. Cloudquery
+Service Catalogue has two parts:
+1. Data collection
+2. Data analysis
 
-[cloudquery](packages/cloudquery/README.md) is a set of Cloudquery (ECS) tasks to collect the data.
+### Data collection
 
-To learn how to use the production cloudquery data, see the [docs](docs/getting-started.md) for an introduction.
+We use [CloudQuery](https://www.cloudquery.io/) to collect data from AWS, GitHub, Snyk, and other sources.
 
-To run cloudquery locally, see the package [README](packages/cloudquery/README.md).
+We've implemented CloudQuery as a set of ECS tasks, writing to a Postgres database.
+For more details, see [CloudQuery implementation](docs/cloudquery-implementation.md).
 
-#### Updating CloudQuery
+> [!TIP]
+> To update CloudQuery, see [Updating CloudQuery](docs/updating-cloudquery.md).
 
-To update the version of CloudQuery, and its plugins:
+### Data analysis
 
-1. Edit the [`.env` file at the root of the repository](.env)
-2. [Run CloudQuery locally](packages/cloudquery/README.md) to ensure it works
-3. Update the CDK snapshot tests: `npm test --workspace=cdk -- -u`
-4. Raise a PR
-
-### 2. Repocop
-
-[repocop](packages/repocop/README.md) is a set of database queries using [Prisma](https://www.prisma.io/) which implements our [best practice recommendations](https://github.com/guardian/recommendations/blob/main/best-practices.md).
-
-To run repocop locally, see the package [README](packages/repocop/README.md). (You will need to have cloudquery running first).
+The data in Service Catalogue is analysed in two ways:
+1. Grafana, at https://metrics.gutools.co.uk
+2. AWS Lambda functions, for example [RepoCop](packages/repocop) or [data-audit](packages/data-audit)

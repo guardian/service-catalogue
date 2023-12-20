@@ -12,12 +12,10 @@ interface AwsClientConfig {
 export function awsClientConfig(
 	stage: string,
 	roleArn?: string,
+	region = 'eu-west-1',
 ): AwsClientConfig {
 	return {
-		/*
-		Whilst this _should_ be dynamic, in reality we only use this region, so hardcode it.
-	 	*/
-		region: 'eu-west-1',
+		region,
 
 		/*
 		If DEV (i.e. running locally), get credentials from the ini file.
@@ -41,3 +39,18 @@ export function awsClientConfig(
 			}),
 	};
 }
+
+/**
+ * All regions we support.
+ *
+ * @see https://github.com/guardian/infosec-platform/blob/main/policies/DenyAccessToNonApprovedRegions.json
+ */
+export const AWS_REGIONS = [
+	'eu-west-1',
+	'eu-west-2',
+	'us-east-1',
+	'us-east-2',
+	'us-west-1',
+	'ap-southeast-2',
+	'ca-central-1',
+];

@@ -4,11 +4,11 @@ import type {
 	snyk_projects,
 } from '@prisma/client';
 import type { Octokit } from 'octokit';
-import { type RepositoryTeam } from '../query';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,
 	Repository,
+	TeamRepository,
 } from '../types';
 
 /**
@@ -47,7 +47,7 @@ function hasBranchProtection(
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
  *   > Repositories without one of the following topics are exempt: production, testing, documentation.
  */
-function hasAdminTeam(repo: Repository, teams: RepositoryTeam[]): boolean {
+function hasAdminTeam(repo: Repository, teams: TeamRepository[]): boolean {
 	// Repos that have explicitly been classified as these topics are exempt.
 	// Any other repos, regardless of topic, need to be owned by a team, or assigned one of these topics.
 	const exemptedTopics = ['prototype', 'learning', 'hackday', 'interactive'];
@@ -261,13 +261,70 @@ export function findStacks(
 	};
 }
 
+function findArchivedReposWithStacks(
+	archivedRepositories: Repository[],
+	unarchivedRepositories: Repository[],
+	stacks: AwsCloudFormationStack[],
+) {
+	const archivedRepos = archivedRepositories;
+	const unarchivedRepos = unarchivedRepositories;
+
+	const stacksWithoutAnUnarchivedRepoMatch: AwsCloudFormationStack[] =
+		stacks.filter((stack) =>
+			unarchivedRepos.some(
+				(repo) => !(repo.full_name === stack.tags['gu:repo']),
+			),
+		);
+
+	const archivedReposWithPotentialStacks: RepoAndStack[] = archivedRepos
+		.map((repo) => findStacks(repo, stacksWithoutAnUnarchivedRepoMatch))
+		.filter((result) => result.stacks.length > 0);
+
+	return archivedReposWithPotentialStacks;
+}
+
+export function testExperimentalRepocopFeatures(
+	octokit: Octokit,
+	evaluatedRepos: repocop_github_repository_rules[],
+	unarchivedRepos: Repository[],
+	archivedRepos: Repository[],
+	nonPlaygroundStacks: AwsCloudFormationStack[],
+	snykProjects: snyk_projects[],
+) {
+	const unmaintinedReposCount = evaluatedRepos.filter(
+		(repo) => repo.archiving === false,
+	).length;
+
+	console.log(
+		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepos.length}.`,
+	);
+
+	const archivedWithStacks = findArchivedReposWithStacks(
+		archivedRepos,
+		unarchivedRepos,
+		nonPlaygroundStacks,
+	);
+
+	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
+
+	console.log(
+		'Archived repos with live stacks, first 10 results:',
+		archivedWithStacks.slice(0, 10),
+	);
+
+	unarchivedRepos
+		.filter((r) => r.topics.includes('production'))
+		.slice(0, 10)
+		.map((r) => isTracked(octokit, r, snykProjects));
+}
+
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
 export function evaluateOneRepo(
 	repo: Repository,
 	allBranches: github_repository_branches[],
-	teams: RepositoryTeam[],
+	teams: TeamRepository[],
 ): repocop_github_repository_rules {
 	/*
 	Either the fullname, or the org and name, or the org and 'unknown'.
@@ -291,7 +348,7 @@ export function evaluateOneRepo(
 export function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
-	teams: RepositoryTeam[],
+	teams: TeamRepository[],
 ): repocop_github_repository_rules[] {
 	return repositories.map((r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
