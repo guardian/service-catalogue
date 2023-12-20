@@ -228,6 +228,19 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			runAsSingleton: true,
 		},
+		{
+			name: 'OrgWideCloudTrail',
+			description:
+				'Collecting CloudTrail events. Used to view account activity.',
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)), // Once a day, as there's likely to be a lot of data!
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_cloudtrail*'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			runAsSingleton: true, // Singleton as there's likely to be a lot of data!
+			memoryLimitMiB: 2048, // There's a lot of data, so grant more memory to avoid OOM errors.
+			cpu: 1024, // There's a lot of data, so grant more CPU.
+		},
 	];
 
 	/*
