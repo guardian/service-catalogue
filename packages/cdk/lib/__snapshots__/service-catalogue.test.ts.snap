@@ -16068,7 +16068,10 @@ spec:
             {
               "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Resource": "arn:aws:s3:::gdn-cdn",
+              "Resource": [
+                "arn:aws:s3:::gdn-cdn",
+                "arn:aws:s3:::gdn-cdn/*",
+              ],
             },
           ],
           "Version": "2012-10-17",
