@@ -23,7 +23,7 @@ import type { Topic } from 'aws-cdk-lib/aws-sns';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
-import { singletonPolicies } from './policies';
+import { singletonPolicy } from './policies';
 import { Versions } from './versions';
 
 const cloudqueryImage = ContainerImage.fromRegistry(
@@ -226,11 +226,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						// How many more of me are there?
 						`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
 
-						// If there's more than one, then I don't need to be here.
-						'[[ ${RUNNING} -gt 1 ]] && aws ecs stop-task --cluster $ECS_CLUSTER --task $ECS_TASK_ARN --no-cli-pager 1> /dev/null',
-
-						// I'm the only one, let's go on.
-						'exit 0',
+						// Exit zero (successfull) if I'm the only one running
+						'[[ ${RUNNING} > 1 ]] && exit 114 || exit 0',
 					].join(';'),
 				],
 				logging: new FireLensLogDriver({
@@ -254,9 +251,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				condition: ContainerDependencyCondition.SUCCESS,
 			});
 
-			singletonPolicies(cluster).forEach((policy) =>
-				task.addToTaskRolePolicy(policy),
-			);
+			task.addToTaskRolePolicy(singletonPolicy(cluster));
 		}
 
 		task.addFirelensLogRouter(`${id}Firelens`, {

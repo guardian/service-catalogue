@@ -3607,7 +3607,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -3760,7 +3760,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubIssuesTaskDefinition750BB414",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -7981,7 +7981,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -8092,7 +8092,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceOrgWideCloudFormationTaskDefinitionC6E96023",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -9920,7 +9920,7 @@ spec:
             "Command": [
               "/bin/bash",
               "-c",
-              "yum install -y -q jq awscli;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} -gt 1 ]] && aws ecs stop-task --cluster $ECS_CLUSTER --task $ECS_TASK_ARN --no-cli-pager 1> /dev/null;exit 0",
+              "yum install -y -q jq awscli;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
             ],
             "EntryPoint": [
               "",
@@ -10270,32 +10270,18 @@ spec:
           "Statement": [
             {
               "Action": "ecs:ListTasks",
+              "Condition": {
+                "StringEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
               "Effect": "Allow",
               "Resource": "*",
-            },
-            {
-              "Action": "ecs:StopTask",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":task/",
-                    {
-                      "Ref": "servicecatalogueCluster5FC34DC5",
-                    },
-                    "/*",
-                  ],
-                ],
-              },
             },
             {
               "Action": [
@@ -10539,7 +10525,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -10650,7 +10636,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceOrgWideInspectorTaskDefinition280F3CC7",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -16056,6 +16042,14 @@ spec:
               },
             },
             {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::gdn-cdn",
+                "arn:aws:s3:::gdn-cdn/*",
+              ],
+            },
+            {
               "Action": [
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret",
@@ -16146,6 +16140,7 @@ spec:
             "GITHUB_APP_SECRET": {
               "Ref": "branchprotectorgithubappauth4E91892E",
             },
+            "INTERACTIVES_COUNT": "3",
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },
