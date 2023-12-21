@@ -16056,6 +16056,14 @@ spec:
               },
             },
             {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::gdn-cdn",
+                "arn:aws:s3:::gdn-cdn/*",
+              ],
+            },
+            {
               "Action": [
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret",
@@ -16146,6 +16154,7 @@ spec:
             "GITHUB_APP_SECRET": {
               "Ref": "branchprotectorgithubappauth4E91892E",
             },
+            "INTERACTIVES_COUNT": "3",
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },

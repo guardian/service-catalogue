@@ -71,7 +71,7 @@ export async function getConfig(): Promise<Config> {
 			'guardian/esd-', // ESD team
 			'guardian/pluto-', // Multimedia team
 		],
-		interactivesCount: stage === 'PROD' ? 15 : 1,
+		interactivesCount: Number(getEnvOrThrow('INTERACTIVES_COUNT')),
 		branchProtectionEnabled: process.env.BRANCH_PROTECTION_ENABLED === 'true',
 	};
 }
