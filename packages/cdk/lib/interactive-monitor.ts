@@ -1,5 +1,7 @@
 import { type GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
+import type { PolicyStatementProps } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
@@ -33,5 +35,15 @@ export class InteractiveMonitor {
 		githubCredentials.grantRead(lambda);
 		topic.addSubscription(new LambdaSubscription(lambda, {}));
 		this.topic = topic;
+
+		const policyStatementProps: PolicyStatementProps = {
+			effect: Effect.ALLOW,
+			actions: ['s3:ListBucket'],
+			resources: ['arn:aws:s3:::gdn-cdn'],
+		};
+
+		const ps = new PolicyStatement(policyStatementProps);
+
+		lambda.addToRolePolicy(ps);
 	}
 }
