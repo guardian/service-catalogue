@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS riffraff_deploy_logs;
