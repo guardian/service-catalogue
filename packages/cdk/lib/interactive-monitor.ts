@@ -39,7 +39,7 @@ export class InteractiveMonitor {
 		const policyStatementProps: PolicyStatementProps = {
 			effect: Effect.ALLOW,
 			actions: ['s3:ListBucket'],
-			resources: ['arn:aws:s3:::gdn-cdn'],
+			resources: ['arn:aws:s3:::gdn-cdn', 'arn:aws:s3:::gdn-cdn/*'],
 		};
 
 		const ps = new PolicyStatement(policyStatementProps);
