@@ -1,5 +1,3 @@
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
-import { Arn, ArnFormat } from 'aws-cdk-lib';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
@@ -38,29 +36,15 @@ export const readBucketPolicy = (...resources: string[]): PolicyStatement => {
 	});
 };
 
-export function singletonPolicies(cluster: Cluster) {
-	const { account, region } = GuStack.of(cluster);
-
-	return [
-		new PolicyStatement({
-			effect: Effect.ALLOW,
-			resources: ['*'],
-			actions: ['ecs:ListTasks'],
-		}),
-		new PolicyStatement({
-			effect: Effect.ALLOW,
-			resources: [
-				Arn.format({
-					partition: 'aws',
-					service: 'ecs',
-					region,
-					account,
-					resource: 'task',
-					resourceName: `${cluster.clusterName}/*`,
-					arnFormat: ArnFormat.SLASH_RESOURCE_NAME,
-				}),
-			],
-			actions: ['ecs:StopTask'],
-		}),
-	];
+export function singletonPolicy(cluster: Cluster) {
+	return new PolicyStatement({
+		effect: Effect.ALLOW,
+		resources: ['*'],
+		conditions: {
+			StringEquals: {
+				'ecs:cluster': cluster.clusterArn,
+			},
+		},
+		actions: ['ecs:ListTasks'],
+	});
 }
