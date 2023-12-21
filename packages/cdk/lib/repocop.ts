@@ -40,7 +40,7 @@ export class Repocop {
 				QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitorTopic.topicArn,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
-				INTERACTIVES_COUNT: '15',
+				INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '20' : '3',
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],

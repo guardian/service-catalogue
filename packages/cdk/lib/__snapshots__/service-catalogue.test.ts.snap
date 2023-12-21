@@ -16154,7 +16154,7 @@ spec:
             "GITHUB_APP_SECRET": {
               "Ref": "branchprotectorgithubappauth4E91892E",
             },
-            "INTERACTIVES_COUNT": "15",
+            "INTERACTIVES_COUNT": "3",
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },
