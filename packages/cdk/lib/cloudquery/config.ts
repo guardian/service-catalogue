@@ -42,6 +42,22 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 	};
 }
 
+export function overrideLocalPlugin(
+	config: CloudqueryConfig,
+	override: boolean,
+): CloudqueryConfig {
+	return override
+		? {
+				...config,
+				spec: {
+					...config.spec,
+					registry: 'local',
+					path: '/plugin',
+				},
+			}
+		: config;
+}
+
 export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},

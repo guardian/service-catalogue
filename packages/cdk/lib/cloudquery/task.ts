@@ -18,7 +18,7 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
-import { postgresDestinationConfig } from './config';
+import { overrideLocalPlugin, postgresDestinationConfig } from './config';
 import { Images } from './images';
 import { singletonPolicy } from './policies';
 
@@ -101,6 +101,18 @@ export interface ScheduledCloudqueryTaskProps
 	 * @see https://cloud.cloudquery.io/teams/the-guardian/api-keys
 	 */
 	cloudQueryApiKey: Secret;
+
+	/**
+	 * For testing purposes, does nothing if undefined.
+	 *
+	 * Use this property to specify the URL to a plugin binary to be downloaded instead of relying on the CloudQuery registry.
+	 *
+	 * Plugins should be build for AMD64 architectures and Linux. For official CloudQuery plugins you can usually build a binary by running
+	 * the following command in the plugins root folder: `GOOS=linux GOARCH=amd64 make build` and an executable should appear in the same folder.
+	 *
+	 * @see https://docs.cloudquery.io/docs/developers/running-locally
+	 */
+	pluginBinaryUrl?: string;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -125,6 +137,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			additionalSecurityGroups = [],
 			runAsSingleton,
 			cloudQueryApiKey,
+			pluginBinaryUrl,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -192,8 +205,16 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
 					 */
 					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
-
-					`printf '${dump(sourceConfig)}' > /source.yaml`,
+					...(pluginBinaryUrl
+						? [
+								`echo "Downloading plugin binary from: ${pluginBinaryUrl}"`,
+								`wget -O /plugin -q ${pluginBinaryUrl}`,
+								'chmod +x /plugin',
+							]
+						: []),
+					`printf '${dump(
+						overrideLocalPlugin(sourceConfig, pluginBinaryUrl !== undefined),
+					)}' > /source.yaml`,
 					`printf '${dump(destinationConfig)}' > /destination.yaml`,
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),

@@ -83,6 +83,18 @@ export interface CloudquerySource {
 	 * @default false
 	 */
 	runAsSingleton?: boolean;
+
+	/**
+	 * For testing purposes, does nothing if undefined.
+	 *
+	 * Use this property to specify the URL to a plugin binary to be downloaded instead of relying on the CloudQuery registry.
+	 *
+	 * Plugins should be build for AMD64 architectures and Linux. For official CloudQuery plugins you can usually build a binary by running
+	 * the following command in the plugins root folder: `GOOS=linux GOARCH=amd64 make build` and an executable should appear in the same folder.
+	 *
+	 * @see https://docs.cloudquery.io/docs/developers/running-locally
+	 */
+	pluginBinaryUrl?: string;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -160,6 +172,7 @@ export class CloudqueryCluster extends Cluster {
 				cpu,
 				additionalSecurityGroups,
 				runAsSingleton = false,
+				pluginBinaryUrl,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -174,10 +187,12 @@ export class CloudqueryCluster extends Cluster {
 					cpu,
 					additionalSecurityGroups,
 					runAsSingleton,
+
 					cloudQueryApiKey: Secret.fromSecretsManager(
 						cloudqueryApiKey,
 						'api-key',
 					),
+					pluginBinaryUrl,
 				});
 			},
 		);
