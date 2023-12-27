@@ -10,8 +10,8 @@ import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import type { CloudquerySource } from './ecs/cluster';
-import { CloudqueryCluster } from './ecs/cluster';
+import type { CloudquerySource } from './cluster';
+import { CloudqueryCluster } from './cluster';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
@@ -22,12 +22,8 @@ import {
 	riffraffSourcesConfig,
 	skipTables,
 	snykSourceConfig,
-} from './ecs/config';
-import {
-	cloudqueryAccess,
-	listOrgsPolicy,
-	readBucketPolicy,
-} from './ecs/policies';
+} from './config';
+import { cloudqueryAccess, listOrgsPolicy, readBucketPolicy } from './policies';
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
