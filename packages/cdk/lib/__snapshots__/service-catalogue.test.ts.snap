@@ -14899,7 +14899,7 @@ spec:
 spec:
   name: snyk
   path: cloudquery/snyk
-  version: v3.1.10
+  version: v4.0.2
   tables:
     - snyk_dependencies
     - snyk_groups
