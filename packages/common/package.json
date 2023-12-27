@@ -13,10 +13,10 @@
 		"@aws-sdk/rds-signer": "^3.481.0",
 		"@octokit/auth-app": "^6.0.1",
 		"octokit": "^3.1.2",
-		"@prisma/client": "^5.5.2"
+		"@prisma/client": "^5.7.1"
 	},
 	"devDependencies": {
-		"prisma": "^5.5.2",
+		"prisma": "^5.7.1",
 		"@octokit/types": "^12.4.0"
 	},
 	"prisma": {
