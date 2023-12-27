@@ -15,6 +15,15 @@ updates:
       - dependency-name: "aws-cdk"
       - dependency-name: "aws-cdk-lib"
       - dependency-name: "constructs"
+    
+    groups:
+      aws-sdk:
+        patterns:
+          - "@aws-sdk/*"
+      prisma:
+        patterns:
+          - "prisma"
+          - "@prisma/client"
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
