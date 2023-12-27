@@ -13,7 +13,7 @@ import {
 	SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
-import { awsClientConfig } from 'common/aws.js';
+import { awsClientConfig } from 'common/aws';
 import type { DatabaseConfig } from 'common/database';
 import { getCentralElkLink } from 'common/logs';
 import terminalLink from 'terminal-link';
@@ -369,6 +369,6 @@ function printLogsUrl(app: string, stage: string, taskDefinition: string) {
 					'✅ View logs (Note: ECS takes a few seconds to start)',
 					url,
 				),
-		  )
+			)
 		: console.log(url);
 }
