@@ -2,7 +2,7 @@ import * as path from 'path';
 import { config } from 'dotenv';
 
 // Load the `.env` file at the root of the repository
-config({ path: path.resolve(__dirname, '../../../../../.env') });
+config({ path: path.resolve(__dirname, '../../../../.env') });
 
 const envOrError = (name: string): string => {
 	const value = process.env[name];

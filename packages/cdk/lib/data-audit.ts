@@ -6,7 +6,7 @@ import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/ecs/policies';
+import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/policies';
 
 interface DataAuditProps {
 	vpc: IVpc;
