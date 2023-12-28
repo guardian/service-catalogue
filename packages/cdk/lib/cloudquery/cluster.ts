@@ -2,12 +2,12 @@ import { GuLoggingStreamNameParameter } from '@guardian/cdk/lib/constructs/core'
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Cluster } from 'aws-cdk-lib/aws-ecs';
-import type { Secret } from 'aws-cdk-lib/aws-ecs/lib/container-definition';
+import { Cluster, Secret } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import { EmailSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import type { CloudqueryConfig } from './config';
@@ -119,6 +119,7 @@ export class CloudqueryCluster extends Cluster {
 			enableFargateCapacityProviders: true,
 		});
 
+		const { stack, stage } = scope;
 		const { app, db, dbAccess, sources } = props;
 
 		const loggingStreamName =
@@ -150,6 +151,10 @@ export class CloudqueryCluster extends Cluster {
 			topic,
 		};
 
+		const cloudqueryApiKey = new SecretsManager(scope, 'cloudquery-api-key', {
+			secretName: `/${stage}/${stack}/${app}/cloudquery-api-key`,
+		});
+
 		sources.forEach(
 			({
 				name,
@@ -177,6 +182,10 @@ export class CloudqueryCluster extends Cluster {
 					cpu,
 					extraSecurityGroups,
 					runAsSingleton,
+					cloudQueryApiKey: Secret.fromSecretsManager(
+						cloudqueryApiKey,
+						'api-key',
+					),
 				});
 			},
 		);

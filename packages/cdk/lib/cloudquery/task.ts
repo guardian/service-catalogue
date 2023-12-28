@@ -110,6 +110,14 @@ export interface ScheduledCloudqueryTaskProps
 	 * Useful to help avoid overlapping runs.
 	 */
 	runAsSingleton: boolean;
+
+	/**
+	 * The CloudQuery API key, stored in AWS Secrets Manager.
+	 *
+	 * @see https://docs.cloudquery.io/docs/deployment/generate-api-key
+	 * @see https://cloud.cloudquery.io/teams/the-guardian/api-keys
+	 */
+	cloudQueryApiKey: Secret;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -134,6 +142,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			cpu,
 			extraSecurityGroups,
 			runAsSingleton,
+			cloudQueryApiKey,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -173,6 +182,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
 				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
 				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+				CLOUDQUERY_API_KEY: cloudQueryApiKey,
 			},
 			dockerLabels: {
 				Stack: stack,
