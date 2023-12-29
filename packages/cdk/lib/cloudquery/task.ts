@@ -202,6 +202,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		});
 
 		if (runAsSingleton) {
+			const operationInProgress = 114;
+			const success = 0;
+
 			const singletonTask = task.addContainer(`${id}AwsCli`, {
 				image: Images.amazonLinux,
 				entryPoint: [''],
@@ -221,7 +224,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
 
 						// Exit zero (successful) if I'm the only one running
-						'[[ ${RUNNING} > 1 ]] && exit 114 || exit 0',
+						`[[ $\{RUNNING} > 1 ]] && exit ${operationInProgress} || exit ${success}`,
 					].join(';'),
 				],
 				logging: fireLensLogDriver,
