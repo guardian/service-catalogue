@@ -499,6 +499,7 @@ export function addCloudqueryEcsCluster(
 		secrets: {
 			GITHUB_ACCESS_TOKEN: Secret.fromSecretsManager(githubLanguagesSecret),
 		},
+		// additionalCommands: additionalGithubCommands,
 	};
 
 	new CloudqueryCluster(scope, `${app}Cluster`, {
