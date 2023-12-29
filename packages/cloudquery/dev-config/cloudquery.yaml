@@ -3,7 +3,8 @@ kind: source
 spec:
   name: 'github-languages'
   path: 'guardian/github-languages'
-  version: v0.0.2
+  registry: 'github'
+  version: v0.0.4
   tables: ['*']
   destinations: ['postgresql']
 ---
