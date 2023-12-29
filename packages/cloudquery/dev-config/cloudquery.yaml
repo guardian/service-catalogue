@@ -1,6 +1,16 @@
 ---
 kind: source
 spec:
+  name: 'github-languages'
+  # https://github.com/guardian/cq-source-github-languages
+  path: 'guardian/github-languages'
+  registry: 'github'
+  version: v0.0.4
+  tables: ['*']
+  destinations: ['postgresql']
+---
+kind: source
+spec:
   # Source spec section
   name: 'github'
   path: 'cloudquery/github'
