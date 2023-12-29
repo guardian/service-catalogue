@@ -5,7 +5,6 @@ import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerDependencyCondition,
-	ContainerImage,
 	FargateTaskDefinition,
 	FireLensLogDriver,
 	FirelensLogRouterType,
@@ -20,20 +19,8 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
+import { Images } from './images';
 import { singletonPolicy } from './policies';
-import { Versions } from './versions';
-
-const cloudqueryImage = ContainerImage.fromRegistry(
-	`ghcr.io/cloudquery/cloudquery:${Versions.CloudqueryCli}`,
-);
-
-const firelensImage = ContainerImage.fromRegistry(
-	'ghcr.io/guardian/devx-logs:2',
-);
-
-const awsImage = ContainerImage.fromRegistry(
-	'public.ecr.aws/amazonlinux/amazonlinux:latest',
-);
 
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
@@ -163,7 +150,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		}
 
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
-			image: cloudqueryImage,
+			image: Images.cloudquery,
 			entryPoint: [''],
 			environment: {
 				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
@@ -210,7 +197,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		if (runAsSingleton) {
 			const singletonTask = task.addContainer(`${id}AwsCli`, {
-				image: awsImage,
+				image: Images.amazonLinux,
 				entryPoint: [''],
 				command: [
 					'/bin/bash',
@@ -256,7 +243,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		}
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
-			image: firelensImage,
+			image: Images.devxLogs,
 			logging: LogDrivers.awsLogs({
 				streamPrefix: [stack, stage, app].join('/'),
 				logRetention: RetentionDays.ONE_DAY,
