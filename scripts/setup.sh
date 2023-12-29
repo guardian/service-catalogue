@@ -84,13 +84,15 @@ setup_environment() {
 
   INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile deployTools --region eu-west-1 --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
 
-  github_info_url="https://github.com/settings/tokens?type=beta"
-
   snyk_info_url="https://docs.snyk.io/snyk-api-info/authentication-for-api"
 
-  token_text="# See $github_info_url
-GITHUB_ACCESS_TOKEN=
+  JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile deployTools --region eu-west-1 --output text | awk '{print $4}')
+  APP_ID=$(echo "$JSON_STRING" | jq -r '."app-id"') #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
+  INSTALLATION_ID=$(echo "$JSON_STRING" | jq -r '."installation-id"')
 
+echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "${local_env_file_dir}"/private-key.pem
+
+  token_text="
 # See $snyk_info_url
 SNYK_TOKEN="
   
@@ -98,6 +100,8 @@ SNYK_TOKEN="
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
+GITHUB_APP_ID=${APP_ID}
+GITHUB_INSTALLATION_ID=${INSTALLATION_ID}
 "
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/
@@ -123,19 +127,12 @@ INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
     echo "No .env.local file found - creating it in $local_env_file_dir"
     mkdir -p "$HOME"/.gu/service_catalogue
     touch -a "$local_env_file_dir"/.env.local
-    echo "Adding Github and Snyk token names and required environment variables"
+    echo "Adding Snyk token name and required environment variables"
     echo "$token_text" >> "$local_env_file"
     echo "$env_var_text" >> "$local_env_file"
   fi
 
 source "$local_env_file"
-
-  # Check if GitHub token is set
-  if [ -z "$GITHUB_ACCESS_TOKEN" ]
-  then
-    echo -e "${yellow}Please create or retrieve a GitHub token${clear}.
-Visit ${cyan}$github_info_url${clear}, and add it to ${cyan}$local_env_file${clear}"
-  fi
 
   # Check if Snyk token is set
   if [ -z "$SNYK_TOKEN" ]
