@@ -54,65 +54,6 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
     },
   },
   "Resources": {
-    "CloudQueryAlertTopicBFD81410": {
-      "Properties": {
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::SNS::Topic",
-    },
-    "CloudQueryAlertTopicPolicy04C6710E": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-              "Resource": {
-                "Ref": "CloudQueryAlertTopicBFD81410",
-              },
-              "Sid": "0",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Topics": [
-          {
-            "Ref": "CloudQueryAlertTopicBFD81410",
-          },
-        ],
-      },
-      "Type": "AWS::SNS::TopicPolicy",
-    },
-    "CloudQueryAlertTopicdevxoperationsguardiancouk4BB39369": {
-      "Properties": {
-        "Endpoint": "devx.operations@guardian.co.uk",
-        "Protocol": "email",
-        "TopicArn": {
-          "Ref": "CloudQueryAlertTopicBFD81410",
-        },
-      },
-      "Type": "AWS::SNS::Subscription",
-    },
     "CloudquerySourceAwsCostExplorerScheduledEventRule85BE97F8": {
       "Properties": {
         "ScheduleExpression": "rate(7 days)",
@@ -716,58 +657,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceAwsCostExplorerTaskErrorRule77585BD5": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-AwsCostExplorer exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceAwsCostExplorerTaskDefinition62DC1A04",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceDelegatedToSecurityAccountScheduledEventRuleC7320B4E": {
       "Properties": {
         "ScheduleExpression": "cron(0 22 * * ? *)",
@@ -1366,58 +1255,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceDelegatedToSecurityAccountTaskErrorRule814688AE": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-DelegatedToSecurityAccount exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionD407788D",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceDeployToolsListOrgsScheduledEventRuleDF9BD8AF": {
       "Properties": {
@@ -2020,58 +1857,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceDeployToolsListOrgsTaskErrorRuleA3FA98EF": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-DeployToolsListOrgs exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionDE2A34D9",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceFastlyServicesScheduledEventRule1F83E593": {
       "Properties": {
@@ -2683,58 +2468,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceFastlyServicesTaskErrorRule0FE4E6C2": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-FastlyServices exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceFastlyServicesTaskDefinitionDCCD3FD4",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceGalaxiesScheduledEventRuleCC774CB8": {
       "Properties": {
@@ -3366,58 +3099,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceGalaxiesTaskErrorRule593B0339": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-Galaxies exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceGalaxiesTaskDefinition0777FEFC",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceGitHubIssuesScheduledEventRuleAF7C253C": {
       "Properties": {
@@ -4059,58 +3740,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceGitHubIssuesTaskErrorRuleB525D0C4": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-GitHubIssues exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionFA21D536",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceGitHubRepositoriesScheduledEventRuleC7F5836E": {
       "Properties": {
@@ -4760,58 +4389,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceGitHubRepositoriesTaskErrorRule16B8D95D": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-GitHubRepositories exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceGitHubTeamsScheduledEventRule051F542B": {
       "Properties": {
         "ScheduleExpression": "cron(0 10 ? * 1 *)",
@@ -5460,58 +5037,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceGitHubTeamsTaskErrorRule8F803D44": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-GitHubTeams exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionB01C9D3C",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceGuardianCustomSnykProjectsScheduledEventRule92FBDA90": {
       "Properties": {
         "ScheduleExpression": "cron(0 5 * * ? *)",
@@ -6118,58 +5643,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceGuardianCustomSnykProjectsTaskErrorRule8E998BEC": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-GuardianCustomSnykProjects exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionEB2B4EBC",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideAutoScalingGroupsScheduledEventRuleC637A0C6": {
       "Properties": {
         "ScheduleExpression": "cron(0 0 * * ? *)",
@@ -6772,58 +6245,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceOrgWideAutoScalingGroupsTaskErrorRule89A7D413": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideAutoScalingGroups exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinition90175FA6",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceOrgWideBackupScheduledEventRuleF35A6F79": {
       "Properties": {
@@ -7430,58 +6851,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceOrgWideBackupTaskErrorRule5D0F0085": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideBackup exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideBackupTaskDefinition9BAD0C75",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideCertificatesScheduledEventRule2D4505F4": {
       "Properties": {
         "ScheduleExpression": "cron(0 1 * * ? *)",
@@ -8084,58 +7453,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceOrgWideCertificatesTaskErrorRuleBEBBDB94": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideCertificates exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideCertificatesTaskDefinition47A214D9",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceOrgWideCloudFormationScheduledEventRule83F64E14": {
       "Properties": {
@@ -8740,58 +8057,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceOrgWideCloudFormationTaskErrorRule976BA39D": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideCloudFormation exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideCloudFormationTaskDefinitionDA4F8A51",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideCloudwatchAlarmsScheduledEventRuleB72D02A5": {
       "Properties": {
         "ScheduleExpression": "cron(0 2 * * ? *)",
@@ -9395,58 +8660,6 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "CloudquerySourceOrgWideCloudwatchAlarmsTaskErrorRuleFFE53B33": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideCloudwatchAlarms exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionF28C916F",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideDynamoDBScheduledEventRule6AF4B752": {
       "Properties": {
         "ScheduleExpression": "cron(0 5 * * ? *)",
@@ -10049,58 +9262,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceOrgWideDynamoDBTaskErrorRuleFAF05A86": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideDynamoDB exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideDynamoDBTaskDefinition7016173E",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceOrgWideEc2ScheduledEventRule3D54BEFB": {
       "Properties": {
@@ -10754,58 +9915,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceOrgWideEc2TaskErrorRule00801564": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideEc2 exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideEc2TaskDefinition7E4B2AE4",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideInspectorScheduledEventRule0152ABA6": {
       "Properties": {
         "ScheduleExpression": "cron(0 3 * * ? *)",
@@ -11410,58 +10519,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceOrgWideInspectorTaskErrorRuleDD0BA774": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideInspector exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideInspectorTaskDefinition25FAB51D",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideLoadBalancersScheduledEventRule1B13EFF3": {
       "Properties": {
         "ScheduleExpression": "cron(0 23 * * ? *)",
@@ -12065,58 +11122,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceOrgWideLoadBalancersTaskErrorRuleD5C43212": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideLoadBalancers exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideLoadBalancersTaskDefinitionF1D11F23",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceOrgWideRDSScheduledEventRuleD2037915": {
       "Properties": {
@@ -12724,58 +11729,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceOrgWideRDSTaskErrorRule96AF3703": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideRDS exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideRDSTaskDefinitionFDF4F4E5",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceOrgWideS3ScheduledEventRuleB310F050": {
       "Properties": {
         "ScheduleExpression": "cron(0 4 * * ? *)",
@@ -13378,58 +12331,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceOrgWideS3TaskErrorRuleC440F507": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-OrgWideS3 exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceOrgWideS3TaskDefinition8B6BA52D",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "CloudquerySourceRemainingAwsDataScheduledEventRuleAE2A0ED1": {
       "Properties": {
@@ -14095,58 +12996,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceRemainingAwsDataTaskErrorRule4BBB40E1": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-RemainingAwsData exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceRemainingAwsDataTaskDefinition8790EDD9",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceRiffRaffDataScheduledEventRuleDE690018": {
       "Properties": {
         "ScheduleExpression": "cron(0 0 * * ? *)",
@@ -14788,58 +13637,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceRiffRaffDataTaskErrorRule9346BC72": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-RiffRaffData exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionFF023225",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CloudquerySourceSnykAllScheduledEventRule73601A00": {
       "Properties": {
         "ScheduleExpression": "cron(0 6 * * ? *)",
@@ -15457,58 +14254,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceSnykAllTaskErrorRule3E369596": {
-      "Properties": {
-        "Description": "Rule for events indicating an ECS task exited due to an error.",
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers": {
-              "exitCode": [
-                1,
-                137,
-                139,
-                255,
-              ],
-            },
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stoppedReason": [
-              "Task CloudquerySource-SnykAll exited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceSnykAllTaskDefinitionC8C1F3EC",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Ref": "CloudQueryAlertTopicBFD81410",
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
     },
     "DataAudit2FEB3068": {
       "DependsOn": [
