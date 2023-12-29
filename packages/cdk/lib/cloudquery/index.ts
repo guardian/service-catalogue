@@ -17,6 +17,7 @@ import {
 	awsSourceConfigForOrganisation,
 	fastlySourceConfig,
 	galaxiesSourceConfig,
+	githubLanguagesConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
 	riffraffSourcesConfig,
@@ -486,6 +487,21 @@ export function addCloudqueryEcsCluster(
 		},
 	};
 
+	const githubLanguagesSecret = new SecretsManager(scope, 'github-languages', {
+		secretName: `/${stage}/${stack}/${app}/github-languages`,
+	});
+
+	const githubLanguagesSource: CloudquerySource = {
+		name: 'GitHubLanguages',
+		description: 'Collect GitHub languages data',
+		schedule: nonProdSchedule ?? Schedule.rate(Duration.days(7)),
+		config: githubLanguagesConfig(),
+		secrets: {
+			GITHUB_ACCESS_TOKEN: Secret.fromSecretsManager(githubLanguagesSecret),
+		},
+		// additionalCommands: additionalGithubCommands,
+	};
+
 	new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
@@ -499,6 +515,7 @@ export function addCloudqueryEcsCluster(
 			...galaxiesSources,
 			...snykSources,
 			riffRaffSources,
+			githubLanguagesSource,
 		],
 	});
 }
