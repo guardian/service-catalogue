@@ -3835,6 +3835,7 @@ spec:
     - postgresql
   tables:
     - github_languages
+  registry: github
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql

@@ -294,6 +294,7 @@ export function githubLanguagesConfig(): CloudqueryConfig {
 			version: `v${Versions.CloudqueryGithubLanguages}`,
 			destinations: ['postgresql'],
 			tables: ['github_languages'],
+			registry: 'github',
 		},
 	};
 }
