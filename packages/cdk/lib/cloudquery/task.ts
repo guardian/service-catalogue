@@ -26,18 +26,18 @@ export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
 	/**
-	 * The name of the source.
+	 * The name of the task.
 	 * This will get added to the `Name` tag of the task definition.
 	 */
 	name: string;
 
 	/**
-	 * THe Postgres database for ServiceCatalogue to connect to.
+	 * The Postgres database for CloudQuery to connect to.
 	 */
 	db: DatabaseInstance;
 
 	/**
-	 * The security group to allow ServiceCatalogue to connect to the database.
+	 * The security group to allow CloudQuery to connect to the database.
 	 */
 	dbAccess: GuSecurityGroup;
 
@@ -52,22 +52,24 @@ export interface ScheduledCloudqueryTaskProps
 	loggingStreamName: string;
 
 	/**
-	 * The IAM managed policies to attach to the task.
+	 * Any IAM managed policies to attach to the task.
 	 */
 	managedPolicies: IManagedPolicy[];
 
 	/**
-	 * The IAM policies to attach to the task.
+	 * IAM policies to attach to the task.
 	 */
 	policies: PolicyStatement[];
 
 	/**
-	 * The ServiceCatalogue config to use to collect data from.
+	 * The CloudQuery config to use to collect data from.
+	 *
+	 * @see https://docs.cloudquery.io/docs/reference/source-spec
 	 */
 	sourceConfig: CloudqueryConfig;
 
 	/**
-	 * Any secrets to pass to the ServiceCatalogue container.
+	 * Any secrets to pass to the CloudQuery container.
 	 *
 	 * @see https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs.ContainerDefinitionOptions.html#secrets
 	 * @see https://repost.aws/knowledge-center/ecs-data-security-container-task
@@ -75,14 +77,16 @@ export interface ScheduledCloudqueryTaskProps
 	secrets?: Record<string, Secret>;
 
 	/**
-	 * Additional commands to run within the ServiceCatalogue container, executed first.
+	 * Any additional commands to run within the CloudQuery container.
+	 * These are executed first.
 	 */
 	additionalCommands?: string[];
 
 	/**
-	 * Extra security groups applied to the task for accessing resources such as RiffRaff
+	 * Any additional security groups applied to the task.
+	 * For example, a group allowing access to Riff-Raff.
 	 */
-	extraSecurityGroups?: ISecurityGroup[];
+	additionalSecurityGroups?: ISecurityGroup[];
 
 	/**
 	 * Run this task as a singleton?
@@ -118,7 +122,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			additionalCommands = [],
 			memoryLimitMiB = 512,
 			cpu,
-			extraSecurityGroups,
+			additionalSecurityGroups = [],
 			runAsSingleton,
 			cloudQueryApiKey,
 		} = props;
@@ -148,6 +152,15 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		if (!db.secret) {
 			throw new Error('DB Secret is missing');
 		}
+
+		const fireLensLogDriver = new FireLensLogDriver({
+			options: {
+				Name: `kinesis_streams`,
+				region,
+				stream: loggingStreamName,
+				retry_limit: '2',
+			},
+		});
 
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: Images.cloudquery,
@@ -185,17 +198,13 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),
 			],
-			logging: new FireLensLogDriver({
-				options: {
-					Name: `kinesis_streams`,
-					region,
-					stream: loggingStreamName,
-					retry_limit: '2',
-				},
-			}),
+			logging: fireLensLogDriver,
 		});
 
 		if (runAsSingleton) {
+			const operationInProgress = 114;
+			const success = 0;
+
 			const singletonTask = task.addContainer(`${id}AwsCli`, {
 				image: Images.amazonLinux,
 				entryPoint: [''],
@@ -214,18 +223,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						// How many more of me are there?
 						`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
 
-						// Exit zero (successfull) if I'm the only one running
-						'[[ ${RUNNING} > 1 ]] && exit 114 || exit 0',
+						// Exit zero (successful) if I'm the only one running
+						`[[ $\{RUNNING} > 1 ]] && exit ${operationInProgress} || exit ${success}`,
 					].join(';'),
 				],
-				logging: new FireLensLogDriver({
-					options: {
-						Name: `kinesis_streams`,
-						region,
-						stream: loggingStreamName,
-						retry_limit: '2',
-					},
-				}),
+				logging: fireLensLogDriver,
 
 				/*
 				A container listed as a dependency of another cannot be marked as essential.
@@ -272,7 +274,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			scheduledFargateTaskDefinitionOptions: {
 				taskDefinition: task,
 			},
-			securityGroups: [dbAccess, ...(extraSecurityGroups ?? [])],
+			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
 		});
 

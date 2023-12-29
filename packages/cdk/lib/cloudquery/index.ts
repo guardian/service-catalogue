@@ -468,7 +468,7 @@ export function addCloudqueryEcsCluster(
 		description: "Source deployment data directly from riff-raff's database",
 		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 		config: riffraffSourcesConfig(),
-		extraSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
+		additionalSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
 		secrets: {
 			RIFFRAFF_DB_USERNAME: Secret.fromSecretsManager(
 				cloudqueryRiffRaffDatabaseCredentials,
