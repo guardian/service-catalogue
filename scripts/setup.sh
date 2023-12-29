@@ -87,10 +87,11 @@ setup_environment() {
   snyk_info_url="https://docs.snyk.io/snyk-api-info/authentication-for-api"
 
   JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile deployTools --region eu-west-1 --output text | awk '{print $4}')
-  APP_ID=$(echo "$JSON_STRING" | jq -r '."app-id"') #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
-  INSTALLATION_ID=$(echo "$JSON_STRING" | jq -r '."installation-id"')
+echo "$JSON_STRING" | jq -rc '."app-id"' | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
+echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env_file_dir"/installation-id
+  GITHUB_PRIVATE_KEY_PATH=$local_env_file_dir/private-key.pem
 
-echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "${local_env_file_dir}"/private-key.pem
+echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
 
   token_text="
 # See $snyk_info_url
@@ -102,6 +103,7 @@ ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
 GITHUB_APP_ID=${APP_ID}
 GITHUB_INSTALLATION_ID=${INSTALLATION_ID}
+GITHUB_PRIVATE_KEY_PATH=${GITHUB_PRIVATE_KEY_PATH}
 "
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/
