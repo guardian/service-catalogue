@@ -2,6 +2,7 @@
 kind: source
 spec:
   name: 'github-languages'
+  # https://github.com/guardian/cq-source-github-languages
   path: 'guardian/github-languages'
   registry: 'github'
   version: v0.0.4
