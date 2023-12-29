@@ -285,6 +285,19 @@ export function guardianSnykSourceConfig(
 	};
 }
 
+export function githubLanguagesConfig(): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'github-languages',
+			path: 'guardian/github-languages',
+			version: `v${Versions.CloudqueryGithubLanguages}`,
+			destinations: ['postgresql'],
+			tables: ['github_languages'],
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts

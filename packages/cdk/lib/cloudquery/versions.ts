@@ -26,4 +26,5 @@ export const Versions = {
 	CloudqueryGalaxies: envOrError('CQ_GUARDIAN_GALAXIES'),
 	CloudquerySnyk: envOrError('CQ_SNYK'),
 	CloudquerySnykGuardian: envOrError('CQ_GUARDIAN_SNYK'),
+	CloudqueryGithubLanguages: '0.0.4', //TODO pull from env
 };
