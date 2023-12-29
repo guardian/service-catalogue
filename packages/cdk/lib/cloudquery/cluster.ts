@@ -2,7 +2,7 @@ import { GuLoggingStreamNameParameter } from '@guardian/cdk/lib/constructs/core'
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Cluster, Secret } from 'aws-cdk-lib/aws-ecs';
+import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
@@ -83,6 +83,17 @@ export interface CloudquerySource {
 	 * @default false
 	 */
 	runAsSingleton?: boolean;
+
+	/**
+	 * The image of a CloudQuery plugin that is distributed via Docker,
+	 * i.e. plugins not written in Go.
+	 *
+	 * This image will be run on its own, exposing the GRPC server on localhost:7777.
+	 * The CloudQuery source config should be configured with a registry of grpc, and path of localhost:7777.
+	 *
+	 * @see https://docs.cloudquery.io/docs/reference/source-spec
+	 */
+	dockerDistributedPluginImage?: RepositoryImage;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -160,6 +171,7 @@ export class CloudqueryCluster extends Cluster {
 				cpu,
 				additionalSecurityGroups,
 				runAsSingleton = false,
+				dockerDistributedPluginImage,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -178,6 +190,7 @@ export class CloudqueryCluster extends Cluster {
 						cloudqueryApiKey,
 						'api-key',
 					),
+					dockerDistributedPluginImage,
 				});
 			},
 		);
