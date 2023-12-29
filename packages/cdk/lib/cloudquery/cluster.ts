@@ -71,9 +71,10 @@ export interface CloudquerySource {
 	cpu?: 256 | 512 | 1024 | 2048 | 4096 | 8192 | 16384;
 
 	/**
-	 * Extra security groups applied to the task for accessing resources such as RiffRaff
+	 * Any additional security groups applied to the task.
+	 * For example, a group allowing access to Riff-Raff.
 	 */
-	extraSecurityGroups?: ISecurityGroup[];
+	additionalSecurityGroups?: ISecurityGroup[];
 
 	/**
 	 * Run this task as a singleton?
@@ -157,7 +158,7 @@ export class CloudqueryCluster extends Cluster {
 				additionalCommands,
 				memoryLimitMiB,
 				cpu,
-				extraSecurityGroups,
+				additionalSecurityGroups,
 				runAsSingleton = false,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
@@ -171,7 +172,7 @@ export class CloudqueryCluster extends Cluster {
 					additionalCommands,
 					memoryLimitMiB,
 					cpu,
-					extraSecurityGroups,
+					additionalSecurityGroups,
 					runAsSingleton,
 					cloudQueryApiKey: Secret.fromSecretsManager(
 						cloudqueryApiKey,

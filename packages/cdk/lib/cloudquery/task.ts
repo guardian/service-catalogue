@@ -83,10 +83,10 @@ export interface ScheduledCloudqueryTaskProps
 	additionalCommands?: string[];
 
 	/**
-	 * Any extra security groups applied to the task.
+	 * Any additional security groups applied to the task.
 	 * For example, a group allowing access to Riff-Raff.
 	 */
-	extraSecurityGroups?: ISecurityGroup[];
+	additionalSecurityGroups?: ISecurityGroup[];
 
 	/**
 	 * Run this task as a singleton?
@@ -122,7 +122,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			additionalCommands = [],
 			memoryLimitMiB = 512,
 			cpu,
-			extraSecurityGroups,
+			additionalSecurityGroups = [],
 			runAsSingleton,
 			cloudQueryApiKey,
 		} = props;
@@ -271,7 +271,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			scheduledFargateTaskDefinitionOptions: {
 				taskDefinition: task,
 			},
-			securityGroups: [dbAccess, ...(extraSecurityGroups ?? [])],
+			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
 		});
 
