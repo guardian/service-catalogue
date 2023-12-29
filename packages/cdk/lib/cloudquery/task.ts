@@ -220,7 +220,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						// How many more of me are there?
 						`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
 
-						// Exit zero (successfull) if I'm the only one running
+						// Exit zero (successful) if I'm the only one running
 						'[[ ${RUNNING} > 1 ]] && exit 114 || exit 0',
 					].join(';'),
 				],
