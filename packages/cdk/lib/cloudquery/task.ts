@@ -149,6 +149,15 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			throw new Error('DB Secret is missing');
 		}
 
+		const fireLensLogDriver = new FireLensLogDriver({
+			options: {
+				Name: `kinesis_streams`,
+				region,
+				stream: loggingStreamName,
+				retry_limit: '2',
+			},
+		});
+
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: Images.cloudquery,
 			entryPoint: [''],
@@ -185,14 +194,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),
 			],
-			logging: new FireLensLogDriver({
-				options: {
-					Name: `kinesis_streams`,
-					region,
-					stream: loggingStreamName,
-					retry_limit: '2',
-				},
-			}),
+			logging: fireLensLogDriver,
 		});
 
 		if (runAsSingleton) {
@@ -218,14 +220,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						'[[ ${RUNNING} > 1 ]] && exit 114 || exit 0',
 					].join(';'),
 				],
-				logging: new FireLensLogDriver({
-					options: {
-						Name: `kinesis_streams`,
-						region,
-						stream: loggingStreamName,
-						retry_limit: '2',
-					},
-				}),
+				logging: fireLensLogDriver,
 
 				/*
 				A container listed as a dependency of another cannot be marked as essential.
