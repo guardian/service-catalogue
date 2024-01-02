@@ -224,6 +224,8 @@ export function addCloudqueryEcsCluster(
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			runAsSingleton: true,
+			pluginBinaryUrl:
+				'https://github.com/AshCorr/aoc2023/releases/download/test/aws',
 		},
 	];
 

