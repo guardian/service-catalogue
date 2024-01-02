@@ -275,6 +275,7 @@ export function guardianSnykSourceConfig(
 		spec: {
 			name: 'guardian-snyk',
 			path: 'guardian/snyk-full-project',
+			registry: 'github',
 			version: `v${Versions.CloudquerySnykGuardian}`,
 			tables,
 			skip_tables: skipTables,
