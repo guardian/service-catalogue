@@ -188,6 +188,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 		spec: {
 			name: 'galaxies',
 			path: 'guardian/galaxies',
+			registry: 'github',
 			version: `v${Versions.CloudqueryGalaxies}`,
 			destinations: ['postgresql'],
 			tables: [
@@ -274,6 +275,7 @@ export function guardianSnykSourceConfig(
 		spec: {
 			name: 'guardian-snyk',
 			path: 'guardian/snyk-full-project',
+			registry: 'github',
 			version: `v${Versions.CloudquerySnykGuardian}`,
 			tables,
 			skip_tables: skipTables,

@@ -2532,6 +2532,7 @@ spec:
 spec:
   name: galaxies
   path: guardian/galaxies
+  registry: github
   version: v1.1.0
   destinations:
     - postgresql
@@ -5723,6 +5724,7 @@ spec:
 spec:
   name: guardian-snyk
   path: guardian/snyk-full-project
+  registry: github
   version: v0.1.1
   tables:
     - snyk_projects
