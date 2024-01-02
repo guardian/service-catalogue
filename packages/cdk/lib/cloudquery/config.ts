@@ -188,6 +188,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 		spec: {
 			name: 'galaxies',
 			path: 'guardian/galaxies',
+			registry: 'github',
 			version: `v${Versions.CloudqueryGalaxies}`,
 			destinations: ['postgresql'],
 			tables: [
