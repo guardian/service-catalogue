@@ -15,7 +15,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@guardian/eslint-config-typescript": "7.0.0",
+    "@guardian/eslint-config-typescript": "9.0.0",
     "@guardian/prettier": "7.0.0",
     "@guardian/tsconfig": "^0.2.0",
     "@types/jest": "^29.5.11",
