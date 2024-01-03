@@ -34,6 +34,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			archiving: true,
 			topics: true,
 			contents: true,
+			vulnerability_tracking: false,
 			evaluated_on: new Date(),
 		};
 
@@ -65,6 +66,7 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			archiving: true,
 			topics: true,
 			contents: true,
+			vulnerability_tracking: false,
 			evaluated_on: new Date(),
 		};
 

@@ -18,6 +18,7 @@ describe('findPotentialInteractives', () => {
 			archiving: true,
 			topics: true,
 			contents: true,
+			vulnerability_tracking: false,
 			evaluated_on: new Date(),
 		};
 

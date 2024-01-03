@@ -15764,15 +15764,16 @@ model snyk_reporting_latest_issues {
 }
 
 model repocop_github_repository_rules {
-  full_name           String   @unique
-  default_branch_name Boolean
-  branch_protection   Boolean
-  team_based_access   Boolean
-  admin_access        Boolean
-  archiving           Boolean?
-  topics              Boolean
-  contents            Boolean?
-  evaluated_on        DateTime
+  full_name              String   @unique
+  default_branch_name    Boolean
+  branch_protection      Boolean
+  team_based_access      Boolean
+  admin_access           Boolean
+  archiving              Boolean?
+  topics                 Boolean
+  contents               Boolean?
+  evaluated_on           DateTime
+  vulnerability_tracking Boolean
 }
 
 model galaxies_people_profile_info_table {
@@ -15846,6 +15847,16 @@ model cloudquery_table_frequency {
   frequency  String?
 
   @@ignore
+}
+
+model github_languages {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @id(map: "github_languages_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  full_name      String?
+  name           String?
+  languages      String[]
 }
 
 view view_repo_ownership {
