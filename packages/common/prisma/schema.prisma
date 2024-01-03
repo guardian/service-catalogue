@@ -15764,15 +15764,16 @@ model snyk_reporting_latest_issues {
 }
 
 model repocop_github_repository_rules {
-  full_name           String   @unique
-  default_branch_name Boolean
-  branch_protection   Boolean
-  team_based_access   Boolean
-  admin_access        Boolean
-  archiving           Boolean?
-  topics              Boolean
-  contents            Boolean?
-  evaluated_on        DateTime
+  full_name              String   @unique
+  default_branch_name    Boolean
+  branch_protection      Boolean
+  team_based_access      Boolean
+  admin_access           Boolean
+  archiving              Boolean?
+  topics                 Boolean
+  contents               Boolean?
+  evaluated_on           DateTime
+  vulnerability_tracking Boolean
 }
 
 model galaxies_people_profile_info_table {

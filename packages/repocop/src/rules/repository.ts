@@ -341,6 +341,8 @@ export function evaluateOneRepo(
 		archiving: isMaintained(repo),
 		topics: hasStatusTopic(repo),
 		contents: null,
+		// TODO Determine whether we're actually tracking vulnerabilities for repo
+		vulnerability_tracking: false,
 		evaluated_on: new Date(),
 	};
 }
