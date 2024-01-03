@@ -4675,8 +4675,6 @@ model aws_ec2_images {
   architecture          String?
   block_device_mappings Json?
   boot_mode             String?
-  creation_date         String?
-  deprecation_time      String?
   description           String?
   ena_support           Boolean?
   hypervisor            String?
@@ -4701,6 +4699,8 @@ model aws_ec2_images {
   tpm_support           String?
   usage_operation       String?
   virtualization_type   String?
+  creation_date         DateTime? @db.Timestamp(6)
+  deprecation_time      DateTime? @db.Timestamp(6)
 
   @@id([account_id, region, arn], map: "aws_ec2_images_cqpk")
   @@ignore
