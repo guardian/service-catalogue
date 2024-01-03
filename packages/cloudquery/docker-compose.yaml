@@ -25,6 +25,7 @@ services:
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       CQ_SNYK: ${CQ_SNYK}
+      GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
       SNYK_TOKEN: ${SNYK_TOKEN}
       GALAXIES_BUCKET: ${GALAXIES_BUCKET}
     command: sync /dev-config.yaml --log-console --log-level info
