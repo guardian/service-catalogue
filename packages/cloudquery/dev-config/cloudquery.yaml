@@ -18,7 +18,11 @@ spec:
   tables: ['*']
   destinations: ['postgresql']
   spec:
-    access_token: ${GITHUB_ACCESS_TOKEN}
+    app_auth:
+      - org: guardian
+        private_key_path: /private-key.pem
+        app_id: '${file:/app-id}'
+        installation_id: '${file:/installation-id}'
     repos: [
         # example devX owned repos
         'guardian/cdk',

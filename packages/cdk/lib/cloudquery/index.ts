@@ -224,6 +224,7 @@ export function addCloudqueryEcsCluster(
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			runAsSingleton: true,
+			memoryLimitMiB: 1024,
 		},
 	];
 

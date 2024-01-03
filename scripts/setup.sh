@@ -83,21 +83,27 @@ setup_environment() {
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
   INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile deployTools --region eu-west-1 --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
-
   github_info_url="https://github.com/settings/tokens?type=beta"
-
   snyk_info_url="https://docs.snyk.io/snyk-api-info/authentication-for-api"
 
-  token_text="# See $github_info_url
+  token_text="# Required permissions are Metadata: Read and Administration: Read. See $github_info_url
 GITHUB_ACCESS_TOKEN=
-
 # See $snyk_info_url
 SNYK_TOKEN="
+
+  JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile deployTools --region eu-west-1 --output text | awk '{print $4}')
+echo "$JSON_STRING" | jq -rc '."app-id"' | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
+echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env_file_dir"/installation-id
+  GITHUB_PRIVATE_KEY_PATH=$local_env_file_dir/private-key.pem
+
+echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
+
   
   env_var_text="
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
+GITHUB_PRIVATE_KEY_PATH=${GITHUB_PRIVATE_KEY_PATH}
 "
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/
@@ -123,7 +129,7 @@ INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
     echo "No .env.local file found - creating it in $local_env_file_dir"
     mkdir -p "$HOME"/.gu/service_catalogue
     touch -a "$local_env_file_dir"/.env.local
-    echo "Adding Github and Snyk token names and required environment variables"
+    echo "Adding Github and Snyk token name and required environment variables"
     echo "$token_text" >> "$local_env_file"
     echo "$env_var_text" >> "$local_env_file"
   fi
@@ -136,6 +142,7 @@ source "$local_env_file"
     echo -e "${yellow}Please create or retrieve a GitHub token${clear}.
 Visit ${cyan}$github_info_url${clear}, and add it to ${cyan}$local_env_file${clear}"
   fi
+
 
   # Check if Snyk token is set
   if [ -z "$SNYK_TOKEN" ]

@@ -15,7 +15,7 @@ updates:
       - dependency-name: "aws-cdk"
       - dependency-name: "aws-cdk-lib"
       - dependency-name: "constructs"
-    
+
     groups:
       aws-sdk:
         patterns:
@@ -24,6 +24,12 @@ updates:
         patterns:
           - "prisma"
           - "@prisma/client"
+      code-quality:
+        patterns:
+          - "@guardian/eslint-config-typescript"
+          - "@guardian/prettier"
+          - "eslint"
+          - "eslint-plugin-prettier"
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:

@@ -16,6 +16,9 @@ services:
     volumes:
       - ~/.aws/credentials:/.aws/credentials
       - ./dev-config/cloudquery.yaml:/dev-config.yaml
+      - ~/.gu/service_catalogue/app-id:/app-id
+      - ~/.gu/service_catalogue/installation-id:/installation-id
+      - ~/.gu/service_catalogue/private-key.pem:/private-key.pem
     environment:
       AWS_SHARED_CREDENTIALS_FILE: '/.aws/credentials'
       CQ_POSTGRES_DESTINATION: ${CQ_POSTGRES_DESTINATION}
