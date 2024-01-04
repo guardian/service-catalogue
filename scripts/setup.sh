@@ -139,7 +139,7 @@ CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
     echo "No .env.local file found - creating it in $local_env_file_dir"
     mkdir -p "$HOME"/.gu/service_catalogue
     touch -a "$local_env_file_dir"/.env.local
-    echo "Adding Github and Snyk token name and required environment variables"
+    echo "Adding Github token name and required environment variables"
     echo "$token_text" >> "$local_env_file"
     echo "$env_var_text" >> "$local_env_file"
   fi
