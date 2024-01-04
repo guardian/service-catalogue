@@ -148,7 +148,15 @@ export function hasDependencyTracking(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
 
-	const ignoredLanguages = ['HTML', 'CSS', 'Shell'];
+	const ignoredLanguages = [
+		'HTML',
+		'CSS',
+		'Shell',
+		'Jupyter Notebook',
+		'Makefile',
+		'Dockerfile',
+		'PLpgSQL',
+	];
 
 	const commonSupportedLanguages = [
 		'C#',
