@@ -8,8 +8,6 @@ clear='\033[0m'
 yellow='\033[1;33m'
 cyan='\033[0;36m'
 
-PROFILE=deployTools
-REGION=eu-west-1
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR=$(realpath "${DIR}/..")
 STEP_COUNT=0
@@ -159,7 +157,7 @@ setup_hook() {
 setup_hook pre-commit
 check_node_version
 install_dependencies
-check_credentials "$PROFILE"
-setup_environment "$PROFILE" "$REGION"
+check_credentials deployTools
+setup_environment deployTools eu-west-1
 
 echo -e "\n${cyan}Setup complete${clear} ✅"
