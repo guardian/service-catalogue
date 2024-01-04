@@ -148,8 +148,6 @@ export function hasDependencyTracking(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
 
-	console.log(`${repo.name} has languages: `, languages);
-
 	const ignoredLanguages = ['HTML', 'CSS', 'Shell'];
 
 	const commonSupportedLanguages = [
