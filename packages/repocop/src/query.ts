@@ -1,4 +1,5 @@
 import type {
+	github_languages,
 	github_repository_branches,
 	PrismaClient,
 	snyk_projects,
@@ -99,4 +100,10 @@ export async function getSnykProjects(
 	client: PrismaClient,
 ): Promise<snyk_projects[]> {
 	return await client.snyk_projects.findMany({});
+}
+
+export async function getRepositoryLanguages(
+	client: PrismaClient,
+): Promise<github_languages[]> {
+	return await client.github_languages.findMany({});
 }

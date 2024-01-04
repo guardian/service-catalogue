@@ -10,6 +10,7 @@ import {
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
+	getRepositoryLanguages,
 	getSnykProjects,
 	getStacks,
 	getTeamRepositories,
@@ -49,22 +50,27 @@ export async function main() {
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const repoTeams = await getTeamRepositories(prisma);
+	const repoLanguages = await getRepositoryLanguages(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykProjects = await getSnykProjects(prisma);
 	const evaluatedRepos: repocop_github_repository_rules[] =
-		evaluateRepositories(unarchivedRepos, branches, repoTeams);
+		evaluateRepositories(
+			unarchivedRepos,
+			branches,
+			repoTeams,
+			repoLanguages,
+			snykProjects,
+		);
 
 	const octokit = await stageAwareOctokit(config.stage);
 
 	testExperimentalRepocopFeatures(
-		octokit,
 		evaluatedRepos,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
-		snykProjects,
 	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);

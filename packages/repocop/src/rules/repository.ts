@@ -1,9 +1,9 @@
 import type {
+	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
-import type { Octokit } from 'octokit';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,
@@ -130,21 +130,6 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 	return snykTags;
 }
 
-//TODO - create a CQ plugin to retrieve languages from the repo, reducing our reliance on the GitHub API
-export async function getRepoLanguages(octokit: Octokit, repo: Repository) {
-	const languages = await octokit.paginate(
-		octokit.rest.repos.listLanguages,
-		{
-			owner: 'guardian',
-			repo: repo.name,
-		},
-		(response) => {
-			return Object.keys(response.data);
-		},
-	);
-	return languages;
-}
-
 export function verifyDependencyTracking(
 	repo: Repository,
 	languages: string[],
@@ -219,17 +204,18 @@ export function verifyDependencyTracking(
  *   > Production repositories should have dependency tracking enabled.
  */
 
-export const isTracked = async (
-	octokit: Octokit,
+export const isTracked = (
 	repo: Repository,
 	snyk_projects: snyk_projects[],
+	repoLanguages: github_languages[],
 ) => {
 	const isExempt = !repo.topics.includes('production') || repo.archived;
 	if (isExempt) {
 		return true;
 	}
 
-	const languages = await getRepoLanguages(octokit, repo);
+	const languages: string[] = []; // TODO - derive this from repoLanguages
+
 	console.log(`${repo.name} has languages: `, languages);
 	const isVerified = verifyDependencyTracking(repo, languages, snyk_projects);
 	console.log(`${repo.name} has valid dependency tracking: `, isVerified);
@@ -284,12 +270,10 @@ function findArchivedReposWithStacks(
 }
 
 export function testExperimentalRepocopFeatures(
-	octokit: Octokit,
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
-	snykProjects: snyk_projects[],
 ) {
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
@@ -311,11 +295,6 @@ export function testExperimentalRepocopFeatures(
 		'Archived repos with live stacks, first 10 results:',
 		archivedWithStacks.slice(0, 10),
 	);
-
-	unarchivedRepos
-		.filter((r) => r.topics.includes('production'))
-		.slice(0, 10)
-		.map((r) => isTracked(octokit, r, snykProjects));
 }
 
 /**
@@ -325,6 +304,8 @@ export function evaluateOneRepo(
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
+	repoLanguages: github_languages[],
+	snykProjects: snyk_projects[],
 ): repocop_github_repository_rules {
 	/*
 	Either the fullname, or the org and name, or the org and 'unknown'.
@@ -341,8 +322,7 @@ export function evaluateOneRepo(
 		archiving: isMaintained(repo),
 		topics: hasStatusTopic(repo),
 		contents: null,
-		// TODO Determine whether we're actually tracking vulnerabilities for repo
-		vulnerability_tracking: false,
+		vulnerability_tracking: isTracked(repo, snykProjects, repoLanguages),
 		evaluated_on: new Date(),
 	};
 }
@@ -351,10 +331,18 @@ export function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
+	repoLanguages: github_languages[],
+	snykProjects: snyk_projects[],
 ): repocop_github_repository_rules[] {
 	return repositories.map((r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		return evaluateOneRepo(r, branchesForRepo, teamsForRepo);
+		return evaluateOneRepo(
+			r,
+			branchesForRepo,
+			teamsForRepo,
+			repoLanguages,
+			snykProjects,
+		);
 	});
 }
