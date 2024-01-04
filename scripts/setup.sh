@@ -91,7 +91,7 @@ setup_environment() {
   CLOUDQUERY_API_KEY=$(
     aws secretsmanager get-secret-value \
     --secret-id /CODE/deploy/service-catalogue/cloudquery-api-key \
-    --profile deployTools --region eu-west-1 | jq '.SecretString | fromjson["api-key"]'
+    --profile "$PROFILE" --region "$REGION" | jq '.SecretString | fromjson["api-key"]'
   )
 
   github_info_url="https://github.com/settings/tokens?type=beta"
