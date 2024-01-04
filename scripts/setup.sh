@@ -70,6 +70,8 @@ check_credentials() {
 }
 
 setup_environment() {
+  PROFILE=$1
+  REGION=$2
   step "Setting up Service Catalogue environment"
 
   local_env_file_dir=$HOME/.gu/service_catalogue
@@ -78,27 +80,27 @@ setup_environment() {
 
   size_threshold=1
 
-  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
+  SNYK_TOKEN=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/snyk-credentials  --profile "$PROFILE" --region "$REGION" | jq -r '.SecretString' | jq -r '."api-key"' | tr -d "'")
 
-  ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
+  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
 
-  INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile deployTools --region eu-west-1 --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
+  ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
+
+  INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
 
   CLOUDQUERY_API_KEY=$(
     aws secretsmanager get-secret-value \
     --secret-id /CODE/deploy/service-catalogue/cloudquery-api-key \
-    --profile deployTools --region eu-west-1 | jq '.SecretString | fromjson["api-key"]'
+    --profile "$PROFILE" --region "$REGION" | jq '.SecretString | fromjson["api-key"]'
   )
 
   github_info_url="https://github.com/settings/tokens?type=beta"
-  snyk_info_url="https://docs.snyk.io/snyk-api-info/authentication-for-api"
 
   token_text="# Required permissions are Metadata: Read and Administration: Read. See $github_info_url
 GITHUB_ACCESS_TOKEN=
-# See $snyk_info_url
-SNYK_TOKEN="
+"
 
-  JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile deployTools --region eu-west-1 --output text | awk '{print $4}')
+  JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile "$PROFILE" --region "$REGION" --output text | awk '{print $4}')
 echo "$JSON_STRING" | jq -rc '."app-id"' | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
 echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env_file_dir"/installation-id
   GITHUB_PRIVATE_KEY_PATH=$local_env_file_dir/private-key.pem
@@ -106,7 +108,7 @@ echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env
 echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
 
   
-  env_var_text="
+  env_var_text="SNYK_TOKEN=${SNYK_TOKEN}
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
@@ -151,13 +153,6 @@ source "$local_env_file"
 Visit ${cyan}$github_info_url${clear}, and add it to ${cyan}$local_env_file${clear}"
   fi
 
-
-  # Check if Snyk token is set
-  if [ -z "$SNYK_TOKEN" ]
-  then
-    echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
-Visit ${cyan}$snyk_info_url${clear}, and add it to ${cyan}$local_env_file${clear}"
-  fi
 }
 
 setup_hook() {
@@ -171,6 +166,6 @@ setup_hook pre-commit
 check_node_version
 install_dependencies
 check_credentials deployTools
-setup_environment
+setup_environment deployTools eu-west-1
 
-echo -e "${cyan}Setup complete${clear} ✅"
+echo -e "\n${cyan}Setup complete${clear} ✅"
