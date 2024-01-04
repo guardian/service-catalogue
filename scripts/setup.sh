@@ -8,6 +8,8 @@ clear='\033[0m'
 yellow='\033[1;33m'
 cyan='\033[0;36m'
 
+PROFILE=deployTools
+REGION=eu-west-1
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR=$(realpath "${DIR}/..")
 STEP_COUNT=0
@@ -70,6 +72,8 @@ check_credentials() {
 }
 
 setup_environment() {
+  PROFILE=$1
+  REGION=$2
   step "Setting up Service Catalogue environment"
 
   local_env_file_dir=$HOME/.gu/service_catalogue
@@ -78,21 +82,20 @@ setup_environment() {
 
   size_threshold=1
 
-  SNYK_TOKEN=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/snyk-credentials  --profile deployTools --region eu-west-1 | jq -r '.SecretString' | jq -r '."api-key"' | tr -d "'")
+  SNYK_TOKEN=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/snyk-credentials  --profile "$PROFILE" --region "$REGION" | jq -r '.SecretString' | jq -r '."api-key"' | tr -d "'")
 
-  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
+  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
 
-  ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
+  ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
 
-  INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile deployTools --region eu-west-1 --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
+  INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
   github_info_url="https://github.com/settings/tokens?type=beta"
-  snyk_info_url="https://docs.snyk.io/snyk-api-info/authentication-for-api"
 
   token_text="# Required permissions are Metadata: Read and Administration: Read. See $github_info_url
 GITHUB_ACCESS_TOKEN=
 "
 
-  JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile deployTools --region eu-west-1 --output text | awk '{print $4}')
+  JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile "$PROFILE" --region "$REGION" --output text | awk '{print $4}')
 echo "$JSON_STRING" | jq -rc '."app-id"' | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
 echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env_file_dir"/installation-id
   GITHUB_PRIVATE_KEY_PATH=$local_env_file_dir/private-key.pem
@@ -156,7 +159,7 @@ setup_hook() {
 setup_hook pre-commit
 check_node_version
 install_dependencies
-check_credentials deployTools
-setup_environment
+check_credentials "$PROFILE"
+setup_environment "$PROFILE" "$REGION"
 
 echo -e "\n${cyan}Setup complete${clear} ✅"
