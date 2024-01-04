@@ -143,7 +143,6 @@ export function hasDependencyTracking(
 		return true;
 	}
 
-	//TODO: test to make sure [] => true
 	const languages: string[] =
 		repoLanguages.find(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
@@ -198,9 +197,6 @@ export function hasDependencyTracking(
 
 	const repoIsOnSnyk = !!matchingSnykProject;
 
-	// TODO: Sort out logging for dep tracking
-	// console.log(`${repo.name} has valid dependency tracking: `, isVerified);
-
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
 			supportedSnykLanguages.includes(language),
@@ -210,6 +206,13 @@ export function hasDependencyTracking(
 		const containsOnlyDependabotSupportedLanguages = languages.every(
 			(language) => supportedDependabotLanguages.includes(language),
 		);
+		if (!containsOnlyDependabotSupportedLanguages) {
+			console.log(
+				`${repo.name} does not have valid dependency tracking: `,
+				languages,
+			);
+		}
+
 		return containsOnlyDependabotSupportedLanguages;
 	}
 }
