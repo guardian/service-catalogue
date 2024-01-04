@@ -78,6 +78,8 @@ setup_environment() {
 
   size_threshold=1
 
+  SNYK_TOKEN=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/snyk-credentials  --profile deployTools --region eu-west-1 | jq -r '.SecretString' | jq -r '."api-key"' | tr -d "'")
+
   GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
@@ -88,8 +90,7 @@ setup_environment() {
 
   token_text="# Required permissions are Metadata: Read and Administration: Read. See $github_info_url
 GITHUB_ACCESS_TOKEN=
-# See $snyk_info_url
-SNYK_TOKEN="
+"
 
   JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile deployTools --region eu-west-1 --output text | awk '{print $4}')
 echo "$JSON_STRING" | jq -rc '."app-id"' | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
@@ -99,7 +100,7 @@ echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env
 echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
 
   
-  env_var_text="
+  env_var_text="SNYK_TOKEN=${SNYK_TOKEN}
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
@@ -143,13 +144,6 @@ source "$local_env_file"
 Visit ${cyan}$github_info_url${clear}, and add it to ${cyan}$local_env_file${clear}"
   fi
 
-
-  # Check if Snyk token is set
-  if [ -z "$SNYK_TOKEN" ]
-  then
-    echo -e "${yellow}Please create or retrieve a Snyk token${clear}.
-Visit ${cyan}$snyk_info_url${clear}, and add it to ${cyan}$local_env_file${clear}"
-  fi
 }
 
 setup_hook() {
@@ -165,4 +159,4 @@ install_dependencies
 check_credentials deployTools
 setup_environment
 
-echo -e "${cyan}Setup complete${clear} ✅"
+echo -e "\n${cyan}Setup complete${clear} ✅"
