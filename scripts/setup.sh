@@ -83,6 +83,13 @@ setup_environment() {
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile deployTools --region eu-west-1 | jq '.Parameter.Value' | tr -d '"')
 
   INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile deployTools --region eu-west-1 --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
+
+  CLOUDQUERY_API_KEY=$(
+    aws secretsmanager get-secret-value \
+    --secret-id /CODE/deploy/service-catalogue/cloudquery-api-key \
+    --profile deployTools --region eu-west-1 | jq '.SecretString | fromjson["api-key"]'
+  )
+
   github_info_url="https://github.com/settings/tokens?type=beta"
   snyk_info_url="https://docs.snyk.io/snyk-api-info/authentication-for-api"
 
@@ -104,6 +111,7 @@ GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
 GITHUB_PRIVATE_KEY_PATH=${GITHUB_PRIVATE_KEY_PATH}
+CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
 "
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/
