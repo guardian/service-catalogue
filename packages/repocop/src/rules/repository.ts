@@ -130,14 +130,26 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 	return snykTags;
 }
 
-export function verifyDependencyTracking(
+/**
+ * Evaluate the following rule for a Github repository:
+ *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
+ */
+export function hasDependencyTracking(
 	repo: Repository,
-	languages: string[],
+	repoLanguages: github_languages[],
 	snyk_projects: snyk_projects[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
 	}
+
+	//TODO: test to make sure [] => true
+	const languages: string[] =
+		repoLanguages.find(
+			(repoLanguage) => repoLanguage.full_name === repo.full_name,
+		)?.languages ?? [];
+
+	console.log(`${repo.name} has languages: `, languages);
 
 	const ignoredLanguages = ['HTML', 'CSS', 'Shell'];
 
@@ -186,6 +198,9 @@ export function verifyDependencyTracking(
 
 	const repoIsOnSnyk = !!matchingSnykProject;
 
+	// TODO: Sort out logging for dep tracking
+	// console.log(`${repo.name} has valid dependency tracking: `, isVerified);
+
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
 			supportedSnykLanguages.includes(language),
@@ -198,29 +213,6 @@ export function verifyDependencyTracking(
 		return containsOnlyDependabotSupportedLanguages;
 	}
 }
-
-/**
- * Evaluate the following rule for a Github repository:
- *   > Production repositories should have dependency tracking enabled.
- */
-
-export const isTracked = (
-	repo: Repository,
-	snyk_projects: snyk_projects[],
-	repoLanguages: github_languages[],
-) => {
-	const isExempt = !repo.topics.includes('production') || repo.archived;
-	if (isExempt) {
-		return true;
-	}
-
-	const languages: string[] = []; // TODO - derive this from repoLanguages
-
-	console.log(`${repo.name} has languages: `, languages);
-	const isVerified = verifyDependencyTracking(repo, languages, snyk_projects);
-	console.log(`${repo.name} has valid dependency tracking: `, isVerified);
-	return isVerified;
-};
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -322,7 +314,11 @@ export function evaluateOneRepo(
 		archiving: isMaintained(repo),
 		topics: hasStatusTopic(repo),
 		contents: null,
-		vulnerability_tracking: isTracked(repo, snykProjects, repoLanguages),
+		vulnerability_tracking: hasDependencyTracking(
+			repo,
+			repoLanguages,
+			snykProjects,
+		),
 		evaluated_on: new Date(),
 	};
 }
