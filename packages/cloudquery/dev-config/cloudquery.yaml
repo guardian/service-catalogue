@@ -116,6 +116,7 @@ spec:
     - snyk_projects
   destinations:
     - postgresql
+  registry: github
   spec:
     api_key: ${SNYK_TOKEN}
 ---
@@ -128,6 +129,7 @@ spec:
     - postgresql
   tables:
     - galaxies_*
+  registry: github
   spec:
     bucket: ${GALAXIES_BUCKET}
 ---
