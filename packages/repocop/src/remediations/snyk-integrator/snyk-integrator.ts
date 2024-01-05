@@ -1,6 +1,5 @@
 import { stringify } from 'yaml';
 
-//TODO test this
 export function createYaml(languages: string[]): string {
 	const inputs = {
 		ORG: '<REPLACE ME>',
