@@ -95,6 +95,8 @@ export function findReposInProdWithoutProductionTopic(
 	unarchivedRepos: Repository[],
 	stacks: AwsCloudFormationStack[],
 ): AwsCloudFormationStack[] {
+	console.log('Discovering Cloudformation stacks with PROD or INFRA tags.');
+
 	const repoNamesWithoutProductionTopic: string[] =
 		getRepoNamesWithoutProductionTopic(unarchivedRepos);
 
@@ -116,6 +118,10 @@ export function findReposInProdWithoutProductionTopic(
 			repoNamesWithoutProductionTopic,
 			oldProdStacks,
 		);
+
+	console.log(
+		`Found ${reposInProdWithoutProductionTopic.length} repos without a production/interactive topic that have a PROD/INFRA Cloudformation Stage tag.`,
+	);
 
 	return reposInProdWithoutProductionTopic;
 }
