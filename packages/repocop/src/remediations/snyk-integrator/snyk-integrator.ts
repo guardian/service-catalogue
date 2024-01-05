@@ -1,7 +1,35 @@
 import { stringify } from 'yaml';
 
+interface SnykInputs {
+	ORG: string;
+	SKIP_SBT?: boolean;
+	SKIP_NODE?: boolean;
+	SKIP_PYTHON?: boolean;
+	PYTHON_VERSION?: string;
+	SKIP_GO?: boolean;
+}
+
+interface SnykYaml {
+	name: string;
+	on: {
+		push: {
+			branches: string[];
+		};
+		workflow_dispatch: object;
+	};
+	jobs: {
+		security: {
+			uses: string;
+			with: SnykInputs;
+			secrets: {
+				SNYK_TOKEN: string;
+			};
+		};
+	};
+}
+
 export function createYaml(languages: string[]): string {
-	const inputs = {
+	const inputs: SnykInputs = {
 		ORG: '<REPLACE ME>',
 		SKIP_SBT: languages.includes('Scala') ? undefined : true,
 		SKIP_NODE:
@@ -13,7 +41,7 @@ export function createYaml(languages: string[]): string {
 		SKIP_GO: languages.includes('Go') ? false : undefined,
 	};
 
-	const myJson = {
+	const myJson: SnykYaml = {
 		name: 'Snyk',
 		on: {
 			push: {
