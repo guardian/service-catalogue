@@ -33,6 +33,5 @@ export function createYaml(languages: string[]): string {
 		},
 	};
 
-	console.log(stringify(myJson).replace('{}', ''));
 	return stringify(myJson).replace('{}', '');
 }

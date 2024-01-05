@@ -320,8 +320,8 @@ export function testExperimentalRepocopFeatures(
 
 	console.log('Testing snyk.yml generation');
 
-	createYaml(['Scala', 'Python', 'Shell']);
-	createYaml(['Go', 'Dockerfile', 'TypeScript']);
+	console.log(createYaml(['Scala', 'Python', 'Shell']));
+	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
 }
 
 /**
