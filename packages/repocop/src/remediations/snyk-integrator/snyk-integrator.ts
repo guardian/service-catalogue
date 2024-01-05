@@ -1,7 +1,7 @@
 import { stringify } from 'yaml';
 
 //TODO test this
-export function createYaml(languages: string[]) {
+export function createYaml(languages: string[]): string {
 	const inputs = {
 		ORG: '<REPLACE ME>',
 		SKIP_SBT: languages.includes('Scala') ? undefined : true,
@@ -34,4 +34,5 @@ export function createYaml(languages: string[]) {
 	};
 
 	console.log(stringify(myJson).replace('{}', ''));
+	return stringify(myJson).replace('{}', '');
 }
