@@ -1,5 +1,4 @@
 import type {
-	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
 	snyk_projects,
