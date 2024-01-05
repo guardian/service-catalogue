@@ -1,56 +1,36 @@
-interface ActionInputs {
-	skipNode: string;
-	skipSbt: string;
-	skipPython: string;
-	skipGo: string;
-	org: string;
-	pythonVersion?: string;
-	//TODO we might need the PIP_REQUIREMENTS_FILE input
-}
+import { stringify } from 'yaml';
 
-function createActionInputs(languages: string[]): ActionInputs {
-	const actionInputs: ActionInputs = {
-		org: '<REPLACE>',
-		skipSbt: languages.includes('Scala') ? '' : 'SKIP_SBT: true',
-		skipNode:
+export function createYaml(languages: string[]) {
+	const inputs = {
+		ORG: '<REPLACE ME>',
+		SKIP_SBT: languages.includes('Scala') ? undefined : true,
+		SKIP_NODE:
 			languages.includes('TypeScript') || languages.includes('JavaScript')
-				? ''
-				: 'SKIP_NODE: true',
-		skipPython: languages.includes('Python') ? 'SKIP_PYTHON: false' : '',
-		skipGo: languages.includes('Go') ? 'SKIP_GO: false' : '',
-		pythonVersion: languages.includes('Python')
-			? 'PYTHON_VERSION: <REPLACE ME>'
-			: undefined,
+				? undefined
+				: true,
+		SKIP_PYTHON: languages.includes('Python') ? false : undefined,
+		PYTHON_VERSION: languages.includes('Python') ? '<REPLACE ME>' : undefined,
+		SKIP_GO: languages.includes('Go') ? false : undefined,
 	};
-	return actionInputs;
-}
 
-const inputs = createActionInputs(['TypeScript', 'Python', 'Shell']);
+	const myJson = {
+		name: 'Snyk',
+		on: {
+			push: {
+				branches: ['main'],
+			},
+			workflow_dispatch: {}, //There isn't an elegant way to do this in TypeScript, so we'll remove the {} at the end
+		},
+		jobs: {
+			security: {
+				uses: 'guardian/.github/.github/workflows/sbt-node-snyk.yml@main',
+				with: inputs,
+				secrets: {
+					SNYK_TOKEN: '${{ secrets.SNYK_TOKEN }}',
+				},
+			},
+		},
+	};
 
-const outputYaml =
-	String.raw`
-name: Snyk
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-jobs:
-  security:
-    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
-    with:
-      ORG: ${inputs.org}
-      ${inputs.skipNode}
-      ${inputs.skipSbt}
-      ${inputs.skipPython}
-      ${inputs.skipGo}
-      ${inputs.pythonVersion}
-    secrets:
-       SNYK_TOKEN:` + ' ${{ secrets.SNYK_TOKEN }}';
-
-export function runThis() {
-	console.log('hello');
-	console.log(outputYaml);
+	console.log(stringify(myJson).replace('{}', ''));
 }
