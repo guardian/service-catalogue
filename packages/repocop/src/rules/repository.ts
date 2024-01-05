@@ -1,9 +1,11 @@
 import type {
+	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
 import type { Octokit } from 'octokit';
+import { createYaml } from '../remediations/snyk-integrator/snyk-integrator';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,
@@ -316,6 +318,11 @@ export function testExperimentalRepocopFeatures(
 		.filter((r) => r.topics.includes('production'))
 		.slice(0, 10)
 		.map((r) => isTracked(octokit, r, snykProjects));
+
+	console.log('Testing snyk.yml generation');
+
+	createYaml(['Scala', 'Python', 'Shell']);
+	createYaml(['Go', 'Dockerfile', 'TypeScript']);
 }
 
 /**
