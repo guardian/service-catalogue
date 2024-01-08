@@ -1,4 +1,5 @@
 import type {
+	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
 	snyk_projects,
@@ -131,31 +132,33 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 	return snykTags;
 }
 
-//TODO - create a CQ plugin to retrieve languages from the repo, reducing our reliance on the GitHub API
-export async function getRepoLanguages(octokit: Octokit, repo: Repository) {
-	const languages = await octokit.paginate(
-		octokit.rest.repos.listLanguages,
-		{
-			owner: 'guardian',
-			repo: repo.name,
-		},
-		(response) => {
-			return Object.keys(response.data);
-		},
-	);
-	return languages;
-}
-
-export function verifyDependencyTracking(
+/**
+ * Evaluate the following rule for a Github repository:
+ *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
+ */
+export function hasDependencyTracking(
 	repo: Repository,
-	languages: string[],
+	repoLanguages: github_languages[],
 	snyk_projects: snyk_projects[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
 	}
 
-	const ignoredLanguages = ['HTML', 'CSS', 'Shell'];
+	const languages: string[] =
+		repoLanguages.find(
+			(repoLanguage) => repoLanguage.full_name === repo.full_name,
+		)?.languages ?? [];
+
+	const ignoredLanguages = [
+		'HTML',
+		'CSS',
+		'Shell',
+		'Jupyter Notebook',
+		'Makefile',
+		'Dockerfile',
+		'PLpgSQL',
+	];
 
 	const commonSupportedLanguages = [
 		'C#',
@@ -211,31 +214,16 @@ export function verifyDependencyTracking(
 		const containsOnlyDependabotSupportedLanguages = languages.every(
 			(language) => supportedDependabotLanguages.includes(language),
 		);
+		if (!containsOnlyDependabotSupportedLanguages) {
+			console.log(
+				`${repo.name} does not have valid dependency tracking: `,
+				languages,
+			);
+		}
+
 		return containsOnlyDependabotSupportedLanguages;
 	}
 }
-
-/**
- * Evaluate the following rule for a Github repository:
- *   > Production repositories should have dependency tracking enabled.
- */
-
-export const isTracked = async (
-	octokit: Octokit,
-	repo: Repository,
-	snyk_projects: snyk_projects[],
-) => {
-	const isExempt = !repo.topics.includes('production') || repo.archived;
-	if (isExempt) {
-		return true;
-	}
-
-	const languages = await getRepoLanguages(octokit, repo);
-	console.log(`${repo.name} has languages: `, languages);
-	const isVerified = verifyDependencyTracking(repo, languages, snyk_projects);
-	console.log(`${repo.name} has valid dependency tracking: `, isVerified);
-	return isVerified;
-};
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -285,12 +273,10 @@ function findArchivedReposWithStacks(
 }
 
 export function testExperimentalRepocopFeatures(
-	octokit: Octokit,
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
-	snykProjects: snyk_projects[],
 ) {
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
@@ -313,13 +299,7 @@ export function testExperimentalRepocopFeatures(
 		archivedWithStacks.slice(0, 10),
 	);
 
-	unarchivedRepos
-		.filter((r) => r.topics.includes('production'))
-		.slice(0, 10)
-		.map((r) => isTracked(octokit, r, snykProjects));
-
 	console.log('Testing snyk.yml generation');
-
 	console.log(createYaml(['Scala', 'Python', 'Shell']));
 	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
 }
@@ -331,6 +311,8 @@ export function evaluateOneRepo(
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
+	repoLanguages: github_languages[],
+	snykProjects: snyk_projects[],
 ): repocop_github_repository_rules {
 	/*
 	Either the fullname, or the org and name, or the org and 'unknown'.
@@ -347,8 +329,11 @@ export function evaluateOneRepo(
 		archiving: isMaintained(repo),
 		topics: hasStatusTopic(repo),
 		contents: null,
-		// TODO Determine whether we're actually tracking vulnerabilities for repo
-		vulnerability_tracking: false,
+		vulnerability_tracking: hasDependencyTracking(
+			repo,
+			repoLanguages,
+			snykProjects,
+		),
 		evaluated_on: new Date(),
 	};
 }
@@ -357,10 +342,18 @@ export function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
+	repoLanguages: github_languages[],
+	snykProjects: snyk_projects[],
 ): repocop_github_repository_rules[] {
 	return repositories.map((r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		return evaluateOneRepo(r, branchesForRepo, teamsForRepo);
+		return evaluateOneRepo(
+			r,
+			branchesForRepo,
+			teamsForRepo,
+			repoLanguages,
+			snykProjects,
+		);
 	});
 }
