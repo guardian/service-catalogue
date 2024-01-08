@@ -4,6 +4,8 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
+import type { Octokit } from 'octokit';
+import { createSnykPullRequest } from '../remediations/snyk-integrator/create-pull-request';
 import { createYaml } from '../remediations/snyk-integrator/snyk-integrator';
 import type {
 	AwsCloudFormationStack,
@@ -286,11 +288,12 @@ function findArchivedReposWithStacks(
 	return archivedReposWithPotentialStacks;
 }
 
-export function testExperimentalRepocopFeatures(
+export async function testExperimentalRepocopFeatures(
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
+	octokit: Octokit,
 ) {
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
@@ -316,6 +319,14 @@ export function testExperimentalRepocopFeatures(
 	console.log('Testing snyk.yml generation');
 	console.log(createYaml(['Scala', 'Python', 'Shell']));
 	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
+
+	console.log('Creating a test pull request');
+	const response = await createSnykPullRequest(octokit, 'test-repocop-prs', [
+		'Scala',
+		'Python',
+		'Shell',
+	]);
+	console.log('Pull request successfully created:', response?.data.html_url);
 }
 
 /**
