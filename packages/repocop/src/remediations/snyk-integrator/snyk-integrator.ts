@@ -62,3 +62,24 @@ export function createYaml(languages: string[]): string {
 
 	return stringify(snykWorkflowJson).replace('{}', '');
 }
+
+export function generatePr(languages: string[]): [string, string] {
+	const workflow_languages = [
+		'Scala',
+		'TypeScript',
+		'JavaScript',
+		'Python',
+		'Go',
+	];
+
+	//intersection of repo languages and workflow-supported languages
+	const prLanguages = languages.filter((x) => workflow_languages.includes(x));
+
+	if (prLanguages.length === 0) {
+		throw new Error('No supported languages provided, cannot generate PR');
+	}
+
+	const header = `Integrate ${prLanguages.join(', ')} projects with Snyk`;
+
+	return [header, 'hi'];
+}

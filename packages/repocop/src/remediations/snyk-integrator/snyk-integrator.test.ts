@@ -1,4 +1,4 @@
-import { createYaml } from './snyk-integrator';
+import { createYaml, generatePr } from './snyk-integrator';
 
 describe('createYaml', () => {
 	it('should skip node and sbt if no languages are provided', () => {
@@ -41,5 +41,21 @@ jobs:
       SNYK_TOKEN: ${'$'}{{ secrets.SNYK_TOKEN }}
 `;
 		expect(yaml).toEqual(result);
+	});
+});
+
+describe('A generated PR', () => {
+	it('should have only the supported languages in its header', () => {
+		const [header, body] = generatePr([
+			'Scala',
+			'TypeScript',
+			'Rust', //unsupported by the action
+			'Kotlin', //unsupported by the action
+			'Go',
+		]);
+		console.log(body);
+		expect(header).toEqual(
+			'Integrate Scala, TypeScript, Go projects with Snyk',
+		);
 	});
 });
