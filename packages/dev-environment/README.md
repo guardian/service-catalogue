@@ -51,7 +51,7 @@ It includes:
 
 ## RepoCop
    
-   To develop locally follow the steps in the  repocop [README](../repocop/README.md)
+   To develop locally once the tables have been populated follow the steps in the  repocop [README](../repocop/README.md)
 
 ## Links
 
