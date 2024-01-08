@@ -58,4 +58,8 @@ describe('A generated PR', () => {
 			'Integrate Scala, TypeScript, Go projects with Snyk',
 		);
 	});
+	it('should throw if no supported languages are provided', () => {
+		expect(() => generatePr(['Rust', 'Kotlin'])).toThrow();
+		expect(() => generatePr([])).toThrow();
+	});
 });
