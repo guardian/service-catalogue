@@ -4,7 +4,6 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
-import type { Octokit } from 'octokit';
 import { createYaml } from '../remediations/snyk-integrator/snyk-integrator';
 import type {
 	AwsCloudFormationStack,
