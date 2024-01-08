@@ -158,6 +158,7 @@ Visit ${cyan}$github_info_url${clear}, and add it to ${cyan}$local_env_file${cle
 setup_hook() {
   HOOK_NAME=$1
   step "Setting up $HOOK_NAME hook"
+  mkdir -p "$ROOT_DIR/.git/hooks"
   cp "$ROOT_DIR/.hooks/$HOOK_NAME" "$ROOT_DIR/.git/hooks/$HOOK_NAME"
   chmod +x "$ROOT_DIR/.git/hooks/$HOOK_NAME"
 }

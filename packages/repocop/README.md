@@ -9,7 +9,12 @@ See the [Grafana dashboard](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?or
 
 Prerequisites:
 
-1. [CloudQuery](../../packages/cloudquery/README.md) has populated the local database
+1. [CloudQuery](../dev-environment/README.md) has populated the local database
+2. The prima migrations have been applied to the local database
+```bash
+npm -w cli start migrate -- --stage DEV
+```
+
 
 To run RepoCop locally, run:
 
