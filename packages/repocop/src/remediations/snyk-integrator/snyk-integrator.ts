@@ -9,7 +9,7 @@ interface SnykInputs {
 	SKIP_GO?: boolean;
 }
 
-interface SnykYaml {
+interface SnykSchema {
 	name: string;
 	on: {
 		push: {
@@ -30,18 +30,18 @@ interface SnykYaml {
 
 export function createYaml(languages: string[]): string {
 	const inputs: SnykInputs = {
-		ORG: '<REPLACE ME>',
+		ORG: '<SNYK_ORG_ID>',
 		SKIP_SBT: languages.includes('Scala') ? undefined : true,
 		SKIP_NODE:
 			languages.includes('TypeScript') || languages.includes('JavaScript')
 				? undefined
 				: true,
 		SKIP_PYTHON: languages.includes('Python') ? false : undefined,
-		PYTHON_VERSION: languages.includes('Python') ? '<REPLACE ME>' : undefined,
+		PYTHON_VERSION: languages.includes('Python') ? '<MAJOR.MINOR>' : undefined,
 		SKIP_GO: languages.includes('Go') ? false : undefined,
 	};
 
-	const myJson: SnykYaml = {
+	const snykWorkflowJson: SnykSchema = {
 		name: 'Snyk',
 		on: {
 			push: {
@@ -60,5 +60,5 @@ export function createYaml(languages: string[]): string {
 		},
 	};
 
-	return stringify(myJson).replace('{}', '');
+	return stringify(snykWorkflowJson).replace('{}', '');
 }

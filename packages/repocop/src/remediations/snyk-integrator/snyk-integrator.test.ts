@@ -13,7 +13,7 @@ jobs:
   security:
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
     with:
-      ORG: <REPLACE ME>
+      ORG: <SNYK_ORG_ID>
       SKIP_SBT: true
       SKIP_NODE: true
     secrets:
@@ -33,9 +33,9 @@ jobs:
   security:
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
     with:
-      ORG: <REPLACE ME>
+      ORG: <SNYK_ORG_ID>
       SKIP_PYTHON: false
-      PYTHON_VERSION: <REPLACE ME>
+      PYTHON_VERSION: <MAJOR.MINOR>
       SKIP_GO: false
     secrets:
       SNYK_TOKEN: ${'$'}{{ secrets.SNYK_TOKEN }}
