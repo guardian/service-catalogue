@@ -11,6 +11,32 @@ spec:
 ---
 kind: source
 spec:
+  # Source spec section
+  name: 'github'
+  path: 'cloudquery/github'
+  version: v${CQ_GITHUB}
+  tables: ['*']
+  destinations: ['postgresql']
+  spec:
+    app_auth:
+      - org: guardian
+        private_key_path: /private-key.pem
+        app_id: '${file:/app-id}'
+        installation_id: '${file:/installation-id}'
+    repos: [
+        # example devX owned repos
+        'guardian/cdk',
+        'guardian/service-catalogue',
+
+        # example non-devX repo
+        'guardian/dotcom-rendering',
+
+        # example private repo
+        'guardian/tracker',
+      ]
+---
+kind: source
+spec:
   name: 'aws'
   path: 'cloudquery/aws'
   version: v${CQ_AWS}

@@ -1,7 +1,0 @@
-{
-  "name": "cloudquery",
-  "version": "0.0.0",
-  "scripts": {
-    "start": "./script/start"
-  }
-}
