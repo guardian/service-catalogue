@@ -4,6 +4,7 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
+import { createYaml } from '../remediations/snyk-integrator/snyk-integrator';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,
@@ -296,6 +297,10 @@ export function testExperimentalRepocopFeatures(
 		'Archived repos with live stacks, first 10 results:',
 		archivedWithStacks.slice(0, 10),
 	);
+
+	console.log('Testing snyk.yml generation');
+	console.log(createYaml(['Scala', 'Python', 'Shell']));
+	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
 }
 
 /**
