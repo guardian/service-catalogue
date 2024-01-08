@@ -1,3 +1,4 @@
+import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 
 interface SnykInputs {
@@ -67,41 +68,40 @@ function generatePrHeader(languages: string[]): string {
 	return `Integrate ${languages.join(', ')} projects with Snyk`;
 }
 
-function generatePrBody(
-	languages: string[],
-	branchName: string,
-	fullRepoName: string,
-): string {
-	const prTest = String.raw`
-## What does this change?
-This PR integrates your repository with Snyk, to track its dependencies, in
-line with our recommendations.
+function checklist(items: string[]): string {
+	return items.map((item) => `- [ ] ${item}`).join('\n');
+}
 
-##Why?
-If a repository is in production, we need to track its third party dependencies
-for vulnerabilities. DevX have detected that your repo contains at least one
-language that is not supported by Dependabot. As a result, we have raised this
-PR on your behalf to add it to Snyk.
-
-## How has it been verified?
-We have tested this action against a combination of TypeScript, Scala, Go, and
-Python repositories. If your repository contains other languages not included
-here, integration may not work the way you expect it to.
-
-## What do I need to do?
-- [ ] Replace the SNYK_ORG variable with one that your team already uses (you
-should have other repos integrated with Snyk. If you can’t find any, reach out
-to DevX)
-- [ ] Replace the python version with the version your repo uses
-
-## How do I check this works?
-- [ ] You can run the action yourself via the GitHub cli using \`gh workflow run
-ci.yml --ref ${branchName} --repo ${fullRepoName}\`
-- [ ] View the action output, verify it has generated one project per
-dependency manifest.
-
-`;
-	return prTest;
+function generatePrBody(branchName: string, fullRepoName: string): string {
+	const x = [
+		h2('What does this change?'),
+		p(
+			'This PR integrates your repository with Snyk, to track its dependencies, in line with our recommendations.',
+		),
+		h2('Why?'),
+		p(
+			'If a repository is in production, we need to track its third party dependencies for vulnerabilities. ' +
+				'DevX have detected that your repo contains at least one language that is not supported by Dependabot. ' +
+				'As a result, we have raised this PR on your behalf to add it to Snyk.',
+		),
+		h2('How has it been verified?'),
+		p(
+			'We have tested this action against a combination of TypeScript, Scala, Go, and Python repositories. ' +
+				'If your repository contains other languages not included here, integration may not work the way you expect it to.',
+		),
+		h2('What do I need to do?'),
+		checklist([
+			'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
+				'If you can’t find any, reach out to DevX)',
+			'Replace the python version with the version your repo uses',
+		]),
+		h2('How do I check this works?'),
+		checklist([
+			`Run the action via the GitHub CLI \`gh workflow run ci.yml --ref ${branchName} --repo ${fullRepoName}\``,
+			`View the action output, verify it has generated one project per dependency manifest.`,
+		]),
+	];
+	return tsMarkdown(x);
 }
 
 export function generatePr(
@@ -127,7 +127,7 @@ export function generatePr(
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(workflowSupportedLanguages, branch, fullRepoName);
+	const body = generatePrBody(branch, fullRepoName);
 
 	return [header, body];
 }

@@ -67,4 +67,8 @@ describe('A generated PR', () => {
 		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
 		expect(() => generateServiceCataloguePr([])).toThrow();
 	});
+	it('Should create a body with the correct GitHub CLI command', () => {
+		const body = generatePr(['Scala'], 'main', 'myRepo')[1];
+		expect(body).toContain('gh workflow run ci.yml --ref main --repo myRepo');
+	});
 });
