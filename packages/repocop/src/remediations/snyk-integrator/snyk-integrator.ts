@@ -73,7 +73,7 @@ function checklist(items: string[]): string {
 }
 
 function generatePrBody(branchName: string, fullRepoName: string): string {
-	const x = [
+	const body = [
 		h2('What does this change?'),
 		p(
 			'This PR integrates your repository with Snyk, to track its dependencies, in line with our recommendations.',
@@ -101,7 +101,7 @@ function generatePrBody(branchName: string, fullRepoName: string): string {
 			`View the action output, verify it has generated one project per dependency manifest.`,
 		]),
 	];
-	return tsMarkdown(x);
+	return tsMarkdown(body);
 }
 
 export function generatePr(
