@@ -67,11 +67,48 @@ function generatePrHeader(languages: string[]): string {
 	return `Integrate ${languages.join(', ')} projects with Snyk`;
 }
 
-function generatePrBody(languages: string[]): string {
-	return languages.join('\n');
+function generatePrBody(
+	languages: string[],
+	branchName: string,
+	fullRepoName: string,
+): string {
+	const prTest = String.raw`
+## What does this change?
+This PR integrates your repository with Snyk, to track its dependencies, in
+line with our recommendations.
+
+##Why?
+If a repository is in production, we need to track its third party dependencies
+for vulnerabilities. DevX have detected that your repo contains at least one
+language that is not supported by Dependabot. As a result, we have raised this
+PR on your behalf to add it to Snyk.
+
+## How has it been verified?
+We have tested this action against a combination of TypeScript, Scala, Go, and
+Python repositories. If your repository contains other languages not included
+here, integration may not work the way you expect it to.
+
+## What do I need to do?
+- [ ] Replace the SNYK_ORG variable with one that your team already uses (you
+should have other repos integrated with Snyk. If you can’t find any, reach out
+to DevX)
+- [ ] Replace the python version with the version your repo uses
+
+## How do I check this works?
+- [ ] You can run the action yourself via the GitHub cli using \`gh workflow run
+ci.yml --ref ${branchName} --repo ${fullRepoName}\`
+- [ ] View the action output, verify it has generated one project per
+dependency manifest.
+
+`;
+	return prTest;
 }
 
-export function generatePr(repoLanguages: string[]): [string, string] {
+export function generatePr(
+	repoLanguages: string[],
+	branch: string,
+	fullRepoName: string,
+): [string, string] {
 	const workflowLanguages = [
 		'Scala',
 		'TypeScript',
@@ -90,7 +127,7 @@ export function generatePr(repoLanguages: string[]): [string, string] {
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(workflowSupportedLanguages);
+	const body = generatePrBody(workflowSupportedLanguages, branch, fullRepoName);
 
 	return [header, body];
 }
