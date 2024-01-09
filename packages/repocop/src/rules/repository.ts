@@ -5,8 +5,10 @@ import type {
 	snyk_projects,
 } from '@prisma/client';
 import type { Octokit } from 'octokit';
-import { createSnykPullRequest } from '../remediations/snyk-integrator/create-pull-request';
-import { createYaml } from '../remediations/snyk-integrator/snyk-integrator';
+import {
+	createSnykPullRequest,
+	createYaml,
+} from '../remediations/snyk-integrator/snyk-integrator';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,

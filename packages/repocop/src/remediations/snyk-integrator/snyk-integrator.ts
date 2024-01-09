@@ -1,5 +1,8 @@
+import { randomBytes } from 'node:crypto';
+import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
+import { createPullRequest } from './create-pull-request';
 
 interface SnykInputs {
 	ORG: string;
@@ -130,4 +133,30 @@ export function generatePr(
 	const body = generatePrBody(branch, fullRepoName);
 
 	return [header, body];
+}
+
+export async function createSnykPullRequest(
+	octokit: Octokit,
+	fullRepoName: string,
+	repoLanguages: string[],
+) {
+	// Introduce a random suffix to allow the same PR to be raised multiple times
+	// Useful for testing, but may be less useful in production
+	const branchName = `integrate-snyk-${randomBytes(8).toString('hex')}`;
+	const snykFileContents = createYaml(repoLanguages);
+	const [title, body] = generatePr(repoLanguages, branchName, fullRepoName);
+	return await createPullRequest(octokit, {
+		fullRepoName,
+		title,
+		body,
+		branchName,
+		changes: [
+			{
+				commitMessage: 'Add Snyk.yml',
+				files: {
+					'snyk.yml': snykFileContents,
+				},
+			},
+		],
+	});
 }

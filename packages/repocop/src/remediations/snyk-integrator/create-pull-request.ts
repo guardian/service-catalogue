@@ -1,7 +1,5 @@
-import { randomBytes } from 'crypto';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
-import { createYaml, generatePr } from './snyk-integrator';
 
 interface CreatePullRequestOptions {
 	fullRepoName: string;
@@ -37,31 +35,5 @@ export async function createPullRequest(
 			commit: commitMessage,
 			files: files,
 		})),
-	});
-}
-
-export async function createSnykPullRequest(
-	octokit: Octokit,
-	fullRepoName: string,
-	repoLanguages: string[],
-) {
-	// Introduce a random suffix to allow the same PR to be raised multiple times
-	// Useful for testing, but may be less useful in production
-	const branchName = `integrate-snyk-${randomBytes(8).toString('hex')}`;
-	const snykFileContents = createYaml(repoLanguages);
-	const [title, body] = generatePr(repoLanguages, branchName, fullRepoName);
-	return await createPullRequest(octokit, {
-		fullRepoName,
-		title,
-		body,
-		branchName,
-		changes: [
-			{
-				commitMessage: 'Add Snyk.yml',
-				files: {
-					'snyk.yml': snykFileContents,
-				},
-			},
-		],
 	});
 }
