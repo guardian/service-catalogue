@@ -322,9 +322,9 @@ export async function testExperimentalRepocopFeatures(
 	);
 
 	console.log('Testing snyk.yml generation');
-	console.log(createYaml(['Scala', 'Python', 'Shell']));
-	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
-
+	console.log(createYaml(['Scala', 'Python', 'Shell'], 'branch'));
+	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript'], 'branch'));
+  
 	if (config.snykIntegrationPREnabled) {
 		console.log('Creating a test Snyk Pull Request against test-repocop-prs');
 		const response = await createSnykPullRequest(
