@@ -36,6 +36,8 @@ jobs:
       ORG: <SNYK_ORG_ID>
       SKIP_PYTHON: false
       PYTHON_VERSION: <MAJOR.MINOR>
+	  PIP_REQUIREMENTS_FILES: <PATH_TO_REQUIREMENTS> # Space separated list of requirements files. Only use one of this or PIPFILES
+      PIPFILES: <PATH_TO_PIPFILES> # Space separated list of pipfiles. Only use one of this or PIP_REQUIREMENTS_FILES
       SKIP_GO: false
     secrets:
       SNYK_TOKEN: ${'$'}{{ secrets.SNYK_TOKEN }}

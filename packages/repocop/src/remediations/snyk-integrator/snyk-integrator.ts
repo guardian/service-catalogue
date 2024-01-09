@@ -7,6 +7,8 @@ interface SnykInputs {
 	SKIP_NODE?: boolean;
 	SKIP_PYTHON?: boolean;
 	PYTHON_VERSION?: string;
+	PIP_REQUIREMENTS_FILES?: string;
+	PIPFILES?: string;
 	SKIP_GO?: boolean;
 }
 
@@ -39,6 +41,12 @@ export function createYaml(languages: string[]): string {
 				: true,
 		SKIP_PYTHON: languages.includes('Python') ? false : undefined,
 		PYTHON_VERSION: languages.includes('Python') ? '<MAJOR.MINOR>' : undefined,
+		PIP_REQUIREMENTS_FILES: languages.includes('Python')
+			? '<PATH_TO_REQUIREMENTS> # Space separated list of requirements files. Only use one of this or PIPFILES'
+			: undefined,
+		PIPFILES: languages.includes('Python')
+			? '<PATH_TO_PIPFILES> # Space separated list of pipfiles. Only use one of this or PIP_REQUIREMENTS_FILES'
+			: undefined,
 		SKIP_GO: languages.includes('Go') ? false : undefined,
 	};
 
@@ -61,7 +69,7 @@ export function createYaml(languages: string[]): string {
 		},
 	};
 
-	return stringify(snykWorkflowJson).replace('{}', '');
+	return stringify(snykWorkflowJson).replace('{}', '').replace(`"`, '');
 }
 
 function generatePrHeader(languages: string[]): string {
