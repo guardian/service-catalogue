@@ -331,7 +331,7 @@ export async function testExperimentalRepocopFeatures(
 		console.log('Creating a test Snyk Pull Request against test-repocop-prs');
 		const response = await createSnykPullRequest(
 			octokit,
-			'test-repocop-prs',
+			'guardian/test-repocop-prs',
 			// Introduce a random suffix to allow the same PR to be raised multiple times
 			// Useful for testing, but may be less useful in production
 			`integrate-snyk-${randomBytes(8).toString('hex')}`,
