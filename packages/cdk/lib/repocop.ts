@@ -64,7 +64,7 @@ export class Repocop {
 			guStack,
 			`snyk-integrator-github-app-auth`,
 			{
-				secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/branch-protector-github-app-secret`,
+				secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/snyk-integrator-github-app-secret`,
 			},
 		);
 

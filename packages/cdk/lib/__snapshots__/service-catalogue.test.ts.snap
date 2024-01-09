@@ -16731,7 +16731,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/branch-protector-github-app-secret",
+        "Name": "/TEST/deploy/service-catalogue/snyk-integrator-github-app-secret",
         "Tags": [
           {
             "Key": "gu:cdk:version",
