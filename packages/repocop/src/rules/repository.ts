@@ -300,8 +300,6 @@ export async function testExperimentalRepocopFeatures(
 	nonPlaygroundStacks: AwsCloudFormationStack[],
 	octokit: Octokit,
 ) {
-	const { stage } = config;
-
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
@@ -327,7 +325,7 @@ export async function testExperimentalRepocopFeatures(
 	console.log(createYaml(['Scala', 'Python', 'Shell']));
 	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
 
-	if (stage === 'PROD') {
+	if (config.snykIntegrationPREnabled) {
 		console.log('Creating a test Snyk Pull Request against test-repocop-prs');
 		const response = await createSnykPullRequest(
 			octokit,
@@ -338,6 +336,10 @@ export async function testExperimentalRepocopFeatures(
 			['Scala', 'Python', 'Shell'],
 		);
 		console.log('Pull request successfully created:', response?.data.html_url);
+	} else {
+		console.log(
+			'Skipping creating a test Snyk Pull Request (feature is not enabled)',
+		);
 	}
 }
 

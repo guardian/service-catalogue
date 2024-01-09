@@ -47,6 +47,11 @@ export interface Config extends PrismaConfig {
 	 * Flag to enable branch protection.
 	 */
 	branchProtectionEnabled: boolean;
+
+	/**
+	 * Flag to enable creation of Snyk integration PRs
+	 */
+	snykIntegrationPREnabled: boolean;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -73,5 +78,7 @@ export async function getConfig(): Promise<Config> {
 		],
 		interactivesCount: Number(getEnvOrThrow('INTERACTIVES_COUNT')),
 		branchProtectionEnabled: process.env.BRANCH_PROTECTION_ENABLED === 'true',
+		snykIntegrationPREnabled:
+			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
 	};
 }
