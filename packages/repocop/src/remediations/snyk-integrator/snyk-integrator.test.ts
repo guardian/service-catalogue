@@ -1,4 +1,4 @@
-import { createYaml } from './snyk-integrator';
+import { createYaml, generatePr } from './snyk-integrator';
 
 describe('createYaml', () => {
 	it('should skip node and sbt if no languages are provided', () => {
@@ -41,5 +41,34 @@ jobs:
       SNYK_TOKEN: ${'$'}{{ secrets.SNYK_TOKEN }}
 `;
 		expect(yaml).toEqual(result);
+	});
+});
+
+describe('A generated PR', () => {
+	//higher level function that takes in just languages and returns a PR
+	function generateServiceCataloguePr(languages: string[]): [string, string] {
+		return generatePr(languages, 'main', 'guardian/service-catalogue');
+	}
+
+	it('should have only the supported languages in its header', () => {
+		const header = generateServiceCataloguePr([
+			'Scala',
+			'TypeScript',
+			'Rust', //unsupported by the action
+			'Kotlin', //unsupported by the action
+			'Go',
+		])[0];
+
+		expect(header).toEqual(
+			'Integrate Scala, TypeScript, Go projects with Snyk',
+		);
+	});
+	it('should throw if no supported languages are provided', () => {
+		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
+		expect(() => generateServiceCataloguePr([])).toThrow();
+	});
+	it('Should create a body with the correct GitHub CLI command', () => {
+		const body = generatePr(['Scala'], 'main', 'myRepo')[1];
+		expect(body).toContain('gh workflow run ci.yml --ref main --repo myRepo');
 	});
 });
