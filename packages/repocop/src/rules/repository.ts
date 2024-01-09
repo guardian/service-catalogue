@@ -208,6 +208,14 @@ export function hasDependencyTracking(
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
 			supportedSnykLanguages.includes(language),
 		);
+		if (!containsOnlySnykSupportedLanguages) {
+			console.log(
+				`${repo.name} contains the following languages not supported by Snyk: `,
+				languages.filter(
+					(language) => !supportedSnykLanguages.includes(language),
+				),
+			);
+		}
 		return containsOnlySnykSupportedLanguages;
 	} else {
 		const containsOnlyDependabotSupportedLanguages = languages.every(
@@ -215,8 +223,10 @@ export function hasDependencyTracking(
 		);
 		if (!containsOnlyDependabotSupportedLanguages) {
 			console.log(
-				`${repo.name} does not have valid dependency tracking: `,
-				languages,
+				`${repo.name} contains the following languagesnot supported by Dependabot: `,
+				languages.filter(
+					(language) => !supportedDependabotLanguages.includes(language),
+				),
 			);
 		}
 
