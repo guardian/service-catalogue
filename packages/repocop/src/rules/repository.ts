@@ -1,10 +1,16 @@
+import { randomBytes } from 'node:crypto';
 import type {
 	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
-import { createYaml } from '../remediations/snyk-integrator/snyk-integrator';
+import type { Octokit } from 'octokit';
+import type { Config } from '../config';
+import {
+	createSnykPullRequest,
+	createYaml,
+} from '../remediations/snyk-integrator/snyk-integrator';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,
@@ -286,11 +292,13 @@ function findArchivedReposWithStacks(
 	return archivedReposWithPotentialStacks;
 }
 
-export function testExperimentalRepocopFeatures(
+export async function testExperimentalRepocopFeatures(
+	config: Config,
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
+	octokit: Octokit,
 ) {
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
@@ -316,6 +324,23 @@ export function testExperimentalRepocopFeatures(
 	console.log('Testing snyk.yml generation');
 	console.log(createYaml(['Scala', 'Python', 'Shell'], 'branch'));
 	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript'], 'branch'));
+  
+	if (config.snykIntegrationPREnabled) {
+		console.log('Creating a test Snyk Pull Request against test-repocop-prs');
+		const response = await createSnykPullRequest(
+			octokit,
+			'test-repocop-prs',
+			// Introduce a random suffix to allow the same PR to be raised multiple times
+			// Useful for testing, but may be less useful in production
+			`integrate-snyk-${randomBytes(8).toString('hex')}`,
+			['Scala', 'Python', 'Shell'],
+		);
+		console.log('Pull request successfully created:', response?.data.html_url);
+	} else {
+		console.log(
+			'Skipping creating a test Snyk Pull Request (feature is not enabled)',
+		);
+	}
 }
 
 /**
