@@ -71,7 +71,7 @@ jobs:
             data-audit:
               - packages/data-audit/dist/data-audit.zip
             snyk-integrator:
-              - packages/repocop/dist/repocop.zip
+              - packages/snyk-integrator/dist/snyk-integrator.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
 
