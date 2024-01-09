@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import type {
 	github_languages,
 	github_repository_branches,
@@ -322,12 +323,15 @@ export async function testExperimentalRepocopFeatures(
 	console.log(createYaml(['Scala', 'Python', 'Shell']));
 	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
 
-	console.log('Creating a test pull request');
-	const response = await createSnykPullRequest(octokit, 'test-repocop-prs', [
-		'Scala',
-		'Python',
-		'Shell',
-	]);
+	console.log('Creating a test Snyk Pull Request against test-repocop-prs');
+	const response = await createSnykPullRequest(
+		octokit,
+		'test-repocop-prs',
+		// Introduce a random suffix to allow the same PR to be raised multiple times
+		// Useful for testing, but may be less useful in production
+		`integrate-snyk-${randomBytes(8).toString('hex')}`,
+		['Scala', 'Python', 'Shell'],
+	);
 	console.log('Pull request successfully created:', response?.data.html_url);
 }
 

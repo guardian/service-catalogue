@@ -1,4 +1,3 @@
-import { randomBytes } from 'node:crypto';
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
@@ -138,11 +137,9 @@ export function generatePr(
 export async function createSnykPullRequest(
 	octokit: Octokit,
 	fullRepoName: string,
+	branchName: string,
 	repoLanguages: string[],
 ) {
-	// Introduce a random suffix to allow the same PR to be raised multiple times
-	// Useful for testing, but may be less useful in production
-	const branchName = `integrate-snyk-${randomBytes(8).toString('hex')}`;
 	const snykFileContents = createYaml(repoLanguages);
 	const [title, body] = generatePr(repoLanguages, branchName, fullRepoName);
 	return await createPullRequest(octokit, {
