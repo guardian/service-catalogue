@@ -151,7 +151,7 @@ export async function createSnykPullRequest(
 			{
 				commitMessage: 'Add Snyk.yml',
 				files: {
-					'snyk.yml': snykFileContents,
+					'.github/workflows/snyk.yml': snykFileContents,
 				},
 			},
 		],
