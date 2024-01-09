@@ -408,7 +408,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'Galaxies',
 			description: 'Galaxies data',
-			schedule: Schedule.rate(Duration.days(1)),
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 			policies: [
 				readBucketPolicy(
 					`${actionsStaticSiteBucket.bucketArn}/galaxies.gutools.co.uk/data/*`,
