@@ -228,7 +228,7 @@ export function hasDependencyTracking(
 		);
 		if (!containsOnlyDependabotSupportedLanguages) {
 			console.log(
-				`${repo.name} contains the following languagesnot supported by Dependabot: `,
+				`${repo.name} contains the following languages not supported by Dependabot: `,
 				languages.filter(
 					(language) => !supportedDependabotLanguages.includes(language),
 				),
