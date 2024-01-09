@@ -6,6 +6,7 @@ import type {
 	snyk_projects,
 } from '@prisma/client';
 import type { Octokit } from 'octokit';
+import type { Config } from '../config';
 import {
 	createSnykPullRequest,
 	createYaml,
@@ -292,12 +293,15 @@ function findArchivedReposWithStacks(
 }
 
 export async function testExperimentalRepocopFeatures(
+	config: Config,
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
 	octokit: Octokit,
 ) {
+	const { stage } = config;
+
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
@@ -323,16 +327,18 @@ export async function testExperimentalRepocopFeatures(
 	console.log(createYaml(['Scala', 'Python', 'Shell']));
 	console.log(createYaml(['Go', 'Dockerfile', 'TypeScript']));
 
-	console.log('Creating a test Snyk Pull Request against test-repocop-prs');
-	const response = await createSnykPullRequest(
-		octokit,
-		'test-repocop-prs',
-		// Introduce a random suffix to allow the same PR to be raised multiple times
-		// Useful for testing, but may be less useful in production
-		`integrate-snyk-${randomBytes(8).toString('hex')}`,
-		['Scala', 'Python', 'Shell'],
-	);
-	console.log('Pull request successfully created:', response?.data.html_url);
+	if (stage === 'PROD') {
+		console.log('Creating a test Snyk Pull Request against test-repocop-prs');
+		const response = await createSnykPullRequest(
+			octokit,
+			'test-repocop-prs',
+			// Introduce a random suffix to allow the same PR to be raised multiple times
+			// Useful for testing, but may be less useful in production
+			`integrate-snyk-${randomBytes(8).toString('hex')}`,
+			['Scala', 'Python', 'Shell'],
+		);
+		console.log('Pull request successfully created:', response?.data.html_url);
+	}
 }
 
 /**

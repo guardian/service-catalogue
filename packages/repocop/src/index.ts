@@ -67,6 +67,7 @@ export async function main() {
 	const octokit = await stageAwareOctokit(config.stage);
 
 	await testExperimentalRepocopFeatures(
+		config,
 		evaluatedRepos,
 		unarchivedRepos,
 		archivedRepos,
