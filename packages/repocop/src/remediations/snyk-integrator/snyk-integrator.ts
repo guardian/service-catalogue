@@ -1,5 +1,7 @@
+import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
+import { createPullRequest } from './create-pull-request';
 
 interface SnykInputs {
 	ORG: string;
@@ -72,7 +74,7 @@ function checklist(items: string[]): string {
 	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
-function generatePrBody(branchName: string, fullRepoName: string): string {
+function generatePrBody(branchName: string, repoName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -97,7 +99,7 @@ function generatePrBody(branchName: string, fullRepoName: string): string {
 		]),
 		h2('How do I check this works?'),
 		checklist([
-			`Run the action via the GitHub CLI \`gh workflow run ci.yml --ref ${branchName} --repo ${fullRepoName}\``,
+			`Run the action via the GitHub CLI \`gh workflow run snyk.yml --ref ${branchName} --repo guardian/${repoName}\``,
 			`View the action output, verify it has generated one project per dependency manifest.`,
 		]),
 	];
@@ -107,7 +109,7 @@ function generatePrBody(branchName: string, fullRepoName: string): string {
 export function generatePr(
 	repoLanguages: string[],
 	branch: string,
-	fullRepoName: string,
+	repoName: string,
 ): [string, string] {
 	const workflowLanguages = [
 		'Scala',
@@ -127,7 +129,31 @@ export function generatePr(
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(branch, fullRepoName);
+	const body = generatePrBody(branch, repoName);
 
 	return [header, body];
+}
+
+export async function createSnykPullRequest(
+	octokit: Octokit,
+	repoName: string,
+	branchName: string,
+	repoLanguages: string[],
+) {
+	const snykFileContents = createYaml(repoLanguages);
+	const [title, body] = generatePr(repoLanguages, branchName, repoName);
+	return await createPullRequest(octokit, {
+		repoName,
+		title,
+		body,
+		branchName,
+		changes: [
+			{
+				commitMessage: 'Add Snyk.yml',
+				files: {
+					'.github/workflows/snyk.yml': snykFileContents,
+				},
+			},
+		],
+	});
 }
