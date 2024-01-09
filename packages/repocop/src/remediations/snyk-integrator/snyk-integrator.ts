@@ -99,7 +99,7 @@ function generatePrBody(branchName: string, fullRepoName: string): string {
 		]),
 		h2('How do I check this works?'),
 		checklist([
-			`Run the action via the GitHub CLI \`gh workflow run ci.yml --ref ${branchName} --repo ${fullRepoName}\``,
+			`Run the action via the GitHub CLI \`gh workflow run snyk.yml --ref ${branchName} --repo ${fullRepoName}\``,
 			`View the action output, verify it has generated one project per dependency manifest.`,
 		]),
 	];
