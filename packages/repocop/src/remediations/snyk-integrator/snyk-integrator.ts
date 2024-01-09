@@ -69,7 +69,9 @@ export function createYaml(languages: string[]): string {
 		},
 	};
 
-	return stringify(snykWorkflowJson).replace('{}', '').replace(`"`, '');
+	return stringify(snykWorkflowJson, { lineWidth: 120 })
+		.replace('{}', '')
+		.replaceAll(`"`, '');
 }
 
 function generatePrHeader(languages: string[]): string {
