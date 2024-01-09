@@ -2,12 +2,13 @@ import { createYaml, generatePr } from './snyk-integrator';
 
 describe('createYaml', () => {
 	it('should skip node and sbt if no languages are provided', () => {
-		const yaml = createYaml([]);
+		const yaml = createYaml([], 'branch');
 		const result = String.raw`name: Snyk
 on:
   push:
     branches:
       - main
+      - branch
   workflow_dispatch: 
 jobs:
   security:
@@ -22,7 +23,7 @@ jobs:
 		expect(yaml).toEqual(result);
 	});
 	it('should not skip python and go if they are provided', () => {
-		const yaml = createYaml(['Scala', 'TypeScript', 'Python', 'Go']);
+		const yaml = createYaml(['Scala', 'TypeScript', 'Python', 'Go'], 'branch');
 
 		const expectedInputKeys = [
 			'ORG',

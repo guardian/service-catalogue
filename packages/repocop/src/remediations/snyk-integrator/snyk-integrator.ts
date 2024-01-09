@@ -31,7 +31,7 @@ interface SnykSchema {
 	};
 }
 
-export function createYaml(languages: string[]): string {
+export function createYaml(languages: string[], prBranch: string): string {
 	const inputs: SnykInputs = {
 		ORG: '<SNYK_ORG_ID>',
 		SKIP_SBT: languages.includes('Scala') ? undefined : true,
@@ -54,7 +54,7 @@ export function createYaml(languages: string[]): string {
 		name: 'Snyk',
 		on: {
 			push: {
-				branches: ['main'],
+				branches: ['main', prBranch],
 			},
 			workflow_dispatch: {}, //There isn't an elegant way to do this in TypeScript, so we'll remove the {} at the end
 		},
