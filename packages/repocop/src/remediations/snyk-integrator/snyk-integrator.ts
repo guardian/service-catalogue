@@ -150,7 +150,7 @@ export async function createSnykPullRequest(
 	branchName: string,
 	repoLanguages: string[],
 ) {
-	const snykFileContents = createYaml(repoLanguages);
+	const snykFileContents = createYaml(repoLanguages, branchName);
 	const [title, body] = generatePr(repoLanguages, branchName, repoName);
 	return await createPullRequest(octokit, {
 		repoName,
