@@ -268,7 +268,7 @@ spec:
             "Name": "CloudquerySource-AwsCostExplorerPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -282,7 +282,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -296,7 +296,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -978,7 +978,7 @@ spec:
             "Name": "CloudquerySource-DelegatedToSecurityAccountPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -992,7 +992,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -1006,7 +1006,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -1651,7 +1651,7 @@ spec:
             "Name": "CloudquerySource-DeployToolsListOrgsPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -1665,7 +1665,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -1679,7 +1679,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -2338,7 +2338,7 @@ spec:
             "Name": "CloudquerySource-FastlyServicesPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -2352,7 +2352,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -2366,7 +2366,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -3011,7 +3011,7 @@ spec:
             "Name": "CloudquerySource-GalaxiesPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -3025,7 +3025,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -3039,7 +3039,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -3953,7 +3953,7 @@ spec:
             "Name": "CloudquerySource-GitHubIssuesPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -3967,7 +3967,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -3981,7 +3981,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -4436,7 +4436,7 @@ spec:
             "Name": "CloudquerySource-GitHubLanguagesPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -4450,7 +4450,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -4464,7 +4464,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -5130,7 +5130,7 @@ spec:
             "Name": "CloudquerySource-GitHubRepositoriesPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -5144,7 +5144,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -5158,7 +5158,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -5854,7 +5854,7 @@ spec:
             "Name": "CloudquerySource-GitHubTeamsPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -5868,7 +5868,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -5882,7 +5882,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -6567,7 +6567,7 @@ spec:
             "Name": "CloudquerySource-GuardianCustomSnykProjectsPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -6581,7 +6581,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -6595,7 +6595,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -7847,7 +7847,7 @@ spec:
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -7861,7 +7861,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -7875,7 +7875,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -8528,7 +8528,7 @@ spec:
             "Name": "CloudquerySource-OrgWideBackupPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -8542,7 +8542,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -8556,7 +8556,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -9207,7 +9207,7 @@ spec:
             "Name": "CloudquerySource-OrgWideCertificatesPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -9221,7 +9221,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -9235,7 +9235,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -9916,7 +9916,7 @@ spec:
             "Name": "CloudquerySource-OrgWideCloudFormationPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -9930,7 +9930,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -9944,7 +9944,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -10775,7 +10775,7 @@ spec:
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -10789,7 +10789,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -10803,7 +10803,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -11244,7 +11244,7 @@ spec:
             "Name": "CloudquerySource-OrgWideDynamoDBPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -11258,7 +11258,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -11272,7 +11272,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -11957,7 +11957,7 @@ spec:
             "Name": "CloudquerySource-OrgWideEc2PostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -11971,7 +11971,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -11985,7 +11985,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -12652,7 +12652,7 @@ spec:
             "Name": "CloudquerySource-OrgWideInspectorPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -12666,7 +12666,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -12680,7 +12680,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -13542,7 +13542,7 @@ spec:
             "Name": "CloudquerySource-OrgWideLoadBalancersPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -13556,7 +13556,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -13570,7 +13570,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -14224,7 +14224,7 @@ spec:
             "Name": "CloudquerySource-OrgWideRDSPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -14238,7 +14238,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -14252,7 +14252,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -14693,7 +14693,7 @@ spec:
             "Name": "CloudquerySource-OrgWideS3PostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -14707,7 +14707,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -14721,7 +14721,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -15433,7 +15433,7 @@ spec:
             "Name": "CloudquerySource-RemainingAwsDataPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -15447,7 +15447,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -15461,7 +15461,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -16370,7 +16370,7 @@ spec:
             "Name": "CloudquerySource-RiffRaffDataPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -16384,7 +16384,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -16398,7 +16398,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -16844,7 +16844,7 @@ spec:
             "Name": "CloudquerySource-SnykAllPostgresContainer",
             "Secrets": [
               {
-                "Name": "DBUSER",
+                "Name": "PGUSER",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -16858,7 +16858,7 @@ spec:
                 },
               },
               {
-                "Name": "DBHOST",
+                "Name": "PGHOST",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
@@ -16872,7 +16872,7 @@ spec:
                 },
               },
               {
-                "Name": "DBPASSWORD",
+                "Name": "PGPASSWORD",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",

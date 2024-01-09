@@ -347,9 +347,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				image: Images.postgres,
 				entryPoint: [''],
 				secrets: {
-					DBUSER: Secret.fromSecretsManager(db.secret, 'username'),
-					DBHOST: Secret.fromSecretsManager(db.secret, 'host'),
-					DBPASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+					PGUSER: Secret.fromSecretsManager(db.secret, 'username'),
+					PGHOST: Secret.fromSecretsManager(db.secret, 'host'),
+					PGPASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
 				},
 				dockerLabels: {
 					Stack: stack,
