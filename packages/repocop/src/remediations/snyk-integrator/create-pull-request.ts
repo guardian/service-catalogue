@@ -2,7 +2,7 @@ import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 
 interface CreatePullRequestOptions {
-	fullRepoName: string;
+	repoName: string;
 	title: string;
 	body: string;
 	branchName: string;
@@ -16,7 +16,7 @@ interface CreatePullRequestOptions {
 export async function createPullRequest(
 	octokit: Octokit,
 	{
-		fullRepoName,
+		repoName,
 		title,
 		body,
 		branchName,
@@ -26,7 +26,7 @@ export async function createPullRequest(
 ) {
 	return await composeCreatePullRequest(octokit, {
 		owner: 'guardian',
-		repo: fullRepoName,
+		repo: repoName,
 		title,
 		body,
 		head: branchName,
