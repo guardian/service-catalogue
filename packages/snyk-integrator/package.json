@@ -1,0 +1,18 @@
+{
+	"name": "snyk-integrator",
+	"version": "1.0.0",
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.130"
+	},
+	"scripts": {
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"start": "APP=snyk-integrator tsx src/run-locally.ts",
+		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects snyk-integrator"
+	},
+	"dependencies": {
+		"@aws-sdk/client-sns": "^3.484.0",
+		"ts-markdown": "^1.0.0",
+		"octokit-plugin-create-pull-request": "^5.1.1",
+		"yaml": "^2.3.4"
+	}
+}
