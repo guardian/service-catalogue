@@ -116,6 +116,12 @@ export interface ScheduledCloudqueryTaskProps
 	dockerDistributedPluginImage?: RepositoryImage;
 }
 
+/**
+ * Takes a schedule and figures out its frequency. Supports both CRON and RATE schedules.
+ *
+ * @param schedule - An AWS EventBridge Schedule
+ * @returns an enum representing the rate at which a schedule runs
+ */
 const scheduleFrequency = (
 	schedule: Schedule,
 ): 'DAILY' | 'WEEKLY' | 'OTHER' => {
@@ -125,9 +131,10 @@ const scheduleFrequency = (
 		schedule.expressionString.length - 1,
 	);
 
-	let frequency: number | undefined;
+	let frequencyInMilliseconds: number | undefined;
 
 	if (type === 'rate') {
+		// Parse the RATE type of schedule, eg `rate(5 hours)`
 		const [amountString, type] = expression.split(' ');
 		const typeInMilliseconds: Record<string, number> = {
 			days: 24 * 60 * 60 * 1000,
@@ -148,8 +155,11 @@ const scheduleFrequency = (
 			throw new Error(`Unexpected rate type: ${expression}`);
 		}
 
-		frequency = typeMultiplier * amount;
+		frequencyInMilliseconds = typeMultiplier * amount;
 	} else if (type === 'cron') {
+		// Parse the RATE type of schedule, eg `cron(* * * 4 * *)`
+		// AWS uses a non-standard CRON expression so we need to rely on a cron library specifically designed
+		// for parsing AWS cron expressions.
 		const parsedExpression = awsCronParser.parse(expression);
 		const occurence = awsCronParser.next(parsedExpression, new Date());
 
@@ -163,15 +173,16 @@ const scheduleFrequency = (
 			throw new Error(`Second occurrence of schedule not found: ${expression}`);
 		}
 
-		frequency = nextOccurrence.getTime() - occurence.getTime();
+		frequencyInMilliseconds = nextOccurrence.getTime() - occurence.getTime();
 	} else {
 		throw new Error(`Unexpected schedule type: ${type}`);
 	}
 
 	const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
-	if (frequency / DAY_IN_MILLISECONDS > 8) {
+	// Use slightly more than 1 or 1 week just to make sure we catch things correctly
+	if (frequencyInMilliseconds / DAY_IN_MILLISECONDS > 8) {
 		return 'OTHER';
-	} else if (frequency / DAY_IN_MILLISECONDS > 2) {
+	} else if (frequencyInMilliseconds / DAY_IN_MILLISECONDS > 2) {
 		return 'WEEKLY';
 	} else {
 		return 'DAILY';
