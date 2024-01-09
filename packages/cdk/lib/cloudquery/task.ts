@@ -361,7 +361,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					'/bin/sh',
 					'-c',
 					[
-						`psql -c "INSERT INTO cloudquery_table_frequency VALUES ${tableValues} ON CONFLICT (table_name) DO UPDATE SET frequency = '${frequency}'`,
+						`psql -c "INSERT INTO cloudquery_table_frequency VALUES ${tableValues} ON CONFLICT (table_name) DO UPDATE SET frequency = '${frequency}'"`,
 					].join(';'),
 				],
 				logging: fireLensLogDriver,
