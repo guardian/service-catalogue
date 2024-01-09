@@ -16478,28 +16478,14 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/repocop/repocop.zip",
+          "S3Key": "deploy/TEST/snyk-integrator/snyk-integrator.zip",
         },
         "Environment": {
           "Variables": {
-            "ANGHAMMARAD_SNS_ARN": {
-              "Ref": "AnghammaradSnsArn",
-            },
-            "APP": "repocop",
-            "DATABASE_HOSTNAME": {
-              "Fn::GetAtt": [
-                "PostgresInstance16DE4286E",
-                "Endpoint.Address",
-              ],
-            },
+            "APP": "snyk-integrator",
             "GITHUB_APP_SECRET": {
               "Ref": "snykintegratorgithubappauth8C64864D",
             },
-            "INTERACTIVES_COUNT": "3",
-            "INTERACTIVE_MONITOR_TOPIC_ARN": {
-              "Ref": "TopicBFC7AF6E",
-            },
-            "QUERY_LOGGING": "false",
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -16516,7 +16502,7 @@ spec:
         "Tags": [
           {
             "Key": "App",
-            "Value": "repocop",
+            "Value": "snyk-integrator",
           },
           {
             "Key": "gu:cdk:version",
@@ -16540,7 +16526,7 @@ spec:
           "SecurityGroupIds": [
             {
               "Fn::GetAtt": [
-                "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                "snykintegratorSecurityGroup158665A3",
                 "GroupId",
               ],
             },
@@ -16551,6 +16537,44 @@ spec:
         },
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "snykintegratorSecurityGroup158665A3": {
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function ServiceCataloguesnykintegratorC6E6D2B3",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "snyk-integrator",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "snykintegratorServiceRole8B7567EF": {
       "Properties": {
@@ -16595,7 +16619,7 @@ spec:
         "Tags": [
           {
             "Key": "App",
-            "Value": "repocop",
+            "Value": "snyk-integrator",
           },
           {
             "Key": "gu:cdk:version",
@@ -16656,7 +16680,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/repocop/repocop.zip",
+                      "/deploy/TEST/snyk-integrator/snyk-integrator.zip",
                     ],
                   ],
                 },
@@ -16677,7 +16701,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/repocop",
+                    ":parameter/TEST/deploy/snyk-integrator",
                   ],
                 ],
               },
@@ -16700,7 +16724,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/repocop/*",
+                    ":parameter/TEST/deploy/snyk-integrator/*",
                   ],
                 ],
               },

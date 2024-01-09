@@ -72,21 +72,15 @@ export class Repocop {
 			guStack,
 			'snyk-integrator',
 			{
-				app: 'repocop',
-				fileName: 'repocop.zip',
+				app: 'snyk-integrator',
+				fileName: 'snyk-integrator.zip',
 				handler: 'index.main',
 				memorySize: 1024,
 				runtime: Runtime.NODEJS_20_X,
 				environment: {
-					ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
-					DATABASE_HOSTNAME: cloudqueryDB.dbInstanceEndpointAddress,
-					QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
-					INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitorTopic.topicArn,
 					GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
-					INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '40' : '3',
 				},
 				vpc,
-				securityGroups: [dbSecurityGroup],
 				timeout: Duration.minutes(5),
 			},
 		);
