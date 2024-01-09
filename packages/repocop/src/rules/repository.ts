@@ -157,6 +157,11 @@ export function hasDependencyTracking(
 		'Makefile',
 		'Dockerfile',
 		'PLpgSQL',
+		'Thrift',
+		'SCSS',
+		'Batchfile',
+		'HCL',
+		'VCL',
 	];
 
 	const commonSupportedLanguages = [
