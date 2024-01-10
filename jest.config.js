@@ -4,15 +4,17 @@ const dotenv = require('dotenv');
 // Load environment variables from .env file at the root of the repository
 dotenv.config({ path: `${__dirname}/.env` });
 
+const transform = {
+	'^.+\\.tsx?$': ['esbuild-jest', { target: 'esnext' }],
+};
+
 module.exports = {
 	verbose: true,
 	testEnvironment: 'node',
 	projects: [
 		{
 			displayName: 'cdk',
-			transform: {
-				'^.+\\.tsx?$': 'ts-jest',
-			},
+			transform,
 			transformIgnorePatterns: [
 				'node_modules/(?!@guardian/private-infrastructure-config)',
 			],
@@ -21,16 +23,12 @@ module.exports = {
 		},
 		{
 			displayName: 'common',
-			transform: {
-				'^.+\\.tsx?$': 'ts-jest',
-			},
+			transform,
 			testMatch: ['<rootDir>/packages/common/**/*.test.ts'],
 		},
 		{
 			displayName: 'repocop',
-			transform: {
-				'^.+\\.tsx?$': 'ts-jest',
-			},
+			transform,
 			transformIgnorePatterns: [
 				'node_modules/(?!@guardian/private-infrastructure-config)',
 			],
@@ -38,9 +36,7 @@ module.exports = {
 		},
 		{
 			displayName: 'interactive-monitor',
-			transform: {
-				'^.+\\.tsx?$': 'ts-jest',
-			},
+			transform,
 			testMatch: ['<rootDir>/packages/interactive-monitor/**/*.test.ts'],
 		},
 	],
