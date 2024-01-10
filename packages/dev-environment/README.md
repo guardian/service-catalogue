@@ -14,8 +14,6 @@ It includes:
 ## Requirements
 
 - Docker
-- A GitHub Personal Access Token (PAT) with read access on all repos
-- A Snyk token
 
 ## Setup
 
@@ -28,9 +26,8 @@ It includes:
 
 ## Running
 
-1. Put your GitHub PAT and Snyk token in the `.env.local` file at `~/.gu/service_catalogue/`(n.b. DO NOT put them in the repo `.env` file, as you could commit a secret by accident).
-2. Start Docker
-3. Run:
+1. Start Docker
+2. Run:
 
    ```sh
    npm start -w cloudquery
@@ -47,10 +44,14 @@ It includes:
 4. Wait for tables to start being populated. Usually the first tables show up after a few seconds, but this could take
    as long as a minute.
 5. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data
-6. To restart on your local machine, delete the container in docker and go back to step 3.
+6. To restart on your local machine, delete the container in docker and go back to step 2.
 
 > **Note**
 > You can also use other Postgres clients, such as `psql` to query the data, or even your IDE!
+
+## RepoCop
+   
+   To develop locally once the tables have been populated follow the steps in the  repocop [README](../repocop/README.md)
 
 ## Links
 
