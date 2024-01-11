@@ -12,6 +12,15 @@ import type {
 	TeamRepository,
 } from './types';
 
+export type NonEmptyArray<T> = [T, ...T[]];
+
+export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
+	if (value.length === 0) {
+		throw new Error(`Expected a non-empty array. Source table may be empty.`);
+	}
+	return value as NonEmptyArray<T>;
+}
+
 export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
@@ -30,21 +39,21 @@ export async function getRepositories(
 	});
 
 	console.log(`Found ${repositories.length} repositories`);
-	return repositories.map((r) => r as Repository);
+	return toNonEmptyArray(repositories.map((r) => r as Repository));
 }
 
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
 export async function getRepositoryBranches(
 	client: PrismaClient,
 	repos: Repository[],
-): Promise<github_repository_branches[]> {
+): Promise<NonEmptyArray<github_repository_branches>> {
 	const branches = await client.github_repository_branches.findMany({
 		where: {
 			repository_id: { in: repos.map((repo) => repo.id) },
 		},
 	});
 
-	return branches;
+	return toNonEmptyArray(branches);
 }
 
 export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
@@ -58,12 +67,12 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 		})
 	).map((t) => t as Team);
 	console.log(`Parsed ${teams.length} teams.`);
-	return teams;
+	return toNonEmptyArray(teams);
 };
 
 export async function getTeamRepositories(
 	client: PrismaClient,
-): Promise<TeamRepository[]> {
+): Promise<NonEmptyArray<TeamRepository>> {
 	const data = await client.github_team_repositories.findMany({
 		select: {
 			id: true,
@@ -71,21 +80,21 @@ export async function getTeamRepositories(
 			team_id: true,
 		},
 	});
-	return data.map((t) => t as TeamRepository);
+	return toNonEmptyArray(data.map((t) => t as TeamRepository));
 }
 
 export async function getRepoOwnership(
 	client: PrismaClient,
-): Promise<view_repo_ownership[]> {
+): Promise<NonEmptyArray<view_repo_ownership>> {
 	const data = await client.view_repo_ownership.findMany();
 	console.log(`Found ${data.length} repo ownership records.`);
-	return data;
+	return toNonEmptyArray(data);
 }
 
 export async function getStacks(
 	client: PrismaClient,
-): Promise<AwsCloudFormationStack[]> {
-	return (
+): Promise<NonEmptyArray<AwsCloudFormationStack>> {
+	const stacks = (
 		await client.aws_cloudformation_stacks.findMany({
 			select: {
 				stack_name: true,
@@ -94,16 +103,19 @@ export async function getStacks(
 			},
 		})
 	).map((stack) => stack as AwsCloudFormationStack);
+
+	console.log(`Found ${stacks.length} stacks.`);
+	return toNonEmptyArray(stacks);
 }
 
 export async function getSnykProjects(
 	client: PrismaClient,
-): Promise<snyk_projects[]> {
-	return await client.snyk_projects.findMany({});
+): Promise<NonEmptyArray<snyk_projects>> {
+	return toNonEmptyArray(await client.snyk_projects.findMany({}));
 }
 
 export async function getRepositoryLanguages(
 	client: PrismaClient,
-): Promise<github_languages[]> {
-	return await client.github_languages.findMany({});
+): Promise<NonEmptyArray<github_languages>> {
+	return toNonEmptyArray(await client.github_languages.findMany({}));
 }
