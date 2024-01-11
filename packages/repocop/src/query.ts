@@ -16,7 +16,7 @@ export type NonEmptyArray<T> = [T, ...T[]];
 
 export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 	if (value.length === 0) {
-		throw new Error(`Expected a non-empty array for ${typeof value}`);
+		throw new Error(`Expected a non-empty array. Source table may be empty.`);
 	}
 	return value as NonEmptyArray<T>;
 }
