@@ -41,9 +41,7 @@ module.exports = {
 		},
 		{
 			displayName: 'snyk-integrator',
-			transform: {
-				'^.+\\.tsx?$': 'ts-jest',
-			},
+			transform,
 			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
 		},
 	],
