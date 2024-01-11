@@ -70,6 +70,8 @@ jobs:
               - packages/interactive-monitor/dist/interactive-monitor.zip
             data-audit:
               - packages/data-audit/dist/data-audit.zip
+            snyk-integrator:
+              - packages/snyk-integrator/dist/snyk-integrator.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
 

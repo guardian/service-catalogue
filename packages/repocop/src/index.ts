@@ -66,13 +66,11 @@ export async function main() {
 
 	const octokit = await stageAwareOctokit(config.stage);
 
-	await testExperimentalRepocopFeatures(
-		config,
+	testExperimentalRepocopFeatures(
 		evaluatedRepos,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
-		octokit,
 	);
 
 	await writeEvaluationTable(evaluatedRepos, prisma);

@@ -39,5 +39,10 @@ module.exports = {
 			transform,
 			testMatch: ['<rootDir>/packages/interactive-monitor/**/*.test.ts'],
 		},
+		{
+			displayName: 'snyk-integrator',
+			transform,
+			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
+		},
 	],
 };

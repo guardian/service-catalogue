@@ -50,5 +50,6 @@ npm run synth & npm run build
 
 verifyMarkdown & \
   createZip "interactive-monitor" & \
+  createZip "snyk-integrator" & \
   createLambdaWithPrisma "repocop" & \
   createLambdaWithPrisma "data-audit"
