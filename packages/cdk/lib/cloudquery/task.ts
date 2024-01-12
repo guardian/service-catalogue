@@ -174,6 +174,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		});
 
+		//Do not remove the steampipe plugin list command. It is used to check if the steampipe plugin is installed correctly.
 		task.addContainer(`${id}SteampipeContainer`, {
 			image: Images.steampipe,
 			entryPoint: [''],
@@ -187,7 +188,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					'steampipe plugin install steampipe',
+					'steampipe plugin install --progress=false steampipe',
+					'steampipe plugin list',
 					'steampipe query "select name from steampipe_registry_plugin;"',
 				].join(';'),
 			],
