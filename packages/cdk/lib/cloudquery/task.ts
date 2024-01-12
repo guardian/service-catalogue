@@ -19,7 +19,10 @@ import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { CloudqueryConfig } from './config';
+<<<<<<< HEAD
 // import { postgresDestinationConfig } from './config';
+=======
+>>>>>>> f70e36e (Remove unused import for testing)
 import { Images } from './images';
 
 export interface ScheduledCloudqueryTaskProps
