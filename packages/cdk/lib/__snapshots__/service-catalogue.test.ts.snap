@@ -110,7 +110,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -775,7 +775,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -1406,7 +1406,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2040,7 +2040,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2653,7 +2653,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -3537,7 +3537,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -4020,7 +4020,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -4619,7 +4619,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -5299,7 +5299,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -6009,7 +6009,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -7249,7 +7249,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -7884,7 +7884,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -8521,7 +8521,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -9186,7 +9186,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -10001,7 +10001,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -10426,7 +10426,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11061,7 +11061,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11745,7 +11745,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12591,7 +12591,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13227,7 +13227,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13655,7 +13655,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -14290,7 +14290,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -15209,7 +15209,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -15659,7 +15659,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",

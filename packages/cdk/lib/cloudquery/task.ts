@@ -188,7 +188,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					'steampipe plugin install steampipe',
-					'steampipe query "select name from steampipe_registry_plugin;',
+					'steampipe query "select name from steampipe_registry_plugin;"',
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
