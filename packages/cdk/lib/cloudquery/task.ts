@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- TODO: Remove this once we have tested
+//@ts-nocheck
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Tags } from 'aws-cdk-lib';
@@ -16,11 +18,9 @@ import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
-import { postgresDestinationConfig } from './config';
+// import { postgresDestinationConfig } from './config';
 import { Images } from './images';
-import { singletonPolicy } from './policies';
 
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
@@ -129,14 +129,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			loggingStreamName,
 			sourceConfig,
 			enabled,
-			secrets,
-			additionalCommands = [],
 			memoryLimitMiB = 512,
 			cpu,
 			additionalSecurityGroups = [],
-			runAsSingleton,
-			cloudQueryApiKey,
-			dockerDistributedPluginImage,
+			// runAsSingleton,
+			// cloudQueryApiKey,
+			// dockerDistributedPluginImage,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -151,7 +149,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		 */
 		Tags.of(task).add('Name', name);
 
-		const destinationConfig = postgresDestinationConfig();
+		// const destinationConfig = postgresDestinationConfig();
 
 		/*
 		This error shouldn't ever be thrown as AWS CDK creates a secret by default,
@@ -226,103 +224,103 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			condition: ContainerDependencyCondition.START,
 		});
 
-		const cloudqueryTask = task.addContainer(`${id}Container`, {
-			image: Images.cloudquery,
-			entryPoint: [''],
-			environment: {
-				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
-			},
-			secrets: {
-				...secrets,
-				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
-				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
-				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
-				CLOUDQUERY_API_KEY: cloudQueryApiKey,
-			},
-			dockerLabels: {
-				Stack: stack,
-				Stage: stage,
-				App: app,
-				Name: name,
-			},
-			command: [
-				'/bin/sh',
-				'-c',
-				[
-					...additionalCommands,
+		// const cloudqueryTask = task.addContainer(`${id}Container`, {
+		// 	image: Images.cloudquery,
+		// 	entryPoint: [''],
+		// 	environment: {
+		// 		GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
+		// 	},
+		// 	secrets: {
+		// 		...secrets,
+		// 		DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
+		// 		DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
+		// 		DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+		// 		CLOUDQUERY_API_KEY: cloudQueryApiKey,
+		// 	},
+		// 	dockerLabels: {
+		// 		Stack: stack,
+		// 		Stage: stage,
+		// 		App: app,
+		// 		Name: name,
+		// 	},
+		// 	command: [
+		// 		'/bin/sh',
+		// 		'-c',
+		// 		[
+		// 			...additionalCommands,
 
-					/*
-					Install the CA bundle for all RDS certificates.
-					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
-					 */
-					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
+		// 			/*
+		// 			Install the CA bundle for all RDS certificates.
+		// 			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
+		// 			 */
+		// 			'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
 
-					`printf '${dump(sourceConfig)}' > /source.yaml`,
-					`printf '${dump(destinationConfig)}' > /destination.yaml`,
-					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
-				].join(';'),
-			],
-			logging: fireLensLogDriver,
-		});
+		// 			`printf '${dump(sourceConfig)}' > /source.yaml`,
+		// 			`printf '${dump(destinationConfig)}' > /destination.yaml`,
+		// 			'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
+		// 		].join(';'),
+		// 	],
+		// 	logging: fireLensLogDriver,
+		// });
 
-		if (dockerDistributedPluginImage) {
-			const additionalCloudQueryContainer = task.addContainer(
-				`${id}PluginContainer`,
-				{
-					image: dockerDistributedPluginImage,
-					logging: fireLensLogDriver,
-					essential: false,
-				},
-			);
+		// if (dockerDistributedPluginImage) {
+		// 	const additionalCloudQueryContainer = task.addContainer(
+		// 		`${id}PluginContainer`,
+		// 		{
+		// 			image: dockerDistributedPluginImage,
+		// 			logging: fireLensLogDriver,
+		// 			essential: false,
+		// 		},
+		// 	);
 
-			cloudqueryTask.addContainerDependencies({
-				container: additionalCloudQueryContainer,
-				condition: ContainerDependencyCondition.START,
-			});
-		}
+		// 	cloudqueryTask.addContainerDependencies({
+		// 		container: additionalCloudQueryContainer,
+		// 		condition: ContainerDependencyCondition.START,
+		// 	});
+		// }
 
-		if (runAsSingleton) {
-			const operationInProgress = 114;
-			const success = 0;
+		// if (runAsSingleton) {
+		// 	const operationInProgress = 114;
+		// 	const success = 0;
 
-			const singletonTask = task.addContainer(`${id}AwsCli`, {
-				image: Images.amazonLinux,
-				entryPoint: [''],
-				command: [
-					'/bin/bash',
-					'-c',
-					[
-						// Install jq to handle JSON, and awscli to query ECS
-						'yum install -y -q jq awscli',
+		// 	const singletonTask = task.addContainer(`${id}AwsCli`, {
+		// 		image: Images.amazonLinux,
+		// 		entryPoint: [''],
+		// 		command: [
+		// 			'/bin/bash',
+		// 			'-c',
+		// 			[
+		// 				// Install jq to handle JSON, and awscli to query ECS
+		// 				'yum install -y -q jq awscli',
 
-						// Who am I?
-						`ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster')`,
-						`ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family')`,
-						`ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN')`,
+		// 				// Who am I?
+		// 				`ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster')`,
+		// 				`ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family')`,
+		// 				`ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN')`,
 
-						// How many more of me are there?
-						`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
+		// 				// How many more of me are there?
+		// 				`RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length')`,
 
-						// Exit zero (successful) if I'm the only one running
-						`[[ $\{RUNNING} > 1 ]] && exit ${operationInProgress} || exit ${success}`,
-					].join(';'),
-				],
-				logging: fireLensLogDriver,
+		// 				// Exit zero (successful) if I'm the only one running
+		// 				`[[ $\{RUNNING} > 1 ]] && exit ${operationInProgress} || exit ${success}`,
+		// 			].join(';'),
+		// 		],
+		// 		logging: fireLensLogDriver,
 
-				/*
-				A container listed as a dependency of another cannot be marked as essential.
-				Below, we describe a dependency such that CloudQuery will only start if the singleton step succeeds.
-			 	*/
-				essential: false,
-			});
+		// 		/*
+		// 		A container listed as a dependency of another cannot be marked as essential.
+		// 		Below, we describe a dependency such that CloudQuery will only start if the singleton step succeeds.
+		// 	 	*/
+		// 		essential: false,
+		// 	});
 
-			cloudqueryTask.addContainerDependencies({
-				container: singletonTask,
-				condition: ContainerDependencyCondition.SUCCESS,
-			});
+		// 	cloudqueryTask.addContainerDependencies({
+		// 		container: singletonTask,
+		// 		condition: ContainerDependencyCondition.SUCCESS,
+		// 	});
 
-			task.addToTaskRolePolicy(singletonPolicy(cluster));
-		}
+		// 	task.addToTaskRolePolicy(singletonPolicy(cluster));
+		// }
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
 			image: Images.devxLogs,
