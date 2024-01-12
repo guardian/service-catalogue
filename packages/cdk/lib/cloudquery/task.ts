@@ -174,6 +174,26 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		});
 
+		task.addContainer(`${id}SteampipeContainer`, {
+			image: Images.steampipe,
+			entryPoint: [''],
+			dockerLabels: {
+				Stack: stack,
+				Stage: stage,
+				App: app,
+				Name: name,
+			},
+			command: [
+				'/bin/sh',
+				'-c',
+				[
+					'steampipe plugin install steampipe',
+					'steampipe query "select name from steampipe_registry_plugin;',
+				].join(';'),
+			],
+			logging: fireLensLogDriver,
+		});
+
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: Images.cloudquery,
 			entryPoint: [''],

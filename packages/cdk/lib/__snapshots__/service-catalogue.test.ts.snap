@@ -110,6 +110,38 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsCostExplorer",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsCostExplorerSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
@@ -743,6 +775,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "DelegatedToSecurityAccount",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-DelegatedToSecurityAccountSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
@@ -1338,6 +1402,38 @@ spec:
     "CloudquerySourceDeployToolsListOrgsTaskDefinitionDE2A34D9": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "DeployToolsListOrgs",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-DeployToolsListOrgsSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -1944,6 +2040,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "FastlyServices",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-FastlyServicesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: fastly
@@ -2521,6 +2649,38 @@ spec:
     "CloudquerySourceGalaxiesTaskDefinition0777FEFC": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "Galaxies",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GalaxiesSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -3377,6 +3537,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubIssues",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubIssuesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "echo $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo $GITHUB_APP_ID > /github-app-id;echo $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
@@ -3824,6 +4016,38 @@ spec:
     "CloudquerySourceGitHubLanguagesTaskDefinitionDA995E2B": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubLanguages",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubLanguagesSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -4391,6 +4615,38 @@ spec:
     "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubRepositories",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubRepositoriesSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -5039,6 +5295,38 @@ spec:
     "CloudquerySourceGitHubTeamsTaskDefinitionB01C9D3C": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubTeams",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubTeamsSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -5717,6 +6005,38 @@ spec:
     "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionEB2B4EBC": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GuardianCustomSnykProjects",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GuardianCustomSnykProjectsSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -6929,6 +7249,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideAutoScalingGroups",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideAutoScalingGroupsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
@@ -7528,6 +7880,38 @@ spec:
     "CloudquerySourceOrgWideBackupTaskDefinition9BAD0C75": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideBackup",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideBackupSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -8133,6 +8517,38 @@ spec:
     "CloudquerySourceOrgWideCertificatesTaskDefinition47A214D9": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCertificates",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideCertificatesSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -8766,6 +9182,38 @@ spec:
     "CloudquerySourceOrgWideCloudFormationTaskDefinitionDA4F8A51": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCloudFormation",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideCloudFormationSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -9553,6 +10001,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCloudwatchAlarms",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
@@ -9942,6 +10422,38 @@ spec:
     "CloudquerySourceOrgWideDynamoDBTaskDefinition7016173E": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideDynamoDB",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideDynamoDBSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -10545,6 +11057,38 @@ spec:
     "CloudquerySourceOrgWideEc2TaskDefinition7E4B2AE4": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideEc2",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideEc2SteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -11197,6 +11741,38 @@ spec:
     "CloudquerySourceOrgWideInspectorTaskDefinition25FAB51D": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideInspector",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideInspectorSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -12015,6 +12591,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideLoadBalancers",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideLoadBalancersSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
@@ -12619,6 +13227,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideRDS",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideRDSSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
@@ -13011,6 +13651,38 @@ spec:
     "CloudquerySourceOrgWideS3TaskDefinition8B6BA52D": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideS3",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideS3SteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -13614,6 +14286,38 @@ spec:
     "CloudquerySourceRemainingAwsDataTaskDefinition8790EDD9": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "RemainingAwsData",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-RemainingAwsDataSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
@@ -14505,6 +15209,38 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "RiffRaffData",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-RiffRaffDataSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
               "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: postgresql
@@ -14919,6 +15655,38 @@ spec:
     "CloudquerySourceSnykAllTaskDefinitionC8C1F3EC": {
       "Properties": {
         "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "steampipe plugin install steampipe;steampipe query "select name from steampipe_registry_plugin;",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "SnykAll",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/turbot/steampipe:latest",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-SnykAllSteampipeContainer",
+          },
           {
             "Command": [
               "/bin/sh",
