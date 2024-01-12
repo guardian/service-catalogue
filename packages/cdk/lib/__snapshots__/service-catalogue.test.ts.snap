@@ -110,7 +110,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -137,6 +137,88 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-AwsCostExplorerSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-AwsCostExplorerSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsCostExplorer",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsCostExplorerPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -775,7 +857,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -802,6 +884,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-DelegatedToSecurityAccountSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-DelegatedToSecurityAccountSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "DelegatedToSecurityAccount",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-DelegatedToSecurityAccountPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -1406,7 +1570,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -1433,6 +1597,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-DeployToolsListOrgsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-DeployToolsListOrgsSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "DeployToolsListOrgs",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-DeployToolsListOrgsPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -2040,7 +2286,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2067,6 +2313,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-FastlyServicesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-FastlyServicesSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "FastlyServices",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-FastlyServicesPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -2391,7 +2719,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "fastlycredentialsF42D3C80",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -2401,7 +2729,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "fastlycredentialsF42D3C80",
               },
             },
             {
@@ -2653,7 +2981,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2680,6 +3008,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-GalaxiesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-GalaxiesSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "Galaxies",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GalaxiesPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -3482,7 +3892,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "githubcredentialsAF453741",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -3492,7 +3902,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -3537,7 +3947,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -3564,6 +3974,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubIssuesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-GitHubIssuesSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubIssues",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubIssuesPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -4020,7 +4512,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -4047,6 +4539,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubLanguagesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-GitHubLanguagesSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubLanguages",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubLanguagesPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -4396,7 +4970,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "githublanguages5093EDEC",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -4406,7 +4980,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "githublanguages5093EDEC",
               },
             },
             {
@@ -4619,7 +5193,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -4646,6 +5220,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubRepositoriesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-GitHubRepositoriesSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubRepositories",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubRepositoriesPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -5076,7 +5732,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "githubcredentialsAF453741",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -5086,7 +5742,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -5299,7 +5955,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -5326,6 +5982,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubTeamsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-GitHubTeamsSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubTeams",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubTeamsPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -5756,7 +6494,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "githubcredentialsAF453741",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -5766,7 +6504,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -6009,7 +6747,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -6036,6 +6774,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-GuardianCustomSnykProjectsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-GuardianCustomSnykProjectsSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GuardianCustomSnykProjects",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GuardianCustomSnykProjectsPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -6395,7 +7215,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "snykcredentials4D951A18",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -6405,7 +7225,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "snykcredentials4D951A18",
               },
             },
             {
@@ -7249,7 +8069,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -7276,6 +8096,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideAutoScalingGroupsSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideAutoScalingGroups",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideAutoScalingGroupsPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -7884,7 +8786,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -7911,6 +8813,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideBackupSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideBackupSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideBackup",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideBackupPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -8521,7 +9505,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -8548,6 +9532,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCertificatesSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideCertificatesSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCertificates",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideCertificatesPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -9186,7 +10252,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -9213,6 +10279,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudFormationSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideCloudFormationSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCloudFormation",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideCloudFormationPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -10001,7 +11149,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -10028,6 +11176,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideCloudwatchAlarmsSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideCloudwatchAlarms",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideCloudwatchAlarmsPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -10426,7 +11656,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -10453,6 +11683,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideDynamoDBSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideDynamoDBSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideDynamoDB",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideDynamoDBPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -11061,7 +12373,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11088,6 +12400,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideEc2SteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideEc2SteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideEc2",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideEc2PgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -11745,7 +13139,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11772,6 +13166,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideInspectorSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideInspectorSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideInspector",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideInspectorPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -12591,7 +14067,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12618,6 +14094,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideLoadBalancersSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideLoadBalancersSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideLoadBalancers",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideLoadBalancersPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -13227,7 +14785,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13254,6 +14812,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideRDSSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideRDSSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideRDS",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideRDSPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -13655,7 +15295,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13682,6 +15322,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideS3SteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-OrgWideS3SteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "OrgWideS3",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-OrgWideS3PgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -14290,7 +16012,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -14317,6 +16039,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-RemainingAwsDataSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-RemainingAwsDataSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "RemainingAwsData",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-RemainingAwsDataPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -15154,7 +16958,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "RiffRaffDatabaseCredentials2033FD7A",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -15164,7 +16968,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "RiffRaffDatabaseCredentials2033FD7A",
               },
             },
             {
@@ -15209,7 +17013,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -15236,6 +17040,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-RiffRaffDataSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-RiffRaffDataSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "RiffRaffData",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-RiffRaffDataPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -15659,7 +17545,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "select name from steampipe_registry_plugin;"",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -15686,6 +17572,88 @@ spec:
               },
             },
             "Name": "CloudquerySource-SnykAllSteampipeContainer",
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME):\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "START",
+                "ContainerName": "CloudquerySource-SnykAllSteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "SnykAll",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-SnykAllPgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
@@ -16086,7 +18054,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "snykcredentials4D951A18",
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
               },
             },
             {
@@ -16096,7 +18064,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                "Ref": "snykcredentials4D951A18",
               },
             },
             {
