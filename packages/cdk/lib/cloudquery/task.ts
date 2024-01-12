@@ -214,7 +214,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					'pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://${DB_USERNAME):${DB_PASSWORD}@${DB_HOST}:5432/postgres',
+					'sleep 60',
+					'pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:5432/postgres',
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
