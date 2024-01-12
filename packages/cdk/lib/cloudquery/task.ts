@@ -175,7 +175,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		});
 
 		//Do not remove the steampipe plugin list command. It is used to check if the steampipe plugin is installed correctly.
-		task.addContainer(`${id}SteampipeContainer`, {
+		const steampipeContainer = task.addContainer(`${id}SteampipeContainer`, {
 			image: Images.steampipe,
 			entryPoint: [''],
 			dockerLabels: {
@@ -190,10 +190,39 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				[
 					'steampipe plugin install --progress=false steampipe',
 					'steampipe plugin list',
-					'steampipe query "select name from steampipe_registry_plugin;"',
+					'steampipe service start  --foreground --database-password steampipe',
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
+		});
+
+		const pgDumpContainer = task.addContainer(`${id}PgDumpContainer`, {
+			image: Images.pgdump,
+			entryPoint: [''],
+			dockerLabels: {
+				Stack: stack,
+				Stage: stage,
+				App: app,
+				Name: name,
+			},
+			secrets: {
+				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
+				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
+				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+			},
+			command: [
+				'/bin/sh',
+				'-c',
+				[
+					'pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://${DB_USERNAME):${DB_PASSWORD}@${DB_HOST}:5432/postgres',
+				].join(';'),
+			],
+			logging: fireLensLogDriver,
+		});
+
+		pgDumpContainer.addContainerDependencies({
+			container: steampipeContainer,
+			condition: ContainerDependencyCondition.START,
 		});
 
 		const cloudqueryTask = task.addContainer(`${id}Container`, {

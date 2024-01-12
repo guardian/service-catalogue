@@ -14,4 +14,5 @@ export const Images = {
 		`ghcr.io/guardian/cq-source-ns1:${Versions.CloudqueryNs1}`,
 	),
 	steampipe: ContainerImage.fromRegistry('ghcr.io/turbot/steampipe:latest'),
+	pgdump: ContainerImage.fromRegistry('postgres:16.1'),
 };
