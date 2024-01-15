@@ -105,12 +105,10 @@ function generatePrBody(branchName: string, repoName: string): string {
 		checklist([
 			'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
 				'If you can’t find any, reach out to DevX)',
-			'Replace the python version with the version your repo uses',
-		]),
-		h2('How do I check this works?'),
-		checklist([
-			`Run the action via the GitHub CLI \`gh workflow run snyk.yml --ref ${branchName} --repo guardian/${repoName}\``,
-			`View the action output, verify it has generated one project per dependency manifest.`,
+			'Replace the relevant python fields, if they exist in the file. If not, skip this step',
+			'The job should run automatically on every commit to this branch. ' +
+				'View the action output and verify it has generated one project per dependency manifest.',
+			`When you are happy the action works, remove ${branchName} option from the list of branches in the workflow, approve, and merge.`,
 		]),
 	];
 	return tsMarkdown(body);
