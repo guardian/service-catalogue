@@ -42,7 +42,7 @@ jobs:
 describe('A generated PR', () => {
 	//higher level function that takes in just languages and returns a PR
 	function generateServiceCataloguePr(languages: string[]): [string, string] {
-		return generatePr(languages, 'main', 'guardian/service-catalogue');
+		return generatePr(languages, 'main');
 	}
 
 	it('should have only the supported languages in its header', () => {
