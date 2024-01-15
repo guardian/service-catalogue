@@ -588,4 +588,39 @@ describe('Dependency tracking', () => {
 		const actual = hasDependencyTracking(repo, [noLanguages], [], []);
 		expect(actual).toEqual(true);
 	});
+	test('is valid if a repository has a snyk.yml', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+			id: 1n,
+		};
+		const workflow: github_workflows = {
+			cq_sync_time: null,
+			cq_source_name: null,
+			cq_id: '',
+			cq_parent_id: null,
+			id: 1n,
+			name: null,
+			path: '.github/workflows/snyk.yml',
+			repository_id: 1n,
+			org: 'guardian',
+			contents: null,
+			node_id: null,
+			state: null,
+			created_at: null,
+			updated_at: null,
+			url: null,
+			html_url: null,
+			badge_url: null,
+		};
+
+		const actual = hasDependencyTracking(
+			repo,
+			[snykSupportedLanguages],
+			[],
+			[workflow],
+		);
+		expect(actual).toEqual(true);
+	});
 });
