@@ -201,12 +201,16 @@ export function hasDependencyTracking(
 
 	//This is a temporary workaround until we get the snyk_projects table back.
 	function findSnykYaml(repo: Repository, workflowFiles: github_workflows[]) {
-		return workflowFiles.find(
+		const result = workflowFiles.find(
 			(file) =>
 				file.repository_id === repo.id &&
 				!!file.path &&
 				file.path.includes('snyk'),
 		);
+		if (result !== undefined) {
+			console.log(`${repo.name} has a snyk workflow file.`);
+		}
+		return result;
 	}
 
 	function findMatchingSnykProject(
