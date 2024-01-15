@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	github_repository_branches,
+	github_workflows,
 	PrismaClient,
 	snyk_projects,
 	view_repo_ownership,
@@ -108,14 +109,21 @@ export async function getStacks(
 	return toNonEmptyArray(stacks);
 }
 
+//allow it to return an empty array while getWorkflowFiles exists
 export async function getSnykProjects(
 	client: PrismaClient,
-): Promise<NonEmptyArray<snyk_projects>> {
-	return toNonEmptyArray(await client.snyk_projects.findMany({}));
+): Promise<snyk_projects[]> {
+	return await client.snyk_projects.findMany({});
 }
 
 export async function getRepositoryLanguages(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<github_languages>> {
 	return toNonEmptyArray(await client.github_languages.findMany({}));
+}
+
+export async function getWorkflowFiles(
+	client: PrismaClient,
+): Promise<NonEmptyArray<github_workflows>> {
+	return toNonEmptyArray(await client.github_workflows.findMany({}));
 }

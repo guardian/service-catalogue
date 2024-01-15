@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	github_repository_branches,
+	github_workflows,
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
@@ -138,6 +139,7 @@ export function hasDependencyTracking(
 	repo: Repository,
 	repoLanguages: github_languages[],
 	snyk_projects: snyk_projects[],
+	workflowFiles: github_workflows[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
@@ -197,16 +199,41 @@ export function hasDependencyTracking(
 
 	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
 
-	const matchingSnykProject = allProjectTags.find(
-		(tags) =>
-			//TODO - this is a close enough match for now, but in the future we should use commit hashes
-			//to make sure the projects are in sync
-			!!repo.full_name &&
-			tags.repo == repo.full_name &&
-			tags.branch === repo.default_branch,
-	);
+	//This is a temporary workaround until we get the snyk_projects table back.
+	function snykYamlExists(repo: Repository, workflowFiles: github_workflows[]) {
+		const result = workflowFiles.find(
+			(file) =>
+				file.repository_id === repo.id &&
+				!!file.path &&
+				file.path.includes('snyk'),
+		);
+		const exists = result !== undefined;
+		if (exists) {
+			console.log(`${repo.full_name} has a snyk workflow file.`);
+		}
+		return exists;
+	}
 
-	const repoIsOnSnyk = !!matchingSnykProject;
+	function snykProjectExists(repo: Repository, allProjectTags: SnykTags[]) {
+		const result = allProjectTags.find(
+			(tags) =>
+				//TODO - this is a close enough match for now, but in the future we should use commit hashes
+				//to make sure the projects are in sync
+				!!repo.full_name &&
+				tags.repo == repo.full_name &&
+				tags.branch === repo.default_branch,
+		);
+		const exists = result !== undefined;
+		if (exists) {
+			console.log(`${repo.name} has a snyk project.`);
+		}
+		return exists;
+	}
+
+	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
+	const repoIsOnSnyk =
+		snykYamlExists(repo, workflowFiles) ||
+		snykProjectExists(repo, allProjectTags);
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
@@ -322,6 +349,7 @@ export function evaluateOneRepo(
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
+	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules {
 	/*
 	Either the fullname, or the org and name, or the org and 'unknown'.
@@ -342,6 +370,7 @@ export function evaluateOneRepo(
 			repo,
 			repoLanguages,
 			snykProjects,
+			workflowFiles,
 		),
 		evaluated_on: new Date(),
 	};
@@ -353,6 +382,7 @@ export function evaluateRepositories(
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
+	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules[] {
 	return repositories.map((r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
@@ -363,6 +393,7 @@ export function evaluateRepositories(
 			teamsForRepo,
 			repoLanguages,
 			snykProjects,
+			workflowFiles,
 		);
 	});
 }

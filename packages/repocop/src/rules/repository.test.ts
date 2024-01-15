@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	github_repository_branches,
+	github_workflows,
 	snyk_projects,
 } from '@prisma/client';
 import type {
@@ -14,6 +15,24 @@ import {
 	hasDependencyTracking,
 	parseSnykTags,
 } from './repository';
+
+function evaluateRepoTestHelper(
+	repo: Repository,
+	branches: github_repository_branches[] = [],
+	teams: TeamRepository[] = [],
+	languages: github_languages[] = [],
+	snykProjects: snyk_projects[] = [],
+	githubWorkflows: github_workflows[] = [],
+) {
+	return evaluateOneRepo(
+		repo,
+		branches,
+		teams,
+		languages,
+		snykProjects,
+		githubWorkflows,
+	);
+}
 
 const nullBranch: github_repository_branches = {
 	cq_sync_time: null,
@@ -54,9 +73,7 @@ describe('default_branch_name should be false when the default branch is not mai
 	test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: Repository[] = [thePerfectRepo, badRepo];
-		const evaluation = repos.map((repo) =>
-			evaluateOneRepo(repo, [], [], [], []),
-		);
+		const evaluation = repos.map((repo) => evaluateRepoTestHelper(repo));
 
 		expect(evaluation.map((repo) => repo.default_branch_name)).toEqual([
 			true,
@@ -84,24 +101,17 @@ describe('Repositories should have branch protection', () => {
 			name: 'side-branch',
 		};
 
-		const actual = evaluateOneRepo(
-			thePerfectRepo,
-			[protectedMainBranch, unprotectedSideBranch],
-			[],
-			[],
-			[],
-		);
+		const actual = evaluateRepoTestHelper(thePerfectRepo, [
+			protectedMainBranch,
+			unprotectedSideBranch,
+		]);
 
 		expect(actual.branch_protection).toEqual(true);
 	});
 	test('We should get a negative result when the default branch of a production repo is not protected', () => {
-		const actual = evaluateOneRepo(
-			thePerfectRepo,
-			[unprotectedMainBranch],
-			[],
-			[],
-			[],
-		);
+		const actual = evaluateRepoTestHelper(thePerfectRepo, [
+			unprotectedMainBranch,
+		]);
 		expect(actual.branch_protection).toEqual(false);
 	});
 	test('Repos with no branches do not need protecting, and should be considered protected', () => {
@@ -110,7 +120,7 @@ describe('Repositories should have branch protection', () => {
 			default_branch: null,
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.branch_protection).toEqual(true);
 	});
 	test('Repos with exempted topics should be considered adequately protected, even if they have an unprotected main branch', () => {
@@ -119,7 +129,7 @@ describe('Repositories should have branch protection', () => {
 			topics: ['hackday'],
 		};
 
-		const actual = evaluateOneRepo(repo, [unprotectedMainBranch], [], [], []);
+		const actual = evaluateRepoTestHelper(repo, [unprotectedMainBranch]);
 		expect(actual.branch_protection).toEqual(true);
 	});
 });
@@ -140,7 +150,7 @@ describe('Repository admin access', () => {
 			},
 		];
 
-		const actual = evaluateOneRepo(repo, [], teams, [], []);
+		const actual = evaluateRepoTestHelper(repo, [], teams);
 		expect(actual.admin_access).toEqual(false);
 	});
 
@@ -164,7 +174,7 @@ describe('Repository admin access', () => {
 			},
 		];
 
-		const actual = evaluateOneRepo(repo, [], teams, [], []);
+		const actual = evaluateRepoTestHelper(repo, [], teams);
 		expect(actual.admin_access).toEqual(true);
 	});
 
@@ -177,7 +187,7 @@ describe('Repository admin access', () => {
 			topics: ['hackday'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.admin_access).toEqual(true);
 	});
 
@@ -201,7 +211,7 @@ describe('Repository admin access', () => {
 				team_id: 2n,
 			},
 		];
-		const actual = evaluateOneRepo(repo, [], teams, [], []);
+		const actual = evaluateRepoTestHelper(repo, [], teams);
 		expect(actual.admin_access).toEqual(true);
 	});
 
@@ -213,7 +223,7 @@ describe('Repository admin access', () => {
 			topics: ['avocado'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.admin_access).toEqual(false);
 	});
 });
@@ -225,7 +235,7 @@ describe('Repository topics', () => {
 			topics: ['production'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.topics).toEqual(true);
 	});
 
@@ -237,7 +247,7 @@ describe('Repository topics', () => {
 			topics: ['interactive'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.topics).toEqual(true);
 	});
 
@@ -249,7 +259,7 @@ describe('Repository topics', () => {
 			topics: ['production', 'hackday'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.topics).toEqual(false);
 	});
 
@@ -259,7 +269,7 @@ describe('Repository topics', () => {
 			topics: ['production', 'android'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.topics).toEqual(true);
 	});
 
@@ -269,7 +279,7 @@ describe('Repository topics', () => {
 			topics: [],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.topics).toEqual(false);
 	});
 
@@ -279,7 +289,7 @@ describe('Repository topics', () => {
 			topics: ['android', 'mobile'],
 		};
 
-		const actual = evaluateOneRepo(repo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(repo);
 		expect(actual.topics).toEqual(false);
 	});
 });
@@ -296,8 +306,8 @@ describe('Repository maintenance', () => {
 			created_at: new Date('2019-01-01'),
 		};
 
-		const recentEval = evaluateOneRepo(recentRepo, [], [], [], []);
-		const oldEval = evaluateOneRepo(oldRepo, [], [], [], []);
+		const recentEval = evaluateRepoTestHelper(recentRepo);
+		const oldEval = evaluateRepoTestHelper(oldRepo);
 		expect(recentEval.archiving).toEqual(true);
 		expect(oldEval.archiving).toEqual(false);
 	});
@@ -311,7 +321,7 @@ describe('Repository maintenance', () => {
 			pushed_at: new Date('2020-01-01'),
 		};
 
-		const actual = evaluateOneRepo(recentlyUpdatedRepo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(recentlyUpdatedRepo);
 		expect(actual.archiving).toEqual(true);
 	});
 	test('is not a concern if no dates are found', () => {
@@ -319,7 +329,7 @@ describe('Repository maintenance', () => {
 			...nullRepo,
 		};
 
-		const actual = evaluateOneRepo(recentlyUpdatedRepo, [], [], [], []);
+		const actual = evaluateRepoTestHelper(recentlyUpdatedRepo);
 		expect(actual.archiving).toEqual(true);
 	});
 });
@@ -502,6 +512,7 @@ describe('Dependency tracking', () => {
 			repo,
 			[snykSupportedLanguages],
 			[project],
+			[],
 		);
 		expect(actual).toEqual(true);
 	});
@@ -511,7 +522,12 @@ describe('Dependency tracking', () => {
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [fullySupportedLanguages], []);
+		const actual = hasDependencyTracking(
+			repo,
+			[fullySupportedLanguages],
+			[],
+			[],
+		);
 		expect(actual).toEqual(true);
 	});
 	test('is not valid if a project is not on snyk, and uses a language dependabot does not support', () => {
@@ -520,7 +536,12 @@ describe('Dependency tracking', () => {
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [snykSupportedLanguages], []);
+		const actual = hasDependencyTracking(
+			repo,
+			[snykSupportedLanguages],
+			[],
+			[],
+		);
 		expect(actual).toEqual(false);
 	});
 	test('is not valids not valid if a project is on snyk, and uses a language not supported by snyk', () => {
@@ -529,7 +550,7 @@ describe('Dependency tracking', () => {
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
 		expect(actual).toEqual(false);
 	});
 	test('is valid if a repository has been archived', () => {
@@ -538,7 +559,7 @@ describe('Dependency tracking', () => {
 			archived: true,
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
 		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has a non-production tag', () => {
@@ -547,7 +568,7 @@ describe('Dependency tracking', () => {
 			topics: [],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
 		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has no languages', () => {
@@ -564,7 +585,62 @@ describe('Dependency tracking', () => {
 			languages: [],
 		};
 
-		const actual = hasDependencyTracking(repo, [noLanguages], []);
+		const actual = hasDependencyTracking(repo, [noLanguages], [], []);
 		expect(actual).toEqual(true);
+	});
+	const workflow: github_workflows = {
+		cq_sync_time: null,
+		cq_source_name: null,
+		cq_id: '',
+		cq_parent_id: null,
+		id: 1n,
+		name: null,
+		path: '.github/workflows/snyk.yml',
+		repository_id: 1n,
+		org: 'guardian',
+		contents: null,
+		node_id: null,
+		state: null,
+		created_at: null,
+		updated_at: null,
+		url: null,
+		html_url: null,
+		badge_url: null,
+	};
+	test('is valid if a repository has a snyk.yml', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+			id: 1n,
+		};
+
+		const actual = hasDependencyTracking(
+			repo,
+			[snykSupportedLanguages],
+			[],
+			[workflow],
+		);
+		expect(actual).toEqual(true);
+	});
+	test('is not valid if a repository does not have a snyk.yml', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+			id: 1n,
+		};
+		const nonMatchingWorkflow: github_workflows = {
+			...workflow,
+			path: '.github/workflows/other.yml',
+		};
+
+		const actual = hasDependencyTracking(
+			repo,
+			[unsupportedLanguages],
+			[],
+			[nonMatchingWorkflow],
+		);
+		expect(actual).toEqual(false);
 	});
 });

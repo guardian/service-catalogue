@@ -15,6 +15,7 @@ import {
 	getStacks,
 	getTeamRepositories,
 	getTeams,
+	getWorkflowFiles,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
@@ -51,6 +52,7 @@ export async function main() {
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const repoTeams = await getTeamRepositories(prisma);
 	const repoLanguages = await getRepositoryLanguages(prisma);
+	const workflowFiles = await getWorkflowFiles(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
@@ -62,6 +64,7 @@ export async function main() {
 			repoTeams,
 			repoLanguages,
 			snykProjects,
+			workflowFiles,
 		);
 
 	const octokit = await stageAwareOctokit(config.stage);
