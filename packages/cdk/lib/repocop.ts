@@ -11,7 +11,9 @@ import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import type { ITopic, Topic } from 'aws-cdk-lib/aws-sns';
+import { Topic } from 'aws-cdk-lib/aws-sns';
+import type { ITopic } from 'aws-cdk-lib/aws-sns';
+import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 
 export class Repocop {
 	constructor(
@@ -27,6 +29,14 @@ export class Repocop {
 		dbSecurityGroup: SecurityGroup,
 		repocopGithubSecret: Secret,
 	) {
+		const snykIntegratorInputTopic = new Topic(
+			guStack,
+			`snyk-integrator-input-topic-${guStack.stage}`,
+			{
+				displayName: 'Snyk Integrator Input Topic',
+			},
+		);
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
@@ -74,7 +84,7 @@ export class Repocop {
 			{
 				app: 'snyk-integrator',
 				fileName: 'snyk-integrator.zip',
-				handler: 'index.main',
+				handler: 'index.handler',
 				memorySize: 1024,
 				runtime: Runtime.NODEJS_20_X,
 				environment: {
@@ -86,5 +96,8 @@ export class Repocop {
 		);
 
 		snykIntegratorSecret.grantRead(snykIntegatorLambda);
+		snykIntegratorInputTopic.addSubscription(
+			new LambdaSubscription(snykIntegatorLambda, {}),
+		);
 	}
 }

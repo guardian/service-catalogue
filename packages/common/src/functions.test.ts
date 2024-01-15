@@ -1,7 +1,9 @@
+import type { SNSEvent } from 'aws-lambda';
 import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
 	getEnvOrThrow,
+	parseEvent,
 	parseSecretJson,
 	partition,
 } from './functions';
@@ -79,5 +81,52 @@ describe('partitioning an array', () => {
 		const [truthy, falsy] = partition(input, predicate);
 		expect(truthy).toEqual([1, 1, 1]);
 		expect(falsy).toEqual([2, 3, 4]);
+	});
+});
+
+describe('Unwrapping an SNS message', () => {
+	function eventWithMessage(msg: string): SNSEvent {
+		return {
+			Records: [
+				{
+					EventSource: 'aws:sns',
+					EventVersion: '1.0',
+					EventSubscriptionArn: '',
+					Sns: {
+						Message: msg,
+						SignatureVersion: '',
+						Timestamp: '',
+						Signature: '',
+						SigningCertUrl: '',
+						MessageId: '',
+						MessageAttributes: {},
+						Type: '',
+						UnsubscribeUrl: '',
+						TopicArn: '',
+					},
+				},
+			],
+		};
+	}
+
+	interface MyEvent {
+		myString: string;
+		myArray: string[];
+	}
+
+	it('should generate a result of the expected type', () => {
+		const outputEvent: MyEvent = {
+			myString: 'hello',
+			myArray: ['how', 'are', 'you', '?'],
+		};
+
+		const inputMsg = '{"myString":"hello","myArray":["how","are","you","?"]}';
+		const inputEvent = eventWithMessage(inputMsg);
+		expect(parseEvent<MyEvent>(inputEvent)).toEqual([outputEvent]);
+	});
+	it('should throw an error if the input message is not valid JSON', () => {
+		const inputMsg = '{"myString":"goodbye","myArray":["how","are","you","?]}';
+		const inputEvent = eventWithMessage(inputMsg);
+		expect(() => parseEvent<MyEvent>(inputEvent)).toThrow();
 	});
 });
