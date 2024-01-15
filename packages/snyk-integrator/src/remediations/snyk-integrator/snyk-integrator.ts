@@ -84,7 +84,7 @@ function checklist(items: string[]): string {
 	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
-function generatePrBody(branchName: string, repoName: string): string {
+function generatePrBody(branchName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -105,12 +105,10 @@ function generatePrBody(branchName: string, repoName: string): string {
 		checklist([
 			'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
 				'If you can’t find any, reach out to DevX)',
-			'Replace the python version with the version your repo uses',
-		]),
-		h2('How do I check this works?'),
-		checklist([
-			`Run the action via the GitHub CLI \`gh workflow run snyk.yml --ref ${branchName} --repo guardian/${repoName}\``,
-			`View the action output, verify it has generated one project per dependency manifest.`,
+			'Replace the relevant python fields, if they exist in the file. If not, skip this step',
+			'The job should run automatically on every commit to this branch. ' +
+				'View the action output and verify it has generated one project per dependency manifest.',
+			`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
 		]),
 	];
 	return tsMarkdown(body);
@@ -119,7 +117,6 @@ function generatePrBody(branchName: string, repoName: string): string {
 export function generatePr(
 	repoLanguages: string[],
 	branch: string,
-	repoName: string,
 ): [string, string] {
 	const workflowLanguages = [
 		'Scala',
@@ -139,7 +136,7 @@ export function generatePr(
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(branch, repoName);
+	const body = generatePrBody(branch);
 
 	return [header, body];
 }
@@ -151,7 +148,7 @@ export async function createSnykPullRequest(
 	repoLanguages: string[],
 ) {
 	const snykFileContents = createYaml(repoLanguages, branchName);
-	const [title, body] = generatePr(repoLanguages, branchName, repoName);
+	const [title, body] = generatePr(repoLanguages, branchName);
 	return await createPullRequest(octokit, {
 		repoName,
 		title,

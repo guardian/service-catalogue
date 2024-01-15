@@ -42,7 +42,7 @@ jobs:
 describe('A generated PR', () => {
 	//higher level function that takes in just languages and returns a PR
 	function generateServiceCataloguePr(languages: string[]): [string, string] {
-		return generatePr(languages, 'main', 'guardian/service-catalogue');
+		return generatePr(languages, 'main');
 	}
 
 	it('should have only the supported languages in its header', () => {
@@ -61,11 +61,5 @@ describe('A generated PR', () => {
 	it('should throw if no supported languages are provided', () => {
 		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
 		expect(() => generateServiceCataloguePr([])).toThrow();
-	});
-	it('Should create a body with the correct GitHub CLI command', () => {
-		const body = generatePr(['Scala'], 'main', 'myRepo')[1];
-		expect(body).toContain(
-			'gh workflow run snyk.yml --ref main --repo guardian/myRepo',
-		);
 	});
 });
