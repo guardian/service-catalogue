@@ -2,7 +2,6 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
-import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerDependencyCondition,
 	FargateTaskDefinition,
@@ -11,6 +10,7 @@ import {
 	LogDrivers,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
+import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
@@ -101,6 +101,17 @@ export interface ScheduledCloudqueryTaskProps
 	 * @see https://cloud.cloudquery.io/teams/the-guardian/api-keys
 	 */
 	cloudQueryApiKey: Secret;
+
+	/**
+	 * The image of a CloudQuery plugin that is distributed via Docker,
+	 * i.e. plugins not written in Go.
+	 *
+	 * This image will be run on its own, exposing the GRPC server on localhost:7777.
+	 * The CloudQuery source config should be configured with a registry of grpc, and path of localhost:7777.
+	 *
+	 * @see https://docs.cloudquery.io/docs/reference/source-spec
+	 */
+	dockerDistributedPluginImage?: RepositoryImage;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -125,6 +136,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			additionalSecurityGroups = [],
 			runAsSingleton,
 			cloudQueryApiKey,
+			dockerDistributedPluginImage,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -200,6 +212,22 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			],
 			logging: fireLensLogDriver,
 		});
+
+		if (dockerDistributedPluginImage) {
+			const additionalCloudQueryContainer = task.addContainer(
+				`${id}PluginContainer`,
+				{
+					image: dockerDistributedPluginImage,
+					logging: fireLensLogDriver,
+					essential: false,
+				},
+			);
+
+			cloudqueryTask.addContainerDependencies({
+				container: additionalCloudQueryContainer,
+				condition: ContainerDependencyCondition.START,
+			});
+		}
 
 		if (runAsSingleton) {
 			const operationInProgress = 114;

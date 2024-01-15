@@ -20,10 +20,12 @@ import {
 	githubLanguagesConfig,
 	githubSourceConfig,
 	guardianSnykSourceConfig,
+	ns1SourceConfig,
 	riffraffSourcesConfig,
 	skipTables,
 	snykSourceConfig,
 } from './config';
+import { Images } from './images';
 import { cloudqueryAccess, listOrgsPolicy, readBucketPolicy } from './policies';
 
 interface CloudqueryEcsClusterProps {
@@ -503,6 +505,21 @@ export function addCloudqueryEcsCluster(
 		// additionalCommands: additionalGithubCommands,
 	};
 
+	const ns1ApiKey = new SecretsManager(scope, 'ns1-credentials', {
+		secretName: `/${stage}/${stack}/${app}/ns1-credentials`,
+	});
+
+	const ns1Source: CloudquerySource = {
+		name: 'NS1',
+		description: 'DNS records from NS1',
+		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+		dockerDistributedPluginImage: Images.ns1Source,
+		secrets: {
+			NS1_API_KEY: Secret.fromSecretsManager(ns1ApiKey, 'api-key'),
+		},
+		config: ns1SourceConfig(),
+	};
+
 	new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
@@ -517,6 +534,7 @@ export function addCloudqueryEcsCluster(
 			...snykSources,
 			riffRaffSources,
 			githubLanguagesSource,
+			ns1Source,
 		],
 	});
 }

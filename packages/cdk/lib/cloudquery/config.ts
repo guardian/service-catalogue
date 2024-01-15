@@ -204,6 +204,27 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 	};
 }
 
+export function ns1SourceConfig(): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'ns1',
+			registry: 'grpc',
+			path: 'localhost:7777',
+
+			// This property is required, but only relevant for GitHub hosted plugins.
+			// Use a fake value to satisfy the config parser.
+			// See https://docs.cloudquery.io/docs/reference/source-spec#version
+			version: 'v0.0.0',
+			tables: ['ns1_*'],
+			destinations: ['postgresql'],
+			spec: {
+				apiKey: '${NS1_API_KEY}',
+			},
+		},
+	};
+}
+
 export function riffraffSourcesConfig(): CloudqueryConfig {
 	return {
 		kind: 'source',
