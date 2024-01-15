@@ -68,7 +68,6 @@ export async function stageAwareOctokit(stage: string) {
 	}
 }
 
-//TODO test me
 export function parseEvent<T>(event: SNSEvent): T[] {
 	return event.Records.map((record) => JSON.parse(record.Sns.Message) as T);
 }
