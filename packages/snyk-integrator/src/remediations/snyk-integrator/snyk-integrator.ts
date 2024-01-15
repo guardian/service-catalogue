@@ -84,7 +84,7 @@ function checklist(items: string[]): string {
 	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
-function generatePrBody(branchName: string, repoName: string): string {
+function generatePrBody(branchName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -117,7 +117,6 @@ function generatePrBody(branchName: string, repoName: string): string {
 export function generatePr(
 	repoLanguages: string[],
 	branch: string,
-	repoName: string,
 ): [string, string] {
 	const workflowLanguages = [
 		'Scala',
@@ -137,7 +136,7 @@ export function generatePr(
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(branch, repoName);
+	const body = generatePrBody(branch);
 
 	return [header, body];
 }
@@ -149,7 +148,7 @@ export async function createSnykPullRequest(
 	repoLanguages: string[],
 ) {
 	const snykFileContents = createYaml(repoLanguages, branchName);
-	const [title, body] = generatePr(repoLanguages, branchName, repoName);
+	const [title, body] = generatePr(repoLanguages, branchName);
 	return await createPullRequest(octokit, {
 		repoName,
 		title,
