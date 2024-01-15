@@ -200,24 +200,33 @@ export function hasDependencyTracking(
 	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
 
 	//This is a temporary workaround until we get the snyk_projects table back.
-	const snykYml = workflowFiles.find(
-		(file) =>
-			file.repository_id === repo.id &&
-			!!file.path &&
-			file.path.includes('snyk'),
-	);
+	function findSnykYaml(repo: Repository, workflowFiles: github_workflows[]) {
+		return workflowFiles.find(
+			(file) =>
+				file.repository_id === repo.id &&
+				!!file.path &&
+				file.path.includes('snyk'),
+		);
+	}
 
-	const matchingSnykProject = allProjectTags.find(
-		(tags) =>
-			//TODO - this is a close enough match for now, but in the future we should use commit hashes
-			//to make sure the projects are in sync
-			!!repo.full_name &&
-			tags.repo == repo.full_name &&
-			tags.branch === repo.default_branch,
-	);
+	function findMatchingSnykProject(
+		repo: Repository,
+		allProjectTags: SnykTags[],
+	) {
+		return allProjectTags.find(
+			(tags) =>
+				//TODO - this is a close enough match for now, but in the future we should use commit hashes
+				//to make sure the projects are in sync
+				!!repo.full_name &&
+				tags.repo == repo.full_name &&
+				tags.branch === repo.default_branch,
+		);
+	}
 
 	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
-	const repoIsOnSnyk = !!snykYml || !!matchingSnykProject;
+	const repoIsOnSnyk =
+		!!findSnykYaml(repo, workflowFiles) ||
+		!!findMatchingSnykProject(repo, allProjectTags);
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
