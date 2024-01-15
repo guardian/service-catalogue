@@ -108,7 +108,7 @@ function generatePrBody(branchName: string, repoName: string): string {
 			'Replace the relevant python fields, if they exist in the file. If not, skip this step',
 			'The job should run automatically on every commit to this branch. ' +
 				'View the action output and verify it has generated one project per dependency manifest.',
-			`When you are happy the action works, remove ${branchName} option from the list of branches in the workflow, approve, and merge.`,
+			`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
 		]),
 	];
 	return tsMarkdown(body);
