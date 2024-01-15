@@ -1,6 +1,7 @@
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
+import type { SNSEvent } from 'aws-lambda';
 import { Octokit } from 'octokit';
 import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
 
@@ -67,6 +68,9 @@ export async function stageAwareOctokit(stage: string) {
 	}
 }
 
+export function parseEvent<T>(event: SNSEvent): T[] {
+	return event.Records.map((record) => JSON.parse(record.Sns.Message) as T);
+}
 export function branchProtectionCtas(
 	fullRepoName: string,
 	teamSlug: string,

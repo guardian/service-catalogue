@@ -2,7 +2,7 @@ import type { _Object, ListObjectsCommandInput } from '@aws-sdk/client-s3';
 import { ListObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { SNSHandler } from 'aws-lambda';
 import { awsClientConfig } from 'common/aws';
-import { applyTopics, stageAwareOctokit } from 'common/functions';
+import { applyTopics, parseEvent, stageAwareOctokit } from 'common/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -137,12 +137,9 @@ export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
 	const owner = 'guardian';
 	console.log(`Detected stage: ${config.stage}`);
-	const events = event.Records.map(async (record) =>
-		Promise.all(
-			(JSON.parse(record.Sns.Message) as string[]).map(
-				async (repo) => await assessRepo(repo, owner, config),
-			),
-		),
+	const events = parseEvent<string[]>(event).flat();
+
+	await Promise.all(
+		events.map(async (repo) => await assessRepo(repo, owner, config)),
 	);
-	await Promise.all(events);
 };

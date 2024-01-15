@@ -17148,7 +17148,7 @@ spec:
             "STAGE": "TEST",
           },
         },
-        "Handler": "index.main",
+        "Handler": "index.handler",
         "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
@@ -17195,6 +17195,22 @@ spec:
         },
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "snykintegratorAllowInvokeServiceCataloguesnykintegratorinputtopicTEST8ADE3A2EDEF3DA67": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "snykintegrator1EF519CF",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": {
+          "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "snykintegratorSecurityGroup158665A3": {
       "Properties": {
@@ -17435,6 +17451,45 @@ spec:
       },
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
+    },
+    "snykintegratorinputtopicTEST6BCA9CE1": {
+      "Properties": {
+        "DisplayName": "Snyk Integrator Input Topic",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "snykintegratorsnykintegratorinputtopicTEST80B8842E": {
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "snykintegrator1EF519CF",
+            "Arn",
+          ],
+        },
+        "Protocol": "lambda",
+        "TopicArn": {
+          "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
     },
   },
 }
