@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A lens into your GitHub organisation",
   "scripts": {
-    "test": "npm run test --workspaces --if-present",
+    "test": "npm query .workspace | jq -r '.[].location' | sed -e 's,.*/,,' | xargs -P 0 -L1 npm run test --if-present -w",
     "test-update": "jest -u",
     "synth": "npm run synth --workspace=cdk",
     "typecheck": "tsc --noEmit",

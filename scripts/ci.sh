@@ -45,7 +45,7 @@ verifyMarkdown() {
 
 npm ci
 npm run typecheck & npm run lint
-npm query .workspace | jq -r '.[].location' | sed -e 's,.*/,,' | xargs -P 0 -L1 npm run test --if-present -w
+npm run test
 npm run synth & npm run build
 
 verifyMarkdown & \
