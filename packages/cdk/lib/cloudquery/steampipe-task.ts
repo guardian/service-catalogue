@@ -171,7 +171,7 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 			logging: fireLensLogDriver,
 			healthCheck: {
 				command: [
-					'CMD',
+					'CMD-SHELL',
 					"steampipe service status | grep 'Steampipe service is running'",
 				],
 			},
@@ -195,7 +195,7 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					`pg_dump -a -t ${table} -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres`,
+					`pg_dump --if-exists -t ${table} -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,

@@ -16199,7 +16199,7 @@ spec:
             "Essential": true,
             "HealthCheck": {
               "Command": [
-                "CMD",
+                "CMD-SHELL",
                 "steampipe service status | grep 'Steampipe service is running'",
               ],
               "Interval": 30,
@@ -16270,7 +16270,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump --if-exists -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
