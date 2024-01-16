@@ -65,7 +65,7 @@ export async function sendToCloudwatch(
 					evaluatedRepos.map((x) => x.archiving),
 				),
 				createMetric(
-					'HasAdmin',
+					'HasAdminTeam',
 					evaluatedRepos.map((x) => x.admin_access),
 				),
 				createMetric(
