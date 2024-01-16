@@ -17014,6 +17014,11 @@ spec:
                 "Ref": "TopicBFC7AF6E",
               },
             },
+            {
+              "Action": "cloudwatch:PutMetricData",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
           ],
           "Version": "2012-10-17",
         },
