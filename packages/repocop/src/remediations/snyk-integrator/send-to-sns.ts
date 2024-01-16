@@ -5,7 +5,6 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
-import { shuffle } from 'common/src/functions';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from '../../config';
 import { ignoredLanguages } from '../../languages';
@@ -48,10 +47,9 @@ function eventContainsOnlyActionSupportedLanguages(
 		actionSuppoertedLanguages.includes(lang),
 	);
 }
-
-export async function sendUnprotectedRepo(
+//TODO test me
+function findReposWhereIntegrationWillWork(
 	evaluatedRepos: repocop_github_repository_rules[],
-	config: Config,
 	owners: view_repo_ownership[],
 	githubLanguages: github_languages[],
 ) {
@@ -76,10 +74,23 @@ export async function sendUnprotectedRepo(
 			eventContainsOnlyActionSupportedLanguages(event),
 		);
 
-	const eventToSend = reposWhereAllLanguagesAreSupported[0];
+	return reposWhereAllLanguagesAreSupported;
+}
+
+export async function sendUnprotectedRepo(
+	evaluatedRepos: repocop_github_repository_rules[],
+	config: Config,
+	owners: view_repo_ownership[],
+	githubLanguages: github_languages[],
+) {
+	const eventToSend = findReposWhereIntegrationWillWork(
+		evaluatedRepos,
+		owners,
+		githubLanguages,
+	)[0];
 
 	const publishRequestEntry = new PublishCommand({
-		Message: JSON.stringify(reposWhereAllLanguagesAreSupported[0]),
+		Message: JSON.stringify(eventToSend),
 		TopicArn: '', //TODO fix this
 	});
 
