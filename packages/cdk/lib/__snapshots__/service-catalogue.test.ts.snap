@@ -16270,7 +16270,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "pg_dump --if-exists -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump --clean --if-exists -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
