@@ -1,17 +1,14 @@
-import type { MetricDatum } from '@aws-sdk/client-cloudwatch';
-import {
-	CloudWatchClient,
-	PutMetricDataCommand,
-} from '@aws-sdk/client-cloudwatch';
+import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
-import { getEnvOrThrow, partition, stageAwareOctokit } from 'common/functions';
+import { partition, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
+import { sendToCloudwatch } from './metrics';
 import {
 	getRepoOwnership,
 	getRepositories,
@@ -31,67 +28,6 @@ import {
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
 import type { AwsCloudFormationStack } from './types';
-
-function getPercentageTrue(evaluatedRepos: Array<boolean | undefined>) {
-	const totalRepos = evaluatedRepos.length;
-	const trackedReposPercentage: number =
-		Math.round(evaluatedRepos.filter((x) => x).length / totalRepos) * 100;
-
-	return trackedReposPercentage;
-}
-
-function createMetric(
-	metricName: string,
-	boolArray: Array<boolean | undefined>,
-): MetricDatum {
-	getPercentageTrue(boolArray);
-	const Dimensions = [
-		{
-			Name: 'Stack',
-			Value: getEnvOrThrow('STACK'),
-		},
-		{
-			Name: 'Stage',
-			Value: process.env.STAGE ?? 'DEV',
-		},
-		{
-			Name: 'App',
-			Value: getEnvOrThrow('APP'),
-		},
-	];
-
-	return {
-		MetricName: metricName,
-		Value: getPercentageTrue(boolArray),
-		Unit: 'Percent',
-		Dimensions,
-	};
-}
-
-async function sendToCloudwatch(
-	evaluatedRepos: repocop_github_repository_rules[],
-	cloudwatch: CloudWatchClient,
-) {
-	await cloudwatch.send(
-		new PutMetricDataCommand({
-			Namespace: 'Repocop',
-			MetricData: [
-				createMetric(
-					'TrackedRepositoriesPercentage',
-					evaluatedRepos.map((x) => x.vulnerability_tracking),
-				),
-				createMetric(
-					'ValidTopicsPercentage',
-					evaluatedRepos.map((x) => x.topics),
-				),
-				createMetric(
-					'BranchProtectionPercentage',
-					evaluatedRepos.map((x) => x.branch_protection),
-				),
-			],
-		}),
-	);
-}
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
