@@ -39,7 +39,7 @@ const snykOnlySupportedLanguages = [
 
 export const actionSupportedLanguages = ignoredLanguages.concat(
 	'Scala',
-	'Typescript',
+	'TypeScript',
 	'Go',
 	'Python',
 	'JavaScript',

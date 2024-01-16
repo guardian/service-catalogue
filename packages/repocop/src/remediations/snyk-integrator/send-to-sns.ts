@@ -40,10 +40,9 @@ function eventContainsOnlyActionSupportedLanguages(
 		actionSupportedLanguages.includes(lang),
 	);
 }
-//TODO test me
-function findReposWhereIntegrationWillWork(
+
+export function findUntrackedReposWhereIntegrationWillWork(
 	evaluatedRepos: repocop_github_repository_rules[],
-	owners: view_repo_ownership[],
 	githubLanguages: github_languages[],
 ) {
 	const unprotectedRepos = findUnprotectedRepos(evaluatedRepos);
@@ -64,6 +63,10 @@ function findReposWhereIntegrationWillWork(
 			eventContainsOnlyActionSupportedLanguages(event),
 		);
 
+	console.log(
+		`Found ${reposWhereAllLanguagesAreSupported.length} untracked repos that can be integrated with Snyk`,
+	);
+
 	return reposWhereAllLanguagesAreSupported;
 }
 
@@ -75,9 +78,8 @@ export async function sendUnprotectedRepo(
 ) {
 	const devXRepos = findDevXRepos(owners, evaluatedRepos);
 
-	const eventToSend = findReposWhereIntegrationWillWork(
+	const eventToSend = findUntrackedReposWhereIntegrationWillWork(
 		devXRepos,
-		owners,
 		githubLanguages,
 	)[0];
 
