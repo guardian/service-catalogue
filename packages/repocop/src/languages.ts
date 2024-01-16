@@ -37,6 +37,14 @@ const snykOnlySupportedLanguages = [
 	'Visual Basic .NET',
 ];
 
+export const actionSupportedLanguages = ignoredLanguages.concat(
+	'Scala',
+	'Typescript',
+	'Go',
+	'Python',
+	'JavaScript',
+);
+
 export const supportedDependabotLanguages = ignoredLanguages.concat(
 	commonSupportedLanguages,
 );

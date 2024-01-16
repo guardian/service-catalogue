@@ -7,7 +7,7 @@ import type {
 import { awsClientConfig } from 'common/src/aws';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from '../../config';
-import { ignoredLanguages } from '../../languages';
+import { actionSupportedLanguages } from '../../languages';
 import { removeRepoOwner } from '../shared-utilities';
 
 export function findUnprotectedRepos(
@@ -36,15 +36,8 @@ function findDevXRepos(
 function eventContainsOnlyActionSupportedLanguages(
 	event: SnykIntegratorEvent,
 ): boolean {
-	const actionSuppoertedLanguages = ignoredLanguages.concat(
-		'Scala',
-		'Typescript',
-		'Go',
-		'Python',
-		'JavaScript',
-	);
 	return event.languages.every((lang) =>
-		actionSuppoertedLanguages.includes(lang),
+		actionSupportedLanguages.includes(lang),
 	);
 }
 //TODO test me
