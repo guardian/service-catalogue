@@ -57,15 +57,27 @@ export async function sendToCloudwatch(
 			Namespace: 'repocop',
 			MetricData: [
 				createMetric(
-					'TrackedRepositoriesPercentage',
+					'DefaultBranchIsMain',
+					evaluatedRepos.map((x) => x.default_branch_name),
+				),
+				createMetric(
+					'IsMaintained',
+					evaluatedRepos.map((x) => x.archiving),
+				),
+				createMetric(
+					'HasAdmin',
+					evaluatedRepos.map((x) => x.admin_access),
+				),
+				createMetric(
+					'HasVulnerabilityTracking',
 					evaluatedRepos.map((x) => x.vulnerability_tracking),
 				),
 				createMetric(
-					'ValidTopicsPercentage',
+					'HasValidTopics',
 					evaluatedRepos.map((x) => x.topics),
 				),
 				createMetric(
-					'BranchProtectionPercentage',
+					'HasBranchProtection',
 					evaluatedRepos.map((x) => x.branch_protection),
 				),
 			],
