@@ -163,10 +163,13 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
 				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
 			},
+			user: 'root',
 			command: [
 				'/bin/sh',
 				'-c',
 				[
+					'chown -R steampipe:0 /steampipe-output',
+					'su - steampipe',
 					'steampipe plugin install --progress=false steampipe',
 					'steampipe plugin list',
 					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /workspace/${table}.csv`,
@@ -178,7 +181,7 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 		});
 
 		steampipeContainer.addMountPoints({
-			containerPath: '/workspace',
+			containerPath: '/steampipe-output',
 			sourceVolume: 'steampipe-output',
 			readOnly: false,
 		});
