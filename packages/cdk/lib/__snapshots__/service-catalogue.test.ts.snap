@@ -1948,7 +1948,7 @@ spec:
 spec:
   name: fastly
   path: cloudquery/fastly
-  version: v2.1.12
+  version: v3.0.6
   tables:
     - fastly_services
     - fastly_service_versions
@@ -2529,7 +2529,7 @@ spec:
 spec:
   name: fastly
   path: cloudquery/fastly
-  version: v2.1.12
+  version: v3.0.6
   tables:
     - fastly_stats_services
   destinations:
