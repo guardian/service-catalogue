@@ -65,7 +65,6 @@ export class Repocop {
 			repocopLampdaProps,
 		);
 
-		//allow repocop to create and put metrics
 		const policyStatement = new PolicyStatement({
 			actions: ['cloudwatch:PutMetricData'],
 			resources: ['*'],
