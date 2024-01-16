@@ -7,7 +7,7 @@ import type { repocop_github_repository_rules } from '@prisma/client';
 import { getEnvOrThrow } from 'common/src/functions';
 
 export function getPercentageTrue(booleanishArray: Array<boolean | null>) {
-	const array = booleanishArray.filter((x) => x !== null) as boolean[];
+	const array = booleanishArray.filter((x): x is boolean => x !== null);
 	if (array.length === 0) {
 		return 0;
 	}
