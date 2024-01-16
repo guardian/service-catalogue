@@ -9,9 +9,12 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import type { CloudqueryConfig } from './config';
+import { ScheduledSteampipeTask } from './steampipe-task';
 import { ScheduledCloudqueryTask } from './task';
 
-export interface CloudquerySource {
+export type Source = CloudquerySource | SteampipeSource;
+
+type CommonSourceProps = {
 	/**
 	 * The name of the source.
 	 * This will get added to the `Name` tag of the task definition.
@@ -29,13 +32,6 @@ export interface CloudquerySource {
 	 * If this schedule is daily or weekly you should add an equivalent entry to the `cloudquery_table_frequency` table.
 	 */
 	schedule: Schedule;
-
-	/**
-	 * Cloudquery config (aka 'spec') for this source.
-	 *
-	 * This should be the JS version of whatever YAML config you want to use for this source.
-	 */
-	config: CloudqueryConfig;
 
 	/**
 	 * Policies required by this source.
@@ -83,6 +79,17 @@ export interface CloudquerySource {
 	 * @default false
 	 */
 	runAsSingleton?: boolean;
+};
+
+export type CloudquerySource = {
+	type: 'cloudquery';
+
+	/**
+	 * Cloudquery config (aka 'spec') for this source.
+	 *
+	 * This should be the JS version of whatever YAML config you want to use for this source.
+	 */
+	config: CloudqueryConfig;
 
 	/**
 	 * The image of a CloudQuery plugin that is distributed via Docker,
@@ -94,7 +101,16 @@ export interface CloudquerySource {
 	 * @see https://docs.cloudquery.io/docs/reference/source-spec
 	 */
 	dockerDistributedPluginImage?: RepositoryImage;
-}
+} & CommonSourceProps;
+
+export type SteampipeSource = {
+	type: 'steampipe';
+
+	/**
+	 * Table to be synced, see https://hub.steampipe.io/plugins for examples.
+	 */
+	table: string;
+} & CommonSourceProps;
 
 interface CloudqueryClusterProps extends AppIdentity {
 	/**
@@ -115,7 +131,7 @@ interface CloudqueryClusterProps extends AppIdentity {
 	/**
 	 * Which tables to collect at a frequency other than once a day.
 	 */
-	sources: CloudquerySource[];
+	sources: Source[];
 }
 
 /**
@@ -158,41 +174,78 @@ export class CloudqueryCluster extends Cluster {
 			secretName: `/${stage}/${stack}/${app}/cloudquery-api-key`,
 		});
 
-		sources.forEach(
-			({
-				name,
-				schedule,
-				config,
-				managedPolicies = [],
-				policies = [],
-				secrets,
-				additionalCommands,
-				memoryLimitMiB,
-				cpu,
-				additionalSecurityGroups,
-				runAsSingleton = false,
-				dockerDistributedPluginImage,
-			}) => {
-				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
-					...taskProps,
+		sources
+			.filter(
+				(source): source is CloudquerySource => source.type == 'cloudquery',
+			)
+			.forEach(
+				({
 					name,
-					managedPolicies,
-					policies: [logShippingPolicy, ...policies],
 					schedule,
-					sourceConfig: config,
+					config,
+					managedPolicies = [],
+					policies = [],
 					secrets,
 					additionalCommands,
 					memoryLimitMiB,
 					cpu,
 					additionalSecurityGroups,
-					runAsSingleton,
-					cloudQueryApiKey: Secret.fromSecretsManager(
-						cloudqueryApiKey,
-						'api-key',
-					),
+					runAsSingleton = false,
 					dockerDistributedPluginImage,
-				});
-			},
-		);
+				}) => {
+					new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
+						...taskProps,
+						name,
+						managedPolicies,
+						policies: [logShippingPolicy, ...policies],
+						schedule,
+						sourceConfig: config,
+						secrets,
+						additionalCommands,
+						memoryLimitMiB,
+						cpu,
+						additionalSecurityGroups,
+						runAsSingleton,
+						cloudQueryApiKey: Secret.fromSecretsManager(
+							cloudqueryApiKey,
+							'api-key',
+						),
+						dockerDistributedPluginImage,
+					});
+				},
+			);
+
+		sources
+			.filter((source): source is SteampipeSource => source.type == 'steampipe')
+			.forEach(
+				({
+					name,
+					schedule,
+					table,
+					managedPolicies = [],
+					policies = [],
+					secrets,
+					additionalCommands,
+					memoryLimitMiB,
+					cpu,
+					additionalSecurityGroups,
+					runAsSingleton = false,
+				}) => {
+					new ScheduledSteampipeTask(scope, `SteampipeSource-${name}`, {
+						...taskProps,
+						name,
+						managedPolicies,
+						policies: [logShippingPolicy, ...policies],
+						schedule,
+						table,
+						secrets,
+						additionalCommands,
+						memoryLimitMiB,
+						cpu,
+						additionalSecurityGroups,
+						runAsSingleton,
+					});
+				},
+			);
 	}
 }

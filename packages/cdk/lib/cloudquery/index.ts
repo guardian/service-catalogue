@@ -10,7 +10,7 @@ import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import type { CloudquerySource } from './cluster';
+import type { CloudquerySource, Source, SteampipeSource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
 	awsSourceConfigForAccount,
@@ -57,8 +57,9 @@ export function addCloudqueryEcsCluster(
 			riffRaffDatabaseAccessSecurityGroupParam,
 		);
 
-	const individualAwsSources: CloudquerySource[] = [
+	const individualAwsSources: Source[] = [
 		{
+			type: 'cloudquery',
 			name: 'DeployToolsListOrgs',
 			description:
 				'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
@@ -80,6 +81,7 @@ export function addCloudqueryEcsCluster(
 			],
 		},
 		{
+			type: 'cloudquery',
 			name: 'DelegatedToSecurityAccount',
 			description:
 				'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
@@ -93,6 +95,7 @@ export function addCloudqueryEcsCluster(
 			cpu: 1024,
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideCloudFormation',
 			description:
 				'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
@@ -104,6 +107,7 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 1024,
 		},
 		{
+			type: 'cloudquery',
 			name: 'AwsCostExplorer',
 			description:
 				'Collecting Aws Cost Explorer Information. This is usefull for reservations',
@@ -114,6 +118,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideLoadBalancers',
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
@@ -124,6 +129,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideAutoScalingGroups',
 			description:
 				'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
@@ -134,6 +140,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideCertificates',
 			description:
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
@@ -144,6 +151,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideCloudwatchAlarms',
 			description:
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
@@ -154,6 +162,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideInspector',
 			description: 'Collecting Inspector data across the organisation.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
@@ -164,6 +173,7 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 1024,
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideS3',
 			description:
 				'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
@@ -174,6 +184,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideDynamoDB',
 			description:
 				'Collecting DynamoDB data across the organisation. Uses include auditing backup configuration.',
@@ -184,6 +195,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideRDS',
 			description:
 				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
@@ -199,6 +211,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideBackup',
 			description:
 				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
@@ -213,6 +226,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			type: 'cloudquery',
 			name: 'OrgWideEc2',
 			description:
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
@@ -238,6 +252,7 @@ export function addCloudqueryEcsCluster(
   If we identify a table that needs to be updated more often, we should create a dedicated task for it.
    */
 	const remainingAwsSources: CloudquerySource = {
+		type: 'cloudquery',
 		name: 'RemainingAwsData',
 		description: 'Data fetched across all accounts in the organisation.',
 		schedule:
@@ -249,9 +264,12 @@ export function addCloudqueryEcsCluster(
 				...skipTables,
 
 				// casting because `config.spec.tables` could be empty, though in reality it never is
-				...(individualAwsSources.flatMap(
-					(_) => _.config.spec.tables,
-				) as string[]),
+				...(individualAwsSources
+					.filter(
+						(source): source is CloudquerySource =>
+							source.type === 'cloudquery',
+					)
+					.flatMap((_) => _.config.spec.tables) as string[]),
 			],
 
 			// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
@@ -297,6 +315,7 @@ export function addCloudqueryEcsCluster(
 
 	const githubSources: CloudquerySource[] = [
 		{
+			type: 'cloudquery',
 			name: 'GitHubRepositories',
 			description:
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
@@ -321,6 +340,7 @@ export function addCloudqueryEcsCluster(
 			additionalCommands: additionalGithubCommands,
 		},
 		{
+			type: 'cloudquery',
 			name: 'GitHubTeams',
 			description:
 				'Collect GitHub team data. Uses include identifying which repositories a team owns.',
@@ -352,6 +372,7 @@ export function addCloudqueryEcsCluster(
 			cpu: 2048,
 		},
 		{
+			type: 'cloudquery',
 			name: 'GitHubIssues',
 			description: 'Collect GitHub issue data (PRs and Issues)',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
@@ -370,6 +391,7 @@ export function addCloudqueryEcsCluster(
 
 	const fastlySources: CloudquerySource[] = [
 		{
+			type: 'cloudquery',
 			name: 'FastlyServices',
 			description: 'Fastly services data',
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
@@ -406,6 +428,7 @@ export function addCloudqueryEcsCluster(
 
 	const galaxiesSources: CloudquerySource[] = [
 		{
+			type: 'cloudquery',
 			name: 'Galaxies',
 			description: 'Galaxies data',
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
@@ -424,6 +447,7 @@ export function addCloudqueryEcsCluster(
 
 	const snykSources: CloudquerySource[] = [
 		{
+			type: 'cloudquery',
 			name: 'SnykAll',
 			description: 'Collecting all Snyk data, except for projects',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
@@ -446,6 +470,7 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 1024,
 		},
 		{
+			type: 'cloudquery',
 			name: 'GuardianCustomSnykProjects',
 			description:
 				'Collecting Snyk projects including grouped vulnerabilities and tags',
@@ -468,6 +493,7 @@ export function addCloudqueryEcsCluster(
 	);
 
 	const riffRaffSources: CloudquerySource = {
+		type: 'cloudquery',
 		name: 'RiffRaffData',
 		description: "Source deployment data directly from riff-raff's database",
 		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
@@ -495,6 +521,7 @@ export function addCloudqueryEcsCluster(
 	});
 
 	const githubLanguagesSource: CloudquerySource = {
+		type: 'cloudquery',
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
 		schedule: nonProdSchedule ?? Schedule.rate(Duration.days(7)),
@@ -510,6 +537,7 @@ export function addCloudqueryEcsCluster(
 	});
 
 	const ns1Source: CloudquerySource = {
+		type: 'cloudquery',
 		name: 'NS1',
 		description: 'DNS records from NS1',
 		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
@@ -518,6 +546,14 @@ export function addCloudqueryEcsCluster(
 			NS1_API_KEY: Secret.fromSecretsManager(ns1ApiKey, 'api-key'),
 		},
 		config: ns1SourceConfig(),
+	};
+
+	const steampipePluginsRegistrySource: SteampipeSource = {
+		type: 'steampipe',
+		name: 'SteampipePlugins',
+		description: 'Collect GitHub languages data',
+		schedule: nonProdSchedule ?? Schedule.rate(Duration.days(7)),
+		table: 'steampipe_registry_plugin',
 	};
 
 	new CloudqueryCluster(scope, `${app}Cluster`, {
@@ -535,6 +571,7 @@ export function addCloudqueryEcsCluster(
 			riffRaffSources,
 			githubLanguagesSource,
 			ns1Source,
+			steampipePluginsRegistrySource,
 		],
 	});
 }

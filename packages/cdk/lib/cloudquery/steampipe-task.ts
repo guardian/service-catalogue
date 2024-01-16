@@ -10,19 +10,16 @@ import {
 	LogDrivers,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
-import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
+import type { Cluster } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { dump } from 'js-yaml';
-import type { CloudqueryConfig } from './config';
-import { postgresDestinationConfig } from './config';
 import { Images } from './images';
 import { singletonPolicy } from './policies';
 
-export interface ScheduledCloudqueryTaskProps
+export interface ScheduledSteampipeTaskProps
 	extends AppIdentity,
 		Omit<ScheduledFargateTaskProps, 'Cluster'> {
 	/**
@@ -66,7 +63,7 @@ export interface ScheduledCloudqueryTaskProps
 	 *
 	 * @see https://docs.cloudquery.io/docs/reference/source-spec
 	 */
-	sourceConfig: CloudqueryConfig;
+	table: string;
 
 	/**
 	 * Any secrets to pass to the CloudQuery container.
@@ -93,30 +90,10 @@ export interface ScheduledCloudqueryTaskProps
 	 * Useful to help avoid overlapping runs.
 	 */
 	runAsSingleton: boolean;
-
-	/**
-	 * The CloudQuery API key, stored in AWS Secrets Manager.
-	 *
-	 * @see https://docs.cloudquery.io/docs/deployment/generate-api-key
-	 * @see https://cloud.cloudquery.io/teams/the-guardian/api-keys
-	 */
-	cloudQueryApiKey: Secret;
-
-	/**
-	 * The image of a CloudQuery plugin that is distributed via Docker,
-	 * i.e. plugins not written in Go.
-	 *
-	 * This image will be run on its own, exposing the GRPC server on localhost:7777.
-	 * The CloudQuery source config should be configured with a registry of grpc, and path of localhost:7777.
-	 *
-	 * @see https://docs.cloudquery.io/docs/reference/source-spec
-	 */
-	dockerDistributedPluginImage?: RepositoryImage;
 }
 
-export class ScheduledCloudqueryTask extends ScheduledFargateTask {
-	public readonly sourceConfig: CloudqueryConfig;
-	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
+export class ScheduledSteampipeTask extends ScheduledFargateTask {
+	constructor(scope: GuStack, id: string, props: ScheduledSteampipeTaskProps) {
 		const {
 			name,
 			db,
@@ -127,16 +104,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			managedPolicies,
 			policies,
 			loggingStreamName,
-			sourceConfig,
 			enabled,
-			secrets,
-			additionalCommands = [],
 			memoryLimitMiB = 512,
 			cpu,
 			additionalSecurityGroups = [],
+			table,
 			runAsSingleton,
-			cloudQueryApiKey,
-			dockerDistributedPluginImage,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -150,9 +123,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		A scheduled task (i.e. `this`) cannot be tagged, so we tag the task definition instead.
 		 */
 		Tags.of(task).add('Name', name);
-
-		const destinationConfig = postgresDestinationConfig();
-
 		/*
 		This error shouldn't ever be thrown as AWS CDK creates a secret by default,
 		it is just typed as optional.
@@ -174,60 +144,67 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		});
 
-		const cloudqueryTask = task.addContainer(`${id}Container`, {
-			image: Images.cloudquery,
+		//Do not remove the steampipe plugin list command. It is used to check if the steampipe plugin is installed correctly.
+		const steampipeContainer = task.addContainer(`${id}SteampipeContainer`, {
+			image: Images.steampipe,
 			entryPoint: [''],
-			environment: {
-				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
-			},
-			secrets: {
-				...secrets,
-				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
-				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
-				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
-				CLOUDQUERY_API_KEY: cloudQueryApiKey,
-			},
 			dockerLabels: {
 				Stack: stack,
 				Stage: stage,
 				App: app,
 				Name: name,
 			},
+			secrets: {
+				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
+				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
+				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+			},
 			command: [
 				'/bin/sh',
 				'-c',
 				[
-					...additionalCommands,
+					'steampipe plugin install --progress=false steampipe',
+					'steampipe plugin list',
+					'steampipe service start  --foreground --database-password steampipe',
+				].join(';'),
+			],
+			logging: fireLensLogDriver,
+			healthCheck: {
+				command: [
+					'CMD',
+					"steampipe service status | grep 'Steampipe service is running'",
+				],
+			},
+		});
 
-					/*
-					Install the CA bundle for all RDS certificates.
-					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
-					 */
-					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
-
-					`printf '${dump(sourceConfig)}' > /source.yaml`,
-					`printf '${dump(destinationConfig)}' > /destination.yaml`,
-					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
+		const pgDumpContainer = task.addContainer(`${id}PgDumpContainer`, {
+			image: Images.pgdump,
+			entryPoint: [''],
+			dockerLabels: {
+				Stack: stack,
+				Stage: stage,
+				App: app,
+				Name: name,
+			},
+			secrets: {
+				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
+				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
+				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+			},
+			command: [
+				'/bin/sh',
+				'-c',
+				[
+					`pg_dump -a -t ${table} -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
 		});
 
-		if (dockerDistributedPluginImage) {
-			const additionalCloudQueryContainer = task.addContainer(
-				`${id}PluginContainer`,
-				{
-					image: dockerDistributedPluginImage,
-					logging: fireLensLogDriver,
-					essential: false,
-				},
-			);
-
-			cloudqueryTask.addContainerDependencies({
-				container: additionalCloudQueryContainer,
-				condition: ContainerDependencyCondition.START,
-			});
-		}
+		pgDumpContainer.addContainerDependencies({
+			container: steampipeContainer,
+			condition: ContainerDependencyCondition.HEALTHY,
+		});
 
 		if (runAsSingleton) {
 			const operationInProgress = 114;
@@ -264,7 +241,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				essential: false,
 			});
 
-			cloudqueryTask.addContainerDependencies({
+			steampipeContainer.addContainerDependencies({
 				container: singletonTask,
 				condition: ContainerDependencyCondition.SUCCESS,
 			});
@@ -305,7 +282,5 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
 		});
-
-		this.sourceConfig = sourceConfig;
 	}
 }
