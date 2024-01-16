@@ -6,13 +6,14 @@ import {
 import type { repocop_github_repository_rules } from '@prisma/client';
 import { getEnvOrThrow } from 'common/src/functions';
 
-export function getPercentageTrue(evaluatedRepos: Array<boolean | undefined>) {
-	if (evaluatedRepos.length === 0) {
+export function getPercentageTrue(booleanishArray: Array<boolean | null>) {
+	const array = booleanishArray.filter((x) => x !== null) as boolean[];
+	if (array.length === 0) {
 		return 0;
 	}
-	const totalRepos = evaluatedRepos.length;
+	const totalRepos = array.length;
 	const trackedReposPercentage = (
-		(evaluatedRepos.filter((x) => x === true).length * 100) /
+		(array.filter((x) => x).length * 100) /
 		totalRepos
 	).toFixed(1);
 	return parseFloat(trackedReposPercentage);
@@ -20,7 +21,7 @@ export function getPercentageTrue(evaluatedRepos: Array<boolean | undefined>) {
 
 function createMetric(
 	metricName: string,
-	boolArray: Array<boolean | undefined>,
+	boolArray: Array<boolean | null>,
 ): MetricDatum {
 	getPercentageTrue(boolArray);
 	const Dimensions = [

@@ -16,3 +16,10 @@ describe('When evaluating the proportion of trues and falses, we', () => {
 		expect(getPercentageTrue([true, false, false])).toBe(33.3);
 	});
 });
+describe('An array that contains null values', () => {
+	test('should discount the nulls completely', () => {
+		expect(getPercentageTrue([null])).toBe(0);
+		expect(getPercentageTrue([null, true])).toBe(100);
+		expect(getPercentageTrue([null, false, true])).toBe(50);
+	});
+});
