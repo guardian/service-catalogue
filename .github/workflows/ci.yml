@@ -50,8 +50,54 @@ jobs:
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
-      - name: Run script/ci
-        run: ./scripts/ci.sh
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run synth
+      - run: npm run build
+
+      - name: verify markdown
+        run: |
+          npm run generate -w best-practices
+          if [[ $(git status -z) == *"packages/best-practices/best-practices.md"* ]]; then
+            echo "Best practices markdown file is out of date. Please regenerate the project and commit the changes."
+            exit 1
+          fi
+
+      - name: create artifact - interactive monitor
+        working-directory: packages/interactive-monitor/dist
+        run: zip -qr interactive-monitor.zip .
+
+      - name: create artifact - snyk-integrator
+        working-directory: packages/snyk-integrator/dist
+        run: zip -qr snyk-integrator.zip .
+
+      - name: create artifact - repocop
+        run: |
+          cp -r packages/common/prisma packages/repocop/dist
+          mkdir -p packages/repocop/dist/node_modules
+          cp -r node_modules/@prisma packages/repocop/dist/node_modules/@prisma
+          cp -r node_modules/prisma packages/repocop/dist/node_modules/prisma
+          cp -r node_modules/.prisma packages/repocop/dist/node_modules/.prisma
+          
+          (
+            cd packages/repocop/dist
+            zip -qr repocop.zip .
+          )
+
+      - name: create artifact - data-audit
+        run: |
+          cp -r packages/common/prisma packages/data-audit/dist
+          mkdir -p packages/data-audit/dist/node_modules
+          cp -r node_modules/@prisma packages/data-audit/dist/node_modules/@prisma
+          cp -r node_modules/prisma packages/data-audit/dist/node_modules/prisma
+          cp -r node_modules/.prisma packages/data-audit/dist/node_modules/.prisma
+          
+          (
+            cd packages/data-audit/dist
+            zip -qr data-audit.zip .
+          )
 
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@v3
@@ -74,6 +120,7 @@ jobs:
               - packages/snyk-integrator/dist/snyk-integrator.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
+      TIMING: 1
 
   db-migration:
     timeout-minutes: 15
