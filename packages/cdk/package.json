@@ -6,11 +6,11 @@
     "synth": "cdk synth --path-metadata false --version-reporting false"
   },
   "devDependencies": {
-    "@guardian/cdk": "53.0.0",
+    "@guardian/cdk": "53.0.3",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v2.3.0",
     "@types/js-yaml": "^4.0.9",
-    "aws-cdk": "2.114.1",
-    "aws-cdk-lib": "2.114.1",
+    "aws-cdk": "2.121.1",
+    "aws-cdk-lib": "2.121.1",
     "aws-cron-parser": "^1.1.12",
     "constructs": "10.3.0",
     "js-yaml": "^4.1.0",
