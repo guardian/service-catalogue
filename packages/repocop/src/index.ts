@@ -1,11 +1,14 @@
+import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
+import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
+import { sendToCloudwatch } from './metrics';
 import {
 	getRepoOwnership,
 	getRepositories,
@@ -66,6 +69,10 @@ export async function main() {
 			snykProjects,
 			workflowFiles,
 		);
+
+	const awsConfig = awsClientConfig(config.stage);
+	const cloudwatch = new CloudWatchClient(awsConfig);
+	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
 
 	const octokit = await stageAwareOctokit(config.stage);
 

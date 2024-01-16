@@ -8,6 +8,7 @@ import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -64,11 +65,22 @@ export class Repocop {
 			repocopLampdaProps,
 		);
 
+		const policyStatement = new PolicyStatement({
+			actions: ['cloudwatch:PutMetricData'],
+			resources: ['*'],
+			conditions: {
+				StringEquals: {
+					'cloudwatch:namespace': 'repocop',
+				},
+			},
+		});
+
 		cloudqueryDB.grantConnect(repocopLambda, 'repocop');
 
 		repocopGithubSecret.grantRead(repocopLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
+		repocopLambda.addToRolePolicy(policyStatement);
 
 		const snykIntegratorSecret = new Secret(
 			guStack,

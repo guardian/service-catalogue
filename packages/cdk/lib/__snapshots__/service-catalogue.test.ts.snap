@@ -17014,6 +17014,16 @@ spec:
                 "Ref": "TopicBFC7AF6E",
               },
             },
+            {
+              "Action": "cloudwatch:PutMetricData",
+              "Condition": {
+                "StringEquals": {
+                  "cloudwatch:namespace": "repocop",
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
           ],
           "Version": "2012-10-17",
         },
