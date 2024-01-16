@@ -4,7 +4,7 @@ import {
 	PutMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
 import type { repocop_github_repository_rules } from '@prisma/client';
-import { getEnvOrThrow } from 'common/src/functions';
+import type { Config } from './config';
 
 export function getPercentageTrue(booleanishArray: Array<boolean | null>) {
 	const array = booleanishArray.filter((x): x is boolean => x !== null);
@@ -22,20 +22,21 @@ export function getPercentageTrue(booleanishArray: Array<boolean | null>) {
 function createMetric(
 	metricName: string,
 	boolArray: Array<boolean | null>,
+	config: Config,
 ): MetricDatum {
 	getPercentageTrue(boolArray);
 	const Dimensions = [
 		{
 			Name: 'Stack',
-			Value: getEnvOrThrow('STACK'),
+			Value: config.stack,
 		},
 		{
 			Name: 'Stage',
-			Value: process.env.STAGE ?? 'DEV',
+			Value: config.stage,
 		},
 		{
 			Name: 'App',
-			Value: getEnvOrThrow('APP'),
+			Value: config.app,
 		},
 	];
 
@@ -50,6 +51,7 @@ function createMetric(
 export async function sendToCloudwatch(
 	evaluatedRepos: repocop_github_repository_rules[],
 	cloudwatch: CloudWatchClient,
+	config: Config,
 ) {
 	console.log('Sending metrics to Cloudwatch');
 	await cloudwatch.send(
@@ -59,26 +61,32 @@ export async function sendToCloudwatch(
 				createMetric(
 					'DefaultBranchIsMain',
 					evaluatedRepos.map((x) => x.default_branch_name),
+					config,
 				),
 				createMetric(
 					'IsMaintained',
 					evaluatedRepos.map((x) => x.archiving),
+					config,
 				),
 				createMetric(
 					'HasAdminTeam',
 					evaluatedRepos.map((x) => x.admin_access),
+					config,
 				),
 				createMetric(
 					'HasVulnerabilityTracking',
 					evaluatedRepos.map((x) => x.vulnerability_tracking),
+					config,
 				),
 				createMetric(
 					'HasValidTopics',
 					evaluatedRepos.map((x) => x.topics),
+					config,
 				),
 				createMetric(
 					'HasBranchProtection',
 					evaluatedRepos.map((x) => x.branch_protection),
+					config,
 				),
 			],
 		}),
