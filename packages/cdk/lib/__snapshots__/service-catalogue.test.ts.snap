@@ -16185,7 +16185,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "SELECT * FROM steampipe_registry_plugin" --output csv --header false > /query_output.csv;head /query-output.csv",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -16196,16 +16196,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
-            "HealthCheck": {
-              "Command": [
-                "CMD-SHELL",
-                "steampipe service status | grep 'Steampipe service is running'",
-              ],
-              "Interval": 30,
-              "Retries": 3,
-              "Timeout": 5,
-            },
+            "Essential": false,
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -16220,6 +16211,13 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/query_output.csv",
+                "ReadOnly": false,
+                "SourceVolume": "steampipe-output",
+              },
+            ],
             "Name": "SteampipeSource-SteampipePluginsSteampipeContainer",
             "Secrets": [
               {
@@ -16270,11 +16268,11 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "pg_dump --clean --if-exists -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres -c "COPY steampipe_registry_plugin FROM STDIN WITH DELIMITER ','" < /query_output.csv",
             ],
             "DependsOn": [
               {
-                "Condition": "HEALTHY",
+                "Condition": "SUCCESS",
                 "ContainerName": "SteampipeSource-SteampipePluginsSteampipeContainer",
               },
             ],
@@ -16302,6 +16300,13 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/query_output.csv",
+                "ReadOnly": false,
+                "SourceVolume": "steampipe-output",
+              },
+            ],
             "Name": "SteampipeSource-SteampipePluginsPgDumpContainer",
             "Secrets": [
               {
@@ -16428,6 +16433,11 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "steampipe-output",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },

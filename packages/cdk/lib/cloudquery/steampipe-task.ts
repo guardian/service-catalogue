@@ -144,6 +144,10 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 			},
 		});
 
+		task.addVolume({
+			name: 'steampipe-output',
+		});
+
 		//Do not remove the steampipe plugin list command. It is used to check if the steampipe plugin is installed correctly.
 		const steampipeContainer = task.addContainer(`${id}SteampipeContainer`, {
 			image: Images.steampipe,
@@ -165,16 +169,18 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				[
 					'steampipe plugin install --progress=false steampipe',
 					'steampipe plugin list',
-					'steampipe service start  --foreground --database-password steampipe',
+					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /query_output.csv`,
+					`head /query-output.csv`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
-			healthCheck: {
-				command: [
-					'CMD-SHELL',
-					"steampipe service status | grep 'Steampipe service is running'",
-				],
-			},
+			essential: false,
+		});
+
+		steampipeContainer.addMountPoints({
+			containerPath: '/query_output.csv',
+			sourceVolume: 'steampipe-output',
+			readOnly: false,
 		});
 
 		const pgDumpContainer = task.addContainer(`${id}PgDumpContainer`, {
@@ -195,15 +201,21 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					`pg_dump --clean --if-exists -t ${table} -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres`,
+					`psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres -c "COPY ${table} FROM STDIN WITH DELIMITER ','" < /query_output.csv`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
 		});
 
+		pgDumpContainer.addMountPoints({
+			containerPath: '/query_output.csv',
+			sourceVolume: 'steampipe-output',
+			readOnly: false,
+		});
+
 		pgDumpContainer.addContainerDependencies({
 			container: steampipeContainer,
-			condition: ContainerDependencyCondition.HEALTHY,
+			condition: ContainerDependencyCondition.SUCCESS,
 		});
 
 		if (runAsSingleton) {
