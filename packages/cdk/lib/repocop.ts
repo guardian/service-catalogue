@@ -69,6 +69,11 @@ export class Repocop {
 		const policyStatement = new PolicyStatement({
 			actions: ['cloudwatch:PutMetricData'],
 			resources: ['*'],
+			conditions: {
+				StringEquals: {
+					'cloudwatch:namespace': 'repocop',
+				},
+			},
 		});
 
 		cloudqueryDB.grantConnect(repocopLambda, 'repocop');

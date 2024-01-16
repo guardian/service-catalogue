@@ -53,7 +53,7 @@ export async function sendToCloudwatch(
 	console.log('Sending metrics to Cloudwatch');
 	await cloudwatch.send(
 		new PutMetricDataCommand({
-			Namespace: 'Repocop',
+			Namespace: 'repocop',
 			MetricData: [
 				createMetric(
 					'TrackedRepositoriesPercentage',

@@ -17016,6 +17016,11 @@ spec:
             },
             {
               "Action": "cloudwatch:PutMetricData",
+              "Condition": {
+                "StringEquals": {
+                  "cloudwatch:namespace": "repocop",
+                },
+              },
               "Effect": "Allow",
               "Resource": "*",
             },
