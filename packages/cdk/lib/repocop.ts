@@ -81,6 +81,7 @@ export class Repocop {
 		repocopGithubSecret.grantRead(repocopLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
+		snykIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 
 		const snykIntegratorSecret = new Secret(

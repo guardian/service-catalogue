@@ -17018,6 +17018,13 @@ spec:
               },
             },
             {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
+              },
+            },
+            {
               "Action": "cloudwatch:PutMetricData",
               "Condition": {
                 "StringEquals": {

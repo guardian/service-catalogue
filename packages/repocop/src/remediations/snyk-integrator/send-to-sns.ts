@@ -64,7 +64,8 @@ export function findUntrackedReposWhereIntegrationWillWork(
 		);
 
 	console.log(
-		`Found ${reposWhereAllLanguagesAreSupported.length} untracked repos that can be integrated with Snyk`,
+		`Found ${reposWhereAllLanguagesAreSupported.length} untracked repos that can be integrated with Snyk: `,
+		reposWhereAllLanguagesAreSupported.join(','),
 	);
 
 	return reposWhereAllLanguagesAreSupported;
@@ -76,6 +77,7 @@ export async function sendUnprotectedRepo(
 	owners: view_repo_ownership[],
 	githubLanguages: github_languages[],
 ) {
+	//Only use internal repos while we are testing.
 	const devXRepos = findDevXRepos(owners, evaluatedRepos);
 
 	const eventToSend = findUntrackedReposWhereIntegrationWillWork(
