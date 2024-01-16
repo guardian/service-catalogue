@@ -19,10 +19,7 @@ import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { CloudqueryConfig } from './config';
-<<<<<<< HEAD
 // import { postgresDestinationConfig } from './config';
-=======
->>>>>>> f70e36e (Remove unused import for testing)
 import { Images } from './images';
 
 export interface ScheduledCloudqueryTaskProps
@@ -185,6 +182,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				App: app,
 				Name: name,
 			},
+			secrets: {
+				DB_USERNAME: Secret.fromSecretsManager(db.secret, 'username'),
+				DB_HOST: Secret.fromSecretsManager(db.secret, 'host'),
+				DB_PASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+			},
 			command: [
 				'/bin/sh',
 				'-c',
@@ -195,6 +197,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
+			healthCheck: {
+				command: [
+					'CMD',
+					"steampipe service status | grep 'Steampipe service is running'",
+				],
+			},
 		});
 
 		const pgDumpContainer = task.addContainer(`${id}PgDumpContainer`, {
@@ -215,8 +223,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					'sleep 60',
-					'pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:5432/postgres',
+					'pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:5432/postgres',
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
@@ -224,7 +231,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		pgDumpContainer.addContainerDependencies({
 			container: steampipeContainer,
-			condition: ContainerDependencyCondition.START,
+			condition: ContainerDependencyCondition.HEALTHY,
 		});
 
 		// const cloudqueryTask = task.addContainer(`${id}Container`, {

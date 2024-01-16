@@ -122,6 +122,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -137,16 +146,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-AwsCostExplorerSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-AwsCostExplorerSteampipeContainer",
               },
             ],
@@ -730,6 +783,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -745,16 +807,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-DelegatedToSecurityAccountSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-DelegatedToSecurityAccountSteampipeContainer",
               },
             ],
@@ -1303,6 +1409,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -1318,16 +1433,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-DeployToolsListOrgsSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-DeployToolsListOrgsSteampipeContainer",
               },
             ],
@@ -1881,6 +2040,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -1896,16 +2064,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-FastlyServicesSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-FastlyServicesSteampipeContainer",
               },
             ],
@@ -2419,6 +2631,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -2434,16 +2655,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-GalaxiesSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GalaxiesSteampipeContainer",
               },
             ],
@@ -3202,6 +3467,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -3217,16 +3491,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-GitHubIssuesSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubIssuesSteampipeContainer",
               },
             ],
@@ -3600,6 +3918,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -3615,16 +3942,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-GitHubLanguagesSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubLanguagesSteampipeContainer",
               },
             ],
@@ -4138,6 +4509,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -4153,16 +4533,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-GitHubRepositoriesSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubRepositoriesSteampipeContainer",
               },
             ],
@@ -4706,6 +5130,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -4721,16 +5154,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-GitHubTeamsSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GitHubTeamsSteampipeContainer",
               },
             ],
@@ -5304,6 +5781,15 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -5319,16 +5805,60 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               },
             },
             "Name": "CloudquerySource-GuardianCustomSnykProjectsSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-GuardianCustomSnykProjectsSteampipeContainer",
               },
             ],
@@ -5830,36 +6360,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
-spec:
-  name: ns1
-  registry: grpc
-  path: localhost:7777
-  version: v0.0.0
-  tables:
-    - ns1_*
-  destinations:
-    - postgresql
-  spec:
-    apiKey: \${NS1_API_KEY}
-' > /source.yaml;printf 'kind: destination
-spec:
-  name: postgresql
-  registry: github
-  path: cloudquery/postgresql
-  version: v7.0.1
-  migrate_mode: forced
-  spec:
-    connection_string: >-
-      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-      dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "START",
-                "ContainerName": "CloudquerySource-NS1PluginContainer",
-              },
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe service start  --foreground --database-password steampipe",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -5870,14 +6371,17 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Environment": [
-              {
-                "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
-              },
-            ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:4.3.5",
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5891,22 +6395,8 @@ spec:
                 },
               },
             },
-            "Name": "CloudquerySource-NS1Container",
+            "Name": "CloudquerySource-NS1SteampipeContainer",
             "Secrets": [
-              {
-                "Name": "NS1_API_KEY",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "ns1credentialsA8DD3B2D",
-                      },
-                      ":api-key::",
-                    ],
-                  ],
-                },
-              },
               {
                 "Name": "DB_USERNAME",
                 "ValueFrom": {
@@ -5949,25 +6439,31 @@ spec:
                   ],
                 },
               },
-              {
-                "Name": "CLOUDQUERY_API_KEY",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "cloudqueryapikeyCCF82F53",
-                      },
-                      ":api-key::",
-                    ],
-                  ],
-                },
-              },
             ],
           },
           {
-            "Essential": false,
-            "Image": "ghcr.io/guardian/cq-source-ns1:0.0.3",
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-NS1SteampipeContainer",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "NS1",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": true,
+            "Image": "postgres:16.1",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5981,7 +6477,51 @@ spec:
                 },
               },
             },
-            "Name": "CloudquerySource-NS1PluginContainer",
+            "Name": "CloudquerySource-NS1PgDumpContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Environment": [
@@ -6199,27 +6739,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "ns1credentialsA8DD3B2D",
-              },
-            },
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-              },
-            },
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "cloudqueryapikeyCCF82F53",
               },
             },
             {
@@ -6473,6 +6993,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -6488,16 +7017,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideAutoScalingGroupsSteampipeContainer",
               },
             ],
@@ -7051,6 +7624,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -7066,16 +7648,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideBackupSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideBackupSteampipeContainer",
               },
             ],
@@ -7629,6 +8255,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -7644,16 +8279,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCertificatesSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideCertificatesSteampipeContainer",
               },
             ],
@@ -8237,6 +8916,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -8252,16 +8940,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudFormationSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideCloudFormationSteampipeContainer",
               },
             ],
@@ -8985,6 +9717,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -9000,16 +9741,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideCloudwatchAlarmsSteampipeContainer",
               },
             ],
@@ -9363,6 +10148,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -9378,16 +10172,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideDynamoDBSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideDynamoDBSteampipeContainer",
               },
             ],
@@ -9941,6 +10779,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -9956,16 +10803,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideEc2SteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideEc2SteampipeContainer",
               },
             ],
@@ -10519,6 +11410,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -10534,16 +11434,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideInspectorSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideInspectorSteampipeContainer",
               },
             ],
@@ -11297,6 +12241,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -11312,16 +12265,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideLoadBalancersSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideLoadBalancersSteampipeContainer",
               },
             ],
@@ -11875,6 +12872,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -11890,16 +12896,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideRDSSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideRDSSteampipeContainer",
               },
             ],
@@ -12253,6 +13303,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -12268,16 +13327,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideS3SteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-OrgWideS3SteampipeContainer",
               },
             ],
@@ -12831,6 +13934,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -12846,16 +13958,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-RemainingAwsDataSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-RemainingAwsDataSteampipeContainer",
               },
             ],
@@ -13612,6 +14768,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -13627,16 +14792,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-RiffRaffDataSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-RiffRaffDataSteampipeContainer",
               },
             ],
@@ -13980,6 +15189,15 @@ spec:
               "",
             ],
             "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "steampipe service status | grep 'Steampipe service is running'",
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "Timeout": 5,
+            },
             "Image": "ghcr.io/turbot/steampipe:latest",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -13995,16 +15213,60 @@ spec:
               },
             },
             "Name": "CloudquerySource-SnykAllSteampipeContainer",
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
           },
           {
             "Command": [
               "/bin/sh",
               "-c",
-              "sleep 60;pg_dump -a -t steampipe_registry_plugin steampipe -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
+              "pg_dump -a -t steampipe_registry_plugin -d postgres://steampipe:steampipe@localhost:9193/steampipe | psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres",
             ],
             "DependsOn": [
               {
-                "Condition": "START",
+                "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-SnykAllSteampipeContainer",
               },
             ],
