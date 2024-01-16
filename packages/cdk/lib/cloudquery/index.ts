@@ -386,6 +386,17 @@ export function addCloudqueryEcsCluster(
 				FASTLY_API_KEY: Secret.fromSecretsManager(fastlyCredentials, 'api-key'),
 			},
 		},
+		{
+			name: 'FastlyStatistics',
+			description: 'Fastly statistic data',
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(1)),
+			config: fastlySourceConfig({
+				tables: ['fastly_stats_services'],
+			}),
+			secrets: {
+				FASTLY_API_KEY: Secret.fromSecretsManager(fastlyCredentials, 'api-key'),
+			},
+		},
 	];
 
 	// The bucket in which the Galaxies data lives.
