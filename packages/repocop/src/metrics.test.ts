@@ -11,8 +11,8 @@ describe('When evaluating the proportion of trues and falses, we', () => {
 		expect(getPercentageTrue([false])).toBe(0);
 		expect(getPercentageTrue([true, false])).toBe(50);
 	});
-	test('Should round to the nearest integer value', () => {
-		expect(getPercentageTrue([true, true, false])).toBe(67);
-		expect(getPercentageTrue([true, false, false])).toBe(33);
+	test('Should round to one decimal place', () => {
+		expect(getPercentageTrue([true, true, false])).toBe(66.7);
+		expect(getPercentageTrue([true, false, false])).toBe(33.3);
 	});
 });

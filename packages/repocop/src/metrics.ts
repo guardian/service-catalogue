@@ -11,11 +11,11 @@ export function getPercentageTrue(evaluatedRepos: Array<boolean | undefined>) {
 		return 0;
 	}
 	const totalRepos = evaluatedRepos.length;
-	const trackedReposPercentage: number = Math.round(
-		(evaluatedRepos.filter((x) => x === true).length * 100) / totalRepos,
-	);
-
-	return trackedReposPercentage;
+	const trackedReposPercentage = (
+		(evaluatedRepos.filter((x) => x === true).length * 100) /
+		totalRepos
+	).toFixed(1);
+	return parseFloat(trackedReposPercentage);
 }
 
 function createMetric(
