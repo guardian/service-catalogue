@@ -167,6 +167,7 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
+					'chown steampipe:0 /steampipe-output',
 					'steampipe plugin install --progress=false steampipe',
 					'steampipe plugin list',
 					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /steampipe-output/query_output.csv`,
