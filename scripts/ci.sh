@@ -44,12 +44,15 @@ verifyMarkdown() {
 }
 
 npm ci
-npm run typecheck & npm run lint
-npm query .workspace | jq -r '.[].location' | sed -e 's,.*/,,' | xargs -P 0 -L1 npm run test --if-present -w
-npm run synth & npm run build
+npm test
 
-verifyMarkdown & \
-  createZip "interactive-monitor" & \
-  createZip "snyk-integrator" & \
-  createLambdaWithPrisma "repocop" & \
-  createLambdaWithPrisma "data-audit"
+# Run the following in parallel.
+# Logs will be interleaved, but the `--print-label` flag will prefix each line with the name of the script being run.
+# See https://github.com/mysticatea/npm-run-all.
+npx npm-run-all --print-label --parallel typecheck lint synth build
+
+verifyMarkdown
+createZip "interactive-monitor"
+createZip "snyk-integrator"
+createLambdaWithPrisma "repocop"
+createLambdaWithPrisma "data-audit"
