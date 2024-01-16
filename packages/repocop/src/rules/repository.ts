@@ -5,6 +5,10 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
+import {
+	supportedDependabotLanguages,
+	supportedSnykLanguages,
+} from '../languages';
 import type {
 	AwsCloudFormationStack,
 	RepoAndStack,
@@ -149,53 +153,6 @@ export function hasDependencyTracking(
 		repoLanguages.find(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
-
-	const ignoredLanguages = [
-		'HTML',
-		'CSS',
-		'Shell',
-		'Jupyter Notebook',
-		'Makefile',
-		'Dockerfile',
-		'PLpgSQL',
-		'Thrift',
-		'SCSS',
-		'Batchfile',
-		'HCL',
-		'VCL',
-	];
-
-	const commonSupportedLanguages = [
-		'C#',
-		'Go',
-		'Java',
-		'JavaScript',
-		'Python',
-		'Swift',
-		'TypeScript',
-	];
-	const snykOnlySupportedLanguages = [
-		'C',
-		'C++',
-		'Apex',
-		'Bazel',
-		'Elixir',
-		'Kotlin',
-		'PHP',
-		'Ruby',
-		'Rust',
-		'Scala',
-		'Objective-C',
-		'Visual Basic .NET',
-	];
-
-	const supportedDependabotLanguages = ignoredLanguages.concat(
-		commonSupportedLanguages,
-	);
-
-	const supportedSnykLanguages = ignoredLanguages
-		.concat(commonSupportedLanguages)
-		.concat(snykOnlySupportedLanguages);
 
 	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
 

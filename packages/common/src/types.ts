@@ -16,3 +16,8 @@ export type GitHubAppConfig = {
 	strategyOptions: StrategyOptions;
 	installationId: string;
 };
+
+export interface SnykIntegratorEvent {
+	name: string;
+	languages: string[];
+}
