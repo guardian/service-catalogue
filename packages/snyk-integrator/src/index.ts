@@ -7,28 +7,28 @@ import { getConfig } from './config';
 import {
 	createSnykPullRequest,
 	createYaml,
-} from './remediations/snyk-integrator/snyk-integrator';
+} from './snyk-integrator/snyk-integrator';
 
 export async function main(event: SnykIntegratorEvent) {
+	console.log(`Generating Snyk PR for ${event.name}`);
 	const config: Config = getConfig();
 
 	const octokit = await stageAwareOctokit(config.stage);
-
-	console.log('Testing snyk.yml generation');
-	console.log(createYaml(event.languages, 'branch'));
-
+	// Introduce a random suffix to allow the same PR to be raised multiple times
+	// Useful for testing, but may be less useful in production
+	const branch = `integrate-snyk-${randomBytes(8).toString('hex')}`;
 	if (config.stage === 'PROD') {
-		console.log('Creating a test Snyk Pull Request against test-repocop-prs');
 		const response = await createSnykPullRequest(
 			octokit,
 			event.name,
-			// Introduce a random suffix to allow the same PR to be raised multiple times
-			// Useful for testing, but may be less useful in production
-			`integrate-snyk-${randomBytes(8).toString('hex')}`,
+
+			branch,
 			event.languages,
 		);
 		console.log('Pull request successfully created:', response?.data.html_url);
 	} else {
+		console.log('Testing snyk.yml generation');
+		console.log(createYaml(event.languages, branch));
 		console.log(
 			'Skipping creating a test Snyk Pull Request (feature is not enabled)',
 		);
@@ -37,7 +37,6 @@ export async function main(event: SnykIntegratorEvent) {
 }
 
 export const handler: SNSHandler = async (event) => {
-	console.log('Event received:', event);
 	const snykIntegratorEvents = parseEvent<SnykIntegratorEvent>(event);
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we're just testing
