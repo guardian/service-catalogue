@@ -3,7 +3,7 @@ red="\033[0;31m"
 clear="\033[0m"
 yellow="\033[1;33m"
 #check for staged changes in .env and ask user to confirm
-if [[ $(git diff --cached --name-only | grep .env) ]]; then
+if [[ $(git diff --cached --name-only | grep -w .env) ]]; then
   echo -e "${red}You have staged changes in the original .env file. This might include secrets you do not intend to commit."
   echo -e "${yellow}Are you sure you want to commit these changes?${clear} [y/N] "
   exec < /dev/tty
