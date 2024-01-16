@@ -9,7 +9,7 @@ if [[ $(git diff --cached --name-only | grep -w .env) ]]; then
   exec < /dev/tty
   read REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo -e "${red}Aborting commit.${clear} Please discard unintended changes with $(git restore .env) before committing again."
+    echo -e "${red}Aborting commit.${clear} Please discard unintended changes with `git restore .env` before committing again."
     exit 1
   fi
 fi
