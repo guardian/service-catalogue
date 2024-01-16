@@ -1,3 +1,4 @@
+import type { MetricDatum } from '@aws-sdk/client-cloudwatch';
 import {
 	CloudWatchClient,
 	PutMetricDataCommand,
@@ -33,29 +34,17 @@ import type { AwsCloudFormationStack } from './types';
 
 function getPercentageTrue(evaluatedRepos: Array<boolean | undefined>) {
 	const totalRepos = evaluatedRepos.length;
-	const trackedReposPercentage: number = Math.round(
-		evaluatedRepos.filter((x) => x).length / totalRepos,
-	);
+	const trackedReposPercentage: number =
+		Math.round(evaluatedRepos.filter((x) => x).length / totalRepos) * 100;
 
 	return trackedReposPercentage;
 }
 
-async function sendToCloudwatch(
-	evaluatedRepos: repocop_github_repository_rules[],
-	cloudwatch: CloudWatchClient,
-) {
-	const trackedReposPercentage: number = getPercentageTrue(
-		evaluatedRepos.map((x) => x.vulnerability_tracking),
-	);
-
-	const validTopicsPercentage = getPercentageTrue(
-		evaluatedRepos.map((x) => x.topics),
-	);
-
-	const branchProtectionPercentage = getPercentageTrue(
-		evaluatedRepos.map((x) => x.branch_protection),
-	);
-
+function createMetric(
+	metricName: string,
+	boolArray: Array<boolean | undefined>,
+): MetricDatum {
+	getPercentageTrue(boolArray);
 	const Dimensions = [
 		{
 			Name: 'Stack',
@@ -71,28 +60,34 @@ async function sendToCloudwatch(
 		},
 	];
 
+	return {
+		MetricName: metricName,
+		Value: getPercentageTrue(boolArray),
+		Unit: 'Percent',
+		Dimensions,
+	};
+}
+
+async function sendToCloudwatch(
+	evaluatedRepos: repocop_github_repository_rules[],
+	cloudwatch: CloudWatchClient,
+) {
 	await cloudwatch.send(
 		new PutMetricDataCommand({
 			Namespace: 'Repocop',
 			MetricData: [
-				{
-					MetricName: 'TrackedRepositoriesPercentage',
-					Value: trackedReposPercentage,
-					Unit: 'Percent',
-					Dimensions,
-				},
-				{
-					MetricName: 'ValidTopicsPercentage',
-					Value: validTopicsPercentage,
-					Unit: 'Percent',
-					Dimensions,
-				},
-				{
-					MetricName: 'BranchProtectionPercentage',
-					Value: branchProtectionPercentage,
-					Unit: 'Percent',
-					Dimensions,
-				},
+				createMetric(
+					'TrackedRepositoriesPercentage',
+					evaluatedRepos.map((x) => x.vulnerability_tracking),
+				),
+				createMetric(
+					'ValidTopicsPercentage',
+					evaluatedRepos.map((x) => x.topics),
+				),
+				createMetric(
+					'BranchProtectionPercentage',
+					evaluatedRepos.map((x) => x.branch_protection),
+				),
 			],
 		}),
 	);
