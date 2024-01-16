@@ -16185,7 +16185,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "SELECT * FROM steampipe_registry_plugin" --output csv --header false > /query_output.csv;head /query-output.csv",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "SELECT * FROM steampipe_registry_plugin" --output csv --header false > /steampipe-output/query_output.csv;head /steampipe-output/query-output.csv",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -16213,7 +16213,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/query_output.csv",
+                "ContainerPath": "/steampipe-output",
                 "ReadOnly": false,
                 "SourceVolume": "steampipe-output",
               },
@@ -16268,7 +16268,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres -c "COPY steampipe_registry_plugin FROM STDIN WITH DELIMITER ','" < /query_output.csv",
+              "psql postgres://\${DB_USERNAME}:\${DB_PASSWORD}@\${DB_HOST}:5432/postgres -c "COPY steampipe_registry_plugin FROM STDIN WITH DELIMITER ','" < /steampipe-output/query_output.csv",
             ],
             "DependsOn": [
               {
@@ -16302,7 +16302,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/query_output.csv",
+                "ContainerPath": "/steampipe-output",
                 "ReadOnly": false,
                 "SourceVolume": "steampipe-output",
               },

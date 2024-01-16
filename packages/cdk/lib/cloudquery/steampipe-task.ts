@@ -169,8 +169,8 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				[
 					'steampipe plugin install --progress=false steampipe',
 					'steampipe plugin list',
-					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /query_output.csv`,
-					`head /query-output.csv`,
+					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /steampipe-output/query_output.csv`,
+					`head /steampipe-output/query-output.csv`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
@@ -178,7 +178,7 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 		});
 
 		steampipeContainer.addMountPoints({
-			containerPath: '/query_output.csv',
+			containerPath: '/steampipe-output',
 			sourceVolume: 'steampipe-output',
 			readOnly: false,
 		});
@@ -201,14 +201,14 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				'/bin/sh',
 				'-c',
 				[
-					`psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres -c "COPY ${table} FROM STDIN WITH DELIMITER ','" < /query_output.csv`,
+					`psql postgres://$\{DB_USERNAME}:$\{DB_PASSWORD}@$\{DB_HOST}:5432/postgres -c "COPY ${table} FROM STDIN WITH DELIMITER ','" < /steampipe-output/query_output.csv`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
 		});
 
 		pgDumpContainer.addMountPoints({
-			containerPath: '/query_output.csv',
+			containerPath: '/steampipe-output',
 			sourceVolume: 'steampipe-output',
 			readOnly: false,
 		});
