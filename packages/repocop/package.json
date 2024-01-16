@@ -10,9 +10,10 @@
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop"
 	},
 	"dependencies": {
+		"@aws-sdk/client-cloudwatch": "^3.490.0",
 		"@aws-sdk/client-sns": "^3.490.0",
-		"ts-markdown": "^1.0.0",
 		"octokit-plugin-create-pull-request": "^5.1.1",
+		"ts-markdown": "^1.0.0",
 		"yaml": "^2.3.4"
 	}
 }

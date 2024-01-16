@@ -1,9 +1,14 @@
+import {
+	CloudWatchClient,
+	PutMetricDataCommand,
+} from '@aws-sdk/client-cloudwatch';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
+import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
-import { partition, stageAwareOctokit } from 'common/functions';
+import { getEnvOrThrow, partition, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -25,6 +30,73 @@ import {
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
 import type { AwsCloudFormationStack } from './types';
+
+function getPercentageTrue(evaluatedRepos: Array<boolean | undefined>) {
+	const totalRepos = evaluatedRepos.length;
+	const trackedReposPercentage: number = Math.round(
+		evaluatedRepos.filter((x) => x).length / totalRepos,
+	);
+
+	return trackedReposPercentage;
+}
+
+async function sendToCloudwatch(
+	evaluatedRepos: repocop_github_repository_rules[],
+	cloudwatch: CloudWatchClient,
+) {
+	const trackedReposPercentage: number = getPercentageTrue(
+		evaluatedRepos.map((x) => x.vulnerability_tracking),
+	);
+
+	const validTopicsPercentage = getPercentageTrue(
+		evaluatedRepos.map((x) => x.topics),
+	);
+
+	const branchProtectionPercentage = getPercentageTrue(
+		evaluatedRepos.map((x) => x.branch_protection),
+	);
+
+	const Dimensions = [
+		{
+			Name: 'Stack',
+			Value: getEnvOrThrow('STACK'),
+		},
+		{
+			Name: 'Stage',
+			Value: process.env.STAGE ?? 'DEV',
+		},
+		{
+			Name: 'App',
+			Value: getEnvOrThrow('APP'),
+		},
+	];
+
+	await cloudwatch.send(
+		new PutMetricDataCommand({
+			Namespace: 'Repocop',
+			MetricData: [
+				{
+					MetricName: 'TrackedRepositoriesPercentage',
+					Value: trackedReposPercentage,
+					Unit: 'Percent',
+					Dimensions,
+				},
+				{
+					MetricName: 'ValidTopicsPercentage',
+					Value: validTopicsPercentage,
+					Unit: 'Percent',
+					Dimensions,
+				},
+				{
+					MetricName: 'BranchProtectionPercentage',
+					Value: branchProtectionPercentage,
+					Unit: 'Percent',
+					Dimensions,
+				},
+			],
+		}),
+	);
+}
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -66,6 +138,10 @@ export async function main() {
 			snykProjects,
 			workflowFiles,
 		);
+
+	const awsConfig = awsClientConfig(config.stage);
+	const cloudwatch = new CloudWatchClient(awsConfig);
+	await sendToCloudwatch(evaluatedRepos, cloudwatch);
 
 	const octokit = await stageAwareOctokit(config.stage);
 
