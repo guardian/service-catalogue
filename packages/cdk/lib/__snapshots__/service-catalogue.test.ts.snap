@@ -16754,6 +16754,9 @@ spec:
               "Ref": "TopicBFC7AF6E",
             },
             "QUERY_LOGGING": "false",
+            "SNYK_INTEGRATOR_INPUT_TOPIC_ARN": {
+              "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -17012,6 +17015,13 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "TopicBFC7AF6E",
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
               },
             },
             {

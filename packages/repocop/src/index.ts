@@ -21,6 +21,7 @@ import {
 	getWorkflowFiles,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
+import { sendUnprotectedRepo } from './remediations/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import {
@@ -83,11 +84,12 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
+	const repoOwners = await getRepoOwnership(prisma);
+	await sendUnprotectedRepo(evaluatedRepos, config, repoOwners, repoLanguages);
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
 
-		const repoOwners = await getRepoOwnership(prisma);
 		const teams = await getTeams(prisma);
 
 		if (config.branchProtectionEnabled) {

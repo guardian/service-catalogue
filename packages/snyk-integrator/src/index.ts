@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto';
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
+import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -33,11 +34,6 @@ export async function main(event: SnykIntegratorEvent) {
 		);
 	}
 	console.log('Done');
-}
-
-export interface SnykIntegratorEvent {
-	name: string;
-	languages: string[];
 }
 
 export const handler: SNSHandler = async (event) => {

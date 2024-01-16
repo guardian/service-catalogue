@@ -53,6 +53,7 @@ export class Repocop {
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitorTopic.topicArn,
 				GITHUB_APP_SECRET: repocopGithubSecret.secretArn,
 				INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '40' : '3',
+				SNYK_INTEGRATOR_INPUT_TOPIC_ARN: snykIntegratorInputTopic.topicArn,
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],
@@ -80,6 +81,7 @@ export class Repocop {
 		repocopGithubSecret.grantRead(repocopLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
+		snykIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 
 		const snykIntegratorSecret = new Secret(
