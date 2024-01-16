@@ -53,13 +53,10 @@ function findReposWhereIntegrationWillWork(
 	owners: view_repo_ownership[],
 	githubLanguages: github_languages[],
 ) {
-	const unprotectedDevXRepos = findDevXRepos(
-		owners,
-		findUnprotectedRepos(evaluatedRepos),
-	);
+	const unprotectedRepos = findUnprotectedRepos(evaluatedRepos);
 
-	const unprotectedDevXReposWithLanguages: SnykIntegratorEvent[] =
-		unprotectedDevXRepos.map((repo) => {
+	const unprotectedReposWithLanguages: SnykIntegratorEvent[] =
+		unprotectedRepos.map((repo) => {
 			const languages =
 				githubLanguages.find((lang) => lang.full_name === repo.full_name)
 					?.languages ?? [];
@@ -70,7 +67,7 @@ function findReposWhereIntegrationWillWork(
 		});
 
 	const reposWhereAllLanguagesAreSupported =
-		unprotectedDevXReposWithLanguages.filter((event) =>
+		unprotectedReposWithLanguages.filter((event) =>
 			eventContainsOnlyActionSupportedLanguages(event),
 		);
 
@@ -83,8 +80,10 @@ export async function sendUnprotectedRepo(
 	owners: view_repo_ownership[],
 	githubLanguages: github_languages[],
 ) {
+	const devXRepos = findDevXRepos(owners, evaluatedRepos);
+
 	const eventToSend = findReposWhereIntegrationWillWork(
-		evaluatedRepos,
+		devXRepos,
 		owners,
 		githubLanguages,
 	)[0];
