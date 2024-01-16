@@ -72,7 +72,7 @@ export async function main() {
 
 	const awsConfig = awsClientConfig(config.stage);
 	const cloudwatch = new CloudWatchClient(awsConfig);
-	await sendToCloudwatch(evaluatedRepos, cloudwatch);
+	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
 
 	const octokit = await stageAwareOctokit(config.stage);
 
