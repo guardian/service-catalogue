@@ -57,6 +57,11 @@ export interface Config extends PrismaConfig {
 	 * Flag to enable creation of Snyk integration PRs
 	 */
 	snykIntegrationPREnabled: boolean;
+
+	/**
+	 * The ARN of the Snyk Integrator input topic.
+	 */
+	snykIntegratorTopic: string;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -86,5 +91,6 @@ export async function getConfig(): Promise<Config> {
 		branchProtectionEnabled: process.env.BRANCH_PROTECTION_ENABLED === 'true',
 		snykIntegrationPREnabled:
 			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
+		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
 	};
 }

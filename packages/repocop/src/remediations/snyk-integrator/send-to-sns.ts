@@ -85,7 +85,7 @@ export async function sendUnprotectedRepo(
 
 	const publishRequestEntry = new PublishCommand({
 		Message: JSON.stringify(eventToSend),
-		TopicArn: '', //TODO fix this
+		TopicArn: config.snykIntegratorTopic,
 	});
 
 	console.log(`Sending ${eventToSend?.name} to Snyk Integrator`);
