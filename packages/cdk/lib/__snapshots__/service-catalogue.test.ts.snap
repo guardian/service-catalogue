@@ -16185,7 +16185,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "SELECT * FROM steampipe_registry_plugin" --output csv --header false > /workspace/steampipe-output/steampipe_registry_plugin.csv;head /workspace/steampipe-output/steampipe_registry_plugin.csv",
+              "steampipe plugin install --progress=false steampipe;steampipe plugin list;steampipe query "SELECT * FROM steampipe_registry_plugin" --output csv --header false > /workspace/steampipe_registry_plugin.csv;head /workspace/steampipe_registry_plugin.csv",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -16213,7 +16213,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/workspace/steampipe-output",
+                "ContainerPath": "/workspace",
                 "ReadOnly": false,
                 "SourceVolume": "steampipe-output",
               },

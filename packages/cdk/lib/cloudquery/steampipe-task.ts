@@ -169,8 +169,8 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 				[
 					'steampipe plugin install --progress=false steampipe',
 					'steampipe plugin list',
-					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /workspace/steampipe-output/${table}.csv`,
-					`head /workspace/steampipe-output/${table}.csv`,
+					`steampipe query "SELECT * FROM ${table}" --output csv --header false > /workspace/${table}.csv`,
+					`head /workspace/${table}.csv`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
@@ -178,7 +178,7 @@ export class ScheduledSteampipeTask extends ScheduledFargateTask {
 		});
 
 		steampipeContainer.addMountPoints({
-			containerPath: '/workspace/steampipe-output',
+			containerPath: '/workspace',
 			sourceVolume: 'steampipe-output',
 			readOnly: false,
 		});
