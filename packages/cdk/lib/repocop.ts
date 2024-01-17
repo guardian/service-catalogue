@@ -84,34 +84,45 @@ export class Repocop {
 		snykIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 
-		const snykIntegratorSecret = new Secret(
-			guStack,
-			`snyk-integrator-github-app-auth`,
-			{
-				secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/snyk-integrator-github-app-secret`,
-			},
-		);
+		const snykIntegatorLambda = stageAwareSnykIntegrator(guStack, vpc);
 
-		const snykIntegatorLambda: GuLambdaFunction = new GuLambdaFunction(
-			guStack,
-			'snyk-integrator',
-			{
-				app: 'snyk-integrator',
-				fileName: 'snyk-integrator.zip',
-				handler: 'index.handler',
-				memorySize: 1024,
-				runtime: Runtime.NODEJS_20_X,
-				environment: {
-					GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
-				},
-				vpc,
-				timeout: Duration.minutes(5),
-			},
-		);
-
-		snykIntegratorSecret.grantRead(snykIntegatorLambda);
 		snykIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(snykIntegatorLambda, {}),
 		);
+	}
+}
+
+function stageAwareSnykIntegrator(
+	guStack: GuStack,
+	vpc: IVpc,
+): GuLambdaFunction {
+	const app: string = 'snyk-integrator';
+	const nonProdLambdaProps = {
+		app,
+		fileName: `${app}.zip`,
+		handler: 'index.handler',
+		memorySize: 1024,
+		runtime: Runtime.NODEJS_20_X,
+		vpc,
+		timeout: Duration.minutes(5),
+	};
+
+	if (guStack.stage === 'PROD' || guStack.stage === 'TEST') {
+		const snykIntegratorSecret = new Secret(guStack, `${app}-github-app-auth`, {
+			secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/${app}-github-app-secret`,
+		});
+
+		const lambda = new GuLambdaFunction(guStack, app, {
+			...nonProdLambdaProps,
+			environment: {
+				GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
+			},
+		});
+
+		snykIntegratorSecret.grantRead(lambda);
+
+		return lambda;
+	} else {
+		return new GuLambdaFunction(guStack, app, nonProdLambdaProps);
 	}
 }
