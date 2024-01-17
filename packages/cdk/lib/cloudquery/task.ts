@@ -8,6 +8,7 @@ import {
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDrivers,
+	PropagatedTagSource,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
@@ -304,6 +305,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
+			propagateTags: PropagatedTagSource.TASK_DEFINITION,
 		});
 
 		this.sourceConfig = sourceConfig;
