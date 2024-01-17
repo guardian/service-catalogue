@@ -13,11 +13,11 @@ export async function main(event: SnykIntegratorEvent) {
 	console.log(`Generating Snyk PR for ${event.name}`);
 	const config: Config = getConfig();
 
-	const octokit = await stageAwareOctokit(config.stage);
 	// Introduce a random suffix to allow the same PR to be raised multiple times
 	// Useful for testing, but may be less useful in production
 	const branch = `integrate-snyk-${randomBytes(8).toString('hex')}`;
 	if (config.stage === 'PROD') {
+		const octokit = await stageAwareOctokit(config.stage);
 		const response = await createSnykPullRequest(
 			octokit,
 			event.name,

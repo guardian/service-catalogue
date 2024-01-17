@@ -101,15 +101,20 @@ export class Repocop {
 				handler: 'index.handler',
 				memorySize: 1024,
 				runtime: Runtime.NODEJS_20_X,
-				environment: {
-					GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
-				},
+				environment:
+					guStack.stage === 'PROD'
+						? {
+								GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
+							}
+						: {},
 				vpc,
 				timeout: Duration.minutes(5),
 			},
 		);
 
-		snykIntegratorSecret.grantRead(snykIntegatorLambda);
+		if (guStack.stage === 'PROD') {
+			snykIntegratorSecret.grantRead(snykIntegatorLambda);
+		}
 		snykIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(snykIntegatorLambda, {}),
 		);
