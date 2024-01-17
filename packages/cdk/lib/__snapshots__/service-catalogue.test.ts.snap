@@ -17161,6 +17161,9 @@ spec:
         "Environment": {
           "Variables": {
             "APP": "snyk-integrator",
+            "GITHUB_APP_SECRET": {
+              "Ref": "snykintegratorgithubappauth8C64864D",
+            },
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -17418,6 +17421,16 @@ spec:
                     ":parameter/TEST/deploy/snyk-integrator/*",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "snykintegratorgithubappauth8C64864D",
               },
             },
           ],
