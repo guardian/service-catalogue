@@ -85,11 +85,17 @@ export async function sendUnprotectedRepo(
 		githubLanguages,
 	)[0];
 
-	const publishRequestEntry = new PublishCommand({
-		Message: JSON.stringify(eventToSend),
-		TopicArn: config.snykIntegratorTopic,
-	});
+	if (eventToSend) {
+		const publishRequestEntry = new PublishCommand({
+			Message: JSON.stringify(eventToSend),
+			TopicArn: config.snykIntegratorTopic,
+		});
 
-	console.log(`Sending ${eventToSend?.name} to Snyk Integrator`);
-	await new SNSClient(awsClientConfig(config.stage)).send(publishRequestEntry);
+		console.log(`Sending ${eventToSend.name} to Snyk Integrator`);
+		await new SNSClient(awsClientConfig(config.stage)).send(
+			publishRequestEntry,
+		);
+	} else {
+		console.log('No untracked repos found');
+	}
 }
