@@ -4,18 +4,18 @@ import type { ProjectId, PullRequestDetails } from './types';
 
 function getLastPrsQuery(repoName: string, last: number) {
 	return `{
-        organization(login: "guardian"){
-              repository(name: "${repoName}"){
-            pullRequests(last: ${last}}){
-              nodes{
-                author{
+        organization(login: "guardian") {
+          repository(name: "${repoName}") {
+            pullRequests(last: 5, states:[OPEN]) {
+              nodes {
+                author {
                   login
                 }
                 id
               }
             }
           }
-          }
+        }
       }`;
 }
 
