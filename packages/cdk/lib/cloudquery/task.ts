@@ -13,16 +13,15 @@ import {
 import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
-import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import awsCronParser from 'aws-cron-parser';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
 import { Images } from './images';
 import { singletonPolicy } from './policies';
+import { scheduleFrequency } from './schedule';
 
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
@@ -115,79 +114,6 @@ export interface ScheduledCloudqueryTaskProps
 	 */
 	dockerDistributedPluginImage?: RepositoryImage;
 }
-
-/**
- * Takes a schedule and figures out its frequency. Supports both CRON and RATE schedules.
- *
- * @param schedule - An AWS EventBridge Schedule
- * @returns an enum representing the rate at which a schedule runs
- */
-const scheduleFrequency = (
-	schedule: Schedule,
-): 'DAILY' | 'WEEKLY' | 'OTHER' => {
-	const type = schedule.expressionString.substring(0, 4);
-	const expression = schedule.expressionString.substring(
-		5,
-		schedule.expressionString.length - 1,
-	);
-
-	let frequencyInMilliseconds: number | undefined;
-
-	if (type === 'rate') {
-		// Parse the RATE type of schedule, eg `rate(5 hours)`
-		const [amountString, type] = expression.split(' ');
-		const typeInMilliseconds: Record<string, number> = {
-			days: 24 * 60 * 60 * 1000,
-			hours: 60 * 60 * 1000,
-			minutes: 60 * 1000,
-			seconds: 1000,
-		};
-
-		if (type === undefined || amountString === undefined) {
-			throw new Error(`Malformed Rate expression: ${expression}`);
-		}
-
-		const typeMultiplier =
-			typeInMilliseconds[type] ?? typeInMilliseconds[`${type}s`];
-		const amount = parseInt(amountString);
-
-		if (typeMultiplier === undefined) {
-			throw new Error(`Unexpected rate type: ${expression}`);
-		}
-
-		frequencyInMilliseconds = typeMultiplier * amount;
-	} else if (type === 'cron') {
-		// Parse the RATE type of schedule, eg `cron(* * * 4 * *)`
-		// AWS uses a non-standard CRON expression so we need to rely on a cron library specifically designed
-		// for parsing AWS cron expressions.
-		const parsedExpression = awsCronParser.parse(expression);
-		const occurence = awsCronParser.next(parsedExpression, new Date());
-
-		if (!occurence) {
-			throw new Error(`First occurence of schedule not found: ${expression}`);
-		}
-
-		const nextOccurrence = awsCronParser.next(parsedExpression, occurence);
-
-		if (!nextOccurrence) {
-			throw new Error(`Second occurrence of schedule not found: ${expression}`);
-		}
-
-		frequencyInMilliseconds = nextOccurrence.getTime() - occurence.getTime();
-	} else {
-		throw new Error(`Unexpected schedule type: ${type}`);
-	}
-
-	const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
-	// Use slightly more than 1 or 1 week just to make sure we catch things correctly
-	if (frequencyInMilliseconds / DAY_IN_MILLISECONDS > 8) {
-		return 'OTHER';
-	} else if (frequencyInMilliseconds / DAY_IN_MILLISECONDS > 2) {
-		return 'WEEKLY';
-	} else {
-		return 'DAILY';
-	}
-};
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 	public readonly sourceConfig: CloudqueryConfig;
