@@ -24,6 +24,8 @@ function findDevXRepos(
 		.filter(
 			(owner) =>
 				owner.github_team_name === 'DevX Security' ||
+				owner.github_team_name === 'DevX Operations' ||
+				owner.github_team_name === 'DevX Reliability' ||
 				owner.github_team_name === 'Developer Experience',
 		)
 		.map((owner) => owner.repo_name);
