@@ -68,7 +68,7 @@ export function findUntrackedReposWhereIntegrationWillWork(
 
 	console.log(
 		`Found ${reposWhereAllLanguagesAreSupported.length} untracked repos that can be integrated with Snyk: `,
-		reposWhereAllLanguagesAreSupported.join(','),
+		reposWhereAllLanguagesAreSupported.map((x) => JSON.stringify(x)).join(','),
 	);
 
 	return reposWhereAllLanguagesAreSupported;
