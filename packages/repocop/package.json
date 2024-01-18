@@ -6,7 +6,7 @@
 	},
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
-		"start": "APP=repocop tsx src/run-locally.ts",
+		"start": "APP=repocop STACK=deploy tsx src/run-locally.ts",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop"
 	},
 	"dependencies": {
