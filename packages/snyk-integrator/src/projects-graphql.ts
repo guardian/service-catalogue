@@ -2,7 +2,15 @@ import { stageAwareGraphQlClient } from 'common/functions';
 import type { SnykIntegratorEvent } from 'common/types';
 import type { ProjectId, PullRequestDetails } from './types';
 
-function getLastPrsQuery(repoName: string) {
+/*
+ ** GitHub's v2 projects API is accessible via GraphQL only.
+ ** We could use classic projects and the REST API, but then we would lose
+ ** features like PRs moving across the board automatically when their status
+ ** changes(i.e. when they are merged).
+ */
+
+//TODO test me
+ function getLastPrsQuery(repoName: string) {
 	//It's really unlikely that we'll need to pull as many as 5 PRs,
 	//but this is not an expensive query, so we may as well.
 	return `{
