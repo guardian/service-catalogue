@@ -17,3 +17,17 @@ datasources:
       connMaxLifetime: 14400
       postgresVersion: 1000
       timescaledb: false
+  - name: Steampipe
+    type: postgres
+    url: steampipe:9193
+    user: steampipe
+    secureJsonData:
+      password: 'steampipe'
+    jsonData:
+      database: steampipe
+      sslmode: 'disable'
+      maxOpenConns: 0
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+      postgresVersion: 1000
+      timescaledb: false

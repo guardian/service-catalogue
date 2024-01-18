@@ -34,8 +34,19 @@ services:
     image: grafana/grafana-oss:9.4.7
     depends_on:
       - postgres
+      - steampipe
     ports:
       - '3000:3000'
     volumes:
       - ./dev-config/grafana.ini:/etc/grafana/grafana.ini
       - ./dev-config/grafana-datasource.yaml:/etc/grafana/provisioning/datasources/cloudquery.yaml
+  steampipe:
+    build:
+      context: steampipe
+      dockerfile: Dockerfile
+    ports:
+      - '9193:9193'
+    environment:
+      STEAMPIPE_DATABASE_PASSWORD: steampipe
+      GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
+    command: ["service", "start", "--foreground"]
