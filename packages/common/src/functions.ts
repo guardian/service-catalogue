@@ -68,6 +68,25 @@ export async function stageAwareOctokit(stage: string) {
 	}
 }
 
+export async function stageAwareGraphQlClient(stage: string) {
+	if (stage === 'CODE' || stage === 'PROD') {
+		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
+		const octokit: Octokit = await getGithubClient(githubAppConfig);
+		const graphqlWithAuth = octokit.graphql;
+		return graphqlWithAuth;
+	} else {
+		//NB this runs into issues with SAML authentication
+		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
+		const { graphql } = await import('@octokit/graphql');
+		const graphqlWithAuth = graphql.defaults({
+			headers: {
+				authorization: `token ${token}`,
+			},
+		});
+		return graphqlWithAuth;
+	}
+}
+
 export function parseEvent<T>(event: SNSEvent): T[] {
 	return event.Records.map((record) => JSON.parse(record.Sns.Message) as T);
 }
