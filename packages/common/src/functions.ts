@@ -75,7 +75,7 @@ export async function stageAwareGraphQlClient(stage: string) {
 		const graphqlWithAuth = octokit.graphql;
 		return graphqlWithAuth;
 	} else {
-		//NB this runs into issues with SAML authentication
+		//NB you may have to validate your PAT with SAML to use the GraphQL API
 		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
 		const { graphql } = await import('@octokit/graphql');
 		const graphqlWithAuth = graphql.defaults({
