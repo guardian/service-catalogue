@@ -4,6 +4,7 @@ import { parseEvent, stageAwareOctokit } from 'common/functions';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
+import { addPrToProject } from './projects-graphql';
 import {
 	createSnykPullRequest,
 	createYaml,
@@ -21,11 +22,13 @@ export async function main(event: SnykIntegratorEvent) {
 		const response = await createSnykPullRequest(
 			octokit,
 			event.name,
-
 			branch,
 			event.languages,
 		);
 		console.log('Pull request successfully created:', response?.data.html_url);
+
+		await addPrToProject(config.stage, event);
+		console.log('Updated project board');
 	} else {
 		console.log('Testing snyk.yml generation');
 		console.log(createYaml(event.languages, branch));
