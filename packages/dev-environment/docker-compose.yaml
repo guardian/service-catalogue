@@ -8,32 +8,24 @@ services:
       POSTGRES_DB: ${DATABASE_HOSTNAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  cloudquery:
-    image: ghcr.io/cloudquery/cloudquery:${CQ_CLI}
-    platform: linux/amd64
-    depends_on:
-      - postgres
-    volumes:
-      - ~/.aws/credentials:/.aws/credentials
-      - ./dev-config/cloudquery.yaml:/dev-config.yaml
-      - ~/.gu/service_catalogue/app-id:/app-id
-      - ~/.gu/service_catalogue/installation-id:/installation-id
-      - ~/.gu/service_catalogue/private-key.pem:/private-key.pem
+  steampipe:
+    image: ghcr.io/turbot/steampipe:latest
+    ports:
+      - '9193:9193'
     environment:
-      AWS_SHARED_CREDENTIALS_FILE: '/.aws/credentials'
-      CQ_POSTGRES_DESTINATION: ${CQ_POSTGRES_DESTINATION}
-      CQ_AWS: ${CQ_AWS}
-      CQ_GITHUB: ${CQ_GITHUB}
-      CQ_SNYK: ${CQ_SNYK}
-      GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
-      SNYK_TOKEN: ${SNYK_TOKEN}
-      GALAXIES_BUCKET: ${GALAXIES_BUCKET}
-      CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
-    command: sync /dev-config.yaml --log-console --log-level info
+      STEAMPIPE_DATABASE_PASSWORD: steampipe
+      GITHUB_TOKEN: (secret)
+    entrypoint:
+      [
+        '/bin/sh',
+        '-c',
+        'steampipe plugin install github; steampipe plugin list; steampipe service start --foreground',
+      ]
   grafana:
     image: grafana/grafana-oss:9.4.7
     depends_on:
       - postgres
+      - steampipe
     ports:
       - '3000:3000'
     volumes:
