@@ -5,6 +5,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
+import { shuffle } from 'common/src/functions';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from '../../config';
 import { actionSupportedLanguages } from '../../languages';
@@ -32,7 +33,7 @@ function findDevXRepos(
 
 	const devXRepos = repos.filter((repo) => devXTeams.includes(repo.full_name));
 
-	return devXRepos;
+	return shuffle([...new Set(devXRepos)]);
 }
 
 function eventContainsOnlyActionSupportedLanguages(
