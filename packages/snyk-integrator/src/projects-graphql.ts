@@ -28,8 +28,10 @@ export function getLastPrsQuery(repoName: string) {
       }`;
 }
 
-//TODO test
-function addToProjectQuery(projectId: string, pullRequestId: string): string {
+export function addToProjectQuery(
+	projectId: string,
+	pullRequestId: string,
+): string {
 	return `mutation {
 		addProjectV2ItemById(input: {projectId: "${projectId}" contentId: "${pullRequestId}"}) {
 		  item {
