@@ -41,15 +41,12 @@ services:
       - ./dev-config/grafana.ini:/etc/grafana/grafana.ini
       - ./dev-config/grafana-datasource.yaml:/etc/grafana/provisioning/datasources/cloudquery.yaml
   steampipe:
-    image: ghcr.io/turbot/steampipe:latest
+    build:
+      context: steampipe
+      dockerfile: Dockerfile
     ports:
       - '9193:9193'
     environment:
       STEAMPIPE_DATABASE_PASSWORD: steampipe
       GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
-    entrypoint:
-      [
-        '/bin/sh',
-        '-c',
-        'steampipe plugin install github; steampipe plugin list; steampipe service start --foreground',
-      ]
+    command: ["service", "start", "--foreground"]
