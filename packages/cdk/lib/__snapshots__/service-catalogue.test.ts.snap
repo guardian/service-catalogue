@@ -86,6 +86,12 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsCostExplorerTaskDefinition62DC1A04",
@@ -690,6 +696,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionD407788D",
@@ -1290,6 +1302,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceDeployToolsListOrgsTaskDefinitionDE2A34D9",
@@ -1893,6 +1911,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceFastlyServicesTaskDefinitionDCCD3FD4",
@@ -2505,6 +2529,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGalaxiesTaskDefinition0777FEFC",
@@ -3138,6 +3168,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionFA21D536",
@@ -3780,6 +3816,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubLanguagesTaskDefinitionDA995E2B",
@@ -4378,6 +4420,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC",
@@ -5027,6 +5075,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionB01C9D3C",
@@ -5676,6 +5730,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGuardianCustomSnykProjectsTaskDefinitionEB2B4EBC",
@@ -6284,6 +6344,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceNS1TaskDefinition56258A70",
@@ -6916,6 +6982,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideAutoScalingGroupsTaskDefinition90175FA6",
@@ -7520,6 +7592,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideBackupTaskDefinition9BAD0C75",
@@ -8126,6 +8204,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideCertificatesTaskDefinition47A214D9",
@@ -8730,6 +8814,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideCloudFormationTaskDefinitionDA4F8A51",
@@ -9334,6 +9424,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionF28C916F",
@@ -9938,6 +10034,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideDynamoDBTaskDefinition7016173E",
@@ -10542,6 +10644,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideEc2TaskDefinition7E4B2AE4",
@@ -11195,6 +11303,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideInspectorTaskDefinition25FAB51D",
@@ -11800,6 +11914,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideLoadBalancersTaskDefinitionF1D11F23",
@@ -12405,6 +12525,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideRDSTaskDefinitionFDF4F4E5",
@@ -13012,6 +13138,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceOrgWideS3TaskDefinition8B6BA52D",
@@ -13616,6 +13748,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceRemainingAwsDataTaskDefinition8790EDD9",
@@ -14284,6 +14422,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionFF023225",
@@ -14923,6 +15067,12 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "TEST",
+                  "Value": "TEST",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceSnykAllTaskDefinitionC8C1F3EC",

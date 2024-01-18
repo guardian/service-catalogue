@@ -305,6 +305,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
+			tags: [
+				{
+					key: 'TEST',
+					value: 'TEST',
+				},
+			],
 			propagateTags: PropagatedTagSource.TASK_DEFINITION,
 		});
 
