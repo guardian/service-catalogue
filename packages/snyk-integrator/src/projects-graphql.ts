@@ -10,7 +10,7 @@ import type { ProjectId, PullRequestDetails } from './types';
  */
 
 //TODO test me
- function getLastPrsQuery(repoName: string) {
+function getLastPrsQuery(repoName: string) {
 	//It's really unlikely that we'll need to pull as many as 5 PRs,
 	//but this is not an expensive query, so we may as well.
 	return `{
@@ -27,6 +27,17 @@ import type { ProjectId, PullRequestDetails } from './types';
           }
         }
       }`;
+}
+
+//TODO test
+function addToProjectQuery(projectId: string, pullRequestId: string): string {
+	return `mutation {
+		addProjectV2ItemById(input: {projectId: "${projectId}" contentId: "${pullRequestId}"}) {
+		  item {
+			id
+		  }
+		}
+	  }`;
 }
 
 export async function addPrToProject(
@@ -59,13 +70,9 @@ export async function addPrToProject(
 
 	console.log(pullRequestIds);
 
-	const addToProjectString = `mutation {
-		addProjectV2ItemById(input: {projectId: "${projectId}" contentId: "${pullRequestIds[0]}"}) {
-		  item {
-			id
-		  }
-		}
-	  }`;
-
-	return addToProjectString;
+	await Promise.all(
+		pullRequestIds.map(async (prId) => {
+			await graphqlWithAuth(addToProjectQuery(projectId, prId));
+		}),
+	);
 }
