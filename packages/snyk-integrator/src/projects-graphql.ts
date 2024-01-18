@@ -1,5 +1,5 @@
-import { stageAwareGraphQlClient } from 'common/functions';
-import type { SnykIntegratorEvent } from 'common/types';
+import { stageAwareGraphQlClient } from 'common/src/functions';
+import type { SnykIntegratorEvent } from 'common/src/types';
 import type { ProjectId, PullRequestDetails } from './types';
 
 /*
@@ -9,8 +9,7 @@ import type { ProjectId, PullRequestDetails } from './types';
  ** changes(i.e. when they are merged).
  */
 
-//TODO test me
-function getLastPrsQuery(repoName: string) {
+export function getLastPrsQuery(repoName: string) {
 	//It's really unlikely that we'll need to pull as many as 5 PRs,
 	//but this is not an expensive query, so we may as well.
 	return `{
