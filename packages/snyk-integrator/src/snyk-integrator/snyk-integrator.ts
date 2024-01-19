@@ -107,7 +107,7 @@ function generatePrBody(branchName: string): string {
 				'If you can’t find any, reach out to DevX)',
 			'Replace the relevant python fields, if they exist in the file. If not, skip this step',
 			'The job should run automatically on every commit to this branch. ' +
-				'View the action output and verify it has generated one project per dependency manifest.',
+				'View the action output and verify it has generated one project per dependency manifest (except pnpm and deno).',
 			`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
 		]),
 	];
