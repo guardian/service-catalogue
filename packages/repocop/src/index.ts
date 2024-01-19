@@ -51,21 +51,6 @@ export async function main() {
 
 	const octokit = await stageAwareOctokit(config.stage);
 
-	const alerts = await octokit.rest.dependabot.listAlertsForOrg({
-		org: 'guardian',
-		per_page: 100,
-		severity: 'critical', //'critical,high',
-		state: 'open',
-	});
-
-	console.log(alerts.data.length);
-
-	console.log(
-		alerts.data
-			.map((a) => a.repository.full_name)
-			.filter((name) => !name.includes('interactive')),
-	);
-
 	const [unarchivedRepos, archivedRepos] = partition(
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes),
 		(repo) => !repo.archived,
@@ -92,7 +77,8 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
 
-	testExperimentalRepocopFeatures(
+	await testExperimentalRepocopFeatures(
+		octokit,
 		evaluatedRepos,
 		unarchivedRepos,
 		archivedRepos,
