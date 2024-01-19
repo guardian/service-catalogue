@@ -7075,30 +7075,6 @@ model aws_emr_studios {
   @@ignore
 }
 
-model aws_emr_supported_instance_types {
-  cq_sync_time             DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_source_name           String?   @map("_cq_source_name")
-  cq_id                    String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id             String?   @map("_cq_parent_id") @db.Uuid
-  account_id               String
-  region                   String
-  release_label            String
-  architecture             String?
-  ebs_optimized_available  Boolean?
-  ebs_optimized_by_default Boolean?
-  ebs_storage_only         Boolean?
-  instance_family_id       String?
-  is64_bits_only           Boolean?
-  memory_gb                Float?
-  number_of_disks          BigInt?
-  storage_gb               BigInt?
-  type                     String
-  vcpu                     BigInt?
-
-  @@id([account_id, region, release_label, type], map: "aws_emr_supported_instance_types_cqpk")
-  @@ignore
-}
-
 model aws_eventbridge_api_destinations {
   cq_sync_time                     DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name                   String?   @map("_cq_source_name")

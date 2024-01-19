@@ -333,6 +333,7 @@ export const skipTables = [
 	'aws_elasticache_parameter_groups',
 	'aws_elasticache_reserved_cache_nodes_offerings',
 	'aws_elasticache_service_updates',
+	'aws_emr_supported_instance_types',
 	'aws_neptune_cluster_parameter_groups',
 	'aws_neptune_db_parameter_groups',
 	'aws_rds_cluster_parameter_groups',
