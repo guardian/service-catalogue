@@ -9,6 +9,10 @@ import {
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
+import {
+	NetworkLoadBalancer,
+	Protocol,
+} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
@@ -45,6 +49,11 @@ export interface SteampipeServiceProps
 	 * The name of the Kinesis stream to send logs to.
 	 */
 	loggingStreamName: string;
+
+	/**
+	 * Security group allowing access to Network Load Balancer
+	 */
+	accessSecurityGroup: ISecurityGroup;
 }
 
 export class SteampipeService extends FargateService {
@@ -56,6 +65,7 @@ export class SteampipeService extends FargateService {
 			loggingStreamName,
 			cluster,
 			app,
+			accessSecurityGroup,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -97,6 +107,12 @@ export class SteampipeService extends FargateService {
 			},
 			command: ['service', 'start', '--foreground'],
 			logging: fireLensLogDriver,
+			portMappings: [
+				{
+					containerPort: 9193,
+					name: 'steampipe',
+				},
+			],
 		});
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
@@ -119,11 +135,29 @@ export class SteampipeService extends FargateService {
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
 
+		const nlb = new NetworkLoadBalancer(scope, `steampipe-nlb`, {
+			vpc: cluster.vpc,
+			securityGroups: [accessSecurityGroup],
+		});
+
+		const nlbListener = nlb.addListener(`steampipe-nlb-listener`, {
+			port: 9193,
+			protocol: Protocol.TCP,
+		});
+
 		super(scope, id, {
 			cluster,
 			vpcSubnets: { subnets: cluster.vpc.privateSubnets },
 			taskDefinition: task,
 			securityGroups: additionalSecurityGroups,
+			assignPublicIp: false,
+			desiredCount: 1,
+		});
+
+		nlbListener.addTargets(`steampipe-nlb-target`, {
+			port: 9193,
+			protocol: Protocol.TCP,
+			targets: [this],
 		});
 	}
 }

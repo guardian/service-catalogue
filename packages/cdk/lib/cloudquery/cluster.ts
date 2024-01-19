@@ -117,6 +117,11 @@ interface CloudqueryClusterProps extends AppIdentity {
 	 * Which tables to collect at a frequency other than once a day.
 	 */
 	sources: CloudquerySource[];
+
+	/**
+	 * Security group to be applied to Steampipe NLB
+	 */
+	steampipeSecurityGroup: GuSecurityGroup;
 }
 
 /**
@@ -131,7 +136,7 @@ export class CloudqueryCluster extends Cluster {
 		});
 
 		const { stack, stage } = scope;
-		const { app, db, dbAccess, sources } = props;
+		const { app, db, dbAccess, sources, steampipeSecurityGroup } = props;
 
 		const loggingStreamName =
 			GuLoggingStreamNameParameter.getInstance(scope).valueAsString;
@@ -205,7 +210,7 @@ export class CloudqueryCluster extends Cluster {
 			managedPolicies: [],
 			policies: [logShippingPolicy],
 			secrets: {},
-			additionalSecurityGroups: [],
+			accessSecurityGroup: steampipeSecurityGroup,
 		});
 	}
 }

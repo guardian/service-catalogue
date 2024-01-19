@@ -83,6 +83,15 @@ export class ServiceCatalogue extends GuStack {
 			privateSubnetIds: privateSubnets.map((subnet) => subnet.subnetId),
 		});
 
+		const steampipeSecurityGroup = new GuSecurityGroup(
+			this,
+			'SteampipeSecurityGroup',
+			{
+				app,
+				vpc,
+			},
+		);
+
 		const port = 5432;
 
 		const dbSecurityGroup = new GuSecurityGroup(this, 'PostgresSecurityGroup', {
@@ -123,9 +132,20 @@ export class ServiceCatalogue extends GuStack {
 			'Allow connection to Postgres from the office network.',
 		);
 
+		steampipeSecurityGroup.addIngressRule(
+			Peer.ipv4(GuardianPrivateNetworks.Engineering),
+			Port.tcp(9193),
+			'Allow connection to Steampipe from the office network.',
+		);
+
 		dbSecurityGroup.connections.allowFrom(
 			applicationToPostgresSecurityGroup,
 			Port.tcp(port),
+		);
+
+		steampipeSecurityGroup.connections.allowFrom(
+			applicationToPostgresSecurityGroup,
+			Port.tcp(9193),
 		);
 
 		// Used by downstream services that read ServiceCatalogue data, namely Grafana.
@@ -149,6 +169,7 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
+			steampipeSecurityGroup,
 		});
 
 		const anghammaradTopicParameter =

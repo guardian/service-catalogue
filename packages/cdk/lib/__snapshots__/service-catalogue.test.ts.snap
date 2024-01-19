@@ -8,6 +8,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuVpcParameter",
       "GuSecurityGroup",
       "GuSecurityGroup",
+      "GuSecurityGroup",
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
       "GuAnghammaradTopicParameter",
@@ -18031,6 +18032,74 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
+    "SteampipeSecurityGroupServicecatalogue45A0E3D6": {
+      "Properties": {
+        "GroupDescription": "ServiceCatalogue/SteampipeSecurityGroupServicecatalogue",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "10.0.0.4/22",
+            "Description": "Allow connection to Steampipe from the office network.",
+            "FromPort": 9193,
+            "IpProtocol": "tcp",
+            "ToPort": 9193,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "service-catalogue",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "SteampipeSecurityGroupServicecataloguefromServiceCataloguePostgresAccessSecurityGroupServicecatalogue56F7252C919316EC7C95": {
+      "Properties": {
+        "Description": "from ServiceCataloguePostgresAccessSecurityGroupServicecatalogue56F7252C:9193",
+        "FromPort": 9193,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9193,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "TopicBFC7AF6E": {
       "Properties": {
         "Tags": [
@@ -19452,6 +19521,8 @@ spec:
     },
     "steampipeService2E9D07AE": {
       "DependsOn": [
+        "steampipenlbsteampipenlblistener4500F2D0",
+        "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369",
         "steampipeTaskDefinitionTaskRoleDefaultPolicyE6E26240",
         "steampipeTaskDefinitionTaskRole8DC44379",
       ],
@@ -19468,8 +19539,19 @@ spec:
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50,
         },
+        "DesiredCount": 1,
         "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
+        "LoadBalancers": [
+          {
+            "ContainerName": "steampipeContainer",
+            "ContainerPort": 9193,
+            "TargetGroupArn": {
+              "Ref": "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369",
+            },
+          },
+        ],
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
             "AssignPublicIp": "DISABLED",
@@ -19540,6 +19622,13 @@ spec:
               },
             },
             "Name": "steampipeContainer",
+            "PortMappings": [
+              {
+                "ContainerPort": 9193,
+                "Name": "steampipe",
+                "Protocol": "tcp",
+              },
+            ],
             "Secrets": [
               {
                 "Name": "STEAMPIPE_DATABASE_PASSWORD",
@@ -19843,6 +19932,95 @@ spec:
       },
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
+    },
+    "steampipenlb8A25667C": {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internal",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": {
+          "Ref": "PrivateSubnets",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Type": "network",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "steampipenlbsteampipenlblistener4500F2D0": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": {
+          "Ref": "steampipenlb8A25667C",
+        },
+        "Port": 9193,
+        "Protocol": "TCP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369": {
+      "Properties": {
+        "Port": 9193,
+        "Protocol": "TCP",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TargetType": "ip",
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
   },
 }
