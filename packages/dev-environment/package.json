@@ -1,7 +1,11 @@
 {
-  "name": "dev-environment",
-  "version": "0.0.0",
-  "scripts": {
-    "start": "./script/start"
-  }
+	"name": "dev-environment",
+	"version": "0.0.0",
+	"scripts": {
+		"start": "./script/start",
+		"test": "yamllint dev-config/*.yaml"
+	},
+	"devDependencies": {
+		"yaml-lint": "^1.7.0"
+	}
 }
