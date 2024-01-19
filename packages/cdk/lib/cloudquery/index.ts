@@ -520,7 +520,7 @@ export function addCloudqueryEcsCluster(
 		config: ns1SourceConfig(),
 	};
 
-	new CloudqueryCluster(scope, `${app}Cluster`, {
+	return new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
 		db,
