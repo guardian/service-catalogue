@@ -13,9 +13,11 @@ import {
 import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
+import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import awsCronParser from 'aws-cron-parser';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
@@ -114,6 +116,68 @@ export interface ScheduledCloudqueryTaskProps
 	dockerDistributedPluginImage?: RepositoryImage;
 }
 
+const scheduleFrequency = (
+	schedule: Schedule,
+): 'DAILY' | 'WEEKLY' | 'OTHER' => {
+	const type = schedule.expressionString.substring(0, 4);
+	const expression = schedule.expressionString.substring(
+		5,
+		schedule.expressionString.length - 1,
+	);
+
+	let frequency: number | undefined;
+
+	if (type === 'rate') {
+		const [amountString, type] = expression.split(' ');
+		const typeInMilliseconds: Record<string, number> = {
+			days: 24 * 60 * 60 * 1000,
+			hours: 60 * 60 * 1000,
+			minutes: 60 * 1000,
+			seconds: 1000,
+		};
+
+		if (type === undefined || amountString === undefined) {
+			throw new Error(`Malformed Rate expression: ${expression}`);
+		}
+
+		const typeMultiplier =
+			typeInMilliseconds[type] ?? typeInMilliseconds[`${type}s`];
+		const amount = parseInt(amountString);
+
+		if (typeMultiplier === undefined) {
+			throw new Error(`Unexpected rate type: ${expression}`);
+		}
+
+		frequency = typeMultiplier * amount;
+	} else if (type === 'cron') {
+		const parsedExpression = awsCronParser.parse(expression);
+		const occurence = awsCronParser.next(parsedExpression, new Date());
+
+		if (!occurence) {
+			throw new Error(`First occurence of schedule not found: ${expression}`);
+		}
+
+		const nextOccurrence = awsCronParser.next(parsedExpression, occurence);
+
+		if (!nextOccurrence) {
+			throw new Error(`Second occurrence of schedule not found: ${expression}`);
+		}
+
+		frequency = nextOccurrence.getTime() - occurence.getTime();
+	} else {
+		throw new Error(`Unexpected schedule type: ${type}`);
+	}
+
+	const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+	if (frequency / DAY_IN_MILLISECONDS > 8) {
+		return 'OTHER';
+	} else if (frequency / DAY_IN_MILLISECONDS > 2) {
+		return 'WEEKLY';
+	} else {
+		return 'DAILY';
+	}
+};
+
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 	public readonly sourceConfig: CloudqueryConfig;
 	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
@@ -140,6 +204,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
+		const frequency = scheduleFrequency(schedule);
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB,
@@ -270,6 +335,37 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			});
 
 			task.addToTaskRolePolicy(singletonPolicy(cluster));
+		}
+
+		if (frequency === 'DAILY' || frequency === 'WEEKLY') {
+			const tableValues = sourceConfig.spec.tables
+				?.map((table) => table.replaceAll('*', '%'))
+				.map((table) => `('${table}', '${frequency}')`)
+				.join(',');
+
+			task.addContainer(`${id}PostgresContainer`, {
+				image: Images.postgres,
+				entryPoint: [''],
+				secrets: {
+					DBUSER: Secret.fromSecretsManager(db.secret, 'username'),
+					DBHOST: Secret.fromSecretsManager(db.secret, 'host'),
+					DBPASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+				},
+				dockerLabels: {
+					Stack: stack,
+					Stage: stage,
+					App: app,
+					Name: name,
+				},
+				command: [
+					'/bin/sh',
+					'-c',
+					[
+						`psql -c "INSERT INTO cloudquery_table_frequency VALUES ${tableValues} ON CONFLICT (table_name) DO UPDATE SET frequency = '${frequency}'`,
+					].join(';'),
+				],
+				logging: fireLensLogDriver,
+			});
 		}
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
