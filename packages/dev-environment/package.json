@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"scripts": {
 		"start": "./script/start",
-		"test": "yamllint dev-config/*.yaml"
+		"test": "find . | egrep '.yml|.yaml' | xargs yamllint"
 	},
 	"devDependencies": {
 		"yaml-lint": "^1.7.0"
