@@ -1,6 +1,7 @@
 import { nullRepo } from '../../rules/repository.test';
 import type { AwsCloudFormationStack, Repository } from '../../types';
 import {
+	createMessage,
 	findReposInProdWithoutProductionTopic,
 	getRepoNamesWithoutProductionTopic,
 } from './topic-monitor-production';
@@ -146,5 +147,23 @@ describe('getReposInProdWithoutProductionTopic', () => {
 			[myRepoProdStackNew],
 		);
 		expect(result).toEqual([]);
+	});
+});
+
+describe('createMessage', () => {
+	it('asd', () => {
+		const actual = createMessage(
+			'guardian/service-catalogue',
+			'service-catalogue-PROD',
+			'developer-experience',
+			1,
+		);
+
+		expect(actual).toEqual({
+			message:
+				"The 'production' topic has applied to guardian/service-catalogue which has the stack service-catalogue-PROD.  This is because stack is over 1 months old and has PROD or INFRA tags. Repositories with PROD or INFRA stacks should have a 'production' topic to help with security. Visit the links below to learn more about topics and how to add/remove them if you need to.",
+			subject:
+				'Production topic monitoring (for GitHub team developer-experience)',
+		});
 	});
 });
