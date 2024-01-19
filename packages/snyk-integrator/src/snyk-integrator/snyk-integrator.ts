@@ -84,6 +84,7 @@ function checklist(items: string[]): string {
 	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
+//TODO test the python text only shows up when it's supposed to.
 function createPRChecklist(languages: string[], branchName: string): string[] {
 	const pythonText = ['Replace the relevant python fields'];
 	const step1 =
