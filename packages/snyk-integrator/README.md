@@ -2,7 +2,7 @@
 
 ### What does it do?
 
-The snyk integrator takes repo name and it's languages as JSON, like so:
+The snyk integrator takes a repo name and it's languages as JSON, like so:
 
 ```json
 {
@@ -11,23 +11,23 @@ The snyk integrator takes repo name and it's languages as JSON, like so:
 }
 ```
 
-It uses the input to generates a yml file, matching the specification of our [GitHub action](https://github.com/guardian/.github/blob/main/.github/workflows/sbt-node-snyk.yml). This action runs `snyk monitor` on pushes to the main branch, so that we can keep track of vulnerabilities introduced by third party dependencies.
+It uses this input to generates a YAML file, matching the specification of our [GitHub action](https://github.com/guardian/.github/blob/main/.github/workflows/sbt-node-snyk.yml). This action runs `snyk monitor` on pushes to the main branch, so that we can keep track of vulnerabilities introduced by third party dependencies.
 
-After creating the yml file, it creates a pull request on the named repository for teams to review. Previously this file was created manually, or via some slightly dodgy copy-pasting. An automated solution saves teams time and effort expended into understanding how to configure the action, and means repos are integrated with Snyk more quickly.
+After creating the YAML, it raises a pull request on the named repository for teams to review. Previously this YAML file was created manually, or via some slightly dodgy copy-pasting. An automated solution saves teams time and effort expended into understanding how to configure the action, and means repos are integrated with Snyk more quickly, and with fewer mistakes.
 
 ### Why?
 
 #### Why track dependencies?
 
-Supply chain attacks are an increasingly common vector for malicious actors. Tracking the dependencies we use - and resolving the vulnerabilities they introduce - allows us to minimise the probability of such an attack occurring.
+The supply chain is an increasingly common attack vector for malicious actors. Tracking the dependencies we use - and resolving the vulnerabilities they introduce - allows us to minimise the probability of such an attack occurring, and the impact of such an attack.
 
 #### Why use Snyk?
 
-Dependency management is a complex problem, and no tool is a complete solution. Dependabot (GitHub's in-house dependency management tool) works well for some languages, but not all. Crucially for P&E, it does not support scanning build.sbt files, or other more niche languages such as Rust.
+Dependency management is a complex problem, and no tool is a complete solution. Dependabot (GitHub's in-house dependency management tool) works well for some languages, but not all. Crucially for P&E, Dependabot does not support scanning build.sbt files, or other more niche languages such as Rust.
 
 ### Running on non-production environments
 
-In non-production environments, such as CODE, or when running locally, the snyk integrator will not create a PR. Instead, it will print the contents of the yaml file to the console. This allows developers to test the the core logic (creating the yaml file), without creating a PR.
+In non-production environments, such as CODE, or when running locally, the snyk integrator will not create a PR. Instead, it will print the contents of the YAML file to the console. This allows developers to test the the core logic (creating the yaml file), without unintended side effects.
 
 #### CODE
 
