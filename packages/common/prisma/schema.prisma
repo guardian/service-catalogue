@@ -15843,7 +15843,7 @@ model audit_results {
 }
 
 model cloudquery_table_frequency {
-  table_name String?
+  table_name String  @id(map: "cloudquery_table_frequency_pk")
   frequency  String?
 
   @@ignore

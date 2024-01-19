@@ -14,4 +14,7 @@ export const Images = {
 	ns1Source: ContainerImage.fromRegistry(
 		`ghcr.io/guardian/cq-source-ns1:${Versions.CloudqueryNs1}`,
 	),
+	postgres: ContainerImage.fromRegistry(
+		'public.ecr.aws/docker/library/postgres:16-alpine',
+	),
 };

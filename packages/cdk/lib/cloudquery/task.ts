@@ -21,6 +21,7 @@ import type { CloudqueryConfig } from './config';
 import { postgresDestinationConfig } from './config';
 import { Images } from './images';
 import { singletonPolicy } from './policies';
+import { scheduleFrequency } from './schedule';
 
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
@@ -140,6 +141,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
+		const frequency = scheduleFrequency(schedule);
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB,
@@ -270,6 +272,37 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			});
 
 			task.addToTaskRolePolicy(singletonPolicy(cluster));
+		}
+
+		if (frequency === 'DAILY' || frequency === 'WEEKLY') {
+			const tableValues = sourceConfig.spec.tables
+				?.map((table) => table.replaceAll('*', '%'))
+				.map((table) => `('${table}', '${frequency}')`)
+				.join(',');
+
+			task.addContainer(`${id}PostgresContainer`, {
+				image: Images.postgres,
+				entryPoint: [''],
+				secrets: {
+					PGUSER: Secret.fromSecretsManager(db.secret, 'username'),
+					PGHOST: Secret.fromSecretsManager(db.secret, 'host'),
+					PGPASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+				},
+				dockerLabels: {
+					Stack: stack,
+					Stage: stage,
+					App: app,
+					Name: name,
+				},
+				command: [
+					'/bin/sh',
+					'-c',
+					[
+						`psql -c "INSERT INTO cloudquery_table_frequency VALUES ${tableValues} ON CONFLICT (table_name) DO UPDATE SET frequency = '${frequency}'"`,
+					].join(';'),
+				],
+				logging: fireLensLogDriver,
+			});
 		}
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
