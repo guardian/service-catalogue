@@ -1,5 +1,6 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import { type ISecurityGroup, Port } from 'aws-cdk-lib/aws-ec2';
 import {
 	FargateService,
 	FargateTaskDefinition,
@@ -21,12 +22,6 @@ import { Images } from '../cloudquery/images';
 export interface SteampipeServiceProps
 	extends AppIdentity,
 		Omit<FargateServiceProps, 'Cluster' | 'taskDefinition'> {
-	/**
-	 * Any additional security groups applied to the task.
-	 * For example, a group allowing access to Riff-Raff.
-	 */
-	additionalSecurityGroups?: ISecurityGroup[];
-
 	/**
 	 * Any secrets to pass to the CloudQuery container.
 	 *
@@ -61,7 +56,6 @@ export class SteampipeService extends FargateService {
 		const {
 			managedPolicies,
 			policies,
-			additionalSecurityGroups,
 			loggingStreamName,
 			cluster,
 			app,
@@ -135,9 +129,22 @@ export class SteampipeService extends FargateService {
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
 
+		const steampipeSecurityGroup = new GuSecurityGroup(scope, `steampipe-sg`, {
+			app: app,
+			vpc: cluster.vpc,
+		});
+
+		// Anything with this SG can talk to anything else with this SG
+		// In this case the NLB can talk to the ECS Service
+		steampipeSecurityGroup.addIngressRule(
+			steampipeSecurityGroup,
+			Port.tcp(9193),
+			'Allow this SG to talk to other applications also using this SG (in this case NLB to ECS)',
+		);
+
 		const nlb = new NetworkLoadBalancer(scope, `steampipe-nlb`, {
 			vpc: cluster.vpc,
-			securityGroups: [accessSecurityGroup],
+			securityGroups: [accessSecurityGroup, steampipeSecurityGroup],
 		});
 
 		const nlbListener = nlb.addListener(`steampipe-nlb-listener`, {
@@ -149,7 +156,7 @@ export class SteampipeService extends FargateService {
 			cluster,
 			vpcSubnets: { subnets: cluster.vpc.privateSubnets },
 			taskDefinition: task,
-			securityGroups: additionalSecurityGroups,
+			securityGroups: [steampipeSecurityGroup],
 			assignPublicIp: false,
 			desiredCount: 1,
 		});

@@ -11,6 +11,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuSecurityGroup",
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
+      "GuSecurityGroup",
       "GuAnghammaradTopicParameter",
       "GuDistributionBucketParameter",
       "GuLambdaFunction",
@@ -19481,44 +19482,6 @@ spec:
       },
       "Type": "AWS::SNS::Subscription",
     },
-    "steampipeSecurityGroupD4F9725A": {
-      "DependsOn": [
-        "steampipeTaskDefinitionTaskRoleDefaultPolicyE6E26240",
-        "steampipeTaskDefinitionTaskRole8DC44379",
-      ],
-      "Properties": {
-        "GroupDescription": "ServiceCatalogue/steampipe/SecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
     "steampipeService2E9D07AE": {
       "DependsOn": [
         "steampipenlbsteampipenlblistener4500F2D0",
@@ -19558,7 +19521,7 @@ spec:
             "SecurityGroups": [
               {
                 "Fn::GetAtt": [
-                  "steampipeSecurityGroupD4F9725A",
+                  "steampipesgServicecatalogue18CB8C1F",
                   "GroupId",
                 ],
               },
@@ -19949,6 +19912,12 @@ spec:
               "GroupId",
             ],
           },
+          {
+            "Fn::GetAtt": [
+              "steampipesgServicecatalogue18CB8C1F",
+              "GroupId",
+            ],
+          },
         ],
         "Subnets": {
           "Ref": "PrivateSubnets",
@@ -20021,6 +19990,65 @@ spec:
         },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "steampipesgServicecatalogue18CB8C1F": {
+      "Properties": {
+        "GroupDescription": "ServiceCatalogue/steampipe-sgServicecatalogue",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "service-catalogue",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "steampipesgServicecataloguefromServiceCataloguesteampipesgServicecatalogue96A883E79193F33A348B": {
+      "Properties": {
+        "Description": "Allow this SG to talk to other applications also using this SG (in this case NLB to ECS)",
+        "FromPort": 9193,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "steampipesgServicecatalogue18CB8C1F",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "steampipesgServicecatalogue18CB8C1F",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9193,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
   },
 }
