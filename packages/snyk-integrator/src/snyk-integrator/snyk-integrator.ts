@@ -93,15 +93,14 @@ function createPRChecklist(languages: string[], branchName: string): string[] {
 		'`guardian-devtools` and `guardian-dotcom-n2y`';
 	const step2 =
 		'The Snyk job should run automatically on every commit to this branch. ' +
-		'Click through to see the logs of the latest Snyk status check on ' +
+		'Click through on the Snyk status check see the logs of the latest run on ' +
 		'this PR, and verify it has generated one project per dependency manifest ' +
 		'(except pnpm and deno). ' +
 		'Examples of dependency manifests are a build.sbt, or a package-lock.json, ' +
 		'essentially, any file that lists the dependencies of your project.';
 	const step3 =
-		'When you are happy the action works, remove the ' +
-		`\`${branchName}\` option from the list of branches in the workflow, ` +
-		'approve, and merge.';
+		`When you are happy the action works, remove the branch name \`${branchName}\`` +
+		'trigger from the snyk.yml (aka delete line 6), approve, and merge.';
 	const defaultText = [step1, step2, step3];
 	const checklistItems = languages.includes('Python')
 		? pythonText.concat(defaultText)
