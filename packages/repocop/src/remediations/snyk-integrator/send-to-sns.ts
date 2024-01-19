@@ -5,6 +5,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
+import { shuffle } from 'common/src/functions';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from '../../config';
 import { actionSupportedLanguages } from '../../languages';
@@ -24,13 +25,15 @@ function findDevXRepos(
 		.filter(
 			(owner) =>
 				owner.github_team_name === 'DevX Security' ||
+				owner.github_team_name === 'DevX Operations' ||
+				owner.github_team_name === 'DevX Reliability' ||
 				owner.github_team_name === 'Developer Experience',
 		)
 		.map((owner) => owner.repo_name);
 
 	const devXRepos = repos.filter((repo) => devXTeams.includes(repo.full_name));
 
-	return devXRepos;
+	return shuffle([...new Set(devXRepos)]);
 }
 
 function eventContainsOnlyActionSupportedLanguages(
