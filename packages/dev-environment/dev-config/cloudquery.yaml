@@ -12,6 +12,7 @@ spec:
     'github_release_assets',
     'github_repository_dependabot_alerts',
     'github_repository_dependabot_secrets',
+    'github_workflow_runs', #should block github_workflow_run_usage and github_workflow_jobs from running
   ]
   spec:
     app_auth:
