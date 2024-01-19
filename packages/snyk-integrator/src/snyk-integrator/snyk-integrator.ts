@@ -92,10 +92,12 @@ function createPRChecklist(languages: string[], branchName: string): string[] {
 		'If you can’t find any, reach out to DevX). Examples are ' +
 		'`guardian-devtools` and `guardian-dotcom-n2y`';
 	const step2 =
-		'The job should run automatically on every commit to this branch. ' +
-		'View the action output and verify it has generated one project per ' +
-		'dependency manifest (except pnpm and deno). ' +
-		'Examples of dependency manifests are a build.sbt, or a package-lock.json.';
+		'The Snyk job should run automatically on every commit to this branch. ' +
+		'Click through to see the logs of the latest Snyk status check on ' +
+		'this PR, and verify it has generated one project per dependency manifest ' +
+		'(except pnpm and deno). ' +
+		'Examples of dependency manifests are a build.sbt, or a package-lock.json, ' +
+		'essentially, any file that lists the dependencies of your project.';
 	const step3 =
 		'When you are happy the action works, remove the ' +
 		`\`${branchName}\` option from the list of branches in the workflow, ` +
