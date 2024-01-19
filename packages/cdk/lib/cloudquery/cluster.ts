@@ -8,6 +8,7 @@ import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
+import { SteampipeService } from '../steampipe/service';
 import type { CloudqueryConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
@@ -194,5 +195,17 @@ export class CloudqueryCluster extends Cluster {
 				});
 			},
 		);
+
+		// This should ideally not be in the cloudquery folder, but unfortunately this is where we define our ECS cluster
+		// so here it stays for now!
+		new SteampipeService(scope, 'steampipe', {
+			app,
+			cluster: this,
+			loggingStreamName,
+			managedPolicies: [],
+			policies: [logShippingPolicy],
+			secrets: {},
+			additionalSecurityGroups: [],
+		});
 	}
 }
