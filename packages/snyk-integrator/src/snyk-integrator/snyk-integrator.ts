@@ -86,14 +86,21 @@ function checklist(items: string[]): string {
 
 function createPRChecklist(languages: string[], branchName: string): string[] {
 	const pythonText = ['Replace the relevant python fields'];
-	const defaultText = [
-		'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
-			'If you can’t find any, reach out to DevX)',
-		'Replace the relevant python fields, if they exist in the file. If not, skip this step',
+	const step1 =
+		'Replace the SNYK_ORG variable with the org name that your team ' +
+		'already uses (you should have other repos integrated with Snyk. ' +
+		'If you can’t find any, reach out to DevX). Examples are ' +
+		'`guardian-devtools` and `guardian-dotcom-n2y`';
+	const step2 =
 		'The job should run automatically on every commit to this branch. ' +
-			'View the action output and verify it has generated one project per dependency manifest (except pnpm and deno).',
-		`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
-	];
+		'View the action output and verify it has generated one project per ' +
+		'dependency manifest (except pnpm and deno). ' +
+		'Examples of dependency manifests are a build.sbt, or a package-lock.json.';
+	const step3 =
+		'When you are happy the action works, remove the ' +
+		`\`${branchName}\` option from the list of branches in the workflow, ` +
+		'approve, and merge.';
+	const defaultText = [step1, step2, step3];
 	const checklistItems = languages.includes('Python')
 		? pythonText.concat(defaultText)
 		: defaultText;
