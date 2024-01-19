@@ -7,6 +7,12 @@ spec:
   version: v${CQ_GITHUB}
   tables: ['*']
   destinations: ['postgresql']
+  skip_tables: [
+    'github_releases',
+    'github_release_assets',
+    'github_repository_dependabot_alerts',
+    'github_repository_dependabot_secrets',
+  ]
   spec:
     app_auth:
       - org: guardian
