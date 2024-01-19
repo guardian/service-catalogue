@@ -11,7 +11,7 @@ The snyk integrator takes a repo name and it's languages as JSON, like so:
 }
 ```
 
-It uses this input to generates a YAML file, matching the specification of our [GitHub action](https://github.com/guardian/.github/blob/main/.github/workflows/sbt-node-snyk.yml). This action runs `snyk monitor` on pushes to the main branch, so that we can keep track of vulnerabilities introduced by third party dependencies.
+It uses this input to generates a YAML file, matching the specification of our [workflow](https://github.com/guardian/.github/blob/main/.github/workflows/sbt-node-snyk.yml). This action runs `snyk monitor` on pushes to the main branch, so that we can keep track of vulnerabilities introduced by third party dependencies.
 
 After creating the YAML, it raises a pull request on the named repository for teams to review. Previously this YAML file was created manually, or via some slightly dodgy copy-pasting. An automated solution saves teams time and effort expended into understanding how to configure the action, and means repos are integrated with Snyk more quickly, and with fewer mistakes.
 
