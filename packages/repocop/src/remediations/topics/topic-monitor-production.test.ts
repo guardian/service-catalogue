@@ -151,7 +151,7 @@ describe('getReposInProdWithoutProductionTopic', () => {
 });
 
 describe('createMessage', () => {
-	it('asd', () => {
+	it('its response', () => {
 		const actual = createMessage(
 			'guardian/service-catalogue',
 			'service-catalogue-PROD',
@@ -161,7 +161,7 @@ describe('createMessage', () => {
 
 		expect(actual).toEqual({
 			message:
-				"The 'production' topic has applied to guardian/service-catalogue which has the stack service-catalogue-PROD.  This is because stack is over 1 months old and has PROD or INFRA tags. Repositories with PROD or INFRA stacks should have a 'production' topic to help with security. Visit the links below to learn more about topics and how to add/remove them if you need to.",
+				"The 'production' topic has applied to guardian/service-catalogue which has the stack service-catalogue-PROD.\nThis is because stack is over 1 months old and has PROD or INFRA tags.\nRepositories with PROD or INFRA stacks should have a 'production' topic to help with security.\nVisit the links below to learn more about topics and how to add/remove them if you need to.",
 			subject:
 				'Production topic monitoring (for GitHub team developer-experience)',
 		});
