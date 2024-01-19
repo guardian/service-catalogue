@@ -84,6 +84,22 @@ function checklist(items: string[]): string {
 	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
+function createPRChecklist(languages: string[], branchName: string): string[] {
+	const pythonText = ['Replace the relevant python fields'];
+	const defaultText = [
+		'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
+			'If you can’t find any, reach out to DevX)',
+		'Replace the relevant python fields, if they exist in the file. If not, skip this step',
+		'The job should run automatically on every commit to this branch. ' +
+			'View the action output and verify it has generated one project per dependency manifest (except pnpm and deno).',
+		`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
+	];
+	const checklistItems = languages.includes('Python')
+		? pythonText.concat(defaultText)
+		: defaultText;
+	return checklistItems;
+}
+
 function generatePrBody(branchName: string): string {
 	const body = [
 		h2('What does this change?'),
@@ -102,14 +118,7 @@ function generatePrBody(branchName: string): string {
 				'If your repository contains other languages not included here, integration may not work the way you expect it to.',
 		),
 		h2('What do I need to do?'),
-		checklist([
-			'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
-				'If you can’t find any, reach out to DevX)',
-			'Replace the relevant python fields, if they exist in the file. If not, skip this step',
-			'The job should run automatically on every commit to this branch. ' +
-				'View the action output and verify it has generated one project per dependency manifest (except pnpm and deno).',
-			`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
-		]),
+		checklist(createPRChecklist(['Python'], branchName)),
 	];
 	return tsMarkdown(body);
 }
