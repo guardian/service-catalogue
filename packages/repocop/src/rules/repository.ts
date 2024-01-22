@@ -415,18 +415,20 @@ export async function evaluateOneRepo(
 	};
 }
 
-export function evaluateRepositories(
+export async function evaluateRepositories(
+	octokit: Octokit,
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
-): repocop_github_repository_rules[] {
-	return repositories.map((r) => {
+): Promise<repocop_github_repository_rules[]> {
+	const evaluatedRepos = repositories.map(async (r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		return evaluateOneRepo(
+		return await evaluateOneRepo(
+			octokit,
 			r,
 			branchesForRepo,
 			teamsForRepo,
@@ -435,4 +437,5 @@ export function evaluateRepositories(
 			workflowFiles,
 		);
 	});
+	return await Promise.all(evaluatedRepos);
 }

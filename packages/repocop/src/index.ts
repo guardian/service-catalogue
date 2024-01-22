@@ -64,7 +64,8 @@ export async function main() {
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykProjects = await getSnykProjects(prisma);
 	const evaluatedRepos: repocop_github_repository_rules[] =
-		evaluateRepositories(
+		await evaluateRepositories(
+			octokit,
 			unarchivedRepos,
 			branches,
 			repoTeams,
