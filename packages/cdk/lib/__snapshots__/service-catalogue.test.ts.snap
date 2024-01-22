@@ -19646,6 +19646,20 @@ spec:
                   ],
                 },
               },
+              {
+                "Name": "GITHUB_TOKEN",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "steampipecredentials98149F9E",
+                      },
+                      ":github-token::",
+                    ],
+                  ],
+                },
+              },
             ],
           },
           {

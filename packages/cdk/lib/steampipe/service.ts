@@ -103,6 +103,11 @@ export class SteampipeService extends FargateService {
 					steampipeCredentials,
 					'password',
 				),
+				// Steampipe Github plugin currently only supports PAT tokens
+				GITHUB_TOKEN: Secret.fromSecretsManager(
+					steampipeCredentials,
+					'github-token',
+				),
 			},
 			command: ['service', 'start', '--foreground'],
 			logging: fireLensLogDriver,
