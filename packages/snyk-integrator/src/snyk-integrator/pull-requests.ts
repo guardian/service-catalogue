@@ -43,11 +43,10 @@ export async function getPullRequest(
 	repoName: string,
 	branchName: string,
 ) {
-	// TODO(@chrislomaxjones) pagination necessary?
-	const pulls = await octokit.rest.pulls.list({
+	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
 		owner: 'guardian',
 		repo: repoName,
 		state: 'open',
 	});
-	return pulls.data.find((pull) => pull.head.ref === branchName);
+	return pulls.find((pull) => pull.head.ref === branchName);
 }
