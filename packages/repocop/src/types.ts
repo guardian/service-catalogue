@@ -67,3 +67,8 @@ type DependabotVulnResponse =
 	Endpoints['GET /repos/{owner}/{repo}/dependabot/alerts']['response'];
 
 export type Alert = DependabotVulnResponse['data'][number];
+
+export type PartialAlert = Pick<
+	Alert,
+	'state' | 'dependency' | 'security_vulnerability' | 'created_at'
+>;

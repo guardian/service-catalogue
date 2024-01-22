@@ -12,8 +12,8 @@ import {
 	supportedSnykLanguages,
 } from '../languages';
 import type {
-	Alert,
 	AwsCloudFormationStack,
+	PartialAlert,
 	RepoAndStack,
 	Repository,
 	TeamRepository,
@@ -269,7 +269,7 @@ function findArchivedReposWithStacks(
 export async function getAlertsForRepo(
 	octokit: Octokit,
 	name: string,
-): Promise<Alert[] | undefined> {
+): Promise<PartialAlert[] | undefined> {
 	if (name.startsWith('guardian/')) {
 		name = name.replace('guardian/', '');
 	}
@@ -281,14 +281,52 @@ export async function getAlertsForRepo(
 			per_page: 100,
 			severity: 'critical', //eventually this should be "critical,high"
 			state: 'open',
+			sort: 'created',
+			direction: 'asc', //retrieve oldest vulnerabilities first
 		});
 
-		return alert.data;
+		return alert.data.map((a) => a as PartialAlert);
 	} catch (error) {
-		console.error(`Error: could not get alerts for ${name}`);
-		console.error(error);
+		console.warn(`Could not get alerts for ${name}`);
+		console.warn(error);
 		return undefined;
 	}
+}
+
+function isOldForSeverity(
+	date: Date,
+	severity: 'critical' | 'high',
+	alert: PartialAlert,
+) {
+	const alertDate = new Date(alert.created_at);
+	return alertDate < date && alert.security_vulnerability.severity === severity;
+}
+
+export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
+	const twoWeeksAgo = new Date();
+	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+	twoWeeksAgo.setHours(0, 0, 0, 0);
+
+	const yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	yesterday.setHours(0, 0, 0, 0);
+	const oldHighAlerts = alerts.filter((alert) =>
+		isOldForSeverity(twoWeeksAgo, 'high', alert),
+	);
+	const oldCriticalAlerts = alerts.filter((alert) =>
+		isOldForSeverity(yesterday, 'critical', alert),
+	);
+	if (oldHighAlerts.length > 0) {
+		console.log(
+			`${repo}: has ${oldHighAlerts.length} high alerts older than two weeks`,
+		);
+	}
+	if (oldCriticalAlerts.length > 0) {
+		console.log(
+			`${repo}: has ${oldCriticalAlerts.length} critical alerts older than one day`,
+		);
+	}
+	return oldHighAlerts.length > 0 || oldCriticalAlerts.length > 0;
 }
 
 export async function testExperimentalRepocopFeatures(
@@ -308,7 +346,7 @@ export async function testExperimentalRepocopFeatures(
 			.map(async (repo) => {
 				console.log(`Getting alerts for ${repo.full_name}`);
 				const alerts = await getAlertsForRepo(octokit, repo.full_name);
-				console.log(repo.full_name, alerts);
+				hasOldAlerts(alerts ?? [], repo.name);
 			}),
 	);
 
@@ -329,27 +367,34 @@ export async function testExperimentalRepocopFeatures(
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
 
 	console.log(
-		'Archived repos with live stacks, first 10 results:',
-		archivedWithStacks.slice(0, 10),
+		'Archived repos with live stacks, first 3 results:',
+		archivedWithStacks.slice(0, 3),
 	);
 }
 
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
-export function evaluateOneRepo(
+export async function evaluateOneRepo(
+	octokit: Octokit,
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
-): repocop_github_repository_rules {
+): Promise<repocop_github_repository_rules> {
 	/*
 	Either the fullname, or the org and name, or the org and 'unknown'.
 	The latter should never happen, it's just how the types have been defined.
 	 */
 	const fullName = repo.full_name;
+	if (repo.topics.includes('production')) {
+		const alerts = await getAlertsForRepo(octokit, repo.full_name);
+		if (alerts) {
+			console.log(hasOldAlerts(alerts, repo.name));
+		}
+	}
 
 	return {
 		full_name: fullName,
