@@ -182,3 +182,7 @@ export async function createSnykPullRequest(
 		],
 	});
 }
+
+export function generateBranchName(languages: string[]) {
+	return `integrate-snyk-${languages.sort().join('-')}`;
+}
