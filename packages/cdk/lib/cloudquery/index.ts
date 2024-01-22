@@ -33,7 +33,6 @@ interface CloudqueryEcsClusterProps {
 	db: DatabaseInstance;
 	dbAccess: GuSecurityGroup;
 	nonProdSchedule?: Schedule;
-	steampipeSecurityGroup: GuSecurityGroup;
 }
 
 export function addCloudqueryEcsCluster(
@@ -41,7 +40,7 @@ export function addCloudqueryEcsCluster(
 	props: CloudqueryEcsClusterProps,
 ) {
 	const { stage, stack, app = 'service-catalogue' } = scope;
-	const { vpc, db, dbAccess, nonProdSchedule, steampipeSecurityGroup } = props;
+	const { vpc, db, dbAccess, nonProdSchedule } = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
 		StringParameter.valueForStringParameter(
@@ -521,7 +520,7 @@ export function addCloudqueryEcsCluster(
 		config: ns1SourceConfig(),
 	};
 
-	new CloudqueryCluster(scope, `${app}Cluster`, {
+	return new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
 		db,
@@ -537,6 +536,5 @@ export function addCloudqueryEcsCluster(
 			githubLanguagesSource,
 			ns1Source,
 		],
-		steampipeSecurityGroup,
 	});
 }

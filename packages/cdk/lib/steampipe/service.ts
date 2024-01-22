@@ -1,4 +1,8 @@
-import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
+import {
+	type AppIdentity,
+	GuLoggingStreamNameParameter,
+	type GuStack,
+} from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration } from 'aws-cdk-lib';
@@ -16,7 +20,7 @@ import {
 	NetworkLoadBalancer,
 	Protocol,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Images } from '../cloudquery/images';
@@ -33,19 +37,9 @@ export interface SteampipeServiceProps
 	secrets?: Record<string, Secret>;
 
 	/**
-	 * Any IAM managed policies to attach to the task.
-	 */
-	managedPolicies: IManagedPolicy[];
-
-	/**
 	 * IAM policies to attach to the task.
 	 */
 	policies: PolicyStatement[];
-
-	/**
-	 * The name of the Kinesis stream to send logs to.
-	 */
-	loggingStreamName: string;
 
 	/**
 	 * Security group allowing access to Network Load Balancer
@@ -55,16 +49,25 @@ export interface SteampipeServiceProps
 
 export class SteampipeService extends FargateService {
 	constructor(scope: GuStack, id: string, props: SteampipeServiceProps) {
-		const {
-			managedPolicies,
-			policies,
-			loggingStreamName,
-			cluster,
-			app,
-			accessSecurityGroup,
-		} = props;
+		const { policies, cluster, app, accessSecurityGroup } = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
+
+		const loggingStreamName =
+			GuLoggingStreamNameParameter.getInstance(scope).valueAsString;
+		const loggingStreamArn = scope.formatArn({
+			service: 'kinesis',
+			resource: 'stream',
+			resourceName: loggingStreamName,
+		});
+
+		const logShippingPolicy = new PolicyStatement({
+			actions: ['kinesis:Describe*', 'kinesis:Put*'],
+			effect: Effect.ALLOW,
+			resources: [loggingStreamArn],
+		});
+
+		const taskPolicies = [logShippingPolicy, ...policies];
 
 		const steampipeCredentials = new SecretsManager(
 			scope,
@@ -128,8 +131,7 @@ export class SteampipeService extends FargateService {
 			},
 		});
 
-		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
-		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
+		taskPolicies.forEach((policy) => task.addToTaskRolePolicy(policy));
 
 		const steampipeSecurityGroup = new GuSecurityGroup(scope, `steampipe-sg`, {
 			app: app,

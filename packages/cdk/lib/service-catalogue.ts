@@ -41,6 +41,7 @@ import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Repocop } from './repocop';
+import { SteampipeService } from './steampipe/service';
 
 interface ServiceCatalogueProps extends GuStackProps {
 	//TODO add fields for every kind of job to make schedule explicit at a glance.
@@ -171,12 +172,11 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
-		addCloudqueryEcsCluster(this, {
+		const cluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
-			steampipeSecurityGroup,
 		});
 
 		const anghammaradTopicParameter =
@@ -240,6 +240,16 @@ export class ServiceCatalogue extends GuStack {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
+		});
+
+		// This should ideally not be in the cloudquery folder, but unfortunately this is where we define our ECS cluster
+		// so here it stays for now!
+		new SteampipeService(this, 'steampipe', {
+			app,
+			cluster,
+			policies: [],
+			secrets: {},
+			accessSecurityGroup: steampipeSecurityGroup,
 		});
 	}
 }
