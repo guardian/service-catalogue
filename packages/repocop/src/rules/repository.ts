@@ -270,7 +270,7 @@ function findArchivedReposWithStacks(
 	return archivedReposWithPotentialStacks;
 }
 
-async function getAlertForRepo(octokit: Octokit, name: string) {
+async function getAlertsForRepo(octokit: Octokit, name: string) {
 	if (name.startsWith('guardian/')) {
 		name = name.replace('guardian/', '');
 	}
@@ -283,6 +283,13 @@ async function getAlertForRepo(octokit: Octokit, name: string) {
 	});
 
 	return alert;
+}
+
+interface DependabotAlert {
+	created_at: string;
+	security_vulnerability: {
+		severity: string;
+	};
 }
 
 export async function testExperimentalRepocopFeatures(
@@ -298,8 +305,14 @@ export async function testExperimentalRepocopFeatures(
 
 	await Promise.all(
 		prodRepos.slice(0, 10).map(async (repo) => {
-			const alert = await getAlertForRepo(octokit, repo.full_name);
-			console.log(JSON.stringify(alert.data));
+			console.log(`Getting alerts for ${repo.full_name}`);
+			const alerts = await getAlertsForRepo(octokit, repo.full_name);
+			console.log(`Printing raw alerts`);
+			console.log(JSON.stringify(alerts.data));
+			console.log(`Printing alerts after casting to DependabotAlert[]`);
+			const x = alerts.data as DependabotAlert[];
+			console.log(x);
+			// console.log(JSON.stringify(alerts.data));
 		}),
 	);
 
