@@ -1,3 +1,4 @@
+import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
 	github_repositories,
@@ -61,3 +62,8 @@ export interface TeamRepository extends TeamRepositoryFields {
 	team_id: NonNullable<TeamRepositoryFields['team_id']>;
 	role_name: NonNullable<TeamRepositoryFields['role_name']>;
 }
+
+type DependabotVulnResponse =
+	Endpoints['GET /repos/{owner}/{repo}/dependabot/alerts']['response'];
+
+export type Alert = DependabotVulnResponse['data'][number];
