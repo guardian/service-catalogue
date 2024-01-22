@@ -5,6 +5,7 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
+import { shuffle } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
@@ -299,21 +300,23 @@ export async function testExperimentalRepocopFeatures(
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
 ) {
-	const prodRepos = unarchivedRepos.filter((repo) =>
-		repo.topics.includes('production'),
-	);
+	// const prodRepos = unarchivedRepos.filter((repo) =>
+	// 	repo.topics.includes('production'),
+	// );
 
 	await Promise.all(
-		prodRepos.slice(0, 10).map(async (repo) => {
-			console.log(`Getting alerts for ${repo.full_name}`);
-			const alerts = await getAlertsForRepo(octokit, repo.full_name);
-			console.log(`Printing raw alerts`);
-			console.log(JSON.stringify(alerts.data));
-			console.log(`Printing alerts after casting to DependabotAlert[]`);
-			const x = alerts.data as DependabotAlert[];
-			console.log(x);
-			// console.log(JSON.stringify(alerts.data));
-		}),
+		shuffle(unarchivedRepos)
+			.slice(0, 10)
+			.map(async (repo) => {
+				console.log(`Getting alerts for ${repo.full_name}`);
+				const alerts = await getAlertsForRepo(octokit, repo.full_name);
+				console.log(`Printing raw alerts`);
+				console.log(JSON.stringify(alerts.data));
+				console.log(`Printing alerts after casting to DependabotAlert[]`);
+				const x = alerts.data as DependabotAlert[];
+				console.log(x);
+				// console.log(JSON.stringify(alerts.data));
+			}),
 	);
 
 	const unmaintinedReposCount = evaluatedRepos.filter(
