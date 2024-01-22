@@ -12,6 +12,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuStringParameter",
       "GuLoggingStreamNameParameter",
       "GuSecurityGroup",
+      "GuCname",
       "GuAnghammaradTopicParameter",
       "GuDistributionBucketParameter",
       "GuLambdaFunction",
@@ -18033,6 +18034,23 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
+    "SteampipeDNS": {
+      "Properties": {
+        "Name": "steampipe.code.dev-gutools.co.uk",
+        "RecordType": "CNAME",
+        "ResourceRecords": [
+          {
+            "Fn::GetAtt": [
+              "steampipenlb8A25667C",
+              "DNSName",
+            ],
+          },
+        ],
+        "Stage": "TEST",
+        "TTL": 3600,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
     "SteampipeSecurityGroupServicecatalogue45A0E3D6": {
       "Properties": {
         "GroupDescription": "ServiceCatalogue/SteampipeSecurityGroupServicecatalogue",
@@ -18094,6 +18112,27 @@ spec:
         "SourceSecurityGroupId": {
           "Fn::GetAtt": [
             "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+            "GroupId",
+          ],
+        },
+        "ToPort": 9193,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "SteampipeSecurityGroupServicecataloguefromServiceCataloguePostgresSecurityGroupServicecatalogue716624F091938A31DC0C": {
+      "Properties": {
+        "Description": "from ServiceCataloguePostgresSecurityGroupServicecatalogue716624F0:9193",
+        "FromPort": 9193,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "PostgresSecurityGroupServicecatalogueD2F089D5",
             "GroupId",
           ],
         },

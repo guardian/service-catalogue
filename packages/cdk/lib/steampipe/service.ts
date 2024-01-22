@@ -1,5 +1,7 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import { Duration } from 'aws-cdk-lib';
 import { type ISecurityGroup, Port } from 'aws-cdk-lib/aws-ec2';
 import {
 	FargateService,
@@ -150,6 +152,13 @@ export class SteampipeService extends FargateService {
 		const nlbListener = nlb.addListener(`steampipe-nlb-listener`, {
 			port: 9193,
 			protocol: Protocol.TCP,
+		});
+
+		new GuCname(scope, 'SteampipeDNS', {
+			app: app,
+			ttl: Duration.hours(1),
+			domainName: 'steampipe.code.dev-gutools.co.uk',
+			resourceRecord: nlb.loadBalancerDnsName,
 		});
 
 		super(scope, id, {

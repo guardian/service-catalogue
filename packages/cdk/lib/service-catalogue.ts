@@ -143,8 +143,15 @@ export class ServiceCatalogue extends GuStack {
 			Port.tcp(port),
 		);
 
+		// Allow anything that can access the RDS DB to access Steampipe, so Grafana
 		steampipeSecurityGroup.connections.allowFrom(
 			applicationToPostgresSecurityGroup,
+			Port.tcp(9193),
+		);
+
+		// Allow RDS DB to access Steampipe
+		steampipeSecurityGroup.connections.allowFrom(
+			dbSecurityGroup,
 			Port.tcp(9193),
 		);
 
