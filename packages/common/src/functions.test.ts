@@ -3,9 +3,11 @@ import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
 	getEnvOrThrow,
+	getGithubAppSecret,
 	parseEvent,
 	parseSecretJson,
 	partition,
+	topicMonitoringProductionTagCtas,
 } from './functions';
 
 function isValidUrl(str: string) {
@@ -34,6 +36,28 @@ describe('branchProtectionCtas', () => {
 			'https://github.com/my-org/my-repo',
 			'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
 			'https://github.com/my-org/my-repo/settings/branches',
+		]);
+	});
+});
+
+describe('topicMonitoringProductionTagCtas', () => {
+	it('should return an array of four valid urls', () => {
+		const fullRepoName = 'my-org/my-repo';
+		const teamSlug = 'my-team';
+		const result = topicMonitoringProductionTagCtas(fullRepoName, teamSlug);
+		expect(result).toHaveLength(4);
+		expect(result.every((x) => isValidUrl(x.url))).toBe(true);
+	});
+
+	it('should return the correct urls in the correct order', () => {
+		const fullRepoName = 'my-org/my-repo';
+		const teamSlug = 'my-team';
+		const result = topicMonitoringProductionTagCtas(fullRepoName, teamSlug);
+		expect(result.map((x) => x.url)).toStrictEqual([
+			'https://github.com/my-org/my-repo',
+			'https://github.com/guardian/service-catalogue/blob/main/packages/best-practices/best-practices.md',
+			'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
+			'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository',
 		]);
 	});
 });
@@ -70,7 +94,34 @@ describe('getEnvOrThrow', () => {
 	});
 
 	it('should throw an error for a non-existing environment variable', () => {
-		expect(() => getEnvOrThrow('NON_EXISTING_VAR')).toThrow();
+		const err = 'Environment variable NON_EXISTING_VAR is not set.';
+		expect(() => getEnvOrThrow('NON_EXISTING_VAR')).toThrow(err);
+	});
+});
+
+describe('getGitHubAppSecret', () => {
+	it('should throw iff the GITHUB_APP_SECRET environment variable is not set', async () => {
+		const err = 'Environment variable GITHUB_APP_SECRET is not set.';
+		const secret = process.env.GITHUB_APP_SECRET;
+		delete process.env.GITHUB_APP_SECRET;
+		await expect(getGithubAppSecret()).rejects.toThrow(err);
+		process.env.GITHUB_APP_SECRET = secret;
+	});
+});
+
+describe('parseSecretJson', () => {
+	it('should do the right thing', () => {
+		const actual = parseSecretJson(
+			'{"appId": "myAppId", "base64PrivateKey": "aGVsbG8=", "clientId": "myClientId", "clientSecret": "myClientSecret", "installationId": "myInstallationId"}',
+		);
+		console.log(actual.strategyOptions);
+		//check that the correct fields are in the correct values, and that base64PrivateKey has been decoded
+		expect(actual.installationId).toEqual('myInstallationId');
+		expect(actual.strategyOptions.appId).toEqual('myAppId');
+		expect(actual.strategyOptions.clientId).toEqual('myClientId');
+		expect(actual.strategyOptions.clientSecret).toEqual('myClientSecret');
+		expect(actual.strategyOptions.installationId).toEqual('myInstallationId');
+		expect(actual.strategyOptions.privateKey).toEqual('hello');
 	});
 });
 

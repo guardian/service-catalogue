@@ -27,7 +27,7 @@ export function getEnvOrThrow(key: string): string {
 	return value;
 }
 
-async function getGithubAppSecret(): Promise<string> {
+export async function getGithubAppSecret(): Promise<string> {
 	const SecretId = getEnvOrThrow('GITHUB_APP_SECRET');
 	const secretsManager = new SecretsManager();
 
