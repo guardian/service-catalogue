@@ -1,4 +1,4 @@
-import { stageAwareGraphQlClient } from 'common/src/functions';
+import { stageAwareOctokit } from 'common/src/functions';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { ProjectId, PullRequestDetails } from './types';
 
@@ -45,7 +45,7 @@ export async function addPrToProject(
 	stage: string,
 	event: SnykIntegratorEvent,
 ) {
-	const graphqlWithAuth = await stageAwareGraphQlClient(stage);
+	const graphqlWithAuth = (await stageAwareOctokit(stage)).graphql;
 
 	const projectDetails: ProjectId = await graphqlWithAuth(
 		`{
