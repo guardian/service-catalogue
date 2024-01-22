@@ -5,5 +5,5 @@ import { main } from './index';
 config({ path: `../../.env` });
 
 if (require.main === module) {
-	void (async () => await main())();
+	void main();
 }
