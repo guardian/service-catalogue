@@ -285,7 +285,7 @@ export async function getAlertsForRepo(
 			owner: 'guardian',
 			repo: name,
 			per_page: 100,
-			// severity: 'critical',
+			severity: 'critical', //eventually this should be "critical,high"
 			state: 'open',
 		});
 
