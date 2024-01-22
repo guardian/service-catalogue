@@ -49,6 +49,8 @@ export async function main() {
 	const config: Config = await getConfig();
 	const prisma = getPrismaClient(config);
 
+	const octokit = await stageAwareOctokit(config.stage);
+
 	const [unarchivedRepos, archivedRepos] = partition(
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes),
 		(repo) => !repo.archived,
@@ -75,9 +77,8 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
 
-	const octokit = await stageAwareOctokit(config.stage);
-
-	testExperimentalRepocopFeatures(
+	await testExperimentalRepocopFeatures(
+		octokit,
 		evaluatedRepos,
 		unarchivedRepos,
 		archivedRepos,

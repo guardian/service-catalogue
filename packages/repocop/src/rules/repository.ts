@@ -5,11 +5,14 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
+import { shuffle } from 'common/src/functions';
+import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
 } from '../languages';
 import type {
+	Alert,
 	AwsCloudFormationStack,
 	RepoAndStack,
 	Repository,
@@ -269,12 +272,52 @@ function findArchivedReposWithStacks(
 	return archivedReposWithPotentialStacks;
 }
 
-export function testExperimentalRepocopFeatures(
+export async function getAlertsForRepo(
+	octokit: Octokit,
+	name: string,
+): Promise<Alert[] | undefined> {
+	if (name.startsWith('guardian/')) {
+		name = name.replace('guardian/', '');
+	}
+
+	try {
+		const alert = await octokit.rest.dependabot.listAlertsForRepo({
+			owner: 'guardian',
+			repo: name,
+			per_page: 100,
+			severity: 'critical', //eventually this should be "critical,high"
+			state: 'open',
+		});
+
+		return alert.data;
+	} catch (error) {
+		console.error(`Error: could not get alerts for ${name}`);
+		console.error(error);
+		return undefined;
+	}
+}
+
+export async function testExperimentalRepocopFeatures(
+	octokit: Octokit,
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
 ) {
+	const prodRepos = unarchivedRepos.filter((repo) =>
+		repo.topics.includes('production'),
+	);
+
+	await Promise.all(
+		shuffle(prodRepos)
+			.slice(0, 10)
+			.map(async (repo) => {
+				console.log(`Getting alerts for ${repo.full_name}`);
+				const alerts = await getAlertsForRepo(octokit, repo.full_name);
+				console.log(repo.full_name, alerts);
+			}),
+	);
+
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
