@@ -8,6 +8,7 @@ import { addPrToProject } from './projects-graphql';
 import {
 	createSnykPullRequest,
 	createYaml,
+	generatePr,
 } from './snyk-integrator/snyk-integrator';
 
 export async function main(event: SnykIntegratorEvent) {
@@ -32,9 +33,10 @@ export async function main(event: SnykIntegratorEvent) {
 	} else {
 		console.log('Testing snyk.yml generation');
 		console.log(createYaml(event.languages, branch));
-		console.log(
-			'Skipping creating a test Snyk Pull Request (feature is not enabled)',
-		);
+		console.log('Testing PR generation');
+		const [head, body] = generatePr(event.languages, branch);
+		console.log('Title:\n', head);
+		console.log('Body:\n', body);
 	}
 	console.log('Done');
 }
