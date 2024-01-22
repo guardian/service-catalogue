@@ -109,7 +109,7 @@ function createPRChecklist(languages: string[], branchName: string): string[] {
 	return checklistItems;
 }
 
-function generatePrBody(branchName: string): string {
+function generatePrBody(branchName: string, languages: string[]): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -127,7 +127,7 @@ function generatePrBody(branchName: string): string {
 				'If your repository contains other languages not included here, integration may not work the way you expect it to.',
 		),
 		h2('What do I need to do?'),
-		checklist(createPRChecklist(['Python'], branchName)),
+		checklist(createPRChecklist(languages, branchName)),
 	];
 	return tsMarkdown(body);
 }
@@ -154,7 +154,7 @@ export function generatePr(
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(branch);
+	const body = generatePrBody(branch, repoLanguages);
 
 	return [header, body];
 }
