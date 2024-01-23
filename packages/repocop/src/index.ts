@@ -86,7 +86,7 @@ export async function main() {
 	);
 
 	const repoOwners = await getRepoOwnership(prisma);
-	await sendUnprotectedRepo(evaluatedRepos, config, repoOwners, repoLanguages);
+	await sendUnprotectedRepo(evaluatedRepos, config, repoLanguages);
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);
