@@ -13,7 +13,6 @@ export const ignoredLanguages = [
 	'SCSS',
 	'Less',
 	'Sass',
-	'Jinja', // Jinja uses Python dependencies
 ];
 
 const commonSupportedLanguages = [
@@ -22,6 +21,7 @@ const commonSupportedLanguages = [
 	'Java',
 	'JavaScript',
 	'Python',
+	'Jinja', // Jinja uses Python dependencies
 	'Swift',
 	'TypeScript',
 ];
