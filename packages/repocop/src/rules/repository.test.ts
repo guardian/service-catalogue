@@ -14,6 +14,7 @@ import {
 	evaluateOneRepo,
 	findStacks,
 	hasDependencyTracking,
+	hasOldAlerts,
 	parseSnykTags,
 } from './repository';
 
@@ -72,7 +73,7 @@ const thePerfectRepo: Repository = {
 	default_branch: 'main',
 };
 
-describe('default_branch_name should be false when the default branch is not main', () => {
+describe('REPOSITORY_01 - default_branch_name should be false when the default branch is not main', () => {
 	test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: Repository[] = [thePerfectRepo, badRepo];
@@ -85,7 +86,7 @@ describe('default_branch_name should be false when the default branch is not mai
 	});
 });
 
-describe('Repositories should have branch protection', () => {
+describe('REPOSITORY_02 - Repositories should have branch protection', () => {
 	const unprotectedMainBranch: github_repository_branches = {
 		...nullBranch,
 		repository_id: BigInt(1),
@@ -137,7 +138,7 @@ describe('Repositories should have branch protection', () => {
 	});
 });
 
-describe('Repository admin access', () => {
+describe('REPOSITORY_04 - Repository admin access', () => {
 	test('Should return false when there is no admin team', () => {
 		const repo: Repository = {
 			...nullRepo,
@@ -231,7 +232,7 @@ describe('Repository admin access', () => {
 	});
 });
 
-describe('Repository topics', () => {
+describe('REPOSITORY_06 - Repository topics', () => {
 	test('Should return true when there is a single recognised topic', () => {
 		const repo: Repository = {
 			...nullRepo,
@@ -297,7 +298,8 @@ describe('Repository topics', () => {
 	});
 });
 
-describe('Repository maintenance', () => {
+// No rule for this evaluation yet
+describe('NO RULE - Repository maintenance', () => {
 	test('should have happened at some point in the last two years', () => {
 		const recentRepo: Repository = {
 			...nullRepo,
@@ -337,7 +339,7 @@ describe('Repository maintenance', () => {
 	});
 });
 
-describe('Repositories with related stacks on AWS', () => {
+describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
 	test('should be findable if a stack has a matching tag', () => {
 		const full_name = 'guardian/repo1';
 		const tags = {
@@ -375,7 +377,7 @@ describe('Repositories with related stacks on AWS', () => {
 	});
 });
 
-describe('Repositories without any related stacks on AWS', () => {
+describe('REPOSITORY_08 - Repositories without any related stacks on AWS', () => {
 	test('should not be findable', () => {
 		const repo: Repository = {
 			...nullRepo,
@@ -410,7 +412,7 @@ describe('Repositories without any related stacks on AWS', () => {
 	});
 });
 
-describe('Snyk tags', () => {
+describe('REPOSITORY_09 - Snyk tags', () => {
 	const nullSnykProject: snyk_projects = {
 		cq_source_name: null,
 		cq_sync_time: null,
@@ -450,7 +452,7 @@ describe('Snyk tags', () => {
 	});
 });
 
-describe('Dependency tracking', () => {
+describe('REPOSITORY_09 - Dependency tracking', () => {
 	const nullSnykProject: snyk_projects = {
 		cq_source_name: null,
 		cq_sync_time: null,
@@ -644,5 +646,73 @@ describe('Dependency tracking', () => {
 			[nonMatchingWorkflow],
 		);
 		expect(actual).toEqual(false);
+	});
+});
+
+function createAlert(
+	severity: 'critical' | 'high' | 'medium',
+	createdAt: Date,
+	state: 'open' | 'auto_dismissed' | 'dismissed' | 'fixed',
+): PartialAlert {
+	const alert = {
+		state,
+		created_at: createdAt.toISOString(),
+		security_vulnerability: {
+			severity,
+			vulnerable_version_range: '',
+			first_patched_version: {
+				identifier: '',
+			},
+			package: {
+				name: '',
+				ecosystem: '',
+			},
+		},
+		dependency: {
+			package: {
+				name: '',
+				ecosystem: '',
+			},
+		},
+	};
+	return alert;
+}
+
+describe('NO RULE - Repository alerts', () => {
+	test('should be flagged if there are critical alerts older than one day', () => {
+		console.log(new Date('2021-01-01').toISOString());
+		const alerts: PartialAlert[] = [
+			createAlert('critical', new Date('2021-01-01'), 'open'),
+		];
+
+		expect(hasOldAlerts(alerts, 'test')).toBe(true);
+	});
+	test('should not be flagged if a critical alert was raised today', () => {
+		const alerts: PartialAlert[] = [
+			createAlert('critical', new Date(), 'open'),
+		];
+
+		expect(hasOldAlerts(alerts, 'test')).toBe(false);
+	});
+	test('should be flagged if there are high alerts older than 14 days', () => {
+		const alerts: PartialAlert[] = [
+			createAlert('high', new Date('2021-01-01'), 'open'),
+		];
+
+		expect(hasOldAlerts(alerts, 'test')).toBe(true);
+	});
+	test('should not be flagged if a high alert was raised today', () => {
+		const alerts: PartialAlert[] = [createAlert('high', new Date(), 'open')];
+
+		expect(hasOldAlerts(alerts, 'test')).toBe(false);
+	});
+	test('should not be flagged if a high alert was raised 13 days ago', () => {
+		const thirteenDaysAgo = new Date();
+		thirteenDaysAgo.setDate(thirteenDaysAgo.getDate() - 13);
+		const alerts: PartialAlert[] = [
+			createAlert('high', thirteenDaysAgo, 'open'),
+		];
+
+		expect(hasOldAlerts(alerts, 'test')).toBe(false);
 	});
 });
