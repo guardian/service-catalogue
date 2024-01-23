@@ -13,7 +13,9 @@ import {
 } from '../languages';
 import type {
 	AwsCloudFormationStack,
+	DependabotVulnResponse,
 	PartialAlert,
+	RepoAndAlerts,
 	RepoAndStack,
 	Repository,
 	TeamRepository,
@@ -275,20 +277,21 @@ export async function getAlertsForRepo(
 	}
 
 	try {
-		const alert = await octokit.rest.dependabot.listAlertsForRepo({
-			owner: 'guardian',
-			repo: name,
-			per_page: 100,
-			severity: 'critical', //eventually this should be "critical,high"
-			state: 'open',
-			sort: 'created',
-			direction: 'asc', //retrieve oldest vulnerabilities first
-		});
+		const alert: DependabotVulnResponse =
+			await octokit.rest.dependabot.listAlertsForRepo({
+				owner: 'guardian',
+				repo: name,
+				per_page: 100,
+				severity: 'critical', //eventually this should be "critical,high"
+				state: 'open',
+				sort: 'created',
+				direction: 'asc', //retrieve oldest vulnerabilities first
+			});
 
+		console.log(`Got ${alert.data.length} alerts for ${name}`);
 		return alert.data.map((a) => a as PartialAlert);
 	} catch (error) {
-		console.warn(`Could not get alerts for ${name}`);
-		console.warn(error);
+		console.warn(`Could not get dependabot alerts for ${name}`);
 		return undefined;
 	}
 }
@@ -375,29 +378,25 @@ export async function testExperimentalRepocopFeatures(
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
-export async function evaluateOneRepo(
-	octokit: Octokit,
+export function evaluateOneRepo(
+	alerts: PartialAlert[] | undefined,
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
-): Promise<repocop_github_repository_rules> {
-	/*
-	Either the fullname, or the org and name, or the org and 'unknown'.
-	The latter should never happen, it's just how the types have been defined.
-	 */
-	const fullName = repo.full_name;
-	if (repo.topics.includes('production')) {
-		const alerts = await getAlertsForRepo(octokit, repo.full_name);
-		if (alerts) {
-			console.log(hasOldAlerts(alerts, repo.name));
-		}
+): repocop_github_repository_rules {
+	if (repo.topics.includes('production') && !!alerts) {
+		console.log(
+			`Alerts for ${repo.name}: `,
+			JSON.stringify(alerts.map((a) => a.dependency)),
+		);
+		console.log(hasOldAlerts(alerts, repo.name));
 	}
 
 	return {
-		full_name: fullName,
+		full_name: repo.full_name,
 		default_branch_name: hasDefaultBranchNameMain(repo),
 		branch_protection: hasBranchProtection(repo, allBranches),
 		team_based_access: false,
@@ -415,20 +414,21 @@ export async function evaluateOneRepo(
 	};
 }
 
-export async function evaluateRepositories(
-	octokit: Octokit,
+export function evaluateRepositories(
+	alerts: RepoAndAlerts[],
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
-): Promise<repocop_github_repository_rules[]> {
-	const evaluatedRepos = repositories.map(async (r) => {
+): repocop_github_repository_rules[] {
+	const evaluatedRepos = repositories.map((r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		return await evaluateOneRepo(
-			octokit,
+		const alertsForRepo = alerts.find((a) => a.shortName === r.name);
+		return evaluateOneRepo(
+			alertsForRepo?.alerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,
@@ -437,5 +437,5 @@ export async function evaluateRepositories(
 			workflowFiles,
 		);
 	});
-	return await Promise.all(evaluatedRepos);
+	return evaluatedRepos;
 }

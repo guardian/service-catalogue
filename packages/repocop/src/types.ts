@@ -63,7 +63,7 @@ export interface TeamRepository extends TeamRepositoryFields {
 	role_name: NonNullable<TeamRepositoryFields['role_name']>;
 }
 
-type DependabotVulnResponse =
+export type DependabotVulnResponse =
 	Endpoints['GET /repos/{owner}/{repo}/dependabot/alerts']['response'];
 
 export type Alert = DependabotVulnResponse['data'][number];
@@ -72,3 +72,11 @@ export type PartialAlert = Pick<
 	Alert,
 	'state' | 'dependency' | 'security_vulnerability' | 'created_at'
 >;
+
+export interface RepoAndAlerts {
+	shortName: string;
+	/*
+	 ** alerts is undefined if we catch an error, typically because dependabot is not enabled
+	 */
+	alerts: PartialAlert[] | undefined;
+}

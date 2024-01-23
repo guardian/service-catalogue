@@ -26,9 +26,11 @@ import { sendPotentialInteractives } from './remediations/topics/topic-monitor-i
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import {
 	evaluateRepositories,
+	getAlertsForRepo,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack } from './types';
+import type { AwsCloudFormationStack, RepoAndAlerts } from './types';
+import { isProduction } from './utils';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -63,9 +65,24 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykProjects = await getSnykProjects(prisma);
+
+	const prodRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+	const alerts: RepoAndAlerts[] = (
+		await Promise.all(
+			prodRepos.map(async (repo) => {
+				return {
+					shortName: repo.full_name,
+					alerts: await getAlertsForRepo(octokit, repo.name),
+				};
+			}),
+		)
+	).filter((x) => !!x.alerts);
+
+	console.log(`Found ${alerts.length} repos with alerts`);
+
 	const evaluatedRepos: repocop_github_repository_rules[] =
-		await evaluateRepositories(
-			octokit,
+		evaluateRepositories(
+			alerts,
 			unarchivedRepos,
 			branches,
 			repoTeams,

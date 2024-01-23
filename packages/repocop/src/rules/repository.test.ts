@@ -6,6 +6,7 @@ import type {
 } from '@prisma/client';
 import type {
 	AwsCloudFormationStack,
+	PartialAlert,
 	Repository,
 	TeamRepository,
 } from '../types';
@@ -23,8 +24,10 @@ function evaluateRepoTestHelper(
 	languages: github_languages[] = [],
 	snykProjects: snyk_projects[] = [],
 	githubWorkflows: github_workflows[] = [],
+	alerts: PartialAlert[] = [],
 ) {
 	return evaluateOneRepo(
+		alerts,
 		repo,
 		branches,
 		teams,
