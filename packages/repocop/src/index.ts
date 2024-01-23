@@ -95,8 +95,7 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
 
-	await testExperimentalRepocopFeatures(
-		octokit,
+	testExperimentalRepocopFeatures(
 		evaluatedRepos,
 		unarchivedRepos,
 		archivedRepos,

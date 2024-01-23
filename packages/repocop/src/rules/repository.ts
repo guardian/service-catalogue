@@ -5,7 +5,6 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
-import { shuffle } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
@@ -20,6 +19,7 @@ import type {
 	Repository,
 	TeamRepository,
 } from '../types';
+import { isProduction } from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -288,10 +288,8 @@ export async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		console.log(`Got ${alert.data.length} alerts for ${name}`);
 		return alert.data.map((a) => a as PartialAlert);
 	} catch (error) {
-		console.warn(`Could not get dependabot alerts for ${name}`);
 		return undefined;
 	}
 }
@@ -319,40 +317,27 @@ export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
 	const oldCriticalAlerts = alerts.filter((alert) =>
 		isOldForSeverity(yesterday, 'critical', alert),
 	);
-	if (oldHighAlerts.length > 0) {
-		console.log(
-			`${repo}: has ${oldHighAlerts.length} high alerts older than two weeks`,
-		);
-	}
 	if (oldCriticalAlerts.length > 0) {
 		console.log(
-			`${repo}: has ${oldCriticalAlerts.length} critical alerts older than one day`,
+			`Dependabot - ${repo}: has ${oldCriticalAlerts.length} critical alerts older than one day`,
 		);
+	} else if (oldHighAlerts.length > 0) {
+		console.log(
+			`Dependabot - ${repo}: has ${oldHighAlerts.length} high alerts older than two weeks`,
+		);
+	} else {
+		console.log(`Dependabot - ${repo}: has no old alerts`);
 	}
+
 	return oldHighAlerts.length > 0 || oldCriticalAlerts.length > 0;
 }
 
-export async function testExperimentalRepocopFeatures(
-	octokit: Octokit,
+export function testExperimentalRepocopFeatures(
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
 ) {
-	const prodRepos = unarchivedRepos.filter((repo) =>
-		repo.topics.includes('production'),
-	);
-
-	await Promise.all(
-		shuffle(prodRepos)
-			.slice(0, 10)
-			.map(async (repo) => {
-				console.log(`Getting alerts for ${repo.full_name}`);
-				const alerts = await getAlertsForRepo(octokit, repo.full_name);
-				hasOldAlerts(alerts ?? [], repo.name);
-			}),
-	);
-
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
@@ -387,12 +372,18 @@ export function evaluateOneRepo(
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules {
-	if (repo.topics.includes('production') && !!alerts) {
+	if (isProduction(repo) && alerts) {
+		console.log(`Evaluating ${repo.name} for Dependabot alerts`);
 		console.log(
 			`Alerts for ${repo.name}: `,
 			JSON.stringify(alerts.map((a) => a.dependency)),
 		);
-		console.log(hasOldAlerts(alerts, repo.name));
+		const isVulnerable = hasOldAlerts(alerts, repo.name);
+		if (isVulnerable) {
+			console.log(`${repo.name} is vulnerable`);
+		}
+	} else {
+		console.log(`No Dependabot alerts for ${repo.name}`);
 	}
 
 	return {
