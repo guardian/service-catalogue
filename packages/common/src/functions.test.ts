@@ -110,7 +110,7 @@ describe('getGitHubAppSecret', () => {
 });
 
 describe('parseSecretJson', () => {
-	it('should do the right thing', () => {
+	it('put the right values in the right fields, if the JSON string has the correct fields', () => {
 		const actual = parseSecretJson(
 			'{"appId": "myAppId", "base64PrivateKey": "aGVsbG8=", "clientId": "myClientId", "clientSecret": "myClientSecret", "installationId": "myInstallationId"}',
 		);
@@ -122,6 +122,14 @@ describe('parseSecretJson', () => {
 		expect(actual.strategyOptions.clientSecret).toEqual('myClientSecret');
 		expect(actual.strategyOptions.installationId).toEqual('myInstallationId');
 		expect(actual.strategyOptions.privateKey).toEqual('hello');
+	});
+	it('should throw an error if the input string is not valid JSON', () => {
+		const input = 'not valid JSON';
+		expect(() => parseSecretJson(input)).toThrow();
+	});
+	it('should throw an error if the input string is not a valid GithubAppSecret', () => {
+		const input = '{"not": "a valid GithubAppSecret"}';
+		expect(() => parseSecretJson(input)).toThrow();
 	});
 });
 
