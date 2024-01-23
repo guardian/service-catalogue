@@ -1,3 +1,4 @@
+import type { Endpoints } from '@octokit/types';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 
@@ -38,6 +39,9 @@ export async function createPullRequest(
 	});
 }
 
+type PullRequestParameters =
+	Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
+
 export async function getPullRequest(
 	octokit: Octokit,
 	repoName: string,
@@ -47,6 +51,6 @@ export async function getPullRequest(
 		owner: 'guardian',
 		repo: repoName,
 		state: 'open',
-	});
+	} satisfies PullRequestParameters);
 	return pulls.find((pull) => pull.head.ref === branchName);
 }
