@@ -37,3 +37,16 @@ export async function createPullRequest(
 		})),
 	});
 }
+
+export async function getPullRequest(
+	octokit: Octokit,
+	repoName: string,
+	branchName: string,
+) {
+	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
+		owner: 'guardian',
+		repo: repoName,
+		state: 'open',
+	});
+	return pulls.find((pull) => pull.head.ref === branchName);
+}

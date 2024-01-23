@@ -1,7 +1,7 @@
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
-import { createPullRequest } from './create-pull-request';
+import { createPullRequest } from './pull-requests';
 
 interface SnykInputs {
 	ORG: string;
@@ -181,4 +181,11 @@ export async function createSnykPullRequest(
 			},
 		],
 	});
+}
+
+export function generateBranchName(languages: string[]) {
+	return `integrate-snyk-${languages
+		.sort()
+		.map((language) => language.toLowerCase())
+		.join('-')}`;
 }
