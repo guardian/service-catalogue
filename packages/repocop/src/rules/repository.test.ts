@@ -351,7 +351,6 @@ describe('Repositories with related stacks on AWS', () => {
 			creation_time: new Date(),
 			tags,
 		};
-		console.log(findStacks(repo, [stack]));
 		const result = findStacks(repo, [stack]).stacks.length;
 		expect(result).toEqual(1);
 	});

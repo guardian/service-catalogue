@@ -58,9 +58,7 @@ export async function addPrToProject(
 	);
 
 	const projectId = projectDetails.organization.projectV2.id;
-	console.log(projectId);
 
-	//TODO can we filter this to only PRs raised by gu-snyk-integrator?
 	const prDetails: PullRequestDetails = await graphqlWithAuth(
 		getLastPrsQuery(event.name),
 	);
@@ -68,8 +66,6 @@ export async function addPrToProject(
 	const pullRequestIds = prDetails.organization.repository.pullRequests.nodes
 		.filter((pr) => pr.author.login === 'gu-snyk-integrator')
 		.map((pr) => pr.id);
-
-	console.log(pullRequestIds);
 
 	await Promise.all(
 		pullRequestIds.map(async (prId) => {

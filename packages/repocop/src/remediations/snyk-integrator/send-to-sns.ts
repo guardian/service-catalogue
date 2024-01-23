@@ -66,10 +66,14 @@ export function findUntrackedReposWhereIntegrationWillWork(
 			eventContainsOnlyActionSupportedLanguages(event),
 		);
 
-	console.log(
-		`Found ${reposWhereAllLanguagesAreSupported.length} untracked repos that can be integrated with Snyk: `,
-		reposWhereAllLanguagesAreSupported.join(','),
-	);
+	if (reposWhereAllLanguagesAreSupported.length > 0) {
+		console.log(
+			`Found ${reposWhereAllLanguagesAreSupported.length} untracked repos that can be integrated with Snyk: `,
+			reposWhereAllLanguagesAreSupported
+				.map((x) => JSON.stringify(x))
+				.join(','),
+		);
+	}
 
 	return reposWhereAllLanguagesAreSupported;
 }

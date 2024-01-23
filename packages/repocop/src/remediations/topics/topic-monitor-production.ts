@@ -195,9 +195,11 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	console.log(
-		`Found ${reposWithContactableOwners.length} repos with contactable owners for addition of the production topic`,
-	);
+	if (reposWithContactableOwners.length > 0) {
+		console.log(
+			`Found ${reposWithContactableOwners.length} repos with contactable owners for addition of the production topic`,
+		);
+	}
 
 	await Promise.all(
 		reposWithContactableOwners.map((repo) =>

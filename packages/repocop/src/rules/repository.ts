@@ -168,9 +168,6 @@ export function hasDependencyTracking(
 				file.path.includes('snyk'),
 		);
 		const exists = result !== undefined;
-		if (exists) {
-			console.log(`${repo.full_name} has a snyk workflow file.`);
-		}
 		return exists;
 	}
 
@@ -184,9 +181,6 @@ export function hasDependencyTracking(
 				tags.branch === repo.default_branch,
 		);
 		const exists = result !== undefined;
-		if (exists) {
-			console.log(`${repo.name} has a snyk project.`);
-		}
 		return exists;
 	}
 
