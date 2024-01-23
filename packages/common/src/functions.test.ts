@@ -100,7 +100,7 @@ describe('getEnvOrThrow', () => {
 });
 
 describe('getGitHubAppSecret', () => {
-	it('should throw iff the GITHUB_APP_SECRET environment variable is not set', async () => {
+	it('should throw if the GITHUB_APP_SECRET environment variable is not set', async () => {
 		const err = 'Environment variable GITHUB_APP_SECRET is not set.';
 		const secret = process.env.GITHUB_APP_SECRET;
 		delete process.env.GITHUB_APP_SECRET;
