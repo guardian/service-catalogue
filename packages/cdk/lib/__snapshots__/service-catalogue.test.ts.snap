@@ -250,7 +250,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -960,7 +960,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -1633,7 +1633,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -2320,7 +2320,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -2993,7 +2993,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -3935,7 +3935,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -4418,7 +4418,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -5112,7 +5112,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -5836,7 +5836,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -6549,7 +6549,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -7226,7 +7226,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -7905,7 +7905,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -8586,7 +8586,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -9265,7 +9265,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -9974,7 +9974,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -10833,7 +10833,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -11302,7 +11302,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -12015,7 +12015,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -12710,7 +12710,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -13600,7 +13600,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -14282,7 +14282,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -14751,7 +14751,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -15492,7 +15492,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -16429,7 +16429,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
@@ -16903,7 +16903,7 @@ spec:
             "EntryPoint": [
               "",
             ],
-            "Essential": true,
+            "Essential": false,
             "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
