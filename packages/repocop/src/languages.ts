@@ -7,10 +7,13 @@ export const ignoredLanguages = [
 	'Dockerfile',
 	'PLpgSQL',
 	'Thrift',
-	'SCSS',
 	'Batchfile',
 	'HCL',
 	'VCL',
+	'SCSS',
+	'Less',
+	'Sass',
+	'Jinja', // Jinja uses Python dependencies
 ];
 
 const commonSupportedLanguages = [
