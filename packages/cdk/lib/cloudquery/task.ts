@@ -302,6 +302,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					].join(';'),
 				],
 				logging: fireLensLogDriver,
+				essential: false,
 			});
 		}
 
