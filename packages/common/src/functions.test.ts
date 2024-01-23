@@ -114,7 +114,6 @@ describe('parseSecretJson', () => {
 		const actual = parseSecretJson(
 			'{"appId": "myAppId", "base64PrivateKey": "aGVsbG8=", "clientId": "myClientId", "clientSecret": "myClientSecret", "installationId": "myInstallationId"}',
 		);
-		console.log(actual.strategyOptions);
 		//check that the correct fields are in the correct values, and that base64PrivateKey has been decoded
 		expect(actual.installationId).toEqual('myInstallationId');
 		expect(actual.strategyOptions.appId).toEqual('myAppId');
