@@ -118,6 +118,10 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe-database',
 					efsVolumeConfiguration: {
 						fileSystemId: fileSystem.fileSystemId,
+						transitEncryption: 'ENABLED',
+						authorizationConfig: {
+							iam: 'ENABLED',
+						},
 					},
 				},
 			],

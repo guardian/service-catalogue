@@ -19873,9 +19873,13 @@ spec:
         "Volumes": [
           {
             "EFSVolumeConfiguration": {
+              "AuthorizationConfig": {
+                "IAM": "ENABLED",
+              },
               "FilesystemId": {
                 "Ref": "SteampipeDatabaseEFS4822AB7A",
               },
+              "TransitEncryption": "ENABLED",
             },
             "Name": "steampipe-database",
           },
