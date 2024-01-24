@@ -281,7 +281,7 @@ export async function getAlertsForRepo(
 				owner: 'guardian',
 				repo: name,
 				per_page: 100,
-				severity: 'critical', //eventually this should be "critical,high"
+				severity: 'critical,high',
 				state: 'open',
 				sort: 'created',
 				direction: 'asc', //retrieve oldest vulnerabilities first

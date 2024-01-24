@@ -27,6 +27,7 @@ import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic
 import {
 	evaluateRepositories,
 	getAlertsForRepo,
+	hasOldAlerts,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
 import type { AwsCloudFormationStack, RepoAndAlerts } from './types';
@@ -78,11 +79,12 @@ export async function main() {
 		)
 	).filter((x) => !!x.alerts);
 
-	alerts.forEach((alert) => {
+	alerts.slice(0, 20).forEach((alert) => {
 		if (alert.alerts) {
 			console.log(
 				`Found ${alert.alerts.length} alerts for ${alert.shortName}: `,
-				alert.alerts.map((x) => x.created_at),
+				alert.alerts.map((x) => x.created_at).slice(0, 5),
+				hasOldAlerts(alert.alerts, alert.shortName),
 			);
 		} else {
 			console.log(`Found no alerts for ${alert.shortName}`);
