@@ -2,7 +2,6 @@ import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import type {
 	github_languages,
 	repocop_github_repository_rules,
-	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
@@ -15,25 +14,6 @@ export function findUnprotectedRepos(
 	evaluatedRepos: repocop_github_repository_rules[],
 ): repocop_github_repository_rules[] {
 	return evaluatedRepos.filter((repo) => !repo.vulnerability_tracking);
-}
-
-function findDevXRepos(
-	owners: view_repo_ownership[],
-	repos: repocop_github_repository_rules[],
-): repocop_github_repository_rules[] {
-	const devXTeams = owners
-		.filter(
-			(owner) =>
-				owner.github_team_name === 'DevX Security' ||
-				owner.github_team_name === 'DevX Operations' ||
-				owner.github_team_name === 'DevX Reliability' ||
-				owner.github_team_name === 'Developer Experience',
-		)
-		.map((owner) => owner.repo_name);
-
-	const devXRepos = repos.filter((repo) => devXTeams.includes(repo.full_name));
-
-	return shuffle([...new Set(devXRepos)]);
 }
 
 function eventContainsOnlyActionSupportedLanguages(
@@ -81,15 +61,10 @@ export function findUntrackedReposWhereIntegrationWillWork(
 export async function sendUnprotectedRepo(
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
-	owners: view_repo_ownership[],
 	githubLanguages: github_languages[],
 ) {
-	//Only use internal repos while we are testing.
-	const devXRepos = findDevXRepos(owners, evaluatedRepos);
-
-	const eventToSend = findUntrackedReposWhereIntegrationWillWork(
-		devXRepos,
-		githubLanguages,
+	const eventToSend = shuffle(
+		findUntrackedReposWhereIntegrationWillWork(evaluatedRepos, githubLanguages),
 	)[0];
 
 	if (eventToSend) {
