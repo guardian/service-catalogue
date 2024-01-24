@@ -17,8 +17,8 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuScheduledLambda",
       "GuLambdaFunction",
       "GuScheduledLambda",
-      "GuFileSystem",
       "GuSecurityGroup",
+      "GuFileSystem",
       "GuCname",
     ],
     "gu:cdk:version": "TEST",
@@ -17716,7 +17716,7 @@ spec:
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "steampipesgServicecatalogue18CB8C1F",
               "GroupId",
             ],
           },
@@ -17740,7 +17740,7 @@ spec:
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "steampipesgServicecatalogue18CB8C1F",
               "GroupId",
             ],
           },
@@ -17764,7 +17764,7 @@ spec:
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "steampipesgServicecatalogue18CB8C1F",
               "GroupId",
             ],
           },
@@ -18170,13 +18170,8 @@ spec:
             "Value": "TEST",
           },
         ],
-        "LifecyclePolicies": [
-          {
-            "TransitionToIA": "AFTER_14_DAYS",
-          },
-        ],
         "PerformanceMode": "generalPurpose",
-        "ThroughputMode": "bursting",
+        "ThroughputMode": "elastic",
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Retain",
@@ -20250,6 +20245,27 @@ spec:
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
+    },
+    "steampipesgServicecataloguefromServiceCataloguesteampipesgServicecatalogue96A883E720492E3A726D": {
+      "Properties": {
+        "Description": "Allow this SG to talk to EFS mounts also using this SG",
+        "FromPort": 2049,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "steampipesgServicecatalogue18CB8C1F",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "steampipesgServicecatalogue18CB8C1F",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "steampipesgServicecataloguefromServiceCataloguesteampipesgServicecatalogue96A883E79193F33A348B": {
       "Properties": {

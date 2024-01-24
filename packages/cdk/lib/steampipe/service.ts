@@ -17,11 +17,7 @@ import {
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
-import {
-	LifecyclePolicy,
-	PerformanceMode,
-	ThroughputMode,
-} from 'aws-cdk-lib/aws-efs';
+import { PerformanceMode, ThroughputMode } from 'aws-cdk-lib/aws-efs';
 import {
 	NetworkLoadBalancer,
 	Protocol,
@@ -84,16 +80,34 @@ export class SteampipeService extends FargateService {
 			},
 		);
 
+		const steampipeSecurityGroup = new GuSecurityGroup(scope, `steampipe-sg`, {
+			app: app,
+			vpc: cluster.vpc,
+		});
+
+		// Anything with this SG can talk to anything else with this SG
+		// In this case the NLB can talk to the ECS Service
+		steampipeSecurityGroup.addIngressRule(
+			steampipeSecurityGroup,
+			Port.tcp(9193),
+			'Allow this SG to talk to other applications also using this SG (in this case NLB to ECS)',
+		);
+
+		steampipeSecurityGroup.addIngressRule(
+			steampipeSecurityGroup,
+			Port.tcp(2049),
+			'Allow this SG to talk to EFS mounts also using this SG',
+		);
+
 		const fileSystem = new GuFileSystem(scope, 'SteampipeDatabaseEFS', {
 			vpc: cluster.vpc,
 			encrypted: true,
-			lifecyclePolicy: LifecyclePolicy.AFTER_14_DAYS,
-			throughputMode: ThroughputMode.BURSTING,
+			throughputMode: ThroughputMode.ELASTIC,
 			performanceMode: PerformanceMode.GENERAL_PURPOSE,
 			vpcSubnets: {
 				subnets: cluster.vpc.privateSubnets,
 			},
-			securityGroup: accessSecurityGroup,
+			securityGroup: steampipeSecurityGroup,
 		});
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
@@ -170,19 +184,6 @@ export class SteampipeService extends FargateService {
 		});
 
 		taskPolicies.forEach((policy) => task.addToTaskRolePolicy(policy));
-
-		const steampipeSecurityGroup = new GuSecurityGroup(scope, `steampipe-sg`, {
-			app: app,
-			vpc: cluster.vpc,
-		});
-
-		// Anything with this SG can talk to anything else with this SG
-		// In this case the NLB can talk to the ECS Service
-		steampipeSecurityGroup.addIngressRule(
-			steampipeSecurityGroup,
-			Port.tcp(9193),
-			'Allow this SG to talk to other applications also using this SG (in this case NLB to ECS)',
-		);
 
 		const nlb = new NetworkLoadBalancer(scope, `steampipe-nlb`, {
 			vpc: cluster.vpc,
