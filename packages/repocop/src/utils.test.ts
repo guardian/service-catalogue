@@ -1,8 +1,8 @@
 import type { Repository } from './types';
 import { isProduction } from './utils';
 
-describe('test', () => {
-	test('pass', () => {
+describe('isProduction', () => {
+	test('should return correct values for prod and non-prod repos', () => {
 		const prodRepo: Repository = {
 			archived: false,
 			full_name: 'test',
