@@ -287,7 +287,7 @@ export async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data.map((a) => a as PartialAlert);
+		return alert.data as PartialAlert[];
 	} catch (error) {
 		return undefined;
 	}
