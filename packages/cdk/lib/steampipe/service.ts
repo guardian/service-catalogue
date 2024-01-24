@@ -217,6 +217,7 @@ export class SteampipeService extends FargateService {
 			healthCheck: {
 				healthyThresholdCount: 2,
 				interval: Duration.seconds(5),
+				timeout: Duration.seconds(2),
 			},
 		});
 

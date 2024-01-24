@@ -20184,6 +20184,7 @@ spec:
     "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369": {
       "Properties": {
         "HealthCheckIntervalSeconds": 5,
+        "HealthCheckTimeoutSeconds": 2,
         "HealthyThresholdCount": 2,
         "Port": 9193,
         "Protocol": "TCP",
