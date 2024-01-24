@@ -6,7 +6,8 @@ import {
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration } from 'aws-cdk-lib';
-import { type ISecurityGroup, Port } from 'aws-cdk-lib/aws-ec2';
+import { Port } from 'aws-cdk-lib/aws-ec2';
+import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import {
 	FargateService,
 	FargateTaskDefinition,
@@ -17,6 +18,11 @@ import {
 } from 'aws-cdk-lib/aws-ecs';
 import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
 import {
+	LifecyclePolicy,
+	PerformanceMode,
+	ThroughputMode,
+} from 'aws-cdk-lib/aws-efs';
+import {
 	NetworkLoadBalancer,
 	Protocol,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -24,6 +30,7 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Images } from '../cloudquery/images';
+import { GuFileSystem } from './filesystem';
 
 export interface SteampipeServiceProps
 	extends AppIdentity,
@@ -77,9 +84,29 @@ export class SteampipeService extends FargateService {
 			},
 		);
 
+		const fileSystem = new GuFileSystem(scope, 'SteampipeDatabaseEFS', {
+			vpc: cluster.vpc,
+			encrypted: true,
+			lifecyclePolicy: LifecyclePolicy.AFTER_14_DAYS,
+			throughputMode: ThroughputMode.BURSTING,
+			performanceMode: PerformanceMode.GENERAL_PURPOSE,
+			vpcSubnets: {
+				subnets: cluster.vpc.privateSubnets,
+			},
+			securityGroup: accessSecurityGroup,
+		});
+
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB: 512,
 			cpu: 256,
+			volumes: [
+				{
+					name: 'steampipe-database',
+					efsVolumeConfiguration: {
+						fileSystemId: fileSystem.fileSystemId,
+					},
+				},
+			],
 		});
 
 		const fireLensLogDriver = new FireLensLogDriver({
@@ -91,7 +118,7 @@ export class SteampipeService extends FargateService {
 			},
 		});
 
-		task.addContainer(`${id}Container`, {
+		const steampipe = task.addContainer(`${id}Container`, {
 			image: Images.steampipe,
 			dockerLabels: {
 				Stack: stack,
@@ -117,6 +144,12 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe',
 				},
 			],
+		});
+
+		steampipe.addMountPoints({
+			containerPath: '/home/steampipe/.steampipe/db',
+			sourceVolume: 'steampipe-database',
+			readOnly: false,
 		});
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
@@ -181,6 +214,12 @@ export class SteampipeService extends FargateService {
 			port: 9193,
 			protocol: Protocol.TCP,
 			targets: [this],
+			healthCheck: {
+				healthyThresholdCount: 2,
+				interval: Duration.seconds(5),
+			},
 		});
+
+		fileSystem.grantRootAccess(this.taskDefinition.taskRole.grantPrincipal);
 	}
 }

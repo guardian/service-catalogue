@@ -17,6 +17,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuScheduledLambda",
       "GuLambdaFunction",
       "GuScheduledLambda",
+      "GuFileSystem",
       "GuSecurityGroup",
       "GuCname",
     ],
@@ -17707,6 +17708,78 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
+    "EfsMountTargetSteampipeDatabaseEFSA": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "SteampipeDatabaseEFS4822AB7A",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::Select": [
+            0,
+            {
+              "Ref": "PrivateSubnets",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EfsMountTargetSteampipeDatabaseEFSB": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "SteampipeDatabaseEFS4822AB7A",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::Select": [
+            1,
+            {
+              "Ref": "PrivateSubnets",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EfsMountTargetSteampipeDatabaseEFSC": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "SteampipeDatabaseEFS4822AB7A",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "SteampipeSecurityGroupServicecatalogue45A0E3D6",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::Select": [
+            2,
+            {
+              "Ref": "PrivateSubnets",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
     "PostgresAccessSecurityGroupParam38DFE001": {
       "Properties": {
         "DataType": "text",
@@ -18050,6 +18123,63 @@ spec:
         "TTL": 3600,
       },
       "Type": "Guardian::DNS::RecordSet",
+    },
+    "SteampipeDatabaseEFS4822AB7A": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemPolicy": {
+          "Statement": [
+            {
+              "Action": [
+                "elasticfilesystem:ClientWrite",
+                "elasticfilesystem:ClientRootAccess",
+              ],
+              "Condition": {
+                "Bool": {
+                  "elasticfilesystem:AccessedViaMountTarget": "true",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "FileSystemTags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "ServiceCatalogue/SteampipeDatabaseEFS",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "LifecyclePolicies": [
+          {
+            "TransitionToIA": "AFTER_14_DAYS",
+          },
+        ],
+        "PerformanceMode": "generalPurpose",
+        "ThroughputMode": "bursting",
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Retain",
     },
     "SteampipeSecurityGroupServicecatalogue45A0E3D6": {
       "Properties": {
@@ -19623,6 +19753,13 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/home/steampipe/.steampipe/db",
+                "ReadOnly": false,
+                "SourceVolume": "steampipe-database",
+              },
+            ],
             "Name": "steampipeContainer",
             "PortMappings": [
               {
@@ -19738,6 +19875,16 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "EFSVolumeConfiguration": {
+              "FilesystemId": {
+                "Ref": "SteampipeDatabaseEFS4822AB7A",
+              },
+            },
+            "Name": "steampipe-database",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -19884,6 +20031,25 @@ spec:
                 ],
               },
             },
+            {
+              "Action": [
+                "elasticfilesystem:ClientMount",
+                "elasticfilesystem:ClientWrite",
+                "elasticfilesystem:ClientRootAccess",
+              ],
+              "Condition": {
+                "Bool": {
+                  "elasticfilesystem:AccessedViaMountTarget": "true",
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "SteampipeDatabaseEFS4822AB7A",
+                  "Arn",
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -20017,6 +20183,8 @@ spec:
     },
     "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369": {
       "Properties": {
+        "HealthCheckIntervalSeconds": 5,
+        "HealthyThresholdCount": 2,
         "Port": 9193,
         "Protocol": "TCP",
         "Tags": [
