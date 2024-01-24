@@ -19,7 +19,6 @@ import type {
 	Repository,
 	TeamRepository,
 } from '../types';
-import { isProduction } from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -372,19 +371,20 @@ export function evaluateOneRepo(
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules {
-	if (isProduction(repo) && alerts) {
-		console.log(`Evaluating ${repo.name} for Dependabot alerts`);
-		console.log(
-			`Alerts for ${repo.name}: `,
-			JSON.stringify(alerts.map((a) => a.dependency)),
-		);
-		const isVulnerable = hasOldAlerts(alerts, repo.name);
-		if (isVulnerable) {
-			console.log(`${repo.name} is vulnerable`);
-		}
-	} else {
-		console.log(`No Dependabot alerts for ${repo.name}`);
-	}
+	// if (isProduction(repo) && alerts) {
+	// 	console.log(`Evaluating ${repo.name} for Dependabot alerts`);
+	// 	console.log(
+	// 		`Alerts for ${repo.name}: `,
+	// 		JSON.stringify(alerts.map((a) => a.dependency)),
+	// 	);
+	// 	const isVulnerable = hasOldAlerts(alerts, repo.name);
+	// 	if (isVulnerable) {
+	// 		console.log(`${repo.name} is vulnerable`);
+	// 	}
+	// } else {
+	// 	console.log(`No Dependabot alerts for ${repo.name}`);
+	// }
+	alerts = undefined;
 
 	return {
 		full_name: repo.full_name,

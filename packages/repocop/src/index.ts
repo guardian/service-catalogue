@@ -78,6 +78,17 @@ export async function main() {
 		)
 	).filter((x) => !!x.alerts);
 
+	alerts.forEach((alert) => {
+		if (alert.alerts) {
+			console.log(
+				`Found ${alert.alerts.length} alerts for ${alert.shortName}: `,
+				alert.alerts.map((x) => x.created_at),
+			);
+		} else {
+			console.log(`Found no alerts for ${alert.shortName}`);
+		}
+	});
+
 	console.log(`Found ${alerts.length} repos with alerts`);
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
