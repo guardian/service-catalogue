@@ -5,15 +5,16 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 } from '@prisma/client';
-import { shuffle } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
 } from '../languages';
 import type {
-	Alert,
 	AwsCloudFormationStack,
+	DependabotVulnResponse,
+	PartialAlert,
+	RepoAndAlerts,
 	RepoAndStack,
 	Repository,
 	TeamRepository,
@@ -269,49 +270,78 @@ function findArchivedReposWithStacks(
 export async function getAlertsForRepo(
 	octokit: Octokit,
 	name: string,
-): Promise<Alert[] | undefined> {
+): Promise<PartialAlert[] | undefined> {
 	if (name.startsWith('guardian/')) {
 		name = name.replace('guardian/', '');
 	}
 
 	try {
-		const alert = await octokit.rest.dependabot.listAlertsForRepo({
-			owner: 'guardian',
-			repo: name,
-			per_page: 100,
-			severity: 'critical', //eventually this should be "critical,high"
-			state: 'open',
-		});
+		const alert: DependabotVulnResponse =
+			await octokit.rest.dependabot.listAlertsForRepo({
+				owner: 'guardian',
+				repo: name,
+				per_page: 100,
+				severity: 'critical,high',
+				state: 'open',
+				sort: 'created',
+				direction: 'asc', //retrieve oldest vulnerabilities first
+			});
 
-		return alert.data;
+		return alert.data as PartialAlert[];
 	} catch (error) {
-		console.error(`Error: could not get alerts for ${name}`);
-		console.error(error);
 		return undefined;
 	}
 }
 
-export async function testExperimentalRepocopFeatures(
-	octokit: Octokit,
+function isOldForSeverity(
+	date: Date,
+	severity: 'critical' | 'high',
+	alert: PartialAlert,
+) {
+	const alertDate = new Date(alert.created_at);
+	return alertDate < date && alert.security_vulnerability.severity === severity;
+}
+
+export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
+	const highDayCount = 14;
+	const criticalDayCount = 1;
+
+	const highVulnCutOff = new Date();
+	highVulnCutOff.setDate(highVulnCutOff.getDate() - highDayCount);
+	highVulnCutOff.setHours(0, 0, 0, 0);
+
+	const criticalVulnCutOff = new Date();
+	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
+	criticalVulnCutOff.setHours(0, 0, 0, 0);
+	const oldHighAlerts = alerts.filter((alert) =>
+		isOldForSeverity(highVulnCutOff, 'high', alert),
+	);
+	const oldCriticalAlerts = alerts.filter((alert) =>
+		isOldForSeverity(criticalVulnCutOff, 'critical', alert),
+	);
+	if (oldCriticalAlerts.length > 0) {
+		console.log(
+			`Dependabot - ${repo}: has ${oldCriticalAlerts.length} critical alerts older than ${criticalDayCount} days`,
+		);
+	}
+	if (oldHighAlerts.length > 0) {
+		console.log(
+			`Dependabot - ${repo}: has ${oldHighAlerts.length} high alerts older than ${highDayCount} weeks`,
+		);
+	}
+	if (oldCriticalAlerts.length === 0 && oldHighAlerts.length === 0) {
+		console.log(`Dependabot - ${repo}: has no old alerts`);
+	}
+
+	return oldHighAlerts.length > 0 || oldCriticalAlerts.length > 0;
+}
+
+export function testExperimentalRepocopFeatures(
 	evaluatedRepos: repocop_github_repository_rules[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
 ) {
-	const prodRepos = unarchivedRepos.filter((repo) =>
-		repo.topics.includes('production'),
-	);
-
-	await Promise.all(
-		shuffle(prodRepos)
-			.slice(0, 10)
-			.map(async (repo) => {
-				console.log(`Getting alerts for ${repo.full_name}`);
-				const alerts = await getAlertsForRepo(octokit, repo.full_name);
-				console.log(repo.full_name, alerts);
-			}),
-	);
-
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
@@ -329,8 +359,8 @@ export async function testExperimentalRepocopFeatures(
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
 
 	console.log(
-		'Archived repos with live stacks, first 10 results:',
-		archivedWithStacks.slice(0, 10),
+		'Archived repos with live stacks, first 3 results:',
+		archivedWithStacks.slice(0, 3),
 	);
 }
 
@@ -338,6 +368,7 @@ export async function testExperimentalRepocopFeatures(
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
 export function evaluateOneRepo(
+	alerts: PartialAlert[] | undefined,
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
@@ -345,14 +376,10 @@ export function evaluateOneRepo(
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules {
-	/*
-	Either the fullname, or the org and name, or the org and 'unknown'.
-	The latter should never happen, it's just how the types have been defined.
-	 */
-	const fullName = repo.full_name;
+	alerts = undefined;
 
 	return {
-		full_name: fullName,
+		full_name: repo.full_name,
 		default_branch_name: hasDefaultBranchNameMain(repo),
 		branch_protection: hasBranchProtection(repo, allBranches),
 		team_based_access: false,
@@ -371,6 +398,7 @@ export function evaluateOneRepo(
 }
 
 export function evaluateRepositories(
+	alerts: RepoAndAlerts[],
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
@@ -378,10 +406,12 @@ export function evaluateRepositories(
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules[] {
-	return repositories.map((r) => {
+	const evaluatedRepos = repositories.map((r) => {
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
+		const alertsForRepo = alerts.find((a) => a.shortName === r.name);
 		return evaluateOneRepo(
+			alertsForRepo?.alerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,
@@ -390,4 +420,5 @@ export function evaluateRepositories(
 			workflowFiles,
 		);
 	});
+	return evaluatedRepos;
 }
