@@ -303,28 +303,33 @@ function isOldForSeverity(
 }
 
 export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
-	const twoWeeksAgo = new Date();
-	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-	twoWeeksAgo.setHours(0, 0, 0, 0);
+	const highDayCount = 14;
+	const criticalDayCount = 1;
 
-	const yesterday = new Date();
-	yesterday.setDate(yesterday.getDate() - 1);
-	yesterday.setHours(0, 0, 0, 0);
+	const highVulnCutOff = new Date();
+	highVulnCutOff.setDate(highVulnCutOff.getDate() - highDayCount);
+	highVulnCutOff.setHours(0, 0, 0, 0);
+
+	const criticalVulnCutOff = new Date();
+	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
+	criticalVulnCutOff.setHours(0, 0, 0, 0);
 	const oldHighAlerts = alerts.filter((alert) =>
-		isOldForSeverity(twoWeeksAgo, 'high', alert),
+		isOldForSeverity(highVulnCutOff, 'high', alert),
 	);
 	const oldCriticalAlerts = alerts.filter((alert) =>
-		isOldForSeverity(yesterday, 'critical', alert),
+		isOldForSeverity(criticalVulnCutOff, 'critical', alert),
 	);
 	if (oldCriticalAlerts.length > 0) {
 		console.log(
-			`Dependabot - ${repo}: has ${oldCriticalAlerts.length} critical alerts older than one day`,
+			`Dependabot - ${repo}: has ${oldCriticalAlerts.length} critical alerts older than ${criticalDayCount} days`,
 		);
-	} else if (oldHighAlerts.length > 0) {
+	}
+	if (oldHighAlerts.length > 0) {
 		console.log(
-			`Dependabot - ${repo}: has ${oldHighAlerts.length} high alerts older than two weeks`,
+			`Dependabot - ${repo}: has ${oldHighAlerts.length} high alerts older than ${highDayCount} weeks`,
 		);
-	} else {
+	}
+	if (oldCriticalAlerts.length === 0 && oldHighAlerts.length === 0) {
 		console.log(`Dependabot - ${repo}: has no old alerts`);
 	}
 
@@ -371,19 +376,6 @@ export function evaluateOneRepo(
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
 ): repocop_github_repository_rules {
-	// if (isProduction(repo) && alerts) {
-	// 	console.log(`Evaluating ${repo.name} for Dependabot alerts`);
-	// 	console.log(
-	// 		`Alerts for ${repo.name}: `,
-	// 		JSON.stringify(alerts.map((a) => a.dependency)),
-	// 	);
-	// 	const isVulnerable = hasOldAlerts(alerts, repo.name);
-	// 	if (isVulnerable) {
-	// 		console.log(`${repo.name} is vulnerable`);
-	// 	}
-	// } else {
-	// 	console.log(`No Dependabot alerts for ${repo.name}`);
-	// }
 	alerts = undefined;
 
 	return {

@@ -79,15 +79,12 @@ export async function main() {
 		)
 	).filter((x) => !!x.alerts);
 
-	alerts.slice(0, 20).forEach((alert) => {
-		if (alert.alerts) {
+	alerts.forEach((alert) => {
+		if (alert.alerts && alert.alerts.length > 0) {
 			console.log(
 				`Found ${alert.alerts.length} alerts for ${alert.shortName}: `,
-				alert.alerts.map((x) => x.created_at).slice(0, 5),
-				hasOldAlerts(alert.alerts, alert.shortName),
 			);
-		} else {
-			console.log(`Found no alerts for ${alert.shortName}`);
+			hasOldAlerts(alert.alerts, alert.shortName);
 		}
 	});
 
