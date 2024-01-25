@@ -68,8 +68,14 @@ export interface Config extends PrismaConfig {
 	 */
 	snykIntegratorTopic: string;
 
-	snykSecretArn: string;
+	/**
+	 * The API key for Snyk.
+	 */
 	snykReadOnlyKey: string;
+
+	/**
+	 * The Snyk group ID.
+	 */
 	snykGroupId: string;
 }
 
@@ -103,7 +109,6 @@ export async function getConfig(): Promise<Config> {
 		snykIntegrationPREnabled:
 			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
 		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
-		snykSecretArn: getEnvOrThrow('SNYK_API_KEY_ARN'),
 		snykReadOnlyKey: snykSecretValues['api-key'].replaceAll("'", ''),
 		snykGroupId: snykSecretValues['group-id'].replaceAll("'", ''),
 	};
