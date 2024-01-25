@@ -19744,7 +19744,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/home/steampipe/.steampipe/db/",
+                "ContainerPath": "/home/steampipe/.steampipe/db/14.2.0/",
                 "ReadOnly": false,
                 "SourceVolume": "steampipe-database",
               },

@@ -172,7 +172,7 @@ export class SteampipeService extends FargateService {
 		});
 
 		steampipe.addMountPoints({
-			containerPath: '/home/steampipe/.steampipe/db/',
+			containerPath: '/home/steampipe/.steampipe/db/14.2.0/',
 			sourceVolume: 'steampipe-database',
 			readOnly: false,
 		});
