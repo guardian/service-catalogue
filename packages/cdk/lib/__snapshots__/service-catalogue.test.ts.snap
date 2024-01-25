@@ -18765,6 +18765,9 @@ spec:
               "Ref": "TopicBFC7AF6E",
             },
             "QUERY_LOGGING": "false",
+            "SNYK_API_KEY_ARN": {
+              "Ref": "snykcredentials4D951A18",
+            },
             "SNYK_INTEGRATOR_INPUT_TOPIC_ARN": {
               "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
             },
@@ -19044,6 +19047,16 @@ spec:
               },
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "snykcredentials4D951A18",
+              },
             },
           ],
           "Version": "2012-10-17",

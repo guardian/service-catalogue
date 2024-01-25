@@ -246,6 +246,7 @@ export class ServiceCatalogue extends GuStack {
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
 			githubCredentials,
+			snykCredentials,
 		);
 
 		addDataAuditLambda(this, {
