@@ -8,7 +8,6 @@ import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration } from 'aws-cdk-lib';
 import { Port } from 'aws-cdk-lib/aws-ec2';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
-import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
 import {
 	CpuArchitecture,
 	FargateService,
@@ -18,6 +17,8 @@ import {
 	LogDrivers,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
+import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
+import { PerformanceMode, ThroughputMode } from 'aws-cdk-lib/aws-efs';
 import {
 	NetworkLoadBalancer,
 	Protocol,
@@ -26,6 +27,7 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Images } from '../cloudquery/images';
+import { GuFileSystem } from './filesystem';
 
 export const STEAMPIPE_DB_PORT = 9193;
 
@@ -99,12 +101,37 @@ export class SteampipeService extends FargateService {
 			'Allow this SG to talk to other applications also using this SG (in this case NLB to ECS)',
 		);
 
+		steampipeSecurityGroup.addIngressRule(
+			steampipeSecurityGroup,
+			Port.tcp(2049),
+			'Allow this SG to talk to EFS mounts also using this SG',
+		);
+
+		const fileSystem = new GuFileSystem(scope, 'SteampipeDatabaseEFS', {
+			vpc: cluster.vpc,
+			encrypted: true,
+			throughputMode: ThroughputMode.ELASTIC,
+			performanceMode: PerformanceMode.GENERAL_PURPOSE,
+			vpcSubnets: {
+				subnets: cluster.vpc.privateSubnets,
+			},
+			securityGroup: steampipeSecurityGroup,
+		});
+
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB: 512,
 			cpu: 256,
 			runtimePlatform: {
 				cpuArchitecture: CpuArchitecture.ARM64,
 			},
+			volumes: [
+				{
+					name: 'steampipe-database',
+					efsVolumeConfiguration: {
+						fileSystemId: fileSystem.fileSystemId,
+					},
+				},
+			],
 		});
 
 		const fireLensLogDriver = new FireLensLogDriver({
@@ -116,7 +143,7 @@ export class SteampipeService extends FargateService {
 			},
 		});
 
-		task.addContainer(`${id}Container`, {
+		const steampipe = task.addContainer(`${id}Container`, {
 			image: Images.steampipe,
 			dockerLabels: {
 				Stack: stack,
@@ -142,6 +169,12 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe',
 				},
 			],
+		});
+
+		steampipe.addMountPoints({
+			containerPath: '/home/steampipe/.steampipe/db/',
+			sourceVolume: 'steampipe-database',
+			readOnly: false,
 		});
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
