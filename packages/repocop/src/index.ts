@@ -50,6 +50,8 @@ async function writeEvaluationTable(
 
 export async function main() {
 	const config: Config = await getConfig();
+
+	console.log('Snyk Group Id:', config.snykGroupId);
 	const prisma = getPrismaClient(config);
 
 	const octokit = await stageAwareOctokit(config.stage);
