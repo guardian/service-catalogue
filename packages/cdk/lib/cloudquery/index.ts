@@ -33,6 +33,7 @@ interface CloudqueryEcsClusterProps {
 	db: DatabaseInstance;
 	dbAccess: GuSecurityGroup;
 	nonProdSchedule?: Schedule;
+	snykCredentials: SecretsManager;
 }
 
 export function addCloudqueryEcsCluster(
@@ -419,10 +420,6 @@ export function addCloudqueryEcsCluster(
 		},
 	];
 
-	const snykCredentials = new SecretsManager(scope, 'snyk-credentials', {
-		secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
-	});
-
 	const snykSources: CloudquerySource[] = [
 		{
 			name: 'SnykAll',
@@ -442,7 +439,10 @@ export function addCloudqueryEcsCluster(
 				skipTables: ['snyk_organization_provisions'],
 			}),
 			secrets: {
-				SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
+				SNYK_API_KEY: Secret.fromSecretsManager(
+					props.snykCredentials,
+					'api-key',
+				),
 			},
 			memoryLimitMiB: 1024,
 		},
@@ -455,7 +455,10 @@ export function addCloudqueryEcsCluster(
 				tables: ['snyk_projects'],
 			}),
 			secrets: {
-				SNYK_API_KEY: Secret.fromSecretsManager(snykCredentials, 'api-key'),
+				SNYK_API_KEY: Secret.fromSecretsManager(
+					props.snykCredentials,
+					'api-key',
+				),
 			},
 		},
 	];

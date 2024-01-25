@@ -179,11 +179,16 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
+		const snykCredentials = new Secret(this, 'snyk-credentials', {
+			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
+		});
+
 		const cluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
+			snykCredentials,
 		});
 
 		const anghammaradTopicParameter =
