@@ -169,6 +169,7 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe',
 				},
 			],
+			entryPoint: ['/bin/sh', '-c'],
 		});
 
 		steampipe.addMountPoints({

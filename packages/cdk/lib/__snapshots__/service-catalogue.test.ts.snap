@@ -19727,6 +19727,10 @@ spec:
               "Stack": "deploy",
               "Stage": "TEST",
             },
+            "EntryPoint": [
+              "/bin/sh",
+              "-c",
+            ],
             "Essential": true,
             "Image": "ghcr.io/guardian/service-catalogue/steampipe:1",
             "LogConfiguration": {
