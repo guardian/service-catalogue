@@ -10,8 +10,6 @@ spec:
     - github_repositories
     - github_repository_branches
     - github_workflows
-    - github_teams
-    - github_team_repositories
   destinations: ['postgresql']
   spec:
     app_auth:
@@ -30,6 +28,25 @@ spec:
         # example private repo
         'guardian/tracker',
       ]
+---
+kind: source
+spec:
+  name: 'github-teams'
+  path: 'cloudquery/github'
+  version: v${CQ_GITHUB}
+  skip_dependent_tables: true
+  tables:
+    - github_teams
+    - github_team_repositories
+  destinations: ['postgresql']
+  spec:
+    app_auth:
+      - org: guardian
+        private_key_path: /private-key.pem
+        app_id: '${file:/app-id}'
+        installation_id: '${file:/installation-id}'
+    orgs:
+      - guardian
 ---
 kind: source
 spec:
