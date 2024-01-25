@@ -18157,6 +18157,44 @@ spec:
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Retain",
     },
+    "SteampipeDatabaseEFSSteampipeDatabaseEFSAccessPoint2C2619C6": {
+      "Properties": {
+        "AccessPointTags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "ServiceCatalogue/SteampipeDatabaseEFS/SteampipeDatabaseEFSAccessPoint",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "FileSystemId": {
+          "Ref": "SteampipeDatabaseEFS4822AB7A",
+        },
+        "RootDirectory": {
+          "CreationInfo": {
+            "OwnerGid": "0",
+            "OwnerUid": "9193",
+            "Permissions": "755",
+          },
+          "Path": "/steampipe-database",
+        },
+      },
+      "Type": "AWS::EFS::AccessPoint",
+    },
     "SteampipeSecurityGroupServicecatalogue45A0E3D6": {
       "Properties": {
         "GroupDescription": "ServiceCatalogue/SteampipeSecurityGroupServicecatalogue",
@@ -19718,9 +19756,7 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "service",
-              "start",
-              "--foreground",
+              "steampipe service start --foreground",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -19874,9 +19910,15 @@ spec:
         "Volumes": [
           {
             "EFSVolumeConfiguration": {
+              "AuthorizationConfig": {
+                "AccessPointId": {
+                  "Ref": "SteampipeDatabaseEFSSteampipeDatabaseEFSAccessPoint2C2619C6",
+                },
+              },
               "FilesystemId": {
                 "Ref": "SteampipeDatabaseEFS4822AB7A",
               },
+              "TransitEncryption": "ENABLED",
             },
             "Name": "steampipe-database",
           },

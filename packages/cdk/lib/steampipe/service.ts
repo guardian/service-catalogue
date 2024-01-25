@@ -118,6 +118,23 @@ export class SteampipeService extends FargateService {
 			securityGroup: steampipeSecurityGroup,
 		});
 
+		// By default the root folder of an EFS FileSystem is owned by a root user
+		// In order to get a folder that can be written to by the Steampipe user we need to create
+		// and AccessPoint
+		const accessPoint = fileSystem.addAccessPoint(
+			'SteampipeDatabaseEFSAccessPoint',
+			{
+				createAcl: {
+					// From https://github.com/turbot/steampipe/blob/main/Dockerfile#L8
+					ownerGid: '0',
+					ownerUid: '9193',
+					// Owner can Read, Write, and Execute, everyone else just read and execute
+					permissions: '755',
+				},
+				path: '/steampipe-database',
+			},
+		);
+
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB: 512,
 			cpu: 256,
@@ -129,6 +146,10 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe-database',
 					efsVolumeConfiguration: {
 						fileSystemId: fileSystem.fileSystemId,
+						transitEncryption: 'ENABLED',
+						authorizationConfig: {
+							accessPointId: accessPoint.accessPointId,
+						},
 					},
 				},
 			],
@@ -161,7 +182,7 @@ export class SteampipeService extends FargateService {
 					'github-token',
 				),
 			},
-			command: ['service', 'start', '--foreground'],
+			command: ['steampipe service start --foreground'],
 			logging: fireLensLogDriver,
 			portMappings: [
 				{
