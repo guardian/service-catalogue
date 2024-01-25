@@ -2186,6 +2186,7 @@ spec:
     - fastly_service_backends
     - fastly_service_domains
     - fastly_service_health_checks
+    - fastly_account_users
   destinations:
     - postgresql
   concurrency: 1000
@@ -2312,7 +2313,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('fastly_services', 'DAILY'),('fastly_service_versions', 'DAILY'),('fastly_service_backends', 'DAILY'),('fastly_service_domains', 'DAILY'),('fastly_service_health_checks', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('fastly_services', 'DAILY'),('fastly_service_versions', 'DAILY'),('fastly_service_backends', 'DAILY'),('fastly_service_domains', 'DAILY'),('fastly_service_health_checks', 'DAILY'),('fastly_account_users', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",

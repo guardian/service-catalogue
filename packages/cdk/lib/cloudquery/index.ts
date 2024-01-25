@@ -380,6 +380,7 @@ export function addCloudqueryEcsCluster(
 					'fastly_service_backends',
 					'fastly_service_domains',
 					'fastly_service_health_checks',
+					'fastly_account_users',
 				],
 			}),
 			secrets: {
