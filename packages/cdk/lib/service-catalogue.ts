@@ -54,7 +54,6 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * @default true
 	 */
 	rdsDeletionProtection?: boolean;
-	withBackup: true;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -111,7 +110,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
 
-		Tags.of(db).add("devx-backup-enabled", "false");
+		Tags.of(db).add('devx-backup-enabled', 'true');
 
 		const applicationToPostgresSecurityGroup = new GuSecurityGroup(
 			this,
