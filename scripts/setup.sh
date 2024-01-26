@@ -82,7 +82,7 @@ setup_environment() {
 
   SNYK_TOKEN=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/snyk-credentials  --profile "$PROFILE" --region "$REGION" | jq -r '.SecretString' | jq -r '."api-key"' | tr -d "'")
 
-  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/services-api/galaxies-bucket-name --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
+  GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/cloudquery/actions-static-site-bucket-arn --profile "$PROFILE" --region "$REGION" | jq -r '.Parameter.Value | sub("arn:aws:s3:::"; "")')
 
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
 
@@ -109,7 +109,7 @@ echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env
 
 echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
 
-  
+
   env_var_text="SNYK_TOKEN=${SNYK_TOKEN}
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
