@@ -179,11 +179,16 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
+		const snykReadOnlyKey = new Secret(this, 'snyk-credentials', {
+			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
+		});
+
 		const cluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
+			snykCredentials: snykReadOnlyKey,
 		});
 
 		const anghammaradTopicParameter =
@@ -241,6 +246,7 @@ export class ServiceCatalogue extends GuStack {
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
 			githubCredentials,
+			snykReadOnlyKey,
 		);
 
 		addDataAuditLambda(this, {
