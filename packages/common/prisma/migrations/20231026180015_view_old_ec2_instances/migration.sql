@@ -1,7 +1,7 @@
 /*
  The view view_old_ec2_instances
  */
-CREATE OR REPLACE FUNCTION coalesce_dates(image_creation_time text, instance_launch_time timestamp) RETURNS date
+CREATE OR REPLACE FUNCTION coalesce_dates(image_creation_time timestamp, instance_launch_time timestamp) RETURNS date
     LANGUAGE SQL
     IMMUTABLE
 RETURN coalesce(cast(image_creation_time as date), cast(instance_launch_time as date));
