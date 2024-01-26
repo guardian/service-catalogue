@@ -2,5 +2,8 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
       "source.fixAll": true
-  }
+  },
+  "c4.diagram.plantuml.enabled": true,
+  "c4.diagram.structurizr.enabled": true
+
 }
