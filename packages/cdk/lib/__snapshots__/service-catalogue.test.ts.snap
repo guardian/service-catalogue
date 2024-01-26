@@ -19728,6 +19728,9 @@ spec:
         "RequiresCompatibilities": [
           "FARGATE",
         ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "ARM64",
+        },
         "Tags": [
           {
             "Key": "gu:cdk:version",

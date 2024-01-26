@@ -8,7 +8,9 @@ import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration } from 'aws-cdk-lib';
 import { Port } from 'aws-cdk-lib/aws-ec2';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
 import {
+	CpuArchitecture,
 	FargateService,
 	FargateTaskDefinition,
 	FireLensLogDriver,
@@ -16,7 +18,6 @@ import {
 	LogDrivers,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
-import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
 import {
 	NetworkLoadBalancer,
 	Protocol,
@@ -101,6 +102,9 @@ export class SteampipeService extends FargateService {
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB: 512,
 			cpu: 256,
+			runtimePlatform: {
+				cpuArchitecture: CpuArchitecture.ARM64,
+			},
 		});
 
 		const fireLensLogDriver = new FireLensLogDriver({
