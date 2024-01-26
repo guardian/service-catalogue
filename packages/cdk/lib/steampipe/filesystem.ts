@@ -23,6 +23,8 @@ export class GuFileSystem extends FileSystem {
 
 		// The underlying FileSystem does not seem to like using a reference to subnets
 		// and throws the error "Found an encoded list token string in a scalar string context"
+		// Manually create MountTagets for each AZ (this assumed that the FileSystem is being used in eu-west-1 with 3 AZs)
+		// MountTargets don't have an associated cost and allow us to access our EFS volume in any AZ without incurring cross AZ transfer costs
 		const subnets = props.vpc.selectSubnets(props.vpcSubnets);
 		new CfnMountTarget(scope, `EfsMountTarget-${id}-A`, {
 			fileSystemId: this.fileSystemId,

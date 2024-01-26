@@ -30,6 +30,7 @@ import { Images } from '../cloudquery/images';
 import { GuFileSystem } from './filesystem';
 
 export const STEAMPIPE_DB_PORT = 9193;
+export const EFS_PORT = 2049;
 
 export interface SteampipeServiceProps
 	extends AppIdentity,
@@ -103,7 +104,7 @@ export class SteampipeService extends FargateService {
 
 		steampipeSecurityGroup.addIngressRule(
 			steampipeSecurityGroup,
-			Port.tcp(2049),
+			Port.tcp(EFS_PORT),
 			'Allow this SG to talk to EFS mounts also using this SG',
 		);
 
@@ -120,7 +121,7 @@ export class SteampipeService extends FargateService {
 
 		// By default the root folder of an EFS FileSystem is owned by a root user
 		// In order to get a folder that can be written to by the Steampipe user we need to create
-		// and AccessPoint
+		// an AccessPoint which allows us to set the POSIX permissions on the mount point.
 		const accessPoint = fileSystem.addAccessPoint(
 			'SteampipeDatabaseEFSAccessPoint',
 			{
