@@ -243,6 +243,8 @@ export class SteampipeService extends FargateService {
 			securityGroups: [steampipeSecurityGroup],
 			assignPublicIp: false,
 			desiredCount: 1,
+			minHealthyPercent: 0,
+			maxHealthyPercent: 100,
 		});
 
 		nlbListener.addTargets(`steampipe-nlb-target`, {
