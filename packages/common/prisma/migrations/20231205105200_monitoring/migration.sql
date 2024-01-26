@@ -2,7 +2,7 @@
 -- Ideally we could generate this list automatically, but for now its hardcoded
 DROP TABLE IF EXISTS  cloudquery_table_frequency;
 CREATE TABLE cloudquery_table_frequency (
-     table_name TEXT,
+     table_name TEXT PRIMARY KEY ,
      frequency TEXT
 );
 INSERT INTO cloudquery_table_frequency(table_name, frequency) VALUES
