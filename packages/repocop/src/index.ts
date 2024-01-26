@@ -26,9 +26,12 @@ import { sendPotentialInteractives } from './remediations/topics/topic-monitor-i
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import {
 	evaluateRepositories,
+	getAlertsForRepo,
+	hasOldAlerts,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack } from './types';
+import type { AwsCloudFormationStack, RepoAndAlerts } from './types';
+import { isProduction } from './utils';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -47,7 +50,11 @@ async function writeEvaluationTable(
 
 export async function main() {
 	const config: Config = await getConfig();
+
+	console.log('Snyk Group Id:', config.snykGroupId);
 	const prisma = getPrismaClient(config);
+
+	const octokit = await stageAwareOctokit(config.stage);
 
 	const [unarchivedRepos, archivedRepos] = partition(
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes),
@@ -61,8 +68,33 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykProjects = await getSnykProjects(prisma);
+
+	const prodRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+	const alerts: RepoAndAlerts[] = (
+		await Promise.all(
+			prodRepos.map(async (repo) => {
+				return {
+					shortName: repo.full_name,
+					alerts: await getAlertsForRepo(octokit, repo.name),
+				};
+			}),
+		)
+	).filter((x) => !!x.alerts);
+
+	alerts.forEach((alert) => {
+		if (alert.alerts && alert.alerts.length > 0) {
+			console.log(
+				`Found ${alert.alerts.length} alerts for ${alert.shortName}: `,
+			);
+			hasOldAlerts(alert.alerts, alert.shortName);
+		}
+	});
+
+	console.log(`Found ${alerts.length} repos with alerts`);
+
 	const evaluatedRepos: repocop_github_repository_rules[] =
 		evaluateRepositories(
+			alerts,
 			unarchivedRepos,
 			branches,
 			repoTeams,
@@ -75,8 +107,6 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
 
-	const octokit = await stageAwareOctokit(config.stage);
-
 	testExperimentalRepocopFeatures(
 		evaluatedRepos,
 		unarchivedRepos,
@@ -85,7 +115,7 @@ export async function main() {
 	);
 
 	const repoOwners = await getRepoOwnership(prisma);
-	await sendUnprotectedRepo(evaluatedRepos, config, repoOwners, repoLanguages);
+	await sendUnprotectedRepo(evaluatedRepos, config, repoLanguages);
 	await writeEvaluationTable(evaluatedRepos, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(evaluatedRepos, config);

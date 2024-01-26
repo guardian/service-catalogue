@@ -5,6 +5,7 @@ import {
 	applyTopics,
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
+import { stripMargin } from 'common/src/string';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
 import type { AwsCloudFormationStack, Repository, Team } from '../../types';
@@ -24,11 +25,11 @@ export function createMessage(
 ) {
 	return {
 		subject: `Production topic monitoring (for GitHub team ${teamSlug})`,
-		message:
-			`The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}. ` +
-			` This is because stack is over ${months} months old and has PROD or INFRA tags.` +
-			` Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.` +
-			' Visit the links below to learn more about topics and how to add/remove them if you need to.',
+		message: stripMargin`
+			|The 'production' topic has applied to ${fullRepoName} which has the stack ${stackName}.
+			|This is because stack is over ${months} months old and has PROD or INFRA tags.
+			|Repositories with PROD or INFRA stacks should have a 'production' topic to help with security.
+			|Visit the links below to learn more about topics and how to add/remove them if you need to.`,
 	};
 }
 
@@ -194,9 +195,11 @@ export async function applyProductionTopicAndMessageTeams(
 		})
 		.filter((contactableRepo) => contactableRepo.teamNameSlugs.length > 0);
 
-	console.log(
-		`Found ${reposWithContactableOwners.length} repos with contactable owners for addition of the production topic`,
-	);
+	if (reposWithContactableOwners.length > 0) {
+		console.log(
+			`Found ${reposWithContactableOwners.length} repos with contactable owners for addition of the production topic`,
+		);
+	}
 
 	await Promise.all(
 		reposWithContactableOwners.map((repo) =>

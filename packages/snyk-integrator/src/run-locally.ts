@@ -6,9 +6,8 @@ config({ path: `../../.env` }); // Load `.env` file at the root of the repositor
 config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
 
 if (require.main === module) {
-	void (async () =>
-		await main({
-			name: 'service-catalogue',
-			languages: ['Scala', 'Go'],
-		}))();
+	void main({
+		name: 'service-catalogue',
+		languages: ['Scala', 'Go'],
+	});
 }

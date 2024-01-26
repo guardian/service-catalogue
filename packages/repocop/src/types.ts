@@ -1,3 +1,4 @@
+import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
 	github_repositories,
@@ -60,4 +61,22 @@ export interface TeamRepository extends TeamRepositoryFields {
 	id: NonNullable<TeamRepositoryFields['id']>; //repository id
 	team_id: NonNullable<TeamRepositoryFields['team_id']>;
 	role_name: NonNullable<TeamRepositoryFields['role_name']>;
+}
+
+export type DependabotVulnResponse =
+	Endpoints['GET /repos/{owner}/{repo}/dependabot/alerts']['response'];
+
+export type Alert = DependabotVulnResponse['data'][number];
+
+export type PartialAlert = Pick<
+	Alert,
+	'state' | 'dependency' | 'security_vulnerability' | 'created_at'
+>;
+
+export interface RepoAndAlerts {
+	shortName: string;
+	/*
+	 ** alerts is undefined if we catch an error, typically because dependabot is not enabled
+	 */
+	alerts: PartialAlert[] | undefined;
 }

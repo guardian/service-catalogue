@@ -1,7 +1,11 @@
 {
-  "name": "dev-environment",
-  "version": "0.0.0",
-  "scripts": {
-    "start": "./script/start"
-  }
+	"name": "dev-environment",
+	"version": "0.0.0",
+	"scripts": {
+		"start": "./script/start",
+		"test": "find . | egrep '.yml|.yaml' | xargs yamllint"
+	},
+	"devDependencies": {
+		"yaml-lint": "^1.7.0"
+	}
 }

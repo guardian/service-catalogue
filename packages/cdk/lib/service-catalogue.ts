@@ -41,6 +41,7 @@ import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Repocop } from './repocop';
+import { STEAMPIPE_DB_PORT, SteampipeService } from './steampipe/service';
 
 interface ServiceCatalogueProps extends GuStackProps {
 	//TODO add fields for every kind of job to make schedule explicit at a glance.
@@ -54,6 +55,13 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * @default true
 	 */
 	rdsDeletionProtection?: boolean;
+
+	/**
+	 * Domain to access Steampipe DB from
+	 */
+	steampipeDomainName:
+		| 'steampipe.code.dev-gutools.co.uk'
+		| 'steampipe.gutools.co.uk';
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -63,7 +71,7 @@ export class ServiceCatalogue extends GuStack {
 		const { stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
 
-		const { rdsDeletionProtection = true } = props;
+		const { rdsDeletionProtection = true, steampipeDomainName } = props;
 
 		const nonProdSchedule = props.schedule;
 
@@ -82,6 +90,15 @@ export class ServiceCatalogue extends GuStack {
 			availabilityZones: ['ignored'],
 			privateSubnetIds: privateSubnets.map((subnet) => subnet.subnetId),
 		});
+
+		const steampipeSecurityGroup = new GuSecurityGroup(
+			this,
+			'SteampipeSecurityGroup',
+			{
+				app,
+				vpc,
+			},
+		);
 
 		const port = 5432;
 
@@ -125,9 +142,27 @@ export class ServiceCatalogue extends GuStack {
 			'Allow connection to Postgres from the office network.',
 		);
 
+		steampipeSecurityGroup.addIngressRule(
+			Peer.ipv4(GuardianPrivateNetworks.Engineering),
+			Port.tcp(STEAMPIPE_DB_PORT),
+			'Allow connection to Steampipe from the office network.',
+		);
+
 		dbSecurityGroup.connections.allowFrom(
 			applicationToPostgresSecurityGroup,
 			Port.tcp(port),
+		);
+
+		// Allow anything that can access the RDS DB to access Steampipe, so Grafana
+		steampipeSecurityGroup.connections.allowFrom(
+			applicationToPostgresSecurityGroup,
+			Port.tcp(STEAMPIPE_DB_PORT),
+		);
+
+		// Allow RDS DB to access Steampipe
+		steampipeSecurityGroup.connections.allowFrom(
+			dbSecurityGroup,
+			Port.tcp(9193),
 		);
 
 		// Used by downstream services that read ServiceCatalogue data, namely Grafana.
@@ -146,11 +181,16 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
-		addCloudqueryEcsCluster(this, {
+		const snykReadOnlyKey = new Secret(this, 'snyk-credentials', {
+			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
+		});
+
+		const cluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
+			snykCredentials: snykReadOnlyKey,
 		});
 
 		const anghammaradTopicParameter =
@@ -208,12 +248,24 @@ export class ServiceCatalogue extends GuStack {
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
 			githubCredentials,
+			snykReadOnlyKey,
 		);
 
 		addDataAuditLambda(this, {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
+		});
+
+		// This should ideally not be in the cloudquery folder, but unfortunately this is where we define our ECS cluster
+		// so here it stays for now!
+		new SteampipeService(this, 'steampipe', {
+			app,
+			cluster,
+			policies: [],
+			secrets: {},
+			accessSecurityGroup: steampipeSecurityGroup,
+			domainName: steampipeDomainName,
 		});
 	}
 }

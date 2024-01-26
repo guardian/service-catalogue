@@ -12,7 +12,6 @@ import { addToProjectQuery, getLastPrsQuery } from './projects-graphql';
 describe('Formatting graphQL queries', () => {
 	it('should return a valid graphQL object when constructing the query for getting the most recent PRs', () => {
 		const actual = getLastPrsQuery('test-repo');
-		console.log(actual);
 		const expected = String.raw`{
         organization(login: "guardian") {
           repository(name: "test-repo") {
@@ -34,7 +33,6 @@ describe('Formatting graphQL queries', () => {
 		const actual = addToProjectQuery('test-project-id', 'test-pr-id')
 			.replaceAll('\t', '') //getting the spacing right in this query is a pain, and unimportant, so remove it
 			.replaceAll('\n', '');
-		console.log(actual);
 		const expected = String.raw`mutation {addProjectV2ItemById(input: {projectId: "test-project-id" contentId: "test-pr-id"}) {  item {id  }}  }`;
 		expect(actual).toEqual(expected);
 	});

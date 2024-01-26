@@ -1,7 +1,7 @@
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
-import { createPullRequest } from './create-pull-request';
+import { createPullRequest } from './pull-requests';
 
 interface SnykInputs {
 	ORG: string;
@@ -84,7 +84,32 @@ function checklist(items: string[]): string {
 	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
-function generatePrBody(branchName: string): string {
+//TODO test the python text only shows up when it's supposed to.
+function createPRChecklist(languages: string[], branchName: string): string[] {
+	const pythonText = ['Replace the relevant python fields'];
+	const step1 =
+		'Replace the SNYK_ORG variable with the org name that your team ' +
+		'already uses (you should have other repos integrated with Snyk. ' +
+		'If you can’t find any, reach out to DevX). Examples are ' +
+		'`guardian-devtools` and `guardian-dotcom-n2y`';
+	const step2 =
+		'The Snyk job should run automatically on every commit to this branch. ' +
+		'Click through on the Snyk status check see the logs of the latest run on ' +
+		'this PR, and verify it has generated one project per dependency manifest ' +
+		'(except pnpm and deno). ' +
+		'Examples of dependency manifests are a build.sbt, or a package-lock.json, ' +
+		'essentially, any file that lists the dependencies of your project.';
+	const step3 =
+		`When you are happy the action works, remove the branch name \`${branchName}\`` +
+		'trigger from the snyk.yml (aka delete line 6), approve, and merge.';
+	const defaultText = [step1, step2, step3];
+	const checklistItems = languages.includes('Python')
+		? pythonText.concat(defaultText)
+		: defaultText;
+	return checklistItems;
+}
+
+function generatePrBody(branchName: string, languages: string[]): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -102,14 +127,7 @@ function generatePrBody(branchName: string): string {
 				'If your repository contains other languages not included here, integration may not work the way you expect it to.',
 		),
 		h2('What do I need to do?'),
-		checklist([
-			'Replace the SNYK_ORG variable with one that your team already uses (you should have other repos integrated with Snyk. ' +
-				'If you can’t find any, reach out to DevX)',
-			'Replace the relevant python fields, if they exist in the file. If not, skip this step',
-			'The job should run automatically on every commit to this branch. ' +
-				'View the action output and verify it has generated one project per dependency manifest (except pnpm and deno).',
-			`When you are happy the action works, remove the \`${branchName}\` option from the list of branches in the workflow, approve, and merge.`,
-		]),
+		checklist(createPRChecklist(languages, branchName)),
 	];
 	return tsMarkdown(body);
 }
@@ -136,7 +154,7 @@ export function generatePr(
 	}
 
 	const header = generatePrHeader(workflowSupportedLanguages);
-	const body = generatePrBody(branch);
+	const body = generatePrBody(branch, repoLanguages);
 
 	return [header, body];
 }
@@ -163,4 +181,11 @@ export async function createSnykPullRequest(
 			},
 		],
 	});
+}
+
+export function generateBranchName(languages: string[]) {
+	return `integrate-snyk-${languages
+		.sort()
+		.map((language) => language.toLowerCase())
+		.join('-')}`;
 }
