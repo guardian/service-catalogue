@@ -6,6 +6,7 @@ import type {
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
+import get from 'got';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
@@ -30,7 +31,14 @@ import {
 	hasOldAlerts,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack, RepoAndAlerts } from './types';
+import type {
+	AwsCloudFormationStack,
+	GuardianSnykTags,
+	ProjectTag,
+	RepoAndAlerts,
+	SnykOrgResponse,
+	SnykProjectsResponse,
+} from './types';
 import { isProduction } from './utils';
 
 async function writeEvaluationTable(
@@ -48,10 +56,78 @@ async function writeEvaluationTable(
 	console.log('Finished writing to table');
 }
 
+function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
+	return {
+		repo: tags.find((t) => t.key === 'repo')?.value,
+		branch: tags.find((t) => t.key === 'branch')?.value,
+		commit: tags.find((t) => t.key === 'commit')?.value,
+	};
+}
+
+function projectsURL(orgId: string, snykApiVersion: string): string {
+	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
+}
+
+function snykRequestOptions(config: Config) {
+	return {
+		headers: {
+			Authorization: `token ${config.snykReadOnlyKey}`,
+		},
+	};
+}
+
+async function getProjectTagsForOrg(
+	orgId: string,
+	snykApiVersion: string,
+	config: Config,
+): Promise<GuardianSnykTags[]> {
+	const projectsResponse = await get(
+		projectsURL(orgId, snykApiVersion),
+		snykRequestOptions(config),
+	);
+	console.log('Status code: ', projectsResponse.statusCode);
+	const tags = (JSON.parse(projectsResponse.body) as SnykProjectsResponse).data
+		.map((x) => x.attributes.tags)
+		.map(toGuardianSnykTags);
+
+	console.log(`Projects found for org ${orgId}: `, tags.length);
+	return tags;
+}
+
 export async function main() {
 	const config: Config = await getConfig();
 
 	console.log('Snyk Group Id:', config.snykGroupId);
+
+	const snykApiVersion = '2024-01-04';
+
+	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${snykApiVersion}`;
+
+	const resp = await get(getOrgsUrl, snykRequestOptions(config));
+	console.log('Status code: ', resp.statusCode);
+
+	const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
+	console.log('Orgs found: ', snykOrgResponse.orgs.length);
+
+	const orgIds = snykOrgResponse.orgs.map((org) => org.id);
+
+	const tags = new Set(
+		(
+			await Promise.all(
+				orgIds.map(
+					async (orgId) =>
+						await getProjectTagsForOrg(orgId, snykApiVersion, config),
+				),
+			)
+		)
+			.flat()
+			.filter((x) => !!x.repo && !!x.branch && !!x.commit),
+	);
+
+	// console.log(tags);
+
+	console.log('Projects found: ', tags.size);
+
 	const prisma = getPrismaClient(config);
 
 	const octokit = await stageAwareOctokit(config.stage);

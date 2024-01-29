@@ -80,3 +80,39 @@ export interface RepoAndAlerts {
 	 */
 	alerts: PartialAlert[] | undefined;
 }
+
+// Snyk REST API response types
+interface SnykOrg {
+	id: string;
+	name: string;
+	slug: string;
+}
+export interface SnykOrgResponse {
+	orgs: SnykOrg[];
+}
+
+export interface ProjectTag {
+	key: string;
+	value: string;
+}
+
+interface SnykProject {
+	id: string;
+	attributes: {
+		name: string;
+		origin: string;
+		status: string;
+		tags: ProjectTag[];
+	};
+}
+export interface SnykProjectsResponse {
+	data: SnykProject[];
+}
+
+//End of Snyk REST API response types
+
+export interface GuardianSnykTags {
+	repo: string | undefined;
+	branch: string | undefined;
+	commit: string | undefined;
+}
