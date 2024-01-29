@@ -30,7 +30,7 @@ workspace {
     views {
         systemLandscape "SystemLandscape" {
             include *
-            autoLayout
+            autoLayout 
         }
 
         systemContext cloudquery "SystemContextCloudquery" {

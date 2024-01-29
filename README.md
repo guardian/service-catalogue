@@ -1,7 +1,7 @@
 # The Product & Engineering Service Catalogue
 
 A database of information from AWS, GitHub, Synk, and other sources,
-Service Catalogue aims to provide a picture of the Guardian's estate, 
+Service Catalogue aims to provide a picture of the Guardian's estate,
 broken down by Product & Engineering (P&E) team.
 
 In contrast with [Prism](https://github.com/guardian/prism), which collects data
@@ -11,11 +11,12 @@ about.
 
 ## Purpose
 
-The Guardian has hundreds of EC2, lambda, and other services in AWS, 
-each built from one of thousands of GitHub repositories, 
+The Guardian has hundreds of EC2, lambda, and other services in AWS,
+each built from one of thousands of GitHub repositories,
 by one of many P&E teams.
 
 Some of the questions Service Catalogue aims to answer include:
+
 - For P&E teams:
   - Which services do I own?
   - Which services follow DevX best practice/use tooling?
@@ -29,12 +30,14 @@ Some of the questions Service Catalogue aims to answer include:
 
 Pricing information is not yet available in Service Catalogue,
 therefore, we're unable to answer questions such as:
+
 - What does each service cost?
 - What services are costing us the most money?
 
 ## How does it work?
 
 Service Catalogue has two parts:
+
 1. Data collection
 2. Data analysis
 
@@ -51,6 +54,7 @@ For more details, see [CloudQuery implementation](docs/cloudquery-implementation
 ### Data analysis
 
 The data in Service Catalogue is analysed in two ways:
+
 1. Grafana, at https://metrics.gutools.co.uk
 2. AWS Lambda functions, for example [RepoCop](packages/repocop) or [data-audit](packages/data-audit)
 
