@@ -6,6 +6,7 @@ import type {
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
+import type { GotBodyOptions } from 'got';
 import get from 'got';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -39,7 +40,7 @@ import type {
 	SnykOrgResponse,
 	SnykProjectsResponse,
 } from './types';
-import { isProduction } from './utils';
+import { isProduction, SetWithContentEquality } from './utils';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -60,7 +61,6 @@ function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
 	return {
 		repo: tags.find((t) => t.key === 'repo')?.value,
 		branch: tags.find((t) => t.key === 'branch')?.value,
-		commit: tags.find((t) => t.key === 'commit')?.value,
 	};
 }
 
@@ -68,7 +68,7 @@ function projectsURL(orgId: string, snykApiVersion: string): string {
 	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
 }
 
-function snykRequestOptions(config: Config) {
+function snykRequestOptions(config: Config): GotBodyOptions<string> {
 	return {
 		headers: {
 			Authorization: `token ${config.snykReadOnlyKey}`,
@@ -86,11 +86,40 @@ async function getProjectTagsForOrg(
 		snykRequestOptions(config),
 	);
 	console.log('Status code: ', projectsResponse.statusCode);
-	const tags = (JSON.parse(projectsResponse.body) as SnykProjectsResponse).data
+	const parsedResponse = JSON.parse(
+		projectsResponse.body,
+	) as SnykProjectsResponse;
+
+	console.log(parsedResponse.links?.next);
+
+	const tags = parsedResponse.data
 		.map((x) => x.attributes.tags)
 		.map(toGuardianSnykTags);
 
 	console.log(`Projects found for org ${orgId}: `, tags.length);
+
+	let next = parsedResponse.links?.next;
+
+	while (next) {
+		console.log('Next page found: ', next);
+		const nextResponse = await get(
+			`https://api.snyk.io${next}`,
+			snykRequestOptions(config),
+		);
+		console.log('Status code: ', nextResponse.statusCode);
+		const nextParsedResponse = JSON.parse(
+			nextResponse.body,
+		) as SnykProjectsResponse;
+		const nextTags = nextParsedResponse.data
+			.map((x) => x.attributes.tags)
+			.map(toGuardianSnykTags);
+
+		tags.push(...nextTags);
+
+		console.log(`Projects found for org ${orgId}: `, tags.length);
+		next = nextParsedResponse.links?.next;
+	}
+
 	return tags;
 }
 
@@ -111,22 +140,25 @@ export async function main() {
 
 	const orgIds = snykOrgResponse.orgs.map((org) => org.id);
 
-	const tags = new Set(
-		(
-			await Promise.all(
-				orgIds.map(
-					async (orgId) =>
-						await getProjectTagsForOrg(orgId, snykApiVersion, config),
-				),
-			)
+	const tags = (
+		await Promise.all(
+			orgIds.map(
+				async (orgId) =>
+					await getProjectTagsForOrg(orgId, snykApiVersion, config),
+			),
 		)
-			.flat()
-			.filter((x) => !!x.repo && !!x.branch && !!x.commit),
+	)
+		.flat()
+		.filter((x) => !!x.repo && !!x.branch);
+
+	const tagsWithContentEquality = new SetWithContentEquality<GuardianSnykTags>(
+		(t) => `${t.repo}-${t.branch}`,
 	);
 
-	// console.log(tags);
+	tags.forEach((t) => tagsWithContentEquality.add(t));
 
-	console.log('Projects found: ', tags.size);
+	console.log(tagsWithContentEquality.values());
+	console.log('Projects found: ', tagsWithContentEquality.values().length);
 
 	const prisma = getPrismaClient(config);
 

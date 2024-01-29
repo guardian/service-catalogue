@@ -105,8 +105,14 @@ interface SnykProject {
 		tags: ProjectTag[];
 	};
 }
+
+interface Next {
+	next: string;
+}
+
 export interface SnykProjectsResponse {
 	data: SnykProject[];
+	links: Next | undefined;
 }
 
 //End of Snyk REST API response types
@@ -114,5 +120,4 @@ export interface SnykProjectsResponse {
 export interface GuardianSnykTags {
 	repo: string | undefined;
 	branch: string | undefined;
-	commit: string | undefined;
 }
