@@ -103,17 +103,22 @@ GITHUB_ACCESS_TOKEN=
 "
 
   JSON_STRING=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/github-credentials  --profile "$PROFILE" --region "$REGION" --output text | awk '{print $4}')
-echo "$JSON_STRING" | jq -rc '."app-id"' | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
-echo "$JSON_STRING" | jq  -rc '."installation-id"' | xargs echo -n > "$local_env_file_dir"/installation-id
-  GITHUB_PRIVATE_KEY_PATH=$local_env_file_dir/private-key.pem
+  GITHUB_APP_ID=$(echo "$JSON_STRING" | jq -rc '."app-id"')
+  GITHUB_INSTALLATION_ID=$(echo "$JSON_STRING" | jq  -rc '."installation-id"')
 
-echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
+  echo "$GITHUB_APP_ID" | xargs echo -n > "$local_env_file_dir"/app-id #keys need to be quoted otherwise the hyphen is interpreted as a minus sign
+  echo "$GITHUB_INSTALLATION_ID" | xargs echo -n > "$local_env_file_dir"/installation-id
+  
+  GITHUB_PRIVATE_KEY_PATH=$local_env_file_dir/private-key.pem
+  echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVATE_KEY_PATH"
 
 
   env_var_text="SNYK_TOKEN=${SNYK_TOKEN}
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
+GITHUB_APP_ID=${GITHUB_APP_ID}
+GITHUB_INSTALLATION_ID=${GITHUB_INSTALLATION_ID}
 GITHUB_PRIVATE_KEY_PATH=${GITHUB_PRIVATE_KEY_PATH}
 CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
 SNYK_INTEGRATOR_INPUT_TOPIC_ARN=${SNYK_INTEGRATOR_INPUT_TOPIC_ARN}

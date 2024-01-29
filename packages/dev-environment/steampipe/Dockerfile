@@ -1,3 +1,8 @@
 FROM ghcr.io/turbot/steampipe
-RUN  steampipe plugin install steampipe github@0.39.0 aws@0.129.0
+
+COPY ./github/steampipe-plugin-github.plugin  /home/steampipe/.steampipe/plugins/local/github/steampipe-plugin-github.plugin
+COPY ./github/github.spc  /home/steampipe/.steampipe/config/github.spc
+
+RUN  steampipe plugin install steampipe aws@0.129.0
+
 

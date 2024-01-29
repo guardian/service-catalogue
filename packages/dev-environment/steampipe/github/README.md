@@ -1,0 +1,3 @@
+Currently we build a version of the Steampipe github plugin ourselves from the [github app token branch](https://github.com/turbot/steampipe-plugin-github/tree/issue-390). The last build was made from commit [a42b89a81ad58bcf55dea2cf1d8c5a2b8d7848fb](https://github.com/turbot/steampipe-plugin-github/commit/a42b89a81ad58bcf55dea2cf1d8c5a2b8d7848fb).
+
+Hopefully this branch will be merged down to main once testing is completed and we can get rid of this folder.

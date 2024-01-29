@@ -48,5 +48,9 @@ services:
       - '9193:9193'
     environment:
       STEAMPIPE_DATABASE_PASSWORD: steampipe
-      GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
-    command: ["service", "start", "--foreground"]
+      GITHUB_APP_ID: ${GITHUB_APP_ID}
+      GITHUB_INSTALLATION_ID: ${GITHUB_INSTALLATION_ID}
+      GITHUB_PRIVATE_KEY: /home/.steampipe/config/github/private-key.pem
+    volumes:
+      - ${GITHUB_PRIVATE_KEY_PATH}:/home/.steampipe/config/github/private-key.pem
+    command: ['service', 'start', '--foreground']
