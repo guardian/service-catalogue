@@ -2,7 +2,7 @@
 	"name": "repocop",
 	"version": "1.0.0",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.131"
+		"@types/aws-lambda": "^8.10.133"
 	},
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
