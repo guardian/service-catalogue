@@ -23,7 +23,7 @@ import {
 	NetworkLoadBalancer,
 	Protocol,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Images } from '../cloudquery/images';
@@ -218,6 +218,14 @@ export class SteampipeService extends FargateService {
 		});
 
 		taskPolicies.forEach((policy) => task.addToTaskRolePolicy(policy));
+
+		task.taskRole.addManagedPolicy(
+			ManagedPolicy.fromManagedPolicyArn(
+				scope,
+				'SteampipeReadOnlyPolicy',
+				'arn:aws:iam::aws:policy/ReadOnlyAccess',
+			),
+		);
 
 		const nlb = new NetworkLoadBalancer(scope, `steampipe-nlb`, {
 			vpc: cluster.vpc,
