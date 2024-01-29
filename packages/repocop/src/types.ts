@@ -96,7 +96,7 @@ export interface ProjectTag {
 	value: string;
 }
 
-interface SnykProject {
+export interface SnykProject {
 	id: string;
 	attributes: {
 		name: string;

@@ -12,6 +12,7 @@ import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
 import {
+	getProjectsForOrg,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
@@ -64,63 +65,12 @@ function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
 	};
 }
 
-function projectsURL(orgId: string, snykApiVersion: string): string {
-	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
-}
-
 function snykRequestOptions(config: Config): GotBodyOptions<string> {
 	return {
 		headers: {
 			Authorization: `token ${config.snykReadOnlyKey}`,
 		},
 	};
-}
-
-async function getProjectTagsForOrg(
-	orgId: string,
-	snykApiVersion: string,
-	config: Config,
-): Promise<GuardianSnykTags[]> {
-	const projectsResponse = await get(
-		projectsURL(orgId, snykApiVersion),
-		snykRequestOptions(config),
-	);
-	console.log('Status code: ', projectsResponse.statusCode);
-	const parsedResponse = JSON.parse(
-		projectsResponse.body,
-	) as SnykProjectsResponse;
-
-	console.log(parsedResponse.links?.next);
-
-	const tags = parsedResponse.data
-		.map((x) => x.attributes.tags)
-		.map(toGuardianSnykTags);
-
-	console.log(`Projects found for org ${orgId}: `, tags.length);
-
-	let next = parsedResponse.links?.next;
-
-	while (next) {
-		console.log('Next page found: ', next);
-		const nextResponse = await get(
-			`https://api.snyk.io${next}`,
-			snykRequestOptions(config),
-		);
-		console.log('Status code: ', nextResponse.statusCode);
-		const nextParsedResponse = JSON.parse(
-			nextResponse.body,
-		) as SnykProjectsResponse;
-		const nextTags = nextParsedResponse.data
-			.map((x) => x.attributes.tags)
-			.map(toGuardianSnykTags);
-
-		tags.push(...nextTags);
-
-		console.log(`Projects found for org ${orgId}: `, tags.length);
-		next = nextParsedResponse.links?.next;
-	}
-
-	return tags;
 }
 
 export async function main() {
@@ -130,25 +80,30 @@ export async function main() {
 
 	const snykApiVersion = '2024-01-04';
 
-	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${snykApiVersion}`;
+	async function getSnykOrgs(config: Config): Promise<SnykOrgResponse> {
+		const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${snykApiVersion}`;
+		const resp = await get(getOrgsUrl, snykRequestOptions(config));
+		console.log('Status code: ', resp.statusCode);
 
-	const resp = await get(getOrgsUrl, snykRequestOptions(config));
-	console.log('Status code: ', resp.statusCode);
+		const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
+		console.log('Orgs found: ', snykOrgResponse.orgs.length);
+		return snykOrgResponse;
+	}
 
-	const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
-	console.log('Orgs found: ', snykOrgResponse.orgs.length);
+	const snykOrgResponse = await getSnykOrgs(config);
 
 	const orgIds = snykOrgResponse.orgs.map((org) => org.id);
 
 	const tags = (
 		await Promise.all(
 			orgIds.map(
-				async (orgId) =>
-					await getProjectTagsForOrg(orgId, snykApiVersion, config),
+				async (orgId) => await getProjectsForOrg(orgId, snykApiVersion, config),
 			),
 		)
 	)
 		.flat()
+		.map((x) => x.attributes.tags)
+		.map(toGuardianSnykTags)
 		.filter((x) => !!x.repo && !!x.branch);
 
 	const tagsWithContentEquality = new SetWithContentEquality<GuardianSnykTags>(

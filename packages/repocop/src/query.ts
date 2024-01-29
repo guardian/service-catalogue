@@ -6,9 +6,14 @@ import type {
 	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
+import get from 'got';
+import type { Config } from './config';
 import type {
 	AwsCloudFormationStack,
+	GuardianSnykTags,
 	Repository,
+	SnykProject,
+	SnykProjectsResponse,
 	Team,
 	TeamRepository,
 } from './types';
@@ -126,4 +131,51 @@ export async function getWorkflowFiles(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<github_workflows>> {
 	return toNonEmptyArray(await client.github_workflows.findMany({}));
+}
+
+function projectsURL(orgId: string, snykApiVersion: string): string {
+	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
+}
+
+export async function getProjectsForOrg(
+	orgId: string,
+	snykApiVersion: string,
+	config: Config,
+): Promise<SnykProject[]> {
+	const opts = {
+		headers: {
+			Authorization: `token ${config.snykReadOnlyKey}`,
+		},
+	};
+
+	const projectsResponse = await get(projectsURL(orgId, snykApiVersion), opts);
+	console.log('Status code: ', projectsResponse.statusCode);
+	const parsedResponse = JSON.parse(
+		projectsResponse.body,
+	) as SnykProjectsResponse;
+
+	console.log(parsedResponse.links?.next);
+
+	const data = parsedResponse.data;
+
+	console.log(`Projects found for org ${orgId}: `, data.length);
+
+	let next = parsedResponse.links?.next;
+
+	while (next) {
+		console.log('Next page found: ', next);
+		const nextResponse = await get(`https://api.snyk.io${next}`, opts);
+		console.log('Status code: ', nextResponse.statusCode);
+		const nextParsedResponse = JSON.parse(
+			nextResponse.body,
+		) as SnykProjectsResponse;
+		const nextTags = nextParsedResponse.data;
+
+		data.push(...nextTags);
+
+		console.log(`Projects found for org ${orgId}: `, data.length);
+		next = nextParsedResponse.links?.next;
+	}
+
+	return data;
 }
