@@ -185,12 +185,17 @@ export class ServiceCatalogue extends GuStack {
 			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
 		});
 
+		const githubCredentials = new Secret(this, 'github-credentials', {
+			secretName: `/${stage}/${stack}/${app}/github-credentials`,
+		});
+
 		const cluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
 			snykCredentials: snykReadOnlyKey,
+			githubCredentials,
 		});
 
 		const anghammaradTopicParameter =
@@ -224,7 +229,7 @@ export class ServiceCatalogue extends GuStack {
 			anghammaradTopicParameter.valueAsString,
 		);
 
-		const githubCredentials = new Secret(
+		const repocopGithubCredentials = new Secret(
 			this,
 			`branch-protector-github-app-auth`,
 			{
@@ -247,7 +252,7 @@ export class ServiceCatalogue extends GuStack {
 			vpc,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
-			githubCredentials,
+			repocopGithubCredentials,
 			snykReadOnlyKey,
 		);
 
@@ -266,6 +271,7 @@ export class ServiceCatalogue extends GuStack {
 			secrets: {},
 			accessSecurityGroup: steampipeSecurityGroup,
 			domainName: steampipeDomainName,
+			githubCredentials,
 		});
 	}
 }

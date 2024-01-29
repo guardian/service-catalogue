@@ -19768,7 +19768,9 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "steampipe service start --foreground",
+              "/bin/sh",
+              "-c",
+              "mkdir -p /home/steampipe/.steampipe/config/github/private-key.pem;echo $GITHUB_PRIVATE_KEY_VALUE > /home/steampipe/.steampipe/config/github/private-key.pem/private-key.pem;steampipe service start --foreground",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -19776,11 +19778,16 @@ spec:
               "Stage": "TEST",
             },
             "EntryPoint": [
-              "/bin/sh",
-              "-c",
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GITHUB_PRIVATE_KEY",
+                "Value": "/home/steampipe/.steampipe/config/github/private-key.pem/private-key.pem",
+              },
             ],
             "Essential": true,
-            "Image": "ghcr.io/guardian/service-catalogue/steampipe:2",
+            "Image": "ghcr.io/guardian/service-catalogue/steampipe:prerelease-3",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -19825,15 +19832,43 @@ spec:
                 },
               },
               {
-                "Name": "GITHUB_TOKEN",
+                "Name": "GITHUB_PRIVATE_KEY_VALUE",
                 "ValueFrom": {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Ref": "steampipecredentials98149F9E",
+                        "Ref": "githubcredentialsAF453741",
                       },
-                      ":github-token::",
+                      ":private-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_APP_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":app-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_INSTALLATION_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":installation-id::",
                     ],
                   ],
                 },
@@ -19985,6 +20020,16 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "steampipecredentials98149F9E",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {

@@ -34,6 +34,7 @@ interface CloudqueryEcsClusterProps {
 	dbAccess: GuSecurityGroup;
 	nonProdSchedule?: Schedule;
 	snykCredentials: SecretsManager;
+	githubCredentials: SecretsManager;
 }
 
 export function addCloudqueryEcsCluster(
@@ -41,7 +42,7 @@ export function addCloudqueryEcsCluster(
 	props: CloudqueryEcsClusterProps,
 ) {
 	const { stage, stack, app = 'service-catalogue' } = scope;
-	const { vpc, db, dbAccess, nonProdSchedule } = props;
+	const { vpc, db, dbAccess, nonProdSchedule, githubCredentials } = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
 		StringParameter.valueForStringParameter(
@@ -267,25 +268,14 @@ export function addCloudqueryEcsCluster(
 		cpu: 1024,
 	};
 
-	const cloudqueryGithubCredentials = new SecretsManager(
-		scope,
-		'github-credentials',
-		{
-			secretName: `/${stage}/${stack}/${app}/github-credentials`,
-		},
-	);
-
 	const githubSecrets: Record<string, Secret> = {
 		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
+			githubCredentials,
 			'private-key',
 		),
-		GITHUB_APP_ID: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
-			'app-id',
-		),
+		GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
 		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
+			githubCredentials,
 			'installation-id',
 		),
 	};

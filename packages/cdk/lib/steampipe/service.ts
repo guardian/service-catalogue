@@ -31,6 +31,9 @@ import { GuFileSystem } from './filesystem';
 
 export const STEAMPIPE_DB_PORT = 9193;
 export const EFS_PORT = 2049;
+export const GITHUB_PRIVATE_KEY_FOLDER =
+	'/home/steampipe/.steampipe/config/github/private-key.pem';
+export const GITHUB_PRIVATE_KEY_FILE = `${GITHUB_PRIVATE_KEY_FOLDER}/private-key.pem`;
 
 export interface SteampipeServiceProps
 	extends AppIdentity,
@@ -57,11 +60,23 @@ export interface SteampipeServiceProps
 	 * Domain to access Steampipe DB from
 	 */
 	domainName: 'steampipe.code.dev-gutools.co.uk' | 'steampipe.gutools.co.uk';
+
+	/**
+	 * Shared github credentials with Cloudquery
+	 */
+	githubCredentials: SecretsManager;
 }
 
 export class SteampipeService extends FargateService {
 	constructor(scope: GuStack, id: string, props: SteampipeServiceProps) {
-		const { policies, cluster, app, accessSecurityGroup, domainName } = props;
+		const {
+			policies,
+			cluster,
+			app,
+			accessSecurityGroup,
+			domainName,
+			githubCredentials,
+		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
 
@@ -80,6 +95,18 @@ export class SteampipeService extends FargateService {
 		});
 
 		const taskPolicies = [logShippingPolicy, ...policies];
+
+		const githubSecrets: Record<string, Secret> = {
+			GITHUB_PRIVATE_KEY_VALUE: Secret.fromSecretsManager(
+				githubCredentials,
+				'private-key',
+			),
+			GITHUB_APP_ID: Secret.fromSecretsManager(githubCredentials, 'app-id'),
+			GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+				githubCredentials,
+				'installation-id',
+			),
+		};
 
 		const steampipeCredentials = new SecretsManager(
 			scope,
@@ -177,13 +204,22 @@ export class SteampipeService extends FargateService {
 					steampipeCredentials,
 					'steampipe-db-password',
 				),
-				// Steampipe Github plugin currently only supports PAT tokens
-				GITHUB_TOKEN: Secret.fromSecretsManager(
-					steampipeCredentials,
-					'github-token',
-				),
+				...githubSecrets,
 			},
-			command: ['steampipe service start --foreground'],
+			environment: {
+				GITHUB_PRIVATE_KEY: GITHUB_PRIVATE_KEY_FILE,
+			},
+			entryPoint: [''],
+			command: [
+				'/bin/sh',
+				'-c',
+				[
+					// Github plugin does not support reading private key from environment, must be read from a file.
+					`mkdir -p ${GITHUB_PRIVATE_KEY_FOLDER}`,
+					`echo $GITHUB_PRIVATE_KEY_VALUE > ${GITHUB_PRIVATE_KEY_FILE}`,
+					'steampipe service start --foreground',
+				].join(';'),
+			],
 			logging: fireLensLogDriver,
 			portMappings: [
 				{
@@ -191,7 +227,6 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe',
 				},
 			],
-			entryPoint: ['/bin/sh', '-c'],
 		});
 
 		steampipe.addMountPoints({
