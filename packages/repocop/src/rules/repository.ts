@@ -362,7 +362,6 @@ export function hasOldSnykAlerts(
 		issue: SnykIssue;
 	}
 
-	//find snyk projects that have a tag value matching the full repo name
 	const snykProjectIdsForRepo = snykProjects
 		.filter((project) => {
 			const tagValues = project.attributes.tags.map((tag) => tag.value);

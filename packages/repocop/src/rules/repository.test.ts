@@ -685,7 +685,7 @@ function createAlert(
 	return alert;
 }
 
-describe('NO RULE - Repository alerts', () => {
+describe('NO RULE - Dependabot alerts', () => {
 	test('should be flagged if there are critical alerts older than one day', () => {
 		const alerts: PartialAlert[] = [
 			createAlert('critical', new Date('2021-01-01'), 'open'),
@@ -723,7 +723,7 @@ describe('NO RULE - Repository alerts', () => {
 	});
 });
 
-describe('NO RULE - Old snyk issues', () => {
+describe('NO RULE - Snyk vulnerabilities', () => {
 	const repoName = thePerfectRepo.full_name;
 	const snykProjectId = '1a2b';
 	const highSeverityIssue = {
@@ -761,7 +761,7 @@ describe('NO RULE - Old snyk issues', () => {
 		packageManager: '',
 	};
 
-	const oldIssueTableRow: snyk_reporting_latest_issues = {
+	const staleSnykIssue: snyk_reporting_latest_issues = {
 		cq_sync_time: null,
 		cq_source_name: null,
 		cq_id: '',
@@ -777,12 +777,12 @@ describe('NO RULE - Old snyk issues', () => {
 		fixed_date: null,
 	};
 
-	const newIssueTableRow: snyk_reporting_latest_issues = {
-		...oldIssueTableRow,
+	const freshSnykIssue: snyk_reporting_latest_issues = {
+		...staleSnykIssue,
 		introduced_date: new Date().toISOString(),
 	};
 
-	const proj: SnykProject = {
+	const snykProject: SnykProject = {
 		id: snykProjectId,
 		attributes: {
 			name: '',
@@ -802,7 +802,11 @@ describe('NO RULE - Old snyk issues', () => {
 		expect(result).toEqual(false);
 	});
 	test('Should be detected if a repo, project, and old issue match', () => {
-		const result = hasOldSnykAlerts(thePerfectRepo, [oldIssueTableRow], [proj]);
+		const result = hasOldSnykAlerts(
+			thePerfectRepo,
+			[staleSnykIssue],
+			[snykProject],
+		);
 		expect(result).toEqual(true);
 	});
 	test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
@@ -810,31 +814,42 @@ describe('NO RULE - Old snyk issues', () => {
 			...thePerfectRepo,
 			topics: [],
 		};
-		const result = hasOldSnykAlerts(nonProdRepo, [oldIssueTableRow], [proj]);
+		const result = hasOldSnykAlerts(
+			nonProdRepo,
+			[staleSnykIssue],
+			[snykProject],
+		);
 		expect(result).toEqual(false);
 	});
 	test('Should not be detected if a repo, project, and new issue match', () => {
-		const result = hasOldSnykAlerts(thePerfectRepo, [newIssueTableRow], [proj]);
+		const result = hasOldSnykAlerts(
+			thePerfectRepo,
+			[freshSnykIssue],
+			[snykProject],
+		);
 		expect(result).toEqual(false);
 	});
 	test('Should not detected if a snyk project has no tags', () => {
+		const untaggedProject = {
+			...snykProject,
+			attributes: { ...snykProject.attributes, tags: [] },
+		};
 		const result = hasOldSnykAlerts(
 			thePerfectRepo,
-			[oldIssueTableRow],
-			[{ ...proj, attributes: { ...proj.attributes, tags: [] } }],
+			[staleSnykIssue],
+			[untaggedProject],
 		);
 		expect(result).toEqual(false);
 	});
 	test('Should not detect low severity issues', () => {
+		const staleLowSeverityIssue = {
+			...staleSnykIssue,
+			issue: lowSeverityIssue,
+		};
 		const result = hasOldSnykAlerts(
 			thePerfectRepo,
-			[
-				{
-					...oldIssueTableRow,
-					issue: lowSeverityIssue,
-				},
-			],
-			[proj],
+			[staleLowSeverityIssue],
+			[snykProject],
 		);
 		expect(result).toEqual(false);
 	});
