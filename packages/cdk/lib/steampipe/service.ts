@@ -258,6 +258,15 @@ export class SteampipeService extends FargateService {
 				interval: Duration.seconds(5),
 				timeout: Duration.seconds(2),
 			},
+			// Apps like Grafana will keep a connection to Steampipe alive as long as possible.
+			// When an ECS task is deactivated the NLB tries to be helpful and will keep the task alive
+			// for up to 5 minutes whilst theres still active connections.
+			//
+			// Because we only allow a max of 1 instance of Steampipe this is not particularly useful to us
+			// and we'd prefer for the old instance to stop as quickly as possible so that the new instance
+			// can start. Setting the deregistrationDelay to 0 will cause the NLB to terminate connections
+			// and launch the new instance with 0 delay.
+			deregistrationDelay: Duration.seconds(0),
 		});
 	}
 }

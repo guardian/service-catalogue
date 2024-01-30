@@ -20247,6 +20247,12 @@ spec:
             "Value": "TEST",
           },
         ],
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "0",
+          },
+        ],
         "TargetType": "ip",
         "VpcId": {
           "Ref": "VpcId",
