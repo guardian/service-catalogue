@@ -77,15 +77,15 @@ export async function main() {
 		.map(toGuardianSnykTags)
 		.filter((x) => !!x.repo && !!x.branch);
 
-	const tagsWithContentEquality = new SetWithContentEquality<GuardianSnykTags>(
-		(t) => `${t.repo}-${t.branch}`,
+	const uniqueStringTags: string[] = [
+		...new Set(allSnykTags.map((t) => JSON.stringify(t))),
+	];
+
+	const uniqueTags = uniqueStringTags.map(
+		(t) => JSON.parse(t) as GuardianSnykTags,
 	);
 
-	allSnykTags.forEach((t) => tagsWithContentEquality.add(t));
-	const uniqueSnykTags = tagsWithContentEquality.values();
-
-	console.log(uniqueSnykTags.slice(0, 10));
-	console.log('Projects found: ', tagsWithContentEquality.values().length);
+	console.log('Snyk projects found: ', uniqueTags.length);
 
 	const prisma = getPrismaClient(config);
 

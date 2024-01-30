@@ -36,18 +36,3 @@ describe('Failure on empty arrays', () => {
 		expect(toNonEmptyArray(nonEmptyArray)).toEqual(typedNonEmptyArray);
 	});
 });
-
-describe('SetWithContentEquality', () => {
-	test('should add unique items to the set', () => {
-		const set = new SetWithContentEquality<string>((s) => s);
-		set.add('a');
-		set.add('b');
-		expect(set.values().length).toBe(2);
-	});
-	test('should not add duplicate items to the set', () => {
-		const set = new SetWithContentEquality<string>((s) => s);
-		set.add('a');
-		set.add('a');
-		expect(set.values().length).toBe(1);
-	});
-});
