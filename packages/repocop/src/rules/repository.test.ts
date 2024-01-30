@@ -29,6 +29,8 @@ function evaluateRepoTestHelper(
 	snykProjects: snyk_projects[] = [],
 	githubWorkflows: github_workflows[] = [],
 	alerts: PartialAlert[] = [],
+	latestSnykIssues: snyk_reporting_latest_issues[] = [],
+	snykProjectsFromRest: SnykProject[] = [],
 ) {
 	return evaluateOneRepo(
 		alerts,
@@ -38,6 +40,8 @@ function evaluateRepoTestHelper(
 		languages,
 		snykProjects,
 		githubWorkflows,
+		latestSnykIssues,
+		snykProjectsFromRest,
 	);
 }
 
@@ -794,27 +798,35 @@ describe('NO RULE - Old snyk issues', () => {
 	};
 
 	test('Should not be detected if no projects or issues are passed', () => {
-		const x = hasOldSnykAlerts(thePerfectRepo, [], []);
-		expect(x).toEqual(false);
+		const result = hasOldSnykAlerts(thePerfectRepo, [], []);
+		expect(result).toEqual(false);
 	});
 	test('Should be detected if a repo, project, and old issue match', () => {
-		const x = hasOldSnykAlerts(thePerfectRepo, [oldIssueTableRow], [proj]);
-		expect(x).toEqual(true);
+		const result = hasOldSnykAlerts(thePerfectRepo, [oldIssueTableRow], [proj]);
+		expect(result).toEqual(true);
+	});
+	test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
+		const nonProdRepo = {
+			...thePerfectRepo,
+			topics: [],
+		};
+		const result = hasOldSnykAlerts(nonProdRepo, [oldIssueTableRow], [proj]);
+		expect(result).toEqual(false);
 	});
 	test('Should not be detected if a repo, project, and new issue match', () => {
-		const x = hasOldSnykAlerts(thePerfectRepo, [newIssueTableRow], [proj]);
-		expect(x).toEqual(false);
+		const result = hasOldSnykAlerts(thePerfectRepo, [newIssueTableRow], [proj]);
+		expect(result).toEqual(false);
 	});
 	test('Should not detected if a snyk project has no tags', () => {
-		const x = hasOldSnykAlerts(
+		const result = hasOldSnykAlerts(
 			thePerfectRepo,
 			[oldIssueTableRow],
 			[{ ...proj, attributes: { ...proj.attributes, tags: [] } }],
 		);
-		expect(x).toEqual(false);
+		expect(result).toEqual(false);
 	});
 	test('Should not detect low severity issues', () => {
-		const x = hasOldSnykAlerts(
+		const result = hasOldSnykAlerts(
 			thePerfectRepo,
 			[
 				{
@@ -824,6 +836,6 @@ describe('NO RULE - Old snyk issues', () => {
 			],
 			[proj],
 		);
-		expect(x).toEqual(false);
+		expect(result).toEqual(false);
 	});
 });

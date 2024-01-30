@@ -15,13 +15,13 @@ import type {
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	PartialAlert,
-	RepoAndAlerts,
 	RepoAndStack,
 	Repository,
 	SnykIssue,
 	SnykProject,
 	TeamRepository,
 } from '../types';
+import { isProduction } from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -321,17 +321,6 @@ export function hasOldDependabotAlerts(
 	alerts: PartialAlert[],
 	repo: string,
 ): boolean {
-	const highDayCount = 14;
-	const criticalDayCount = 1;
-
-	const highVulnCutOff = new Date();
-	highVulnCutOff.setDate(highVulnCutOff.getDate() - highDayCount);
-	highVulnCutOff.setHours(0, 0, 0, 0);
-
-	const criticalVulnCutOff = new Date();
-	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
-	criticalVulnCutOff.setHours(0, 0, 0, 0);
-
 	const oldAlerts = alerts.filter((a) =>
 		vulnerabilityNeedsAddressing(
 			new Date(a.created_at),
@@ -362,6 +351,9 @@ export function hasOldSnykAlerts(
 	snykIssues: snyk_reporting_latest_issues[],
 	snykProjects: SnykProject[],
 ) {
+	if (!isProduction(repo)) {
+		return false;
+	}
 	interface IntroducedDateAndIssue {
 		introduced_date: string;
 		issue: SnykIssue;
@@ -439,8 +431,19 @@ export function evaluateOneRepo(
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
+	latestSnykIssues: snyk_reporting_latest_issues[],
+	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
-	alerts = undefined;
+	if (isProduction(repo)) {
+		if (alerts) {
+			hasOldDependabotAlerts(alerts, repo.name);
+		} else {
+			console.log(
+				`Dependabot - ${repo.name}: Could not get alerts. Dependabot may not be enabled.`,
+			);
+		}
+		hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest);
+	}
 
 	return {
 		full_name: repo.full_name,
@@ -461,28 +464,32 @@ export function evaluateOneRepo(
 	};
 }
 
-export function evaluateRepositories(
-	alerts: RepoAndAlerts[],
+export async function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
-): repocop_github_repository_rules[] {
-	const evaluatedRepos = repositories.map((r) => {
+	latestSnykIssues: snyk_reporting_latest_issues[],
+	snykProjectsFromRest: SnykProject[],
+	octokit: Octokit,
+): Promise<repocop_github_repository_rules[]> {
+	const evaluatedRepos = repositories.map(async (r) => {
+		const repoAlerts = await getAlertsForRepo(octokit, r.name);
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		const alertsForRepo = alerts.find((a) => a.shortName === r.name);
 		return evaluateOneRepo(
-			alertsForRepo?.alerts,
+			repoAlerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,
 			repoLanguages,
 			snykProjects,
 			workflowFiles,
+			latestSnykIssues,
+			snykProjectsFromRest,
 		);
 	});
-	return evaluatedRepos;
+	return Promise.all(evaluatedRepos);
 }
