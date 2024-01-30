@@ -4,13 +4,13 @@ import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { addPrToProject } from './projects-graphql';
-import { getPullRequest } from './snyk-integrator/pull-requests';
+import { getPullRequest } from './pull-requests';
 import {
 	createSnykPullRequest,
 	createYaml,
 	generateBranchName,
 	generatePr,
-} from './snyk-integrator/snyk-integrator';
+} from './snyk-integrator';
 
 export async function main(event: SnykIntegratorEvent) {
 	console.log(`Generating Snyk PR for ${event.name}`);
