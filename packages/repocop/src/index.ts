@@ -10,6 +10,7 @@ import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
 import {
+	getLatestSnykIssues,
 	getProjectsForOrg,
 	getRepoOwnership,
 	getRepositories,
@@ -30,6 +31,7 @@ import {
 	evaluateRepositories,
 	getAlertsForRepo,
 	hasOldDependabotAlerts,
+	hasOldSnykAlerts,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
 import type {
@@ -104,8 +106,14 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykProjects = await getSnykProjects(prisma);
+	const latestSnykIssues = await getLatestSnykIssues(prisma);
 
 	const prodRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+
+	prodRepos.map((repo) =>
+		hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest),
+	);
+
 	const alerts: RepoAndAlerts[] = (
 		await Promise.all(
 			prodRepos.map(async (repo) => {

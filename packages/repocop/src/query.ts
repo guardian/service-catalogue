@@ -4,6 +4,7 @@ import type {
 	github_workflows,
 	PrismaClient,
 	snyk_projects,
+	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GotBodyOptions } from 'got';
@@ -113,6 +114,12 @@ export async function getSnykProjects(
 	client: PrismaClient,
 ): Promise<snyk_projects[]> {
 	return await client.snyk_projects.findMany({});
+}
+
+export async function getLatestSnykIssues(
+	client: PrismaClient,
+): Promise<snyk_reporting_latest_issues[]> {
+	return await client.snyk_reporting_latest_issues.findMany({});
 }
 
 export async function getRepositoryLanguages(
