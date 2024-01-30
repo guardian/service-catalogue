@@ -683,7 +683,6 @@ function createAlert(
 
 describe('NO RULE - Repository alerts', () => {
 	test('should be flagged if there are critical alerts older than one day', () => {
-		console.log(new Date('2021-01-01').toISOString());
 		const alerts: PartialAlert[] = [
 			createAlert('critical', new Date('2021-01-01'), 'open'),
 		];
@@ -740,7 +739,7 @@ describe('NO RULE - Old snyk issues', () => {
 		isUpgradable: true,
 		priorityScore: 999,
 		disclosureTime: '',
-		publicationTime: '', //'2023-01-14T12:00:00.000Z',
+		publicationTime: '',
 	};
 
 	const lowSeverityIssue = {

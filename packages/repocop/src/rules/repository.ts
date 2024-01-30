@@ -296,13 +296,25 @@ export async function getAlertsForRepo(
 	}
 }
 
-function isOldForSeverity(
-	date: Date,
-	severity: 'critical' | 'high',
-	alert: PartialAlert,
-) {
-	const alertDate = new Date(alert.created_at);
-	return alertDate < date && alert.security_vulnerability.severity === severity;
+function vulnerabilityNeedsAddressing(date: Date, severity: string) {
+	const criticalDayCount = 1;
+	const highDayCount = 14;
+
+	const criticalVulnCutOff = new Date();
+	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
+	criticalVulnCutOff.setHours(0, 0, 0, 0);
+
+	const highVulnCutOff = new Date();
+	highVulnCutOff.setDate(highVulnCutOff.getDate() - highDayCount);
+	highVulnCutOff.setHours(0, 0, 0, 0);
+
+	if (severity === 'critical') {
+		return date < criticalVulnCutOff;
+	} else if (severity === 'high') {
+		return date < highVulnCutOff;
+	} else {
+		return false;
+	}
 }
 
 export function hasOldDependabotAlerts(
@@ -319,27 +331,21 @@ export function hasOldDependabotAlerts(
 	const criticalVulnCutOff = new Date();
 	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
 	criticalVulnCutOff.setHours(0, 0, 0, 0);
-	const oldHighAlerts = alerts.filter((alert) =>
-		isOldForSeverity(highVulnCutOff, 'high', alert),
+
+	const oldAlerts = alerts.filter((a) =>
+		vulnerabilityNeedsAddressing(
+			new Date(a.created_at),
+			a.security_vulnerability.severity,
+		),
 	);
-	const oldCriticalAlerts = alerts.filter((alert) =>
-		isOldForSeverity(criticalVulnCutOff, 'critical', alert),
-	);
-	if (oldCriticalAlerts.length > 0) {
+
+	if (oldAlerts.length > 0) {
 		console.log(
-			`Dependabot - ${repo}: has ${oldCriticalAlerts.length} critical alerts older than ${criticalDayCount} days`,
+			`Dependabot - ${repo}: has ${oldAlerts.length} alerts that need addressing`,
 		);
-	}
-	if (oldHighAlerts.length > 0) {
-		console.log(
-			`Dependabot - ${repo}: has ${oldHighAlerts.length} high alerts older than ${highDayCount} weeks`,
-		);
-	}
-	if (oldCriticalAlerts.length === 0 && oldHighAlerts.length === 0) {
-		console.log(`Dependabot - ${repo}: has no old alerts`);
 	}
 
-	return oldHighAlerts.length > 0 || oldCriticalAlerts.length > 0;
+	return oldAlerts.length > 0;
 }
 
 function getProjectIssues(
@@ -356,9 +362,10 @@ export function hasOldSnykAlerts(
 	snykIssues: snyk_reporting_latest_issues[],
 	snykProjects: SnykProject[],
 ) {
-	const twoWeeksAgo = new Date();
-	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-	twoWeeksAgo.setHours(0, 0, 0, 0);
+	interface IntroducedDateAndIssue {
+		introduced_date: string;
+		issue: SnykIssue;
+	}
 
 	//find snyk projects that have a tag value matching the full repo name
 	const snykProjectIdsForRepo = snykProjects
@@ -368,18 +375,29 @@ export function hasOldSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	const repoIssues: snyk_reporting_latest_issues[] = snykProjectIdsForRepo
-		.map((projectId) => getProjectIssues(projectId, snykIssues))
-		.flat()
-		.filter(
-			(i) => !!i.introduced_date && new Date(i.introduced_date) < twoWeeksAgo,
+	const snykIssuesForRepo: snyk_reporting_latest_issues[] =
+		snykProjectIdsForRepo
+			.map((projectId) => getProjectIssues(projectId, snykIssues))
+			.flat();
+
+	const parsedIssuesAndDates: IntroducedDateAndIssue[] = snykIssuesForRepo.map(
+		(i) => {
+			const issue = JSON.parse(JSON.stringify(i.issue)) as SnykIssue;
+			const date = i.introduced_date ? i.introduced_date : issue.disclosureTime;
+			return { introduced_date: date, issue: issue };
+		},
+	);
+
+	const oldIssues = parsedIssuesAndDates.filter((i) =>
+		vulnerabilityNeedsAddressing(new Date(i.introduced_date), i.issue.severity),
+	);
+
+	if (oldIssues.length > 0) {
+		console.log(
+			`Snyk - ${repo.name}: has ${oldIssues.length} issues that need addressing`,
 		);
-
-	const finalIssues = repoIssues
-		.map((i) => JSON.parse(JSON.stringify(i.issue)) as SnykIssue)
-		.filter((i) => i.severity === 'critical' || i.severity === 'high');
-
-	return finalIssues.length > 0;
+	}
+	return oldIssues.length > 0;
 }
 
 export function testExperimentalRepocopFeatures(
