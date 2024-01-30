@@ -10,10 +10,12 @@ import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
 import {
+	getProjectsForOrg,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryLanguages,
+	getSnykOrgs,
 	getSnykProjects,
 	getStacks,
 	getTeamRepositories,
@@ -30,7 +32,12 @@ import {
 	hasOldAlerts,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack, RepoAndAlerts } from './types';
+import type {
+	AwsCloudFormationStack,
+	GuardianSnykTags,
+	ProjectTag,
+	RepoAndAlerts,
+} from './types';
 import { isProduction } from './utils';
 
 async function writeEvaluationTable(
@@ -48,10 +55,38 @@ async function writeEvaluationTable(
 	console.log('Finished writing to table');
 }
 
+function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
+	return {
+		repo: tags.find((t) => t.key === 'repo')?.value,
+		branch: tags.find((t) => t.key === 'branch')?.value,
+	};
+}
+
 export async function main() {
 	const config: Config = await getConfig();
 
-	console.log('Snyk Group Id:', config.snykGroupId);
+	const snykOrgIds = (await getSnykOrgs(config)).orgs.map((org) => org.id);
+
+	const allSnykTags = (
+		await Promise.all(
+			snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
+		)
+	)
+		.flat()
+		.map((x) => x.attributes.tags)
+		.map(toGuardianSnykTags)
+		.filter((x) => !!x.repo && !!x.branch);
+
+	const uniqueStringTags: string[] = [
+		...new Set(allSnykTags.map((t) => JSON.stringify(t))),
+	];
+
+	const uniqueTags = uniqueStringTags.map(
+		(t) => JSON.parse(t) as GuardianSnykTags,
+	);
+
+	console.log('Snyk projects found: ', uniqueTags.length);
+
 	const prisma = getPrismaClient(config);
 
 	const octokit = await stageAwareOctokit(config.stage);

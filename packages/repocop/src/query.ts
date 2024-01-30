@@ -6,21 +6,20 @@ import type {
 	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
+import type { GotBodyOptions } from 'got';
+import get from 'got';
+import type { Config } from './config';
 import type {
 	AwsCloudFormationStack,
+	NonEmptyArray,
 	Repository,
+	SnykOrgResponse,
+	SnykProject,
+	SnykProjectsResponse,
 	Team,
 	TeamRepository,
 } from './types';
-
-export type NonEmptyArray<T> = [T, ...T[]];
-
-export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
-	if (value.length === 0) {
-		throw new Error(`Expected a non-empty array. Source table may be empty.`);
-	}
-	return value as NonEmptyArray<T>;
-}
+import { toNonEmptyArray } from './utils';
 
 export async function getRepositories(
 	client: PrismaClient,
@@ -126,4 +125,59 @@ export async function getWorkflowFiles(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<github_workflows>> {
 	return toNonEmptyArray(await client.github_workflows.findMany({}));
+}
+
+function projectsURL(orgId: string, snykApiVersion: string): string {
+	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
+}
+
+function snykRequestOptions(config: Config): GotBodyOptions<string> {
+	return {
+		headers: {
+			Authorization: `token ${config.snykReadOnlyKey}`,
+		},
+	};
+}
+
+export async function getSnykOrgs(config: Config): Promise<SnykOrgResponse> {
+	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${config.snykApiVersion}`;
+	const resp = await get(getOrgsUrl, snykRequestOptions(config));
+	console.log('Status code: ', resp.statusCode);
+
+	const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
+	console.log('Orgs found: ', snykOrgResponse.orgs.length);
+	return snykOrgResponse;
+}
+
+export async function getProjectsForOrg(
+	orgId: string,
+	config: Config,
+): Promise<SnykProject[]> {
+	const opts = snykRequestOptions(config);
+
+	const projectsResponse = await get(
+		projectsURL(orgId, config.snykApiVersion),
+		opts,
+	);
+	const parsedResponse = JSON.parse(
+		projectsResponse.body,
+	) as SnykProjectsResponse;
+
+	const data = parsedResponse.data;
+
+	let next = parsedResponse.links?.next;
+
+	while (next) {
+		const nextResponse = await get(`https://api.snyk.io${next}`, opts);
+		const nextParsedResponse = JSON.parse(
+			nextResponse.body,
+		) as SnykProjectsResponse;
+		const nextTags = nextParsedResponse.data;
+
+		data.push(...nextTags);
+		next = nextParsedResponse.links?.next;
+	}
+
+	console.log(`Snyk projects found for org ${orgId}: `, data.length);
+	return data;
 }

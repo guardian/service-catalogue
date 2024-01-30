@@ -6,6 +6,8 @@ import type {
 	github_teams,
 } from '@prisma/client';
 
+export type NonEmptyArray<T> = [T, ...T[]];
+
 export interface RepoAndStack {
 	fullName: string;
 	stacks: string[];
@@ -79,4 +81,45 @@ export interface RepoAndAlerts {
 	 ** alerts is undefined if we catch an error, typically because dependabot is not enabled
 	 */
 	alerts: PartialAlert[] | undefined;
+}
+
+// Snyk REST API response types
+interface SnykOrg {
+	id: string;
+	name: string;
+	slug: string;
+}
+export interface SnykOrgResponse {
+	orgs: SnykOrg[];
+}
+
+export interface ProjectTag {
+	key: string;
+	value: string;
+}
+
+export interface SnykProject {
+	id: string;
+	attributes: {
+		name: string;
+		origin: string;
+		status: string;
+		tags: ProjectTag[];
+	};
+}
+
+interface Next {
+	next: string;
+}
+
+export interface SnykProjectsResponse {
+	data: SnykProject[];
+	links: Next | undefined;
+}
+
+//End of Snyk REST API response types
+
+export interface GuardianSnykTags {
+	repo: string | undefined;
+	branch: string | undefined;
 }
