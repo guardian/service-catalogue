@@ -6,12 +6,13 @@ import type {
 	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
+import type { GotBodyOptions } from 'got';
 import get from 'got';
 import type { Config } from './config';
 import type {
 	AwsCloudFormationStack,
-	GuardianSnykTags,
 	Repository,
+	SnykOrgResponse,
 	SnykProject,
 	SnykProjectsResponse,
 	Team,
@@ -137,16 +138,33 @@ function projectsURL(orgId: string, snykApiVersion: string): string {
 	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
 }
 
+function snykRequestOptions(config: Config): GotBodyOptions<string> {
+	return {
+		headers: {
+			Authorization: `token ${config.snykReadOnlyKey}`,
+		},
+	};
+}
+
+export async function getSnykOrgs(
+	config: Config,
+	snykApiVersion: string,
+): Promise<SnykOrgResponse> {
+	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${snykApiVersion}`;
+	const resp = await get(getOrgsUrl, snykRequestOptions(config));
+	console.log('Status code: ', resp.statusCode);
+
+	const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
+	console.log('Orgs found: ', snykOrgResponse.orgs.length);
+	return snykOrgResponse;
+}
+
 export async function getProjectsForOrg(
 	orgId: string,
 	snykApiVersion: string,
 	config: Config,
 ): Promise<SnykProject[]> {
-	const opts = {
-		headers: {
-			Authorization: `token ${config.snykReadOnlyKey}`,
-		},
-	};
+	const opts = snykRequestOptions(config);
 
 	const projectsResponse = await get(projectsURL(orgId, snykApiVersion), opts);
 	console.log('Status code: ', projectsResponse.statusCode);

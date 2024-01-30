@@ -6,8 +6,6 @@ import type {
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
-import type { GotBodyOptions } from 'got';
-import get from 'got';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
@@ -17,6 +15,7 @@ import {
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryLanguages,
+	getSnykOrgs,
 	getSnykProjects,
 	getStacks,
 	getTeamRepositories,
@@ -38,8 +37,6 @@ import type {
 	GuardianSnykTags,
 	ProjectTag,
 	RepoAndAlerts,
-	SnykOrgResponse,
-	SnykProjectsResponse,
 } from './types';
 import { isProduction, SetWithContentEquality } from './utils';
 
@@ -65,14 +62,6 @@ function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
 	};
 }
 
-function snykRequestOptions(config: Config): GotBodyOptions<string> {
-	return {
-		headers: {
-			Authorization: `token ${config.snykReadOnlyKey}`,
-		},
-	};
-}
-
 export async function main() {
 	const config: Config = await getConfig();
 
@@ -80,17 +69,7 @@ export async function main() {
 
 	const snykApiVersion = '2024-01-04';
 
-	async function getSnykOrgs(config: Config): Promise<SnykOrgResponse> {
-		const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${snykApiVersion}`;
-		const resp = await get(getOrgsUrl, snykRequestOptions(config));
-		console.log('Status code: ', resp.statusCode);
-
-		const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
-		console.log('Orgs found: ', snykOrgResponse.orgs.length);
-		return snykOrgResponse;
-	}
-
-	const snykOrgResponse = await getSnykOrgs(config);
+	const snykOrgResponse = await getSnykOrgs(config, snykApiVersion);
 
 	const orgIds = snykOrgResponse.orgs.map((org) => org.id);
 
