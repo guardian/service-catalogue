@@ -65,15 +65,11 @@ function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
 export async function main() {
 	const config: Config = await getConfig();
 
-	console.log('Snyk Group Id:', config.snykGroupId);
+	const snykOrgIds = (await getSnykOrgs(config)).orgs.map((org) => org.id);
 
-	const snykOrgResponse = await getSnykOrgs(config);
-
-	const orgIds = snykOrgResponse.orgs.map((org) => org.id);
-
-	const tags = (
+	const allSnykTags = (
 		await Promise.all(
-			orgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
+			snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
 		)
 	)
 		.flat()
@@ -85,9 +81,10 @@ export async function main() {
 		(t) => `${t.repo}-${t.branch}`,
 	);
 
-	tags.forEach((t) => tagsWithContentEquality.add(t));
+	allSnykTags.forEach((t) => tagsWithContentEquality.add(t));
+	const uniqueSnykTags = tagsWithContentEquality.values();
 
-	console.log(tagsWithContentEquality.values());
+	console.log(uniqueSnykTags.slice(0, 10));
 	console.log('Projects found: ', tagsWithContentEquality.values().length);
 
 	const prisma = getPrismaClient(config);

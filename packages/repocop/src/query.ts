@@ -166,33 +166,25 @@ export async function getProjectsForOrg(
 		projectsURL(orgId, config.snykApiVersion),
 		opts,
 	);
-	console.log('Status code: ', projectsResponse.statusCode);
 	const parsedResponse = JSON.parse(
 		projectsResponse.body,
 	) as SnykProjectsResponse;
 
-	console.log(parsedResponse.links?.next);
-
 	const data = parsedResponse.data;
-
-	console.log(`Projects found for org ${orgId}: `, data.length);
 
 	let next = parsedResponse.links?.next;
 
 	while (next) {
-		console.log('Next page found: ', next);
 		const nextResponse = await get(`https://api.snyk.io${next}`, opts);
-		console.log('Status code: ', nextResponse.statusCode);
 		const nextParsedResponse = JSON.parse(
 			nextResponse.body,
 		) as SnykProjectsResponse;
 		const nextTags = nextParsedResponse.data;
 
 		data.push(...nextTags);
-
-		console.log(`Projects found for org ${orgId}: `, data.length);
 		next = nextParsedResponse.links?.next;
 	}
 
+	console.log(`Snyk projects found for org ${orgId}: `, data.length);
 	return data;
 }
