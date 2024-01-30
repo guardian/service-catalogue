@@ -368,9 +368,11 @@ export function hasOldSnykAlerts(
 		.map((projectId) => getProjectIssues(projectId, snykIssues))
 		.flat();
 
-	return repoIssues.map(
+	const finalIssues = repoIssues.map(
 		(i) => JSON.parse(JSON.stringify(i.issue)) as SnykIssue,
 	);
+
+	return finalIssues.length > 0;
 }
 
 export function testExperimentalRepocopFeatures(

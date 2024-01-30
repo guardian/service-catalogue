@@ -739,8 +739,8 @@ describe('NO RULE - Old snyk issues', () => {
 		isPatchable: false,
 		isUpgradable: true,
 		priorityScore: 999,
-		disclosureTime: '2023-01-14T00:00:00.000Z',
-		publicationTime: '2023-01-14T12:00:00.000Z',
+		disclosureTime: '',
+		publicationTime: '', //'2023-01-14T12:00:00.000Z',
 	};
 
 	const myProject = {
@@ -761,7 +761,7 @@ describe('NO RULE - Old snyk issues', () => {
 		issue: myIssue,
 		projects: [myProject],
 		organization_id: '',
-		introduced_date: null,
+		introduced_date: new Date().toISOString(),
 		project: null,
 		is_fixed: null,
 		patched_date: null,
@@ -785,11 +785,11 @@ describe('NO RULE - Old snyk issues', () => {
 
 	test('Should not be detected if no projects or issues are passed', () => {
 		const x = hasOldSnykAlerts(thePerfectRepo, [], []);
-		expect(x).toEqual([]);
+		expect(x).toEqual(false);
 	});
 	test('Should be detected if a repo, project, and issue match', () => {
 		const x = hasOldSnykAlerts(thePerfectRepo, [myIssueTableRow], [proj]);
-		expect(x.length).toEqual(1);
+		expect(x).toEqual(true);
 	});
 	test('Should not detected if a snyk project has no tags', () => {
 		const x = hasOldSnykAlerts(
@@ -797,6 +797,6 @@ describe('NO RULE - Old snyk issues', () => {
 			[myIssueTableRow],
 			[{ ...proj, attributes: { ...proj.attributes, tags: [] } }],
 		);
-		expect(x.length).toEqual(0);
+		expect(x).toEqual(false);
 	});
 });
