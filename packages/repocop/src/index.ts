@@ -38,7 +38,7 @@ import type {
 	ProjectTag,
 	RepoAndAlerts,
 } from './types';
-import { isProduction, SetWithContentEquality } from './utils';
+import { isProduction } from './utils';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],

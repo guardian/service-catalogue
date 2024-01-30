@@ -1,5 +1,5 @@
 import type { NonEmptyArray, Repository } from './types';
-import { isProduction, SetWithContentEquality, toNonEmptyArray } from './utils';
+import { isProduction, toNonEmptyArray } from './utils';
 
 describe('isProduction', () => {
 	test('should return correct values for prod and non-prod repos', () => {
