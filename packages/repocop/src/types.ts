@@ -123,3 +123,36 @@ export interface GuardianSnykTags {
 	repo: string | undefined;
 	branch: string | undefined;
 }
+
+export interface SnykIssue {
+	id: string;
+	url?: string;
+	type?: string;
+	title?: string;
+	//CVSSv3: string;
+	//Semver: { unaffected: ''; vulnerable: ['<2.814.0'] };
+	credit?: string[];
+	//Patches: [];
+	//ignored: boolean | null; -- do we need this alongside isIgnored?
+	//package: 'aws-sdk';
+	version: '2.93.0';
+	language?: string;
+	severity: string;
+	cvssScore: number;
+	isIgnored: boolean;
+	isPatched: false;
+	isPinnable: false;
+	Identifiers?: {
+		CVE: string[];
+		CWE: string[];
+		OSVDB: string[];
+	};
+	isPatchable: boolean;
+	isUpgradable: boolean;
+	// jiraIssueUrl: string;
+	priorityScore: number;
+	disclosureTime: string; //or Date?
+	packageManager?: string;
+	exploitMaturity?: string;
+	publicationTime: string; //or Date?
+}

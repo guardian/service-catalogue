@@ -29,7 +29,7 @@ import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic
 import {
 	evaluateRepositories,
 	getAlertsForRepo,
-	hasOldAlerts,
+	hasOldDependabotAlerts,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
 import type {
@@ -67,12 +67,13 @@ export async function main() {
 
 	const snykOrgIds = (await getSnykOrgs(config)).orgs.map((org) => org.id);
 
-	const allSnykTags = (
+	const snykProjectsFromRest = (
 		await Promise.all(
 			snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
 		)
-	)
-		.flat()
+	).flat();
+
+	const allSnykTags = snykProjectsFromRest
 		.map((x) => x.attributes.tags)
 		.map(toGuardianSnykTags)
 		.filter((x) => !!x.repo && !!x.branch);
@@ -121,7 +122,7 @@ export async function main() {
 			console.log(
 				`Found ${alert.alerts.length} alerts for ${alert.shortName}: `,
 			);
-			hasOldAlerts(alert.alerts, alert.shortName);
+			hasOldDependabotAlerts(alert.alerts, alert.shortName);
 		}
 	});
 

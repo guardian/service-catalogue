@@ -3,18 +3,21 @@ import type {
 	github_repository_branches,
 	github_workflows,
 	snyk_projects,
+	snyk_reporting_latest_issues,
 } from '@prisma/client';
 import type {
 	AwsCloudFormationStack,
 	PartialAlert,
 	Repository,
+	SnykProject,
 	TeamRepository,
 } from '../types';
 import {
 	evaluateOneRepo,
 	findStacks,
 	hasDependencyTracking,
-	hasOldAlerts,
+	hasOldDependabotAlerts,
+	hasOldSnykAlerts,
 	parseSnykTags,
 } from './repository';
 
@@ -685,26 +688,26 @@ describe('NO RULE - Repository alerts', () => {
 			createAlert('critical', new Date('2021-01-01'), 'open'),
 		];
 
-		expect(hasOldAlerts(alerts, 'test')).toBe(true);
+		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(true);
 	});
 	test('should not be flagged if a critical alert was raised today', () => {
 		const alerts: PartialAlert[] = [
 			createAlert('critical', new Date(), 'open'),
 		];
 
-		expect(hasOldAlerts(alerts, 'test')).toBe(false);
+		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(false);
 	});
 	test('should be flagged if there are high alerts older than 14 days', () => {
 		const alerts: PartialAlert[] = [
 			createAlert('high', new Date('2021-01-01'), 'open'),
 		];
 
-		expect(hasOldAlerts(alerts, 'test')).toBe(true);
+		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(true);
 	});
 	test('should not be flagged if a high alert was raised today', () => {
 		const alerts: PartialAlert[] = [createAlert('high', new Date(), 'open')];
 
-		expect(hasOldAlerts(alerts, 'test')).toBe(false);
+		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(false);
 	});
 	test('should not be flagged if a high alert was raised 13 days ago', () => {
 		const thirteenDaysAgo = new Date();
@@ -713,6 +716,87 @@ describe('NO RULE - Repository alerts', () => {
 			createAlert('high', thirteenDaysAgo, 'open'),
 		];
 
-		expect(hasOldAlerts(alerts, 'test')).toBe(false);
+		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(false);
+	});
+});
+
+describe('NO RULE - Old snyk issues', () => {
+	const repoName = thePerfectRepo.full_name;
+	const snykProjectId = '1a2b';
+	const myIssue = {
+		id: '',
+		CVSSv3: '',
+		Semver: { unaffected: '', vulnerable: ['<2.814.0'] },
+		Patches: [],
+		ignored: null,
+		package: '',
+		version: '',
+		severity: 'high',
+		cvssScore: 7.3,
+		isIgnored: false,
+		isPatched: false,
+		isPinnable: false,
+		isPatchable: false,
+		isUpgradable: true,
+		priorityScore: 999,
+		disclosureTime: '2023-01-14T00:00:00.000Z',
+		publicationTime: '2023-01-14T12:00:00.000Z',
+	};
+
+	const myProject = {
+		id: snykProjectId,
+		url: '',
+		name: '',
+		source: 'cli',
+		targetFile: '',
+		packageManager: '',
+	};
+
+	const myIssueTableRow: snyk_reporting_latest_issues = {
+		cq_sync_time: null,
+		cq_source_name: null,
+		cq_id: '',
+		cq_parent_id: null,
+		id: '',
+		issue: myIssue,
+		projects: [myProject],
+		organization_id: '',
+		introduced_date: null,
+		project: null,
+		is_fixed: null,
+		patched_date: null,
+		fixed_date: null,
+	};
+
+	const proj: SnykProject = {
+		id: snykProjectId,
+		attributes: {
+			name: '',
+			origin: '',
+			status: '',
+			tags: [
+				{
+					key: 'repo',
+					value: repoName,
+				},
+			],
+		},
+	};
+
+	test('Should not be detected if no projects or issues are passed', () => {
+		const x = hasOldSnykAlerts(thePerfectRepo, [], []);
+		expect(x).toEqual([]);
+	});
+	test('Should be detected if a repo, project, and issue match', () => {
+		const x = hasOldSnykAlerts(thePerfectRepo, [myIssueTableRow], [proj]);
+		expect(x.length).toEqual(1);
+	});
+	test('Should not detected if a snyk project has no tags', () => {
+		const x = hasOldSnykAlerts(
+			thePerfectRepo,
+			[myIssueTableRow],
+			[{ ...proj, attributes: { ...proj.attributes, tags: [] } }],
+		);
+		expect(x.length).toEqual(0);
 	});
 });

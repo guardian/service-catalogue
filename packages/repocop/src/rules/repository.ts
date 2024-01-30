@@ -4,6 +4,7 @@ import type {
 	github_workflows,
 	repocop_github_repository_rules,
 	snyk_projects,
+	snyk_reporting_latest_issues,
 } from '@prisma/client';
 import type { Octokit } from 'octokit';
 import {
@@ -17,6 +18,8 @@ import type {
 	RepoAndAlerts,
 	RepoAndStack,
 	Repository,
+	SnykIssue,
+	SnykProject,
 	TeamRepository,
 } from '../types';
 
@@ -302,7 +305,10 @@ function isOldForSeverity(
 	return alertDate < date && alert.security_vulnerability.severity === severity;
 }
 
-export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
+export function hasOldDependabotAlerts(
+	alerts: PartialAlert[],
+	repo: string,
+): boolean {
 	const highDayCount = 14;
 	const criticalDayCount = 1;
 
@@ -334,6 +340,37 @@ export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
 	}
 
 	return oldHighAlerts.length > 0 || oldCriticalAlerts.length > 0;
+}
+
+function getProjectIssues(
+	projectId: string,
+	issues: snyk_reporting_latest_issues[],
+): snyk_reporting_latest_issues[] {
+	return issues.filter((issue) =>
+		JSON.stringify(issue.projects).includes(projectId),
+	);
+}
+
+export function hasOldSnykAlerts(
+	repo: Repository,
+	snykIssues: snyk_reporting_latest_issues[],
+	snykProjects: SnykProject[],
+) {
+	//find snyk projects that have a tag value matching the full repo name
+	const snykProjectIdsForRepo = snykProjects
+		.filter((project) => {
+			const tagValues = project.attributes.tags.map((tag) => tag.value);
+			return tagValues.includes(repo.full_name);
+		})
+		.map((project) => project.id);
+
+	const repoIssues: snyk_reporting_latest_issues[] = snykProjectIdsForRepo
+		.map((projectId) => getProjectIssues(projectId, snykIssues))
+		.flat();
+
+	return repoIssues.map(
+		(i) => JSON.parse(JSON.stringify(i.issue)) as SnykIssue,
+	);
 }
 
 export function testExperimentalRepocopFeatures(
