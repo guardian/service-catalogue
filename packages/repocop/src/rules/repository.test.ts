@@ -691,26 +691,26 @@ describe('NO RULE - Repository alerts', () => {
 			createAlert('critical', new Date('2021-01-01'), 'open'),
 		];
 
-		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(true);
+		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(true);
 	});
 	test('should not be flagged if a critical alert was raised today', () => {
 		const alerts: PartialAlert[] = [
 			createAlert('critical', new Date(), 'open'),
 		];
 
-		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(false);
+		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
 	});
 	test('should be flagged if there are high alerts older than 14 days', () => {
 		const alerts: PartialAlert[] = [
 			createAlert('high', new Date('2021-01-01'), 'open'),
 		];
 
-		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(true);
+		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(true);
 	});
 	test('should not be flagged if a high alert was raised today', () => {
 		const alerts: PartialAlert[] = [createAlert('high', new Date(), 'open')];
 
-		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(false);
+		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
 	});
 	test('should not be flagged if a high alert was raised 13 days ago', () => {
 		const thirteenDaysAgo = new Date();
@@ -719,7 +719,7 @@ describe('NO RULE - Repository alerts', () => {
 			createAlert('high', thirteenDaysAgo, 'open'),
 		];
 
-		expect(hasOldDependabotAlerts(alerts, 'test')).toBe(false);
+		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
 	});
 });
 

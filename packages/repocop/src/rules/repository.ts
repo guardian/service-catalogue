@@ -319,8 +319,11 @@ function vulnerabilityNeedsAddressing(date: Date, severity: string) {
 
 export function hasOldDependabotAlerts(
 	alerts: PartialAlert[],
-	repo: string,
+	repo: Repository,
 ): boolean {
+	if (!isProduction(repo)) {
+		return false;
+	}
 	const oldAlerts = alerts.filter((a) =>
 		vulnerabilityNeedsAddressing(
 			new Date(a.created_at),
@@ -330,7 +333,7 @@ export function hasOldDependabotAlerts(
 
 	if (oldAlerts.length > 0) {
 		console.log(
-			`Dependabot - ${repo}: has ${oldAlerts.length} alerts that need addressing`,
+			`Dependabot - ${repo.name}: has ${oldAlerts.length} alerts that need addressing`,
 		);
 	}
 
@@ -434,16 +437,15 @@ export function evaluateOneRepo(
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
-	if (isProduction(repo)) {
-		if (alerts) {
-			hasOldDependabotAlerts(alerts, repo.name);
-		} else {
-			console.log(
-				`Dependabot - ${repo.name}: Could not get alerts. Dependabot may not be enabled.`,
-			);
-		}
-		hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest);
+	if (alerts) {
+		hasOldDependabotAlerts(alerts, repo);
+	} else {
+		console.log(
+			`Dependabot - ${repo.name}: Could not get alerts. Dependabot may not be enabled.`,
+		);
 	}
+
+	hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest);
 
 	return {
 		full_name: repo.full_name,
@@ -476,7 +478,9 @@ export async function evaluateRepositories(
 	octokit: Octokit,
 ): Promise<repocop_github_repository_rules[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
-		const repoAlerts = await getAlertsForRepo(octokit, r.name);
+		const repoAlerts = isProduction(r)
+			? await getAlertsForRepo(octokit, r.name)
+			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 		return evaluateOneRepo(
