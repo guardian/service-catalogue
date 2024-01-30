@@ -14,7 +14,7 @@ import {
 } from '@guardian/cdk/lib/constructs/ec2';
 import { GuardianPrivateNetworks } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import {
 	InstanceClass,
 	InstanceSize,
@@ -126,6 +126,8 @@ export class ServiceCatalogue extends GuStack {
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
+
+		Tags.of(db).add('devx-backup-enabled', 'true');
 
 		const applicationToPostgresSecurityGroup = new GuSecurityGroup(
 			this,

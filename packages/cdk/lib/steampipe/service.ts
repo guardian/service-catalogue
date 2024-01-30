@@ -9,6 +9,7 @@ import { Duration } from 'aws-cdk-lib';
 import { Port } from 'aws-cdk-lib/aws-ec2';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import {
+	CpuArchitecture,
 	FargateService,
 	FargateTaskDefinition,
 	FireLensLogDriver,
@@ -17,16 +18,19 @@ import {
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
+import { PerformanceMode, ThroughputMode } from 'aws-cdk-lib/aws-efs';
 import {
 	NetworkLoadBalancer,
 	Protocol,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Images } from '../cloudquery/images';
+import { GuFileSystem } from './filesystem';
 
 export const STEAMPIPE_DB_PORT = 9193;
+export const EFS_PORT = 2049;
 
 export interface SteampipeServiceProps
 	extends AppIdentity,
@@ -98,9 +102,58 @@ export class SteampipeService extends FargateService {
 			'Allow this SG to talk to other applications also using this SG (in this case NLB to ECS)',
 		);
 
+		steampipeSecurityGroup.addIngressRule(
+			steampipeSecurityGroup,
+			Port.tcp(EFS_PORT),
+			'Allow this SG to talk to EFS mounts also using this SG',
+		);
+
+		const fileSystem = new GuFileSystem(scope, 'SteampipeDatabaseEFS', {
+			vpc: cluster.vpc,
+			encrypted: true,
+			throughputMode: ThroughputMode.ELASTIC,
+			performanceMode: PerformanceMode.GENERAL_PURPOSE,
+			vpcSubnets: {
+				subnets: cluster.vpc.privateSubnets,
+			},
+			securityGroup: steampipeSecurityGroup,
+		});
+
+		// By default the root folder of an EFS FileSystem is owned by a root user
+		// In order to get a folder that can be written to by the Steampipe user we need to create
+		// an AccessPoint which allows us to set the POSIX permissions on the mount point.
+		const accessPoint = fileSystem.addAccessPoint(
+			'SteampipeDatabaseEFSAccessPoint',
+			{
+				createAcl: {
+					// From https://github.com/turbot/steampipe/blob/main/Dockerfile#L8
+					ownerGid: '0',
+					ownerUid: '9193',
+					// Owner can Read, Write, and Execute, everyone else just read and execute
+					permissions: '755',
+				},
+				path: '/steampipe-database',
+			},
+		);
+
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB: 512,
 			cpu: 256,
+			runtimePlatform: {
+				cpuArchitecture: CpuArchitecture.ARM64,
+			},
+			volumes: [
+				{
+					name: 'steampipe-database',
+					efsVolumeConfiguration: {
+						fileSystemId: fileSystem.fileSystemId,
+						transitEncryption: 'ENABLED',
+						authorizationConfig: {
+							accessPointId: accessPoint.accessPointId,
+						},
+					},
+				},
+			],
 		});
 
 		const fireLensLogDriver = new FireLensLogDriver({
@@ -112,7 +165,7 @@ export class SteampipeService extends FargateService {
 			},
 		});
 
-		task.addContainer(`${id}Container`, {
+		const steampipe = task.addContainer(`${id}Container`, {
 			image: Images.steampipe,
 			dockerLabels: {
 				Stack: stack,
@@ -130,7 +183,7 @@ export class SteampipeService extends FargateService {
 					'github-token',
 				),
 			},
-			command: ['service', 'start', '--foreground'],
+			command: ['steampipe service start --foreground'],
 			logging: fireLensLogDriver,
 			portMappings: [
 				{
@@ -138,6 +191,13 @@ export class SteampipeService extends FargateService {
 					name: 'steampipe',
 				},
 			],
+			entryPoint: ['/bin/sh', '-c'],
+		});
+
+		steampipe.addMountPoints({
+			containerPath: '/home/steampipe/.steampipe/db/14.2.0/',
+			sourceVolume: 'steampipe-database',
+			readOnly: false,
 		});
 
 		task.addFirelensLogRouter(`${id}Firelens`, {
@@ -158,6 +218,14 @@ export class SteampipeService extends FargateService {
 		});
 
 		taskPolicies.forEach((policy) => task.addToTaskRolePolicy(policy));
+
+		task.taskRole.addManagedPolicy(
+			ManagedPolicy.fromManagedPolicyArn(
+				scope,
+				'SteampipeReadOnlyPolicy',
+				'arn:aws:iam::aws:policy/ReadOnlyAccess',
+			),
+		);
 
 		const nlb = new NetworkLoadBalancer(scope, `steampipe-nlb`, {
 			vpc: cluster.vpc,
@@ -183,6 +251,8 @@ export class SteampipeService extends FargateService {
 			securityGroups: [steampipeSecurityGroup],
 			assignPublicIp: false,
 			desiredCount: 1,
+			minHealthyPercent: 0,
+			maxHealthyPercent: 100,
 		});
 
 		nlbListener.addTargets(`steampipe-nlb-target`, {
