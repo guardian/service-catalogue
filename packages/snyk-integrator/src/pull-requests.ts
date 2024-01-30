@@ -42,6 +42,15 @@ export async function createPullRequest(
 type PullRequestParameters =
 	Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
 
+type PullRequest =
+	Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][number];
+
+const GITHUB_BOT_LOGIN = 'gu-snyk-integrator[bot]';
+
+function isGithubAppAuthor(pull: PullRequest) {
+	return pull.user?.login === GITHUB_BOT_LOGIN && pull.user.type === 'Bot';
+}
+
 export async function getPullRequest(
 	octokit: Octokit,
 	repoName: string,
@@ -52,5 +61,7 @@ export async function getPullRequest(
 		repo: repoName,
 		state: 'open',
 	} satisfies PullRequestParameters);
-	return pulls.find((pull) => pull.head.ref === branchName);
+	return pulls.find(
+		(pull) => pull.head.ref === branchName && isGithubAppAuthor(pull),
+	);
 }
