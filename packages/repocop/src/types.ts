@@ -6,6 +6,8 @@ import type {
 	github_teams,
 } from '@prisma/client';
 
+export type NonEmptyArray<T> = [T, ...T[]];
+
 export interface RepoAndStack {
 	fullName: string;
 	stacks: string[];

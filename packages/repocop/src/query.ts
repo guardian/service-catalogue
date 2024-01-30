@@ -11,6 +11,7 @@ import get from 'got';
 import type { Config } from './config';
 import type {
 	AwsCloudFormationStack,
+	NonEmptyArray,
 	Repository,
 	SnykOrgResponse,
 	SnykProject,
@@ -18,15 +19,7 @@ import type {
 	Team,
 	TeamRepository,
 } from './types';
-
-export type NonEmptyArray<T> = [T, ...T[]];
-
-export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
-	if (value.length === 0) {
-		throw new Error(`Expected a non-empty array. Source table may be empty.`);
-	}
-	return value as NonEmptyArray<T>;
-}
+import { toNonEmptyArray } from './utils';
 
 export async function getRepositories(
 	client: PrismaClient,
