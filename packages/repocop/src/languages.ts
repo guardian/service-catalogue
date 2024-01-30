@@ -22,8 +22,10 @@ const commonSupportedLanguages = [
 	'JavaScript',
 	'Python',
 	'Jinja', // Jinja uses Python dependencies
+	'Mako', // Mako uses Python dependencies
 	'Swift',
 	'TypeScript',
+	'Svelte', // Svelte uses npm etc
 ];
 const snykOnlySupportedLanguages = [
 	'C',
