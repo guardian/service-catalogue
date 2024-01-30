@@ -67,17 +67,13 @@ export async function main() {
 
 	console.log('Snyk Group Id:', config.snykGroupId);
 
-	const snykApiVersion = '2024-01-04';
-
-	const snykOrgResponse = await getSnykOrgs(config, snykApiVersion);
+	const snykOrgResponse = await getSnykOrgs(config);
 
 	const orgIds = snykOrgResponse.orgs.map((org) => org.id);
 
 	const tags = (
 		await Promise.all(
-			orgIds.map(
-				async (orgId) => await getProjectsForOrg(orgId, snykApiVersion, config),
-			),
+			orgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
 		)
 	)
 		.flat()

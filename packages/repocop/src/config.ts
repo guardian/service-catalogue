@@ -77,6 +77,11 @@ export interface Config extends PrismaConfig {
 	 * The Snyk group ID.
 	 */
 	snykGroupId: string;
+
+	/**
+	 * The Snyk API version.
+	 */
+	snykApiVersion: string;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -111,6 +116,7 @@ export async function getConfig(): Promise<Config> {
 		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
 		snykReadOnlyKey: snykSecretValues['api-key'].replaceAll("'", ''),
 		snykGroupId: snykSecretValues['group-id'].replaceAll("'", ''),
+		snykApiVersion: '2024-01-04',
 	};
 
 	interface SnykSecret {

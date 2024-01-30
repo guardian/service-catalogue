@@ -146,11 +146,8 @@ function snykRequestOptions(config: Config): GotBodyOptions<string> {
 	};
 }
 
-export async function getSnykOrgs(
-	config: Config,
-	snykApiVersion: string,
-): Promise<SnykOrgResponse> {
-	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${snykApiVersion}`;
+export async function getSnykOrgs(config: Config): Promise<SnykOrgResponse> {
+	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${config.snykApiVersion}`;
 	const resp = await get(getOrgsUrl, snykRequestOptions(config));
 	console.log('Status code: ', resp.statusCode);
 
@@ -161,12 +158,14 @@ export async function getSnykOrgs(
 
 export async function getProjectsForOrg(
 	orgId: string,
-	snykApiVersion: string,
 	config: Config,
 ): Promise<SnykProject[]> {
 	const opts = snykRequestOptions(config);
 
-	const projectsResponse = await get(projectsURL(orgId, snykApiVersion), opts);
+	const projectsResponse = await get(
+		projectsURL(orgId, config.snykApiVersion),
+		opts,
+	);
 	console.log('Status code: ', projectsResponse.statusCode);
 	const parsedResponse = JSON.parse(
 		projectsResponse.body,
