@@ -126,3 +126,12 @@ jobs:
 
       - name: check schema.prisma file hasn't changed
         run: git diff --exit-code packages/common/prisma/schema.prisma
+
+      - name: check for untracked files
+        run: |
+          UNTRACKED_FILES=$(git ls-files --others --exclude-standard packages/common/prisma | wc -l)
+          if [ "$UNTRACKED_FILES" -gt 0 ]; then
+            echo "Untracked files found:"
+            git ls-files --others --exclude-standard packages/common/prisma
+            exit 1
+          fi
