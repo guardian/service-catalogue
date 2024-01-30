@@ -11,7 +11,6 @@ export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 	return value as NonEmptyArray<T>;
 }
 
-//TODO test this
 export class SetWithContentEquality<T> {
 	private items: T[] = [];
 	private getKey: (item: T) => string;
