@@ -356,6 +356,10 @@ export function hasOldSnykAlerts(
 	snykIssues: snyk_reporting_latest_issues[],
 	snykProjects: SnykProject[],
 ) {
+	const twoWeeksAgo = new Date();
+	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+	twoWeeksAgo.setHours(0, 0, 0, 0);
+
 	//find snyk projects that have a tag value matching the full repo name
 	const snykProjectIdsForRepo = snykProjects
 		.filter((project) => {
@@ -366,11 +370,14 @@ export function hasOldSnykAlerts(
 
 	const repoIssues: snyk_reporting_latest_issues[] = snykProjectIdsForRepo
 		.map((projectId) => getProjectIssues(projectId, snykIssues))
-		.flat();
+		.flat()
+		.filter(
+			(i) => !!i.introduced_date && new Date(i.introduced_date) < twoWeeksAgo,
+		);
 
-	const finalIssues = repoIssues.map(
-		(i) => JSON.parse(JSON.stringify(i.issue)) as SnykIssue,
-	);
+	const finalIssues = repoIssues
+		.map((i) => JSON.parse(JSON.stringify(i.issue)) as SnykIssue)
+		.filter((i) => i.severity === 'critical' || i.severity === 'high');
 
 	return finalIssues.length > 0;
 }
