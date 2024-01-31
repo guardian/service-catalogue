@@ -23,6 +23,8 @@ const commonSupportedLanguages = [
 	'Python',
 	'Jinja', // Jinja uses Python dependencies
 	'Mako', // Mako uses Python dependencies
+	'Ruby',
+	'Rust',
 	'Swift',
 	'TypeScript',
 	'CoffeeScript', // Uses JS/TS dependencies
@@ -36,8 +38,6 @@ const snykOnlySupportedLanguages = [
 	'Elixir',
 	'Kotlin',
 	'PHP',
-	'Ruby',
-	'Rust',
 	'Scala',
 	'Objective-C',
 	'Visual Basic .NET',
