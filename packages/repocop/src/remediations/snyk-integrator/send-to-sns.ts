@@ -7,7 +7,7 @@ import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from '../../config';
-import { actionSupportedLanguages } from '../../languages';
+import { actionSupportedLanguages, ignoredLanguages } from '../../languages';
 import { removeRepoOwner } from '../shared-utilities';
 
 export function findUnprotectedRepos(
@@ -22,6 +22,17 @@ function eventContainsOnlyActionSupportedLanguages(
 	return event.languages.every((lang) =>
 		actionSupportedLanguages.includes(lang),
 	);
+}
+
+function removeIgnoredLanguages(
+	event: SnykIntegratorEvent,
+): SnykIntegratorEvent {
+	return {
+		name: event.name,
+		languages: event.languages.filter(
+			(lang) => !ignoredLanguages.includes(lang),
+		),
+	};
 }
 
 export function findUntrackedReposWhereIntegrationWillWork(
@@ -41,10 +52,9 @@ export function findUntrackedReposWhereIntegrationWillWork(
 			};
 		});
 
-	const reposWhereAllLanguagesAreSupported =
-		unprotectedReposWithLanguages.filter((event) =>
-			eventContainsOnlyActionSupportedLanguages(event),
-		);
+	const reposWhereAllLanguagesAreSupported = unprotectedReposWithLanguages
+		.filter((event) => eventContainsOnlyActionSupportedLanguages(event))
+		.map((event) => removeIgnoredLanguages(event));
 
 	if (reposWhereAllLanguagesAreSupported.length > 0) {
 		console.log(
