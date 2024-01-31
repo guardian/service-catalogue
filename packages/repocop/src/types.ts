@@ -123,3 +123,19 @@ export interface GuardianSnykTags {
 	repo: string | undefined;
 	branch: string | undefined;
 }
+
+export interface SnykIssue {
+	id: string;
+	type?: string;
+	title?: string;
+	version?: string;
+	language?: string;
+	severity: string;
+	isPatched: boolean;
+	isPinnable: false;
+	isPatchable: boolean;
+	isUpgradable: boolean;
+	disclosureTime: string; //or Date?
+	packageManager?: string;
+	publicationTime: string; //or Date?
+}

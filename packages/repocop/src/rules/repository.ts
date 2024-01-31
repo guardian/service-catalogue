@@ -4,6 +4,7 @@ import type {
 	github_workflows,
 	repocop_github_repository_rules,
 	snyk_projects,
+	snyk_reporting_latest_issues,
 } from '@prisma/client';
 import type { Octokit } from 'octokit';
 import {
@@ -14,11 +15,13 @@ import type {
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	PartialAlert,
-	RepoAndAlerts,
 	RepoAndStack,
 	Repository,
+	SnykIssue,
+	SnykProject,
 	TeamRepository,
 } from '../types';
+import { isProduction } from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -293,47 +296,102 @@ export async function getAlertsForRepo(
 	}
 }
 
-function isOldForSeverity(
-	date: Date,
-	severity: 'critical' | 'high',
-	alert: PartialAlert,
-) {
-	const alertDate = new Date(alert.created_at);
-	return alertDate < date && alert.security_vulnerability.severity === severity;
-}
-
-export function hasOldAlerts(alerts: PartialAlert[], repo: string): boolean {
-	const highDayCount = 14;
+function vulnerabilityNeedsAddressing(date: Date, severity: string) {
 	const criticalDayCount = 1;
+	const highDayCount = 14;
+
+	const criticalVulnCutOff = new Date();
+	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
+	criticalVulnCutOff.setHours(0, 0, 0, 0);
 
 	const highVulnCutOff = new Date();
 	highVulnCutOff.setDate(highVulnCutOff.getDate() - highDayCount);
 	highVulnCutOff.setHours(0, 0, 0, 0);
 
-	const criticalVulnCutOff = new Date();
-	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
-	criticalVulnCutOff.setHours(0, 0, 0, 0);
-	const oldHighAlerts = alerts.filter((alert) =>
-		isOldForSeverity(highVulnCutOff, 'high', alert),
-	);
-	const oldCriticalAlerts = alerts.filter((alert) =>
-		isOldForSeverity(criticalVulnCutOff, 'critical', alert),
-	);
-	if (oldCriticalAlerts.length > 0) {
-		console.log(
-			`Dependabot - ${repo}: has ${oldCriticalAlerts.length} critical alerts older than ${criticalDayCount} days`,
-		);
+	if (severity === 'critical') {
+		return date < criticalVulnCutOff;
+	} else if (severity === 'high') {
+		return date < highVulnCutOff;
+	} else {
+		return false;
 	}
-	if (oldHighAlerts.length > 0) {
-		console.log(
-			`Dependabot - ${repo}: has ${oldHighAlerts.length} high alerts older than ${highDayCount} weeks`,
-		);
+}
+
+export function hasOldDependabotAlerts(
+	alerts: PartialAlert[],
+	repo: Repository,
+): boolean {
+	if (!isProduction(repo)) {
+		return false;
 	}
-	if (oldCriticalAlerts.length === 0 && oldHighAlerts.length === 0) {
-		console.log(`Dependabot - ${repo}: has no old alerts`);
+	const oldAlerts = alerts.filter((a) =>
+		vulnerabilityNeedsAddressing(
+			new Date(a.created_at),
+			a.security_vulnerability.severity,
+		),
+	);
+
+	if (oldAlerts.length > 0) {
+		console.log(
+			`Dependabot - ${repo.name}: has ${oldAlerts.length} alerts that need addressing`,
+		);
 	}
 
-	return oldHighAlerts.length > 0 || oldCriticalAlerts.length > 0;
+	return oldAlerts.length > 0;
+}
+
+function getProjectIssues(
+	projectId: string,
+	issues: snyk_reporting_latest_issues[],
+): snyk_reporting_latest_issues[] {
+	return issues.filter((issue) =>
+		JSON.stringify(issue.projects).includes(projectId),
+	);
+}
+
+export function hasOldSnykAlerts(
+	repo: Repository,
+	snykIssues: snyk_reporting_latest_issues[],
+	snykProjects: SnykProject[],
+) {
+	if (!isProduction(repo)) {
+		return false;
+	}
+	interface IntroducedDateAndIssue {
+		introduced_date: string;
+		issue: SnykIssue;
+	}
+
+	const snykProjectIdsForRepo = snykProjects
+		.filter((project) => {
+			const tagValues = project.attributes.tags.map((tag) => tag.value);
+			return tagValues.includes(repo.full_name);
+		})
+		.map((project) => project.id);
+
+	const snykIssuesForRepo: snyk_reporting_latest_issues[] =
+		snykProjectIdsForRepo
+			.map((projectId) => getProjectIssues(projectId, snykIssues))
+			.flat();
+
+	const parsedIssuesAndDates: IntroducedDateAndIssue[] = snykIssuesForRepo.map(
+		(i) => {
+			const issue = JSON.parse(JSON.stringify(i.issue)) as SnykIssue;
+			const date = i.introduced_date ? i.introduced_date : issue.disclosureTime;
+			return { introduced_date: date, issue: issue };
+		},
+	);
+
+	const oldIssues = parsedIssuesAndDates.filter((i) =>
+		vulnerabilityNeedsAddressing(new Date(i.introduced_date), i.issue.severity),
+	);
+
+	if (oldIssues.length > 0) {
+		console.log(
+			`Snyk - ${repo.name}: has ${oldIssues.length} issues that need addressing`,
+		);
+	}
+	return oldIssues.length > 0;
 }
 
 export function testExperimentalRepocopFeatures(
@@ -375,8 +433,18 @@ export function evaluateOneRepo(
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
+	latestSnykIssues: snyk_reporting_latest_issues[],
+	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
-	alerts = undefined;
+	if (alerts) {
+		hasOldDependabotAlerts(alerts, repo);
+	} else {
+		console.log(
+			`Dependabot - ${repo.name}: Could not get alerts. Dependabot may not be enabled.`,
+		);
+	}
+
+	hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest);
 
 	return {
 		full_name: repo.full_name,
@@ -397,28 +465,34 @@ export function evaluateOneRepo(
 	};
 }
 
-export function evaluateRepositories(
-	alerts: RepoAndAlerts[],
+export async function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	snykProjects: snyk_projects[],
 	workflowFiles: github_workflows[],
-): repocop_github_repository_rules[] {
-	const evaluatedRepos = repositories.map((r) => {
+	latestSnykIssues: snyk_reporting_latest_issues[],
+	snykProjectsFromRest: SnykProject[],
+	octokit: Octokit,
+): Promise<repocop_github_repository_rules[]> {
+	const evaluatedRepos = repositories.map(async (r) => {
+		const repoAlerts = isProduction(r)
+			? await getAlertsForRepo(octokit, r.name)
+			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		const alertsForRepo = alerts.find((a) => a.shortName === r.name);
 		return evaluateOneRepo(
-			alertsForRepo?.alerts,
+			repoAlerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,
 			repoLanguages,
 			snykProjects,
 			workflowFiles,
+			latestSnykIssues,
+			snykProjectsFromRest,
 		);
 	});
-	return evaluatedRepos;
+	return Promise.all(evaluatedRepos);
 }
