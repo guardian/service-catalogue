@@ -17,11 +17,9 @@ import {
 	getRepositoryBranches,
 	getRepositoryLanguages,
 	getSnykOrgs,
-	getSnykProjects,
 	getStacks,
 	getTeamRepositories,
 	getTeams,
-	getWorkflowFiles,
 } from './query';
 import { protectBranches } from './remediations/branch-protector/branch-protection';
 import { sendUnprotectedRepo } from './remediations/snyk-integrator/send-to-sns';
@@ -31,11 +29,7 @@ import {
 	evaluateRepositories,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type {
-	AwsCloudFormationStack,
-	GuardianSnykTags,
-	ProjectTag,
-} from './types';
+import type { AwsCloudFormationStack } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -52,13 +46,6 @@ async function writeEvaluationTable(
 	console.log('Finished writing to table');
 }
 
-function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
-	return {
-		repo: tags.find((t) => t.key === 'repo')?.value,
-		branch: tags.find((t) => t.key === 'branch')?.value,
-	};
-}
-
 export async function main() {
 	const config: Config = await getConfig();
 
@@ -69,21 +56,6 @@ export async function main() {
 			snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
 		)
 	).flat();
-
-	const allSnykTags = snykProjectsFromRest
-		.map((x) => x.attributes.tags)
-		.map(toGuardianSnykTags)
-		.filter((x) => !!x.repo && !!x.branch);
-
-	const uniqueStringTags: string[] = [
-		...new Set(allSnykTags.map((t) => JSON.stringify(t))),
-	];
-
-	const uniqueTags = uniqueStringTags.map(
-		(t) => JSON.parse(t) as GuardianSnykTags,
-	);
-
-	console.log('Snyk projects found: ', uniqueTags.length);
 
 	const prisma = getPrismaClient(config);
 
@@ -96,11 +68,9 @@ export async function main() {
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const repoTeams = await getTeamRepositories(prisma);
 	const repoLanguages = await getRepositoryLanguages(prisma);
-	const workflowFiles = await getWorkflowFiles(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
-	const snykProjects = await getSnykProjects(prisma);
 	const latestSnykIssues = await getLatestSnykIssues(prisma);
 
 	const evaluatedRepos: repocop_github_repository_rules[] =
@@ -109,8 +79,6 @@ export async function main() {
 			branches,
 			repoTeams,
 			repoLanguages,
-			snykProjects,
-			workflowFiles,
 			latestSnykIssues,
 			snykProjectsFromRest,
 			octokit,
