@@ -1,7 +1,6 @@
 import type {
 	github_languages,
 	github_repository_branches,
-	github_workflows,
 	repocop_github_repository_rules,
 	snyk_projects,
 	snyk_reporting_latest_issues,
@@ -14,7 +13,9 @@ import {
 import type {
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
+	GuardianSnykTags,
 	PartialAlert,
+	ProjectTag,
 	RepoAndStack,
 	Repository,
 	SnykIssue,
@@ -142,6 +143,31 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 	return snykTags;
 }
 
+function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
+	return {
+		repo: tags.find((t) => t.key === 'repo')?.value,
+		branch: tags.find((t) => t.key === 'branch')?.value,
+	};
+}
+
+function getTagsFromSnykProject(
+	snykProjectsFromRest: SnykProject[],
+): GuardianSnykTags[] {
+	const allSnykTags = snykProjectsFromRest
+		.map((x) => x.attributes.tags)
+		.map(toGuardianSnykTags)
+		.filter((x) => !!x.repo && !!x.branch);
+
+	const uniqueStringTags: string[] = [
+		...new Set(allSnykTags.map((t) => JSON.stringify(t))),
+	];
+
+	const uniqueTags = uniqueStringTags.map(
+		(t) => JSON.parse(t) as GuardianSnykTags,
+	);
+	return uniqueTags;
+}
+
 /**
  * Evaluate the following rule for a Github repository:
  *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
@@ -149,8 +175,7 @@ export function parseSnykTags(snyk_projects: snyk_projects) {
 export function hasDependencyTracking(
 	repo: Repository,
 	repoLanguages: github_languages[],
-	snyk_projects: snyk_projects[],
-	workflowFiles: github_workflows[],
+	snykProjectsFromRest: SnykProject[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
@@ -161,19 +186,8 @@ export function hasDependencyTracking(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
 
-	const allProjectTags = snyk_projects.map((project) => parseSnykTags(project));
-
 	//This is a temporary workaround until we get the snyk_projects table back.
-	function snykYamlExists(repo: Repository, workflowFiles: github_workflows[]) {
-		const result = workflowFiles.find(
-			(file) =>
-				file.repository_id === repo.id &&
-				!!file.path &&
-				file.path.includes('snyk'),
-		);
-		const exists = result !== undefined;
-		return exists;
-	}
+	const tags = getTagsFromSnykProject(snykProjectsFromRest);
 
 	function snykProjectExists(repo: Repository, allProjectTags: SnykTags[]) {
 		const result = allProjectTags.find(
@@ -189,9 +203,7 @@ export function hasDependencyTracking(
 	}
 
 	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
-	const repoIsOnSnyk =
-		snykYamlExists(repo, workflowFiles) ||
-		snykProjectExists(repo, allProjectTags);
+	const repoIsOnSnyk = snykProjectExists(repo, tags);
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
@@ -431,8 +443,6 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
-	snykProjects: snyk_projects[],
-	workflowFiles: github_workflows[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
@@ -458,8 +468,7 @@ export function evaluateOneRepo(
 		vulnerability_tracking: hasDependencyTracking(
 			repo,
 			repoLanguages,
-			snykProjects,
-			workflowFiles,
+			snykProjectsFromRest,
 		),
 		evaluated_on: new Date(),
 	};
@@ -470,8 +479,6 @@ export async function evaluateRepositories(
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
-	snykProjects: snyk_projects[],
-	workflowFiles: github_workflows[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 	octokit: Octokit,
@@ -488,8 +495,6 @@ export async function evaluateRepositories(
 			branchesForRepo,
 			teamsForRepo,
 			repoLanguages,
-			snykProjects,
-			workflowFiles,
 			latestSnykIssues,
 			snykProjectsFromRest,
 		);
