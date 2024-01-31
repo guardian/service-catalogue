@@ -54,7 +54,8 @@ export function findUntrackedReposWhereIntegrationWillWork(
 
 	const reposWhereAllLanguagesAreSupported = unprotectedReposWithLanguages
 		.filter((event) => eventContainsOnlyActionSupportedLanguages(event))
-		.map((event) => removeIgnoredLanguages(event));
+		.map((event) => removeIgnoredLanguages(event))
+		.filter((event) => event.languages.length > 0);
 
 	if (reposWhereAllLanguagesAreSupported.length > 0) {
 		console.log(

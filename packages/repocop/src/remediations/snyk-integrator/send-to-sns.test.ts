@@ -61,6 +61,10 @@ function withGoodAndIgnoredLanguages(fullName: string): github_languages {
 	return repoWithLanguages(fullName, ['Scala', 'TypeScript', 'Shell', 'HTML']);
 }
 
+function withIgnoredLanguages(fullName: string): github_languages {
+	return repoWithLanguages(fullName, ['Shell', 'HTML', 'CSS']);
+}
+
 describe('When trying to find untracked repos where snyk integration will work', () => {
 	test('return a result if an untracked repo contains only languages our action supports', () => {
 		const actual = findUntrackedReposWhereIntegrationWillWork(
@@ -103,5 +107,13 @@ describe('When trying to find untracked repos where snyk integration will work',
 				languages: ['Scala', 'TypeScript'],
 			},
 		]);
+	});
+
+	test('do not return a result if repository only contains ignored languages', () => {
+		const actual = findUntrackedReposWhereIntegrationWillWork(
+			[untrackedRepo('guardian/repo6')],
+			[withIgnoredLanguages('guardian/repo6')],
+		);
+		expect(actual.length).toEqual(0);
 	});
 });
