@@ -50,6 +50,7 @@ export const actionSupportedLanguages = ignoredLanguages.concat(
 	'JavaScript',
 	'Swift',
 	'Kotlin',
+	'Ruby',
 );
 
 export const supportedDependabotLanguages = ignoredLanguages.concat(
