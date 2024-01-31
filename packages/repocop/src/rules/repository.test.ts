@@ -724,24 +724,15 @@ describe('NO RULE - Dependabot alerts', () => {
 });
 
 describe('NO RULE - Snyk vulnerabilities', () => {
-	const repoName = thePerfectRepo.full_name;
 	const snykProjectId = '1a2b';
 	const highSeverityIssue = {
 		id: '',
-		CVSSv3: '',
-		Semver: { unaffected: '', vulnerable: ['<2.814.0'] },
-		Patches: [],
-		ignored: null,
-		package: '',
-		version: '',
 		severity: 'high',
-		cvssScore: 7.3,
 		isIgnored: false,
 		isPatched: false,
 		isPinnable: false,
 		isPatchable: false,
 		isUpgradable: true,
-		priorityScore: 999,
 		disclosureTime: '',
 		publicationTime: '',
 	};
@@ -749,7 +740,6 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 	const lowSeverityIssue = {
 		...highSeverityIssue,
 		severity: 'low',
-		cvssScore: 1.3,
 	};
 
 	const myProject = {
@@ -791,7 +781,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			tags: [
 				{
 					key: 'repo',
-					value: repoName,
+					value: thePerfectRepo.full_name,
 				},
 			],
 		},
