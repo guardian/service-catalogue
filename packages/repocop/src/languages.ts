@@ -25,7 +25,8 @@ const commonSupportedLanguages = [
 	'Mako', // Mako uses Python dependencies
 	'Swift',
 	'TypeScript',
-	'Svelte', // Svelte uses npm etc
+	'CoffeeScript', // Uses JS/TS dependencies
+	'Svelte', // Uses JS/TS dependencies
 ];
 const snykOnlySupportedLanguages = [
 	'C',
