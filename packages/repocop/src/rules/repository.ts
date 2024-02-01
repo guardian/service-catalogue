@@ -364,17 +364,13 @@ function getProjectIssues(
 	);
 }
 
-export function hasOldSnykAlerts(
+export function findSnykAlerts(
 	repo: Repository,
 	snykIssues: snyk_reporting_latest_issues[],
 	snykProjects: SnykProject[],
-) {
+): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
-		return false;
-	}
-	interface IntroducedDateAndIssue {
-		introduced_date: string;
-		issue: SnykIssue;
+		return [];
 	}
 
 	const snykProjectIdsForRepo = snykProjects
@@ -388,25 +384,14 @@ export function hasOldSnykAlerts(
 		snykProjectIdsForRepo
 			.map((projectId) => getProjectIssues(projectId, snykIssues))
 			.flat();
+	const processedVulns = snykIssuesForRepo.map(snykAlertToRepocopVulnerability);
 
-	const parsedIssuesAndDates: IntroducedDateAndIssue[] = snykIssuesForRepo.map(
-		(i) => {
-			const issue = JSON.parse(JSON.stringify(i.issue)) as SnykIssue;
-			const date = i.introduced_date ? i.introduced_date : issue.disclosureTime;
-			return { introduced_date: date, issue: issue };
-		},
+	const relevantVulns = processedVulns.filter(
+		(vuln) =>
+			(vuln.severity === 'high' || vuln.severity === 'critical') && vuln.open,
 	);
 
-	const oldIssues = parsedIssuesAndDates.filter((i) =>
-		vulnerabilityNeedsAddressing(new Date(i.introduced_date), i.issue.severity),
-	);
-
-	if (oldIssues.length > 0) {
-		console.log(
-			`Snyk - ${repo.name}: has ${oldIssues.length} issues that need addressing`,
-		);
-	}
-	return oldIssues.length > 0;
+	return relevantVulns;
 }
 
 export function testExperimentalRepocopFeatures(
@@ -441,7 +426,7 @@ export function testExperimentalRepocopFeatures(
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
 export function evaluateOneRepo(
-	alerts: RepocopVulnerability[] | undefined,
+	dependabotAlertsForRepo: RepocopVulnerability[] | undefined,
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
@@ -449,11 +434,14 @@ export function evaluateOneRepo(
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
-	if (alerts) {
-		hasOldAlerts(alerts, repo);
-	}
+	const snykAlertsForRepo = findSnykAlerts(
+		repo,
+		latestSnykIssues,
+		snykProjectsFromRest,
+	);
 
-	hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest);
+	const allAlerts = snykAlertsForRepo.concat(dependabotAlertsForRepo ?? []);
+	hasOldAlerts(allAlerts, repo);
 
 	return {
 		full_name: repo.full_name,
@@ -496,7 +484,7 @@ function snykAlertToRepocopVulnerability(
 	const issue = alert.issue as unknown as SnykIssue;
 
 	return {
-		open: alert.is_fixed === false,
+		open: alert.is_fixed !== true && !issue.isIgnored,
 		source: 'Snyk',
 		severity: issue.severity,
 		package: issue.packageManager as string,
@@ -518,16 +506,15 @@ export async function evaluateRepositories(
 	octokit: Octokit,
 ): Promise<repocop_github_repository_rules[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
-		const repoAlerts = isProduction(r)
+		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))
 					?.filter((a) => a.state === 'open')
 					.map(dependabotAlertToRepocopVulnerability)
-					.concat(latestSnykIssues.map(snykAlertToRepocopVulnerability))
 			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 		return evaluateOneRepo(
-			repoAlerts,
+			dependabotAlerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,

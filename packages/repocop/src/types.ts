@@ -128,6 +128,7 @@ export interface SnykIssue {
 	language?: string;
 	severity: string;
 	isPatched: boolean;
+	isIgnored: boolean;
 	isPinnable: false;
 	isPatchable: boolean;
 	isUpgradable: boolean;
