@@ -45,11 +45,19 @@ services:
       context: steampipe
       dockerfile: Dockerfile
       args:
-        GITHUB_PLUGIN_VERSION: ${SP_GITHUB}
-        AWS_PLUGIN_VERSION: ${SP_AWS}
+        SP_GITHUB: ${SP_GITHUB}
+        SP_AWS: ${SP_AWS}
     ports:
       - '9193:9193'
+    volumes:
+      - ~/.aws/credentials:/.aws/credentials
     environment:
+      STAGE: ${STAGE}
       STEAMPIPE_DATABASE_PASSWORD: steampipe
       GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
-    command: ["service", "start", "--foreground"]
+
+      # these are permanent credentials, as we'll be using STS Assume Role, which Janus DEV doesn't allow
+      AWS_PROFILE: 'service-catalogue-DEV'
+      AWS_SHARED_CREDENTIALS_FILE: '/.aws/credentials'
+    entrypoint: "/bin/bash -c"
+    command: [ "generate-aws-plugin-config; steampipe service start --foreground" ]

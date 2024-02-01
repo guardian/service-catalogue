@@ -19768,7 +19768,7 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "steampipe service start --foreground",
+              "generate-aws-plugin-config; steampipe service start --foreground",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -19780,7 +19780,7 @@ spec:
               "-c",
             ],
             "Essential": true,
-            "Image": "ghcr.io/guardian/service-catalogue/steampipe:3",
+            "Image": "ghcr.io/guardian/service-catalogue/steampipe:4",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -19879,7 +19879,7 @@ spec:
             "Name": "steampipeFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "steampipeTaskDefinitionExecutionRole36454CCE",
@@ -19887,7 +19887,7 @@ spec:
           ],
         },
         "Family": "ServiceCataloguesteampipeTaskDefinition7074901D",
-        "Memory": "512",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -20026,9 +20026,6 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/ReadOnlyAccess",
-        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -20083,6 +20080,16 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": "organizations:List*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
             },
           ],
           "Version": "2012-10-17",
