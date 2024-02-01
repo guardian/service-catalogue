@@ -34,7 +34,7 @@ export async function createPullRequest(
 		base: baseBranch,
 		changes: changes.map(({ commitMessage, files }) => ({
 			commit: commitMessage,
-			files: files,
+			files,
 		})),
 	});
 }
