@@ -479,8 +479,6 @@ export function dependabotAlertToRepocopVulnerability(
 export function snykAlertToRepocopVulnerability(
 	alert: snyk_reporting_latest_issues,
 ): RepocopVulnerability {
-	alert;
-
 	const issue = alert.issue as unknown as SnykIssue;
 
 	return {
