@@ -38,6 +38,7 @@ import {
 } from 'aws-cdk-lib/aws-ssm';
 import { getCentralElkLink } from 'common/src/logs';
 import { addCloudqueryEcsCluster } from './cloudquery';
+import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/policies';
 import { addDataAuditLambda } from './data-audit';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Repocop } from './repocop';
@@ -262,7 +263,7 @@ export class ServiceCatalogue extends GuStack {
 		new SteampipeService(this, 'steampipe', {
 			app,
 			cluster,
-			policies: [],
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			secrets: {},
 			accessSecurityGroup: steampipeSecurityGroup,
 			domainName: steampipeDomainName,

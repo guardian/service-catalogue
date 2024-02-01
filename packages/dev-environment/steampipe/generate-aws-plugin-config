@@ -35,6 +35,7 @@ while read -r line ; do
 
   echo "adding config for account $ACCOUNT_NAME ($ACCOUNT_ID)"
 
+  if [ "$STAGE" == "DEV" ] ; then
 cat << EOF >> "$AWS_CONFIG_FILE"
 [profile sp_${ACCOUNT_NAME}]
 role_arn = arn:aws:iam::${ACCOUNT_ID}:role/cloudquery-access
@@ -42,6 +43,15 @@ source_profile = service-catalogue-DEV
 role_session_name = steampipe
 
 EOF
+  else
+cat << EOF >> "$AWS_CONFIG_FILE"
+[profile sp_${ACCOUNT_NAME}]
+role_arn = arn:aws:iam::${ACCOUNT_ID}:role/cloudquery-access
+credential_source = EcsContainer
+role_session_name = steampipe
+
+EOF
+  fi
 
 cat << EOF >> "$STEAMPIPE_CONFIG_FILE"
 connection "aws_${SP_NAME}" {

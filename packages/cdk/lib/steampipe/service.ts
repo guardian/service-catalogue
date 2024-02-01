@@ -6,8 +6,9 @@ import {
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration } from 'aws-cdk-lib';
-import { Port } from 'aws-cdk-lib/aws-ec2';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import { Port } from 'aws-cdk-lib/aws-ec2';
+import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
 import {
 	CpuArchitecture,
 	FargateService,
@@ -17,13 +18,12 @@ import {
 	LogDrivers,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
-import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
 import { PerformanceMode, ThroughputMode } from 'aws-cdk-lib/aws-efs';
 import {
 	NetworkLoadBalancer,
 	Protocol,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { Effect, ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { Images } from '../cloudquery/images';
@@ -183,7 +183,9 @@ export class SteampipeService extends FargateService {
 					'github-token',
 				),
 			},
-			command: ['steampipe service start --foreground'],
+			command: [
+				'generate-aws-plugin-config; steampipe service start --foreground',
+			],
 			logging: fireLensLogDriver,
 			portMappings: [
 				{
@@ -218,14 +220,6 @@ export class SteampipeService extends FargateService {
 		});
 
 		taskPolicies.forEach((policy) => task.addToTaskRolePolicy(policy));
-
-		task.taskRole.addManagedPolicy(
-			ManagedPolicy.fromManagedPolicyArn(
-				scope,
-				'SteampipeReadOnlyPolicy',
-				'arn:aws:iam::aws:policy/ReadOnlyAccess',
-			),
-		);
 
 		const nlb = new NetworkLoadBalancer(scope, `steampipe-nlb`, {
 			vpc: cluster.vpc,

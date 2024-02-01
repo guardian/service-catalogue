@@ -52,6 +52,7 @@ services:
     volumes:
       - ~/.aws/credentials:/.aws/credentials
     environment:
+      STAGE: ${STAGE}
       STEAMPIPE_DATABASE_PASSWORD: steampipe
       GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
 

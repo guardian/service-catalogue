@@ -18,6 +18,6 @@ export const Images = {
 		'public.ecr.aws/docker/library/postgres:16-alpine',
 	),
 	steampipe: ContainerImage.fromRegistry(
-		'ghcr.io/guardian/service-catalogue/steampipe:3',
+		'ghcr.io/guardian/service-catalogue/steampipe:4',
 	),
 };
