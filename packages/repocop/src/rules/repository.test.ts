@@ -6,7 +6,7 @@ import type {
 } from '@prisma/client';
 import type {
 	AwsCloudFormationStack,
-	PartialAlert,
+	RepocopVulnerability,
 	Repository,
 	SnykProject,
 	TeamRepository,
@@ -15,7 +15,7 @@ import {
 	evaluateOneRepo,
 	findStacks,
 	hasDependencyTracking,
-	hasOldDependabotAlerts,
+	hasOldAlerts,
 	hasOldSnykAlerts,
 	parseSnykTags,
 } from './repository';
@@ -25,7 +25,7 @@ function evaluateRepoTestHelper(
 	branches: github_repository_branches[] = [],
 	teams: TeamRepository[] = [],
 	languages: github_languages[] = [],
-	alerts: PartialAlert[] = [],
+	alerts: RepocopVulnerability[] = [],
 	latestSnykIssues: snyk_reporting_latest_issues[] = [],
 	snykProjectsFromRest: SnykProject[] = [],
 ) {
@@ -584,70 +584,58 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 	});
 });
 
-function createAlert(
-	severity: 'critical' | 'high' | 'medium',
-	createdAt: Date,
-	state: 'open' | 'auto_dismissed' | 'dismissed' | 'fixed',
-): PartialAlert {
-	const alert = {
-		state,
-		created_at: createdAt.toISOString(),
-		security_vulnerability: {
-			severity,
-			vulnerable_version_range: '',
-			first_patched_version: {
-				identifier: '',
-			},
-			package: {
-				name: '',
-				ecosystem: '',
-			},
-		},
-		dependency: {
-			package: {
-				name: '',
-				ecosystem: '',
-			},
-		},
-	};
-	return alert;
-}
+const oldCriticalDependabotVuln: RepocopVulnerability = {
+	open: true,
+	source: 'Dependabot',
+	severity: 'critical',
+	package: 'ansible',
+	urls: [],
+	ecosystem: 'pip',
+	alert_issue_date: '2021-01-01T00:00:00.000Z',
+};
+
+const newCriticalDependabotVuln: RepocopVulnerability = {
+	...oldCriticalDependabotVuln,
+	alert_issue_date: new Date().toISOString(),
+};
+
+const oldHighDependabotVuln: RepocopVulnerability = {
+	...oldCriticalDependabotVuln,
+	severity: 'high',
+};
+
+const newHighDependabotVuln: RepocopVulnerability = {
+	...oldHighDependabotVuln,
+	alert_issue_date: new Date().toISOString(),
+};
 
 describe('NO RULE - Dependabot alerts', () => {
 	test('should be flagged if there are critical alerts older than one day', () => {
-		const alerts: PartialAlert[] = [
-			createAlert('critical', new Date('2021-01-01'), 'open'),
-		];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(true);
+		expect(hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo)).toBe(
+			true,
+		);
 	});
 	test('should not be flagged if a critical alert was raised today', () => {
-		const alerts: PartialAlert[] = [
-			createAlert('critical', new Date(), 'open'),
-		];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
+		expect(hasOldAlerts([newCriticalDependabotVuln], thePerfectRepo)).toBe(
+			false,
+		);
 	});
 	test('should be flagged if there are high alerts older than 14 days', () => {
-		const alerts: PartialAlert[] = [
-			createAlert('high', new Date('2021-01-01'), 'open'),
-		];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(true);
+		expect(hasOldAlerts([oldHighDependabotVuln], thePerfectRepo)).toBe(true);
 	});
 	test('should not be flagged if a high alert was raised today', () => {
-		const alerts: PartialAlert[] = [createAlert('high', new Date(), 'open')];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
+		expect(hasOldAlerts([newHighDependabotVuln], thePerfectRepo)).toBe(false);
 	});
 	test('should not be flagged if a high alert was raised 13 days ago', () => {
 		const thirteenDaysAgo = new Date();
 		thirteenDaysAgo.setDate(thirteenDaysAgo.getDate() - 13);
-		const alerts: PartialAlert[] = [
-			createAlert('high', thirteenDaysAgo, 'open'),
-		];
 
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
+		const thirteenDayOldHigh: RepocopVulnerability = {
+			...oldHighDependabotVuln,
+			alert_issue_date: thirteenDaysAgo.toISOString(),
+		};
+
+		expect(hasOldAlerts([thirteenDayOldHigh], thePerfectRepo)).toBe(false);
 	});
 });
 

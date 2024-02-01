@@ -11,12 +11,13 @@ import {
 	supportedSnykLanguages,
 } from '../languages';
 import type {
+	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	GuardianSnykTags,
-	PartialAlert,
 	ProjectTag,
 	RepoAndStack,
+	RepocopVulnerability,
 	Repository,
 	SnykIssue,
 	SnykProject,
@@ -285,7 +286,7 @@ function findArchivedReposWithStacks(
 export async function getAlertsForRepo(
 	octokit: Octokit,
 	name: string,
-): Promise<PartialAlert[] | undefined> {
+): Promise<Alert[] | undefined> {
 	if (name.startsWith('guardian/')) {
 		name = name.replace('guardian/', '');
 	}
@@ -302,8 +303,12 @@ export async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data as PartialAlert[];
+		return alert.data;
 	} catch (error) {
+		console.info(
+			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
+		);
+		console.debug(error);
 		return undefined;
 	}
 }
@@ -329,24 +334,22 @@ function vulnerabilityNeedsAddressing(date: Date, severity: string) {
 	}
 }
 
-export function hasOldDependabotAlerts(
-	alerts: PartialAlert[],
+export function hasOldAlerts(
+	alerts: RepocopVulnerability[],
 	repo: Repository,
 ): boolean {
 	if (!isProduction(repo)) {
 		return false;
 	}
 	const oldAlerts = alerts.filter((a) =>
-		vulnerabilityNeedsAddressing(
-			new Date(a.created_at),
-			a.security_vulnerability.severity,
-		),
+		vulnerabilityNeedsAddressing(new Date(a.alert_issue_date), a.severity),
 	);
 
 	if (oldAlerts.length > 0) {
 		console.log(
-			`Dependabot - ${repo.name}: has ${oldAlerts.length} alerts that need addressing`,
+			`${repo.name}: has ${oldAlerts.length} alerts that need addressing`,
 		);
+		console.debug(oldAlerts);
 	}
 
 	return oldAlerts.length > 0;
@@ -438,7 +441,7 @@ export function testExperimentalRepocopFeatures(
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
 export function evaluateOneRepo(
-	alerts: PartialAlert[] | undefined,
+	alerts: RepocopVulnerability[] | undefined,
 	repo: Repository,
 	allBranches: github_repository_branches[],
 	teams: TeamRepository[],
@@ -447,11 +450,7 @@ export function evaluateOneRepo(
 	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
 	if (alerts) {
-		hasOldDependabotAlerts(alerts, repo);
-	} else {
-		console.log(
-			`Dependabot - ${repo.name}: Could not get alerts. Dependabot may not be enabled.`,
-		);
+		hasOldAlerts(alerts, repo);
 	}
 
 	hasOldSnykAlerts(repo, latestSnykIssues, snykProjectsFromRest);
@@ -474,6 +473,41 @@ export function evaluateOneRepo(
 	};
 }
 
+function dependabotAlertToRepocopVulnerability(
+	alert: Alert,
+): RepocopVulnerability {
+	return {
+		open: alert.state === 'open',
+		source: 'Dependabot',
+		severity: alert.security_advisory.severity,
+		package: alert.security_vulnerability.package.name,
+		urls: alert.security_advisory.references.map((ref) => ref.url),
+		ecosystem: alert.security_vulnerability.package.ecosystem,
+		alert_issue_date: alert.created_at,
+		vulnerable_version: alert.security_vulnerability.vulnerable_version_range,
+	};
+}
+
+function snykAlertToRepocopVulnerability(
+	alert: snyk_reporting_latest_issues,
+): RepocopVulnerability {
+	alert;
+
+	const issue = alert.issue as unknown as SnykIssue;
+
+	return {
+		open: alert.is_fixed === false,
+		source: 'Snyk',
+		severity: issue.severity,
+		package: issue.packageManager as string,
+		urls: issue.url ? [issue.url] : [],
+		ecosystem: issue.language as string,
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
+		alert_issue_date: alert.introduced_date!,
+		vulnerable_version: issue.version,
+	};
+}
+
 export async function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
@@ -485,7 +519,10 @@ export async function evaluateRepositories(
 ): Promise<repocop_github_repository_rules[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
 		const repoAlerts = isProduction(r)
-			? await getAlertsForRepo(octokit, r.name)
+			? (await getAlertsForRepo(octokit, r.name))
+					?.filter((a) => a.state === 'open')
+					.map(dependabotAlertToRepocopVulnerability)
+					.concat(latestSnykIssues.map(snykAlertToRepocopVulnerability))
 			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
