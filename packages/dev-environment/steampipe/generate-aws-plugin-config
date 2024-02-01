@@ -8,6 +8,10 @@ AWS_CONFIG_FILE=$HOME/.aws/config
 STEAMPIPE_INSTALL_DIR=$HOME/.steampipe/
 STEAMPIPE_CONFIG_FILE=${STEAMPIPE_INSTALL_DIR}/config/aws.spc
 
+# The `cloudquery-access` role has not been provisioned in the Root account,
+# Do not configure Steampipe to use it, as it will always error with `GetCallerIdentity`.
+ROOT_ACCOUNT_NAME="Guardian Web Systems"
+
 mkdir -p $(dirname "$AWS_CONFIG_FILE")
 mkdir -p $(dirname "$STEAMPIPE_CONFIG_FILE")
 
@@ -64,6 +68,6 @@ EOF
 
 done < <(
   aws organizations list-accounts \
-    --query "Accounts[?Status!='SUSPENDED'].[Name,Id,Status]" \
+    --query "Accounts[?Status!='SUSPENDED' && Name!='$ROOT_ACCOUNT_NAME'].[Name,Id,Status]" \
     --output text
 )
