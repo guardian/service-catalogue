@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
@@ -183,9 +184,6 @@ export async function createSnykPullRequest(
 	});
 }
 
-export function generateBranchName(languages: string[]) {
-	return `integrate-snyk-${languages
-		.sort()
-		.map((language) => language.toLowerCase())
-		.join('-')}`;
+export function generateBranchName() {
+	return `integrate-snyk-${randomBytes(8).toString('hex')}`;
 }

@@ -4,7 +4,7 @@ import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { addPrToProject } from './projects-graphql';
-import { getPullRequest } from './pull-requests';
+import { getExistingPullRequest } from './pull-requests';
 import {
 	createSnykPullRequest,
 	createYaml,
@@ -16,14 +16,12 @@ export async function main(event: SnykIntegratorEvent) {
 	console.log(`Generating Snyk PR for ${event.name}`);
 	const config: Config = getConfig();
 
-	const branch = generateBranchName(event.languages);
+	const branch = generateBranchName();
 	if (config.stage === 'PROD') {
 		const octokit = await stageAwareOctokit(config.stage);
-
-		const existingPullRequest = await getPullRequest(
+		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			event.name,
-			branch,
 		);
 
 		if (!existingPullRequest) {
@@ -40,7 +38,10 @@ export async function main(event: SnykIntegratorEvent) {
 			await addPrToProject(config.stage, event);
 			console.log('Updated project board');
 		} else {
-			console.log(`Existing pull request found with branch ${branch}`);
+			console.log(
+				`Existing pull request found. Skipping creating a new one.`,
+				existingPullRequest.html_url,
+			);
 		}
 	} else {
 		console.log('Testing snyk.yml generation');

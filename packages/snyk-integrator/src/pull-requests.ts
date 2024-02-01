@@ -34,7 +34,7 @@ export async function createPullRequest(
 		base: baseBranch,
 		changes: changes.map(({ commitMessage, files }) => ({
 			commit: commitMessage,
-			files: files,
+			files,
 		})),
 	});
 }
@@ -42,15 +42,32 @@ export async function createPullRequest(
 type PullRequestParameters =
 	Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
 
-export async function getPullRequest(
+type PullRequest =
+	Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][number];
+
+function isGithubAuthor(pull: PullRequest) {
+	return (
+		pull.user?.login === 'gu-snyk-integrator[bot]' && pull.user.type === 'Bot'
+	);
+}
+
+export async function getExistingPullRequest(
 	octokit: Octokit,
 	repoName: string,
-	branchName: string,
 ) {
 	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
 		owner: 'guardian',
 		repo: repoName,
 		state: 'open',
 	} satisfies PullRequestParameters);
-	return pulls.find((pull) => pull.head.ref === branchName);
+
+	const found = pulls.filter((pull) => isGithubAuthor(pull));
+
+	if (found.length > 1) {
+		console.warn(
+			'More than one Snyk integrator PR found on repository - choosing the first.',
+		);
+	}
+
+	return found[0];
 }

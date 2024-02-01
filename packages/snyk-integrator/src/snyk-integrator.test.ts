@@ -65,15 +65,14 @@ describe('A generated PR', () => {
 });
 
 describe('generateBranchName', () => {
-	it('should output same branch name for the same languages', () => {
-		const branch1 = generateBranchName(['TypeScript', 'Scala', 'Python']);
-		const branch2 = generateBranchName(['TypeScript', 'Scala', 'Python']);
-		expect(branch1).toBe(branch2);
+	it('includes a helpful prefix', () => {
+		const branch = generateBranchName();
+		expect(branch).toEqual(expect.stringMatching('integrate-snyk*'));
 	});
 
-	it('should output same branch name for the same languages, regardless of order', () => {
-		const branch1 = generateBranchName(['TypeScript', 'Scala', 'Python']);
-		const branch2 = generateBranchName(['Scala', 'Python', 'TypeScript']);
-		expect(branch1).toBe(branch2);
+	it('does not produce the same branch name twice', () => {
+		const branch1 = generateBranchName();
+		const branch2 = generateBranchName();
+		expect(branch1).not.toEqual(branch2);
 	});
 });
