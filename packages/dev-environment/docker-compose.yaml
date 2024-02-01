@@ -31,7 +31,7 @@ services:
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
     command: sync /dev-config.yaml --log-console --log-level info
   grafana:
-    image: grafana/grafana-oss:9.4.7
+    image: grafana/grafana-oss:10.3.1
     depends_on:
       - postgres
       - steampipe
