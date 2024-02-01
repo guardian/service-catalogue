@@ -5,7 +5,6 @@ import type {
 	snyk_reporting_latest_issues,
 } from '@prisma/client';
 import type {
-	Alert,
 	AwsCloudFormationStack,
 	RepocopVulnerability,
 	Repository,
@@ -21,6 +20,7 @@ import {
 	hasDependencyTracking,
 	hasOldAlerts,
 	parseSnykTags,
+	snykAlertToRepocopVulnerability,
 } from './repository';
 
 function evaluateRepoTestHelper(
@@ -642,59 +642,61 @@ describe('NO RULE - Dependabot alerts', () => {
 	});
 });
 
+const snykProjectId = '1a2b';
+const highSeverityIssue = {
+	id: '',
+	severity: 'high',
+	language: 'js',
+	isIgnored: false,
+	isPatched: false,
+	isPinnable: false,
+	isPatchable: false,
+	isUpgradable: true,
+	disclosureTime: '',
+	publicationTime: '',
+	package: 'fetch',
+	packageManager: 'npm',
+	url: 'example.com',
+};
+
+const lowSeverityIssue = {
+	...highSeverityIssue,
+	severity: 'low',
+};
+
+const myProject = {
+	id: snykProjectId,
+	url: '',
+	name: '',
+	source: 'cli',
+	targetFile: '',
+};
+
+const myOtherProject = {
+	id: '2b3c',
+	url: '',
+	name: '',
+	source: 'cli',
+	targetFile: '',
+};
+
+const snykIssue: snyk_reporting_latest_issues = {
+	cq_sync_time: null,
+	cq_source_name: null,
+	cq_id: '',
+	cq_parent_id: null,
+	id: '',
+	issue: highSeverityIssue,
+	projects: [myProject, myOtherProject],
+	organization_id: '',
+	introduced_date: 'someTZdate',
+	project: null,
+	is_fixed: false,
+	patched_date: null,
+	fixed_date: null,
+};
+
 describe('NO RULE - Snyk vulnerabilities', () => {
-	const snykProjectId = '1a2b';
-	const highSeverityIssue = {
-		id: '',
-		severity: 'high',
-		isIgnored: false,
-		isPatched: false,
-		isPinnable: false,
-		isPatchable: false,
-		isUpgradable: true,
-		disclosureTime: '',
-		publicationTime: '',
-	};
-
-	const lowSeverityIssue = {
-		...highSeverityIssue,
-		severity: 'low',
-	};
-
-	const myProject = {
-		id: snykProjectId,
-		url: '',
-		name: '',
-		source: 'cli',
-		targetFile: '',
-		packageManager: '',
-	};
-
-	const myOtherProject = {
-		id: '2b3c',
-		url: '',
-		name: '',
-		source: 'cli',
-		targetFile: '',
-		packageManager: '',
-	};
-
-	const snykIssue: snyk_reporting_latest_issues = {
-		cq_sync_time: null,
-		cq_source_name: null,
-		cq_id: '',
-		cq_parent_id: null,
-		id: '',
-		issue: highSeverityIssue,
-		projects: [myProject, myOtherProject],
-		organization_id: '',
-		introduced_date: '',
-		project: null,
-		is_fixed: null,
-		patched_date: null,
-		fixed_date: null,
-	};
-
 	const snykProject: SnykProject = {
 		id: snykProjectId,
 		attributes: {
@@ -783,5 +785,42 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			'2022-06-15T07:43:03Z',
 			'2022-06-14T15:21:52Z',
 		]);
+	});
+});
+
+describe('NO RULE - Vulnerabilities from Dependabot', () => {
+	test('Should be parseable into a common format', () => {
+		const result: RepocopVulnerability[] = example.map(
+			dependabotAlertToRepocopVulnerability,
+		);
+		expect(result.length).toEqual(2);
+		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
+		expect(result.map((v) => v.open)).toEqual([false, true]);
+		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
+		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
+		expect(result.map((v) => v.alert_issue_date)).toEqual([
+			'2022-06-15T07:43:03Z',
+			'2022-06-14T15:21:52Z',
+		]);
+	});
+});
+
+describe('NO RULE - Vulnerabilities from Snyk', () => {
+	test('Should be parseable into a common format', () => {
+		const input = snykIssue;
+		const result = snykAlertToRepocopVulnerability(input);
+		console.log(result);
+		expect(result.source).toEqual('Snyk');
+		expect(result.open).toEqual(true);
+		expect(result).toStrictEqual({
+			open: true,
+			source: 'Snyk',
+			severity: 'high',
+			package: 'fetch',
+			urls: ['example.com'],
+			ecosystem: 'npm',
+			alert_issue_date: 'someTZdate',
+			vulnerable_version: undefined,
+		});
 	});
 });

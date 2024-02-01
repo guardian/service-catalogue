@@ -1,5 +1,7 @@
 import type { Alert } from '../types';
 
+//These alerts were copied from the GH API docs https://docs.github.com/en/rest/dependabot/alerts?apiVersion=2022-11-28
+
 export const example: Alert[] = [
 	{
 		number: 2,

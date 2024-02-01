@@ -487,9 +487,9 @@ export function snykAlertToRepocopVulnerability(
 		open: alert.is_fixed !== true && !issue.isIgnored,
 		source: 'Snyk',
 		severity: issue.severity,
-		package: issue.packageManager as string,
+		package: issue.package,
 		urls: issue.url ? [issue.url] : [],
-		ecosystem: issue.language as string,
+		ecosystem: issue.packageManager,
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
 		alert_issue_date: alert.introduced_date!,
 		vulnerable_version: issue.version,

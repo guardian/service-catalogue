@@ -121,7 +121,7 @@ export interface GuardianSnykTags {
 
 export interface SnykIssue {
 	id: string;
-	url?: string; //make non optional?
+	url: string;
 	type?: string;
 	title?: string;
 	version?: string;
@@ -133,7 +133,8 @@ export interface SnykIssue {
 	isPatchable: boolean;
 	isUpgradable: boolean;
 	disclosureTime: string; //or Date?
-	packageManager?: string;
+	package: string;
+	packageManager: string;
 	publicationTime: string; //or Date?
 }
 
