@@ -249,7 +249,7 @@ export class SteampipeService extends FargateService {
 			maxHealthyPercent: 100,
 		});
 
-		nlbListener.addTargets(`steampipe-nlb-target`, {
+		const target = nlbListener.addTargets(`steampipe-nlb-target`, {
 			port: STEAMPIPE_DB_PORT,
 			protocol: Protocol.TCP,
 			targets: [this],
@@ -268,5 +268,10 @@ export class SteampipeService extends FargateService {
 			// and launch the new instance with 0 delay.
 			deregistrationDelay: Duration.seconds(0),
 		});
+
+		target.setAttribute(
+			'deregistration_delay.connection_termination.enabled',
+			'true',
+		);
 	}
 }

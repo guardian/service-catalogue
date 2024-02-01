@@ -20252,6 +20252,10 @@ spec:
             "Key": "deregistration_delay.timeout_seconds",
             "Value": "0",
           },
+          {
+            "Key": "deregistration_delay.connection_termination.enabled",
+            "Value": "true",
+          },
         ],
         "TargetType": "ip",
         "VpcId": {
