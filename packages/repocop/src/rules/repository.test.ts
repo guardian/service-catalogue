@@ -4,6 +4,7 @@ import type {
 	snyk_projects,
 	snyk_reporting_latest_issues,
 } from '@prisma/client';
+import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
 	RepocopVulnerability,
@@ -11,7 +12,6 @@ import type {
 	SnykProject,
 	TeamRepository,
 } from '../types';
-import { example } from './example-dependabot-alerts';
 import {
 	collectAndFormatUrgentSnykAlerts,
 	dependabotAlertToRepocopVulnerability,
