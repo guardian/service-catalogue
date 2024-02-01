@@ -19780,7 +19780,7 @@ spec:
               "-c",
             ],
             "Essential": true,
-            "Image": "ghcr.io/guardian/service-catalogue/steampipe:2",
+            "Image": "ghcr.io/guardian/service-catalogue/steampipe:3",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
