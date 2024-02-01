@@ -1,5 +1,5 @@
 import type { NonEmptyArray, Repository } from './types';
-import { isProduction, toNonEmptyArray } from './utils';
+import { isProduction, stringToSeverity, toNonEmptyArray } from './utils';
 
 describe('isProduction', () => {
 	test('should return correct values for prod and non-prod repos', () => {
@@ -34,5 +34,17 @@ describe('Failure on empty arrays', () => {
 		expect(() => toNonEmptyArray(nonEmptyArray)).not.toThrow();
 		expect(toNonEmptyArray(nonEmptyArray)).toEqual(nonEmptyArray);
 		expect(toNonEmptyArray(nonEmptyArray)).toEqual(typedNonEmptyArray);
+	});
+});
+
+describe('stringToSeverity', () => {
+	test('should return unknown if it is passed an unexpected string', () => {
+		expect(stringToSeverity('foo')).toBe('unknown');
+	});
+	test('should return the correct severity for valid inputs', () => {
+		expect(stringToSeverity('low')).toBe('low');
+		expect(stringToSeverity('medium')).toBe('medium');
+		expect(stringToSeverity('high')).toBe('high');
+		expect(stringToSeverity('critical')).toBe('critical');
 	});
 });

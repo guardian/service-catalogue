@@ -13,9 +13,9 @@ import type {
 } from '../types';
 import { example } from './example-dependabot-alerts';
 import {
+	collectAndFormatUrgentSnykAlerts,
 	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
-	findSnykAlerts,
 	findStacks,
 	hasDependencyTracking,
 	hasOldAlerts,
@@ -713,11 +713,15 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 	};
 
 	test('Should not be detected if no projects or issues are passed', () => {
-		const result = findSnykAlerts(thePerfectRepo, [], []);
+		const result = collectAndFormatUrgentSnykAlerts(thePerfectRepo, [], []);
 		expect(result.length).toEqual(0);
 	});
 	test('Should be detected if a repo, project, and issue match', () => {
-		const result = findSnykAlerts(thePerfectRepo, [snykIssue], [snykProject]);
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[snykIssue],
+			[snykProject],
+		);
 		expect(result.length).toEqual(1);
 	});
 	test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
@@ -725,7 +729,11 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			...thePerfectRepo,
 			topics: [],
 		};
-		const result = findSnykAlerts(nonProdRepo, [snykIssue], [snykProject]);
+		const result = collectAndFormatUrgentSnykAlerts(
+			nonProdRepo,
+			[snykIssue],
+			[snykProject],
+		);
 		expect(result.length).toEqual(0);
 	});
 	test('Should not detected if a snyk project has no tags', () => {
@@ -733,7 +741,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			...snykProject,
 			attributes: { ...snykProject.attributes, tags: [] },
 		};
-		const result = findSnykAlerts(
+		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
 			[snykIssue],
 			[untaggedProject],
@@ -749,7 +757,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			...snykIssue,
 			issue: { ...highSeverityIssue, severity: 'medium' },
 		};
-		const result = findSnykAlerts(
+		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
 			[lowSeverity, mediumSeverity],
 			[snykProject],
@@ -761,7 +769,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			...snykIssue,
 			issue: { ...highSeverityIssue, isIgnored: true },
 		};
-		const result = findSnykAlerts(
+		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
 			[ignoredIssue],
 			[snykProject],

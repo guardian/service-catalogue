@@ -23,7 +23,7 @@ import type {
 	SnykProject,
 	TeamRepository,
 } from '../types';
-import { isProduction } from '../utils';
+import { isProduction, stringToSeverity } from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -364,7 +364,7 @@ function getProjectIssues(
 	);
 }
 
-export function findSnykAlerts(
+export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
 	snykIssues: snyk_reporting_latest_issues[],
 	snykProjects: SnykProject[],
@@ -434,7 +434,7 @@ export function evaluateOneRepo(
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 ): repocop_github_repository_rules {
-	const snykAlertsForRepo = findSnykAlerts(
+	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
 		latestSnykIssues,
 		snykProjectsFromRest,
@@ -484,7 +484,7 @@ export function snykAlertToRepocopVulnerability(
 	return {
 		open: alert.is_fixed !== true && !issue.isIgnored,
 		source: 'Snyk',
-		severity: issue.severity,
+		severity: stringToSeverity(issue.severity),
 		package: issue.package,
 		urls: issue.url ? [issue.url] : [],
 		ecosystem: issue.packageManager,

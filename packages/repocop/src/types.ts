@@ -138,10 +138,12 @@ export interface SnykIssue {
 	publicationTime: string; //or Date?
 }
 
+export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
+
 export interface RepocopVulnerability {
 	source: 'Dependabot' | 'Snyk';
 	open: boolean;
-	severity: string;
+	severity: Severity;
 	package: string;
 	urls: string[];
 	ecosystem: string;
