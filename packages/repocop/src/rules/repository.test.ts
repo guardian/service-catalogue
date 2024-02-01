@@ -4,20 +4,23 @@ import type {
 	snyk_projects,
 	snyk_reporting_latest_issues,
 } from '@prisma/client';
+import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
-	PartialAlert,
+	RepocopVulnerability,
 	Repository,
 	SnykProject,
 	TeamRepository,
 } from '../types';
 import {
+	collectAndFormatUrgentSnykAlerts,
+	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
 	findStacks,
 	hasDependencyTracking,
-	hasOldDependabotAlerts,
-	hasOldSnykAlerts,
+	hasOldAlerts,
 	parseSnykTags,
+	snykAlertToRepocopVulnerability,
 } from './repository';
 
 function evaluateRepoTestHelper(
@@ -25,12 +28,12 @@ function evaluateRepoTestHelper(
 	branches: github_repository_branches[] = [],
 	teams: TeamRepository[] = [],
 	languages: github_languages[] = [],
-	alerts: PartialAlert[] = [],
+	dependabotAlerts: RepocopVulnerability[] = [],
 	latestSnykIssues: snyk_reporting_latest_issues[] = [],
 	snykProjectsFromRest: SnykProject[] = [],
 ) {
 	return evaluateOneRepo(
-		alerts,
+		dependabotAlerts,
 		repo,
 		branches,
 		teams,
@@ -584,122 +587,116 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 	});
 });
 
-function createAlert(
-	severity: 'critical' | 'high' | 'medium',
-	createdAt: Date,
-	state: 'open' | 'auto_dismissed' | 'dismissed' | 'fixed',
-): PartialAlert {
-	const alert = {
-		state,
-		created_at: createdAt.toISOString(),
-		security_vulnerability: {
-			severity,
-			vulnerable_version_range: '',
-			first_patched_version: {
-				identifier: '',
-			},
-			package: {
-				name: '',
-				ecosystem: '',
-			},
-		},
-		dependency: {
-			package: {
-				name: '',
-				ecosystem: '',
-			},
-		},
-	};
-	return alert;
-}
+const oldCriticalDependabotVuln: RepocopVulnerability = {
+	open: true,
+	source: 'Dependabot',
+	severity: 'critical',
+	package: 'ansible',
+	urls: [],
+	ecosystem: 'pip',
+	alert_issue_date: '2021-01-01T00:00:00.000Z',
+};
+
+const newCriticalDependabotVuln: RepocopVulnerability = {
+	...oldCriticalDependabotVuln,
+	alert_issue_date: new Date().toISOString(),
+};
+
+const oldHighDependabotVuln: RepocopVulnerability = {
+	...oldCriticalDependabotVuln,
+	severity: 'high',
+};
+
+const newHighDependabotVuln: RepocopVulnerability = {
+	...oldHighDependabotVuln,
+	alert_issue_date: new Date().toISOString(),
+};
 
 describe('NO RULE - Dependabot alerts', () => {
 	test('should be flagged if there are critical alerts older than one day', () => {
-		const alerts: PartialAlert[] = [
-			createAlert('critical', new Date('2021-01-01'), 'open'),
-		];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(true);
+		expect(hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo)).toBe(
+			true,
+		);
 	});
 	test('should not be flagged if a critical alert was raised today', () => {
-		const alerts: PartialAlert[] = [
-			createAlert('critical', new Date(), 'open'),
-		];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
+		expect(hasOldAlerts([newCriticalDependabotVuln], thePerfectRepo)).toBe(
+			false,
+		);
 	});
 	test('should be flagged if there are high alerts older than 14 days', () => {
-		const alerts: PartialAlert[] = [
-			createAlert('high', new Date('2021-01-01'), 'open'),
-		];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(true);
+		expect(hasOldAlerts([oldHighDependabotVuln], thePerfectRepo)).toBe(true);
 	});
 	test('should not be flagged if a high alert was raised today', () => {
-		const alerts: PartialAlert[] = [createAlert('high', new Date(), 'open')];
-
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
+		expect(hasOldAlerts([newHighDependabotVuln], thePerfectRepo)).toBe(false);
 	});
 	test('should not be flagged if a high alert was raised 13 days ago', () => {
 		const thirteenDaysAgo = new Date();
 		thirteenDaysAgo.setDate(thirteenDaysAgo.getDate() - 13);
-		const alerts: PartialAlert[] = [
-			createAlert('high', thirteenDaysAgo, 'open'),
-		];
 
-		expect(hasOldDependabotAlerts(alerts, thePerfectRepo)).toBe(false);
+		const thirteenDayOldHigh: RepocopVulnerability = {
+			...oldHighDependabotVuln,
+			alert_issue_date: thirteenDaysAgo.toISOString(),
+		};
+
+		expect(hasOldAlerts([thirteenDayOldHigh], thePerfectRepo)).toBe(false);
 	});
 });
 
+const snykProjectId = '1a2b';
+const highSeverityIssue = {
+	id: '',
+	severity: 'high',
+	language: 'js',
+	isIgnored: false,
+	isPatched: false,
+	isPinnable: false,
+	isPatchable: false,
+	isUpgradable: true,
+	disclosureTime: '',
+	publicationTime: '',
+	package: 'fetch',
+	packageManager: 'npm',
+	url: 'example.com',
+};
+
+const lowSeverityIssue = {
+	...highSeverityIssue,
+	severity: 'low',
+};
+
+const myProject = {
+	id: snykProjectId,
+	url: '',
+	name: '',
+	source: 'cli',
+	targetFile: '',
+};
+
+const myOtherProject = {
+	id: '2b3c',
+	url: '',
+	name: '',
+	source: 'cli',
+	targetFile: '',
+};
+
+const snykIssue: snyk_reporting_latest_issues = {
+	cq_sync_time: null,
+	cq_source_name: null,
+	cq_id: '',
+	cq_parent_id: null,
+	id: '',
+	issue: highSeverityIssue,
+	projects: [myProject, myOtherProject],
+	organization_id: '',
+	introduced_date: 'someTZdate',
+	project: null,
+	is_fixed: false,
+	patched_date: null,
+	fixed_date: null,
+};
+
 describe('NO RULE - Snyk vulnerabilities', () => {
-	const snykProjectId = '1a2b';
-	const highSeverityIssue = {
-		id: '',
-		severity: 'high',
-		isIgnored: false,
-		isPatched: false,
-		isPinnable: false,
-		isPatchable: false,
-		isUpgradable: true,
-		disclosureTime: '',
-		publicationTime: '',
-	};
-
-	const lowSeverityIssue = {
-		...highSeverityIssue,
-		severity: 'low',
-	};
-
-	const myProject = {
-		id: snykProjectId,
-		url: '',
-		name: '',
-		source: 'cli',
-		targetFile: '',
-		packageManager: '',
-	};
-
-	const staleSnykIssue: snyk_reporting_latest_issues = {
-		cq_sync_time: null,
-		cq_source_name: null,
-		cq_id: '',
-		cq_parent_id: null,
-		id: '',
-		issue: highSeverityIssue,
-		projects: [myProject],
-		organization_id: '',
-		introduced_date: '2023-01-14T12:00:00.000Z',
-		project: null,
-		is_fixed: null,
-		patched_date: null,
-		fixed_date: null,
-	};
-
-	const freshSnykIssue: snyk_reporting_latest_issues = {
-		...staleSnykIssue,
-		introduced_date: new Date().toISOString(),
-	};
-
 	const snykProject: SnykProject = {
 		id: snykProjectId,
 		attributes: {
@@ -716,59 +713,122 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 	};
 
 	test('Should not be detected if no projects or issues are passed', () => {
-		const result = hasOldSnykAlerts(thePerfectRepo, [], []);
-		expect(result).toEqual(false);
+		const result = collectAndFormatUrgentSnykAlerts(thePerfectRepo, [], []);
+		expect(result.length).toEqual(0);
 	});
-	test('Should be detected if a repo, project, and old issue match', () => {
-		const result = hasOldSnykAlerts(
+	test('Should be detected if a repo, project, and issue match', () => {
+		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
-			[staleSnykIssue],
+			[snykIssue],
 			[snykProject],
 		);
-		expect(result).toEqual(true);
+		expect(result.length).toEqual(1);
 	});
 	test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
 		const nonProdRepo = {
 			...thePerfectRepo,
 			topics: [],
 		};
-		const result = hasOldSnykAlerts(
+		const result = collectAndFormatUrgentSnykAlerts(
 			nonProdRepo,
-			[staleSnykIssue],
+			[snykIssue],
 			[snykProject],
 		);
-		expect(result).toEqual(false);
-	});
-	test('Should not be detected if a repo, project, and new issue match', () => {
-		const result = hasOldSnykAlerts(
-			thePerfectRepo,
-			[freshSnykIssue],
-			[snykProject],
-		);
-		expect(result).toEqual(false);
+		expect(result.length).toEqual(0);
 	});
 	test('Should not detected if a snyk project has no tags', () => {
 		const untaggedProject = {
 			...snykProject,
 			attributes: { ...snykProject.attributes, tags: [] },
 		};
-		const result = hasOldSnykAlerts(
+		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
-			[staleSnykIssue],
+			[snykIssue],
 			[untaggedProject],
 		);
-		expect(result).toEqual(false);
+		expect(result.length).toEqual(0);
 	});
-	test('Should not detect low severity issues', () => {
-		const staleLowSeverityIssue = {
-			...staleSnykIssue,
+	test('Should not be detected if they have a low or medium severity', () => {
+		const lowSeverity = {
+			...snykIssue,
 			issue: lowSeverityIssue,
 		};
-		const result = hasOldSnykAlerts(
+		const mediumSeverity = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, severity: 'medium' },
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
-			[staleLowSeverityIssue],
+			[lowSeverity, mediumSeverity],
 			[snykProject],
 		);
-		expect(result).toEqual(false);
+		expect(result.length).toEqual(0);
+	});
+	test('Should not be detected if the issue has been ignored', () => {
+		const ignoredIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isIgnored: true },
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[ignoredIssue],
+			[snykProject],
+		);
+		expect(result.length).toEqual(0);
+	});
+});
+
+describe('NO RULE - Vulnerabilities from Dependabot', () => {
+	test('Should be parseable into a common format', () => {
+		const result: RepocopVulnerability[] = example.map(
+			dependabotAlertToRepocopVulnerability,
+		);
+		console.log(result);
+		expect(result.length).toEqual(2);
+		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
+		expect(result.map((v) => v.open)).toEqual([false, true]);
+		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
+		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
+		expect(result.map((v) => v.alert_issue_date)).toEqual([
+			'2022-06-15T07:43:03Z',
+			'2022-06-14T15:21:52Z',
+		]);
+	});
+});
+
+describe('NO RULE - Vulnerabilities from Dependabot', () => {
+	test('Should be parseable into a common format', () => {
+		const result: RepocopVulnerability[] = example.map(
+			dependabotAlertToRepocopVulnerability,
+		);
+		expect(result.length).toEqual(2);
+		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
+		expect(result.map((v) => v.open)).toEqual([false, true]);
+		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
+		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
+		expect(result.map((v) => v.alert_issue_date)).toEqual([
+			'2022-06-15T07:43:03Z',
+			'2022-06-14T15:21:52Z',
+		]);
+	});
+});
+
+describe('NO RULE - Vulnerabilities from Snyk', () => {
+	test('Should be parseable into a common format', () => {
+		const input = snykIssue;
+		const result = snykAlertToRepocopVulnerability(input);
+		console.log(result);
+		expect(result.source).toEqual('Snyk');
+		expect(result.open).toEqual(true);
+		expect(result).toStrictEqual({
+			open: true,
+			source: 'Snyk',
+			severity: 'high',
+			package: 'fetch',
+			urls: ['example.com'],
+			ecosystem: 'npm',
+			alert_issue_date: 'someTZdate',
+			vulnerable_version: undefined,
+		});
 	});
 });

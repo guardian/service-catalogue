@@ -70,17 +70,12 @@ export type DependabotVulnResponse =
 
 export type Alert = DependabotVulnResponse['data'][number];
 
-export type PartialAlert = Pick<
-	Alert,
-	'state' | 'dependency' | 'security_vulnerability' | 'created_at'
->;
-
 export interface RepoAndAlerts {
 	shortName: string;
 	/*
 	 ** alerts is undefined if we catch an error, typically because dependabot is not enabled
 	 */
-	alerts: PartialAlert[] | undefined;
+	alerts: Alert[] | undefined;
 }
 
 // Snyk REST API response types
@@ -126,16 +121,33 @@ export interface GuardianSnykTags {
 
 export interface SnykIssue {
 	id: string;
+	url: string;
 	type?: string;
 	title?: string;
 	version?: string;
 	language?: string;
 	severity: string;
 	isPatched: boolean;
+	isIgnored: boolean;
 	isPinnable: false;
 	isPatchable: boolean;
 	isUpgradable: boolean;
 	disclosureTime: string; //or Date?
-	packageManager?: string;
+	package: string;
+	packageManager: string;
 	publicationTime: string; //or Date?
+}
+
+export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
+
+export interface RepocopVulnerability {
+	source: 'Dependabot' | 'Snyk';
+	open: boolean;
+	severity: Severity;
+	package: string;
+	urls: string[];
+	ecosystem: string;
+	alert_issue_date: string;
+	vulnerable_version?: string;
+	fixed_in_version?: string;
 }
