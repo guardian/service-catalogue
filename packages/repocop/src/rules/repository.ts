@@ -461,7 +461,7 @@ export function evaluateOneRepo(
 	};
 }
 
-function dependabotAlertToRepocopVulnerability(
+export function dependabotAlertToRepocopVulnerability(
 	alert: Alert,
 ): RepocopVulnerability {
 	return {
@@ -476,7 +476,7 @@ function dependabotAlertToRepocopVulnerability(
 	};
 }
 
-function snykAlertToRepocopVulnerability(
+export function snykAlertToRepocopVulnerability(
 	alert: snyk_reporting_latest_issues,
 ): RepocopVulnerability {
 	alert;

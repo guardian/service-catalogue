@@ -5,13 +5,16 @@ import type {
 	snyk_reporting_latest_issues,
 } from '@prisma/client';
 import type {
+	Alert,
 	AwsCloudFormationStack,
 	RepocopVulnerability,
 	Repository,
 	SnykProject,
 	TeamRepository,
 } from '../types';
+import { example } from './example-dependabot-alerts';
 import {
+	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
 	findSnykAlerts,
 	findStacks,
@@ -753,5 +756,23 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			[snykProject],
 		);
 		expect(result.length).toEqual(0);
+	});
+});
+
+describe('NO RULE - Vulnerabilities from Dependabot', () => {
+	test('Should be parseable into a common format', () => {
+		const result: RepocopVulnerability[] = example.map(
+			dependabotAlertToRepocopVulnerability,
+		);
+		console.log(result);
+		expect(result.length).toEqual(2);
+		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
+		expect(result.map((v) => v.open)).toEqual([false, true]);
+		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
+		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
+		expect(result.map((v) => v.alert_issue_date)).toEqual([
+			'2022-06-15T07:43:03Z',
+			'2022-06-14T15:21:52Z',
+		]);
 	});
 });
