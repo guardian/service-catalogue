@@ -4,6 +4,7 @@ import type {
 	github_repositories,
 	github_team_repositories,
 	github_teams,
+	repocop_github_repository_rules,
 } from '@prisma/client';
 
 export type NonEmptyArray<T> = [T, ...T[]];
@@ -150,4 +151,10 @@ export interface RepocopVulnerability {
 	alert_issue_date: string;
 	vulnerable_version?: string;
 	fixed_in_version?: string;
+}
+
+export interface EvaluationResult {
+	fullName: string;
+	repocopRules: repocop_github_repository_rules;
+	vulnerabilities: RepocopVulnerability[];
 }

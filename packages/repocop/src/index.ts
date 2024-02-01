@@ -29,7 +29,7 @@ import {
 	evaluateRepositories,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack } from './types';
+import type { AwsCloudFormationStack, EvaluationResult } from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -73,39 +73,40 @@ export async function main() {
 	).filter((s) => s.tags.Stack !== 'playground');
 	const latestSnykIssues = await getLatestSnykIssues(prisma);
 
-	const evaluatedRepos: repocop_github_repository_rules[] =
-		await evaluateRepositories(
-			unarchivedRepos,
-			branches,
-			repoTeams,
-			repoLanguages,
-			latestSnykIssues,
-			snykProjectsFromRest,
-			octokit,
-		);
+	const evaluationResult: EvaluationResult[] = await evaluateRepositories(
+		unarchivedRepos,
+		branches,
+		repoTeams,
+		repoLanguages,
+		latestSnykIssues,
+		snykProjectsFromRest,
+		octokit,
+	);
+
+	const repocopRules = evaluationResult.map((r) => r.repocopRules);
 
 	const awsConfig = awsClientConfig(config.stage);
 	const cloudwatch = new CloudWatchClient(awsConfig);
-	await sendToCloudwatch(evaluatedRepos, cloudwatch, config);
+	await sendToCloudwatch(repocopRules, cloudwatch, config);
 
 	testExperimentalRepocopFeatures(
-		evaluatedRepos,
+		repocopRules,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
 	);
 
 	const repoOwners = await getRepoOwnership(prisma);
-	await sendUnprotectedRepo(evaluatedRepos, config, repoLanguages);
-	await writeEvaluationTable(evaluatedRepos, prisma);
+	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
+	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
-		await sendPotentialInteractives(evaluatedRepos, config);
+		await sendPotentialInteractives(repocopRules, config);
 
 		const teams = await getTeams(prisma);
 
 		if (config.branchProtectionEnabled) {
 			await protectBranches(
-				evaluatedRepos,
+				repocopRules,
 				repoOwners,
 				teams,
 				config,

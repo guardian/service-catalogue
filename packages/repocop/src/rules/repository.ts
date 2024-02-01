@@ -14,6 +14,7 @@ import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
+	EvaluationResult,
 	GuardianSnykTags,
 	ProjectTag,
 	RepoAndStack,
@@ -433,17 +434,19 @@ export function evaluateOneRepo(
 	repoLanguages: github_languages[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
-): repocop_github_repository_rules {
+): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
 		latestSnykIssues,
 		snykProjectsFromRest,
 	);
 
-	const allAlerts = snykAlertsForRepo.concat(dependabotAlertsForRepo ?? []);
-	hasOldAlerts(allAlerts, repo);
+	const vulnerabilities = snykAlertsForRepo.concat(
+		dependabotAlertsForRepo ?? [],
+	);
+	hasOldAlerts(vulnerabilities, repo);
 
-	return {
+	const repocopRules: repocop_github_repository_rules = {
 		full_name: repo.full_name,
 		default_branch_name: hasDefaultBranchNameMain(repo),
 		branch_protection: hasBranchProtection(repo, allBranches),
@@ -458,6 +461,12 @@ export function evaluateOneRepo(
 			snykProjectsFromRest,
 		),
 		evaluated_on: new Date(),
+	};
+
+	return {
+		fullName: repo.full_name,
+		repocopRules,
+		vulnerabilities,
 	};
 }
 
@@ -502,7 +511,7 @@ export async function evaluateRepositories(
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 	octokit: Octokit,
-): Promise<repocop_github_repository_rules[]> {
+): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))

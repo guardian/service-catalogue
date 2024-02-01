@@ -40,7 +40,7 @@ function evaluateRepoTestHelper(
 		languages,
 		latestSnykIssues,
 		snykProjectsFromRest,
-	);
+	).repocopRules;
 }
 
 const nullBranch: github_repository_branches = {
