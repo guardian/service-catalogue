@@ -29,11 +29,18 @@ describe('getPullRequest', () => {
 
 	const snykBranch = {
 		head: {
-			ref: 'integrate-snyk-branch',
+			ref: 'integrate-snyk-abcd',
 		},
 		user: {
 			login: 'gu-snyk-integrator[bot]',
 			type: 'Bot',
+		},
+	};
+
+	const snykBranch2 = {
+		...snykBranch,
+		head: {
+			ref: 'integrate-snyk-efgh',
 		},
 	};
 
@@ -51,7 +58,7 @@ describe('getPullRequest', () => {
 
 	it('should return first pull request that matches and log warning', async () => {
 		const warn = jest.spyOn(console, 'warn');
-		const pulls = [featureBranch, snykBranch, snykBranch];
+		const pulls = [featureBranch, snykBranch, snykBranch2];
 		const foundPull = await getExistingPullRequest(mockOctokit(pulls), 'repo');
 		expect(foundPull).toEqual(snykBranch);
 		expect(warn).toHaveBeenCalledWith(
