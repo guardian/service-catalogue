@@ -6,7 +6,7 @@ ARG SP_AWS
 RUN steampipe plugin install steampipe github@${SP_GITHUB} aws@${SP_AWS}
 
 # Install awscli (root user needed)
-USER 0
+USER root
 RUN apt-get update && apt-get install -y awscli
 
 # Set environment variables, for access by scripts at runtime
