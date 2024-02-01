@@ -137,8 +137,8 @@ export class SteampipeService extends FargateService {
 		);
 
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
-			memoryLimitMiB: 512,
-			cpu: 256,
+			memoryLimitMiB: 2048,
+			cpu: 1024,
 			runtimePlatform: {
 				cpuArchitecture: CpuArchitecture.ARM64,
 			},

@@ -19879,7 +19879,7 @@ spec:
             "Name": "steampipeFirelens",
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "steampipeTaskDefinitionExecutionRole36454CCE",
@@ -19887,7 +19887,7 @@ spec:
           ],
         },
         "Family": "ServiceCataloguesteampipeTaskDefinition7074901D",
-        "Memory": "512",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
