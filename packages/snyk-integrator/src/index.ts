@@ -38,7 +38,10 @@ export async function main(event: SnykIntegratorEvent) {
 			await addPrToProject(config.stage, event);
 			console.log('Updated project board');
 		} else {
-			console.log(`Existing pull request found with branch ${branch}`);
+			console.log(
+				`Existing pull request found. Skipping creating a new one.`,
+				existingPullRequest.html_url,
+			);
 		}
 	} else {
 		console.log('Testing snyk.yml generation');
