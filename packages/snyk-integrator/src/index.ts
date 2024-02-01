@@ -16,7 +16,7 @@ export async function main(event: SnykIntegratorEvent) {
 	console.log(`Generating Snyk PR for ${event.name}`);
 	const config: Config = getConfig();
 
-	const branch = generateBranchName(event.languages);
+	const branch = generateBranchName();
 	if (config.stage === 'PROD') {
 		const octokit = await stageAwareOctokit(config.stage);
 
