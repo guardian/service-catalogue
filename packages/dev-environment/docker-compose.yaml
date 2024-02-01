@@ -45,8 +45,8 @@ services:
       context: steampipe
       dockerfile: Dockerfile
       args:
-        GITHUB_PLUGIN_VERSION: ${SP_GITHUB}
-        AWS_PLUGIN_VERSION: ${SP_AWS}
+        SP_GITHUB: ${SP_GITHUB}
+        SP_AWS: ${SP_AWS}
     ports:
       - '9193:9193'
     environment:

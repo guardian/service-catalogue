@@ -52,5 +52,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            GITHUB_PLUGIN_VERSION=${{ env.SP_GITHUB }}
-            AWS_PLUGIN_VERSION=${{ env.SP_AWS }}
+            SP_GITHUB=${{ env.SP_GITHUB }}
+            SP_AWS=${{ env.SP_AWS }}
