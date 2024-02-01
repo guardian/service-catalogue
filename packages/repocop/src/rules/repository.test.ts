@@ -25,12 +25,12 @@ function evaluateRepoTestHelper(
 	branches: github_repository_branches[] = [],
 	teams: TeamRepository[] = [],
 	languages: github_languages[] = [],
-	alerts: RepocopVulnerability[] = [],
+	dependabotAlerts: RepocopVulnerability[] = [],
 	latestSnykIssues: snyk_reporting_latest_issues[] = [],
 	snykProjectsFromRest: SnykProject[] = [],
 ) {
 	return evaluateOneRepo(
-		alerts,
+		dependabotAlerts,
 		repo,
 		branches,
 		teams,
@@ -726,19 +726,23 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		);
 		expect(result.length).toEqual(0);
 	});
-	test('Should not detect low severity issues', () => {
-		const staleLowSeverityIssue = {
+	test('Should not be detected if they have a low or medium severity', () => {
+		const lowSeverity = {
 			...snykIssue,
 			issue: lowSeverityIssue,
 		};
+		const mediumSeverity = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, severity: 'medium' },
+		};
 		const result = findSnykAlerts(
 			thePerfectRepo,
-			[staleLowSeverityIssue],
+			[lowSeverity, mediumSeverity],
 			[snykProject],
 		);
 		expect(result.length).toEqual(0);
 	});
-	test('Should not detect issues that have been ignored', () => {
+	test('Should not be detected if the issue has been ignored', () => {
 		const ignoredIssue = {
 			...snykIssue,
 			issue: { ...highSeverityIssue, isIgnored: true },
