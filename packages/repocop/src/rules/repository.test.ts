@@ -670,6 +670,15 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		packageManager: '',
 	};
 
+	const myOtherProject = {
+		id: '2b3c',
+		url: '',
+		name: '',
+		source: 'cli',
+		targetFile: '',
+		packageManager: '',
+	};
+
 	const snykIssue: snyk_reporting_latest_issues = {
 		cq_sync_time: null,
 		cq_source_name: null,
@@ -677,7 +686,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		cq_parent_id: null,
 		id: '',
 		issue: highSeverityIssue,
-		projects: [myProject],
+		projects: [myProject, myOtherProject],
 		organization_id: '',
 		introduced_date: '',
 		project: null,
