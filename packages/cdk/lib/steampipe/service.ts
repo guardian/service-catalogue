@@ -165,7 +165,7 @@ export class SteampipeService extends FargateService {
 			},
 		});
 
-		const steampipe = task.addContainer(`${id}Container`, {
+		const steampipe = task.addContainer(`${id}Containers`, {
 			image: Images.steampipe,
 			dockerLabels: {
 				Stack: stack,

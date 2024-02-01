@@ -19716,7 +19716,7 @@ spec:
         "LaunchType": "FARGATE",
         "LoadBalancers": [
           {
-            "ContainerName": "steampipeContainer",
+            "ContainerName": "steampipeContainers",
             "ContainerPort": 9193,
             "TargetGroupArn": {
               "Ref": "steampipenlbsteampipenlblistenersteampipenlbtargetGroup8BBC7369",
@@ -19801,7 +19801,7 @@ spec:
                 "SourceVolume": "steampipe-database",
               },
             ],
-            "Name": "steampipeContainer",
+            "Name": "steampipeContainers",
             "PortMappings": [
               {
                 "ContainerPort": 9193,
