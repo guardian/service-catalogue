@@ -4,7 +4,7 @@ import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { addPrToProject } from './projects-graphql';
-import { getPullRequest } from './pull-requests';
+import { getExistingPullRequest } from './pull-requests';
 import {
 	createSnykPullRequest,
 	createYaml,
@@ -19,11 +19,9 @@ export async function main(event: SnykIntegratorEvent) {
 	const branch = generateBranchName();
 	if (config.stage === 'PROD') {
 		const octokit = await stageAwareOctokit(config.stage);
-
-		const existingPullRequest = await getPullRequest(
+		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			event.name,
-			branch,
 		);
 
 		if (!existingPullRequest) {
