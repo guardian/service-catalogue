@@ -55,9 +55,6 @@ services:
       STAGE: ${STAGE}
       STEAMPIPE_DATABASE_PASSWORD: steampipe
       GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
-
-      # these are permanent credentials, as we'll be using STS Assume Role, which Janus DEV doesn't allow
-      AWS_PROFILE: 'service-catalogue-DEV'
       AWS_SHARED_CREDENTIALS_FILE: '/.aws/credentials'
     entrypoint: "/bin/bash -c"
     command: [ "generate-aws-plugin-config; steampipe service start --foreground" ]
