@@ -184,7 +184,7 @@ export class SteampipeService extends FargateService {
 				),
 			},
 			command: [
-				'generate-aws-plugin-config; steampipe service start --foreground',
+				'generate-aws-plugin-config; exec steampipe service start --foreground',
 			],
 			logging: fireLensLogDriver,
 			portMappings: [

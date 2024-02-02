@@ -19768,7 +19768,7 @@ spec:
         "ContainerDefinitions": [
           {
             "Command": [
-              "generate-aws-plugin-config; steampipe service start --foreground",
+              "generate-aws-plugin-config; exec steampipe service start --foreground",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
