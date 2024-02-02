@@ -19905,6 +19905,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "Name",
+            "Value": "Steampipe",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -19960,6 +19964,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "Steampipe",
           },
           {
             "Key": "Stack",
@@ -20034,6 +20042,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "Steampipe",
           },
           {
             "Key": "Stack",
@@ -20115,6 +20127,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "Steampipe",
           },
           {
             "Key": "Stack",
