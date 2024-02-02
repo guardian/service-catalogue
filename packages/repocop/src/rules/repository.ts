@@ -305,7 +305,10 @@ export async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data;
+		const openRuntimeDependencies = alert.data.filter(
+			(a) => a.dependency.scope !== 'development',
+		);
+		return openRuntimeDependencies;
 	} catch (error) {
 		console.info(
 			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
