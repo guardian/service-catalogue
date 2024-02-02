@@ -29,7 +29,11 @@ import {
 	evaluateRepositories,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
-import type { AwsCloudFormationStack, EvaluationResult } from './types';
+import type {
+	AwsCloudFormationStack,
+	EvaluationResult,
+	RepocopVulnerability,
+} from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -84,6 +88,21 @@ export async function main() {
 	);
 
 	const repocopRules = evaluationResult.map((r) => r.repocopRules);
+	const severityPredicate = (x: RepocopVulnerability) => x.severity === 'high';
+	const [high, critical] = partition(
+		evaluationResult.map((r) => r.vulnerabilities).flat(),
+		severityPredicate,
+	);
+
+	const highPatchable = high.filter((x) => x.isPatchable).length;
+	const criticalPatchable = critical.filter((x) => x.isPatchable).length;
+
+	console.warn(
+		`Found ${high.length} out of date high vulnerabilities, of which ${highPatchable} are patchable`,
+	);
+	console.warn(
+		`Found ${critical.length} out of date critical vulnerabilities, of which ${criticalPatchable} are patchable`,
+	);
 
 	const awsConfig = awsClientConfig(config.stage);
 	const cloudwatch = new CloudWatchClient(awsConfig);

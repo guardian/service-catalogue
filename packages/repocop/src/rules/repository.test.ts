@@ -595,6 +595,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	urls: [],
 	ecosystem: 'pip',
 	alert_issue_date: '2021-01-01T00:00:00.000Z',
+	isPatchable: true,
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -651,7 +652,7 @@ const highSeverityIssue = {
 	isPatched: false,
 	isPinnable: false,
 	isPatchable: false,
-	isUpgradable: true,
+	isUpgradable: false,
 	disclosureTime: '',
 	publicationTime: '',
 	package: 'fetch',
@@ -776,6 +777,34 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		);
 		expect(result.length).toEqual(0);
 	});
+	test('Should not be considered patchable if there is no possible upgrade path', () => {
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[snykIssue],
+			[snykProject],
+		);
+		expect(result.map((r) => r.isPatchable)).toEqual([false]);
+	});
+	test('Should be considered patchable if there is a possible upgrade path', () => {
+		const pinnableIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isPinnable: true },
+		};
+		const patchableIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isPatchable: true },
+		};
+		const upgradableIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isUpgradable: true },
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[pinnableIssue, patchableIssue, upgradableIssue],
+			[snykProject],
+		);
+		expect(result.map((r) => r.isPatchable)).toEqual([true, true, true]);
+	});
 });
 
 describe('NO RULE - Vulnerabilities from Dependabot', () => {
@@ -828,7 +857,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			urls: ['example.com'],
 			ecosystem: 'npm',
 			alert_issue_date: 'someTZdate',
-			vulnerable_version: undefined,
+			isPatchable: false,
 		});
 	});
 });

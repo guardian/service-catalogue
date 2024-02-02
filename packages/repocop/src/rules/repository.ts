@@ -481,7 +481,7 @@ export function dependabotAlertToRepocopVulnerability(
 		urls: alert.security_advisory.references.map((ref) => ref.url),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: alert.created_at,
-		vulnerable_version: alert.security_vulnerability.vulnerable_version_range,
+		isPatchable: !!alert.security_vulnerability.first_patched_version,
 	};
 }
 
@@ -499,7 +499,7 @@ export function snykAlertToRepocopVulnerability(
 		ecosystem: issue.packageManager,
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
 		alert_issue_date: alert.introduced_date!,
-		vulnerable_version: issue.version,
+		isPatchable: issue.isPatchable || issue.isUpgradable || issue.isPinnable,
 	};
 }
 
