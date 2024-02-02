@@ -133,6 +133,11 @@ export interface SnykIssue {
 	isPinnable: boolean;
 	isPatchable: boolean;
 	isUpgradable: boolean;
+	Identifiers: {
+		CVE: string[];
+		CWE: string[];
+		OSVDB: string[];
+	};
 	disclosureTime: string; //or Date?
 	package: string;
 	packageManager: string;
@@ -150,6 +155,7 @@ export interface RepocopVulnerability {
 	ecosystem: string;
 	alert_issue_date: string;
 	isPatchable: boolean;
+	CVEs: string[];
 }
 
 export interface EvaluationResult {

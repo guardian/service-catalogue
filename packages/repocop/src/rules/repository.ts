@@ -473,6 +473,10 @@ export function evaluateOneRepo(
 export function dependabotAlertToRepocopVulnerability(
 	alert: Alert,
 ): RepocopVulnerability {
+	const CVEs = alert.security_advisory.identifiers
+		.filter((i) => i.type === 'CVE')
+		.map((i) => i.value);
+
 	return {
 		open: alert.state === 'open',
 		source: 'Dependabot',
@@ -482,6 +486,7 @@ export function dependabotAlertToRepocopVulnerability(
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: alert.created_at,
 		isPatchable: !!alert.security_vulnerability.first_patched_version,
+		CVEs,
 	};
 }
 
@@ -500,6 +505,7 @@ export function snykAlertToRepocopVulnerability(
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
 		alert_issue_date: alert.introduced_date!,
 		isPatchable: issue.isPatchable || issue.isUpgradable || issue.isPinnable,
+		CVEs: issue.Identifiers.CVE,
 	};
 }
 

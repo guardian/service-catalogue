@@ -596,6 +596,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	ecosystem: 'pip',
 	alert_issue_date: '2021-01-01T00:00:00.000Z',
 	isPatchable: true,
+	CVEs: ['CVE-2021-1234'],
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -653,6 +654,11 @@ const highSeverityIssue = {
 	isPinnable: false,
 	isPatchable: false,
 	isUpgradable: false,
+	Identifiers: {
+		CVE: ['CVE-1234'],
+		CWE: ['CWE-1234'],
+		OSVDB: ['OSVDB-1234'],
+	},
 	disclosureTime: '',
 	publicationTime: '',
 	package: 'fetch',
@@ -812,33 +818,41 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		const result: RepocopVulnerability[] = example.map(
 			dependabotAlertToRepocopVulnerability,
 		);
-		console.log(result);
-		expect(result.length).toEqual(2);
-		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
-		expect(result.map((v) => v.open)).toEqual([false, true]);
-		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
-		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
-		expect(result.map((v) => v.alert_issue_date)).toEqual([
-			'2022-06-15T07:43:03Z',
-			'2022-06-14T15:21:52Z',
-		]);
-	});
-});
+		const expected1: RepocopVulnerability = {
+			source: 'Dependabot',
+			open: false,
+			severity: 'high',
+			package: 'django',
+			urls: [
+				'https://nvd.nist.gov/vuln/detail/CVE-2018-6188',
+				'https://github.com/advisories/GHSA-rf4j-j272-fj86',
+				'https://usn.ubuntu.com/3559-1/',
+				'https://www.djangoproject.com/weblog/2018/feb/01/security-releases/',
+				'http://www.securitytracker.com/id/1040422',
+			],
+			ecosystem: 'pip',
+			alert_issue_date: '2022-06-15T07:43:03Z',
+			isPatchable: true,
+			CVEs: ['CVE-2018-6188'],
+		};
 
-describe('NO RULE - Vulnerabilities from Dependabot', () => {
-	test('Should be parseable into a common format', () => {
-		const result: RepocopVulnerability[] = example.map(
-			dependabotAlertToRepocopVulnerability,
-		);
-		expect(result.length).toEqual(2);
-		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
-		expect(result.map((v) => v.open)).toEqual([false, true]);
-		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
-		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
-		expect(result.map((v) => v.alert_issue_date)).toEqual([
-			'2022-06-15T07:43:03Z',
-			'2022-06-14T15:21:52Z',
-		]);
+		const expected2: RepocopVulnerability = {
+			source: 'Dependabot',
+			open: true,
+			severity: 'medium',
+			package: 'ansible',
+			urls: [
+				'https://nvd.nist.gov/vuln/detail/CVE-2021-20191',
+				'https://access.redhat.com/security/cve/cve-2021-20191',
+				'https://bugzilla.redhat.com/show_bug.cgi?id=1916813',
+			],
+			ecosystem: 'pip',
+			alert_issue_date: '2022-06-14T15:21:52Z',
+			isPatchable: true,
+			CVEs: ['CVE-2021-20191'],
+		};
+
+		expect(result).toStrictEqual([expected1, expected2]);
 	});
 });
 
@@ -858,6 +872,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			ecosystem: 'npm',
 			alert_issue_date: 'someTZdate',
 			isPatchable: false,
+			CVEs: ['CVE-1234'],
 		});
 	});
 });
