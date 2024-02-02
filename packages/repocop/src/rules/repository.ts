@@ -5,6 +5,7 @@ import type {
 	snyk_projects,
 	snyk_reporting_latest_issues,
 } from '@prisma/client';
+import { partition } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
@@ -423,6 +424,39 @@ export function testExperimentalRepocopFeatures(
 	);
 }
 
+export function deduplicateVulnerabilities(
+	vulns: RepocopVulnerability[],
+): RepocopVulnerability[] {
+	const vulnsWithSortedCVEs = vulns.map((v) => {
+		return {
+			...v,
+			CVEs: v.CVEs.sort(),
+		};
+	});
+	const [withCVEs, withoutCVEs] = partition(
+		vulnsWithSortedCVEs,
+		(v) => v.CVEs.length > 0,
+	);
+
+	const criticalFirstPredicate = (x: RepocopVulnerability) =>
+		x.severity === 'critical' ? -1 : 1;
+
+	//group withCVEs by CVEs
+	const dedupedWithCVEs = withCVEs
+		.sort(criticalFirstPredicate)
+		.reduce<Record<string, RepocopVulnerability>>((acc, vuln) => {
+			const key = vuln.CVEs.join(',');
+			if (!acc[key]) {
+				acc[key] = vuln;
+			}
+			return acc;
+		}, {});
+
+	const x: RepocopVulnerability[] = Object.values(dedupedWithCVEs);
+	const dedupedVulns = x.concat(withoutCVEs);
+	return dedupedVulns;
+}
+
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
@@ -466,7 +500,7 @@ export function evaluateOneRepo(
 	return {
 		fullName: repo.full_name,
 		repocopRules,
-		vulnerabilities,
+		vulnerabilities: deduplicateVulnerabilities(vulnerabilities),
 	};
 }
 
@@ -505,7 +539,7 @@ export function snykAlertToRepocopVulnerability(
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
 		alert_issue_date: alert.introduced_date!,
 		isPatchable: issue.isPatchable || issue.isUpgradable || issue.isPinnable,
-		CVEs: issue.Identifiers.CVE,
+		CVEs: issue.Identifiers.CVE ?? [],
 	};
 }
 

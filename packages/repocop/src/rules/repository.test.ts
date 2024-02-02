@@ -14,6 +14,7 @@ import type {
 } from '../types';
 import {
 	collectAndFormatUrgentSnykAlerts,
+	deduplicateVulnerabilities,
 	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
 	findStacks,
@@ -874,5 +875,54 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			isPatchable: false,
 			CVEs: ['CVE-1234'],
 		});
+	});
+});
+
+describe('Deduplication of repocop vulnerabilities', () => {
+	const vuln1: RepocopVulnerability = {
+		source: 'Dependabot',
+		open: true,
+		severity: 'high',
+		package: 'django',
+		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
+		ecosystem: 'pip',
+		alert_issue_date: '2022-06-15T07:43:03Z',
+		isPatchable: true,
+		CVEs: ['CVE-2018-6188'],
+	};
+	const vuln2: RepocopVulnerability = {
+		source: 'Snyk',
+		open: true,
+		severity: 'critical',
+		package: 'django',
+		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
+		ecosystem: 'pip',
+		alert_issue_date: '2022-06-15T07:43:03Z',
+		isPatchable: true,
+		CVEs: ['CVE-2018-6188'],
+	};
+	const actual = deduplicateVulnerabilities([vuln1, vuln2]);
+	test('Should happen if two vulnerabilities share the same CVEs', () => {
+		console.log(actual);
+		expect(actual.length).toStrictEqual(1);
+	});
+	test('Should return the critical vulnerability, given a choice betwen critical and high', () => {
+		expect(actual.map((x) => x.severity)).toStrictEqual(['critical']);
+	});
+	test('Should not happen if two vulnerabilities have different CVEs', () => {
+		const vuln3: RepocopVulnerability = {
+			...vuln1,
+			CVEs: ['CVE-2018-6189'],
+		};
+		const actual = deduplicateVulnerabilities([vuln1, vuln3]);
+		expect(actual.length).toStrictEqual(2);
+	});
+	test('Should not happen if no CVEs are provided', () => {
+		const vuln4: RepocopVulnerability = {
+			...vuln1,
+			CVEs: [],
+		};
+		const actual = deduplicateVulnerabilities([vuln4, vuln4]);
+		expect(actual.length).toStrictEqual(2);
 	});
 });

@@ -134,9 +134,9 @@ export interface SnykIssue {
 	isPatchable: boolean;
 	isUpgradable: boolean;
 	Identifiers: {
-		CVE: string[];
-		CWE: string[];
-		OSVDB: string[];
+		CVE: string[] | null;
+		CWE: string[] | null;
+		OSVDB: string[] | null;
 	};
 	disclosureTime: string; //or Date?
 	package: string;
