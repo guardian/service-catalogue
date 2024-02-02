@@ -2,7 +2,6 @@ import type {
 	github_languages,
 	github_repository_branches,
 	PrismaClient,
-	repocop_github_repository_rules,
 	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
