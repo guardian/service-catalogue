@@ -60,6 +60,7 @@ export class Repocop {
 			vpc,
 			securityGroups: [dbSecurityGroup],
 			timeout: Duration.minutes(5),
+			logFormat: 'JSON',
 		};
 
 		const repocopLambda = new GuScheduledLambda(
