@@ -2,6 +2,7 @@ import type {
 	github_languages,
 	github_repository_branches,
 	PrismaClient,
+	repocop_github_repository_rules,
 	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -24,7 +25,7 @@ export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
 ): Promise<Repository[]> {
-	console.log('Discovering repositories');
+	console.debug('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
 			NOT: [
@@ -37,7 +38,7 @@ export async function getRepositories(
 		},
 	});
 
-	console.log(`Found ${repositories.length} repositories`);
+	console.debug(`Found ${repositories.length} repositories`);
 	return toNonEmptyArray(repositories.map((r) => r as Repository));
 }
 
@@ -65,7 +66,7 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 			},
 		})
 	).map((t) => t as Team);
-	console.log(`Parsed ${teams.length} teams.`);
+	console.debug(`Found ${teams.length} teams.`);
 	return toNonEmptyArray(teams);
 };
 
@@ -103,7 +104,7 @@ export async function getStacks(
 		})
 	).map((stack) => stack as AwsCloudFormationStack);
 
-	console.log(`Found ${stacks.length} stacks.`);
+	console.debug(`Found ${stacks.length} stacks.`);
 	return toNonEmptyArray(stacks);
 }
 
@@ -134,10 +135,8 @@ function snykRequestOptions(config: Config): GotBodyOptions<string> {
 export async function getSnykOrgs(config: Config): Promise<SnykOrgResponse> {
 	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${config.snykApiVersion}`;
 	const resp = await get(getOrgsUrl, snykRequestOptions(config));
-	console.log('Status code: ', resp.statusCode);
-
 	const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
-	console.log('Orgs found: ', snykOrgResponse.orgs.length);
+	console.debug('Orgs found: ', snykOrgResponse.orgs.length);
 	return snykOrgResponse;
 }
 
@@ -170,6 +169,6 @@ export async function getProjectsForOrg(
 		next = nextParsedResponse.links?.next;
 	}
 
-	console.log(`Snyk projects found for org ${orgId}: `, data.length);
+	console.debug(`Snyk projects found for org ${orgId}: `, data.length);
 	return data;
 }
