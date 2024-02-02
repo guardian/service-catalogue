@@ -1,0 +1,40 @@
+graph TB
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["System Landscape"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    1["<div style='font-weight: bold'>Developer</div><div style='font-size: 70%; margin-top: 0px'>[Person]</div><div style='font-size: 80%; margin-top:10px'>A Guardian software engineer</div>"]
+    style 1 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    10["<div style='font-weight: bold'>Anghammarad</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>A messaging service</div>"]
+    style 10 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    2["<div style='font-weight: bold'>DevX Developer</div><div style='font-size: 70%; margin-top: 0px'>[Person]</div><div style='font-size: 80%; margin-top:10px'>A Guardian software engineer</div>"]
+    style 2 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    3["<div style='font-weight: bold'>Cloudquery</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Scheduled tasks that collect<br />data about our code/cloud<br />platforms</div>"]
+    style 3 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    4[("<div style='font-weight: bold'>Cloudquery DB</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Postgres database that stores<br />information from cloudquery<br />and Repocop</div>")]
+    style 4 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    5["<div style='font-weight: bold'>GitHub</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Source code repository</div>"]
+    style 5 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    6["<div style='font-weight: bold'>Snyk</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Vulnerability scanner</div>"]
+    style 6 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    7["<div style='font-weight: bold'>AWS</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Cloud platform</div>"]
+    style 7 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    8["<div style='font-weight: bold'>Repocop</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>A collection of lambdas that<br />track and enforce adherence<br />to best practices and<br />obligations. Includes<br />repocpo, interactive-monitor,<br />and snyk-integrator</div>"]
+    style 8 fill:#dddddd,stroke:#9a9a9a,color:#000000
+    9["<div style='font-weight: bold'>Grafana</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>A dashboarding tool</div>"]
+    style 9 fill:#dddddd,stroke:#9a9a9a,color:#000000
+
+    6-. "<div>Data from snyk populates<br />Cloudquery tables</div><div style='font-size: 70%'>[Cloudquery plugin running on fargate]</div>" .->3
+    5-. "<div>Data from snyk populates<br />Cloudquery tables</div><div style='font-size: 70%'>[Cloudquery plugin running on fargate]</div>" .->3
+    7-. "<div>Data from snyk populates<br />Cloudquery tables</div><div style='font-size: 70%'>[Cloudquery plugin running on fargate]</div>" .->3
+    3-. "<div>Cloudquery writes data to the<br />DB</div><div style='font-size: 70%'></div>" .->4
+    4-. "<div>1. Cloudquery data is used to<br />calculate departmental<br />compliance with obligations</div><div style='font-size: 70%'>[SQL queries using Prisma ORM via TypeScript]</div>" .->8
+    8-. "<div>2. Repocop stores compliance<br />information about repos as a<br />table in the cloudquery DB</div><div style='font-size: 70%'></div>" .->4
+    4-. "<div>Cloudquery data powers<br />grafana dashboards</div><div style='font-size: 70%'>[SQL queries on Postgres DB]</div>" .->9
+    8-. "<div>Repocop raises PRs to fix<br />issues, that are reviewed by<br />developers</div><div style='font-size: 70%'></div>" .->1
+    9-. "<div>Compliance dashboards are<br />used by DevX developers to<br />track departmental progress<br />towards obligations</div><div style='font-size: 70%'></div>" .->2
+    9-. "<div>Compliance dashboards are<br />used by developers to track<br />their team's progress towards<br />obligations. They also have<br />read access to raw cloudquery<br />tables.</div><div style='font-size: 70%'></div>" .->1
+    8-. "<div>Repocop sends notifications<br />of events, or warnings to<br />teams via Anghammarad</div><div style='font-size: 70%'></div>" .->10
+    10-. "<div>Anghammarad delivers messages<br />to developers about changes<br />to their systems</div><div style='font-size: 70%'>[Email or Google Chat]</div>" .->1
+  end
