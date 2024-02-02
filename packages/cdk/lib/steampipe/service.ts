@@ -5,7 +5,7 @@ import {
 } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { Duration } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { Port } from 'aws-cdk-lib/aws-ec2';
 import type { FargateServiceProps } from 'aws-cdk-lib/aws-ecs';
@@ -155,6 +155,8 @@ export class SteampipeService extends FargateService {
 				},
 			],
 		});
+
+		Tags.of(task).add('Name', 'Steampipe');
 
 		const fireLensLogDriver = new FireLensLogDriver({
 			options: {
