@@ -42,6 +42,14 @@ createPrismaZip() {
   )
 }
 
+verifyDiagrams() {
+  npm run generate -w diagrams
+  if [[ $(git status -z) == *"packages/diagrams/output.svg"* ]]; then
+    echo "The $1 package is out of date. Please regenerate the project and commit the changes."
+    exit 1
+  fi
+}
+
 verifyMarkdown() {
   npm run generate -w best-practices
 
