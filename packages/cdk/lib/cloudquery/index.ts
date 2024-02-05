@@ -302,12 +302,8 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
-			config: githubSourceConfig({
-				tables: [
-					'github_repositories',
-					'github_repository_branches',
-					'github_workflows',
-				],
+			config: githubSourceConfig(false, {
+				tables: ['github_repositories', 'github_repository_branches'],
 
 				// We're not (yet) interested in the following tables, so do not collect them to reduce API quota usage.
 				// See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
@@ -328,7 +324,7 @@ export function addCloudqueryEcsCluster(
 			schedule:
 				nonProdSchedule ??
 				Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
-			config: githubSourceConfig({
+			config: githubSourceConfig(false, {
 				tables: [
 					'github_organizations',
 					'github_organization_members',
@@ -354,14 +350,25 @@ export function addCloudqueryEcsCluster(
 		},
 		{
 			name: 'GitHubIssues',
-			description: 'Collect GitHub issue data (PRs and Issues)',
+			description:
+				'Collect GitHub issue data (PRs and Issues), for un-archived repositories',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
-			config: githubSourceConfig({
+			config: githubSourceConfig(true, {
 				tables: ['github_issues'],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 1024,
+		},
+		{
+			name: 'GitHubWorkflows',
+			description: 'Collect GitHub Workflow data, for un-archived repositories',
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
+			config: githubSourceConfig(true, {
+				tables: ['github_workflows'],
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
 		},
 	];
 

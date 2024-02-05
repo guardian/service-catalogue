@@ -113,6 +113,7 @@ export function awsSourceConfigForAccount(
 }
 
 export function githubSourceConfig(
+	skipArchivedRepositories: boolean,
 	tableConfig: CloudqueryTableConfig,
 ): CloudqueryConfig {
 	const { tables, skipTables } = tableConfig;
@@ -143,6 +144,7 @@ export function githubSourceConfig(
 						installation_id: '${file:/github-installation-id}',
 					},
 				],
+				skip_archived_repos: skipArchivedRepositories,
 			},
 		},
 	};

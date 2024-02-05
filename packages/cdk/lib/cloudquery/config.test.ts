@@ -128,27 +128,30 @@ spec:
 	});
 
 	it('Should create a GitHub source configuration', () => {
-		const config = githubSourceConfig({ tables: ['github_repositories'] });
+		const config = githubSourceConfig(false, {
+			tables: ['github_repositories'],
+		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: github
-		  path: cloudquery/github
-		  version: v7.6.4
-		  tables:
-		    - github_repositories
-		  destinations:
-		    - postgresql
-		  spec:
-		    concurrency: 1000
-		    orgs:
-		      - guardian
-		    app_auth:
-		      - org: guardian
-		        private_key_path: /github-private-key
-		        app_id: \${file:/github-app-id}
-		        installation_id: \${file:/github-installation-id}
-		"
-	`);
+"kind: source
+spec:
+  name: github
+  path: cloudquery/github
+  version: v7.6.4
+  tables:
+    - github_repositories
+  destinations:
+    - postgresql
+  spec:
+    concurrency: 1000
+    orgs:
+      - guardian
+    app_auth:
+      - org: guardian
+        private_key_path: /github-private-key
+        app_id: \${file:/github-app-id}
+        installation_id: \${file:/github-installation-id}
+    skip_archived_repos: false
+"
+`);
 	});
 });
