@@ -5,6 +5,7 @@ import type {
 	snyk_projects,
 	snyk_reporting_latest_issues,
 } from '@prisma/client';
+import { partition } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
@@ -14,6 +15,7 @@ import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
+	EvaluationResult,
 	GuardianSnykTags,
 	ProjectTag,
 	RepoAndStack,
@@ -303,7 +305,10 @@ export async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data;
+		const openRuntimeDependencies = alert.data.filter(
+			(a) => a.dependency.scope !== 'development',
+		);
+		return openRuntimeDependencies;
 	} catch (error) {
 		console.info(
 			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
@@ -422,6 +427,38 @@ export function testExperimentalRepocopFeatures(
 	);
 }
 
+export function deduplicateVulnerabilitiesByCve(
+	vulns: RepocopVulnerability[],
+): RepocopVulnerability[] {
+	const vulnsWithSortedCVEs = vulns.map((v) => {
+		return {
+			...v,
+			CVEs: v.CVEs.sort(),
+		};
+	});
+	const [withCVEs, withoutCVEs] = partition(
+		vulnsWithSortedCVEs,
+		(v) => v.CVEs.length > 0,
+	);
+
+	const criticalFirstPredicate = (x: RepocopVulnerability) =>
+		x.severity === 'critical' ? -1 : 1;
+
+	//group withCVEs by CVEs
+	const dedupedWithCVEs = withCVEs
+		.sort(criticalFirstPredicate)
+		.reduce<Record<string, RepocopVulnerability>>((acc, vuln) => {
+			const key = vuln.CVEs.join(',');
+			if (!acc[key]) {
+				acc[key] = vuln;
+			}
+			return acc;
+		}, {});
+
+	const dedupedVulns = Object.values(dedupedWithCVEs).concat(withoutCVEs);
+	return dedupedVulns;
+}
+
 /**
  * Apply rules to a repository as defined in https://github.com/guardian/recommendations/blob/main/best-practices.md.
  */
@@ -433,17 +470,19 @@ export function evaluateOneRepo(
 	repoLanguages: github_languages[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
-): repocop_github_repository_rules {
+): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
 		latestSnykIssues,
 		snykProjectsFromRest,
 	);
 
-	const allAlerts = snykAlertsForRepo.concat(dependabotAlertsForRepo ?? []);
-	hasOldAlerts(allAlerts, repo);
+	const vulnerabilities = snykAlertsForRepo.concat(
+		dependabotAlertsForRepo ?? [],
+	);
+	hasOldAlerts(vulnerabilities, repo);
 
-	return {
+	const repocopRules: repocop_github_repository_rules = {
 		full_name: repo.full_name,
 		default_branch_name: hasDefaultBranchNameMain(repo),
 		branch_protection: hasBranchProtection(repo, allBranches),
@@ -459,11 +498,21 @@ export function evaluateOneRepo(
 		),
 		evaluated_on: new Date(),
 	};
+
+	return {
+		fullName: repo.full_name,
+		repocopRules,
+		vulnerabilities: deduplicateVulnerabilitiesByCve(vulnerabilities),
+	};
 }
 
 export function dependabotAlertToRepocopVulnerability(
 	alert: Alert,
 ): RepocopVulnerability {
+	const CVEs = alert.security_advisory.identifiers
+		.filter((i) => i.type === 'CVE')
+		.map((i) => i.value);
+
 	return {
 		open: alert.state === 'open',
 		source: 'Dependabot',
@@ -472,7 +521,8 @@ export function dependabotAlertToRepocopVulnerability(
 		urls: alert.security_advisory.references.map((ref) => ref.url),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: alert.created_at,
-		vulnerable_version: alert.security_vulnerability.vulnerable_version_range,
+		isPatchable: !!alert.security_vulnerability.first_patched_version,
+		CVEs,
 	};
 }
 
@@ -490,7 +540,8 @@ export function snykAlertToRepocopVulnerability(
 		ecosystem: issue.packageManager,
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
 		alert_issue_date: alert.introduced_date!,
-		vulnerable_version: issue.version,
+		isPatchable: issue.isPatchable || issue.isUpgradable || issue.isPinnable,
+		CVEs: issue.Identifiers.CVE ?? [],
 	};
 }
 
@@ -502,7 +553,7 @@ export async function evaluateRepositories(
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
 	octokit: Octokit,
-): Promise<repocop_github_repository_rules[]> {
+): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))

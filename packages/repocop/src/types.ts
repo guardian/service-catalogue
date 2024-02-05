@@ -4,6 +4,7 @@ import type {
 	github_repositories,
 	github_team_repositories,
 	github_teams,
+	repocop_github_repository_rules,
 } from '@prisma/client';
 
 export type NonEmptyArray<T> = [T, ...T[]];
@@ -129,9 +130,14 @@ export interface SnykIssue {
 	severity: string;
 	isPatched: boolean;
 	isIgnored: boolean;
-	isPinnable: false;
+	isPinnable: boolean;
 	isPatchable: boolean;
 	isUpgradable: boolean;
+	Identifiers: {
+		CVE: string[] | null;
+		CWE: string[] | null;
+		OSVDB: string[] | null;
+	};
 	disclosureTime: string; //or Date?
 	package: string;
 	packageManager: string;
@@ -148,6 +154,12 @@ export interface RepocopVulnerability {
 	urls: string[];
 	ecosystem: string;
 	alert_issue_date: string;
-	vulnerable_version?: string;
-	fixed_in_version?: string;
+	isPatchable: boolean;
+	CVEs: string[];
+}
+
+export interface EvaluationResult {
+	fullName: string;
+	repocopRules: repocop_github_repository_rules;
+	vulnerabilities: RepocopVulnerability[];
 }

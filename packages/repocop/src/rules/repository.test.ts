@@ -14,6 +14,7 @@ import type {
 } from '../types';
 import {
 	collectAndFormatUrgentSnykAlerts,
+	deduplicateVulnerabilitiesByCve,
 	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
 	findStacks,
@@ -40,7 +41,7 @@ function evaluateRepoTestHelper(
 		languages,
 		latestSnykIssues,
 		snykProjectsFromRest,
-	);
+	).repocopRules;
 }
 
 const nullBranch: github_repository_branches = {
@@ -595,6 +596,8 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	urls: [],
 	ecosystem: 'pip',
 	alert_issue_date: '2021-01-01T00:00:00.000Z',
+	isPatchable: true,
+	CVEs: ['CVE-2021-1234'],
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -651,7 +654,12 @@ const highSeverityIssue = {
 	isPatched: false,
 	isPinnable: false,
 	isPatchable: false,
-	isUpgradable: true,
+	isUpgradable: false,
+	Identifiers: {
+		CVE: ['CVE-1234'],
+		CWE: ['CWE-1234'],
+		OSVDB: ['OSVDB-1234'],
+	},
 	disclosureTime: '',
 	publicationTime: '',
 	package: 'fetch',
@@ -776,23 +784,33 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		);
 		expect(result.length).toEqual(0);
 	});
-});
-
-describe('NO RULE - Vulnerabilities from Dependabot', () => {
-	test('Should be parseable into a common format', () => {
-		const result: RepocopVulnerability[] = example.map(
-			dependabotAlertToRepocopVulnerability,
+	test('Should not be considered patchable if there is no possible upgrade path', () => {
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[snykIssue],
+			[snykProject],
 		);
-		console.log(result);
-		expect(result.length).toEqual(2);
-		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
-		expect(result.map((v) => v.open)).toEqual([false, true]);
-		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
-		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
-		expect(result.map((v) => v.alert_issue_date)).toEqual([
-			'2022-06-15T07:43:03Z',
-			'2022-06-14T15:21:52Z',
-		]);
+		expect(result.map((r) => r.isPatchable)).toEqual([false]);
+	});
+	test('Should be considered patchable if there is a possible upgrade path', () => {
+		const pinnableIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isPinnable: true },
+		};
+		const patchableIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isPatchable: true },
+		};
+		const upgradableIssue = {
+			...snykIssue,
+			issue: { ...highSeverityIssue, isUpgradable: true },
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[pinnableIssue, patchableIssue, upgradableIssue],
+			[snykProject],
+		);
+		expect(result.map((r) => r.isPatchable)).toEqual([true, true, true]);
 	});
 });
 
@@ -801,15 +819,41 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		const result: RepocopVulnerability[] = example.map(
 			dependabotAlertToRepocopVulnerability,
 		);
-		expect(result.length).toEqual(2);
-		expect(result.map((v) => v.source)).toEqual(['Dependabot', 'Dependabot']);
-		expect(result.map((v) => v.open)).toEqual([false, true]);
-		expect(result.map((v) => v.severity)).toEqual(['high', 'medium']);
-		expect(result.map((v) => v.package)).toEqual(['django', 'ansible']);
-		expect(result.map((v) => v.alert_issue_date)).toEqual([
-			'2022-06-15T07:43:03Z',
-			'2022-06-14T15:21:52Z',
-		]);
+		const expected1: RepocopVulnerability = {
+			source: 'Dependabot',
+			open: false,
+			severity: 'high',
+			package: 'django',
+			urls: [
+				'https://nvd.nist.gov/vuln/detail/CVE-2018-6188',
+				'https://github.com/advisories/GHSA-rf4j-j272-fj86',
+				'https://usn.ubuntu.com/3559-1/',
+				'https://www.djangoproject.com/weblog/2018/feb/01/security-releases/',
+				'http://www.securitytracker.com/id/1040422',
+			],
+			ecosystem: 'pip',
+			alert_issue_date: '2022-06-15T07:43:03Z',
+			isPatchable: true,
+			CVEs: ['CVE-2018-6188'],
+		};
+
+		const expected2: RepocopVulnerability = {
+			source: 'Dependabot',
+			open: true,
+			severity: 'medium',
+			package: 'ansible',
+			urls: [
+				'https://nvd.nist.gov/vuln/detail/CVE-2021-20191',
+				'https://access.redhat.com/security/cve/cve-2021-20191',
+				'https://bugzilla.redhat.com/show_bug.cgi?id=1916813',
+			],
+			ecosystem: 'pip',
+			alert_issue_date: '2022-06-14T15:21:52Z',
+			isPatchable: true,
+			CVEs: ['CVE-2021-20191'],
+		};
+
+		expect(result).toStrictEqual([expected1, expected2]);
 	});
 });
 
@@ -828,7 +872,57 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			urls: ['example.com'],
 			ecosystem: 'npm',
 			alert_issue_date: 'someTZdate',
-			vulnerable_version: undefined,
+			isPatchable: false,
+			CVEs: ['CVE-1234'],
 		});
+	});
+});
+
+describe('Deduplication of repocop vulnerabilities', () => {
+	const vuln1: RepocopVulnerability = {
+		source: 'Dependabot',
+		open: true,
+		severity: 'high',
+		package: 'django',
+		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
+		ecosystem: 'pip',
+		alert_issue_date: '2022-06-15T07:43:03Z',
+		isPatchable: true,
+		CVEs: ['CVE-2018-6188'],
+	};
+	const vuln2: RepocopVulnerability = {
+		source: 'Snyk',
+		open: true,
+		severity: 'critical',
+		package: 'django',
+		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
+		ecosystem: 'pip',
+		alert_issue_date: '2022-06-15T07:43:03Z',
+		isPatchable: true,
+		CVEs: ['CVE-2018-6188'],
+	};
+	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
+	test('Should happen if two vulnerabilities share the same CVEs', () => {
+		console.log(actual);
+		expect(actual.length).toStrictEqual(1);
+	});
+	test('Should return the critical vulnerability, given a choice betwen critical and high', () => {
+		expect(actual.map((x) => x.severity)).toStrictEqual(['critical']);
+	});
+	test('Should not happen if two vulnerabilities have different CVEs', () => {
+		const vuln3: RepocopVulnerability = {
+			...vuln1,
+			CVEs: ['CVE-2018-6189'],
+		};
+		const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln3]);
+		expect(actual.length).toStrictEqual(2);
+	});
+	test('Should not happen if no CVEs are provided', () => {
+		const vuln4: RepocopVulnerability = {
+			...vuln1,
+			CVEs: [],
+		};
+		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
+		expect(actual.length).toStrictEqual(2);
 	});
 });
