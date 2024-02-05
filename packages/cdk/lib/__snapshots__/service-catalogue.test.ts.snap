@@ -833,8 +833,8 @@ spec:
     - aws_securityhub_*
   destinations:
     - postgresql
-  concurrency: 2000
   spec:
+    concurrency: 2000
     regions:
       - eu-west-1
       - eu-west-2
@@ -2190,8 +2190,8 @@ spec:
     - fastly_account_users
   destinations:
     - postgresql
-  concurrency: 1000
   spec:
+    concurrency: 1000
     fastly_api_key: \${FASTLY_API_KEY}
 ' > /source.yaml;printf 'kind: destination
 spec:
@@ -3771,8 +3771,8 @@ spec:
     - github_issues
   destinations:
     - postgresql
-  concurrency: 1000
   spec:
+    concurrency: 1000
     orgs:
       - guardian
     app_auth:
@@ -4948,8 +4948,8 @@ spec:
     - github_repository_dependabot_secrets
   destinations:
     - postgresql
-  concurrency: 1000
   spec:
+    concurrency: 1000
     orgs:
       - guardian
     app_auth:
@@ -5672,8 +5672,8 @@ spec:
     - github_organization_dependabot_secrets
   destinations:
     - postgresql
-  concurrency: 1000
   spec:
+    concurrency: 1000
     orgs:
       - guardian
     app_auth:
@@ -15365,8 +15365,8 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
-  concurrency: 2000
   spec:
+    concurrency: 2000
     regions:
       - eu-west-1
       - eu-west-2

@@ -99,6 +99,7 @@ spec:
 				'aws_accessanalyzer_analyzer_findings',
 			],
 		});
+		console.log(dump(config));
 		expect(dump(config)).toMatchInlineSnapshot(`
 "kind: source
 spec:
@@ -139,8 +140,8 @@ spec:
 		    - github_repositories
 		  destinations:
 		    - postgresql
-		  concurrency: 1000
 		  spec:
+		    concurrency: 1000
 		    orgs:
 		      - guardian
 		    app_auth:
