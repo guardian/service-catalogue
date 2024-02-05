@@ -61,8 +61,8 @@ export function awsSourceConfig(
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
-			concurrency,
 			spec: {
+				concurrency,
 				regions: AWS_REGIONS,
 				...extraConfig,
 			},
@@ -130,8 +130,8 @@ export function githubSourceConfig(
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
-			concurrency: 1000, // TODO what's the ideal value here?!
 			spec: {
+				concurrency: 1000, // TODO what's the ideal value here?!
 				orgs: ['guardian'],
 				app_auth: [
 					{
@@ -171,11 +171,11 @@ export function fastlySourceConfig(
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
 
-			// The Fastly API is rate limited to 1000 requests per hour.
-			// See https://docs.fastly.com/en/guides/resource-limits#rate-and-time-limits.
-			// TODO what's the ideal value here?!
-			concurrency: 1000,
 			spec: {
+				// The Fastly API is rate limited to 1000 requests per hour.
+				// See https://docs.fastly.com/en/guides/resource-limits#rate-and-time-limits.
+				// TODO what's the ideal value here?!
+				concurrency: 1000,
 				fastly_api_key: '${FASTLY_API_KEY}',
 			},
 		},
