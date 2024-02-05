@@ -122,22 +122,15 @@ export async function main() {
 	const digests = teams.map((t) =>
 		createDigest(t, repoOwners, evaluationResult),
 	);
-	const populatedDigests = digests.filter((d) => {
-		const vulns = d.repos
-			.map((r) => r.vulnerabilityMessages.length)
-			.reduce((a, b) => a + b, 0);
-		return vulns > 0;
-	});
 	const anghammarad = new Anghammarad();
-
 	await Promise.all(
-		shuffle(populatedDigests)
+		shuffle(digests)
 			.slice(0, 2)
 			.map(
 				async (digest) =>
 					await anghammarad.notify({
-						subject: `Vulnerability Digest for ${digest.teamSlug}`,
-						message: `${digest.teamSlug}\n\n${digest.repos.join('\n')}`,
+						subject: digest.subject,
+						message: digest.message,
 						actions: [],
 						target: { Stack: 'testing-alerts' },
 						channel: RequestedChannel.PreferHangouts,
