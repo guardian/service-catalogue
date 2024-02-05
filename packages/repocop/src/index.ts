@@ -1,11 +1,12 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
+import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
-import { partition, stageAwareOctokit } from 'common/functions';
+import { partition, shuffle, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
@@ -34,6 +35,7 @@ import type {
 	EvaluationResult,
 	RepocopVulnerability,
 } from './types';
+import { createDigest } from './vulnerability-digest';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -76,6 +78,8 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const latestSnykIssues = await getLatestSnykIssues(prisma);
+	const teams = await getTeams(prisma);
+	const repoOwners = await getRepoOwnership(prisma);
 
 	const evaluationResult: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
@@ -115,13 +119,39 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	const repoOwners = await getRepoOwnership(prisma);
+	const digests = teams.map((t) =>
+		createDigest(t, repoOwners, evaluationResult),
+	);
+	const populatedDigests = digests.filter((d) => {
+		const vulns = d.repos
+			.map((r) => r.vulnerabilityMessages.length)
+			.reduce((a, b) => a + b, 0);
+		return vulns > 0;
+	});
+	const anghammarad = new Anghammarad();
+
+	await Promise.all(
+		shuffle(populatedDigests)
+			.slice(0, 2)
+			.map(
+				async (digest) =>
+					await anghammarad.notify({
+						subject: `Vulnerability Digest for ${digest.teamSlug}`,
+						message: `${digest.teamSlug}\n\n${digest.repos.join('\n')}`,
+						actions: [],
+						target: { Stack: 'testing-alerts' },
+						channel: RequestedChannel.PreferHangouts,
+						sourceSystem: `${config.app} ${config.stage}`,
+						topicArn: config.anghammaradSnsTopic,
+						threadKey: `vulnerability-digest-${digest.teamSlug}`,
+					}),
+			),
+	);
+
 	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
-
-		const teams = await getTeams(prisma);
 
 		if (config.branchProtectionEnabled) {
 			await protectBranches(
