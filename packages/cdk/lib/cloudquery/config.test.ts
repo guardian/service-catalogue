@@ -99,7 +99,6 @@ spec:
 				'aws_accessanalyzer_analyzer_findings',
 			],
 		});
-		console.log(dump(config));
 		expect(dump(config)).toMatchInlineSnapshot(`
 "kind: source
 spec:
