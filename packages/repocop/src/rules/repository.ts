@@ -455,8 +455,7 @@ export function deduplicateVulnerabilities(
 			return acc;
 		}, {});
 
-	const x: RepocopVulnerability[] = Object.values(dedupedWithCVEs);
-	const dedupedVulns = x.concat(withoutCVEs);
+	const dedupedVulns = Object.values(dedupedWithCVEs).concat(withoutCVEs);
 	return dedupedVulns;
 }
 
