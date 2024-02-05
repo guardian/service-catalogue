@@ -427,7 +427,7 @@ export function testExperimentalRepocopFeatures(
 	);
 }
 
-export function deduplicateVulnerabilities(
+export function deduplicateVulnerabilitiesByCve(
 	vulns: RepocopVulnerability[],
 ): RepocopVulnerability[] {
 	const vulnsWithSortedCVEs = vulns.map((v) => {
@@ -502,7 +502,7 @@ export function evaluateOneRepo(
 	return {
 		fullName: repo.full_name,
 		repocopRules,
-		vulnerabilities: deduplicateVulnerabilities(vulnerabilities),
+		vulnerabilities: deduplicateVulnerabilitiesByCve(vulnerabilities),
 	};
 }
 

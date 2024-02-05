@@ -14,7 +14,7 @@ import type {
 } from '../types';
 import {
 	collectAndFormatUrgentSnykAlerts,
-	deduplicateVulnerabilities,
+	deduplicateVulnerabilitiesByCve,
 	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
 	findStacks,
@@ -901,7 +901,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		isPatchable: true,
 		CVEs: ['CVE-2018-6188'],
 	};
-	const actual = deduplicateVulnerabilities([vuln1, vuln2]);
+	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	test('Should happen if two vulnerabilities share the same CVEs', () => {
 		console.log(actual);
 		expect(actual.length).toStrictEqual(1);
@@ -914,7 +914,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 			...vuln1,
 			CVEs: ['CVE-2018-6189'],
 		};
-		const actual = deduplicateVulnerabilities([vuln1, vuln3]);
+		const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln3]);
 		expect(actual.length).toStrictEqual(2);
 	});
 	test('Should not happen if no CVEs are provided', () => {
@@ -922,7 +922,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 			...vuln1,
 			CVEs: [],
 		};
-		const actual = deduplicateVulnerabilities([vuln4, vuln4]);
+		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
 		expect(actual.length).toStrictEqual(2);
 	});
 });
