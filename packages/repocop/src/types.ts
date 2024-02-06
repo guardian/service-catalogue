@@ -163,3 +163,9 @@ export interface EvaluationResult {
 	repocopRules: repocop_github_repository_rules;
 	vulnerabilities: RepocopVulnerability[];
 }
+
+export interface VulnerabilityDigest {
+	teamSlug: string;
+	subject: string;
+	message: string;
+}

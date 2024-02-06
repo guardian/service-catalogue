@@ -34,6 +34,7 @@ import type {
 	AwsCloudFormationStack,
 	EvaluationResult,
 	RepocopVulnerability,
+	VulnerabilityDigest,
 } from './types';
 import { createDigest } from './vulnerability-digest';
 
@@ -119,13 +120,15 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	const digests = teams.map((t) =>
-		createDigest(t, repoOwners, evaluationResult),
-	);
+	const someTeams = shuffle(teams).slice(0, 5);
+
+	const digests = shuffle(someTeams)
+		.slice(0, 5)
+		.map((t) => createDigest(t, repoOwners, evaluationResult));
 	const anghammarad = new Anghammarad();
 	await Promise.all(
-		shuffle(digests)
-			.slice(0, 2)
+		digests
+			.filter((d): d is VulnerabilityDigest => d !== undefined)
 			.map(
 				async (digest) =>
 					await anghammarad.notify({

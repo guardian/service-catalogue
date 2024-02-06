@@ -310,7 +310,7 @@ export async function getAlertsForRepo(
 		);
 		return openRuntimeDependencies;
 	} catch (error) {
-		console.info(
+		console.debug(
 			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
 		);
 		console.debug(error);
