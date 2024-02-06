@@ -4,7 +4,8 @@ The view view_running_instances provides general information about running EC2 i
 |--------------|------|------------|-------------|----------------|------------|
 |    account1  | grid | ami-123456 |  i-1234556  |      true      | 2023-06-23 |
  */
-create or replace view view_running_instances as
+DROP VIEW IF EXISTS view_running_instances;
+create view view_running_instances as
 with id_and_tags as (select image_id, tags ->> 'BuiltBy' as built_by
                      from aws_ec2_images
                      where tags is not null
@@ -21,14 +22,16 @@ with id_and_tags as (select image_id, tags ->> 'BuiltBy' as built_by
 
 select distinct on (instances.instance_id) accts.name               as account_name,
                                            instances.tags ->> 'App' as app,
-
+                                           instances.tags ->> 'Stack' as stack,
+                                           instances.tags ->> 'Stage' as stage,
                                            instances.image_id,
                                            instances.instance_id,
                                            CASE
                                                WHEN images.built_by_amigo THEN true
                                                ELSE false
                                                END                  as built_by_amigo,
-                                           cast(instances.launch_time as date)
+                                           instances.launch_time,
+                                           instances.instance_type as type
 from aws_ec2_instances instances
          left join aggregated_images images
                    on instances.image_id = images.image_id -- instances.account_id=images.account_id
