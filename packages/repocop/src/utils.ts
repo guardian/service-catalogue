@@ -29,5 +29,19 @@ export function stringToSeverity(severity: string): Severity {
 	}
 }
 
-export const criticalFirstPredicate = (x: RepocopVulnerability) =>
+const criticalFirstPredicate = (x: RepocopVulnerability) =>
 	x.severity === 'critical' ? -1 : 1;
+
+const patchableFirstPredicate = (x: RepocopVulnerability) =>
+	x.isPatchable ? -1 : 1;
+
+export const vulnSortPredicate = (
+	v1: RepocopVulnerability,
+	v2: RepocopVulnerability,
+) => {
+	if (v1.severity === v2.severity) {
+		return patchableFirstPredicate(v1);
+	} else {
+		return criticalFirstPredicate(v1);
+	}
+};
