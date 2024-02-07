@@ -122,26 +122,37 @@ export async function main() {
 
 	const someTeams = shuffle(teams).slice(0, 5);
 
+	const productionRepoFullNames = unarchivedRepos
+		.filter((r) => r.topics.includes('production'))
+		.map((r) => r.full_name);
+
+	const prodEvaluationResults = evaluationResult.filter((r) =>
+		productionRepoFullNames.includes(r.fullName),
+	);
+
 	const digests = shuffle(someTeams)
-		.slice(0, 5)
-		.map((t) => createDigest(t, repoOwners, evaluationResult));
+		.slice(0, 8)
+		.map((t) => createDigest(t, repoOwners, prodEvaluationResults))
+		.filter((d): d is VulnerabilityDigest => d !== undefined);
+
+	console.log(
+		`Sending ${digests.length} vulnerability digests: ${digests.map((d) => d.teamSlug).join(', ')}`,
+	);
 	const anghammarad = new Anghammarad();
 	await Promise.all(
-		digests
-			.filter((d): d is VulnerabilityDigest => d !== undefined)
-			.map(
-				async (digest) =>
-					await anghammarad.notify({
-						subject: digest.subject,
-						message: digest.message,
-						actions: [],
-						target: { Stack: 'testing-alerts' },
-						channel: RequestedChannel.PreferHangouts,
-						sourceSystem: `${config.app} ${config.stage}`,
-						topicArn: config.anghammaradSnsTopic,
-						threadKey: `vulnerability-digest-${digest.teamSlug}`,
-					}),
-			),
+		digests.map(
+			async (digest) =>
+				await anghammarad.notify({
+					subject: digest.subject,
+					message: digest.message,
+					actions: [],
+					target: { Stack: 'testing-alerts' },
+					channel: RequestedChannel.PreferHangouts,
+					sourceSystem: `${config.app} ${config.stage}`,
+					topicArn: config.anghammaradSnsTopic,
+					threadKey: `vulnerability-digest-${digest.teamSlug}`,
+				}),
+		),
 	);
 
 	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
