@@ -393,7 +393,9 @@ export function collectAndFormatUrgentSnykAlerts(
 		snykProjectIdsForRepo
 			.map((projectId) => getProjectIssues(projectId, snykIssues))
 			.flat();
-	const processedVulns = snykIssuesForRepo.map(snykAlertToRepocopVulnerability);
+	const processedVulns = snykIssuesForRepo.map((v) =>
+		snykAlertToRepocopVulnerability(repo.full_name, v),
+	);
 
 	const relevantVulns = processedVulns.filter(
 		(vuln) =>
@@ -508,6 +510,7 @@ export function evaluateOneRepo(
 }
 
 export function dependabotAlertToRepocopVulnerability(
+	fullName: string,
 	alert: Alert,
 ): RepocopVulnerability {
 	const CVEs = alert.security_advisory.identifiers
@@ -516,6 +519,7 @@ export function dependabotAlertToRepocopVulnerability(
 
 	return {
 		open: alert.state === 'open',
+		fullName,
 		source: 'Dependabot',
 		severity: alert.security_advisory.severity,
 		package: alert.security_vulnerability.package.name,
@@ -528,11 +532,13 @@ export function dependabotAlertToRepocopVulnerability(
 }
 
 export function snykAlertToRepocopVulnerability(
+	fullName: string,
 	alert: snyk_reporting_latest_issues,
 ): RepocopVulnerability {
 	const issue = alert.issue as unknown as SnykIssue;
 
 	return {
+		fullName,
 		open: alert.is_fixed !== true && !issue.isIgnored,
 		source: 'Snyk',
 		severity: stringToSeverity(issue.severity),
@@ -559,7 +565,7 @@ export async function evaluateRepositories(
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))
 					?.filter((a) => a.state === 'open')
-					.map(dependabotAlertToRepocopVulnerability)
+					.map((a) => dependabotAlertToRepocopVulnerability(r.full_name, a))
 			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
