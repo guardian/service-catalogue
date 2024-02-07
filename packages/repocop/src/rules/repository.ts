@@ -25,7 +25,11 @@ import type {
 	SnykProject,
 	TeamRepository,
 } from '../types';
-import { isProduction, stringToSeverity } from '../utils';
+import {
+	criticalFirstPredicate,
+	isProduction,
+	stringToSeverity,
+} from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -440,9 +444,6 @@ export function deduplicateVulnerabilitiesByCve(
 		vulnsWithSortedCVEs,
 		(v) => v.CVEs.length > 0,
 	);
-
-	const criticalFirstPredicate = (x: RepocopVulnerability) =>
-		x.severity === 'critical' ? -1 : 1;
 
 	//group withCVEs by CVEs
 	const dedupedWithCVEs = withCVEs

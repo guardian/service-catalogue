@@ -1,4 +1,9 @@
-import type { NonEmptyArray, Repository, Severity } from './types';
+import type {
+	NonEmptyArray,
+	RepocopVulnerability,
+	Repository,
+	Severity,
+} from './types';
 
 export function isProduction(repo: Repository) {
 	return repo.topics.includes('production') && !repo.archived;
@@ -23,3 +28,6 @@ export function stringToSeverity(severity: string): Severity {
 		return 'unknown';
 	}
 }
+
+export const criticalFirstPredicate = (x: RepocopVulnerability) =>
+	x.severity === 'critical' ? -1 : 1;
