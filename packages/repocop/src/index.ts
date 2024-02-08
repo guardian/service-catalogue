@@ -122,17 +122,9 @@ export async function main() {
 
 	const someTeams = shuffle(teams).slice(0, 5);
 
-	const productionRepoFullNames = unarchivedRepos
-		.filter((r) => r.topics.includes('production'))
-		.map((r) => r.full_name);
-
-	const prodEvaluationResults = evaluationResult.filter((r) =>
-		productionRepoFullNames.includes(r.fullName),
-	);
-
 	const digests = shuffle(someTeams)
 		.slice(0, 8)
-		.map((t) => createDigest(t, repoOwners, prodEvaluationResults))
+		.map((t) => createDigest(t, repoOwners, evaluationResult))
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
 	console.log(
