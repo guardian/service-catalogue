@@ -1,5 +1,10 @@
-import type { NonEmptyArray, Repository } from './types';
-import { isProduction, stringToSeverity, toNonEmptyArray } from './utils';
+import type { NonEmptyArray, RepocopVulnerability, Repository } from './types';
+import {
+	isProduction,
+	stringToSeverity,
+	toNonEmptyArray,
+	vulnSortPredicate,
+} from './utils';
 
 describe('isProduction', () => {
 	test('should return correct values for prod and non-prod repos', () => {
@@ -46,5 +51,56 @@ describe('stringToSeverity', () => {
 		expect(stringToSeverity('medium')).toBe('medium');
 		expect(stringToSeverity('high')).toBe('high');
 		expect(stringToSeverity('critical')).toBe('critical');
+	});
+});
+
+describe('vulnSortingPredicate', () => {
+	test('should order by severity, and then patchability', () => {
+		const criticalPatchable: RepocopVulnerability = {
+			package: 'test',
+			severity: 'critical',
+			fullName: 'test',
+			ecosystem: 'test',
+			isPatchable: true,
+			urls: [],
+			open: true,
+			source: 'Dependabot',
+			alert_issue_date: '',
+			CVEs: [],
+		};
+		const criticalNotPatchable: RepocopVulnerability = {
+			...criticalPatchable,
+			isPatchable: false,
+		};
+		const highPatchable: RepocopVulnerability = {
+			...criticalPatchable,
+			severity: 'high',
+		};
+		const highNotPatchable: RepocopVulnerability = {
+			...highPatchable,
+			isPatchable: false,
+		};
+
+		const vulns = [
+			highNotPatchable,
+			criticalPatchable,
+			highPatchable,
+			criticalNotPatchable,
+		];
+		const result = vulns.sort(vulnSortPredicate);
+
+		expect(result).toStrictEqual([
+			criticalPatchable,
+			criticalNotPatchable,
+			highPatchable,
+			highNotPatchable,
+		]);
+
+		const vulns2 = [highNotPatchable, criticalPatchable, criticalPatchable];
+		expect(vulns2.sort(vulnSortPredicate)).toStrictEqual([
+			criticalPatchable,
+			criticalPatchable,
+			highNotPatchable,
+		]);
 	});
 });
