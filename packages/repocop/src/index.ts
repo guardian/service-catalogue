@@ -1,12 +1,11 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
-import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
-import { partition, shuffle, stageAwareOctokit } from 'common/functions';
+import { partition, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { sendToCloudwatch } from './metrics';
@@ -34,9 +33,7 @@ import type {
 	AwsCloudFormationStack,
 	EvaluationResult,
 	RepocopVulnerability,
-	VulnerabilityDigest,
 } from './types';
-import { createDigest } from './vulnerability-digest';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -82,7 +79,7 @@ export async function main() {
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
-	const evaluationResult: EvaluationResult[] = await evaluateRepositories(
+	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
 		branches,
 		repoTeams,
@@ -92,10 +89,10 @@ export async function main() {
 		octokit,
 	);
 
-	const repocopRules = evaluationResult.map((r) => r.repocopRules);
+	const repocopRules = evaluationResults.map((r) => r.repocopRules);
 	const severityPredicate = (x: RepocopVulnerability) => x.severity === 'high';
 	const [high, critical] = partition(
-		evaluationResult.map((r) => r.vulnerabilities).flat(),
+		evaluationResults.map((r) => r.vulnerabilities).flat(),
 		severityPredicate,
 	);
 
@@ -113,38 +110,14 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(repocopRules, cloudwatch, config);
 
-	testExperimentalRepocopFeatures(
-		repocopRules,
+	await testExperimentalRepocopFeatures(
+		evaluationResults,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
-	);
-
-	const someTeams = shuffle(teams).slice(0, 5);
-
-	const digests = shuffle(someTeams)
-		.slice(0, 8)
-		.map((t) => createDigest(t, repoOwners, evaluationResult))
-		.filter((d): d is VulnerabilityDigest => d !== undefined);
-
-	console.log(
-		`Sending ${digests.length} vulnerability digests: ${digests.map((d) => d.teamSlug).join(', ')}`,
-	);
-	const anghammarad = new Anghammarad();
-	await Promise.all(
-		digests.map(
-			async (digest) =>
-				await anghammarad.notify({
-					subject: digest.subject,
-					message: digest.message,
-					actions: [],
-					target: { Stack: 'testing-alerts' },
-					channel: RequestedChannel.PreferHangouts,
-					sourceSystem: `${config.app} ${config.stage}`,
-					topicArn: config.anghammaradSnsTopic,
-					threadKey: `vulnerability-digest-${digest.teamSlug}`,
-				}),
-		),
+		teams,
+		config,
+		repoOwners,
 	);
 
 	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
