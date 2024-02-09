@@ -19,7 +19,7 @@
     "@guardian/prettier": "8.0.0",
     "@guardian/tsconfig": "^0.2.0",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.11.16",
+    "@types/node": "^20.11.17",
     "dotenv": "^16.4.1",
     "esbuild": "^0.20.0",
     "esbuild-jest": "^0.5.0",
