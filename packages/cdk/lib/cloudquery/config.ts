@@ -1,4 +1,7 @@
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import {
+	GuardianAwsAccounts,
+	GuardianOrganisationalUnits,
+} from '@guardian/private-infrastructure-config';
 import { AWS_REGIONS } from 'common/src/aws';
 import { Versions } from './versions';
 
@@ -84,6 +87,9 @@ export function awsSourceConfigForOrganisation(
 			// See: https://github.com/guardian/aws-account-setup/pull/58
 			member_role_name: 'cloudquery-access',
 			organization_units: [GuardianOrganisationalUnits.Root],
+
+			// We have not provisioned a role in the root account, so skip it to avoid noise in logs.
+			skip_member_accounts: [`"${GuardianAwsAccounts.Root}"`],
 		},
 	});
 }

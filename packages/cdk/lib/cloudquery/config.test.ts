@@ -53,6 +53,8 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
+      skip_member_accounts:
+        - '"000000000014"'
 "
 `);
 	});
@@ -87,6 +89,8 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
+      skip_member_accounts:
+        - '"000000000014"'
 "
 `);
 	});
@@ -99,7 +103,6 @@ spec:
 				'aws_accessanalyzer_analyzer_findings',
 			],
 		});
-		console.log(dump(config));
 		expect(dump(config)).toMatchInlineSnapshot(`
 "kind: source
 spec:
