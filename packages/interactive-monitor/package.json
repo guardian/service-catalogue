@@ -10,7 +10,7 @@
 	},
 	"author": "guardian",
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.509.0",
+		"@aws-sdk/client-s3": "^3.511.0",
 		"@types/aws-lambda": "^8.10.133",
 		"octokit": "^3.1.1"
 	},
