@@ -33,13 +33,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Setup AWS credentials to enable uploading to S3 for Riff-Raff.
-      # See https://github.com/aws-actions/configure-aws-credentials
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          aws-region: eu-west-1
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -54,9 +47,10 @@ jobs:
         run: ./scripts/ci.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@v3
+        uses: guardian/actions-riff-raff@87be18ae438481199ff73ee23e51ad935dd56486
         with:
           app: service-catalogue
+          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
           projectName: deploy::service-catalogue
