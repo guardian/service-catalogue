@@ -13362,7 +13362,7 @@ spec:
   spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
-      host=\${RIFFRAFF_DB_HOST} port=5432 dbname=riffraff sslmode=verify-ca
+      host=\${RIFFRAFF_DB_HOST} port=5432 dbname=riffraff sslmode=verify-full
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
