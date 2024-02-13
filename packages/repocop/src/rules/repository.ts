@@ -1,3 +1,4 @@
+import type { Action } from '@guardian/anghammarad';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type {
 	github_languages,
@@ -448,6 +449,12 @@ export async function testExperimentalRepocopFeatures(
 	console.log(
 		`Sending ${digests.length} vulnerability digests: ${digests.map((d) => d.teamSlug).join(', ')}`,
 	);
+
+	const action: Action = {
+		cta: "See 'Prioritise the vulnerabilities' section of Security HQ docs for departmental obligations",
+		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
+	};
+
 	const anghammarad = new Anghammarad();
 	await Promise.all(
 		digests.map(
@@ -455,7 +462,7 @@ export async function testExperimentalRepocopFeatures(
 				await anghammarad.notify({
 					subject: digest.subject,
 					message: digest.message,
-					actions: [],
+					actions: [action],
 					target: { Stack: 'testing-alerts' },
 					channel: RequestedChannel.PreferHangouts,
 					sourceSystem: `${config.app} ${config.stage}`,
