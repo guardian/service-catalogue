@@ -242,10 +242,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 					'host=${RIFFRAFF_DB_HOST}',
 					'port=5432',
 					'dbname=riffraff',
-					// Ideally we'd use sslmode=verify-full however the certificates used by riff-raffs DB are quite old and don't have any SANs set.
-					// In order to upgrade to verify-full we need to change the CA used by the riff-raff DB.
-					// See https://github.com/golang/go/issues/39568
-					'sslmode=verify-ca',
+					'sslmode=verify-full',
 				].join(' '),
 			},
 		},
