@@ -461,25 +461,29 @@ export async function testExperimentalRepocopFeatures(
 		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
 		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
 	};
-	const sendMessage =
-		isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD';
-	console.log(`Is it the first or third Tuesday of the month? ${sendMessage}`);
+
 	const anghammarad = new Anghammarad();
-	await Promise.all(
-		digests.map(
-			async (digest) =>
-				await anghammarad.notify({
-					subject: digest.subject,
-					message: digest.message,
-					actions: [action],
-					target: { Stack: 'testing-alerts' },
-					channel: RequestedChannel.PreferHangouts,
-					sourceSystem: `${config.app} ${config.stage}`,
-					topicArn: config.anghammaradSnsTopic,
-					threadKey: `vulnerability-digest-${digest.teamSlug}`,
-				}),
-		),
-	);
+	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
+		console.log('Sending vulnerability digests');
+		await Promise.all(
+			digests.map(
+				async (digest) =>
+					await anghammarad.notify({
+						subject: digest.subject,
+						message: digest.message,
+						actions: [action],
+						target: { GithubTeamSlug: digest.teamSlug },
+						channel: RequestedChannel.PreferHangouts,
+						sourceSystem: `${config.app} ${config.stage}`,
+						topicArn: config.anghammaradSnsTopic,
+						threadKey: `vulnerability-digest-${digest.teamSlug}`,
+					}),
+			),
+		);
+	} else {
+		console.log('Not sending vulnerability digests');
+		digests.forEach((digest) => console.log(JSON.stringify(digest)));
+	}
 }
 
 export function deduplicateVulnerabilitiesByCve(
