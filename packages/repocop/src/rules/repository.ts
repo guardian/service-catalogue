@@ -8,7 +8,7 @@ import type {
 	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
-import { partition, shuffle } from 'common/src/functions';
+import { partition } from 'common/src/functions';
 import type { Octokit } from 'octokit';
 import type { Config } from '../config';
 import {
@@ -465,7 +465,7 @@ export async function testExperimentalRepocopFeatures(
 						subject: digest.subject,
 						message: digest.message,
 						actions: [action],
-						target: { GithubTeamSlug: digest.teamSlug },
+						target: { Stack: 'testing-alerts' },
 						channel: RequestedChannel.PreferHangouts,
 						sourceSystem: `${config.app} ${config.stage}`,
 						topicArn: config.anghammaradSnsTopic,
@@ -475,24 +475,20 @@ export async function testExperimentalRepocopFeatures(
 		);
 	}
 
-	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-		const digests = teams
-			.map((t) => createDigest(t, repoOwners, evaluationResults))
-			.filter((d): d is VulnerabilityDigest => d !== undefined);
-		await sendVulnerabilityDigests(digests);
-	} else if (
-		isFirstOrThirdTuesdayOfMonth(new Date()) &&
-		config.stage !== 'PROD'
-	) {
-		const digests = shuffle(teams)
-			.slice(0, 8)
-			.map((t) => createDigest(t, repoOwners, evaluationResults))
-			.filter((d): d is VulnerabilityDigest => d !== undefined);
-		console.log('Logging vulnerability digests');
-		digests.forEach((digest) => console.log(JSON.stringify(digest)));
-	} else {
-		console.log('Not sending vulnerability digests');
-	}
+	const someDigests = teams
+		.sort((a, b) => a.slug.localeCompare(b.slug))
+		.slice(0, 10)
+		.map((t) => createDigest(t, repoOwners, evaluationResults))
+		.filter((d): d is VulnerabilityDigest => d !== undefined);
+
+	await sendVulnerabilityDigests(someDigests);
+
+	// if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
+	// 	await sendVulnerabilityDigests(someDigests);
+	// } else {
+	// 	console.log('Logging vulnerability digests');
+	// 	someDigests.forEach((digest) => console.log(JSON.stringify(digest)));
+	// }
 }
 
 export function deduplicateVulnerabilitiesByCve(
