@@ -446,26 +446,19 @@ export async function testExperimentalRepocopFeatures(
 		archivedWithStacks.slice(0, 3),
 	);
 
-	const someTeams = shuffle(teams).slice(0, 5);
+	function sendVulnerabilityDigests(digests: VulnerabilityDigest[]) {
+		const anghammarad = new Anghammarad();
+		console.log(
+			`Sending ${digests.length} vulnerability digests: ${digests
+				.map((d) => d.teamSlug)
+				.join(', ')}`,
+		);
 
-	const digests = shuffle(someTeams)
-		.slice(0, 8)
-		.map((t) => createDigest(t, repoOwners, evaluationResults))
-		.filter((d): d is VulnerabilityDigest => d !== undefined);
-
-	console.log(
-		`Sending ${digests.length} vulnerability digests: ${digests.map((d) => d.teamSlug).join(', ')}`,
-	);
-
-	const action: Action = {
-		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
-		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
-	};
-
-	const anghammarad = new Anghammarad();
-	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-		console.log('Sending vulnerability digests');
-		await Promise.all(
+		const action: Action = {
+			cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
+			url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
+		};
+		return Promise.all(
 			digests.map(
 				async (digest) =>
 					await anghammarad.notify({
@@ -480,9 +473,25 @@ export async function testExperimentalRepocopFeatures(
 					}),
 			),
 		);
+	}
+
+	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
+		const digests = teams
+			.map((t) => createDigest(t, repoOwners, evaluationResults))
+			.filter((d): d is VulnerabilityDigest => d !== undefined);
+		await sendVulnerabilityDigests(digests);
+	} else if (
+		isFirstOrThirdTuesdayOfMonth(new Date()) &&
+		config.stage !== 'PROD'
+	) {
+		const digests = shuffle(teams)
+			.slice(0, 8)
+			.map((t) => createDigest(t, repoOwners, evaluationResults))
+			.filter((d): d is VulnerabilityDigest => d !== undefined);
+		console.log('Logging vulnerability digests');
+		digests.forEach((digest) => console.log(JSON.stringify(digest)));
 	} else {
 		console.log('Not sending vulnerability digests');
-		digests.forEach((digest) => console.log(JSON.stringify(digest)));
 	}
 }
 
