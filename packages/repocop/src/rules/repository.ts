@@ -408,6 +408,13 @@ export function collectAndFormatUrgentSnykAlerts(
 	return relevantVulns;
 }
 
+export function isFirstOrThirdTuesdayOfMonth(date: Date) {
+	const isTuesday = date.getDay() === 2;
+	const inFirstWeek = date.getDate() <= 7;
+	const inThirdWeek = date.getDate() >= 15 && date.getDate() <= 21;
+	return isTuesday && (inFirstWeek || inThirdWeek);
+}
+
 export async function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
@@ -451,26 +458,31 @@ export async function testExperimentalRepocopFeatures(
 	);
 
 	const action: Action = {
-		cta: "See 'Prioritise the vulnerabilities' section of Security HQ docs for departmental obligations",
+		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
 		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
 	};
 
-	const anghammarad = new Anghammarad();
-	await Promise.all(
-		digests.map(
-			async (digest) =>
-				await anghammarad.notify({
-					subject: digest.subject,
-					message: digest.message,
-					actions: [action],
-					target: { Stack: 'testing-alerts' },
-					channel: RequestedChannel.PreferHangouts,
-					sourceSystem: `${config.app} ${config.stage}`,
-					topicArn: config.anghammaradSnsTopic,
-					threadKey: `vulnerability-digest-${digest.teamSlug}`,
-				}),
-		),
-	);
+	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
+		const anghammarad = new Anghammarad();
+		await Promise.all(
+			digests.map(
+				async (digest) =>
+					await anghammarad.notify({
+						subject: digest.subject,
+						message: digest.message,
+						actions: [action],
+						target: { Stack: 'testing-alerts' },
+						channel: RequestedChannel.PreferHangouts,
+						sourceSystem: `${config.app} ${config.stage}`,
+						topicArn: config.anghammaradSnsTopic,
+						threadKey: `vulnerability-digest-${digest.teamSlug}`,
+					}),
+			),
+		);
+	} else {
+		console.log('Not sending vulnerability digests.');
+		digests.forEach((digest) => console.log(JSON.stringify(digest)));
+	}
 }
 
 export function deduplicateVulnerabilitiesByCve(
