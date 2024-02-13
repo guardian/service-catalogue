@@ -415,6 +415,38 @@ export function isFirstOrThirdTuesdayOfMonth(date: Date) {
 	return isTuesday && (inFirstWeek || inThirdWeek);
 }
 
+function sendVulnerabilityDigests(
+	digests: VulnerabilityDigest[],
+	config: Config,
+) {
+	const anghammarad = new Anghammarad();
+	console.log(
+		`Sending ${digests.length} vulnerability digests: ${digests
+			.map((d) => d.teamSlug)
+			.join(', ')}`,
+	);
+
+	const action: Action = {
+		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
+		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
+	};
+	return Promise.all(
+		digests.map(
+			async (digest) =>
+				await anghammarad.notify({
+					subject: digest.subject,
+					message: digest.message,
+					actions: [action],
+					target: { GithubTeamSlug: digest.teamSlug },
+					channel: RequestedChannel.PreferHangouts,
+					sourceSystem: `${config.app} ${config.stage}`,
+					topicArn: config.anghammaradSnsTopic,
+					threadKey: `vulnerability-digest-${digest.teamSlug}`,
+				}),
+		),
+	);
+}
+
 export async function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
@@ -446,49 +478,18 @@ export async function testExperimentalRepocopFeatures(
 		archivedWithStacks.slice(0, 3),
 	);
 
-	function sendVulnerabilityDigests(digests: VulnerabilityDigest[]) {
-		const anghammarad = new Anghammarad();
-		console.log(
-			`Sending ${digests.length} vulnerability digests: ${digests
-				.map((d) => d.teamSlug)
-				.join(', ')}`,
-		);
-
-		const action: Action = {
-			cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
-			url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
-		};
-		return Promise.all(
-			digests.map(
-				async (digest) =>
-					await anghammarad.notify({
-						subject: digest.subject,
-						message: digest.message,
-						actions: [action],
-						target: { Stack: 'testing-alerts' },
-						channel: RequestedChannel.PreferHangouts,
-						sourceSystem: `${config.app} ${config.stage}`,
-						topicArn: config.anghammaradSnsTopic,
-						threadKey: `vulnerability-digest-${digest.teamSlug}`,
-					}),
-			),
-		);
-	}
-
 	const someDigests = teams
 		.sort((a, b) => a.slug.localeCompare(b.slug))
-		.slice(0, 10)
+		.slice(0, 15)
 		.map((t) => createDigest(t, repoOwners, evaluationResults))
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
-	await sendVulnerabilityDigests(someDigests);
-
-	// if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-	// 	await sendVulnerabilityDigests(someDigests);
-	// } else {
-	// 	console.log('Logging vulnerability digests');
-	// 	someDigests.forEach((digest) => console.log(JSON.stringify(digest)));
-	// }
+	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
+		await sendVulnerabilityDigests(someDigests, config);
+	} else {
+		console.log('Logging vulnerability digests');
+		someDigests.forEach((digest) => console.log(JSON.stringify(digest)));
+	}
 }
 
 export function deduplicateVulnerabilitiesByCve(
