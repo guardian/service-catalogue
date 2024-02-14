@@ -8,12 +8,14 @@ import {
 	FireLensLogDriver,
 	FirelensLogRouterType,
 	LogDrivers,
+	PropagatedTagSource,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
 import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
@@ -143,9 +145,16 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
 		const frequency = scheduleFrequency(schedule);
 
+		const roleName = `${app}-${stage}-task-${name}`;
+		const taskRole = new Role(scope, roleName, {
+			assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com'),
+			roleName,
+		});
+
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB,
 			cpu,
+			taskRole,
 		});
 
 		/*
@@ -338,6 +347,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
+			propagateTags: PropagatedTagSource.TASK_DEFINITION,
 		});
 
 		this.sourceConfig = sourceConfig;

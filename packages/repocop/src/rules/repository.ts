@@ -1,12 +1,15 @@
+import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type {
 	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
 	snyk_projects,
 	snyk_reporting_latest_issues,
+	view_repo_ownership,
 } from '@prisma/client';
-import { partition } from 'common/src/functions';
+import { partition, shuffle } from 'common/src/functions';
 import type { Octokit } from 'octokit';
+import type { Config } from '../config';
 import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
@@ -23,9 +26,12 @@ import type {
 	Repository,
 	SnykIssue,
 	SnykProject,
+	Team,
 	TeamRepository,
+	VulnerabilityDigest,
 } from '../types';
-import { isProduction, stringToSeverity } from '../utils';
+import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';
+import { createDigest } from '../vulnerability-digest';
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -310,7 +316,7 @@ export async function getAlertsForRepo(
 		);
 		return openRuntimeDependencies;
 	} catch (error) {
-		console.info(
+		console.debug(
 			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
 		);
 		console.debug(error);
@@ -389,7 +395,9 @@ export function collectAndFormatUrgentSnykAlerts(
 		snykProjectIdsForRepo
 			.map((projectId) => getProjectIssues(projectId, snykIssues))
 			.flat();
-	const processedVulns = snykIssuesForRepo.map(snykAlertToRepocopVulnerability);
+	const processedVulns = snykIssuesForRepo.map((v) =>
+		snykAlertToRepocopVulnerability(repo.full_name, v),
+	);
 
 	const relevantVulns = processedVulns.filter(
 		(vuln) =>
@@ -399,12 +407,16 @@ export function collectAndFormatUrgentSnykAlerts(
 	return relevantVulns;
 }
 
-export function testExperimentalRepocopFeatures(
-	evaluatedRepos: repocop_github_repository_rules[],
+export async function testExperimentalRepocopFeatures(
+	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
+	teams: Team[],
+	config: Config,
+	repoOwners: view_repo_ownership[],
 ) {
+	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
 	const unmaintinedReposCount = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	).length;
@@ -425,6 +437,33 @@ export function testExperimentalRepocopFeatures(
 		'Archived repos with live stacks, first 3 results:',
 		archivedWithStacks.slice(0, 3),
 	);
+
+	const someTeams = shuffle(teams).slice(0, 5);
+
+	const digests = shuffle(someTeams)
+		.slice(0, 8)
+		.map((t) => createDigest(t, repoOwners, evaluationResults))
+		.filter((d): d is VulnerabilityDigest => d !== undefined);
+
+	console.log(
+		`Sending ${digests.length} vulnerability digests: ${digests.map((d) => d.teamSlug).join(', ')}`,
+	);
+	const anghammarad = new Anghammarad();
+	await Promise.all(
+		digests.map(
+			async (digest) =>
+				await anghammarad.notify({
+					subject: digest.subject,
+					message: digest.message,
+					actions: [],
+					target: { Stack: 'testing-alerts' },
+					channel: RequestedChannel.PreferHangouts,
+					sourceSystem: `${config.app} ${config.stage}`,
+					topicArn: config.anghammaradSnsTopic,
+					threadKey: `vulnerability-digest-${digest.teamSlug}`,
+				}),
+		),
+	);
 }
 
 export function deduplicateVulnerabilitiesByCve(
@@ -441,12 +480,9 @@ export function deduplicateVulnerabilitiesByCve(
 		(v) => v.CVEs.length > 0,
 	);
 
-	const criticalFirstPredicate = (x: RepocopVulnerability) =>
-		x.severity === 'critical' ? -1 : 1;
-
 	//group withCVEs by CVEs
 	const dedupedWithCVEs = withCVEs
-		.sort(criticalFirstPredicate)
+		.sort(vulnSortPredicate)
 		.reduce<Record<string, RepocopVulnerability>>((acc, vuln) => {
 			const key = vuln.CVEs.join(',');
 			if (!acc[key]) {
@@ -507,6 +543,7 @@ export function evaluateOneRepo(
 }
 
 export function dependabotAlertToRepocopVulnerability(
+	fullName: string,
 	alert: Alert,
 ): RepocopVulnerability {
 	const CVEs = alert.security_advisory.identifiers
@@ -515,6 +552,7 @@ export function dependabotAlertToRepocopVulnerability(
 
 	return {
 		open: alert.state === 'open',
+		fullName,
 		source: 'Dependabot',
 		severity: alert.security_advisory.severity,
 		package: alert.security_vulnerability.package.name,
@@ -527,11 +565,13 @@ export function dependabotAlertToRepocopVulnerability(
 }
 
 export function snykAlertToRepocopVulnerability(
+	fullName: string,
 	alert: snyk_reporting_latest_issues,
 ): RepocopVulnerability {
 	const issue = alert.issue as unknown as SnykIssue;
 
 	return {
+		fullName,
 		open: alert.is_fixed !== true && !issue.isIgnored,
 		source: 'Snyk',
 		severity: stringToSeverity(issue.severity),
@@ -558,7 +598,7 @@ export async function evaluateRepositories(
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))
 					?.filter((a) => a.state === 'open')
-					.map(dependabotAlertToRepocopVulnerability)
+					.map((a) => dependabotAlertToRepocopVulnerability(r.full_name, a))
 			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);

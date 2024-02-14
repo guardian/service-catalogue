@@ -76,8 +76,10 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const latestSnykIssues = await getLatestSnykIssues(prisma);
+	const teams = await getTeams(prisma);
+	const repoOwners = await getRepoOwnership(prisma);
 
-	const evaluationResult: EvaluationResult[] = await evaluateRepositories(
+	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
 		branches,
 		repoTeams,
@@ -87,10 +89,10 @@ export async function main() {
 		octokit,
 	);
 
-	const repocopRules = evaluationResult.map((r) => r.repocopRules);
+	const repocopRules = evaluationResults.map((r) => r.repocopRules);
 	const severityPredicate = (x: RepocopVulnerability) => x.severity === 'high';
 	const [high, critical] = partition(
-		evaluationResult.map((r) => r.vulnerabilities).flat(),
+		evaluationResults.map((r) => r.vulnerabilities).flat(),
 		severityPredicate,
 	);
 
@@ -108,20 +110,20 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(repocopRules, cloudwatch, config);
 
-	testExperimentalRepocopFeatures(
-		repocopRules,
+	await testExperimentalRepocopFeatures(
+		evaluationResults,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
+		teams,
+		config,
+		repoOwners,
 	);
 
-	const repoOwners = await getRepoOwnership(prisma);
 	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
-
-		const teams = await getTeams(prisma);
 
 		if (config.branchProtectionEnabled) {
 			await protectBranches(

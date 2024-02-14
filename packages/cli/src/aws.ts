@@ -246,6 +246,7 @@ const runTaskByArn = async (
 				securityGroups: securityGroups,
 			},
 		},
+		propagateTags: 'TASK_DEFINITION',
 		capacityProviderStrategy: [{ capacityProvider: 'FARGATE' }],
 	});
 

@@ -589,6 +589,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 });
 
 const oldCriticalDependabotVuln: RepocopVulnerability = {
+	fullName: 'guardian/some-repo',
 	open: true,
 	source: 'Dependabot',
 	severity: 'critical',
@@ -816,10 +817,12 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 
 describe('NO RULE - Vulnerabilities from Dependabot', () => {
 	test('Should be parseable into a common format', () => {
-		const result: RepocopVulnerability[] = example.map(
-			dependabotAlertToRepocopVulnerability,
+		const fullName = 'guardian/myrepo';
+		const result: RepocopVulnerability[] = example.map((alert) =>
+			dependabotAlertToRepocopVulnerability(fullName, alert),
 		);
 		const expected1: RepocopVulnerability = {
+			fullName,
 			source: 'Dependabot',
 			open: false,
 			severity: 'high',
@@ -838,6 +841,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		};
 
 		const expected2: RepocopVulnerability = {
+			fullName,
 			source: 'Dependabot',
 			open: true,
 			severity: 'medium',
@@ -859,12 +863,14 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 
 describe('NO RULE - Vulnerabilities from Snyk', () => {
 	test('Should be parseable into a common format', () => {
+		const fullName = 'guardian/myrepo';
 		const input = snykIssue;
-		const result = snykAlertToRepocopVulnerability(input);
+		const result = snykAlertToRepocopVulnerability(fullName, input);
 		console.log(result);
 		expect(result.source).toEqual('Snyk');
 		expect(result.open).toEqual(true);
 		expect(result).toStrictEqual({
+			fullName,
 			open: true,
 			source: 'Snyk',
 			severity: 'high',
@@ -879,8 +885,10 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 });
 
 describe('Deduplication of repocop vulnerabilities', () => {
+	const fullName = 'guardian/myrepo';
 	const vuln1: RepocopVulnerability = {
 		source: 'Dependabot',
+		fullName,
 		open: true,
 		severity: 'high',
 		package: 'django',
@@ -891,6 +899,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		CVEs: ['CVE-2018-6188'],
 	};
 	const vuln2: RepocopVulnerability = {
+		fullName,
 		source: 'Snyk',
 		open: true,
 		severity: 'critical',
