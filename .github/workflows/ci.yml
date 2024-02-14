@@ -47,7 +47,7 @@ jobs:
         run: ./scripts/ci.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@87be18ae438481199ff73ee23e51ad935dd56486
+        uses: guardian/actions-riff-raff@v4
         with:
           app: service-catalogue
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
