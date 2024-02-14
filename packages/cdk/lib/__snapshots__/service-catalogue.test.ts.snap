@@ -1162,7 +1162,7 @@ spec:
     },
     "CloudquerySourceDeployToolsListOrgsScheduledEventRuleDF9BD8AF": {
       "Properties": {
-        "ScheduleExpression": "cron(* 10 1 1 ? *)",
+        "ScheduleExpression": "cron(0 10 1 1 ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -1364,82 +1364,6 @@ spec:
                         "Ref": "cloudqueryapikeyCCF82F53",
                       },
                       ":api-key::",
-                    ],
-                  ],
-                },
-              },
-            ],
-          },
-          {
-            "Command": [
-              "/bin/sh",
-              "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_organization%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
-            ],
-            "DockerLabels": {
-              "App": "service-catalogue",
-              "Name": "DeployToolsListOrgs",
-              "Stack": "deploy",
-              "Stage": "TEST",
-            },
-            "EntryPoint": [
-              "",
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "Name": "CloudquerySource-DeployToolsListOrgsPostgresContainer",
-            "Secrets": [
-              {
-                "Name": "PGUSER",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":username::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "PGHOST",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":host::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "PGPASSWORD",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":password::",
                     ],
                   ],
                 },
