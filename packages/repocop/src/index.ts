@@ -79,14 +79,13 @@ export async function main() {
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
-	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
+	const evaluationResults: EvaluationResult[] = evaluateRepositories(
 		unarchivedRepos,
 		branches,
 		repoTeams,
 		repoLanguages,
 		latestSnykIssues,
 		snykProjectsFromRest,
-		octokit,
 	);
 
 	const repocopRules = evaluationResults.map((r) => r.repocopRules);
