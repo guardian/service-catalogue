@@ -480,7 +480,7 @@ export async function testExperimentalRepocopFeatures(
 
 	const someDigests = teams
 		.sort((a, b) => a.slug.localeCompare(b.slug))
-		.slice(0, 15)
+		.slice(0, 30)
 		.map((t) => createDigest(t, repoOwners, evaluationResults))
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
