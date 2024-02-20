@@ -1162,7 +1162,7 @@ spec:
     },
     "CloudquerySourceDeployToolsListOrgsScheduledEventRuleDF9BD8AF": {
       "Properties": {
-        "ScheduleExpression": "cron(0 10 1 1 ? *)",
+        "ScheduleExpression": "cron(0 10 1 * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
