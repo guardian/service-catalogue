@@ -21,7 +21,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.17",
     "dotenv": "^16.4.3",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.20.1",
     "esbuild-jest": "^0.5.0",
     "eslint": "^8.56.0",
     "eslint-plugin-prettier": "^5.1.3",
