@@ -90,8 +90,8 @@ export function addCloudqueryEcsCluster(
 				concurrency: 2000,
 			}),
 			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
-			memoryLimitMiB: 2048,
-			cpu: 1024,
+			memoryLimitMiB: 512,
+			cpu: 256,
 		},
 		{
 			name: 'OrgWideCloudFormation',

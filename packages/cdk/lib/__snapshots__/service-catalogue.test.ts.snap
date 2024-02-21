@@ -743,7 +743,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "1638MiB",
+                "Value": "409MiB",
               },
             ],
             "Essential": true,
@@ -936,7 +936,7 @@ spec:
             "Name": "CloudquerySource-DelegatedToSecurityAccountFirelens",
           },
         ],
-        "Cpu": "1024",
+        "Cpu": "256",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionExecutionRole40841493",
@@ -944,7 +944,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceDelegatedToSecurityAccountTaskDefinitionCFCDF71C",
-        "Memory": "2048",
+        "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
