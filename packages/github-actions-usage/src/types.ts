@@ -1,4 +1,8 @@
-import type { github_repositories, github_workflows } from '@prisma/client';
+import type {
+	github_repositories,
+	github_workflows,
+	guardian_github_actions_usage,
+} from '@prisma/client';
 
 type GithubWorkflowDatabaseFields = Pick<
 	github_workflows,
@@ -46,3 +50,8 @@ export interface ValidatedGithubWorkflow {
 	workflowPath: string;
 	workflowContents: GithubWorkflow;
 }
+
+export type GithubActionUsageToSave = Omit<
+	guardian_github_actions_usage,
+	'evaluated_on'
+>;

@@ -619,6 +619,15 @@ model snyk_reporting_latest_issues {
   @@id([organization_id, id], map: "snyk_reporting_latest_issues_cqpk")
 }
 
+model guardian_github_actions_usage {
+  evaluated_on  DateTime
+  full_name     String
+  workflow_path String
+  workflow_uses String[]
+
+  @@unique([full_name, workflow_path], map: "guardian_github_actions_usage_full_name_key")
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
