@@ -1,6 +1,7 @@
 import { getPrismaClient } from 'common/database';
 import { getConfig } from './config';
 import {
+	getRepositoryName,
 	getUsesStringsFromWorkflow,
 	getWorkflowRows,
 	validateWorkflowRows,
@@ -10,14 +11,16 @@ export async function main() {
 	const config = await getConfig();
 	const prismaClient = getPrismaClient(config);
 
-	const rows = await getWorkflowRows(prismaClient);
-	const workflows = validateWorkflowRows(rows);
+	const rawWorkflows = await getWorkflowRows(prismaClient);
+	const repositoryIds = rawWorkflows.map((row) => row.repository_id);
+	const repositories = await getRepositoryName(prismaClient, repositoryIds);
+	const workflows = validateWorkflowRows(repositories, rawWorkflows);
 
 	workflows.forEach((workflow) => {
-		const uses = getUsesStringsFromWorkflow(workflow.contents);
+		const uses = getUsesStringsFromWorkflow(workflow.workflowContents);
 
 		console.log(
-			`The workflow ${workflow.path} in repository ${workflow.repository_id} has ${uses.length} 'uses'`,
+			`The workflow ${workflow.workflowPath} in repository ${workflow.repositoryFullName} has ${uses.length} 'uses'`,
 		);
 	});
 }

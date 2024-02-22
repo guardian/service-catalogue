@@ -4,6 +4,7 @@ import YAML from 'yaml';
 import * as schema from './schema/github-workflow.json';
 import type {
 	GithubWorkflow,
+	RawGithubRepository,
 	RawGithubWorkflow,
 	ValidatedGithubWorkflow,
 } from './types';
@@ -19,8 +20,38 @@ export async function getWorkflowRows(client: PrismaClient) {
 	return data.map((row) => row as RawGithubWorkflow);
 }
 
+export async function getRepositoryName(
+	client: PrismaClient,
+	repositoryIds: bigint[],
+) {
+	const data = await client.github_repositories.findMany({
+		select: {
+			id: true,
+			full_name: true,
+		},
+		where: {
+			id: {
+				in: repositoryIds,
+			},
+		},
+	});
+	return data.map((row) => row as RawGithubRepository);
+}
+
+function getRepositoryNameFromId(
+	repositoryRows: RawGithubRepository[],
+	repositoryId: bigint,
+): string {
+	const item = repositoryRows.find((row) => row.id === repositoryId);
+	if (!item) {
+		throw new Error(`Repository with id ${repositoryId} not found`);
+	}
+	return item.full_name;
+}
+
 export function validateWorkflowRows(
-	databaseRows: RawGithubWorkflow[],
+	repositoryRows: RawGithubRepository[],
+	workflowRows: RawGithubWorkflow[],
 ): ValidatedGithubWorkflow[] {
 	const ajv = new Ajv({
 		// Disable strict mode as we do not author the schema file
@@ -28,11 +59,16 @@ export function validateWorkflowRows(
 		strict: false,
 	});
 
-	const maybeData = databaseRows.map((row) => {
+	const maybeData = workflowRows.map((row) => {
 		const { contents, path, repository_id } = row;
+		const repositoryName = getRepositoryNameFromId(
+			repositoryRows,
+			repository_id,
+		);
+
 		if (!contents) {
 			console.warn(
-				`Failed to read workflow as it is empty - path:${path} repository:${repository_id}`,
+				`Failed to read workflow as it is empty - path:${path} repository:${repositoryName}`,
 			);
 			return undefined;
 		}
@@ -42,15 +78,16 @@ export function validateWorkflowRows(
 
 		if (!isValid) {
 			console.error(
-				`Failed to read workflow as it violates the schema - path:${path} repository:${repository_id}`,
+				`Failed to read workflow as it violates the schema - path:${path} repository:${repositoryName}`,
 			);
 			return undefined;
 		}
 
 		return {
-			path,
-			repository_id,
-			contents: contentAsJson as GithubWorkflow,
+			repositoryFullName: repositoryName,
+			repositoryId: repository_id,
+			workflowPath: path,
+			workflowContents: contentAsJson as GithubWorkflow,
 		} as ValidatedGithubWorkflow;
 	});
 

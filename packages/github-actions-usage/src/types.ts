@@ -1,13 +1,22 @@
-import type { github_workflows } from '@prisma/client';
+import type { github_repositories, github_workflows } from '@prisma/client';
 
-type DatabaseFields = Pick<
+type GithubWorkflowDatabaseFields = Pick<
 	github_workflows,
 	'repository_id' | 'path' | 'contents'
 >;
 
-export interface RawGithubWorkflow extends DatabaseFields {
-	repository_id: NonNullable<DatabaseFields['repository_id']>;
-	path: NonNullable<DatabaseFields['path']>;
+export interface RawGithubWorkflow extends GithubWorkflowDatabaseFields {
+	repository_id: NonNullable<GithubWorkflowDatabaseFields['repository_id']>;
+	path: NonNullable<GithubWorkflowDatabaseFields['path']>;
+}
+
+type GithubRepositoryDatabaseFields = Pick<
+	github_repositories,
+	'id' | 'full_name'
+>;
+
+export interface RawGithubRepository extends GithubRepositoryDatabaseFields {
+	full_name: NonNullable<GithubRepositoryDatabaseFields['full_name']>;
 }
 
 export interface GithubWorkflowStep {
@@ -32,7 +41,8 @@ export interface GithubWorkflow {
 }
 
 export interface ValidatedGithubWorkflow {
-	path: string;
-	repository_id: bigint;
-	contents: GithubWorkflow;
+	repositoryId: bigint;
+	repositoryFullName: string;
+	workflowPath: string;
+	workflowContents: GithubWorkflow;
 }
