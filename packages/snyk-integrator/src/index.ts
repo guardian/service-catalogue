@@ -1,10 +1,10 @@
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
+import { getExistingPullRequest } from 'common/src/pull-requests';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { addPrToProject } from './projects-graphql';
-import { getExistingPullRequest } from './pull-requests';
 import {
 	createSnykPullRequest,
 	createYaml,
@@ -22,6 +22,7 @@ export async function main(event: SnykIntegratorEvent) {
 		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			event.name,
+			'gu-snyk-integrator[bot]',
 		);
 
 		if (!existingPullRequest) {

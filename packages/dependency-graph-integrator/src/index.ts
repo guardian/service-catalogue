@@ -1,12 +1,12 @@
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
+import { getExistingPullRequest } from 'common/src/pull-requests';
 import type { SnykIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { addPrToProject } from './projects-graphql';
-import { getExistingPullRequest } from './pull-requests';
 import {
-	createSnykPullRequest,
+	createDependabotPullRequest,
 	createYaml,
 	generateBranchName,
 	generatePr,
@@ -22,10 +22,11 @@ export async function main(event: SnykIntegratorEvent) {
 		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			event.name,
+			'?????',
 		);
 
 		if (!existingPullRequest) {
-			const response = await createSnykPullRequest(
+			const response = await createDependabotPullRequest(
 				octokit,
 				event.name,
 				branch,
@@ -47,7 +48,7 @@ export async function main(event: SnykIntegratorEvent) {
 		console.log('Testing snyk.yml generation');
 		console.log(createYaml(event.languages, branch));
 		console.log('Testing PR generation');
-		const [head, body] = generatePr(event.languages, branch);
+		const [head, body] = generatePr(branch);
 		console.log('Title:\n', head);
 		console.log('Body:\n', body);
 	}

@@ -1,8 +1,8 @@
 import { randomBytes } from 'crypto';
+import { createPullRequest } from 'common/pull-requests';
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
-import { createPullRequest } from './pull-requests';
 
 export function createYaml(languages: string[], prBranch: string): string {
 	const dependencyGraphWorkflowJson = {
@@ -54,18 +54,20 @@ function generatePrBody(branchName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
-			'This PR integrates your repository with Snyk, to track its dependencies, in line with our recommendations.',
+			'This PR sends your sbt dependencies to GitHub for vulnerability monitoring via Dependabot. ',
 		),
 		h2('Why?'),
 		p(
 			'If a repository is in production, we need to track its third party dependencies for vulnerabilities. ' +
-				'DevX have detected that your repo contains at least one language that is not supported by Dependabot. ' +
+				'Historically, we have done this using Snyk, but we are now moving to GitHub’s native Dependabot. ' +
+				'Scala is not a language that Dependabot supports out of the box, this workflow is required to make it happen' +
 				'As a result, we have raised this PR on your behalf to add it to Snyk.',
 		),
 		h2('How has it been verified?'),
 		p(
-			'We have tested this action against a combination of TypeScript, Scala, Go, and Python repositories. ' +
-				'If your repository contains other languages not included here, integration may not work the way you expect it to.',
+			'We have tested this workflow, and the process of raising a PR on DevX repos, and have verified that it works. ' +
+				'However, we have included some instructions below to help you verify that it works for you. ' +
+				'Please do not hesitate to contact DevX Security if you have any questions or concerns.',
 		),
 		h2('What do I need to do?'),
 		checklist(createPRChecklist(branchName)),
@@ -73,27 +75,7 @@ function generatePrBody(branchName: string): string {
 	return tsMarkdown(body);
 }
 
-export function generatePr(
-	repoLanguages: string[],
-	branch: string,
-): [string, string] {
-	const workflowLanguages = [
-		'Scala',
-		'TypeScript',
-		'JavaScript',
-		'Python',
-		'Go',
-	];
-
-	//intersection of repo languages and workflow-supported languages
-	const workflowSupportedLanguages = repoLanguages.filter((lang) =>
-		workflowLanguages.includes(lang),
-	);
-
-	if (workflowSupportedLanguages.length === 0) {
-		throw new Error('No supported languages provided, cannot generate PR');
-	}
-
+export function generatePr(branch: string): [string, string] {
 	const header =
 		'Submit sbt dependencies to GitHub for vulnerability monitoring';
 	const body = generatePrBody(branch);
@@ -107,8 +89,8 @@ export async function createSnykPullRequest(
 	branchName: string,
 	repoLanguages: string[],
 ) {
-	const snykFileContents = createYaml(repoLanguages, branchName);
-	const [title, body] = generatePr(repoLanguages, branchName);
+	const fileContents = createYaml(repoLanguages, branchName);
+	const [title, body] = generatePr(branchName);
 	return await createPullRequest(octokit, {
 		repoName,
 		title,
@@ -116,9 +98,9 @@ export async function createSnykPullRequest(
 		branchName,
 		changes: [
 			{
-				commitMessage: 'Add snyk.yaml',
+				commitMessage: 'Add sbt-dependency-graph.yml',
 				files: {
-					'.github/workflows/snyk.yaml': snykFileContents,
+					'.github/workflows/sbt-dependency-graph.yml': fileContents,
 				},
 			},
 		],
