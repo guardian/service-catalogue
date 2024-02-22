@@ -83,7 +83,7 @@ export function generatePr(branch: string): [string, string] {
 	return [header, body];
 }
 
-export async function createSnykPullRequest(
+export async function createDependabotPullRequest(
 	octokit: Octokit,
 	repoName: string,
 	branchName: string,
