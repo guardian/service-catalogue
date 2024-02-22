@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { createPullRequest } from 'common/pull-requests';
+import { createPullRequest } from 'common/src/pull-requests';
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';

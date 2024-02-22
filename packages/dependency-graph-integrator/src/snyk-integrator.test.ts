@@ -1,5 +1,6 @@
 import { createYaml, generateBranchName } from './snyk-integrator';
 
+//TODO - WHY DO THESE TESTS STILL PASS????
 describe('createYaml', () => {
 	it('should skip node and sbt if no languages are provided', () => {
 		const yaml = createYaml('branch');
