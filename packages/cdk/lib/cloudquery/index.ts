@@ -427,16 +427,12 @@ export function addCloudqueryEcsCluster(
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
 			config: snykSourceConfig({
 				tables: [
-					'snyk_dependencies',
-					'snyk_groups',
-					'snyk_group_members',
-					'snyk_integrations',
+					'snyk_issues',
 					'snyk_organizations',
-					'snyk_organization_members',
-					'snyk_reporting_issues',
-					'snyk_reporting_latest_issues',
+					'snyk_projects',
+					'snyk_sbom',
 				],
-				skipTables: ['snyk_organization_provisions'],
+				skipTables: [],
 			}),
 			secrets: {
 				SNYK_API_KEY: Secret.fromSecretsManager(
