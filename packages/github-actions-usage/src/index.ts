@@ -4,7 +4,11 @@ import { getWorkflows } from './db-read';
 import { saveResults } from './db-write';
 import { transform } from './transform';
 
-export async function main() {
+export async function main(...args: unknown[]) {
+	console.log(
+		`Called with ${args.map((arg) => JSON.stringify(arg)).join(', ')}`,
+	);
+
 	const config = await getConfig();
 	const prismaClient = getPrismaClient(config);
 

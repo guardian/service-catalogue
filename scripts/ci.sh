@@ -67,3 +67,4 @@ createZip "snyk-integrator"
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 compareGithubWorkflowSchemaToUpstream
+createLambdaWithPrisma "github-actions-usage"

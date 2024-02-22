@@ -40,6 +40,7 @@ import { getCentralElkLink } from 'common/src/logs';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/policies';
 import { addDataAuditLambda } from './data-audit';
+import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Repocop } from './repocop';
 import { STEAMPIPE_DB_PORT, SteampipeService } from './steampipe/service';
@@ -253,6 +254,12 @@ export class ServiceCatalogue extends GuStack {
 		);
 
 		addDataAuditLambda(this, {
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+		});
+
+		addGithubActionsUsageLambda(this, {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
