@@ -51,5 +51,10 @@ module.exports = {
 			transform,
 			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
 		},
+		{
+			displayName: 'github-actions-usage',
+			transform,
+			testMatch: ['<rootDir>/packages/github-actions-usage/**/*.test.ts'],
+		},
 	],
 };
