@@ -36,7 +36,7 @@ export async function main(event: SnykIntegratorEvent) {
 				'Pull request successfully created:',
 				response?.data.html_url,
 			);
-			await addPrToProject(config.stage, event.name, 110);
+			await addPrToProject(config.stage, event.name, 110, 'gu-snyk-integrator');
 			console.log('Updated project board');
 		} else {
 			console.log(

@@ -8,6 +8,5 @@ config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
 if (require.main === module) {
 	void main({
 		name: 'service-catalogue',
-		languages: ['Scala', 'Go'],
 	});
 }

@@ -22,7 +22,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			event.name,
-			'?????',
+			'?????', //TODO - add author
 		);
 
 		if (!existingPullRequest) {
@@ -35,7 +35,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 				'Pull request successfully created:',
 				response?.data.html_url,
 			);
-			await addPrToProject(config.stage, event.name, NaN); //TODO - add board number
+			await addPrToProject(config.stage, event.name, NaN, '??????'); //TODO - add board number and author
 			console.log('Updated project board');
 		} else {
 			console.log(

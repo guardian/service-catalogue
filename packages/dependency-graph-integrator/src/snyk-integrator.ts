@@ -107,5 +107,5 @@ export async function createDependabotPullRequest(
 }
 
 export function generateBranchName() {
-	return `integrate-snyk-${randomBytes(8).toString('hex')}`;
+	return `sbt-dependency-graph-${randomBytes(8).toString('hex')}`;
 }
