@@ -2,7 +2,7 @@ import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
 import { addPrToProject } from 'common/src/projects-graphql';
 import { getExistingPullRequest } from 'common/src/pull-requests';
-import type { SnykIntegratorEvent } from 'common/src/types';
+import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -12,7 +12,7 @@ import {
 	generatePr,
 } from './snyk-integrator';
 
-export async function main(event: SnykIntegratorEvent) {
+export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Snyk PR for ${event.name}`);
 	const config: Config = getConfig();
 
@@ -30,13 +30,12 @@ export async function main(event: SnykIntegratorEvent) {
 				octokit,
 				event.name,
 				branch,
-				event.languages,
 			);
 			console.log(
 				'Pull request successfully created:',
 				response?.data.html_url,
 			);
-			await addPrToProject(config.stage, event);
+			await addPrToProject(config.stage, event.name, NaN); //TODO - add board number
 			console.log('Updated project board');
 		} else {
 			console.log(
@@ -46,7 +45,7 @@ export async function main(event: SnykIntegratorEvent) {
 		}
 	} else {
 		console.log('Testing snyk.yml generation');
-		console.log(createYaml(event.languages, branch));
+		console.log(createYaml(branch));
 		console.log('Testing PR generation');
 		const [head, body] = generatePr(branch);
 		console.log('Title:\n', head);
@@ -56,8 +55,8 @@ export async function main(event: SnykIntegratorEvent) {
 }
 
 export const handler: SNSHandler = async (event) => {
-	const snykIntegratorEvents = parseEvent<SnykIntegratorEvent>(event);
+	const events = parseEvent<DependencyGraphIntegratorEvent>(event);
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we're just testing
-	await main(snykIntegratorEvents[0]!);
+	await main(events[0]!);
 };

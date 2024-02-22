@@ -46,14 +46,15 @@ export function addToProjectQuery(
 
 export async function addPrToProject(
 	stage: string,
-	event: SnykIntegratorEvent,
+	shortRepoName: string,
+	boardNumber: number,
 ) {
 	const graphqlWithAuth = (await stageAwareOctokit(stage)).graphql;
 
 	const projectDetails: ProjectId = await graphqlWithAuth(
 		`{
 			organization(login: "guardian"){
-				projectV2(number: 110) {
+				projectV2(number: ${boardNumber}) {
 				  id
 				}
 			  }
@@ -63,7 +64,7 @@ export async function addPrToProject(
 	const projectId = projectDetails.organization.projectV2.id;
 
 	const prDetails: PullRequestDetails = await graphqlWithAuth(
-		getLastPrsQuery(event.name),
+		getLastPrsQuery(shortRepoName),
 	);
 
 	const pullRequestIds = prDetails.organization.repository.pullRequests.nodes

@@ -17,6 +17,10 @@ export type GitHubAppConfig = {
 	installationId: string;
 };
 
+export interface DependencyGraphIntegratorEvent {
+	name: string;
+}
+
 export interface SnykIntegratorEvent {
 	name: string;
 	languages: string[];

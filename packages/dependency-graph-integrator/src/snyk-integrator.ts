@@ -4,7 +4,7 @@ import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 
-export function createYaml(languages: string[], prBranch: string): string {
+export function createYaml(prBranch: string): string {
 	const dependencyGraphWorkflowJson = {
 		name: 'Update Dependency Graph',
 		on: {
@@ -87,9 +87,8 @@ export async function createDependabotPullRequest(
 	octokit: Octokit,
 	repoName: string,
 	branchName: string,
-	repoLanguages: string[],
 ) {
-	const fileContents = createYaml(repoLanguages, branchName);
+	const fileContents = createYaml(branchName);
 	const [title, body] = generatePr(branchName);
 	return await createPullRequest(octokit, {
 		repoName,
