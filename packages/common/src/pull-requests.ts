@@ -2,19 +2,21 @@ import type { Endpoints } from '@octokit/types';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 
+interface Change {
+	commitMessage: string;
+	files: Record<string, string>;
+}
+
 interface CreatePullRequestOptions {
 	repoName: string;
 	title: string;
 	body: string;
 	branchName: string;
 	baseBranch?: string;
-	changes: Array<{
-		commitMessage: string;
-		files: Record<string, string>;
-	}>;
+	changes: Change[];
 }
 
-export async function createPullRequest(
+export async function createPullRequest( //ignore the warning created here
 	octokit: Octokit,
 	{
 		repoName,

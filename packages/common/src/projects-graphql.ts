@@ -1,6 +1,9 @@
 import { stageAwareOctokit } from 'common/src/functions';
-import type { SnykIntegratorEvent } from 'common/src/types';
-import type { ProjectId, PullRequestDetails } from './types';
+import type {
+	ProjectId,
+	PullRequestDetails,
+	SnykIntegratorEvent,
+} from 'common/src/types';
 
 /*
  ** GitHub's v2 projects API is accessible via GraphQL only.

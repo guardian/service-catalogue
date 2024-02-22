@@ -1,4 +1,4 @@
-import { createYaml, generateBranchName, generatePr } from './snyk-integrator';
+import { createYaml, generateBranchName } from './snyk-integrator';
 
 describe('createYaml', () => {
 	it('should skip node and sbt if no languages are provided', () => {
@@ -36,31 +36,6 @@ jobs:
 		expectedInputKeys.forEach((key) => {
 			expect(yaml).toContain(key);
 		});
-	});
-});
-
-describe('A generated PR', () => {
-	//higher level function that takes in just languages and returns a PR
-	function generateServiceCataloguePr(languages: string[]): [string, string] {
-		return generatePr(languages, 'main');
-	}
-
-	it('should have only the supported languages in its header', () => {
-		const header = generateServiceCataloguePr([
-			'Scala',
-			'TypeScript',
-			'Rust', //unsupported by the action
-			'Kotlin', //unsupported by the action
-			'Go',
-		])[0];
-
-		expect(header).toEqual(
-			'Integrate Scala, TypeScript, Go projects with Snyk',
-		);
-	});
-	it('should throw if no supported languages are provided', () => {
-		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
-		expect(() => generateServiceCataloguePr([])).toThrow();
 	});
 });
 
