@@ -1,5 +1,5 @@
+import { getUsesStringsFromWorkflow } from './query';
 import type { GithubWorkflow } from './types';
-import { getUsesStringsFromWorkflow } from './index';
 
 describe('getUsesStringsFromWorkflow', () => {
 	test('Workflow with single job, and multiple steps', () => {
