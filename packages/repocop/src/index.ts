@@ -26,6 +26,7 @@ import { sendUnprotectedRepo } from './remediations/snyk-integrator/send-to-sns'
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
 import {
+	createAndSendVulnerabilityDigests,
 	evaluateRepositories,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
@@ -109,14 +110,18 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(repocopRules, cloudwatch, config);
 
-	await testExperimentalRepocopFeatures(
+	testExperimentalRepocopFeatures(
 		evaluationResults,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
-		teams,
+	);
+
+	await createAndSendVulnerabilityDigests(
 		config,
+		teams,
 		repoOwners,
+		evaluationResults,
 	);
 
 	await sendUnprotectedRepo(repocopRules, config, repoLanguages);

@@ -447,14 +447,29 @@ function sendVulnerabilityDigests(
 	);
 }
 
-export async function testExperimentalRepocopFeatures(
+export async function createAndSendVulnerabilityDigests(
+	config: Config,
+	teams: Team[],
+	repoOwners: view_repo_ownership[],
+	evaluationResults: EvaluationResult[],
+) {
+	const digests = teams
+		.map((t) => createDigest(t, repoOwners, evaluationResults))
+		.filter((d): d is VulnerabilityDigest => d !== undefined);
+
+	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
+		await sendVulnerabilityDigests(digests, config);
+	} else {
+		console.log('Logging vulnerability digests');
+		digests.forEach((digest) => console.log(JSON.stringify(digest)));
+	}
+}
+
+export function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
-	teams: Team[],
-	config: Config,
-	repoOwners: view_repo_ownership[],
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
 	const unmaintinedReposCount = evaluatedRepos.filter(
@@ -477,19 +492,6 @@ export async function testExperimentalRepocopFeatures(
 		'Archived repos with live stacks, first 3 results:',
 		archivedWithStacks.slice(0, 3),
 	);
-
-	const someDigests = teams
-		.sort((a, b) => a.slug.localeCompare(b.slug))
-		.slice(0, 30)
-		.map((t) => createDigest(t, repoOwners, evaluationResults))
-		.filter((d): d is VulnerabilityDigest => d !== undefined);
-
-	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-		await sendVulnerabilityDigests(someDigests, config);
-	} else {
-		console.log('Logging vulnerability digests');
-		someDigests.forEach((digest) => console.log(JSON.stringify(digest)));
-	}
 }
 
 export function deduplicateVulnerabilitiesByCve(
