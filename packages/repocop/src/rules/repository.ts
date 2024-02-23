@@ -478,17 +478,15 @@ export async function testExperimentalRepocopFeatures(
 		archivedWithStacks.slice(0, 3),
 	);
 
-	const someDigests = teams
-		.sort((a, b) => a.slug.localeCompare(b.slug))
-		.slice(0, 30)
+	const digests = teams
 		.map((t) => createDigest(t, repoOwners, evaluationResults))
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
 	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-		await sendVulnerabilityDigests(someDigests, config);
+		await sendVulnerabilityDigests(digests, config);
 	} else {
 		console.log('Logging vulnerability digests');
-		someDigests.forEach((digest) => console.log(JSON.stringify(digest)));
+		digests.forEach((digest) => console.log(JSON.stringify(digest)));
 	}
 }
 
