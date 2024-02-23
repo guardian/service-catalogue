@@ -7,22 +7,21 @@ import {
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
-import { createYaml, generatePr } from './snyk-integrator';
+import { createYaml, generatePrBody } from './snyk-integrator';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
 	const config: Config = getConfig();
 	const octokit = await stageAwareOctokit(config.stage);
 	const branch = generateBranchName('sbt-dependency-graph');
-	const [prTitle, prBody] = generatePr(branch);
 	await createPrAndAddToProject(
 		config.stage,
 		octokit,
 		event.name,
 		'?????', //TODO - add author
 		branch,
-		prTitle,
-		prBody,
+		'Submit sbt dependencies to GitHub for vulnerability monitoring',
+		generatePrBody(branch),
 		'.github/workflows/sbt-dependency-graph.yml',
 		createYaml(branch),
 		'Add sbt-dependency-graph.yml',

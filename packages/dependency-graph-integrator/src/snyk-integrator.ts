@@ -1,6 +1,4 @@
-import { createPullRequest } from 'common/src/pull-requests';
 import { markdownChecklist } from 'common/src/string';
-import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 
@@ -16,7 +14,7 @@ export function createYaml(prBranch: string): string {
 		jobs: {
 			'dependency-graph': {
 				name: 'Update Dependency Graph',
-				// 'runs-on': 'ubuntu-latest',
+				// 'runs-on': 'ubuntu-latest', //let's see how we do without this
 				steps: [
 					{ uses: 'actions/checkout@v4' },
 					{ uses: 'scalacenter/sbt-dependency-submission@v2' },
@@ -30,10 +28,8 @@ export function createYaml(prBranch: string): string {
 		'{}',
 		'',
 	);
-	//.replaceAll(`"`, '');
 }
 
-//TODO test the python text only shows up when it's supposed to.
 function createPRChecklist(branchName: string): string[] {
 	const step1 =
 		'An run of this action should have been triggered when the branch was ' +
@@ -46,7 +42,7 @@ function createPRChecklist(branchName: string): string[] {
 	return [step1, step2];
 }
 
-function generatePrBody(branchName: string): string {
+export function generatePrBody(branchName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -69,12 +65,4 @@ function generatePrBody(branchName: string): string {
 		markdownChecklist(createPRChecklist(branchName)),
 	];
 	return tsMarkdown(body);
-}
-
-export function generatePr(branch: string): [string, string] {
-	const header =
-		'Submit sbt dependencies to GitHub for vulnerability monitoring';
-	const body = generatePrBody(branch);
-
-	return [header, body];
 }
