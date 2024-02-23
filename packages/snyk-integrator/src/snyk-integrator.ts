@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto';
 import { createPullRequest } from 'common/src/pull-requests';
+import { markdownChecklist } from 'common/src/string';
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
@@ -81,10 +82,6 @@ function generatePrHeader(languages: string[]): string {
 	return `Integrate ${languages.join(', ')} projects with Snyk`;
 }
 
-function checklist(items: string[]): string {
-	return items.map((item) => `- [ ] ${item}`).join('\n');
-}
-
 //TODO test the python text only shows up when it's supposed to.
 function createPRChecklist(languages: string[], branchName: string): string[] {
 	const pythonText = ['Replace the relevant python fields'];
@@ -128,7 +125,7 @@ function generatePrBody(branchName: string, languages: string[]): string {
 				'If your repository contains other languages not included here, integration may not work the way you expect it to.',
 		),
 		h2('What do I need to do?'),
-		checklist(createPRChecklist(languages, branchName)),
+		markdownChecklist(createPRChecklist(languages, branchName)),
 	];
 	return tsMarkdown(body);
 }
@@ -160,30 +157,26 @@ export function generatePr(
 	return [header, body];
 }
 
-export async function createSnykPullRequest(
-	octokit: Octokit,
-	repoName: string,
-	branchName: string,
-	repoLanguages: string[],
-) {
-	const snykFileContents = createYaml(repoLanguages, branchName);
-	const [title, body] = generatePr(repoLanguages, branchName);
-	return await createPullRequest(octokit, {
-		repoName,
-		title,
-		body,
-		branchName,
-		changes: [
-			{
-				commitMessage: 'Add snyk.yaml',
-				files: {
-					'.github/workflows/snyk.yaml': snykFileContents,
-				},
-			},
-		],
-	});
-}
-
-export function generateBranchName() {
-	return `integrate-snyk-${randomBytes(8).toString('hex')}`;
-}
+// export async function createSnykPullRequest(
+// 	octokit: Octokit,
+// 	repoName: string,
+// 	branchName: string,
+// 	repoLanguages: string[],
+// ) {
+// 	const snykFileContents = createYaml(repoLanguages, branchName);
+// 	const [title, body] = generatePr(repoLanguages, branchName);
+// 	return await createPullRequest(octokit, {
+// 		repoName,
+// 		title,
+// 		body,
+// 		branchName,
+// 		changes: [
+// 			{
+// 				commitMessage: 'Add snyk.yaml',
+// 				files: {
+// 					'.github/workflows/snyk.yaml': snykFileContents,
+// 				},
+// 			},
+// 		],
+// 	});
+// }

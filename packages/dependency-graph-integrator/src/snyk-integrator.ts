@@ -1,5 +1,5 @@
-import { randomBytes } from 'crypto';
 import { createPullRequest } from 'common/src/pull-requests';
+import { markdownChecklist } from 'common/src/string';
 import type { Octokit } from 'octokit';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
@@ -31,10 +31,6 @@ export function createYaml(prBranch: string): string {
 		'',
 	);
 	//.replaceAll(`"`, '');
-}
-
-function checklist(items: string[]): string {
-	return items.map((item) => `- [ ] ${item}`).join('\n');
 }
 
 //TODO test the python text only shows up when it's supposed to.
@@ -70,7 +66,7 @@ function generatePrBody(branchName: string): string {
 				'Please do not hesitate to contact DevX Security if you have any questions or concerns.',
 		),
 		h2('What do I need to do?'),
-		checklist(createPRChecklist(branchName)),
+		markdownChecklist(createPRChecklist(branchName)),
 	];
 	return tsMarkdown(body);
 }
@@ -104,8 +100,4 @@ export async function createDependabotPullRequest(
 			},
 		],
 	});
-}
-
-export function generateBranchName() {
-	return `sbt-dependency-graph-${randomBytes(8).toString('hex')}`;
 }

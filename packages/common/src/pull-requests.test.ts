@@ -1,5 +1,5 @@
 import type { Octokit } from 'octokit';
-import { getExistingPullRequest } from './pull-requests';
+import { generateBranchName, getExistingPullRequest } from './pull-requests';
 
 /**
  * Create a mocked version of the Octokit SDK that returns a given array of pull requests
@@ -77,5 +77,14 @@ describe('getPullRequest', () => {
 			'More than one Snyk integrator PR found on repository - choosing the first.',
 		);
 		warn.mockRestore();
+	});
+});
+
+describe('generateBranchName', () => {
+	it('does not produce the same branch name twice', () => {
+		const prefix = 'hello';
+		const branch1 = generateBranchName(prefix);
+		const branch2 = generateBranchName(prefix);
+		expect(branch1).not.toEqual(branch2);
 	});
 });

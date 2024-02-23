@@ -1,22 +1,24 @@
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
 import { addPrToProject } from 'common/src/projects-graphql';
-import { getExistingPullRequest } from 'common/src/pull-requests';
+import {
+	generateBranchName,
+	getExistingPullRequest,
+} from 'common/src/pull-requests';
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
 	createDependabotPullRequest,
 	createYaml,
-	generateBranchName,
 	generatePr,
 } from './snyk-integrator';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
-	console.log(`Generating Snyk PR for ${event.name}`);
+	console.log(`Generating Dependabot PR for ${event.name}`);
 	const config: Config = getConfig();
 
-	const branch = generateBranchName();
+	const branch = generateBranchName('sbt-dependency-graph');
 	if (config.stage === 'PROD') {
 		const octokit = await stageAwareOctokit(config.stage);
 		const existingPullRequest = await getExistingPullRequest(

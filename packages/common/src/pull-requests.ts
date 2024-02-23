@@ -1,6 +1,8 @@
+import { randomBytes } from 'crypto';
 import type { Endpoints } from '@octokit/types';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
+import { addPrToProject } from './projects-graphql';
 
 interface Change {
 	commitMessage: string;
@@ -14,6 +16,10 @@ interface CreatePullRequestOptions {
 	branchName: string;
 	baseBranch?: string;
 	changes: Change[];
+}
+
+export function generateBranchName(prefix: string) {
+	return `${prefix}-${randomBytes(8).toString('hex')}`;
 }
 
 export async function createPullRequest( //ignore the warning created here
@@ -71,4 +77,61 @@ export async function getExistingPullRequest(
 	}
 
 	return found[0];
+}
+
+export async function createPrAndAddToProject(
+	stage: string,
+	octokit: Octokit,
+	repoName: string,
+	author: string,
+	branch: string,
+	prTitle: string,
+	prBody: string,
+	fileName: string, //is this used?
+	fileContents: string,
+	commitMessage: string,
+	boardNumber: number,
+) {
+	if (stage === 'PROD') {
+		const existingPullRequest = await getExistingPullRequest(
+			octokit,
+			repoName,
+			`${author}[bot]`,
+		);
+
+		if (!existingPullRequest) {
+			const response = await createPullRequest(octokit, {
+				repoName,
+				title: prTitle,
+				body: prBody,
+				branchName: branch,
+				changes: [
+					{
+						commitMessage,
+						files: {
+							fileName: fileContents,
+						},
+					},
+				],
+			});
+			console.log(
+				'Pull request successfully created:',
+				response?.data.html_url,
+			);
+			await addPrToProject(stage, repoName, boardNumber, author);
+			console.log('Updated project board');
+		} else {
+			console.log(
+				`Existing pull request found. Skipping creating a new one.`,
+				existingPullRequest.html_url,
+			);
+		}
+	} else {
+		console.log('Testing snyk.yml generation');
+		console.log(fileContents);
+		console.log('Testing PR generation');
+		console.log('Title:\n', prTitle);
+		console.log('Body:\n', prBody);
+	}
+	console.log('Done');
 }
