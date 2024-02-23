@@ -1,4 +1,4 @@
-import { createYaml, generateBranchName, generatePr } from './snyk-integrator';
+import { createYaml, generatePr } from './snyk-integrator';
 
 describe('createYaml', () => {
 	it('should skip node and sbt if no languages are provided', () => {
@@ -61,18 +61,5 @@ describe('A generated PR', () => {
 	it('should throw if no supported languages are provided', () => {
 		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
 		expect(() => generateServiceCataloguePr([])).toThrow();
-	});
-});
-
-describe('generateBranchName', () => {
-	it('includes a helpful prefix', () => {
-		const branch = generateBranchName();
-		expect(branch).toEqual(expect.stringMatching('integrate-snyk*'));
-	});
-
-	it('does not produce the same branch name twice', () => {
-		const branch1 = generateBranchName();
-		const branch2 = generateBranchName();
-		expect(branch1).not.toEqual(branch2);
 	});
 });

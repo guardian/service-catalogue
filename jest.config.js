@@ -44,5 +44,12 @@ module.exports = {
 			transform,
 			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
 		},
+		{
+			displayName: 'dependency-graph-integrator',
+			transform,
+			testMatch: [
+				'<rootDir>/packages/dependency-graph-integrator/**/*.test.ts',
+			],
+		},
 	],
 };

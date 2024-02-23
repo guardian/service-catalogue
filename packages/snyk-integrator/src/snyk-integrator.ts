@@ -156,27 +156,3 @@ export function generatePr(
 
 	return [header, body];
 }
-
-// export async function createSnykPullRequest(
-// 	octokit: Octokit,
-// 	repoName: string,
-// 	branchName: string,
-// 	repoLanguages: string[],
-// ) {
-// 	const snykFileContents = createYaml(repoLanguages, branchName);
-// 	const [title, body] = generatePr(repoLanguages, branchName);
-// 	return await createPullRequest(octokit, {
-// 		repoName,
-// 		title,
-// 		body,
-// 		branchName,
-// 		changes: [
-// 			{
-// 				commitMessage: 'Add snyk.yaml',
-// 				files: {
-// 					'.github/workflows/snyk.yaml': snykFileContents,
-// 				},
-// 			},
-// 		],
-// 	});
-// }
