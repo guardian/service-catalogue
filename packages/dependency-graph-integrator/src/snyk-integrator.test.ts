@@ -1,4 +1,4 @@
-import { createYaml, generateBranchName } from './snyk-integrator';
+import { createYaml } from './snyk-integrator';
 
 //TODO - WHY DO THESE TESTS STILL PASS????
 describe('createYaml', () => {
