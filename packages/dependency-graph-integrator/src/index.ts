@@ -12,8 +12,8 @@ import { createYaml, generatePrBody } from './snyk-integrator';
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
 	const config: Config = getConfig();
-
 	const branch = generateBranchName('sbt-dependency-graph');
+
 	await createPrAndAddToProject(
 		config.stage,
 		event.name,
