@@ -1,5 +1,5 @@
 import type { SNSHandler } from 'aws-lambda';
-import { parseEvent, stageAwareOctokit } from 'common/functions';
+import { parseEvent } from 'common/functions';
 import {
 	createPrAndAddToProject,
 	generateBranchName,
@@ -12,11 +12,10 @@ import { createYaml, generatePrBody } from './snyk-integrator';
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
 	const config: Config = getConfig();
-	const octokit = await stageAwareOctokit(config.stage);
+
 	const branch = generateBranchName('sbt-dependency-graph');
 	await createPrAndAddToProject(
 		config.stage,
-		octokit,
 		event.name,
 		'?????', //TODO - add author
 		branch,

@@ -1,5 +1,5 @@
 import type { SNSHandler } from 'aws-lambda';
-import { parseEvent, stageAwareOctokit } from 'common/functions';
+import { parseEvent } from 'common/functions';
 import {
 	createPrAndAddToProject,
 	generateBranchName,
@@ -21,11 +21,9 @@ export async function main(event: SnykIntegratorEvent) {
 	const snykFileContents = createYaml(event.languages, branch);
 	const fileName = '.github/workflows/snyk.yaml';
 	const commitMessage = 'Add snyk.yaml';
-	const octokit = await stageAwareOctokit(config.stage);
 
 	await createPrAndAddToProject(
 		config.stage,
-		octokit,
 		event.name,
 		author,
 		branch,

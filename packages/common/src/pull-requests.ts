@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 import type { Endpoints } from '@octokit/types';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
+import { stageAwareOctokit } from './functions';
 import { addPrToProject } from './projects-graphql';
 
 interface Change {
@@ -81,7 +82,6 @@ export async function getExistingPullRequest(
 
 export async function createPrAndAddToProject(
 	stage: string,
-	octokit: Octokit,
 	repoName: string,
 	author: string,
 	branch: string,
@@ -93,6 +93,7 @@ export async function createPrAndAddToProject(
 	boardNumber: number,
 ) {
 	if (stage === 'PROD') {
+		const octokit = await stageAwareOctokit(stage);
 		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			repoName,
