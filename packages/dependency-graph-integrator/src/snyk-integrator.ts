@@ -78,26 +78,3 @@ export function generatePr(branch: string): [string, string] {
 
 	return [header, body];
 }
-
-export async function createDependabotPullRequest(
-	octokit: Octokit,
-	repoName: string,
-	branchName: string,
-) {
-	const fileContents = createYaml(branchName);
-	const [title, body] = generatePr(branchName);
-	return await createPullRequest(octokit, {
-		repoName,
-		title,
-		body,
-		branchName,
-		changes: [
-			{
-				commitMessage: 'Add sbt-dependency-graph.yml',
-				files: {
-					'.github/workflows/sbt-dependency-graph.yml': fileContents,
-				},
-			},
-		],
-	});
-}
