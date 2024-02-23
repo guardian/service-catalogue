@@ -110,7 +110,7 @@ export async function createPrAndAddToProject(
 					{
 						commitMessage,
 						files: {
-							fileName: fileContents,
+							[fileName]: fileContents,
 						},
 					},
 				],
