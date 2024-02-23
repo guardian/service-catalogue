@@ -23,7 +23,7 @@ export function generateBranchName(prefix: string) {
 	return `${prefix}-${randomBytes(8).toString('hex')}`;
 }
 
-export async function createPullRequest( //ignore the warning created here
+export async function createPullRequest(
 	octokit: Octokit,
 	{
 		repoName,
