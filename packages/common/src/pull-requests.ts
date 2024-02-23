@@ -72,9 +72,7 @@ export async function getExistingPullRequest(
 	const found = pulls.filter((pull) => isGithubAuthor(pull, author));
 
 	if (found.length > 1) {
-		console.warn(
-			'More than one Snyk integrator PR found on repository - choosing the first.',
-		);
+		console.warn(`More than one PR found on ${repoName} - choosing the first.`);
 	}
 
 	return found[0];
@@ -128,7 +126,7 @@ export async function createPrAndAddToProject(
 			);
 		}
 	} else {
-		console.log('Testing snyk.yml generation');
+		console.log(`Testing generation of ${fileName} for ${repoName}`);
 		console.log(fileContents);
 		console.log('Testing PR generation');
 		console.log('Title:\n', prTitle);

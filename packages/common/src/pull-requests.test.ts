@@ -74,7 +74,7 @@ describe('getPullRequest', () => {
 		);
 		expect(foundPull).toEqual(snykBranch);
 		expect(warn).toHaveBeenCalledWith(
-			'More than one Snyk integrator PR found on repository - choosing the first.',
+			'More than one PR found on repo - choosing the first.',
 		);
 		warn.mockRestore();
 	});
