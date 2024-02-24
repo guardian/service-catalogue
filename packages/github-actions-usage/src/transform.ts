@@ -1,46 +1,52 @@
-import type {
-	guardian_github_actions_usage,
-	PrismaClient,
-} from '@prisma/client';
 import Ajv from 'ajv';
 import YAML from 'yaml';
+import type { ReadDatabaseRow } from './db-read';
+import type { DraftGithubActionUsageRow } from './db-write';
 import * as schema from './schema/github-workflow.json';
-import type {
-	DraftGithubActionUsageRow,
-	GithubWorkflow,
-	ReadDatabaseRow,
-	ValidatedGithubWorkflow,
-} from './types';
 
-export function getWorkflows(client: PrismaClient): Promise<ReadDatabaseRow[]> {
-	return client.$queryRaw<ReadDatabaseRow[]>`
-		SELECT repo.full_name
-				 , workflow.path
-				 , workflow.contents
-		FROM github_workflows AS workflow
-	 		JOIN github_repositories repo 
-	 	    ON workflow.repository_id = repo.id
-		WHERE workflow.contents IS NOT NULL;
-	`;
+export interface GithubWorkflowStep {
+	name?: string;
+	uses?: string;
 }
 
-export async function saveResults(
-	client: PrismaClient,
-	results: DraftGithubActionUsageRow[],
-) {
-	const now = new Date();
+export interface GithubWorkflow {
+	/**
+	 * Those jobs that consist of one step can be defined as a single object.
+	 * Examples of single step workflows can be found in the `snyk.yaml` workflows.
+	 * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
+	 * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iduses
+	 */
+	jobs: Record<
+		string,
+		| {
+				steps: GithubWorkflowStep[];
+		  }
+		| GithubWorkflowStep
+	>;
+}
 
-	const records: guardian_github_actions_usage[] =
-		results.map<guardian_github_actions_usage>((row) => ({
-			evaluated_on: now,
-			...row,
-		}));
+export interface ValidatedGithubWorkflow {
+	repositoryFullName: string;
+	workflowPath: string;
+	workflowContents: GithubWorkflow;
+}
 
-	console.log('Clearing the guardian_github_actions_usage table');
-	await client.guardian_github_actions_usage.deleteMany();
+export function transform(
+	rows: ReadDatabaseRow[],
+): DraftGithubActionUsageRow[] {
+	const workflows = validateWorkflowRows(rows);
 
-	console.log(`Saving ${records.length} guardian_github_actions_usage`);
-	await client.guardian_github_actions_usage.createMany({ data: records });
+	return workflows.map<DraftGithubActionUsageRow>((workflow) => {
+		const uses = getUsesStringsFromWorkflow(workflow.workflowContents);
+		console.log(
+			`The workflow ${workflow.workflowPath} in repository ${workflow.repositoryFullName} has ${uses.length} 'uses'`,
+		);
+		return {
+			full_name: workflow.repositoryFullName,
+			workflow_path: workflow.workflowPath,
+			workflow_uses: uses,
+		};
+	});
 }
 
 export function validateWorkflowRows(
