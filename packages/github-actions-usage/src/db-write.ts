@@ -3,7 +3,7 @@ import type {
 	PrismaClient,
 } from '@prisma/client';
 
-export type DraftGithubActionUsageRow = Omit<
+export type UnsavedGithubActionUsage = Omit<
 	guardian_github_actions_usage,
 	'evaluated_on'
 >;
@@ -16,7 +16,7 @@ export type DraftGithubActionUsageRow = Omit<
  */
 export async function saveResults(
 	client: PrismaClient,
-	results: DraftGithubActionUsageRow[],
+	results: UnsavedGithubActionUsage[],
 ) {
 	const now = new Date();
 

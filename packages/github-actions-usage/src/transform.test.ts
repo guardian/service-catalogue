@@ -1,9 +1,9 @@
-import type { GithubWorkflow } from './transform';
+import type { GithubWorkflowFile } from './transform';
 import { getUsesStringsFromWorkflow } from './transform';
 
 describe('getUsesStringsFromWorkflow', () => {
 	test('Workflow with single job, and multiple steps', () => {
-		const workflow: GithubWorkflow = {
+		const workflow: GithubWorkflowFile = {
 			jobs: {
 				build: {
 					steps: [
@@ -24,7 +24,7 @@ describe('getUsesStringsFromWorkflow', () => {
 	});
 
 	test('Workflow with single job, and single step', () => {
-		const workflow: GithubWorkflow = {
+		const workflow: GithubWorkflowFile = {
 			jobs: {
 				security: {
 					uses: 'guardian/.github/.github/workflows/sbt-node-snyk.yml@main',
@@ -37,7 +37,7 @@ describe('getUsesStringsFromWorkflow', () => {
 	});
 
 	test('Workflow with multiple jobs, and a variety of steps', () => {
-		const workflow: GithubWorkflow = {
+		const workflow: GithubWorkflowFile = {
 			jobs: {
 				validate: {
 					steps: [
