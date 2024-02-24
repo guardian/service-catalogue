@@ -62,7 +62,15 @@ export function validateWorkflowRows(
 			return undefined;
 		}
 
-		const contentAsJson = YAML.parse(contents) as unknown;
+		const contentAsJson = yamlToJson(contents);
+
+		if (!contentAsJson) {
+			console.error(
+				`Failed to read workflow as it is not valid YAML - path:${path} repository:${full_name}`,
+			);
+			return undefined;
+		}
+
 		const isValid = ajv.validate(schema, contentAsJson);
 
 		if (!isValid) {
@@ -100,4 +108,13 @@ export function getUsesStringsFromWorkflow(workflow: GithubWorkflow): string[] {
 
 function removeUndefined<T>(array: Array<T | undefined>): T[] {
 	return array.filter((item) => item !== undefined) as T[];
+}
+
+function yamlToJson(maybeYamlString: string): unknown {
+	try {
+		return YAML.parse(maybeYamlString);
+	} catch (err) {
+		console.error('Failed to parse YAML string', err);
+		return undefined;
+	}
 }
