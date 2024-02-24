@@ -10,17 +10,16 @@ export type UnsavedGithubActionUsage = Omit<
 
 /**
  * Save records to the `guardian_github_actions_usage` table.
- * Each record will be timestamped with the current time.
+ * Each record will receive the same timestamp in its `evaluated_on` column.
  */
 export async function saveResults(
 	client: PrismaClient,
 	results: UnsavedGithubActionUsage[],
+	timestamp: Date,
 ) {
-	const now = new Date();
-
 	const records: guardian_github_actions_usage[] =
 		results.map<guardian_github_actions_usage>((row) => ({
-			evaluated_on: now,
+			evaluated_on: timestamp,
 			...row,
 		}));
 
