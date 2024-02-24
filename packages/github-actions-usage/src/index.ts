@@ -10,5 +10,6 @@ export async function main() {
 
 	const data = await getWorkflows(prismaClient);
 	const recordsToSave = transform(data);
+	await prismaClient.guardian_github_actions_usage.deleteMany();
 	await saveResults(prismaClient, recordsToSave);
 }

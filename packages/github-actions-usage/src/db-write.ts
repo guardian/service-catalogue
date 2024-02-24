@@ -11,8 +11,6 @@ export type UnsavedGithubActionUsage = Omit<
 /**
  * Save records to the `guardian_github_actions_usage` table.
  * Each record will be timestamped with the current time.
- *
- * Existing records will be deleted.
  */
 export async function saveResults(
 	client: PrismaClient,
@@ -25,9 +23,6 @@ export async function saveResults(
 			evaluated_on: now,
 			...row,
 		}));
-
-	console.log('Clearing the guardian_github_actions_usage table');
-	await client.guardian_github_actions_usage.deleteMany();
 
 	console.log(`Saving ${records.length} guardian_github_actions_usage`);
 	await client.guardian_github_actions_usage.createMany({ data: records });
