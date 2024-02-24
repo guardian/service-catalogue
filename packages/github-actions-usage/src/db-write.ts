@@ -12,7 +12,7 @@ export type UnsavedGithubActionUsage = Omit<
  * Save records to the `guardian_github_actions_usage` table.
  * Each record will receive the same timestamp in its `evaluated_on` column.
  */
-export async function saveResults(
+export function saveResults(
 	client: PrismaClient,
 	results: UnsavedGithubActionUsage[],
 	timestamp: Date,
@@ -24,5 +24,5 @@ export async function saveResults(
 		}));
 
 	console.log(`Saving ${records.length} guardian_github_actions_usage`);
-	await client.guardian_github_actions_usage.createMany({ data: records });
+	return client.guardian_github_actions_usage.createMany({ data: records });
 }

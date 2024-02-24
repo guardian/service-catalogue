@@ -11,6 +11,13 @@ export async function main() {
 	const now = new Date();
 	const data = await getWorkflows(prismaClient);
 	const recordsToSave = transform(data);
-	await prismaClient.guardian_github_actions_usage.deleteMany();
-	await saveResults(prismaClient, recordsToSave, now);
+
+	/*
+	Prisma performs `deleteMany` and `createMany` in separate transactions by default.
+	Here we manually wrap them in a single transaction to ensure that the delete and create operations are atomic.
+	 */
+	await prismaClient.$transaction([
+		prismaClient.guardian_github_actions_usage.deleteMany(),
+		saveResults(prismaClient, recordsToSave, now),
+	]);
 }
