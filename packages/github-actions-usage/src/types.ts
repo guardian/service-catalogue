@@ -1,27 +1,15 @@
-import type {
-	github_repositories,
-	github_workflows,
+import type { guardian_github_actions_usage } from '@prisma/client';
+
+export interface ReadDatabaseRow {
+	full_name: string;
+	path: string;
+	contents: string;
+}
+
+export type DraftGithubActionUsageRow = Omit<
 	guardian_github_actions_usage,
-} from '@prisma/client';
-
-type GithubWorkflowDatabaseFields = Pick<
-	github_workflows,
-	'repository_id' | 'path' | 'contents'
+	'evaluated_on'
 >;
-
-export interface RawGithubWorkflow extends GithubWorkflowDatabaseFields {
-	repository_id: NonNullable<GithubWorkflowDatabaseFields['repository_id']>;
-	path: NonNullable<GithubWorkflowDatabaseFields['path']>;
-}
-
-type GithubRepositoryDatabaseFields = Pick<
-	github_repositories,
-	'id' | 'full_name'
->;
-
-export interface RawGithubRepository extends GithubRepositoryDatabaseFields {
-	full_name: NonNullable<GithubRepositoryDatabaseFields['full_name']>;
-}
 
 export interface GithubWorkflowStep {
 	name?: string;
@@ -45,13 +33,7 @@ export interface GithubWorkflow {
 }
 
 export interface ValidatedGithubWorkflow {
-	repositoryId: bigint;
 	repositoryFullName: string;
 	workflowPath: string;
 	workflowContents: GithubWorkflow;
 }
-
-export type GithubActionUsageToSave = Omit<
-	guardian_github_actions_usage,
-	'evaluated_on'
->;

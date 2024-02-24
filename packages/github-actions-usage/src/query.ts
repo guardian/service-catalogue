@@ -6,45 +6,27 @@ import Ajv from 'ajv';
 import YAML from 'yaml';
 import * as schema from './schema/github-workflow.json';
 import type {
-	GithubActionUsageToSave,
+	DraftGithubActionUsageRow,
 	GithubWorkflow,
-	RawGithubRepository,
-	RawGithubWorkflow,
+	ReadDatabaseRow,
 	ValidatedGithubWorkflow,
 } from './types';
 
-export async function getWorkflowRows(client: PrismaClient) {
-	const data = await client.github_workflows.findMany({
-		select: {
-			contents: true,
-			path: true,
-			repository_id: true,
-		},
-	});
-	return data.map((row) => row as RawGithubWorkflow);
-}
-
-export async function getRepositoryName(
-	client: PrismaClient,
-	repositoryIds: bigint[],
-) {
-	const data = await client.github_repositories.findMany({
-		select: {
-			id: true,
-			full_name: true,
-		},
-		where: {
-			id: {
-				in: repositoryIds,
-			},
-		},
-	});
-	return data.map((row) => row as RawGithubRepository);
+export function getWorkflows(client: PrismaClient): Promise<ReadDatabaseRow[]> {
+	return client.$queryRaw<ReadDatabaseRow[]>`
+		SELECT repo.full_name
+				 , workflow.path
+				 , workflow.contents
+		FROM github_workflows AS workflow
+	 		JOIN github_repositories repo 
+	 	    ON workflow.repository_id = repo.id
+		WHERE workflow.contents IS NOT NULL;
+	`;
 }
 
 export async function saveResults(
 	client: PrismaClient,
-	results: GithubActionUsageToSave[],
+	results: DraftGithubActionUsageRow[],
 ) {
 	const now = new Date();
 
@@ -61,20 +43,8 @@ export async function saveResults(
 	await client.guardian_github_actions_usage.createMany({ data: records });
 }
 
-function getRepositoryNameFromId(
-	repositoryRows: RawGithubRepository[],
-	repositoryId: bigint,
-): string {
-	const item = repositoryRows.find((row) => row.id === repositoryId);
-	if (!item) {
-		throw new Error(`Repository with id ${repositoryId} not found`);
-	}
-	return item.full_name;
-}
-
 export function validateWorkflowRows(
-	repositoryRows: RawGithubRepository[],
-	workflowRows: RawGithubWorkflow[],
+	rows: ReadDatabaseRow[],
 ): ValidatedGithubWorkflow[] {
 	const ajv = new Ajv({
 		// Disable strict mode as we do not author the schema file
@@ -82,16 +52,12 @@ export function validateWorkflowRows(
 		strict: false,
 	});
 
-	const maybeData = workflowRows.map((row) => {
-		const { contents, path, repository_id } = row;
-		const repositoryName = getRepositoryNameFromId(
-			repositoryRows,
-			repository_id,
-		);
+	const maybeData = rows.map((row) => {
+		const { full_name, path, contents } = row;
 
 		if (!contents) {
 			console.warn(
-				`Failed to read workflow as it is empty - path:${path} repository:${repositoryName}`,
+				`Failed to read workflow as it is empty - path:${path} repository:${full_name}`,
 			);
 			return undefined;
 		}
@@ -101,22 +67,19 @@ export function validateWorkflowRows(
 
 		if (!isValid) {
 			console.error(
-				`Failed to read workflow as it violates the schema - path:${path} repository:${repositoryName}`,
+				`Failed to read workflow as it violates the schema - path:${path} repository:${full_name}`,
 			);
 			return undefined;
 		}
 
 		return {
-			repositoryFullName: repositoryName,
-			repositoryId: repository_id,
+			repositoryFullName: full_name,
 			workflowPath: path,
 			workflowContents: contentAsJson as GithubWorkflow,
 		} as ValidatedGithubWorkflow;
 	});
 
-	const data = maybeData.filter(
-		(workflow) => workflow !== undefined,
-	) as ValidatedGithubWorkflow[];
+	const data = removeUndefined(maybeData);
 
 	console.log(
 		`GitHub Workflow summary: total ${maybeData.length}, valid ${data.length}, invalid ${maybeData.length - data.length}`,
@@ -133,4 +96,8 @@ export function getUsesStringsFromWorkflow(workflow: GithubWorkflow): string[] {
 			return job.uses ? [job.uses] : [];
 		}
 	});
+}
+
+function removeUndefined<T>(array: Array<T | undefined>): T[] {
+	return array.filter((item) => item !== undefined) as T[];
 }
