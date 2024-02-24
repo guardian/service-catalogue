@@ -43,6 +43,16 @@ verifyMarkdown() {
   fi
 }
 
+compareGithubWorkflowSchemaToUpstream() {
+  ours=$(md5sum "$ROOT_DIR/packages/github-actions-usage/src/schema/github-workflow.json" | awk '{ print $1 }')
+  upstream=$(curl --silent https://json.schemastore.org/github-workflow.json | md5sum | awk '{ print $1 }')
+
+  if [[ "$ours" != "$upstream" ]]; then
+    echo "The GitHub workflow schema is out of date. Please update the schema and commit the changes."
+    exit 1
+  fi
+}
+
 npm ci
 npm test
 
@@ -56,3 +66,4 @@ createZip "interactive-monitor"
 createZip "snyk-integrator"
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
+compareGithubWorkflowSchemaToUpstream
