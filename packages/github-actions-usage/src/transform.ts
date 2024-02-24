@@ -1,3 +1,4 @@
+import type { ErrorObject } from 'ajv';
 import Ajv from 'ajv';
 import YAML from 'yaml';
 import type { RawGithubWorkflow } from './db-read';
@@ -100,9 +101,16 @@ export function validateRawWorkflow(
 	const isValid = ajv.validate(schema, contentAsJson);
 
 	if (!isValid) {
+		const allErrors: ErrorObject[] = ajv.errors ?? [];
+
+		// errors of type 'oneOf' are not useful for debugging
+		const errors = allErrors.filter(({ keyword }) => keyword !== 'oneOf');
+
 		console.error(
-			`Failed to read workflow as it violates the schema - path:${path} repository:${full_name}`,
+			`Failed to read workflow as it violates the schema - path:${path} repository:${full_name} errors:${errors.length}`,
+			errors.map(({ instancePath, message }) => `${instancePath} ${message}`),
 		);
+
 		return undefined;
 	}
 
