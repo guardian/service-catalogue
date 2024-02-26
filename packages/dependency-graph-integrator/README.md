@@ -1,8 +1,8 @@
-## Dependency graph integrator integrator
+## Dependency graph integrator
 
 ### What does it do?
 
-The snyk integrator takes a repo name as JSON, like so:
+The dependency graph integrator takes a repo name as JSON, like so:
 
 ```json
 {

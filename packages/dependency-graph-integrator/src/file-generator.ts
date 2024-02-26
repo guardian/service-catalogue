@@ -4,7 +4,7 @@ import { stringify } from 'yaml';
 
 export function createYaml(prBranch: string): string {
 	const dependencyGraphWorkflowJson = {
-		name: 'Update Dependency Graph',
+		name: 'Update Dependency Graph for SBT',
 		on: {
 			push: {
 				branches: ['main', prBranch],
@@ -13,7 +13,6 @@ export function createYaml(prBranch: string): string {
 		},
 		jobs: {
 			'dependency-graph': {
-				name: 'Update Dependency Graph',
 				// 'runs-on': 'ubuntu-latest', //let's see how we do without this
 				steps: [
 					{ uses: 'actions/checkout@v4' },

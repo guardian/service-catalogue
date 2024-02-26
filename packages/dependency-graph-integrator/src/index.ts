@@ -7,7 +7,7 @@ import {
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
-import { createYaml, generatePrBody } from './snyk-integrator';
+import { createYaml, generatePrBody } from './file-generator';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
