@@ -11,8 +11,6 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.516.0",
-		"@octokit/graphql": "^7.0.2",
-		"octokit-plugin-create-pull-request": "^5.1.1",
 		"ts-markdown": "^1.0.0",
 		"yaml": "^2.3.4"
 	}

@@ -1,4 +1,4 @@
-import { stripMargin } from './string';
+import { markdownChecklist, stripMargin } from './string';
 
 describe('stripMargin', () => {
 	it('should strip the margin from a string', () => {
@@ -7,5 +7,12 @@ describe('stripMargin', () => {
       |From
       |The Guardian`;
 		expect(message).toEqual('Hello\nFrom\nThe Guardian');
+	});
+});
+
+describe('markdownChecklist', () => {
+	it('should generate a markdown checklist', () => {
+		const checklist = markdownChecklist(['item1', 'item2']);
+		expect(checklist).toEqual('- [ ] item1\n- [ ] item2');
 	});
 });

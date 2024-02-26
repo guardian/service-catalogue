@@ -1,6 +1,5 @@
 import { stageAwareOctokit } from 'common/src/functions';
-import type { SnykIntegratorEvent } from 'common/src/types';
-import type { ProjectId, PullRequestDetails } from './types';
+import type { ProjectId, PullRequestDetails } from 'common/src/types';
 
 /*
  ** GitHub's v2 projects API is accessible via GraphQL only.
@@ -43,14 +42,16 @@ export function addToProjectQuery(
 
 export async function addPrToProject(
 	stage: string,
-	event: SnykIntegratorEvent,
+	shortRepoName: string,
+	boardNumber: number,
+	author: string,
 ) {
 	const graphqlWithAuth = (await stageAwareOctokit(stage)).graphql;
 
 	const projectDetails: ProjectId = await graphqlWithAuth(
 		`{
 			organization(login: "guardian"){
-				projectV2(number: 110) {
+				projectV2(number: ${boardNumber}) {
 				  id
 				}
 			  }
@@ -60,11 +61,11 @@ export async function addPrToProject(
 	const projectId = projectDetails.organization.projectV2.id;
 
 	const prDetails: PullRequestDetails = await graphqlWithAuth(
-		getLastPrsQuery(event.name),
+		getLastPrsQuery(shortRepoName),
 	);
 
 	const pullRequestIds = prDetails.organization.repository.pullRequests.nodes
-		.filter((pr) => pr.author.login === 'gu-snyk-integrator')
+		.filter((pr) => pr.author.login === author)
 		.map((pr) => pr.id);
 
 	await Promise.all(

@@ -21,3 +21,7 @@ export function stripMargin(
 	);
 	return result.replace(/\r?(\n)\s*\|/g, '$1').trim();
 }
+
+export function markdownChecklist(items: string[]): string {
+	return items.map((item) => `- [ ] ${item}`).join('\n');
+}
