@@ -25,8 +25,8 @@ import { protectBranches } from './remediations/branch-protector/branch-protecti
 import { sendUnprotectedRepo } from './remediations/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
+import { createAndSendVulnerabilityDigests } from './remediations/vuln-digest/vuln-digest';
 import {
-	createAndSendVulnerabilityDigests,
 	evaluateRepositories,
 	testExperimentalRepocopFeatures,
 } from './rules/repository';
