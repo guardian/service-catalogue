@@ -2,8 +2,86 @@ import type { Action } from '@guardian/anghammarad';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
 import type { Config } from '../../config';
-import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types';
-import { createDigest } from '../../vulnerability-digest';
+import type {
+	EvaluationResult,
+	RepocopVulnerability,
+	Team,
+	VulnerabilityDigest,
+} from '../../types';
+import { vulnSortPredicate } from '../../utils';
+
+function getOwningRepos(
+	team: Team,
+	repoOwners: view_repo_ownership[],
+	results: EvaluationResult[],
+) {
+	const reposOwnedByTeam = repoOwners.filter(
+		(repoOwner) => repoOwner.github_team_id === team.id,
+	);
+
+	const resultsOwnedByTeam = reposOwnedByTeam
+		.map((repo) => {
+			return results.find((result) => result.fullName === repo.full_name);
+		})
+		.filter((result): result is EvaluationResult => result !== undefined);
+
+	return resultsOwnedByTeam;
+}
+
+export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
+	return vulnerabilities
+		.sort(vulnSortPredicate)
+		.slice(0, 10)
+		.sort((v1, v2) => v1.fullName.localeCompare(v2.fullName));
+}
+
+function dateStringToHumanReadable(dateString: string) {
+	const date = new Date(dateString);
+	return date.toDateString();
+}
+
+function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
+	const dateString = dateStringToHumanReadable(vuln.alert_issue_date);
+	const ecosystem =
+		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
+
+	return String.raw`**${vuln.package}** contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
+Introduced to [${vuln.fullName}](https://github.com/${vuln.fullName}) on ${dateString} via ${ecosystem}.
+This vulnerability ${vuln.isPatchable ? 'is ' : 'may *not* be '}patchable.`;
+}
+
+export function createDigest(
+	team: Team,
+	repoOwners: view_repo_ownership[],
+	results: EvaluationResult[],
+): VulnerabilityDigest | undefined {
+	const resultsForTeam = getOwningRepos(team, repoOwners, results);
+	const vulns = resultsForTeam.map((r) => r.vulnerabilities).flat();
+
+	const totalVulnsCount = vulns.length;
+
+	if (totalVulnsCount === 0) {
+		return undefined;
+	}
+
+	const topVulns = getTopVulns(vulns);
+	const listedVulnsCount = topVulns.length;
+	const preamble = String.raw`Found ${totalVulnsCount} vulnerabilities across ${resultsForTeam.length} repositories.
+Displaying the top ${listedVulnsCount} most urgent.
+Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
+
+	const digestString = topVulns
+		.map((v) => createHumanReadableVulnMessage(v))
+		.join('\n\n');
+
+	const message = `${preamble}\n\n${digestString}`;
+
+	return {
+		teamSlug: team.slug,
+		subject: `Vulnerability Digest for ${team.name}`,
+		message,
+	};
+}
 
 export function isFirstOrThirdTuesdayOfMonth(date: Date) {
 	const isTuesday = date.getDay() === 2;
