@@ -85,7 +85,7 @@ export async function createPrAndAddToProject(
 	branch: string,
 	prTitle: string,
 	prBody: string,
-	fileName: string, //is this used?
+	fileName: string,
 	fileContents: string,
 	commitMessage: string,
 	boardNumber: number,

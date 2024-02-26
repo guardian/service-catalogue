@@ -27,6 +27,13 @@ module.exports = {
 			testMatch: ['<rootDir>/packages/common/**/*.test.ts'],
 		},
 		{
+			displayName: 'dependency-graph-integrator',
+			transform,
+			testMatch: [
+				'<rootDir>/packages/dependency-graph-integrator/**/*.test.ts',
+			],
+		},
+		{
 			displayName: 'repocop',
 			transform,
 			transformIgnorePatterns: [
