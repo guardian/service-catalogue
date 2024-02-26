@@ -320,6 +320,7 @@ export function addCloudqueryEcsCluster(
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'GitHubTeams',
