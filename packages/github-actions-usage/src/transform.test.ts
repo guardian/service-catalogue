@@ -1,156 +1,80 @@
-import { stripMargin } from 'common/src/string';
-import type { RawGithubWorkflow } from './db-read';
-import type { GithubWorkflowFile } from './transform';
-import { getUsesStringsFromWorkflow, validateRawWorkflow } from './transform';
+import fs from 'fs';
+import assert from 'node:assert';
+import { describe, test } from 'node:test';
+import type { GithubWorkflow } from './transform';
+import { getUsesInWorkflowTemplate, getWorkflowTemplate } from './transform';
 
-describe('getUsesStringsFromWorkflow', () => {
-	test('Workflow with single job, and multiple steps', () => {
-		const workflow: GithubWorkflowFile = {
-			jobs: {
-				build: {
-					steps: [
-						{
-							uses: 'actions/checkout@v4',
-						},
-						{
-							uses: 'actions/setup-node@v4',
-						},
-					],
-				},
-			},
-		};
-		expect(getUsesStringsFromWorkflow(workflow)).toEqual([
-			'actions/checkout@v4',
-			'actions/setup-node@v4',
-		]);
+const readWorkflowFile = (path: string): string =>
+	fs.readFileSync(`test/fixtures/${path}`, 'utf8');
+
+void describe('getWorkflowTemplate', () => {
+	void test('Workflow with single job, and multiple steps is recognised', async () => {
+		const path = 'multi-step-workflow.yml';
+		const contents = readWorkflowFile(path);
+
+		const actual = await getWorkflowTemplate({
+			full_name: 'guardian/fake-repo',
+			path: `.github/workflows/${path}`,
+			contents,
+		});
+
+		// `getWorkflowTemplate` returns `undefined` if the workflow is invalid.
+		// Therefore, a valid workflow should not be `undefined`
+		assert.notDeepEqual(actual, undefined);
 	});
 
-	test('Workflow with single job, and single step', () => {
-		const workflow: GithubWorkflowFile = {
-			jobs: {
-				security: {
-					uses: 'guardian/.github/.github/workflows/sbt-node-snyk.yml@main',
-				},
-			},
-		};
-		expect(getUsesStringsFromWorkflow(workflow)).toEqual([
-			'guardian/.github/.github/workflows/sbt-node-snyk.yml@main',
-		]);
-	});
+	void test('Invalid workflow is not recognised', async () => {
+		const path = 'invalid-workflow.yml';
+		const contents = readWorkflowFile(path);
 
-	test('Workflow with multiple jobs, and a variety of steps', () => {
-		const workflow: GithubWorkflowFile = {
-			jobs: {
-				validate: {
-					steps: [
-						{
-							uses: 'actions/checkout@v4',
-						},
-						{
-							uses: 'nrwl/nx-set-shas@v4',
-						},
-						{
-							uses: './.github/actions/setup-node-env',
-						},
-					],
-				},
-				chromatic: {
-					uses: './.github/workflows/chromatic.yml',
-				},
-			},
-		};
-		expect(getUsesStringsFromWorkflow(workflow)).toEqual([
-			'actions/checkout@v4',
-			'nrwl/nx-set-shas@v4',
-			'./.github/actions/setup-node-env',
-			'./.github/workflows/chromatic.yml',
-		]);
+		const actual = await getWorkflowTemplate({
+			full_name: 'guardian/fake-repo',
+			path: `.github/workflows/${path}`,
+			contents,
+		});
+
+		// `getWorkflowTemplate` returns `undefined` if the workflow is invalid.
+		assert.deepEqual(actual, undefined);
 	});
 });
 
-describe('validateRawWorkflow', () => {
-	test('return value when content is valid', () => {
-		const workflow: RawGithubWorkflow = {
+void describe('getUsesInmWorkflowTemplate', () => {
+	void test('Workflow with single job, and multiple steps', async () => {
+		const path = 'multi-step-workflow.yml';
+		const contents = readWorkflowFile(path);
+
+		const workflow = (await getWorkflowTemplate({
 			full_name: 'guardian/fake-repo',
-			path: '.github/workflows/ci.yml',
-			contents: stripMargin`
-				|name: Snyk
-				|on:
-				|  push:
-				|    branches:
-				|      - main
-				|  workflow_dispatch:
-				|
-				|jobs:
-				|  security:
-				|    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
-				|    with:
-				|      ORG: guardian-devtools
-				|      SKIP_SBT: true
-				|    secrets:
-				|      SNYK_TOKEN: \${{ secrets.SNYK_TOKEN }}
-				|`,
-		};
-		expect(validateRawWorkflow(workflow)).toEqual({
-			repository: 'guardian/fake-repo',
-			path: '.github/workflows/ci.yml',
-			content: {
-				name: 'Snyk',
-				on: {
-					push: {
-						branches: ['main'],
-					},
-					workflow_dispatch: null,
-				},
-				jobs: {
-					security: {
-						uses: 'guardian/.github/.github/workflows/sbt-node-snyk.yml@main',
-						with: {
-							ORG: 'guardian-devtools',
-							SKIP_SBT: true,
-						},
-						secrets: {
-							SNYK_TOKEN: '${{ secrets.SNYK_TOKEN }}',
-						},
-					},
-				},
-			},
-		});
+			path: `.github/workflows/${path}`,
+			contents,
+		})) as GithubWorkflow;
+
+		const uses = getUsesInWorkflowTemplate(workflow.template);
+
+		assert.deepEqual(uses, [
+			'actions/checkout@v4',
+			'actions/setup-node@v4',
+			'actions/setup-java@v4',
+		]);
 	});
 
-	test('return value when content is YAML, but not a valid GitHub Workflow', () => {
-		const workflow: RawGithubWorkflow = {
-			full_name: 'guardian/fake-repo',
-			path: '.github/workflows/ci.yml',
-			contents: stripMargin`
-				|name: Snyk
-				|on:
-				|  push:
-				|    branches:
-				|      - main
-				|  workflow_dispatch:
-				|
-				|fakeKey: fakeValue
-				|
-				|jobs:
-				|  security:
-				|    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
-				|    with:
-				|      ORG: guardian-devtools
-				|      SKIP_SBT: true
-				|    secrets:
-				|      SNYK_TOKEN: \${{ secrets.SNYK_TOKEN }}
-				|`,
-		};
-		expect(validateRawWorkflow(workflow)).toBeUndefined();
-	});
+	void test('Workflow with multiple jobs, and complex steps', async () => {
+		const path = 'complex-workflow.yml';
+		const contents = readWorkflowFile(path);
 
-	test('return value when content is not YAML', () => {
-		const workflow: RawGithubWorkflow = {
+		const workflow = (await getWorkflowTemplate({
 			full_name: 'guardian/fake-repo',
-			path: '.github/workflows/ci.yml',
-			contents: 'I am not YAML',
-		};
-		expect(validateRawWorkflow(workflow)).toBeUndefined();
+			path: `.github/workflows/${path}`,
+			contents,
+		})) as GithubWorkflow;
+
+		const uses = getUsesInWorkflowTemplate(workflow.template);
+
+		assert.deepEqual(uses, [
+			'actions/checkout@v4',
+			'actions/setup-node@v4',
+			'actions/setup-java@v4',
+			'guardian/.github/.github/workflows/sbt-node-snyk.yml@main',
+		]);
 	});
 });

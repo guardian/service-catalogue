@@ -1,0 +1,35 @@
+# This workflow has two jobs.
+# The first has `uses` within steps.
+# The second has `uses` at the top level.
+
+name: complex workflow
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'corretto'
+          cache: 'sbt'
+      - run: ./script/ci
+  security:
+    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
+    with:
+      ORG: guardian-devtools
+      SKIP_SBT: true
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

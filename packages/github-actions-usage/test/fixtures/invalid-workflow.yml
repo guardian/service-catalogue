@@ -1,0 +1,28 @@
+# This workflow contains the illegal key 'fakeKey', so it should be rejected.
+
+fakeKey: fakeValue
+
+name: invalid workflow
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'corretto'
+          cache: 'sbt'
+      - run: ./script/ci

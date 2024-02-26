@@ -14,7 +14,7 @@ export async function main(...args: unknown[]) {
 
 	const now = new Date();
 	const data = await getWorkflows(prismaClient);
-	const recordsToSave = transform(data);
+	const recordsToSave = await transform(data);
 
 	/*
 	Prisma performs `deleteMany` and `createMany` in separate transactions by default.

@@ -1,46 +1,38 @@
-import type { ErrorObject } from 'ajv';
-import Ajv from 'ajv';
-import YAML from 'yaml';
+import type { WorkflowTemplate } from '@actions/workflow-parser';
+import {
+	convertWorkflowTemplate,
+	NoOperationTraceWriter,
+	parseWorkflow,
+} from '@actions/workflow-parser';
+import type {
+	ActionStep,
+	Step,
+	WorkflowJob,
+} from '@actions/workflow-parser/model/workflow-template';
 import type { RawGithubWorkflow } from './db-read';
 import type { UnsavedGithubActionUsage } from './db-write';
-import * as schema from './schema/github-workflow.json';
 
-export interface GithubWorkflowFileStep {
-	name?: string;
-	uses?: string;
-}
-
-export interface GithubWorkflowFile {
-	/**
-	 * Those jobs that consist of one step can be defined as a single object.
-	 * Examples of single step workflows can be found in the `snyk.yaml` workflows.
-	 * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idsteps
-	 * @see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iduses
-	 */
-	jobs: Record<
-		string,
-		| {
-				steps: GithubWorkflowFileStep[];
-		  }
-		| GithubWorkflowFileStep
-	>;
+function removeUndefined<T>(array: Array<T | undefined>): T[] {
+	return array.filter((item) => item !== undefined) as T[];
 }
 
 export interface GithubWorkflow {
 	repository: string;
 	path: string;
-	content: GithubWorkflowFile;
+	template: WorkflowTemplate;
 }
 
 /**
  * Transform a GitHub Workflow as read from the `github_workflows` table,
  * into a row for the `github_action_usage` table.
  */
-export function transform(
+export async function transform(
 	rawWorkflows: RawGithubWorkflow[],
-): UnsavedGithubActionUsage[] {
-	const workflows = removeUndefined(
-		rawWorkflows.map((workflow) => validateRawWorkflow(workflow)),
+): Promise<UnsavedGithubActionUsage[]> {
+	const workflows: GithubWorkflow[] = removeUndefined(
+		await Promise.all(
+			rawWorkflows.map((workflow) => getWorkflowTemplate(workflow)),
+		),
 	);
 
 	console.log(
@@ -48,8 +40,8 @@ export function transform(
 	);
 
 	return workflows.map<UnsavedGithubActionUsage>(
-		({ repository, path, content }) => {
-			const uses = getUsesStringsFromWorkflow(content);
+		({ repository, path, template }) => {
+			const uses = getUsesInWorkflowTemplate(template);
 			console.log(
 				`The workflow ${path} in repository ${repository} has ${uses.length} 'uses'`,
 			);
@@ -71,77 +63,76 @@ export function transform(
  * @see https://github.com/cloudquery/cloudquery/blob/main/plugins/source/github/resources/services/actions/workflows.go
  * @see https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
  */
-export function validateRawWorkflow(
+export async function getWorkflowTemplate(
 	rawWorkflow: RawGithubWorkflow,
-): GithubWorkflow | undefined {
-	const ajv = new Ajv({
-		// Disable strict mode as we do not author the schema file
-		// See https://ajv.js.org/strict-mode.html
-		strict: false,
-	});
+): Promise<GithubWorkflow | undefined> {
+	const { path, contents, full_name } = rawWorkflow;
 
-	const { full_name, path, contents } = rawWorkflow;
+	const result = parseWorkflow(
+		{
+			name: path,
+			content: contents,
+		},
+		new NoOperationTraceWriter(),
+	);
+	const errors = result.context.errors.getErrors();
 
-	if (!contents) {
-		console.warn(
-			`Failed to read workflow as it is empty - path:${path} repository:${full_name}`,
+	if (errors.length > 0) {
+		console.error(
+			`Failed to parse workflow - path:${path} repository:${full_name} errors:${errors.length}`,
+			errors.map(({ message }) => message),
 		);
 		return undefined;
 	}
 
-	const contentAsJson = yamlToJson(contents);
-
-	if (!contentAsJson) {
+	if (!result.value) {
 		console.error(
-			`Failed to read workflow as it is not valid YAML - path:${path} repository:${full_name}`,
+			`Failed to parse workflow - path:${path} repository:${full_name} value is null`,
 		);
-		return undefined;
-	}
-
-	const isValid = ajv.validate(schema, contentAsJson);
-
-	if (!isValid) {
-		const allErrors: ErrorObject[] = ajv.errors ?? [];
-
-		// errors of type 'oneOf' are not useful for debugging
-		const errors = allErrors.filter(({ keyword }) => keyword !== 'oneOf');
-
-		console.error(
-			`Failed to read workflow as it violates the schema - path:${path} repository:${full_name} errors:${errors.length}`,
-			errors.map(({ instancePath, message }) => `${instancePath} ${message}`),
-		);
-
 		return undefined;
 	}
 
 	return {
-		repository: full_name,
-		path: path,
-		content: contentAsJson as GithubWorkflowFile,
+		repository: rawWorkflow.full_name,
+		path: rawWorkflow.path,
+		template: await convertWorkflowTemplate(result.context, result.value),
 	};
 }
 
-export function getUsesStringsFromWorkflow(
-	workflow: GithubWorkflowFile,
-): string[] {
-	return Object.values(workflow.jobs).flatMap((job) => {
-		if ('steps' in job) {
-			return removeUndefined(job.steps.map((step) => step.uses));
-		} else {
-			return job.uses ? [job.uses] : [];
-		}
-	});
+export function getUsesInWorkflowTemplate(workflowTemplate: WorkflowTemplate) {
+	return removeUndefined(
+		workflowTemplate.jobs.flatMap((job) => {
+			switch (job.type) {
+				case 'job': {
+					return getUsesInJob(job);
+				}
+				case 'reusableWorkflowJob': {
+					if (!job.jobs) {
+						return [job.ref.value];
+					}
+
+					return job.jobs.flatMap((job) => getUsesInJob(job));
+				}
+				default: {
+					const _exhaustiveCheck: never = job;
+					return _exhaustiveCheck;
+				}
+			}
+		}),
+	);
 }
 
-function removeUndefined<T>(array: Array<T | undefined>): T[] {
-	return array.filter((item) => item !== undefined) as T[];
+function getUsesInJob(job: WorkflowJob): string[] {
+	const actionSteps = stepsFromWorkflowJob(job).filter(
+		(step): step is ActionStep => 'uses' in step,
+	);
+	return actionSteps.map((step) => step.uses.value);
 }
 
-function yamlToJson(maybeYamlString: string): unknown {
-	try {
-		return YAML.parse(maybeYamlString);
-	} catch (err) {
-		console.error('Failed to parse YAML string', err);
-		return undefined;
+function stepsFromWorkflowJob(workflowJob: WorkflowJob): Step[] {
+	if (workflowJob.type === 'job') {
+		return workflowJob.steps;
 	}
+	const childJobs = workflowJob.jobs ?? [];
+	return childJobs.flatMap(stepsFromWorkflowJob);
 }
