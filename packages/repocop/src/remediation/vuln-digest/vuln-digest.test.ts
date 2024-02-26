@@ -2,12 +2,8 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import type {
-	EvaluationResult,
-	RepocopVulnerability,
-	Team,
-} from './../../types';
-import { removeRepoOwner } from './../shared-utilities';
+import type { EvaluationResult, RepocopVulnerability, Team } from '../../types';
+import { removeRepoOwner } from '../shared-utilities';
 import {
 	createDigest,
 	getTopVulns,
