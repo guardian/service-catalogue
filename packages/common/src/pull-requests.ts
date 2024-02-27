@@ -112,7 +112,7 @@ async function hasBranchProtection(
 		console.log('has branch protection:', hasProtection);
 		return hasProtection;
 	} catch (e) {
-		console.error(e);
+		console.warn(e);
 		return false;
 	}
 }
@@ -132,7 +132,7 @@ async function productionCustomProperty(
 		},
 	);
 
-	console.log(allResults.data);
+	console.debug(allResults.data);
 
 	const result = allResults.data.find(
 		(property) =>
@@ -140,10 +140,8 @@ async function productionCustomProperty(
 			property.value === 'production',
 	);
 
-	console.log('Found property:', result);
-
 	const hasProductionStatus = !!result;
-	console.log('has production status:', hasProductionStatus);
+	console.log('has custom property ruleset protection:', hasProductionStatus);
 
 	return hasProductionStatus;
 }
@@ -178,11 +176,9 @@ export async function createPrAndAddToProject(
 	const protection1 = await hasBranchProtection(octokit, repoName);
 	const protection2 = await productionCustomProperty(octokit, repoName);
 
-	console.log('Checking branch protection: ', protection1);
-	console.log('Checking production status: ', protection2);
 	const branchIsProtected = protection1 || protection2;
 
-	console.log('Branch is protected:', branchIsProtected);
+	console.log('Branch is protected by rule or ruleset:', branchIsProtected);
 
 	if (!branchIsProtected) {
 		console.warn(
