@@ -78,6 +78,20 @@ export async function getExistingPullRequest(
 	return found[0];
 }
 
+function logPr(
+	fileName: string,
+	repoName: string,
+	fileContents: string,
+	prTitle: string,
+	prBody: string,
+) {
+	console.log(`Testing generation of ${fileName} for ${repoName}`);
+	console.log(fileContents);
+	console.log('Testing PR generation');
+	console.log('Title:\n', prTitle);
+	console.log('Body:\n', prBody);
+}
+
 export async function createPrAndAddToProject(
 	stage: string,
 	repoName: string,
@@ -90,47 +104,66 @@ export async function createPrAndAddToProject(
 	commitMessage: string,
 	boardNumber: number,
 ) {
-	if (stage === 'PROD') {
-		const octokit = await stageAwareOctokit(stage);
-		const existingPullRequest = await getExistingPullRequest(
-			octokit,
-			repoName,
-			`${author}[bot]`,
-		);
-
-		if (!existingPullRequest) {
-			const response = await createPullRequest(octokit, {
-				repoName,
-				title: prTitle,
-				body: prBody,
-				branchName: branch,
-				changes: [
-					{
-						commitMessage,
-						files: {
-							[fileName]: fileContents,
-						},
-					},
-				],
-			});
-			console.log(
-				'Pull request successfully created:',
-				response?.data.html_url,
-			);
-			await addPrToProject(stage, repoName, boardNumber, author);
-			console.log('Updated project board');
-		} else {
-			console.log(
-				`Existing pull request found. Skipping creating a new one.`,
-				existingPullRequest.html_url,
-			);
-		}
-	} else {
-		console.log(`Testing generation of ${fileName} for ${repoName}`);
-		console.log(fileContents);
-		console.log('Testing PR generation');
-		console.log('Title:\n', prTitle);
-		console.log('Body:\n', prBody);
+	// Early return if not on PROD so we don't try to create a GitHub client
+	if (stage !== 'PROD') {
+		console.log('Skipping PR creation. Non-PROD stage detected');
+		logPr(fileName, repoName, fileContents, prTitle, prBody);
+		return;
 	}
-	console.log('Done');
+
+	const octokit = await stageAwareOctokit(stage);
+
+	const protection = await octokit.rest.repos.getBranchProtection({
+		owner: 'guardian',
+		repo: repoName,
+		branch: branch,
+	});
+
+	const defaultBranchProtected =
+		protection.data.name === 'main' || protection.data.name === 'master';
+
+	const unprotectedMainBranch = !(
+		protection.data.enabled &&
+		!!protection.data.required_pull_request_reviews &&
+		defaultBranchProtected
+	);
+
+	const existingPullRequest = await getExistingPullRequest(
+		octokit,
+		repoName,
+		`${author}[bot]`,
+	);
+
+	if (unprotectedMainBranch) {
+		console.warn(
+			`Branch protection not enabled for ${branch} on ${repoName}. Skipping PR creation.`,
+		);
+		logPr(fileName, repoName, fileContents, prTitle, prBody);
+	} else if (existingPullRequest) {
+		console.log(
+			`Existing pull request found. Skipping creating a new one.`,
+			existingPullRequest.html_url,
+		);
+		logPr(fileName, repoName, fileContents, prTitle, prBody);
+	} else {
+		console.log('Creating PR');
+
+		const response = await createPullRequest(octokit, {
+			repoName,
+			title: prTitle,
+			body: prBody,
+			branchName: branch,
+			changes: [
+				{
+					commitMessage,
+					files: {
+						[fileName]: fileContents,
+					},
+				},
+			],
+		});
+		console.log('Pull request successfully created:', response?.data.html_url);
+		await addPrToProject(stage, repoName, boardNumber, author);
+		console.log('Updated project board');
+	}
 }
