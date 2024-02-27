@@ -92,6 +92,22 @@ function logPr(
 	console.log('Body:\n', prBody);
 }
 
+async function hasBranchProtection(
+	octokit: Octokit,
+	repoName: string,
+): Promise<boolean> {
+	const protection = await octokit.rest.repos.getBranchProtection({
+		owner: 'guardian',
+		repo: repoName,
+		branch: 'main',
+	});
+
+	return (
+		protection.data.enabled === true &&
+		!!protection.data.required_pull_request_reviews
+	);
+}
+
 export async function createPrAndAddToProject(
 	stage: string,
 	repoName: string,
@@ -113,28 +129,15 @@ export async function createPrAndAddToProject(
 
 	const octokit = await stageAwareOctokit(stage);
 
-	const protection = await octokit.rest.repos.getBranchProtection({
-		owner: 'guardian',
-		repo: repoName,
-		branch: branch,
-	});
-
-	const defaultBranchProtected =
-		protection.data.name === 'main' || protection.data.name === 'master';
-
-	const unprotectedMainBranch = !(
-		protection.data.enabled &&
-		!!protection.data.required_pull_request_reviews &&
-		defaultBranchProtected
-	);
-
 	const existingPullRequest = await getExistingPullRequest(
 		octokit,
 		repoName,
 		`${author}[bot]`,
 	);
 
-	if (unprotectedMainBranch) {
+	const branchIsUnprotected = !(await hasBranchProtection(octokit, repoName));
+
+	if (branchIsUnprotected) {
 		console.warn(
 			`Branch protection not enabled for ${branch} on ${repoName}. Skipping PR creation.`,
 		);
