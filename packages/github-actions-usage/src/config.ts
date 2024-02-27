@@ -26,7 +26,7 @@ export async function getConfig(): Promise<Config> {
 			? await getDevDatabaseConfig()
 			: await getDatabaseConfig(stage, 'github_actions_usage');
 
-	const queryLogging = (process.env['QUERY_LOGGING'] ?? 'false') === 'true';
+	const queryLogging = process.env['QUERY_LOGGING'] === 'true';
 
 	return {
 		app: getEnvOrThrow('APP'),
