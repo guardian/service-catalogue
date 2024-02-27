@@ -17,6 +17,6 @@
 		"got": "^14.2.0",
 		"octokit-plugin-create-pull-request": "^5.1.1",
 		"ts-markdown": "^1.0.0",
-		"yaml": "^2.3.4"
+		"yaml": "^2.4.0"
 	}
 }
