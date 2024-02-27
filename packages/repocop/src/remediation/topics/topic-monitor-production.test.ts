@@ -1,4 +1,4 @@
-import { nullRepo } from '../../rules/repository.test';
+import { nullRepo } from '../../evaluation/repository.test';
 import type { AwsCloudFormationStack, Repository } from '../../types';
 import {
 	createMessage,

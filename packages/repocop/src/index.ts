@@ -8,6 +8,10 @@ import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
 import type { Config } from './config';
 import { getConfig } from './config';
+import {
+	evaluateRepositories,
+	testExperimentalRepocopFeatures,
+} from './evaluation/repository';
 import { sendToCloudwatch } from './metrics';
 import {
 	getLatestSnykIssues,
@@ -21,15 +25,11 @@ import {
 	getTeamRepositories,
 	getTeams,
 } from './query';
-import { protectBranches } from './remediations/branch-protector/branch-protection';
-import { sendUnprotectedRepo } from './remediations/snyk-integrator/send-to-sns';
-import { sendPotentialInteractives } from './remediations/topics/topic-monitor-interactive';
-import { applyProductionTopicAndMessageTeams } from './remediations/topics/topic-monitor-production';
-import {
-	createAndSendVulnerabilityDigests,
-	evaluateRepositories,
-	testExperimentalRepocopFeatures,
-} from './rules/repository';
+import { protectBranches } from './remediation/branch-protector/branch-protection';
+import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
+import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
+import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
+import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
 import type {
 	AwsCloudFormationStack,
 	EvaluationResult,
