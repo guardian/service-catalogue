@@ -173,10 +173,10 @@ export async function createPrAndAddToProject(
 		`${author}[bot]`,
 	);
 
-	const protection1 = await hasBranchProtection(octokit, repoName);
-	const protection2 = await productionCustomProperty(octokit, repoName);
+	const usesBranchProtectionRule = await hasBranchProtection(octokit, repoName);
+	const usesCentralRuleset = await productionCustomProperty(octokit, repoName);
 
-	const branchIsProtected = protection1 || protection2;
+	const branchIsProtected = usesBranchProtectionRule || usesCentralRuleset;
 
 	console.log('Branch is protected by rule or ruleset:', branchIsProtected);
 
