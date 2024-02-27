@@ -549,49 +549,25 @@ export function snykAlertToRepocopVulnerability(
 	};
 }
 
-// export async function evaluateRepositories(
-// 	repositories: Repository[],
-// 	branches: github_repository_branches[],
-// 	teams: TeamRepository[],
-// 	repoLanguages: github_languages[],
-// 	latestSnykIssues: snyk_reporting_latest_issues[],
-// 	snykProjectsFromRest: SnykProject[],
-// 	octokit: Octokit,
-// ): Promise<EvaluationResult[]> {
-// 	const evaluatedRepos = repositories.map(async (r) => {
-// 		const dependabotAlerts = isProduction(r)
-// 			? (await getAlertsForRepo(octokit, r.name))
-// 					?.filter((a) => a.state === 'open')
-// 					.map((a) => dependabotAlertToRepocopVulnerability(r.full_name, a))
-// 			: [];
-// 		const teamsForRepo = teams.filter((t) => t.id === r.id);
-// 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-// 		return evaluateOneRepo(
-// 			dependabotAlerts,
-// 			r,
-// 			branchesForRepo,
-// 			teamsForRepo,
-// 			repoLanguages,
-// 			latestSnykIssues,
-// 			snykProjectsFromRest,
-// 		);
-// 	});
-// 	return Promise.all(evaluatedRepos);
-// }
-
-export function evaluateRepositories(
+export async function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	teams: TeamRepository[],
 	repoLanguages: github_languages[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
-): EvaluationResult[] {
-	const evaluatedRepos = repositories.map((r) => {
+	octokit: Octokit,
+): Promise<EvaluationResult[]> {
+	const evaluatedRepos = repositories.map(async (r) => {
+		const dependabotAlerts = isProduction(r)
+			? (await getAlertsForRepo(octokit, r.name))
+					?.filter((a) => a.state === 'open')
+					.map((a) => dependabotAlertToRepocopVulnerability(r.full_name, a))
+			: [];
 		const teamsForRepo = teams.filter((t) => t.id === r.id);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 		return evaluateOneRepo(
-			undefined,
+			dependabotAlerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,
@@ -600,5 +576,5 @@ export function evaluateRepositories(
 			snykProjectsFromRest,
 		);
 	});
-	return evaluatedRepos;
+	return Promise.all(evaluatedRepos);
 }
