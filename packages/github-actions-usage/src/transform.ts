@@ -26,7 +26,7 @@ export interface GithubWorkflow {
  * Transform a GitHub Workflow as read from the `github_workflows` table,
  * into a row for the `github_action_usage` table.
  */
-export async function transform(
+export async function extractGithubUsesStrings(
 	rawWorkflows: RawGithubWorkflow[],
 ): Promise<UnsavedGithubActionUsage[]> {
 	const workflows: GithubWorkflow[] = removeUndefined(

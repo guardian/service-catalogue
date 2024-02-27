@@ -2,7 +2,7 @@ import { getPrismaClient } from 'common/database';
 import { getConfig } from './config';
 import { getWorkflows } from './db-read';
 import { saveResults } from './db-write';
-import { transform } from './transform';
+import { extractGithubUsesStrings } from './transform';
 
 export async function main(...args: unknown[]) {
 	console.log(
@@ -13,8 +13,8 @@ export async function main(...args: unknown[]) {
 	const prismaClient = getPrismaClient(config);
 
 	const now = new Date();
-	const data = await getWorkflows(prismaClient);
-	const recordsToSave = await transform(data);
+	const workflowsFromDatabase = await getWorkflows(prismaClient);
+	const recordsToSave = await extractGithubUsesStrings(workflowsFromDatabase);
 
 	/*
 	Prisma performs `deleteMany` and `createMany` in separate transactions by default.
