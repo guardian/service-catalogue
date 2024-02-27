@@ -102,10 +102,38 @@ async function hasBranchProtection(
 		branch: 'main',
 	});
 
+	console.log(protection.data);
+
 	return (
 		protection.data.enabled === true &&
 		!!protection.data.required_pull_request_reviews
 	);
+}
+
+async function productionCustomProperty(
+	octokit: Octokit,
+	repoName: string,
+): Promise<boolean> {
+	const allResults = await octokit.request(
+		'GET /repos/{owner}/{repo}/properties/values',
+		{
+			owner: 'guardian',
+			repo: repoName,
+			headers: {
+				'X-GitHub-Api-Version': '2022-11-28',
+			},
+		},
+	);
+
+	console.log(allResults.data);
+
+	const result = allResults.data.find(
+		(property) =>
+			property.property_name === 'production_status' &&
+			property.value === 'production',
+	);
+
+	return !!result;
 }
 
 export async function createPrAndAddToProject(
@@ -136,8 +164,12 @@ export async function createPrAndAddToProject(
 	);
 
 	const branchIsUnprotected = !(await hasBranchProtection(octokit, repoName));
+	const noProductionRuleset = !(await productionCustomProperty(
+		octokit,
+		repoName,
+	));
 
-	if (branchIsUnprotected) {
+	if (branchIsUnprotected || noProductionRuleset) {
 		console.warn(
 			`Branch protection not enabled for ${branch} on ${repoName}. Skipping PR creation.`,
 		);
