@@ -16,7 +16,9 @@ export function createYaml(prBranch: string): string {
 				// 'runs-on': 'ubuntu-latest', //let's see how we do without this
 				steps: [
 					{ uses: 'actions/checkout@v4' },
-					{ uses: 'scalacenter/sbt-dependency-submission@v2' },
+					{
+						uses: 'guardian/.github/.github/workflows/dependency-graph.yml@main',
+					},
 				],
 				permissions: { contents: 'write' },
 			},

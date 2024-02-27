@@ -14,7 +14,7 @@ jobs:
   dependency-graph:
     steps:
       - uses: actions/checkout@v4
-      - uses: scalacenter/sbt-dependency-submission@v2
+      - uses: guardian/.github/.github/workflows/dependency-graph.yml@main
     permissions:
       contents: write
 `;
