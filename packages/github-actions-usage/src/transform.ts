@@ -12,8 +12,8 @@ import type {
 import type { RawGithubWorkflow } from './db-read';
 import type { UnsavedGithubActionUsage } from './db-write';
 
-function removeUndefined<T>(array: Array<T | undefined>): T[] {
-	return array.filter((item) => item !== undefined) as T[];
+export function removeUndefined<T>(array: Array<T | undefined>): T[] {
+	return array.filter((item): item is T => item !== undefined);
 }
 
 export interface GithubWorkflow {

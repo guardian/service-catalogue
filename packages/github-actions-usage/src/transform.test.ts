@@ -2,10 +2,35 @@ import fs from 'fs';
 import assert from 'node:assert';
 import { describe, test } from 'node:test';
 import type { GithubWorkflow } from './transform';
-import { getUsesInWorkflowTemplate, getWorkflowTemplate } from './transform';
+import {
+	getUsesInWorkflowTemplate,
+	getWorkflowTemplate,
+	removeUndefined,
+} from './transform';
 
 const readWorkflowFile = (path: string): string =>
 	fs.readFileSync(`test/fixtures/${path}`, 'utf8');
+
+void describe('removeUndefined', () => {
+	void test('removes undefined values from an array', () => {
+		const input = [1, undefined, 2, undefined, 3];
+		const expected = [1, 2, 3];
+		const actual = removeUndefined(input);
+		assert.deepEqual(actual, expected);
+	});
+	void test('returns an empty array if all values are undefined', () => {
+		const input = [undefined, undefined, undefined];
+		const expected: unknown[] = [];
+		const actual = removeUndefined(input);
+		assert.deepEqual(actual, expected);
+	});
+	void test('return the same array when no undefined values are present', () => {
+		const input = [1, 2, 3];
+		const expected = [1, 2, 3];
+		const actual = removeUndefined(input);
+		assert.deepEqual(actual, expected);
+	});
+});
 
 void describe('getWorkflowTemplate', () => {
 	void test('Workflow with single job, and multiple steps is recognised', async () => {
