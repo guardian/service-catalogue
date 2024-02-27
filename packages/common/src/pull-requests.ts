@@ -175,13 +175,16 @@ export async function createPrAndAddToProject(
 		`${author}[bot]`,
 	);
 
-	const branchIsUnprotected = !(await hasBranchProtection(octokit, repoName));
-	const noProductionRuleset = !(await productionCustomProperty(
-		octokit,
-		repoName,
-	));
+	const protection1 = await hasBranchProtection(octokit, repoName);
+	const protection2 = await productionCustomProperty(octokit, repoName);
 
-	if (branchIsUnprotected || noProductionRuleset) {
+	console.log('Checking branch protection: ', protection1);
+	console.log('Checking production status: ', protection2);
+	const branchIsProtected = protection1 || protection2;
+
+	console.log('Branch is protected:', branchIsProtected);
+
+	if (!branchIsProtected) {
 		console.warn(
 			`Branch protection not enabled for ${branch} on ${repoName}. Skipping PR creation.`,
 		);
