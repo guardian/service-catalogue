@@ -105,10 +105,12 @@ async function hasBranchProtection(
 
 		console.log(protection.data);
 
-		return (
+		const hasProtection =
 			protection.data.enabled === true &&
-			!!protection.data.required_pull_request_reviews
-		);
+			!!protection.data.required_pull_request_reviews;
+
+		console.log('has branch protection:', hasProtection);
+		return hasProtection;
 	} catch (e) {
 		console.error(e);
 		return false;
@@ -138,7 +140,12 @@ async function productionCustomProperty(
 			property.value === 'production',
 	);
 
-	return !!result;
+	console.log('Found property:', result);
+
+	const hasProductionStatus = !!result;
+	console.log('has production status:', hasProductionStatus);
+
+	return hasProductionStatus;
 }
 
 export async function createPrAndAddToProject(
