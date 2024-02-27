@@ -96,18 +96,23 @@ async function hasBranchProtection(
 	octokit: Octokit,
 	repoName: string,
 ): Promise<boolean> {
-	const protection = await octokit.rest.repos.getBranchProtection({
-		owner: 'guardian',
-		repo: repoName,
-		branch: 'main',
-	});
+	try {
+		const protection = await octokit.rest.repos.getBranchProtection({
+			owner: 'guardian',
+			repo: repoName,
+			branch: 'main',
+		});
 
-	console.log(protection.data);
+		console.log(protection.data);
 
-	return (
-		protection.data.enabled === true &&
-		!!protection.data.required_pull_request_reviews
-	);
+		return (
+			protection.data.enabled === true &&
+			!!protection.data.required_pull_request_reviews
+		);
+	} catch (e) {
+		console.error(e);
+		return false;
+	}
 }
 
 async function productionCustomProperty(
