@@ -26,6 +26,12 @@ Once you have a draft migration, apply it via:
 npm -w cli start migrate -- --stage DEV
 ```
 
+You can then generate a new version of the Prisma Client via:
+
+```bash
+npx -w common prisma generate
+```
+
 ## Applying a migration to CODE or PROD
 Prerequisite:
 1. You have an approved Pull Request
