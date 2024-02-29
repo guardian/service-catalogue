@@ -637,6 +637,8 @@ view view_repo_ownership {
   archived           Boolean
   galaxies_team      String?
   team_contact_email String?
+  github_team_slug   String?
+  name               String?
 
   @@unique([github_team_id, full_name])
 }

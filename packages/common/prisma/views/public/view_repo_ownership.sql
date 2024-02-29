@@ -6,7 +6,9 @@ SELECT
   tr.role_name,
   tr.archived,
   gtt.team_name AS galaxies_team,
-  gtt.team_contact_email
+  gtt.team_contact_email,
+  ght.slug AS github_team_slug,
+  tr.name
 FROM
   (
     (
