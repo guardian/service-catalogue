@@ -21,7 +21,7 @@ function getOwningRepos(
 
 	const resultsOwnedByTeam = reposOwnedByTeam
 		.map((repo) => {
-			return results.find((result) => result.fullName === repo.full_name);
+			return results.find((result) => result.fullName === repo.full_repo_name);
 		})
 		.filter((result): result is EvaluationResult => result !== undefined);
 

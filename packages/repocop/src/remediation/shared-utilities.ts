@@ -11,7 +11,7 @@ export function findContactableOwners(
 	allRepoOwners: view_repo_ownership[],
 	teams: Team[],
 ): string[] {
-	const owners = allRepoOwners.filter((owner) => owner.full_name === repo);
+	const owners = allRepoOwners.filter((owner) => owner.full_repo_name === repo);
 	const teamSlugs = owners
 		.map((owner) => findTeamSlugFromId(owner.github_team_id, teams))
 		.filter((slug): slug is string => !!slug);
