@@ -132,10 +132,12 @@ export async function createAndSendVulnerabilityDigests(
 		.map((t) => createDigest(t, repoOwners, evaluationResults))
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
+	console.log('Logging vulnerability digests');
+	digests.forEach((digest) => console.log(JSON.stringify(digest)));
+
 	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
 		await sendVulnerabilityDigests(digests, config);
 	} else {
-		console.log('Logging vulnerability digests');
-		digests.forEach((digest) => console.log(JSON.stringify(digest)));
+		console.log('Not sending vulnerability digests');
 	}
 }
