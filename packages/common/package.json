@@ -11,7 +11,7 @@
 		"@guardian/anghammarad": "^1.8.2",
 		"@aws-sdk/credential-providers": "^3.525.0",
 		"@aws-sdk/rds-signer": "^3.525.0",
-		"@octokit/auth-app": "^6.0.3",
+		"@octokit/auth-app": "^6.0.4",
 		"octokit": "^3.1.2",
 		"octokit-plugin-create-pull-request": "^5.1.1",
 		"@prisma/client": "^5.10.2"
