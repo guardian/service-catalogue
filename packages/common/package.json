@@ -19,7 +19,7 @@
 	"devDependencies": {
 		"prisma": "^5.10.2",
 		"@octokit/graphql": "^8.0.1",
-		"@octokit/types": "^12.4.0",
+		"@octokit/types": "^12.6.0",
 		"@types/aws-lambda": "^8.10.134"
 	},
 	"prisma": {
