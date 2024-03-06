@@ -6,10 +6,11 @@ import type { Team } from '../../types';
 import { createBranchProtectionEvents } from './branch-protection';
 
 const nullOwner: view_repo_ownership = {
-	full_name: '',
+	full_repo_name: '',
 	github_team_id: BigInt(0),
 	github_team_name: '',
-	repo_name: '',
+	github_team_slug: '',
+	short_repo_name: '',
 	role_name: '',
 	archived: false,
 	galaxies_team: null,
@@ -40,9 +41,10 @@ describe('Team slugs should be findable for every team associated with a repo', 
 
 		const teamOneOwner: view_repo_ownership = {
 			...nullOwner,
-			full_name: repo,
+			full_repo_name: repo,
 			github_team_id: BigInt(1),
 			github_team_name: 'Team One',
+			github_team_slug: teamOne.slug,
 		};
 
 		const actual = createBranchProtectionEvents(

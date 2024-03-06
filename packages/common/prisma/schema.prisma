@@ -631,14 +631,15 @@ model guardian_github_actions_usage {
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
-  repo_name          String
-  full_name          String
+  github_team_slug   String
+  short_repo_name    String
+  full_repo_name     String
   role_name          String
   archived           Boolean
   galaxies_team      String?
   team_contact_email String?
 
-  @@unique([github_team_id, full_name])
+  @@unique([github_team_name, full_repo_name])
 }
 
 view aws_accounts {

@@ -27,8 +27,9 @@ const date = new Date('2021-01-01');
 const ownershipRecord: view_repo_ownership = {
 	github_team_name: teamName,
 	github_team_id: teamId,
-	repo_name: removeRepoOwner(fullName),
-	full_name: fullName,
+	github_team_slug: teamSlug,
+	short_repo_name: removeRepoOwner(fullName),
+	full_repo_name: fullName,
 	role_name: '',
 	archived: false,
 	galaxies_team: null,
@@ -52,7 +53,7 @@ const anotherOwnershipRecord: view_repo_ownership = {
 	...ownershipRecord,
 	github_team_name: anotherTeam.name,
 	github_team_id: anotherTeam.id,
-	full_name: anotherFullName,
+	full_repo_name: anotherFullName,
 };
 
 const anotherRepocopRuleEvaluation: repocop_github_repository_rules = {
