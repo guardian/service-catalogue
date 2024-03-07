@@ -79,24 +79,8 @@ spec:
   version: v${CQ_SNYK}
   destinations: ['postgresql']
   tables:
-    - snyk_reporting_latest_issues
-  spec:
-    api_key: ${SNYK_TOKEN}
-    table_options:
-      snyk_reporting_issues:
-        period: 30d
----
-kind: source
-spec:
-  name: 'guardian-snyk'
-  # https://github.com/guardian/cq-source-snyk-full-project
-  path: guardian/snyk-full-project
-  version: v0.1.1
-  tables:
     - snyk_projects
-  destinations:
-    - postgresql
-  registry: github
+    - snyk_issues
   spec:
     api_key: ${SNYK_TOKEN}
 ---
