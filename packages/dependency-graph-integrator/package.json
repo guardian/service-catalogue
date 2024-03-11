@@ -12,6 +12,6 @@
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.525.0",
 		"ts-markdown": "^1.0.0",
-		"yaml": "^2.4.0"
+		"yaml": "^2.4.1"
 	}
 }
