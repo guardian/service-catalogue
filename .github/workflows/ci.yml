@@ -66,6 +66,8 @@ jobs:
               - packages/data-audit/dist/data-audit.zip
             snyk-integrator:
               - packages/snyk-integrator/dist/snyk-integrator.zip
+            dependency-graph-integrator:
+                - packages/dependency-graph-integrator/dist/dependency-graph-integrator.zip
             github-actions-usage:
               - packages/github-actions-usage/dist/github-actions-usage.zip
     env:
