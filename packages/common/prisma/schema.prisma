@@ -532,6 +532,40 @@ model github_languages {
   languages      String[]
 }
 
+model aws_lambda_functions {
+  cq_sync_time         DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name       String?   @map("_cq_source_name")
+  cq_id                String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id         String?   @map("_cq_parent_id") @db.Uuid
+  account_id           String?
+  region               String?
+  arn                  String    @id(map: "aws_lambda_functions_cqpk")
+  policy_revision_id   String?
+  policy_document      Json?
+  code_signing_config  Json?
+  code_repository_type String?
+  update_runtime_on    String?
+  runtime_version_arn  String?
+  code                 Json?
+  concurrency          Json?
+  configuration        Json?
+  tags                 Json?
+}
+
+model aws_s3_buckets {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  account_id     String?
+  arn            String    @id(map: "aws_s3_buckets_cqpk")
+  creation_date  DateTime? @db.Timestamp(6)
+  name           String?
+  region         String?
+  policy_status  Json?
+  tags           Json?
+}
+
 model audit_results {
   evaluated_on     DateTime
   name             String   @id
@@ -565,40 +599,6 @@ model repocop_github_repository_rules {
   contents               Boolean?
   vulnerability_tracking Boolean
   evaluated_on           DateTime
-}
-
-model aws_lambda_functions {
-  cq_sync_time         DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_source_name       String?   @map("_cq_source_name")
-  cq_id                String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id         String?   @map("_cq_parent_id") @db.Uuid
-  account_id           String?
-  region               String?
-  arn                  String    @id(map: "aws_lambda_functions_cqpk")
-  policy_revision_id   String?
-  policy_document      Json?
-  code_signing_config  Json?
-  code_repository_type String?
-  update_runtime_on    String?
-  runtime_version_arn  String?
-  code                 Json?
-  concurrency          Json?
-  configuration        Json?
-  tags                 Json?
-}
-
-model aws_s3_buckets {
-  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_source_name String?   @map("_cq_source_name")
-  cq_id          String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
-  account_id     String?
-  arn            String    @id(map: "aws_s3_buckets_cqpk")
-  creation_date  DateTime? @db.Timestamp(6)
-  name           String?
-  region         String?
-  policy_status  Json?
-  tags           Json?
 }
 
 model snyk_reporting_latest_issues {
