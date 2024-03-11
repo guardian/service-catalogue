@@ -22,7 +22,6 @@ import {
 	getRepositoryLanguages,
 	getSnykOrgs,
 	getStacks,
-	getTeamRepositories,
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
@@ -71,7 +70,6 @@ export async function main() {
 		(repo) => !repo.archived,
 	);
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
-	const repoTeams = await getTeamRepositories(prisma);
 	const repoLanguages = await getRepositoryLanguages(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
@@ -83,7 +81,7 @@ export async function main() {
 	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
 		branches,
-		repoTeams,
+		repoOwners,
 		repoLanguages,
 		latestSnykIssues,
 		snykProjectsFromRest,

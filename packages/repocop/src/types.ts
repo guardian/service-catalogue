@@ -55,17 +55,6 @@ export interface AwsCloudFormationStack extends StackFields {
 	creation_time: NonNullable<StackFields['creation_time']>;
 }
 
-type TeamRepositoryFields = Pick<
-	github_team_repositories,
-	'id' | 'team_id' | 'role_name'
->;
-
-export interface TeamRepository extends TeamRepositoryFields {
-	id: NonNullable<TeamRepositoryFields['id']>; //repository id
-	team_id: NonNullable<TeamRepositoryFields['team_id']>;
-	role_name: NonNullable<TeamRepositoryFields['role_name']>;
-}
-
 export type DependabotVulnResponse =
 	Endpoints['GET /repos/{owner}/{repo}/dependabot/alerts']['response'];
 
