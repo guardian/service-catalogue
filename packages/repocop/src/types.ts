@@ -2,7 +2,6 @@ import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
 	github_repositories,
-	github_team_repositories,
 	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
