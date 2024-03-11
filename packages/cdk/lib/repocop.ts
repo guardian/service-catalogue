@@ -88,7 +88,11 @@ export class Repocop {
 		repocopLambda.addToRolePolicy(policyStatement);
 		snykCredentialsSecret.grantRead(repocopLambda);
 
-		const snykIntegatorLambda = stageAwareSnykIntegrator(guStack, vpc);
+		const snykIntegatorLambda = stageAwareIntegratorLambda(
+			guStack,
+			vpc,
+			'snyk-integrator',
+		);
 
 		snykIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(snykIntegatorLambda, {}),
@@ -96,11 +100,11 @@ export class Repocop {
 	}
 }
 
-function stageAwareSnykIntegrator(
+function stageAwareIntegratorLambda(
 	guStack: GuStack,
 	vpc: IVpc,
+	app: `${string}-integrator`,
 ): GuLambdaFunction {
-	const app: string = 'snyk-integrator';
 	const nonProdLambdaProps = {
 		app,
 		fileName: `${app}.zip`,
