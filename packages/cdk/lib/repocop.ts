@@ -39,6 +39,14 @@ export class Repocop {
 			},
 		);
 
+		const dependencyGraphIntegratorInputTopic = new Topic(
+			guStack,
+			`dependency-graph-integrator-input-topic-${guStack.stage}`,
+			{
+				displayName: 'Dependency Graph Integrator Input Topic',
+			},
+		);
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
@@ -55,6 +63,8 @@ export class Repocop {
 				GITHUB_APP_SECRET: repocopGithubSecret.secretArn,
 				INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '40' : '3',
 				SNYK_INTEGRATOR_INPUT_TOPIC_ARN: snykIntegratorInputTopic.topicArn,
+				DEPENDENCY_GRAPH_INPUT_TOPIC_ARN:
+					dependencyGraphIntegratorInputTopic.topicArn,
 				SNYK_API_KEY_ARN: snykCredentialsSecret.secretArn,
 			},
 			vpc,
@@ -85,6 +95,7 @@ export class Repocop {
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
 		snykIntegratorInputTopic.grantPublish(repocopLambda);
+		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 		snykCredentialsSecret.grantRead(repocopLambda);
 
@@ -96,6 +107,16 @@ export class Repocop {
 
 		snykIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(snykIntegatorLambda, {}),
+		);
+
+		const dependencyGraphIntegratorLambda = stageAwareIntegratorLambda(
+			guStack,
+			vpc,
+			'dependency-graph-integrator',
+		);
+
+		dependencyGraphIntegratorInputTopic.addSubscription(
+			new LambdaSubscription(dependencyGraphIntegratorLambda, {}),
 		);
 	}
 }
