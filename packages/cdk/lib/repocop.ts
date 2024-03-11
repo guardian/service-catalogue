@@ -116,18 +116,18 @@ function stageAwareIntegratorLambda(
 	};
 
 	if (guStack.stage === 'PROD' || guStack.stage === 'TEST') {
-		const snykIntegratorSecret = new Secret(guStack, `${app}-github-app-auth`, {
+		const githubAppSecret = new Secret(guStack, `${app}-github-app-auth`, {
 			secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/${app}-github-app-secret`,
 		});
 
 		const lambda = new GuLambdaFunction(guStack, app, {
 			...nonProdLambdaProps,
 			environment: {
-				GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
+				GITHUB_APP_SECRET: githubAppSecret.secretArn,
 			},
 		});
 
-		snykIntegratorSecret.grantRead(lambda);
+		githubAppSecret.grantRead(lambda);
 
 		return lambda;
 	} else {
