@@ -4,6 +4,7 @@ import type {
 	repocop_github_repository_rules,
 	snyk_projects,
 	snyk_reporting_latest_issues,
+	view_repo_ownership,
 } from '@prisma/client';
 import { partition } from 'common/src/functions';
 import type { Octokit } from 'octokit';
@@ -23,7 +24,6 @@ import type {
 	Repository,
 	SnykIssue,
 	SnykProject,
-	TeamRepository,
 } from '../types';
 import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';
 
@@ -63,7 +63,7 @@ function hasBranchProtection(
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
  *   > Repositories without one of the following topics are exempt: production, testing, documentation.
  */
-function hasAdminTeam(repo: Repository, teams: TeamRepository[]): boolean {
+function hasAdminTeam(repo: Repository, teams: view_repo_ownership[]): boolean {
 	// Repos that have explicitly been classified as these topics are exempt.
 	// Any other repos, regardless of topic, need to be owned by a team, or assigned one of these topics.
 	const exemptedTopics = ['prototype', 'learning', 'hackday', 'interactive'];
@@ -71,7 +71,8 @@ function hasAdminTeam(repo: Repository, teams: TeamRepository[]): boolean {
 		repo.topics.filter((topic) => exemptedTopics.includes(topic)).length > 0;
 
 	const adminTeams = teams.filter(
-		({ id, role_name }) => id === repo.id && role_name === 'admin',
+		({ full_repo_name, role_name }) =>
+			full_repo_name === repo.full_name && role_name === 'admin',
 	);
 	const hasAdminTeam = adminTeams.length > 0;
 
@@ -466,7 +467,7 @@ export function evaluateOneRepo(
 	dependabotAlertsForRepo: RepocopVulnerability[] | undefined,
 	repo: Repository,
 	allBranches: github_repository_branches[],
-	teams: TeamRepository[],
+	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
@@ -552,7 +553,7 @@ export function snykAlertToRepocopVulnerability(
 export async function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
-	teams: TeamRepository[],
+	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	latestSnykIssues: snyk_reporting_latest_issues[],
 	snykProjectsFromRest: SnykProject[],
@@ -564,7 +565,7 @@ export async function evaluateRepositories(
 					?.filter((a) => a.state === 'open')
 					.map((a) => dependabotAlertToRepocopVulnerability(r.full_name, a))
 			: [];
-		const teamsForRepo = teams.filter((t) => t.id === r.id);
+		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 		return evaluateOneRepo(
 			dependabotAlerts,

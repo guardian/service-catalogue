@@ -16,7 +16,6 @@ import type {
 	SnykProject,
 	SnykProjectsResponse,
 	Team,
-	TeamRepository,
 } from './types';
 import { toNonEmptyArray } from './utils';
 
@@ -68,19 +67,6 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 	console.debug(`Found ${teams.length} teams.`);
 	return toNonEmptyArray(teams);
 };
-
-export async function getTeamRepositories(
-	client: PrismaClient,
-): Promise<NonEmptyArray<TeamRepository>> {
-	const data = await client.github_team_repositories.findMany({
-		select: {
-			id: true,
-			role_name: true,
-			team_id: true,
-		},
-	});
-	return toNonEmptyArray(data.map((t) => t as TeamRepository));
-}
 
 export async function getRepoOwnership(
 	client: PrismaClient,

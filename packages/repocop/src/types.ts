@@ -2,7 +2,6 @@ import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
 	github_repositories,
-	github_team_repositories,
 	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
@@ -53,17 +52,6 @@ export interface AwsCloudFormationStack extends StackFields {
 	stack_name: NonNullable<StackFields['stack_name']>;
 	tags: AWSCloudformationTag;
 	creation_time: NonNullable<StackFields['creation_time']>;
-}
-
-type TeamRepositoryFields = Pick<
-	github_team_repositories,
-	'id' | 'team_id' | 'role_name'
->;
-
-export interface TeamRepository extends TeamRepositoryFields {
-	id: NonNullable<TeamRepositoryFields['id']>; //repository id
-	team_id: NonNullable<TeamRepositoryFields['team_id']>;
-	role_name: NonNullable<TeamRepositoryFields['role_name']>;
 }
 
 export type DependabotVulnResponse =

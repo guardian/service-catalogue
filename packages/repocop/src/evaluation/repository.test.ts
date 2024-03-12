@@ -3,6 +3,7 @@ import type {
 	github_repository_branches,
 	snyk_projects,
 	snyk_reporting_latest_issues,
+	view_repo_ownership,
 } from '@prisma/client';
 import { example } from '../test-data/example-dependabot-alerts';
 import type {
@@ -10,7 +11,6 @@ import type {
 	RepocopVulnerability,
 	Repository,
 	SnykProject,
-	TeamRepository,
 } from '../types';
 import {
 	collectAndFormatUrgentSnykAlerts,
@@ -27,7 +27,7 @@ import {
 function evaluateRepoTestHelper(
 	repo: Repository,
 	branches: github_repository_branches[] = [],
-	teams: TeamRepository[] = [],
+	owners: view_repo_ownership[] = [],
 	languages: github_languages[] = [],
 	dependabotAlerts: RepocopVulnerability[] = [],
 	latestSnykIssues: snyk_reporting_latest_issues[] = [],
@@ -37,7 +37,7 @@ function evaluateRepoTestHelper(
 		dependabotAlerts,
 		repo,
 		branches,
-		teams,
+		owners,
 		languages,
 		latestSnykIssues,
 		snykProjectsFromRest,
@@ -77,6 +77,18 @@ const thePerfectRepo: Repository = {
 	id: BigInt(1),
 	topics: ['production'],
 	default_branch: 'main',
+};
+
+const nullOwner: view_repo_ownership = {
+	github_team_id: 0n,
+	github_team_name: '',
+	role_name: '',
+	full_repo_name: '',
+	short_repo_name: '',
+	github_team_slug: '',
+	archived: false,
+	galaxies_team: null,
+	team_contact_email: null,
 };
 
 describe('REPOSITORY_01 - default_branch_name should be false when the default branch is not main', () => {
@@ -149,14 +161,14 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
-			id: 1234n,
 		};
 
-		const teams: TeamRepository[] = [
+		const teams: view_repo_ownership[] = [
 			{
+				...nullOwner,
 				role_name: 'read-only',
-				id: 1234n,
-				team_id: 1n,
+				full_repo_name: 'guardian/service-catalogue',
+				github_team_id: 1n,
 			},
 		];
 
@@ -168,19 +180,20 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
-			id: 1234n,
 		};
 
-		const teams: TeamRepository[] = [
+		const teams: view_repo_ownership[] = [
 			{
+				...nullOwner,
 				role_name: 'read-only',
-				id: 1234n,
-				team_id: 1n,
+				full_repo_name: 'guardian/service-catalogue',
+				github_team_id: 1n,
 			},
 			{
+				...nullOwner,
 				role_name: 'admin',
-				id: 1234n,
-				team_id: 2n,
+				full_repo_name: 'guardian/service-catalogue',
+				github_team_id: 2n,
 			},
 		];
 
@@ -205,20 +218,21 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
-			id: 1234n,
 			topics: ['production'],
 		};
 
-		const teams: TeamRepository[] = [
+		const teams: view_repo_ownership[] = [
 			{
+				...nullOwner,
 				role_name: 'read-only',
-				id: 1234n,
-				team_id: 1n,
+				full_repo_name: 'guardian/service-catalogue',
+				github_team_id: 1n,
 			},
 			{
+				...nullOwner,
 				role_name: 'admin',
-				id: 1234n,
-				team_id: 2n,
+				full_repo_name: 'guardian/service-catalogue',
+				github_team_id: 2n,
 			},
 		];
 		const actual = evaluateRepoTestHelper(repo, [], teams);
