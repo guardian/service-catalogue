@@ -54,6 +54,7 @@ npx npm-run-all --print-label --parallel typecheck lint synth build
 verifyMarkdown
 createZip "interactive-monitor"
 createZip "snyk-integrator"
+createZip "dependency-graph-integrator"
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"

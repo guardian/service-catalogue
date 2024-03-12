@@ -39,6 +39,14 @@ export class Repocop {
 			},
 		);
 
+		const dependencyGraphIntegratorInputTopic = new Topic(
+			guStack,
+			`dependency-graph-integrator-input-topic-${guStack.stage}`,
+			{
+				displayName: 'Dependency Graph Integrator Input Topic',
+			},
+		);
+
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			fileName: 'repocop.zip',
@@ -55,6 +63,8 @@ export class Repocop {
 				GITHUB_APP_SECRET: repocopGithubSecret.secretArn,
 				INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '40' : '3',
 				SNYK_INTEGRATOR_INPUT_TOPIC_ARN: snykIntegratorInputTopic.topicArn,
+				DEPENDENCY_GRAPH_INPUT_TOPIC_ARN:
+					dependencyGraphIntegratorInputTopic.topicArn,
 				SNYK_API_KEY_ARN: snykCredentialsSecret.secretArn,
 			},
 			vpc,
@@ -85,22 +95,37 @@ export class Repocop {
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
 		snykIntegratorInputTopic.grantPublish(repocopLambda);
+		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 		snykCredentialsSecret.grantRead(repocopLambda);
 
-		const snykIntegatorLambda = stageAwareSnykIntegrator(guStack, vpc);
+		const snykIntegatorLambda = stageAwareIntegratorLambda(
+			guStack,
+			vpc,
+			'snyk-integrator',
+		);
 
 		snykIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(snykIntegatorLambda, {}),
 		);
+
+		const dependencyGraphIntegratorLambda = stageAwareIntegratorLambda(
+			guStack,
+			vpc,
+			'dependency-graph-integrator',
+		);
+
+		dependencyGraphIntegratorInputTopic.addSubscription(
+			new LambdaSubscription(dependencyGraphIntegratorLambda, {}),
+		);
 	}
 }
 
-function stageAwareSnykIntegrator(
+function stageAwareIntegratorLambda(
 	guStack: GuStack,
 	vpc: IVpc,
+	app: `${string}-integrator`,
 ): GuLambdaFunction {
-	const app: string = 'snyk-integrator';
 	const nonProdLambdaProps = {
 		app,
 		fileName: `${app}.zip`,
@@ -112,18 +137,18 @@ function stageAwareSnykIntegrator(
 	};
 
 	if (guStack.stage === 'PROD' || guStack.stage === 'TEST') {
-		const snykIntegratorSecret = new Secret(guStack, `${app}-github-app-auth`, {
+		const githubAppSecret = new Secret(guStack, `${app}-github-app-auth`, {
 			secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/${app}-github-app-secret`,
 		});
 
 		const lambda = new GuLambdaFunction(guStack, app, {
 			...nonProdLambdaProps,
 			environment: {
-				GITHUB_APP_SECRET: snykIntegratorSecret.secretArn,
+				GITHUB_APP_SECRET: githubAppSecret.secretArn,
 			},
 		});
 
-		snykIntegratorSecret.grantRead(lambda);
+		githubAppSecret.grantRead(lambda);
 
 		return lambda;
 	} else {

@@ -16,6 +16,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuLambdaFunction",
       "GuScheduledLambda",
       "GuLambdaFunction",
+      "GuLambdaFunction",
       "GuScheduledLambda",
       "GuLambdaFunction",
       "GuSecurityGroup",
@@ -15398,6 +15399,371 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
+    "dependencygraphintegrator508B46FC": {
+      "DependsOn": [
+        "dependencygraphintegratorServiceRoleDefaultPolicy6EBFEC55",
+        "dependencygraphintegratorServiceRole5200A556",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "deploy/TEST/dependency-graph-integrator/dependency-graph-integrator.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "APP": "dependency-graph-integrator",
+            "GITHUB_APP_SECRET": {
+              "Ref": "dependencygraphintegratorgithubappauthB8B9DE78",
+            },
+            "STACK": "deploy",
+            "STAGE": "TEST",
+          },
+        },
+        "Handler": "index.handler",
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "dependencygraphintegratorServiceRole5200A556",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "dependency-graph-integrator",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 300,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "dependencygraphintegratorSecurityGroupC8A882C0",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "PrivateSubnets",
+          },
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "dependencygraphintegratorAllowInvokeServiceCataloguedependencygraphintegratorinputtopicTESTC360D94D8B8A768E": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "dependencygraphintegrator508B46FC",
+            "Arn",
+          ],
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": {
+          "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "dependencygraphintegratorSecurityGroupC8A882C0": {
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function ServiceCataloguedependencygraphintegrator6DE43587",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "dependency-graph-integrator",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "dependencygraphintegratorServiceRole5200A556": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "dependency-graph-integrator",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "dependencygraphintegratorServiceRoleDefaultPolicy6EBFEC55": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/deploy/TEST/dependency-graph-integrator/dependency-graph-integrator.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/dependency-graph-integrator",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/dependency-graph-integrator/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "dependencygraphintegratorgithubappauthB8B9DE78",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "dependencygraphintegratorServiceRoleDefaultPolicy6EBFEC55",
+        "Roles": [
+          {
+            "Ref": "dependencygraphintegratorServiceRole5200A556",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "dependencygraphintegratordependencygraphintegratorinputtopicTEST621C9371": {
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "dependencygraphintegrator508B46FC",
+            "Arn",
+          ],
+        },
+        "Protocol": "lambda",
+        "TopicArn": {
+          "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "dependencygraphintegratorgithubappauthB8B9DE78": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/dependency-graph-integrator-github-app-secret",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "dependencygraphintegratorinputtopicTESTDAA73A88": {
+      "Properties": {
+        "DisplayName": "Dependency Graph Integrator Input Topic",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
     "fastlycredentialsF42D3C80": {
       "DeletionPolicy": "Delete",
       "Properties": {
@@ -16012,6 +16378,9 @@ spec:
                 "Endpoint.Address",
               ],
             },
+            "DEPENDENCY_GRAPH_INPUT_TOPIC_ARN": {
+              "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+            },
             "GITHUB_APP_SECRET": {
               "Ref": "branchprotectorgithubappauth4E91892E",
             },
@@ -16294,6 +16663,13 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
               },
             },
             {
