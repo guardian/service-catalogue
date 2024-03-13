@@ -34,30 +34,8 @@ services:
     image: grafana/grafana-oss:10.3.1
     depends_on:
       - postgres
-      - steampipe
     ports:
       - '3000:3000'
     volumes:
       - ./dev-config/grafana.ini:/etc/grafana/grafana.ini
       - ./dev-config/grafana-datasource.yaml:/etc/grafana/provisioning/datasources/cloudquery.yaml
-  steampipe:
-    build:
-      context: steampipe
-      dockerfile: Dockerfile
-      args:
-        SP_GITHUB: ${SP_GITHUB}
-        SP_AWS: ${SP_AWS}
-    ports:
-      - '9193:9193'
-    volumes:
-      - ~/.aws/credentials:/.aws/credentials
-    environment:
-      STAGE: ${STAGE}
-      STEAMPIPE_DATABASE_PASSWORD: steampipe
-      GITHUB_TOKEN: ${GITHUB_ACCESS_TOKEN}
-
-      # these are permanent credentials, as we'll be using STS Assume Role, which Janus DEV doesn't allow
-      AWS_PROFILE: 'service-catalogue-DEV'
-      AWS_SHARED_CREDENTIALS_FILE: '/.aws/credentials'
-    entrypoint: "/bin/bash -c"
-    command: [ "generate-aws-plugin-config; steampipe service start --foreground" ]

@@ -17,7 +17,4 @@ export const Images = {
 	postgres: ContainerImage.fromRegistry(
 		'public.ecr.aws/docker/library/postgres:16-alpine',
 	),
-	steampipe: ContainerImage.fromRegistry(
-		'ghcr.io/guardian/service-catalogue/steampipe:4',
-	),
 };

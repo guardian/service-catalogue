@@ -8,7 +8,6 @@ describe('The ServiceCatalogue stack', () => {
 		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
 			stack: 'deploy',
 			stage: 'TEST',
-			steampipeDomainName: 'steampipe.code.dev-gutools.co.uk',
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
