@@ -63,8 +63,7 @@ export function addCloudqueryEcsCluster(
 			name: 'DeployToolsListOrgs',
 			description:
 				'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
-			schedule:
-				nonProdSchedule ?? Schedule.cron({ day: '1', hour: '10', minute: '0' }), // Run on the first of the month at 10am
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 				tables: [
 					/*
