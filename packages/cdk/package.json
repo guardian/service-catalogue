@@ -7,7 +7,7 @@
     "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE"
   },
   "devDependencies": {
-    "@guardian/cdk": "55.0.0",
+    "@guardian/cdk": "56.0.0",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v2.3.0",
     "@types/js-yaml": "^4.0.9",
     "aws-cdk": "2.127.0",
