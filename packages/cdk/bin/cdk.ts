@@ -10,7 +10,6 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack: 'deploy',
 	stage: 'PROD',
 	env: { region: 'eu-west-1' },
-	steampipeDomainName: 'steampipe.gutools.co.uk',
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
 });
 
@@ -20,6 +19,5 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	env: { region: 'eu-west-1' },
 	schedule: Schedule.rate(Duration.days(30)),
 	rdsDeletionProtection: false,
-	steampipeDomainName: 'steampipe.code.dev-gutools.co.uk',
 	cloudFormationStackName: 'deploy-CODE-service-catalogue',
 });
