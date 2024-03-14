@@ -497,12 +497,12 @@ model github_workflows {
 }
 
 model snyk_projects {
-  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name String?   @map("_cq_source_name")
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_id          String    @unique @map("_cq_id") @db.Uuid
   cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
-  attributes     Json?
   id             String    @id(map: "snyk_projects_cqpk")
+  attributes     Json?
   meta           Json?
   relationships  Json?
   type           String?
@@ -669,16 +669,6 @@ view view_running_instances {
   built_by_amigo Boolean
   launch_time    DateTime @db.Timestamp(6)
   type           String
-
-  @@ignore
-}
-
-view view_snyk_project_tags {
-  id     String
-  org_id String
-  name   String
-  repo   String
-  commit String
 
   @@ignore
 }
