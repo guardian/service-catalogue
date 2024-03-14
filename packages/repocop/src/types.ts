@@ -4,9 +4,7 @@ import type {
 	github_repositories,
 	github_teams,
 	repocop_github_repository_rules,
-	snyk_issues,
 } from '@prisma/client';
-import { string } from 'yaml/dist/schema/common/string';
 
 export type NonEmptyArray<T> = [T, ...T[]];
 
@@ -42,6 +40,8 @@ export interface Repository extends RepositoryFields {
 	full_name: NonNullable<RepositoryFields['full_name']>;
 	id: NonNullable<RepositoryFields['id']>;
 }
+
+{"key": "SNYK-JAVA-SOFTWAREAMAZONION-6153869", "risk": {"score": {"model": "v1", "value": 375, "updated_at": "0001-01-01T00:00:00.000Z"}, "factors": []}, "type": "package_vulnerability", "title": "Allocation of Resources Without Limits or Throttling", "status": "open", "classes": [{"id": "CWE-770", "type": "weakness", "source": "CWE"}], "ignored": false, "problems": [{"id": "CVE-2024-21634", "type": "vulnerability", "source": "SNYK", "updated_at": "2024-02-02T20:27:13.077Z", "disclosed_at": "0001-01-01T00:00:00.000Z", "discovered_at": "0001-01-01T00:00:00.000Z"}, {"id": "SNYK-JAVA-SOFTWAREAMAZONION-6153869", "type": "vulnerability", "source": "SNYK", "updated_at": "2024-02-02T20:27:13.077Z", "disclosed_at": "0001-01-01T00:00:00.000Z", "discovered_at": "0001-01-01T00:00:00.000Z"}], "created_at": "2024-01-19T14:12:24.900Z", "updated_at": "2024-02-02T20:26:59.206Z", "coordinates": [{"remedies": null, "reachability": "no-info", "representations": [{"dependency": {"package_name": "software.amazon.ion:ion-java", "package_version": "1.0.2"}}]}], "effective_severity_level": "high"}
 
 interface Attributes {
 	key: string;

@@ -2,7 +2,6 @@ import type {
 	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
-	snyk_issues,
 	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -361,10 +360,10 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
-function getProjectIssues(
+function getIssuesForProject(
 	projectId: string,
-	issues: snyk_issues[],
-): snyk_issues[] {
+	issues: SnykIssue[],
+): SnykIssue[] {
 	return issues.filter((issue) =>
 		JSON.stringify(issue.projects).includes(projectId),
 	);
@@ -372,7 +371,7 @@ function getProjectIssues(
 
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
-	snykIssues: snyk_issues[],
+	snykIssues: SnykIssue[],
 	snykProjects: SnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
@@ -386,8 +385,8 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	const snykIssuesForRepo: snyk_issues[] = snykProjectIdsForRepo
-		.map((projectId) => getProjectIssues(projectId, snykIssues))
+	const snykIssuesForRepo: SnykIssue[] = snykProjectIdsForRepo
+		.map((projectId) => getIssuesForProject(projectId, snykIssues))
 		.flat();
 	const processedVulns = snykIssuesForRepo.map((v) =>
 		snykAlertToRepocopVulnerability(repo.full_name, v),
@@ -468,7 +467,7 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: snyk_issues[],
+	latestSnykIssues: SnykIssue[],
 	snykProjectsFromRest: SnykProject[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
@@ -554,7 +553,7 @@ export async function evaluateRepositories(
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: snyk_issues[],
+	snykIssues: SnykIssue[],
 	snykProjectsFromRest: SnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
@@ -572,7 +571,7 @@ export async function evaluateRepositories(
 			branchesForRepo,
 			teamsForRepo,
 			repoLanguages,
-			latestSnykIssues,
+			snykIssues,
 			snykProjectsFromRest,
 		);
 	});

@@ -85,7 +85,7 @@ export async function main() {
 		branches,
 		repoOwners,
 		repoLanguages,
-		latestSnykIssues,
+		snykIssues,
 		snykProjectsFromRest,
 		octokit,
 	);
