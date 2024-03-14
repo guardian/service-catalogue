@@ -4,7 +4,9 @@ import type {
 	github_repositories,
 	github_teams,
 	repocop_github_repository_rules,
+	snyk_issues,
 } from '@prisma/client';
+import { string } from 'yaml/dist/schema/common/string';
 
 export type NonEmptyArray<T> = [T, ...T[]];
 
@@ -39,6 +41,58 @@ export interface Repository extends RepositoryFields {
 	name: NonNullable<RepositoryFields['name']>;
 	full_name: NonNullable<RepositoryFields['full_name']>;
 	id: NonNullable<RepositoryFields['id']>;
+}
+
+interface Attributes {
+	key: string;
+	risk: {
+		score: {
+			model: string;
+			value: number;
+			updated_at: string; //or Date?
+		};
+		factors: [];
+	};
+	type: string;
+	title: string;
+	status: string;
+	classes: null;
+	ignored: false;
+	problems: [
+		{
+			id: string;
+			type: string;
+			source: string;
+			updated_at: string; //or Date?
+			disclosed_at: string; //or Date?
+			discovered_at: string; //or Date?
+		},
+	];
+	created_at: string; //or Date?
+	updated_at: string; //or Date?
+	coordinates: [
+		{
+			remedies: null | string[]; //unsure about this
+			reachability?: string;
+			is_upgradeable?: true;
+			is_fixable_snyk?: true;
+			is_patchable?: true;
+			representations: [
+				{
+					dependency: {
+						package_name: string;
+						package_version: string;
+					};
+				},
+			];
+		},
+	];
+	effective_severity_level: string;
+}
+
+export interface SnykIssue {
+	id: string;
+	attributes: Attributes;
 }
 
 type StackFields = Pick<
@@ -108,29 +162,29 @@ export interface GuardianSnykTags {
 	branch: string | undefined;
 }
 
-export interface SnykIssue {
-	id: string;
-	url: string;
-	type?: string;
-	title?: string;
-	version?: string;
-	language?: string;
-	severity: string;
-	isPatched: boolean;
-	isIgnored: boolean;
-	isPinnable: boolean;
-	isPatchable: boolean;
-	isUpgradable: boolean;
-	Identifiers: {
-		CVE: string[] | null;
-		CWE: string[] | null;
-		OSVDB: string[] | null;
-	};
-	disclosureTime: string; //or Date?
-	package: string;
-	packageManager: string;
-	publicationTime: string; //or Date?
-}
+// export interface SnykIssue {
+// 	id: string;
+// 	url: string;
+// 	type?: string;
+// 	title?: string;
+// 	version?: string;
+// 	language?: string;
+// 	severity: string;
+// 	isPatched: boolean;
+// 	isIgnored: boolean;
+// 	isPinnable: boolean;
+// 	isPatchable: boolean;
+// 	isUpgradable: boolean;
+// 	Identifiers: {
+// 		CVE: string[] | null;
+// 		CWE: string[] | null;
+// 		OSVDB: string[] | null;
+// 	};
+// 	disclosureTime: string; //or Date?
+// 	package: string;
+// 	packageManager: string;
+// 	publicationTime: string; //or Date?
+// }
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
 

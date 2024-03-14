@@ -2,8 +2,8 @@ import type {
 	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
+	snyk_issues,
 	snyk_projects,
-	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
 import { partition } from 'common/src/functions';
@@ -363,8 +363,8 @@ export function hasOldAlerts(
 
 function getProjectIssues(
 	projectId: string,
-	issues: snyk_reporting_latest_issues[],
-): snyk_reporting_latest_issues[] {
+	issues: snyk_issues[],
+): snyk_issues[] {
 	return issues.filter((issue) =>
 		JSON.stringify(issue.projects).includes(projectId),
 	);
@@ -372,7 +372,7 @@ function getProjectIssues(
 
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
-	snykIssues: snyk_reporting_latest_issues[],
+	snykIssues: snyk_issues[],
 	snykProjects: SnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
@@ -386,10 +386,9 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	const snykIssuesForRepo: snyk_reporting_latest_issues[] =
-		snykProjectIdsForRepo
-			.map((projectId) => getProjectIssues(projectId, snykIssues))
-			.flat();
+	const snykIssuesForRepo: snyk_issues[] = snykProjectIdsForRepo
+		.map((projectId) => getProjectIssues(projectId, snykIssues))
+		.flat();
 	const processedVulns = snykIssuesForRepo.map((v) =>
 		snykAlertToRepocopVulnerability(repo.full_name, v),
 	);
@@ -469,7 +468,7 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: snyk_reporting_latest_issues[],
+	latestSnykIssues: snyk_issues[],
 	snykProjectsFromRest: SnykProject[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
@@ -531,7 +530,7 @@ export function dependabotAlertToRepocopVulnerability(
 
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
-	alert: snyk_reporting_latest_issues,
+	alert: SnykIssue,
 ): RepocopVulnerability {
 	const issue = alert.issue as unknown as SnykIssue;
 
@@ -555,7 +554,7 @@ export async function evaluateRepositories(
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: snyk_reporting_latest_issues[],
+	latestSnykIssues: snyk_issues[],
 	snykProjectsFromRest: SnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {

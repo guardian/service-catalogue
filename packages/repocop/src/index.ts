@@ -14,12 +14,12 @@ import {
 } from './evaluation/repository';
 import { sendToCloudwatch } from './metrics';
 import {
-	getLatestSnykIssues,
 	getProjectsForOrg,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryLanguages,
+	getSnykIssues,
 	getSnykOrgs,
 	getStacks,
 	getTeams,
@@ -74,7 +74,9 @@ export async function main() {
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
-	const latestSnykIssues = await getLatestSnykIssues(prisma);
+	const snykIssues = await getSnykIssues(prisma);
+
+	console.log(snykIssues[0]);
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
