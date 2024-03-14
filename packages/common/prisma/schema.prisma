@@ -497,16 +497,15 @@ model github_workflows {
 }
 
 model snyk_projects {
-  cq_source_name           String?   @map("_cq_source_name")
-  cq_sync_time             DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_id                    String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id             String?   @map("_cq_parent_id") @db.Uuid
-  id                       String    @id(map: "snyk_projects_cqpk")
-  name                     String?
-  origin                   String?
-  issue_counts_by_severity Json?
-  tags                     Json?
-  org_id                   String?
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  attributes     Json?
+  id             String    @id(map: "snyk_projects_cqpk")
+  meta           Json?
+  relationships  Json?
+  type           String?
 }
 
 model galaxies_teams_table {
@@ -601,22 +600,14 @@ model repocop_github_repository_rules {
   evaluated_on           DateTime
 }
 
-model snyk_reporting_latest_issues {
-  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_source_name  String?   @map("_cq_source_name")
-  cq_id           String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
-  organization_id String
-  id              String
-  issue           Json?
-  projects        Json?
-  project         Json?
-  is_fixed        Boolean?
-  introduced_date String?
-  patched_date    String?
-  fixed_date      String?
-
-  @@id([organization_id, id], map: "snyk_reporting_latest_issues_cqpk")
+model snyk_issues {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  attributes     Json?
+  id             String    @id(map: "snyk_issues_cqpk")
+  type           String?
 }
 
 model guardian_github_actions_usage {
