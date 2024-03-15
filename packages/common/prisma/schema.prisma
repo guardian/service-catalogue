@@ -619,6 +619,16 @@ model guardian_github_actions_usage {
   @@unique([full_name, workflow_path], map: "guardian_github_actions_usage_full_name_key")
 }
 
+model snyk_sbom {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @id(map: "snyk_sbom_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String?
+  project_id      String?
+  document        Json?
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
