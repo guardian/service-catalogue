@@ -777,46 +777,49 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		);
 		expect(result.length).toEqual(1);
 	});
-	// test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
-	// 	const nonProdRepo = {
-	// 		...thePerfectRepo,
-	// 		topics: [],
-	// 	};
-	// 	const result = collectAndFormatUrgentSnykAlerts(
-	// 		nonProdRepo,
-	// 		[snykIssue],
-	// 		[snykProject],
-	// 	);
-	// 	expect(result.length).toEqual(0);
-	// });
-	// test('Should not detected if a snyk project has no tags', () => {
-	// 	const untaggedProject = {
-	// 		...snykProject,
-	// 		attributes: { ...snykProject.attributes, tags: [] },
-	// 	};
-	// 	const result = collectAndFormatUrgentSnykAlerts(
-	// 		thePerfectRepo,
-	// 		[snykIssue],
-	// 		[untaggedProject],
-	// 	);
-	// 	expect(result.length).toEqual(0);
-	// });
-	// test('Should not be detected if they have a low or medium severity', () => {
-	// 	const lowSeverity = {
-	// 		...snykIssue,
-	// 		issue: lowSeverityIssue,
-	// 	};
-	// 	const mediumSeverity = {
-	// 		...snykIssue,
-	// 		issue: { ...highSeverityIssue, severity: 'medium' },
-	// 	};
-	// 	const result = collectAndFormatUrgentSnykAlerts(
-	// 		thePerfectRepo,
-	// 		[lowSeverity, mediumSeverity],
-	// 		[snykProject],
-	// 	);
-	// 	expect(result.length).toEqual(0);
-	// });
+	test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
+		const nonProdRepo = {
+			...thePerfectRepo,
+			topics: [],
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			nonProdRepo,
+			[snykIssue],
+			[exampleSnykProject],
+		);
+		expect(result.length).toEqual(0);
+	});
+	test('Should not detected if a snyk project has no tags', () => {
+		const untaggedProject = {
+			...exampleSnykProject,
+			attributes: { ...exampleSnykProject.attributes, tags: [] },
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[snykIssue],
+			[untaggedProject],
+		);
+		expect(result.length).toEqual(0);
+	});
+	test('Should not be detected if they have a low or medium severity', () => {
+		const lowSeverity = {
+			...snykIssue,
+			attributes: { ...snykIssue.attributes, effective_severity_level: 'low' },
+		};
+		const mediumSeverity = {
+			...snykIssue,
+			attributes: {
+				...snykIssue.attributes,
+				effective_severity_level: 'medium',
+			},
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[lowSeverity, mediumSeverity],
+			[exampleSnykProject],
+		);
+		expect(result.length).toEqual(0);
+	});
 	// test('Should not be detected if the issue has been ignored', () => {
 	// 	const ignoredIssue = {
 	// 		...snykIssue,
