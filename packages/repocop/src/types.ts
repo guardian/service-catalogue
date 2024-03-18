@@ -91,7 +91,7 @@ interface Attributes {
 	effective_severity_level: string;
 }
 
-export interface SnykIssue {
+export interface CqSnykIssue {
 	id: string;
 	attributes: Attributes;
 }

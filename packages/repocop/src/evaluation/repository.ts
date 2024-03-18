@@ -14,6 +14,7 @@ import {
 import type {
 	Alert,
 	AwsCloudFormationStack,
+	CqSnykIssue,
 	CqSnykProject,
 	DependabotVulnResponse,
 	EvaluationResult,
@@ -22,7 +23,6 @@ import type {
 	RepoAndStack,
 	RepocopVulnerability,
 	Repository,
-	SnykIssue,
 	SnykProject,
 	Tag,
 } from '../types';
@@ -305,8 +305,8 @@ export function hasOldAlerts(
 
 function getIssuesForProject(
 	projectId: string,
-	issues: SnykIssue[],
-): SnykIssue[] {
+	issues: CqSnykIssue[],
+): CqSnykIssue[] {
 	return issues.filter((issue) =>
 		JSON.stringify(issue.projects).includes(projectId),
 	);
@@ -314,7 +314,7 @@ function getIssuesForProject(
 
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
-	snykIssues: SnykIssue[],
+	snykIssues: CqSnykIssue[],
 	snykProjects: SnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
@@ -328,7 +328,7 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	const snykIssuesForRepo: SnykIssue[] = snykProjectIdsForRepo
+	const snykIssuesForRepo: CqSnykIssue[] = snykProjectIdsForRepo
 		.map((projectId) => getIssuesForProject(projectId, snykIssues))
 		.flat();
 	const processedVulns = snykIssuesForRepo.map((v) =>
@@ -410,7 +410,7 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: SnykIssue[],
+	latestSnykIssues: CqSnykIssue[],
 	snykProjectsFromRest: SnykProject[],
 	reposOnSnyk: string[],
 ): EvaluationResult {
@@ -473,9 +473,9 @@ export function dependabotAlertToRepocopVulnerability(
 
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
-	alert: SnykIssue,
+	alert: CqSnykIssue,
 ): RepocopVulnerability {
-	const issue = alert.issue as unknown as SnykIssue;
+	const issue = alert.issue as unknown as CqSnykIssue;
 
 	return {
 		fullName,
@@ -497,7 +497,7 @@ export async function evaluateRepositories(
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	snykIssues: SnykIssue[],
+	snykIssues: CqSnykIssue[],
 	snykProjectsFromRest: SnykProject[],
 	cqSnykProjects: CqSnykProject[],
 	octokit: Octokit,

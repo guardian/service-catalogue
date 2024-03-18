@@ -2,7 +2,6 @@ import type {
 	github_languages,
 	github_repository_branches,
 	PrismaClient,
-	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { GotBodyOptions } from 'got';
@@ -10,10 +9,10 @@ import get from 'got';
 import type { Config } from './config';
 import type {
 	AwsCloudFormationStack,
+	CqSnykIssue,
 	CqSnykProject,
 	NonEmptyArray,
 	Repository,
-	SnykIssue,
 	SnykOrgResponse,
 	SnykProject,
 	SnykProjectsResponse,
@@ -99,11 +98,11 @@ export async function getStacks(
 
 export async function getSnykIssues(
 	client: PrismaClient,
-): Promise<SnykIssue[]> {
+): Promise<CqSnykIssue[]> {
 	return (await client.snyk_issues.findMany({})).map((i) => {
 		return {
 			id: i.id,
-			attributes: i.attributes as unknown as SnykIssue['attributes'],
+			attributes: i.attributes as unknown as CqSnykIssue['attributes'],
 		};
 	});
 }
