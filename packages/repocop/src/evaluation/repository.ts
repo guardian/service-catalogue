@@ -488,10 +488,10 @@ export function snykAlertToRepocopVulnerability(
 
 	return {
 		fullName,
-		open: alert.attributes.status !== 'open', //TODO double check this
+		open: alert.attributes.status === 'open',
 		source: 'Snyk',
 		severity: stringToSeverity(alert.attributes.effective_severity_level),
-		package: packages.join(', '), //there really only should be one of these tbh
+		package: packages.map((p) => p.dependency.package_name).join(', '), //there really only should be one of these tbh
 		urls: alert.attributes.problems.map((p) => p.url),
 		ecosystem: '',
 

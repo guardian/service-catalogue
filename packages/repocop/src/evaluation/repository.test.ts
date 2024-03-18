@@ -661,7 +661,7 @@ const snykIssue: CqSnykIssue = {
 				discovered_at: '', //or Date?
 			},
 		],
-		created_at: '', //or Date?
+		created_at: 'someTZdate', //or Date?
 		updated_at: '', //or Date?
 		coordinates: [
 			{
@@ -673,14 +673,14 @@ const snykIssue: CqSnykIssue = {
 				representations: [
 					{
 						dependency: {
-							package_name: 'http',
+							package_name: 'fetch',
 							package_version: '1.0.0',
 						},
 					},
 				],
 			},
 		],
-		effective_severity_level: 'critical',
+		effective_severity_level: 'high',
 	},
 	relationships: {
 		scan_item: {
