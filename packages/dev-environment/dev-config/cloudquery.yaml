@@ -47,30 +47,30 @@ spec:
         installation_id: '${file:/installation-id}'
     orgs:
       - guardian
-# ---
-# kind: source
-# spec:
-#   name: 'aws'
-#   path: 'cloudquery/aws'
-#   version: v${CQ_AWS}
-#   destinations: ['postgresql']
-#   tables:
-#     - aws_lambda_functions
-#     - aws_s3_buckets
-#     - aws_cloudformation_stacks
-#     - aws_organizations_accounts
-#     - aws_organizations_account_parents
-#     - aws_organizations_organizational_units
-#     - aws_ec2_instances
-#     - aws_ec2_images
-#   skip_dependent_tables: true
-#   spec:
-#     regions:
-#       - eu-west-1
-#       - us-east-1
-#     accounts:
-#       - id: 'deployTools'
-#         local_profile: 'deployTools'
+---
+kind: source
+spec:
+  name: 'aws'
+  path: 'cloudquery/aws'
+  version: v${CQ_AWS}
+  destinations: ['postgresql']
+  tables:
+    - aws_lambda_functions
+    - aws_s3_buckets
+    - aws_cloudformation_stacks
+    - aws_organizations_accounts
+    - aws_organizations_account_parents
+    - aws_organizations_organizational_units
+    - aws_ec2_instances
+    - aws_ec2_images
+  skip_dependent_tables: true
+  spec:
+    regions:
+      - eu-west-1
+      - us-east-1
+    accounts:
+      - id: 'deployTools'
+        local_profile: 'deployTools'
 ---
 kind: source
 spec:
