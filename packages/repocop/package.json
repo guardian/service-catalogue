@@ -12,9 +12,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-cloudwatch": "^3.535.0",
-		"@aws-sdk/client-secrets-manager": "^3.535.0",
 		"@aws-sdk/client-sns": "^3.535.0",
-		"got": "^14.2.0",
 		"octokit-plugin-create-pull-request": "^5.1.1",
 		"ts-markdown": "^1.0.0",
 		"yaml": "^2.4.1"

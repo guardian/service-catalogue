@@ -18,12 +18,9 @@ import type {
 	CqSnykProject,
 	DependabotVulnResponse,
 	EvaluationResult,
-	GuardianSnykTags,
-	ProjectTag,
 	RepoAndStack,
 	RepocopVulnerability,
 	Repository,
-	SnykProject,
 	Tag,
 } from '../types';
 import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';

@@ -130,40 +130,6 @@ export interface RepoAndAlerts {
 	alerts: Alert[] | undefined;
 }
 
-// Snyk REST API response types
-interface SnykOrg {
-	id: string;
-	name: string;
-	slug: string;
-}
-export interface SnykOrgResponse {
-	orgs: SnykOrg[];
-}
-
-export interface ProjectTag {
-	key: string;
-	value: string;
-}
-
-export interface SnykProject {
-	id: string;
-	attributes: {
-		name: string;
-		origin: string;
-		status: string;
-		tags: ProjectTag[];
-	};
-}
-
-interface Next {
-	next: string;
-}
-
-export interface SnykProjectsResponse {
-	data: SnykProject[];
-	links: Next | undefined;
-}
-
 export interface Tag {
 	key: string;
 	value: string;
@@ -186,13 +152,6 @@ export interface CqSnykProject {
 		target_reference?: string;
 		business_criticality?: unknown[];
 	};
-}
-
-//End of Snyk REST API response types
-
-export interface GuardianSnykTags {
-	repo: string | undefined;
-	branch: string | undefined;
 }
 
 // export interface SnykIssue {
