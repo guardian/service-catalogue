@@ -336,7 +336,7 @@ export function collectAndFormatUrgentSnykAlerts(
 		.flat();
 	console.log('snykIssuesForRepo:', snykIssuesForRepo);
 	const processedVulns = snykIssuesForRepo.map((v) =>
-		snykAlertToRepocopVulnerability(repo.full_name, v),
+		snykAlertToRepocopVulnerability(repo.full_name, v, cqSnykProjects),
 	);
 
 	const relevantVulns = processedVulns.filter(
@@ -478,26 +478,35 @@ export function dependabotAlertToRepocopVulnerability(
 
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
-	alert: CqSnykIssue,
+	issue: CqSnykIssue,
+	projects: CqSnykProject[],
 ): RepocopVulnerability {
-	// const issue = alert.issue as unknown as CqSnykIssue;
-
-	const packages = alert.attributes.coordinates
+	const packages = issue.attributes.coordinates
 		.map((c) => c.representations)
 		.flat();
 
+	const projectIdFromIssue = issue.relationships.scan_item.data.id;
+
+	const ecosystem = projects.find((p) => p.id === projectIdFromIssue)
+		?.attributes.type;
+
+	const isPatchable = issue.attributes.coordinates
+		.map(
+			(c) => c.is_patchable ?? c.is_upgradeable ?? c.is_fixable_snyk ?? false,
+		)
+		.includes(true);
+
 	return {
 		fullName,
-		open: alert.attributes.status === 'open',
+		open: issue.attributes.status === 'open',
 		source: 'Snyk',
-		severity: stringToSeverity(alert.attributes.effective_severity_level),
+		severity: stringToSeverity(issue.attributes.effective_severity_level),
 		package: packages.map((p) => p.dependency.package_name).join(', '), //there really only should be one of these tbh
-		urls: alert.attributes.problems.map((p) => p.url),
-		ecosystem: '',
-
-		alert_issue_date: alert.attributes.created_at,
-		isPatchable: false, //issue.isPatchable || issue.isUpgradable || issue.isPinnable,
-		CVEs: [],
+		urls: issue.attributes.problems.map((p) => p.url),
+		ecosystem: ecosystem ?? 'unknown ecosystem',
+		alert_issue_date: issue.attributes.created_at,
+		isPatchable,
+		CVEs: issue.attributes.problems.map((p) => p.id),
 	};
 }
 

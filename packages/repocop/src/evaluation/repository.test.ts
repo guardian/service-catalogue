@@ -91,6 +91,23 @@ const nullOwner: view_repo_ownership = {
 	team_contact_email: null,
 };
 
+const exampleSnykProject: CqSnykProject = {
+	id: 'project1',
+	attributes: {
+		name: '',
+		type: 'npm',
+		created: '',
+		tags: [
+			{
+				key: 'repo',
+				value: thePerfectRepo.full_name,
+			},
+		],
+		origin: '',
+		status: '',
+	},
+};
+
 describe('REPOSITORY_01 - default_branch_name should be false when the default branch is not main', () => {
 	test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
@@ -652,7 +669,7 @@ const snykIssue: CqSnykIssue = {
 		ignored: false,
 		problems: [
 			{
-				id: 'CVE-0001',
+				id: 'CVE-1234',
 				url: 'example.com',
 				type: 'vulnerability',
 				source: 'NVD',
@@ -668,8 +685,23 @@ const snykIssue: CqSnykIssue = {
 				remedies: null,
 				// reachability: 'direct',
 				is_upgradeable: true,
-				is_fixable_snyk: true,
+				is_fixable_snyk: false,
 				is_patchable: true,
+				representations: [
+					{
+						dependency: {
+							package_name: 'fetch',
+							package_version: '1.0.0',
+						},
+					},
+				],
+			},
+			{
+				remedies: null,
+				// reachability: 'direct',
+				is_upgradeable: false,
+				is_fixable_snyk: true,
+				is_patchable: false,
 				representations: [
 					{
 						dependency: {
@@ -693,23 +725,6 @@ const snykIssue: CqSnykIssue = {
 };
 
 describe('NO RULE - Snyk vulnerabilities', () => {
-	const snykProject: CqSnykProject = {
-		id: 'project1',
-		attributes: {
-			name: '',
-			type: 'npm',
-			created: '',
-			tags: [
-				{
-					key: 'repo',
-					value: thePerfectRepo.full_name,
-				},
-			],
-			origin: '',
-			status: '',
-		},
-	};
-
 	test('Should not be detected if no projects or issues are passed', () => {
 		const result = collectAndFormatUrgentSnykAlerts(thePerfectRepo, [], []);
 		expect(result.length).toEqual(0);
@@ -718,7 +733,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
 			[snykIssue],
-			[snykProject],
+			[exampleSnykProject],
 		);
 		expect(result.length).toEqual(1);
 	});
@@ -854,7 +869,9 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 	test('Should be parseable into a common format', () => {
 		const fullName = 'guardian/myrepo';
 		const input = snykIssue;
-		const result = snykAlertToRepocopVulnerability(fullName, input);
+		const result = snykAlertToRepocopVulnerability(fullName, input, [
+			exampleSnykProject,
+		]);
 		console.log(result);
 		expect(result.source).toEqual('Snyk');
 		expect(result.open).toEqual(true);
@@ -867,7 +884,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			urls: ['example.com'],
 			ecosystem: 'npm',
 			alert_issue_date: 'someTZdate',
-			isPatchable: false,
+			isPatchable: true,
 			CVEs: ['CVE-1234'],
 		});
 	});
