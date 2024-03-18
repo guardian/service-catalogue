@@ -327,7 +327,8 @@ export function collectAndFormatUrgentSnykAlerts(
 	console.log(snykProjectIdsForRepo);
 	const snykIssuesForRepo: CqSnykIssue[] = snykProjectIdsForRepo
 		.map((projectId) => getIssuesForProject(projectId, snykIssues))
-		.flat();
+		.flat()
+		.filter((i) => !i.attributes.ignored);
 	console.log('snykIssuesForRepo:', snykIssuesForRepo);
 	const processedVulns = snykIssuesForRepo.map((v) =>
 		snykAlertToRepocopVulnerability(repo.full_name, v, cqSnykProjects),

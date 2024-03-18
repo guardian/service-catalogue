@@ -795,9 +795,9 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		expect(result.length).toEqual(0);
 	});
 	test('Should not be detected if the issue has been ignored', () => {
-		const ignoredIssue = {
+		const ignoredIssue: CqSnykIssue = {
 			...snykIssue,
-			ignored: true,
+			attributes: { ...snykIssue.attributes, ignored: true },
 		};
 		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
