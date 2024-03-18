@@ -31,18 +31,10 @@ const riffRaff = new RiffRaffYamlFile(app);
 
 const deployments = riffRaff.riffRaffYaml.deployments;
 
-/**
- * All cfn-based dependencies should be applied before this s3 deployment
- */
-const dependencies = [...deployments.entries()]
-	.filter(([, { type }]) => type === 'cloud-formation')
-	.map(([key]) => key);
-
 deployments.set('service-catalogue-prisma-migrations', {
 	type: 'aws-s3',
 	contentDirectory: 'prisma',
 	app: 'prisma-migrate-task',
-	dependencies,
 	parameters: {
 		cacheControl: 'max-age=0',
 		publicReadAcl: false,
