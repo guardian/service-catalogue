@@ -667,56 +667,35 @@ const snykIssue: CqSnykIssue = {
 	},
 };
 
+function fixableVulnerability(
+	package_name: string,
+	package_version: string,
+): Coordinate {
+	return {
+		remedies: null,
+		// reachability: 'direct',
+		is_upgradeable: true,
+		is_fixable_snyk: true,
+		is_patchable: true,
+		representations: [
+			{
+				dependency: {
+					package_name,
+					package_version,
+				},
+			},
+		],
+	};
+}
+
 const snykIssue3Coords = {
 	...snykIssue,
 	attributes: {
 		...snykIssue.attributes,
 		coordinates: [
-			{
-				remedies: null,
-				// reachability: 'direct',
-				is_upgradeable: undefined,
-				is_fixable_snyk: true,
-				is_patchable: undefined,
-				representations: [
-					{
-						dependency: {
-							package_name: 'fetch',
-							package_version: '1.0.1',
-						},
-					},
-				],
-			},
-			{
-				remedies: null,
-				// reachability: 'direct',
-				is_upgradeable: undefined,
-				is_fixable_snyk: true,
-				is_patchable: undefined,
-				representations: [
-					{
-						dependency: {
-							package_name: 'fetch',
-							package_version: '2.0.0',
-						},
-					},
-				],
-			},
-			{
-				remedies: null,
-				// reachability: 'direct',
-				is_upgradeable: true,
-				is_fixable_snyk: true,
-				is_patchable: true,
-				representations: [
-					{
-						dependency: {
-							package_name: 'axios',
-							package_version: '3.0.0',
-						},
-					},
-				],
-			},
+			fixableVulnerability('fetch', '1.0.0'),
+			fixableVulnerability('fetch', '2.0.0'),
+			fixableVulnerability('axios', '3.0.0'),
 		],
 		effective_severity_level: 'high',
 	},
