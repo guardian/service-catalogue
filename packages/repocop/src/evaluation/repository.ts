@@ -307,30 +307,34 @@ function getIssuesForProject(
 	projectId: string,
 	issues: CqSnykIssue[],
 ): CqSnykIssue[] {
-	return issues.filter((issue) =>
-		JSON.stringify(issue.projects).includes(projectId),
+	return issues.filter(
+		(issue) => issue.relationships.scan_item.data.id === projectId,
 	);
 }
 
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
 	snykIssues: CqSnykIssue[],
-	snykProjects: SnykProject[],
+	cqSnykProjects: CqSnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
 		return [];
 	}
-
-	const snykProjectIdsForRepo = snykProjects
+	console.log('isProduction:', isProduction(repo));
+	const snykProjectIdsForRepo = cqSnykProjects
 		.filter((project) => {
 			const tagValues = project.attributes.tags.map((tag) => tag.value);
 			return tagValues.includes(repo.full_name);
 		})
 		.map((project) => project.id);
 
+	console.log('snykProjectIdsForRepo:', snykProjectIdsForRepo);
+
+	console.log(snykProjectIdsForRepo);
 	const snykIssuesForRepo: CqSnykIssue[] = snykProjectIdsForRepo
 		.map((projectId) => getIssuesForProject(projectId, snykIssues))
 		.flat();
+	console.log('snykIssuesForRepo:', snykIssuesForRepo);
 	const processedVulns = snykIssuesForRepo.map((v) =>
 		snykAlertToRepocopVulnerability(repo.full_name, v),
 	);
@@ -340,6 +344,7 @@ export function collectAndFormatUrgentSnykAlerts(
 			(vuln.severity === 'high' || vuln.severity === 'critical') && vuln.open,
 	);
 
+	console.log('relevantVulns: ', relevantVulns);
 	return relevantVulns;
 }
 
@@ -411,13 +416,13 @@ export function evaluateOneRepo(
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	latestSnykIssues: CqSnykIssue[],
-	snykProjectsFromRest: SnykProject[],
+	cqSnykProjects: CqSnykProject[],
 	reposOnSnyk: string[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
 		latestSnykIssues,
-		snykProjectsFromRest,
+		cqSnykProjects,
 	);
 
 	const vulnerabilities = snykAlertsForRepo.concat(
@@ -487,7 +492,7 @@ export function snykAlertToRepocopVulnerability(
 		source: 'Snyk',
 		severity: stringToSeverity(alert.attributes.effective_severity_level),
 		package: packages.join(', '), //there really only should be one of these tbh
-		urls: [''], //issue.url ? [issue.url] : [],
+		urls: alert.attributes.problems.map((p) => p.url),
 		ecosystem: '',
 
 		alert_issue_date: alert.attributes.created_at,
@@ -502,7 +507,6 @@ export async function evaluateRepositories(
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	snykIssues: CqSnykIssue[],
-	snykProjectsFromRest: SnykProject[],
 	cqSnykProjects: CqSnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
@@ -511,7 +515,7 @@ export async function evaluateRepositories(
 			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
 
 		const reposOnSnyk = cqSnykProjects
-			.slice(0, 100)
+			// .slice(0, 100)
 			.map((p) => p.attributes.tags)
 			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
 			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
@@ -534,7 +538,7 @@ export async function evaluateRepositories(
 			teamsForRepo,
 			repoLanguages,
 			snykIssues,
-			snykProjectsFromRest,
+			cqSnykProjects,
 			uniqueReposOnSnyk,
 		);
 	});
