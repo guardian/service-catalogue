@@ -41,12 +41,13 @@ export interface Repository extends RepositoryFields {
 	id: NonNullable<RepositoryFields['id']>;
 }
 
-interface Coordinate {
+export interface Coordinate {
 	remedies: null | string[]; //unsure about this
 	reachability?: string;
 	is_upgradeable?: true;
 	is_fixable_snyk?: true;
 	is_patchable?: true;
+	is_pinnable?: true;
 	representations: [
 		{
 			dependency: {

@@ -2,7 +2,6 @@ import type {
 	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
-	snyk_projects,
 	view_repo_ownership,
 } from '@prisma/client';
 import { partition } from 'common/src/functions';
@@ -325,8 +324,6 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	console.log('snykProjectIdsForRepo:', snykProjectIdsForRepo);
-
 	console.log(snykProjectIdsForRepo);
 	const snykIssuesForRepo: CqSnykIssue[] = snykProjectIdsForRepo
 		.map((projectId) => getIssuesForProject(projectId, snykIssues))
@@ -488,9 +485,7 @@ export function snykAlertToRepocopVulnerability(
 		?.attributes.type;
 
 	const isPatchable = issue.attributes.coordinates
-		.map(
-			(c) => c.is_patchable ?? c.is_upgradeable ?? c.is_fixable_snyk ?? false,
-		)
+		.map((c) => c.is_patchable ?? c.is_upgradeable ?? c.is_pinnable ?? false)
 		.includes(true);
 
 	const packageName = [

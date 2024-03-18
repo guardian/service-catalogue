@@ -14,13 +14,11 @@ import {
 } from './evaluation/repository';
 import { sendToCloudwatch } from './metrics';
 import {
-	getProjectsForOrg,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryLanguages,
 	getSnykIssues,
-	getSnykOrgs,
 	getSnykProjects,
 	getStacks,
 	getTeams,

@@ -6,6 +6,7 @@ import type {
 import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
+	Coordinate,
 	CqSnykIssue,
 	CqSnykProject,
 	RepocopVulnerability,
@@ -765,6 +766,22 @@ const snykIssue3Coords = {
 };
 
 describe('NO RULE - Snyk vulnerabilities', () => {
+	const unfixable: Coordinate = {
+		remedies: null,
+		// reachability: 'direct',
+		is_upgradeable: undefined,
+		is_fixable_snyk: undefined,
+		is_patchable: undefined,
+		representations: [
+			{
+				dependency: {
+					package_name: 'fetch',
+					package_version: '1.0.0',
+				},
+			},
+		],
+	};
+
 	test('Should not be detected if no projects or issues are passed', () => {
 		const result = collectAndFormatUrgentSnykAlerts(thePerfectRepo, [], []);
 		expect(result.length).toEqual(0);
@@ -820,46 +837,75 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		);
 		expect(result.length).toEqual(0);
 	});
-	// test('Should not be detected if the issue has been ignored', () => {
-	// 	const ignoredIssue = {
-	// 		...snykIssue,
-	// 		issue: { ...highSeverityIssue, isIgnored: true },
-	// 	};
-	// 	const result = collectAndFormatUrgentSnykAlerts(
-	// 		thePerfectRepo,
-	// 		[ignoredIssue],
-	// 		[snykProject],
-	// 	);
-	// 	expect(result.length).toEqual(0);
-	// });
-	// test('Should not be considered patchable if there is no possible upgrade path', () => {
-	// 	const result = collectAndFormatUrgentSnykAlerts(
-	// 		thePerfectRepo,
-	// 		[snykIssue],
-	// 		[snykProject],
-	// 	);
-	// 	expect(result.map((r) => r.isPatchable)).toEqual([false]);
-	// });
-	// test('Should be considered patchable if there is a possible upgrade path', () => {
-	// 	const pinnableIssue = {
-	// 		...snykIssue,
-	// 		issue: { ...highSeverityIssue, isPinnable: true },
-	// 	};
-	// 	const patchableIssue = {
-	// 		...snykIssue,
-	// 		issue: { ...highSeverityIssue, isPatchable: true },
-	// 	};
-	// 	const upgradableIssue = {
-	// 		...snykIssue,
-	// 		issue: { ...highSeverityIssue, isUpgradable: true },
-	// 	};
-	// 	const result = collectAndFormatUrgentSnykAlerts(
-	// 		thePerfectRepo,
-	// 		[pinnableIssue, patchableIssue, upgradableIssue],
-	// 		[snykProject],
-	// 	);
-	// 	expect(result.map((r) => r.isPatchable)).toEqual([true, true, true]);
-	// });
+	test('Should not be detected if the issue has been ignored', () => {
+		const ignoredIssue = {
+			...snykIssue,
+			ignored: true,
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[ignoredIssue],
+			[exampleSnykProject],
+		);
+		expect(result.length).toEqual(0);
+	});
+	test('Should not be considered patchable if there is no possible upgrade path', () => {
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[
+				{
+					...snykIssue,
+					attributes: { ...snykIssue.attributes, coordinates: [unfixable] },
+				},
+			],
+			[exampleSnykProject],
+		);
+		expect(result.map((r) => r.isPatchable)).toEqual([false]);
+	});
+	test('Should be considered patchable if there is a possible upgrade path', () => {
+		const pinnableIssue: CqSnykIssue = {
+			...snykIssue,
+			attributes: {
+				...snykIssue.attributes,
+				coordinates: [
+					{
+						...unfixable,
+						is_pinnable: true,
+					},
+				],
+			},
+		};
+		const patchableIssue: CqSnykIssue = {
+			...snykIssue,
+			attributes: {
+				...snykIssue.attributes,
+				coordinates: [
+					{
+						...unfixable,
+						is_patchable: true,
+					},
+				],
+			},
+		};
+		const upgradableIssue: CqSnykIssue = {
+			...snykIssue,
+			attributes: {
+				...snykIssue.attributes,
+				coordinates: [
+					{
+						...unfixable,
+						is_upgradeable: true,
+					},
+				],
+			},
+		};
+		const result = collectAndFormatUrgentSnykAlerts(
+			thePerfectRepo,
+			[pinnableIssue, patchableIssue, upgradableIssue],
+			[exampleSnykProject],
+		);
+		expect(result.map((r) => r.isPatchable)).toEqual([true, true, true]);
+	});
 });
 
 describe('NO RULE - Vulnerabilities from Dependabot', () => {
