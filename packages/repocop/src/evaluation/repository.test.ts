@@ -619,49 +619,6 @@ describe('NO RULE - Dependabot alerts', () => {
 	});
 });
 
-const snykProjectId = '1a2b';
-const highSeverityIssue = {
-	id: '',
-	severity: 'high',
-	language: 'js',
-	isIgnored: false,
-	isPatched: false,
-	isPinnable: false,
-	isPatchable: false,
-	isUpgradable: false,
-	Identifiers: {
-		CVE: ['CVE-1234'],
-		CWE: ['CWE-1234'],
-		OSVDB: ['OSVDB-1234'],
-	},
-	disclosureTime: '',
-	publicationTime: '',
-	package: 'fetch',
-	packageManager: 'npm',
-	url: 'example.com',
-};
-
-const lowSeverityIssue = {
-	...highSeverityIssue,
-	severity: 'low',
-};
-
-const myProject = {
-	id: snykProjectId,
-	url: '',
-	name: '',
-	source: 'cli',
-	targetFile: '',
-};
-
-const myOtherProject = {
-	id: '2b3c',
-	url: '',
-	name: '',
-	source: 'cli',
-	targetFile: '',
-};
-
 const snykIssue: CqSnykIssue = {
 	id: 'issue1', //is this correct??
 	attributes: {
