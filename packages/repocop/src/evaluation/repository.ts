@@ -496,12 +496,9 @@ export function snykAlertToRepocopVulnerability(
 		)
 		.includes(true);
 
-	const packageNames = packages.map((p) => p.dependency.package_name);
-	console.log('packageNames: ', packageNames);
-	const packageNamesSet = new Set(packageNames);
-	console.log('packageNamesSet: ', packageNamesSet);
-	const packageNamesArray = [...packageNamesSet];
-	const packageName = packageNamesArray.join(', ');
+	const packageName = [
+		...new Set(packages.map((p) => p.dependency.package_name)),
+	].join(', ');
 
 	return {
 		fullName,
