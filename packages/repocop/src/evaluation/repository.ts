@@ -332,7 +332,6 @@ export function collectAndFormatUrgentSnykAlerts(
 			(vuln.severity === 'high' || vuln.severity === 'critical') && vuln.open,
 	);
 
-	console.log('relevantVulns: ', relevantVulns);
 	return relevantVulns;
 }
 

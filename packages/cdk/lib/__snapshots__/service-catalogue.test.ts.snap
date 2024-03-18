@@ -13725,7 +13725,7 @@ spec:
 spec:
   name: snyk
   path: cloudquery/snyk
-  version: v5.1.0
+  version: v5.3.0
   tables:
     - snyk_issues
     - snyk_organizations
