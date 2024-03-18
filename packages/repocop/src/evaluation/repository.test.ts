@@ -1,13 +1,12 @@
 import type {
 	github_languages,
 	github_repository_branches,
-	snyk_projects,
-	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
 import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
+	CqSnykIssue,
 	RepocopVulnerability,
 	Repository,
 	SnykProject,
@@ -29,8 +28,9 @@ function evaluateRepoTestHelper(
 	owners: view_repo_ownership[] = [],
 	languages: github_languages[] = [],
 	dependabotAlerts: RepocopVulnerability[] = [],
-	latestSnykIssues: snyk_reporting_latest_issues[] = [],
+	latestSnykIssues: CqSnykIssue[] = [],
 	snykProjectsFromRest: SnykProject[] = [],
+	reposOnSnyk: string[] = [],
 ) {
 	return evaluateOneRepo(
 		dependabotAlerts,
@@ -40,6 +40,7 @@ function evaluateRepoTestHelper(
 		languages,
 		latestSnykIssues,
 		snykProjectsFromRest,
+		reposOnSnyk,
 	).repocopRules;
 }
 

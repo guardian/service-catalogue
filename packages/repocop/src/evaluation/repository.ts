@@ -475,20 +475,24 @@ export function snykAlertToRepocopVulnerability(
 	fullName: string,
 	alert: CqSnykIssue,
 ): RepocopVulnerability {
-	const issue = alert.issue as unknown as CqSnykIssue;
+	// const issue = alert.issue as unknown as CqSnykIssue;
+
+	const packages = alert.attributes.coordinates
+		.map((c) => c.representations)
+		.flat();
 
 	return {
 		fullName,
-		open: alert.is_fixed !== true && !issue.isIgnored,
+		open: alert.attributes.status !== 'open', //TODO double check this
 		source: 'Snyk',
-		severity: stringToSeverity(issue.severity),
-		package: issue.package,
-		urls: issue.url ? [issue.url] : [],
-		ecosystem: issue.packageManager,
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
-		alert_issue_date: alert.introduced_date!,
-		isPatchable: issue.isPatchable || issue.isUpgradable || issue.isPinnable,
-		CVEs: issue.Identifiers.CVE ?? [],
+		severity: stringToSeverity(alert.attributes.effective_severity_level),
+		package: packages.join(', '), //there really only should be one of these tbh
+		urls: [''], //issue.url ? [issue.url] : [],
+		ecosystem: '',
+
+		alert_issue_date: alert.attributes.created_at,
+		isPatchable: false, //issue.isPatchable || issue.isUpgradable || issue.isPinnable,
+		CVEs: [],
 	};
 }
 
