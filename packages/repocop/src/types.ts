@@ -41,6 +41,22 @@ export interface Repository extends RepositoryFields {
 	id: NonNullable<RepositoryFields['id']>;
 }
 
+interface Coordinate {
+	remedies: null | string[]; //unsure about this
+	reachability?: string;
+	is_upgradeable?: true;
+	is_fixable_snyk?: true;
+	is_patchable?: true;
+	representations: [
+		{
+			dependency: {
+				package_name: string;
+				package_version: string;
+			};
+		},
+	];
+}
+
 interface Attributes {
 	key?: string;
 	risk?: {
@@ -69,23 +85,7 @@ interface Attributes {
 	];
 	created_at: string; //or Date?
 	updated_at: string; //or Date?
-	coordinates: [
-		{
-			remedies: null | string[]; //unsure about this
-			reachability?: string;
-			is_upgradeable?: true;
-			is_fixable_snyk?: true;
-			is_patchable?: true;
-			representations: [
-				{
-					dependency: {
-						package_name: string;
-						package_version: string;
-					};
-				},
-			];
-		},
-	];
+	coordinates: Coordinate[];
 	effective_severity_level: string;
 }
 

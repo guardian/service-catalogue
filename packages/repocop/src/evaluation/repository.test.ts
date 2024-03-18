@@ -685,23 +685,8 @@ const snykIssue: CqSnykIssue = {
 				remedies: null,
 				// reachability: 'direct',
 				is_upgradeable: true,
-				is_fixable_snyk: false,
+				is_fixable_snyk: undefined,
 				is_patchable: true,
-				representations: [
-					{
-						dependency: {
-							package_name: 'fetch',
-							package_version: '1.0.0',
-						},
-					},
-				],
-			},
-			{
-				remedies: null,
-				// reachability: 'direct',
-				is_upgradeable: false,
-				is_fixable_snyk: true,
-				is_patchable: false,
 				representations: [
 					{
 						dependency: {
@@ -722,6 +707,57 @@ const snykIssue: CqSnykIssue = {
 			data: { id: '234', type: 'organization' }, //same for organization
 		},
 	},
+};
+
+const snykIssue3Coords = {
+	...snykIssue,
+	coordinates: [
+		{
+			remedies: null,
+			// reachability: 'direct',
+			is_upgradeable: undefined,
+			is_fixable_snyk: true,
+			is_patchable: undefined,
+			representations: [
+				{
+					dependency: {
+						package_name: 'fetch',
+						package_version: '1.0.0',
+					},
+				},
+			],
+		},
+		{
+			remedies: null,
+			// reachability: 'direct',
+			is_upgradeable: undefined,
+			is_fixable_snyk: true,
+			is_patchable: undefined,
+			representations: [
+				{
+					dependency: {
+						package_name: 'fetch',
+						package_version: '2.0.0',
+					},
+				},
+			],
+		},
+		{
+			remedies: null,
+			// reachability: 'direct',
+			is_upgradeable: true,
+			is_fixable_snyk: true,
+			is_patchable: true,
+			representations: [
+				{
+					dependency: {
+						package_name: 'axios',
+						package_version: '3.0.0',
+					},
+				},
+			],
+		},
+	],
 };
 
 describe('NO RULE - Snyk vulnerabilities', () => {
@@ -868,8 +904,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 describe('NO RULE - Vulnerabilities from Snyk', () => {
 	test('Should be parseable into a common format', () => {
 		const fullName = 'guardian/myrepo';
-		const input = snykIssue;
-		const result = snykAlertToRepocopVulnerability(fullName, input, [
+		const result = snykAlertToRepocopVulnerability(fullName, snykIssue, [
 			exampleSnykProject,
 		]);
 		console.log(result);
@@ -887,6 +922,14 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			isPatchable: true,
 			CVEs: ['CVE-1234'],
 		});
+	});
+
+	test('Should dedupe package names,', () => {
+		const fullName = 'guardian/myrepo';
+		const result = snykAlertToRepocopVulnerability(fullName, snykIssue3Coords, [
+			exampleSnykProject,
+		]);
+		expect(result.package).toEqual('fetch,axios');
 	});
 });
 

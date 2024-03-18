@@ -485,6 +485,8 @@ export function snykAlertToRepocopVulnerability(
 		.map((c) => c.representations)
 		.flat();
 
+	console.log('packages: ', packages);
+
 	const projectIdFromIssue = issue.relationships.scan_item.data.id;
 
 	const ecosystem = projects.find((p) => p.id === projectIdFromIssue)
@@ -496,12 +498,19 @@ export function snykAlertToRepocopVulnerability(
 		)
 		.includes(true);
 
+	const packageNames = packages.map((p) => p.dependency.package_name);
+	console.log('packageNames: ', packageNames);
+	const packageNamesSet = new Set(packageNames);
+	console.log('packageNamesSet: ', packageNamesSet);
+	const packageNamesArray = [...packageNamesSet];
+	const packageName = packageNamesArray.join(', ');
+
 	return {
 		fullName,
 		open: issue.attributes.status === 'open',
 		source: 'Snyk',
 		severity: stringToSeverity(issue.attributes.effective_severity_level),
-		package: packages.map((p) => p.dependency.package_name).join(', '), //there really only should be one of these tbh
+		package: packageName,
 		urls: issue.attributes.problems.map((p) => p.url),
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: issue.attributes.created_at,
