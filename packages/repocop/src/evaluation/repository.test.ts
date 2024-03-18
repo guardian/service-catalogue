@@ -20,7 +20,6 @@ import {
 	findStacks,
 	hasDependencyTracking,
 	hasOldAlerts,
-	parseSnykTags,
 	snykAlertToRepocopVulnerability,
 } from './repository';
 
@@ -429,46 +428,6 @@ describe('REPOSITORY_08 - Repositories without any related stacks on AWS', () =>
 		};
 		const result = findStacks(repo, [stack1, stack2]).stacks.length;
 		expect(result).toEqual(0);
-	});
-});
-
-describe('REPOSITORY_09 - Snyk tags', () => {
-	const nullSnykProject: snyk_projects = {
-		cq_source_name: null,
-		cq_sync_time: null,
-		cq_id: '',
-		cq_parent_id: null,
-		id: '',
-		name: null,
-		origin: null,
-		issue_counts_by_severity: null,
-		tags: null,
-		org_id: null,
-	};
-
-	test('should be retrievable if they are commit, repo, or branch', () => {
-		const project: snyk_projects = {
-			...nullSnykProject,
-			tags: [
-				{ key: 'commit', value: '1234' },
-				{ key: 'repo', value: 'guardian/some-repo' },
-				{ key: 'branch', value: 'main' },
-			],
-		};
-		const tags = parseSnykTags(project);
-		expect(tags.commit).toEqual('1234');
-		expect(tags.repo).toEqual('guardian/some-repo');
-		expect(tags.branch).toEqual('main');
-	});
-	test('should not be defined if they do not exist', () => {
-		const project: snyk_projects = {
-			...nullSnykProject,
-			tags: [{ key: 'commit', value: '1234' }],
-		};
-		const tags = parseSnykTags(project);
-		expect(tags.commit).toEqual('1234');
-		expect(tags.repo).toBeUndefined();
-		expect(tags.branch).toBeUndefined();
 	});
 });
 

@@ -21,6 +21,7 @@ import {
 	getRepositoryLanguages,
 	getSnykIssues,
 	getSnykOrgs,
+	getSnykProjects,
 	getStacks,
 	getTeams,
 } from './query';
@@ -54,7 +55,6 @@ export async function main() {
 	const config: Config = await getConfig();
 
 	const snykOrgIds = (await getSnykOrgs(config)).orgs.map((org) => org.id);
-
 	const snykProjectsFromRest = (
 		await Promise.all(
 			snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
@@ -62,7 +62,6 @@ export async function main() {
 	).flat();
 
 	const prisma = getPrismaClient(config);
-
 	const octokit = await stageAwareOctokit(config.stage);
 
 	const [unarchivedRepos, archivedRepos] = partition(
@@ -75,8 +74,7 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykIssues = await getSnykIssues(prisma);
-
-	console.log(snykIssues[0]);
+	const cqSnykProjects = await getSnykProjects(prisma);
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
@@ -87,6 +85,7 @@ export async function main() {
 		repoLanguages,
 		snykIssues,
 		snykProjectsFromRest,
+		cqSnykProjects,
 		octokit,
 	);
 

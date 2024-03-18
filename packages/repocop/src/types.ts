@@ -4,6 +4,7 @@ import type {
 	github_repositories,
 	github_teams,
 	repocop_github_repository_rules,
+	snyk_projects,
 } from '@prisma/client';
 
 export type NonEmptyArray<T> = [T, ...T[]];
@@ -153,6 +154,30 @@ interface Next {
 export interface SnykProjectsResponse {
 	data: SnykProject[];
 	links: Next | undefined;
+}
+
+export interface Tag {
+	key: string;
+	value: string;
+}
+
+export interface CqSnykProject {
+	id: string;
+	attributes: {
+		name: string;
+		tags: Tag[];
+		type: string; //package manager
+		origin: string;
+		status: string;
+		created: string; //or Date?
+		settings: { recurring_tests: { frequency: string } };
+		lifecycle: unknown[];
+		read_only: boolean;
+		environment: unknown[];
+		target_file: string;
+		target_reference: string;
+		business_criticality: unknown[];
+	};
 }
 
 //End of Snyk REST API response types

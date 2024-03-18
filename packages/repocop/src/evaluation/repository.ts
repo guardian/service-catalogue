@@ -14,6 +14,7 @@ import {
 import type {
 	Alert,
 	AwsCloudFormationStack,
+	CqSnykProject,
 	DependabotVulnResponse,
 	EvaluationResult,
 	GuardianSnykTags,
@@ -23,6 +24,7 @@ import type {
 	Repository,
 	SnykIssue,
 	SnykProject,
+	Tag,
 } from '../types';
 import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';
 
@@ -122,54 +124,11 @@ function isMaintained(repo: Repository): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
-interface SnykTags {
-	commit?: string;
-	branch?: string;
-	repo?: string;
-}
-
-export function parseSnykTags(snyk_projects: snyk_projects) {
-	interface TagValues {
-		key: string;
-		value: string;
-	}
-
-	const tagString = JSON.stringify(snyk_projects.tags);
-	const tags = JSON.parse(tagString) as TagValues[];
-
-	const snykTags: SnykTags = {
-		commit: tags.find((tag) => tag.key === 'commit')?.value,
-		branch: tags.find((tag) => tag.key === 'branch')?.value,
-		repo: tags.find((tag) => tag.key === 'repo')?.value,
-	};
-
-	return snykTags;
-}
-
-function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
-	return {
-		repo: tags.find((t) => t.key === 'repo')?.value,
-		branch: tags.find((t) => t.key === 'branch')?.value,
-	};
-}
-
-function getTagsFromSnykProject(
-	snykProjectsFromRest: SnykProject[],
-): GuardianSnykTags[] {
-	const allSnykTags = snykProjectsFromRest
-		.map((x) => x.attributes.tags)
-		.map(toGuardianSnykTags)
-		.filter((x) => !!x.repo && !!x.branch);
-
-	const uniqueStringTags: string[] = [
-		...new Set(allSnykTags.map((t) => JSON.stringify(t))),
-	];
-
-	const uniqueTags = uniqueStringTags.map(
-		(t) => JSON.parse(t) as GuardianSnykTags,
-	);
-	return uniqueTags;
-}
+// interface SnykTags {
+// 	commit?: string;
+// 	branch?: string;
+// 	repo?: string;
+// }
 
 /**
  * Evaluate the following rule for a Github repository:
@@ -178,7 +137,7 @@ function getTagsFromSnykProject(
 export function hasDependencyTracking(
 	repo: Repository,
 	repoLanguages: github_languages[],
-	snykProjectsFromRest: SnykProject[],
+	reposOnSnyk: string[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
@@ -189,24 +148,8 @@ export function hasDependencyTracking(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
 
-	//This is a temporary workaround until we get the snyk_projects table back.
-	const tags = getTagsFromSnykProject(snykProjectsFromRest);
-
-	function snykProjectExists(repo: Repository, allProjectTags: SnykTags[]) {
-		const result = allProjectTags.find(
-			(tags) =>
-				//TODO - this is a close enough match for now, but in the future we should use commit hashes
-				//to make sure the projects are in sync
-				!!repo.full_name &&
-				tags.repo == repo.full_name &&
-				tags.branch === repo.default_branch,
-		);
-		const exists = result !== undefined;
-		return exists;
-	}
-
 	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
-	const repoIsOnSnyk = snykProjectExists(repo, tags);
+	const repoIsOnSnyk = reposOnSnyk.includes(repo.full_name);
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
@@ -469,6 +412,7 @@ export function evaluateOneRepo(
 	repoLanguages: github_languages[],
 	latestSnykIssues: SnykIssue[],
 	snykProjectsFromRest: SnykProject[],
+	reposOnSnyk: string[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
@@ -493,7 +437,7 @@ export function evaluateOneRepo(
 		vulnerability_tracking: hasDependencyTracking(
 			repo,
 			repoLanguages,
-			snykProjectsFromRest,
+			reposOnSnyk,
 		),
 		evaluated_on: new Date(),
 	};
@@ -555,9 +499,22 @@ export async function evaluateRepositories(
 	repoLanguages: github_languages[],
 	snykIssues: SnykIssue[],
 	snykProjectsFromRest: SnykProject[],
+	cqSnykProjects: CqSnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
+		const isMainBranchPredicate = (x: Tag) =>
+			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
+
+		const reposOnSnyk = cqSnykProjects
+			.slice(0, 100)
+			.map((p) => p.attributes.tags)
+			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
+			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
+			.filter((x) => x !== undefined) as string[];
+
+		const uniqueReposOnSnyk = [...new Set(reposOnSnyk)];
+		console.log(uniqueReposOnSnyk);
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))
 					?.filter((a) => a.state === 'open')
@@ -565,6 +522,7 @@ export async function evaluateRepositories(
 			: [];
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
+
 		return evaluateOneRepo(
 			dependabotAlerts,
 			r,
@@ -573,6 +531,7 @@ export async function evaluateRepositories(
 			repoLanguages,
 			snykIssues,
 			snykProjectsFromRest,
+			uniqueReposOnSnyk,
 		);
 	});
 	return Promise.all(evaluatedRepos);
