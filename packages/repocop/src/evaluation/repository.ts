@@ -120,12 +120,6 @@ function isMaintained(repo: Repository): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
-// interface SnykTags {
-// 	commit?: string;
-// 	branch?: string;
-// 	repo?: string;
-// }
-
 /**
  * Evaluate the following rule for a Github repository:
  *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
@@ -316,7 +310,7 @@ export function collectAndFormatUrgentSnykAlerts(
 	if (!isProduction(repo)) {
 		return [];
 	}
-	console.log('isProduction:', isProduction(repo));
+
 	const snykProjectIdsForRepo = cqSnykProjects
 		.filter((project) => {
 			const tagValues = project.attributes.tags.map((tag) => tag.value);
@@ -324,12 +318,11 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	console.log(snykProjectIdsForRepo);
 	const snykIssuesForRepo: CqSnykIssue[] = snykProjectIdsForRepo
 		.map((projectId) => getIssuesForProject(projectId, snykIssues))
 		.flat()
 		.filter((i) => !i.attributes.ignored);
-	console.log('snykIssuesForRepo:', snykIssuesForRepo);
+
 	const processedVulns = snykIssuesForRepo.map((v) =>
 		snykAlertToRepocopVulnerability(repo.full_name, v, cqSnykProjects),
 	);
