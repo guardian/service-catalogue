@@ -711,53 +711,57 @@ const snykIssue: CqSnykIssue = {
 
 const snykIssue3Coords = {
 	...snykIssue,
-	coordinates: [
-		{
-			remedies: null,
-			// reachability: 'direct',
-			is_upgradeable: undefined,
-			is_fixable_snyk: true,
-			is_patchable: undefined,
-			representations: [
-				{
-					dependency: {
-						package_name: 'fetch',
-						package_version: '1.0.0',
+	attributes: {
+		...snykIssue.attributes,
+		coordinates: [
+			{
+				remedies: null,
+				// reachability: 'direct',
+				is_upgradeable: undefined,
+				is_fixable_snyk: true,
+				is_patchable: undefined,
+				representations: [
+					{
+						dependency: {
+							package_name: 'fetch',
+							package_version: '1.0.1',
+						},
 					},
-				},
-			],
-		},
-		{
-			remedies: null,
-			// reachability: 'direct',
-			is_upgradeable: undefined,
-			is_fixable_snyk: true,
-			is_patchable: undefined,
-			representations: [
-				{
-					dependency: {
-						package_name: 'fetch',
-						package_version: '2.0.0',
+				],
+			},
+			{
+				remedies: null,
+				// reachability: 'direct',
+				is_upgradeable: undefined,
+				is_fixable_snyk: true,
+				is_patchable: undefined,
+				representations: [
+					{
+						dependency: {
+							package_name: 'fetch',
+							package_version: '2.0.0',
+						},
 					},
-				},
-			],
-		},
-		{
-			remedies: null,
-			// reachability: 'direct',
-			is_upgradeable: true,
-			is_fixable_snyk: true,
-			is_patchable: true,
-			representations: [
-				{
-					dependency: {
-						package_name: 'axios',
-						package_version: '3.0.0',
+				],
+			},
+			{
+				remedies: null,
+				// reachability: 'direct',
+				is_upgradeable: true,
+				is_fixable_snyk: true,
+				is_patchable: true,
+				representations: [
+					{
+						dependency: {
+							package_name: 'axios',
+							package_version: '3.0.0',
+						},
 					},
-				},
-			],
-		},
-	],
+				],
+			},
+		],
+		effective_severity_level: 'high',
+	},
 };
 
 describe('NO RULE - Snyk vulnerabilities', () => {
@@ -929,7 +933,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 		const result = snykAlertToRepocopVulnerability(fullName, snykIssue3Coords, [
 			exampleSnykProject,
 		]);
-		expect(result.package).toEqual('fetch,axios');
+		expect(result.package).toEqual('fetch, axios');
 	});
 });
 

@@ -485,8 +485,6 @@ export function snykAlertToRepocopVulnerability(
 		.map((c) => c.representations)
 		.flat();
 
-	console.log('packages: ', packages);
-
 	const projectIdFromIssue = issue.relationships.scan_item.data.id;
 
 	const ecosystem = projects.find((p) => p.id === projectIdFromIssue)
