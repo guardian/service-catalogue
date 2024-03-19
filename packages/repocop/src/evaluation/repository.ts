@@ -513,7 +513,6 @@ export async function evaluateRepositories(
 			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
 
 		const reposOnSnyk = snykProjects
-			// .slice(0, 100)
 			.map((p) => p.attributes.tags)
 			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
 			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
