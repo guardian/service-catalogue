@@ -14,6 +14,7 @@ import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
+	Dependency,
 	EvaluationResult,
 	RepoAndStack,
 	RepocopVulnerability,
@@ -468,16 +469,17 @@ export function snykAlertToRepocopVulnerability(
 	issue: SnykIssue,
 	projects: SnykProject[],
 ): RepocopVulnerability {
-	const packages = issue.attributes.coordinates
+	const packages = (issue.attributes.coordinates ?? [])
 		.map((c) => c.representations)
-		.flat();
+		.flat()
+		.filter((r) => r !== null) as Dependency[];
 
 	const projectIdFromIssue = issue.relationships.scan_item.data.id;
 
 	const ecosystem = projects.find((p) => p.id === projectIdFromIssue)
 		?.attributes.type;
 
-	const isPatchable = issue.attributes.coordinates
+	const isPatchable = (issue.attributes.coordinates ?? [])
 		.map((c) => c.is_patchable ?? c.is_upgradeable ?? c.is_pinnable ?? false)
 		.includes(true);
 

@@ -41,6 +41,13 @@ export interface Repository extends RepositoryFields {
 	id: NonNullable<RepositoryFields['id']>;
 }
 
+export interface Dependency {
+	dependency: {
+		package_name: string;
+		package_version: string;
+	};
+}
+
 export interface Coordinate {
 	remedies: null | string[]; //unsure about this
 	reachability?: string;
@@ -48,14 +55,11 @@ export interface Coordinate {
 	is_fixable_snyk?: true;
 	is_patchable?: true;
 	is_pinnable?: true;
-	representations: [
-		{
-			dependency: {
-				package_name: string;
-				package_version: string;
-			};
-		},
-	];
+	/*
+	 ** There's several possible types here, but we can represent them all later.
+	 ** Dependency is the one used 99% of the time, so represent the others as nulls for now
+	 */
+	representations: Array<Dependency | null>;
 }
 
 interface Attributes {
@@ -86,7 +90,7 @@ interface Attributes {
 	];
 	created_at: string; //or Date?
 	updated_at: string; //or Date?
-	coordinates: Coordinate[];
+	coordinates?: Coordinate[];
 	effective_severity_level: string;
 }
 
