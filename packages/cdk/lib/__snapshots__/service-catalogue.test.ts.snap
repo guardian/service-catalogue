@@ -13725,18 +13725,13 @@ spec:
 spec:
   name: snyk
   path: cloudquery/snyk
-  version: v4.0.6
+  version: v5.3.0
   tables:
-    - snyk_dependencies
-    - snyk_groups
-    - snyk_group_members
-    - snyk_integrations
+    - snyk_issues
     - snyk_organizations
-    - snyk_organization_members
-    - snyk_reporting_issues
-    - snyk_reporting_latest_issues
-  skip_tables:
-    - snyk_organization_provisions
+    - snyk_projects
+    - snyk_sbom
+  skip_tables: []
   destinations:
     - postgresql
   spec:
@@ -13865,7 +13860,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('snyk_dependencies', 'DAILY'),('snyk_groups', 'DAILY'),('snyk_group_members', 'DAILY'),('snyk_integrations', 'DAILY'),('snyk_organizations', 'DAILY'),('snyk_organization_members', 'DAILY'),('snyk_reporting_issues', 'DAILY'),('snyk_reporting_latest_issues', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('snyk_issues', 'DAILY'),('snyk_organizations', 'DAILY'),('snyk_projects', 'DAILY'),('snyk_sbom', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -16213,9 +16208,6 @@ spec:
               "Ref": "TopicBFC7AF6E",
             },
             "QUERY_LOGGING": "false",
-            "SNYK_API_KEY_ARN": {
-              "Ref": "snykcredentials4D951A18",
-            },
             "SNYK_INTEGRATOR_INPUT_TOPIC_ARN": {
               "Ref": "snykintegratorinputtopicTEST6BCA9CE1",
             },
@@ -16505,16 +16497,6 @@ spec:
               },
               "Effect": "Allow",
               "Resource": "*",
-            },
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "snykcredentials4D951A18",
-              },
             },
           ],
           "Version": "2012-10-17",

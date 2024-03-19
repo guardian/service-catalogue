@@ -41,6 +41,74 @@ export interface Repository extends RepositoryFields {
 	id: NonNullable<RepositoryFields['id']>;
 }
 
+export interface Dependency {
+	dependency: {
+		package_name: string;
+		package_version: string;
+	};
+}
+
+export interface Coordinate {
+	remedies: null | string[]; //unsure about this
+	reachability?: string;
+	is_upgradeable?: true;
+	is_fixable_snyk?: true;
+	is_patchable?: true;
+	is_pinnable?: true;
+	/*
+	 ** There's several possible types here, but we can represent them all later.
+	 ** Dependency is the one used 99% of the time, so represent the others as nulls for now
+	 */
+	representations: Array<Dependency | null>;
+}
+
+interface Attributes {
+	key?: string;
+	risk?: {
+		score: {
+			model: string;
+			value: number;
+			updated_at: string; //or Date?
+		};
+		factors: [];
+	};
+	type?: string;
+	title?: string;
+	status: string;
+	classes?: [{ id: string; type: string; source: string }] | null;
+	ignored: boolean;
+	problems: [
+		{
+			id: string; //CVE
+			url: string;
+			type: string;
+			source: string;
+			updated_at: string; //or Date?
+			disclosed_at: string; //or Date?
+			discovered_at: string; //or Date?
+		},
+	];
+	created_at: string; //or Date?
+	updated_at: string; //or Date?
+	coordinates?: Coordinate[];
+	effective_severity_level: string;
+}
+
+interface Relationships {
+	scan_item: {
+		data: { id: string; type: 'project' }; //i think type is only ever project?
+	};
+	organization: {
+		data: { id: string; type: 'organization' }; //same for organization
+	};
+}
+
+export interface SnykIssue {
+	id: string;
+	attributes: Attributes;
+	relationships: Relationships;
+}
+
 type StackFields = Pick<
 	aws_cloudformation_stacks,
 	'stack_name' | 'tags' | 'creation_time'
@@ -67,17 +135,7 @@ export interface RepoAndAlerts {
 	alerts: Alert[] | undefined;
 }
 
-// Snyk REST API response types
-interface SnykOrg {
-	id: string;
-	name: string;
-	slug: string;
-}
-export interface SnykOrgResponse {
-	orgs: SnykOrg[];
-}
-
-export interface ProjectTag {
+export interface Tag {
 	key: string;
 	value: string;
 }
@@ -86,50 +144,19 @@ export interface SnykProject {
 	id: string;
 	attributes: {
 		name: string;
+		tags: Tag[];
+		type: string; //package manager
 		origin: string;
 		status: string;
-		tags: ProjectTag[];
+		created: string; //or Date?
+		settings?: { recurring_tests: { frequency: string } };
+		lifecycle?: unknown[];
+		read_only?: boolean;
+		environment?: unknown[];
+		target_file?: string;
+		target_reference?: string;
+		business_criticality?: unknown[];
 	};
-}
-
-interface Next {
-	next: string;
-}
-
-export interface SnykProjectsResponse {
-	data: SnykProject[];
-	links: Next | undefined;
-}
-
-//End of Snyk REST API response types
-
-export interface GuardianSnykTags {
-	repo: string | undefined;
-	branch: string | undefined;
-}
-
-export interface SnykIssue {
-	id: string;
-	url: string;
-	type?: string;
-	title?: string;
-	version?: string;
-	language?: string;
-	severity: string;
-	isPatched: boolean;
-	isIgnored: boolean;
-	isPinnable: boolean;
-	isPatchable: boolean;
-	isUpgradable: boolean;
-	Identifiers: {
-		CVE: string[] | null;
-		CWE: string[] | null;
-		OSVDB: string[] | null;
-	};
-	disclosureTime: string; //or Date?
-	package: string;
-	packageManager: string;
-	publicationTime: string; //or Date?
 }
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';

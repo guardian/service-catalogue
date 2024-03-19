@@ -33,7 +33,9 @@ npx -w common prisma generate
 ```
 
 ## Applying a migration to CODE or PROD
+
 Prerequisite:
+
 1. You have an approved Pull Request
 2. You have `deployTools` credentials from Janus
 3. You are connected to the VPN
@@ -45,5 +47,6 @@ npm -w cli start migrate -- --stage [CODE|PROD]
 ```
 
 See also:
+
 - https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production#production-and-testing-environments
 - https://www.prisma.io/docs/guides/migrate/production-troubleshooting#failed-migration

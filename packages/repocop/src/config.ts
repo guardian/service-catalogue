@@ -1,10 +1,5 @@
 import * as process from 'process';
 import {
-	GetSecretValueCommand,
-	SecretsManagerClient,
-} from '@aws-sdk/client-secrets-manager';
-import { awsClientConfig } from 'common/aws';
-import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
@@ -67,21 +62,6 @@ export interface Config extends PrismaConfig {
 	 * The ARN of the Snyk Integrator input topic.
 	 */
 	snykIntegratorTopic: string;
-
-	/**
-	 * The API key for Snyk.
-	 */
-	snykReadOnlyKey: string;
-
-	/**
-	 * The Snyk group ID.
-	 */
-	snykGroupId: string;
-
-	/**
-	 * The Snyk API version.
-	 */
-	snykApiVersion: string;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -93,8 +73,6 @@ export async function getConfig(): Promise<Config> {
 		stage === 'DEV'
 			? await getDevDatabaseConfig()
 			: await getDatabaseConfig(stage, 'repocop');
-
-	const snykSecretValues = await getSnykSecretValues(stage);
 
 	return {
 		app: getEnvOrThrow('APP'),
@@ -114,31 +92,5 @@ export async function getConfig(): Promise<Config> {
 		snykIntegrationPREnabled:
 			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
 		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
-		snykReadOnlyKey: snykSecretValues['api-key'].replaceAll("'", ''),
-		snykGroupId: snykSecretValues['group-id'].replaceAll("'", ''),
-		snykApiVersion: '2024-01-04',
 	};
-
-	interface SnykSecret {
-		readonly 'api-key': string;
-		readonly 'group-id': string;
-	}
-
-	async function getSnykSecretValues(stage: string): Promise<SnykSecret> {
-		const snykSecretArn = getEnvOrThrow('SNYK_API_KEY_ARN');
-
-		const secretManager = new SecretsManagerClient(awsClientConfig(stage));
-
-		const secretCommand = new GetSecretValueCommand({
-			SecretId: snykSecretArn,
-		});
-
-		const snykSecret = (await secretManager.send(secretCommand)).SecretString;
-
-		if (!snykSecret) {
-			throw new Error('Snyk secret not found');
-		}
-
-		return JSON.parse(snykSecret) as SnykSecret;
-	}
 }

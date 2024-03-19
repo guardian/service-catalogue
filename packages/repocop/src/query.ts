@@ -2,19 +2,14 @@ import type {
 	github_languages,
 	github_repository_branches,
 	PrismaClient,
-	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { GotBodyOptions } from 'got';
-import get from 'got';
-import type { Config } from './config';
 import type {
 	AwsCloudFormationStack,
 	NonEmptyArray,
 	Repository,
-	SnykOrgResponse,
+	SnykIssue,
 	SnykProject,
-	SnykProjectsResponse,
 	Team,
 } from './types';
 import { toNonEmptyArray } from './utils';
@@ -93,67 +88,28 @@ export async function getStacks(
 	return toNonEmptyArray(stacks);
 }
 
-export async function getLatestSnykIssues(
+export async function getSnykIssues(
 	client: PrismaClient,
-): Promise<snyk_reporting_latest_issues[]> {
-	return await client.snyk_reporting_latest_issues.findMany({});
+): Promise<SnykIssue[]> {
+	return (await client.snyk_issues.findMany({})).map((i) => {
+		return {
+			id: i.id,
+			attributes: i.attributes as unknown as SnykIssue['attributes'],
+			relationships: i.relationships as unknown as SnykIssue['relationships'],
+		};
+	});
+}
+
+export async function getSnykProjects(
+	client: PrismaClient,
+): Promise<SnykProject[]> {
+	return (await client.snyk_projects.findMany({})).map((i) => {
+		return i as unknown as SnykProject;
+	});
 }
 
 export async function getRepositoryLanguages(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<github_languages>> {
 	return toNonEmptyArray(await client.github_languages.findMany({}));
-}
-
-function projectsURL(orgId: string, snykApiVersion: string): string {
-	return `https://api.snyk.io/rest/orgs/${orgId}/projects?version=${snykApiVersion}&limit=100`;
-}
-
-function snykRequestOptions(config: Config): GotBodyOptions<string> {
-	return {
-		headers: {
-			Authorization: `token ${config.snykReadOnlyKey}`,
-		},
-	};
-}
-
-export async function getSnykOrgs(config: Config): Promise<SnykOrgResponse> {
-	const getOrgsUrl = `https://api.snyk.io/api/orgs?version=${config.snykApiVersion}`;
-	const resp = await get(getOrgsUrl, snykRequestOptions(config));
-	const snykOrgResponse = JSON.parse(resp.body) as SnykOrgResponse;
-	console.debug('Orgs found: ', snykOrgResponse.orgs.length);
-	return snykOrgResponse;
-}
-
-export async function getProjectsForOrg(
-	orgId: string,
-	config: Config,
-): Promise<SnykProject[]> {
-	const opts = snykRequestOptions(config);
-
-	const projectsResponse = await get(
-		projectsURL(orgId, config.snykApiVersion),
-		opts,
-	);
-	const parsedResponse = JSON.parse(
-		projectsResponse.body,
-	) as SnykProjectsResponse;
-
-	const data = parsedResponse.data;
-
-	let next = parsedResponse.links?.next;
-
-	while (next) {
-		const nextResponse = await get(`https://api.snyk.io${next}`, opts);
-		const nextParsedResponse = JSON.parse(
-			nextResponse.body,
-		) as SnykProjectsResponse;
-		const nextTags = nextParsedResponse.data;
-
-		data.push(...nextTags);
-		next = nextParsedResponse.links?.next;
-	}
-
-	console.debug(`Snyk projects found for org ${orgId}: `, data.length);
-	return data;
 }

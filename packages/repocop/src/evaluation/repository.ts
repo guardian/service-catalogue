@@ -2,8 +2,6 @@ import type {
 	github_languages,
 	github_repository_branches,
 	repocop_github_repository_rules,
-	snyk_projects,
-	snyk_reporting_latest_issues,
 	view_repo_ownership,
 } from '@prisma/client';
 import { partition } from 'common/src/functions';
@@ -16,14 +14,14 @@ import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
+	Dependency,
 	EvaluationResult,
-	GuardianSnykTags,
-	ProjectTag,
 	RepoAndStack,
 	RepocopVulnerability,
 	Repository,
 	SnykIssue,
 	SnykProject,
+	Tag,
 } from '../types';
 import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';
 
@@ -123,55 +121,6 @@ function isMaintained(repo: Repository): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
-interface SnykTags {
-	commit?: string;
-	branch?: string;
-	repo?: string;
-}
-
-export function parseSnykTags(snyk_projects: snyk_projects) {
-	interface TagValues {
-		key: string;
-		value: string;
-	}
-
-	const tagString = JSON.stringify(snyk_projects.tags);
-	const tags = JSON.parse(tagString) as TagValues[];
-
-	const snykTags: SnykTags = {
-		commit: tags.find((tag) => tag.key === 'commit')?.value,
-		branch: tags.find((tag) => tag.key === 'branch')?.value,
-		repo: tags.find((tag) => tag.key === 'repo')?.value,
-	};
-
-	return snykTags;
-}
-
-function toGuardianSnykTags(tags: ProjectTag[]): GuardianSnykTags {
-	return {
-		repo: tags.find((t) => t.key === 'repo')?.value,
-		branch: tags.find((t) => t.key === 'branch')?.value,
-	};
-}
-
-function getTagsFromSnykProject(
-	snykProjectsFromRest: SnykProject[],
-): GuardianSnykTags[] {
-	const allSnykTags = snykProjectsFromRest
-		.map((x) => x.attributes.tags)
-		.map(toGuardianSnykTags)
-		.filter((x) => !!x.repo && !!x.branch);
-
-	const uniqueStringTags: string[] = [
-		...new Set(allSnykTags.map((t) => JSON.stringify(t))),
-	];
-
-	const uniqueTags = uniqueStringTags.map(
-		(t) => JSON.parse(t) as GuardianSnykTags,
-	);
-	return uniqueTags;
-}
-
 /**
  * Evaluate the following rule for a Github repository:
  *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
@@ -179,7 +128,7 @@ function getTagsFromSnykProject(
 export function hasDependencyTracking(
 	repo: Repository,
 	repoLanguages: github_languages[],
-	snykProjectsFromRest: SnykProject[],
+	reposOnSnyk: string[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
@@ -190,24 +139,8 @@ export function hasDependencyTracking(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
 
-	//This is a temporary workaround until we get the snyk_projects table back.
-	const tags = getTagsFromSnykProject(snykProjectsFromRest);
-
-	function snykProjectExists(repo: Repository, allProjectTags: SnykTags[]) {
-		const result = allProjectTags.find(
-			(tags) =>
-				//TODO - this is a close enough match for now, but in the future we should use commit hashes
-				//to make sure the projects are in sync
-				!!repo.full_name &&
-				tags.repo == repo.full_name &&
-				tags.branch === repo.default_branch,
-		);
-		const exists = result !== undefined;
-		return exists;
-	}
-
 	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
-	const repoIsOnSnyk = snykProjectExists(repo, tags);
+	const repoIsOnSnyk = reposOnSnyk.includes(repo.full_name);
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
@@ -361,18 +294,18 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
-function getProjectIssues(
+function getIssuesForProject(
 	projectId: string,
-	issues: snyk_reporting_latest_issues[],
-): snyk_reporting_latest_issues[] {
-	return issues.filter((issue) =>
-		JSON.stringify(issue.projects).includes(projectId),
+	issues: SnykIssue[],
+): SnykIssue[] {
+	return issues.filter(
+		(issue) => issue.relationships.scan_item.data.id === projectId,
 	);
 }
 
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
-	snykIssues: snyk_reporting_latest_issues[],
+	snykIssues: SnykIssue[],
 	snykProjects: SnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
@@ -386,12 +319,13 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	const snykIssuesForRepo: snyk_reporting_latest_issues[] =
-		snykProjectIdsForRepo
-			.map((projectId) => getProjectIssues(projectId, snykIssues))
-			.flat();
+	const snykIssuesForRepo: SnykIssue[] = snykProjectIdsForRepo
+		.map((projectId) => getIssuesForProject(projectId, snykIssues))
+		.flat()
+		.filter((i) => !i.attributes.ignored);
+
 	const processedVulns = snykIssuesForRepo.map((v) =>
-		snykAlertToRepocopVulnerability(repo.full_name, v),
+		snykAlertToRepocopVulnerability(repo.full_name, v, snykProjects),
 	);
 
 	const relevantVulns = processedVulns.filter(
@@ -469,13 +403,14 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: snyk_reporting_latest_issues[],
-	snykProjectsFromRest: SnykProject[],
+	latestSnykIssues: SnykIssue[],
+	snykProjects: SnykProject[],
+	reposOnSnyk: string[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
 		latestSnykIssues,
-		snykProjectsFromRest,
+		snykProjects,
 	);
 
 	const vulnerabilities = snykAlertsForRepo.concat(
@@ -495,7 +430,7 @@ export function evaluateOneRepo(
 		vulnerability_tracking: hasDependencyTracking(
 			repo,
 			repoLanguages,
-			snykProjectsFromRest,
+			reposOnSnyk,
 		),
 		evaluated_on: new Date(),
 	};
@@ -531,22 +466,38 @@ export function dependabotAlertToRepocopVulnerability(
 
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
-	alert: snyk_reporting_latest_issues,
+	issue: SnykIssue,
+	projects: SnykProject[],
 ): RepocopVulnerability {
-	const issue = alert.issue as unknown as SnykIssue;
+	const packages = (issue.attributes.coordinates ?? [])
+		.map((c) => c.representations)
+		.flat()
+		.filter((r) => r !== null) as Dependency[];
+
+	const projectIdFromIssue = issue.relationships.scan_item.data.id;
+
+	const ecosystem = projects.find((p) => p.id === projectIdFromIssue)
+		?.attributes.type;
+
+	const isPatchable = (issue.attributes.coordinates ?? [])
+		.map((c) => c.is_patchable ?? c.is_upgradeable ?? c.is_pinnable ?? false)
+		.includes(true);
+
+	const packageName = [
+		...new Set(packages.map((p) => p.dependency.package_name)),
+	].join(', ');
 
 	return {
 		fullName,
-		open: alert.is_fixed !== true && !issue.isIgnored,
+		open: issue.attributes.status === 'open',
 		source: 'Snyk',
-		severity: stringToSeverity(issue.severity),
-		package: issue.package,
-		urls: issue.url ? [issue.url] : [],
-		ecosystem: issue.packageManager,
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- this is never null in reality
-		alert_issue_date: alert.introduced_date!,
-		isPatchable: issue.isPatchable || issue.isUpgradable || issue.isPinnable,
-		CVEs: issue.Identifiers.CVE ?? [],
+		severity: stringToSeverity(issue.attributes.effective_severity_level),
+		package: packageName,
+		urls: issue.attributes.problems.map((p) => p.url),
+		ecosystem: ecosystem ?? 'unknown ecosystem',
+		alert_issue_date: issue.attributes.created_at,
+		isPatchable,
+		CVEs: issue.attributes.problems.map((p) => p.id),
 	};
 }
 
@@ -555,11 +506,21 @@ export async function evaluateRepositories(
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: snyk_reporting_latest_issues[],
-	snykProjectsFromRest: SnykProject[],
+	snykIssues: SnykIssue[],
+	snykProjects: SnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
+		const isMainBranchPredicate = (x: Tag) =>
+			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
+
+		const reposOnSnyk = snykProjects
+			.map((p) => p.attributes.tags)
+			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
+			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
+			.filter((x) => x !== undefined) as string[];
+
+		const uniqueReposOnSnyk = [...new Set(reposOnSnyk)];
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))
 					?.filter((a) => a.state === 'open')
@@ -567,14 +528,16 @@ export async function evaluateRepositories(
 			: [];
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
+
 		return evaluateOneRepo(
 			dependabotAlerts,
 			r,
 			branchesForRepo,
 			teamsForRepo,
 			repoLanguages,
-			latestSnykIssues,
-			snykProjectsFromRest,
+			snykIssues,
+			snykProjects,
+			uniqueReposOnSnyk,
 		);
 	});
 	return Promise.all(evaluatedRepos);

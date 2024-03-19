@@ -14,13 +14,12 @@ import {
 } from './evaluation/repository';
 import { sendToCloudwatch } from './metrics';
 import {
-	getLatestSnykIssues,
-	getProjectsForOrg,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
 	getRepositoryLanguages,
-	getSnykOrgs,
+	getSnykIssues,
+	getSnykProjects,
 	getStacks,
 	getTeams,
 } from './query';
@@ -53,16 +52,7 @@ async function writeEvaluationTable(
 export async function main() {
 	const config: Config = await getConfig();
 
-	const snykOrgIds = (await getSnykOrgs(config)).orgs.map((org) => org.id);
-
-	const snykProjectsFromRest = (
-		await Promise.all(
-			snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
-		)
-	).flat();
-
 	const prisma = getPrismaClient(config);
-
 	const octokit = await stageAwareOctokit(config.stage);
 
 	const [unarchivedRepos, archivedRepos] = partition(
@@ -74,7 +64,8 @@ export async function main() {
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
-	const latestSnykIssues = await getLatestSnykIssues(prisma);
+	const snykIssues = await getSnykIssues(prisma);
+	const snykProjects = await getSnykProjects(prisma);
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
@@ -83,8 +74,8 @@ export async function main() {
 		branches,
 		repoOwners,
 		repoLanguages,
-		latestSnykIssues,
-		snykProjectsFromRest,
+		snykIssues,
+		snykProjects,
 		octokit,
 	);
 

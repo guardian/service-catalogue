@@ -29,7 +29,6 @@ export class Repocop {
 		interactiveMonitorTopic: Topic,
 		dbSecurityGroup: SecurityGroup,
 		repocopGithubSecret: Secret,
-		snykCredentialsSecret: Secret,
 	) {
 		const snykIntegratorInputTopic = new Topic(
 			guStack,
@@ -65,7 +64,6 @@ export class Repocop {
 				SNYK_INTEGRATOR_INPUT_TOPIC_ARN: snykIntegratorInputTopic.topicArn,
 				DEPENDENCY_GRAPH_INPUT_TOPIC_ARN:
 					dependencyGraphIntegratorInputTopic.topicArn,
-				SNYK_API_KEY_ARN: snykCredentialsSecret.secretArn,
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],
@@ -97,7 +95,6 @@ export class Repocop {
 		snykIntegratorInputTopic.grantPublish(repocopLambda);
 		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
-		snykCredentialsSecret.grantRead(repocopLambda);
 
 		const snykIntegatorLambda = stageAwareIntegratorLambda(
 			guStack,
