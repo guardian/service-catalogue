@@ -73,8 +73,7 @@ export async function getRepoOwnership(
 
 export async function getStacks(
 	client: PrismaClient,
-	// ): Promise<NonEmptyArray<AwsCloudFormationStack>> {
-): Promise<AwsCloudFormationStack[]> {
+): Promise<NonEmptyArray<AwsCloudFormationStack>> {
 	const stacks = (
 		await client.aws_cloudformation_stacks.findMany({
 			select: {
@@ -86,8 +85,7 @@ export async function getStacks(
 	).map((stack) => stack as AwsCloudFormationStack);
 
 	console.debug(`Found ${stacks.length} stacks.`);
-	// return toNonEmptyArray(stacks);
-	return stacks;
+	return toNonEmptyArray(stacks);
 }
 
 export async function getSnykIssues(

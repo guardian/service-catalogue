@@ -52,13 +52,6 @@ async function writeEvaluationTable(
 export async function main() {
 	const config: Config = await getConfig();
 
-	// const snykOrgIds = (await getSnykOrgs(config)).orgs.map((org) => org.id);
-	// const snykProjectsFromRest = (
-	// 	await Promise.all(
-	// 		snykOrgIds.map(async (orgId) => await getProjectsForOrg(orgId, config)),
-	// 	)
-	// ).flat();
-
 	const prisma = getPrismaClient(config);
 	const octokit = await stageAwareOctokit(config.stage);
 
