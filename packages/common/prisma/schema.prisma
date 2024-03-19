@@ -504,9 +504,9 @@ model snyk_projects {
   id              String    @id(map: "snyk_projects_cqpk")
   attributes      Json?
   meta            Json?
+  organization_id String?
   relationships   Json?
   type            String?
-  organization_id String?
 }
 
 model galaxies_teams_table {
@@ -606,11 +606,11 @@ model snyk_issues {
   cq_source_name  String?   @map("_cq_source_name")
   cq_id           String    @unique @map("_cq_id") @db.Uuid
   cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  organization_id String?
   attributes      Json?
   id              String    @id(map: "snyk_issues_cqpk")
-  type            String?
-  organization_id String?
   relationships   Json?
+  type            String?
 }
 
 model guardian_github_actions_usage {

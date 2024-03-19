@@ -10,7 +10,18 @@
 
 */
 
+-- DropTable
 DROP VIEW IF EXISTS "view_snyk_project_tags";
+DROP TABLE IF EXISTS "snyk_dependencies";
+DROP TABLE IF EXISTS "snyk_groups";
+DROP TABLE IF EXISTS "snyk_group_members";
+DROP TABLE IF EXISTS "snyk_integrations";
+DROP TABLE IF EXISTS "snyk_organizations";
+DROP TABLE IF EXISTS "snyk_organization_members";
+DROP TABLE IF EXISTS "snyk_organization_provisions";
+DROP TABLE IF EXISTS "snyk_reporting_issues";
+DROP TABLE IF EXISTS "snyk_reporting_latest_issues";
+
 
 -- AlterTable
 ALTER TABLE "snyk_projects" DROP COLUMN "issue_counts_by_severity",
@@ -20,11 +31,9 @@ DROP COLUMN "origin",
 DROP COLUMN "tags",
 ADD COLUMN     "attributes" JSONB,
 ADD COLUMN     "meta" JSONB,
+ADD COLUMN     "organization_id" TEXT,
 ADD COLUMN     "relationships" JSONB,
 ADD COLUMN     "type" TEXT;
-
--- DropTable
-DROP TABLE "snyk_reporting_latest_issues";
 
 -- CreateTable
 CREATE TABLE "snyk_issues" (
@@ -32,8 +41,10 @@ CREATE TABLE "snyk_issues" (
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
     "_cq_parent_id" UUID,
+    "organization_id" TEXT,
     "attributes" JSONB,
     "id" TEXT NOT NULL,
+    "relationships" JSONB,
     "type" TEXT,
 
     CONSTRAINT "snyk_issues_cqpk" PRIMARY KEY ("id")
