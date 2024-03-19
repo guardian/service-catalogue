@@ -82,8 +82,6 @@ setup_environment() {
 
   SNYK_TOKEN=$(aws secretsmanager get-secret-value --secret-id /CODE/deploy/service-catalogue/snyk-credentials  --profile "$PROFILE" --region "$REGION" | jq -r '.SecretString' | jq -r '."api-key"' | tr -d "'")
 
-  SNYK_API_KEY_ARN=$(aws secretsmanager list-secrets --profile "$PROFILE" --region "$REGION" --query 'SecretList[*]['ARN']' --output text | grep /CODE/deploy/service-catalogue/snyk-credentials)
-  
   GALAXIES_BUCKET=$(aws ssm get-parameter --name /INFRA/deploy/cloudquery/actions-static-site-bucket-arn --profile "$PROFILE" --region "$REGION" | jq -r '.Parameter.Value | sub("arn:aws:s3:::"; "")')
 
   ANGHAMMARAD_SNS_ARN=$(aws ssm get-parameter --name /account/services/anghammarad.topic.arn --profile "$PROFILE" --region "$REGION" | jq '.Parameter.Value' | tr -d '"')
@@ -113,7 +111,6 @@ echo "$JSON_STRING" | jq -r '."private-key"' | base64 --decode > "$GITHUB_PRIVAT
 
 
   env_var_text="SNYK_TOKEN=${SNYK_TOKEN}
-SNYK_API_KEY_ARN=${SNYK_API_KEY_ARN}
 GALAXIES_BUCKET=${GALAXIES_BUCKET}
 ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
