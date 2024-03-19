@@ -25,7 +25,6 @@ export const Versions = {
 	CloudqueryFastly: envOrError('CQ_FASTLY'),
 	CloudqueryGalaxies: envOrError('CQ_GUARDIAN_GALAXIES'),
 	CloudquerySnyk: envOrError('CQ_SNYK'),
-	CloudquerySnykGuardian: envOrError('CQ_GUARDIAN_SNYK'),
 	CloudqueryGithubLanguages: envOrError('CQ_GITHUB_LANGUAGES'),
 	CloudqueryNs1: envOrError('CQ_NS1'),
 };
