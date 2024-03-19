@@ -519,7 +519,6 @@ export async function evaluateRepositories(
 			.filter((x) => x !== undefined) as string[];
 
 		const uniqueReposOnSnyk = [...new Set(reposOnSnyk)];
-		console.log(uniqueReposOnSnyk);
 		const dependabotAlerts = isProduction(r)
 			? (await getAlertsForRepo(octokit, r.name))
 					?.filter((a) => a.state === 'open')
