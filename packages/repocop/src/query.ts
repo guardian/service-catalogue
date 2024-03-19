@@ -6,7 +6,7 @@ import type {
 } from '@prisma/client';
 import type {
 	AwsCloudFormationStack,
-	CqSnykIssue,
+	SnykIssue,
 	CqSnykProject,
 	NonEmptyArray,
 	Repository,
@@ -92,12 +92,12 @@ export async function getStacks(
 
 export async function getSnykIssues(
 	client: PrismaClient,
-): Promise<CqSnykIssue[]> {
+): Promise<SnykIssue[]> {
 	return (await client.snyk_issues.findMany({})).map((i) => {
 		return {
 			id: i.id,
-			attributes: i.attributes as unknown as CqSnykIssue['attributes'],
-			relationships: i.relationships as unknown as CqSnykIssue['relationships'],
+			attributes: i.attributes as unknown as SnykIssue['attributes'],
+			relationships: i.relationships as unknown as SnykIssue['relationships'],
 		};
 	});
 }

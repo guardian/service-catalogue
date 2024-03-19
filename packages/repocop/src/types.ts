@@ -99,7 +99,7 @@ interface Relationships {
 	};
 }
 
-export interface CqSnykIssue {
+export interface SnykIssue {
 	id: string;
 	attributes: Attributes;
 	relationships: Relationships;
@@ -154,30 +154,6 @@ export interface CqSnykProject {
 		business_criticality?: unknown[];
 	};
 }
-
-// export interface SnykIssue {
-// 	id: string;
-// 	url: string;
-// 	type?: string;
-// 	title?: string;
-// 	version?: string;
-// 	language?: string;
-// 	severity: string;
-// 	isPatched: boolean;
-// 	isIgnored: boolean;
-// 	isPinnable: boolean;
-// 	isPatchable: boolean;
-// 	isUpgradable: boolean;
-// 	Identifiers: {
-// 		CVE: string[] | null;
-// 		CWE: string[] | null;
-// 		OSVDB: string[] | null;
-// 	};
-// 	disclosureTime: string; //or Date?
-// 	package: string;
-// 	packageManager: string;
-// 	publicationTime: string; //or Date?
-// }
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
 

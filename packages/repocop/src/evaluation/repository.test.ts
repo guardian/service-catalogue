@@ -7,7 +7,7 @@ import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
 	Coordinate,
-	CqSnykIssue,
+	SnykIssue,
 	CqSnykProject,
 	RepocopVulnerability,
 	Repository,
@@ -29,7 +29,7 @@ function evaluateRepoTestHelper(
 	owners: view_repo_ownership[] = [],
 	languages: github_languages[] = [],
 	dependabotAlerts: RepocopVulnerability[] = [],
-	latestSnykIssues: CqSnykIssue[] = [],
+	latestSnykIssues: SnykIssue[] = [],
 	cqSnykProjects: CqSnykProject[] = [],
 	reposOnSnyk: string[] = [],
 ) {
@@ -619,7 +619,7 @@ describe('NO RULE - Dependabot alerts', () => {
 	});
 });
 
-const snykIssue: CqSnykIssue = {
+const snykIssue: SnykIssue = {
 	id: 'issue1', //is this correct??
 	attributes: {
 		status: 'open',
@@ -774,7 +774,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		expect(result.length).toEqual(0);
 	});
 	test('Should not be detected if the issue has been ignored', () => {
-		const ignoredIssue: CqSnykIssue = {
+		const ignoredIssue: SnykIssue = {
 			...snykIssue,
 			attributes: { ...snykIssue.attributes, ignored: true },
 		};
@@ -799,7 +799,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		expect(result.map((r) => r.isPatchable)).toEqual([false]);
 	});
 	test('Should be considered patchable if there is a possible upgrade path', () => {
-		const pinnableIssue: CqSnykIssue = {
+		const pinnableIssue: SnykIssue = {
 			...snykIssue,
 			attributes: {
 				...snykIssue.attributes,
@@ -811,7 +811,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 				],
 			},
 		};
-		const patchableIssue: CqSnykIssue = {
+		const patchableIssue: SnykIssue = {
 			...snykIssue,
 			attributes: {
 				...snykIssue.attributes,
@@ -823,7 +823,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 				],
 			},
 		};
-		const upgradableIssue: CqSnykIssue = {
+		const upgradableIssue: SnykIssue = {
 			...snykIssue,
 			attributes: {
 				...snykIssue.attributes,

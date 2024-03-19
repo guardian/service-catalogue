@@ -13,7 +13,7 @@ import {
 import type {
 	Alert,
 	AwsCloudFormationStack,
-	CqSnykIssue,
+	SnykIssue,
 	CqSnykProject,
 	DependabotVulnResponse,
 	EvaluationResult,
@@ -295,8 +295,8 @@ export function hasOldAlerts(
 
 function getIssuesForProject(
 	projectId: string,
-	issues: CqSnykIssue[],
-): CqSnykIssue[] {
+	issues: SnykIssue[],
+): SnykIssue[] {
 	return issues.filter(
 		(issue) => issue.relationships.scan_item.data.id === projectId,
 	);
@@ -304,7 +304,7 @@ function getIssuesForProject(
 
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
-	snykIssues: CqSnykIssue[],
+	snykIssues: SnykIssue[],
 	cqSnykProjects: CqSnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
@@ -318,7 +318,7 @@ export function collectAndFormatUrgentSnykAlerts(
 		})
 		.map((project) => project.id);
 
-	const snykIssuesForRepo: CqSnykIssue[] = snykProjectIdsForRepo
+	const snykIssuesForRepo: SnykIssue[] = snykProjectIdsForRepo
 		.map((projectId) => getIssuesForProject(projectId, snykIssues))
 		.flat()
 		.filter((i) => !i.attributes.ignored);
@@ -402,7 +402,7 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: CqSnykIssue[],
+	latestSnykIssues: SnykIssue[],
 	cqSnykProjects: CqSnykProject[],
 	reposOnSnyk: string[],
 ): EvaluationResult {
@@ -465,7 +465,7 @@ export function dependabotAlertToRepocopVulnerability(
 
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
-	issue: CqSnykIssue,
+	issue: SnykIssue,
 	projects: CqSnykProject[],
 ): RepocopVulnerability {
 	const packages = issue.attributes.coordinates
@@ -504,7 +504,7 @@ export async function evaluateRepositories(
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	snykIssues: CqSnykIssue[],
+	snykIssues: SnykIssue[],
 	cqSnykProjects: CqSnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
