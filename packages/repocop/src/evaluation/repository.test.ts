@@ -30,7 +30,7 @@ function evaluateRepoTestHelper(
 	languages: github_languages[] = [],
 	dependabotAlerts: RepocopVulnerability[] = [],
 	latestSnykIssues: SnykIssue[] = [],
-	cqSnykProjects: SnykProject[] = [],
+	snykProjects: SnykProject[] = [],
 	reposOnSnyk: string[] = [],
 ) {
 	return evaluateOneRepo(
@@ -40,7 +40,7 @@ function evaluateRepoTestHelper(
 		owners,
 		languages,
 		latestSnykIssues,
-		cqSnykProjects,
+		snykProjects,
 		reposOnSnyk,
 	).repocopRules;
 }

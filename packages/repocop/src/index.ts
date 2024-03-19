@@ -72,7 +72,7 @@ export async function main() {
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
 	const snykIssues = await getSnykIssues(prisma);
-	const cqSnykProjects = await getSnykProjects(prisma);
+	const snykProjects = await getSnykProjects(prisma);
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
@@ -82,7 +82,7 @@ export async function main() {
 		repoOwners,
 		repoLanguages,
 		snykIssues,
-		cqSnykProjects,
+		snykProjects,
 		octokit,
 	);
 

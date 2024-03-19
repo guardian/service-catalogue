@@ -305,13 +305,13 @@ function getIssuesForProject(
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
 	snykIssues: SnykIssue[],
-	cqSnykProjects: SnykProject[],
+	snykProjects: SnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
 		return [];
 	}
 
-	const snykProjectIdsForRepo = cqSnykProjects
+	const snykProjectIdsForRepo = snykProjects
 		.filter((project) => {
 			const tagValues = project.attributes.tags.map((tag) => tag.value);
 			return tagValues.includes(repo.full_name);
@@ -324,7 +324,7 @@ export function collectAndFormatUrgentSnykAlerts(
 		.filter((i) => !i.attributes.ignored);
 
 	const processedVulns = snykIssuesForRepo.map((v) =>
-		snykAlertToRepocopVulnerability(repo.full_name, v, cqSnykProjects),
+		snykAlertToRepocopVulnerability(repo.full_name, v, snykProjects),
 	);
 
 	const relevantVulns = processedVulns.filter(
@@ -403,13 +403,13 @@ export function evaluateOneRepo(
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	latestSnykIssues: SnykIssue[],
-	cqSnykProjects: SnykProject[],
+	snykProjects: SnykProject[],
 	reposOnSnyk: string[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
 		latestSnykIssues,
-		cqSnykProjects,
+		snykProjects,
 	);
 
 	const vulnerabilities = snykAlertsForRepo.concat(
@@ -505,14 +505,14 @@ export async function evaluateRepositories(
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	snykIssues: SnykIssue[],
-	cqSnykProjects: SnykProject[],
+	snykProjects: SnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map(async (r) => {
 		const isMainBranchPredicate = (x: Tag) =>
 			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
 
-		const reposOnSnyk = cqSnykProjects
+		const reposOnSnyk = snykProjects
 			// .slice(0, 100)
 			.map((p) => p.attributes.tags)
 			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
@@ -536,7 +536,7 @@ export async function evaluateRepositories(
 			teamsForRepo,
 			repoLanguages,
 			snykIssues,
-			cqSnykProjects,
+			snykProjects,
 			uniqueReposOnSnyk,
 		);
 	});
