@@ -36,7 +36,7 @@ deployments.set('service-catalogue-prisma-migrations', {
 	contentDirectory: 'prisma',
 	app: 'prisma-migrate-task',
 	parameters: {
-		cacheControl: 'max-age=0',
+		cacheControl: 'no-store',
 		publicReadAcl: false,
 	},
 	regions: new Set([region]),
