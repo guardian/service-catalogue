@@ -136,7 +136,7 @@ export interface Tag {
 	value: string;
 }
 
-export interface CqSnykProject {
+export interface SnykProject {
 	id: string;
 	attributes: {
 		name: string;

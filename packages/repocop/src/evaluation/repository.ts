@@ -13,13 +13,13 @@ import {
 import type {
 	Alert,
 	AwsCloudFormationStack,
-	SnykIssue,
-	CqSnykProject,
 	DependabotVulnResponse,
 	EvaluationResult,
 	RepoAndStack,
 	RepocopVulnerability,
 	Repository,
+	SnykIssue,
+	SnykProject,
 	Tag,
 } from '../types';
 import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';
@@ -305,7 +305,7 @@ function getIssuesForProject(
 export function collectAndFormatUrgentSnykAlerts(
 	repo: Repository,
 	snykIssues: SnykIssue[],
-	cqSnykProjects: CqSnykProject[],
+	cqSnykProjects: SnykProject[],
 ): RepocopVulnerability[] {
 	if (!isProduction(repo)) {
 		return [];
@@ -403,7 +403,7 @@ export function evaluateOneRepo(
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	latestSnykIssues: SnykIssue[],
-	cqSnykProjects: CqSnykProject[],
+	cqSnykProjects: SnykProject[],
 	reposOnSnyk: string[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
@@ -466,7 +466,7 @@ export function dependabotAlertToRepocopVulnerability(
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
 	issue: SnykIssue,
-	projects: CqSnykProject[],
+	projects: SnykProject[],
 ): RepocopVulnerability {
 	const packages = issue.attributes.coordinates
 		.map((c) => c.representations)
@@ -505,7 +505,7 @@ export async function evaluateRepositories(
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	snykIssues: SnykIssue[],
-	cqSnykProjects: CqSnykProject[],
+	cqSnykProjects: SnykProject[],
 	octokit: Octokit,
 ): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map(async (r) => {

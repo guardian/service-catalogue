@@ -7,10 +7,10 @@ import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
 	Coordinate,
-	SnykIssue,
-	CqSnykProject,
 	RepocopVulnerability,
 	Repository,
+	SnykIssue,
+	SnykProject,
 } from '../types';
 import {
 	collectAndFormatUrgentSnykAlerts,
@@ -30,7 +30,7 @@ function evaluateRepoTestHelper(
 	languages: github_languages[] = [],
 	dependabotAlerts: RepocopVulnerability[] = [],
 	latestSnykIssues: SnykIssue[] = [],
-	cqSnykProjects: CqSnykProject[] = [],
+	cqSnykProjects: SnykProject[] = [],
 	reposOnSnyk: string[] = [],
 ) {
 	return evaluateOneRepo(
@@ -92,7 +92,7 @@ const nullOwner: view_repo_ownership = {
 	team_contact_email: null,
 };
 
-const exampleSnykProject: CqSnykProject = {
+const exampleSnykProject: SnykProject = {
 	id: 'project1',
 	attributes: {
 		name: '',
