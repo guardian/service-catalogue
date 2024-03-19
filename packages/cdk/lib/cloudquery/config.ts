@@ -279,32 +279,6 @@ export function snykSourceConfig(
 	};
 }
 
-export function guardianSnykSourceConfig(
-	tableConfig: CloudqueryTableConfig,
-): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
-
-	if (!tables && !skipTables) {
-		throw new Error('Must specify either tables or skipTables');
-	}
-
-	return {
-		kind: 'source',
-		spec: {
-			name: 'guardian-snyk',
-			path: 'guardian/snyk-full-project',
-			registry: 'github',
-			version: `v${Versions.CloudquerySnykGuardian}`,
-			tables,
-			skip_tables: skipTables,
-			destinations: ['postgresql'],
-			spec: {
-				api_key: '${SNYK_API_KEY}',
-			},
-		},
-	};
-}
-
 export function githubLanguagesConfig(): CloudqueryConfig {
 	return {
 		kind: 'source',

@@ -19,7 +19,6 @@ import {
 	galaxiesSourceConfig,
 	githubLanguagesConfig,
 	githubSourceConfig,
-	guardianSnykSourceConfig,
 	ns1SourceConfig,
 	riffraffSourcesConfig,
 	skipTables,
@@ -441,21 +440,6 @@ export function addCloudqueryEcsCluster(
 				),
 			},
 			memoryLimitMiB: 1024,
-		},
-		{
-			name: 'GuardianCustomSnykProjects',
-			description:
-				'Collecting Snyk projects including grouped vulnerabilities and tags',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '5' }),
-			config: guardianSnykSourceConfig({
-				tables: ['snyk_projects'],
-			}),
-			secrets: {
-				SNYK_API_KEY: Secret.fromSecretsManager(
-					props.snykCredentials,
-					'api-key',
-				),
-			},
 		},
 	];
 
