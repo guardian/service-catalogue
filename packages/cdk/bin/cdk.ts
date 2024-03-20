@@ -13,6 +13,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack,
 	stage: 'PROD',
 	env: { region },
+	multiAz: true,
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
 });
 

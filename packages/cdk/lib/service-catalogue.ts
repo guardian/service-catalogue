@@ -58,6 +58,7 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * @default true
 	 */
 	rdsDeletionProtection?: boolean;
+	multiAz?: boolean;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -67,7 +68,7 @@ export class ServiceCatalogue extends GuStack {
 		const { stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
 
-		const { rdsDeletionProtection = true } = props;
+		const { rdsDeletionProtection = true, multiAz = false } = props;
 
 		const nonProdSchedule = props.schedule;
 
@@ -104,11 +105,7 @@ export class ServiceCatalogue extends GuStack {
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
 			deletionProtection: rdsDeletionProtection,
-
-			/*
-			This certificate supports automatic rotation.
-			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities
-			 */
+			multiAz: multiAz,
 			caCertificate: CaCertificate.RDS_CA_RDS2048_G1,
 		};
 

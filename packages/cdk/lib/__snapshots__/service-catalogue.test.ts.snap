@@ -14823,6 +14823,7 @@ spec:
             ],
           ],
         },
+        "MultiAZ": false,
         "Port": "5432",
         "PubliclyAccessible": false,
         "StorageEncrypted": true,
