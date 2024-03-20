@@ -56,7 +56,7 @@ export function createDigest(
 	results: EvaluationResult[],
 ): VulnerabilityDigest | undefined {
 	const resultsForTeam = getOwningRepos(team, repoOwners, results);
-	const vulns = resultsForTeam.map((r) => r.vulnerabilities).flat();
+	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
 
 	const totalVulnsCount = vulns.length;
 

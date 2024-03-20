@@ -82,7 +82,7 @@ export async function main() {
 	const repocopRules = evaluationResults.map((r) => r.repocopRules);
 	const severityPredicate = (x: RepocopVulnerability) => x.severity === 'high';
 	const [high, critical] = partition(
-		evaluationResults.map((r) => r.vulnerabilities).flat(),
+		evaluationResults.flatMap((r) => r.vulnerabilities),
 		severityPredicate,
 	);
 

@@ -320,8 +320,7 @@ export function collectAndFormatUrgentSnykAlerts(
 		.map((project) => project.id);
 
 	const snykIssuesForRepo: SnykIssue[] = snykProjectIdsForRepo
-		.map((projectId) => getIssuesForProject(projectId, snykIssues))
-		.flat()
+		.flatMap((projectId) => getIssuesForProject(projectId, snykIssues))
 		.filter((i) => !i.attributes.ignored);
 
 	const processedVulns = snykIssuesForRepo.map((v) =>
@@ -470,8 +469,7 @@ export function snykAlertToRepocopVulnerability(
 	projects: SnykProject[],
 ): RepocopVulnerability {
 	const packages = (issue.attributes.coordinates ?? [])
-		.map((c) => c.representations)
-		.flat()
+		.flatMap((c) => c.representations)
 		.filter((r) => r !== null) as Dependency[];
 
 	const projectIdFromIssue = issue.relationships.scan_item.data.id;
