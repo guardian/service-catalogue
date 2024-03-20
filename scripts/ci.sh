@@ -45,7 +45,7 @@ createPrismaZip() {
 verifyDiagrams() {
   npm run generate -w diagrams
   if [[ $(git status -z) == *"packages/diagrams/output.png"* ]]; then
-    echo "The $1 package is out of date. Please regenerate the project and commit the changes."
+    echo "The diagrams package is out of date. Please regenerate the project and commit the changes."
     exit 1
   fi
 }
@@ -68,6 +68,7 @@ npm test
 npx npm-run-all --print-label --parallel typecheck lint synth build
 
 verifyMarkdown
+verifyDiagrams
 createZip "interactive-monitor"
 createZip "snyk-integrator"
 createZip "dependency-graph-integrator"
