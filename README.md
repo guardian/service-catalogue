@@ -67,4 +67,4 @@ Then follow the instructions in the repocop [README](packages/repocop/README.md)
 
 The diagram below outlines the architecture of the major components of the service catalogue. For more detailed diagrams of particular components, see the [diagrams folder](./diagrams/) or the respective project READMEs
 
-![A diagram showing the architecture of the different components of the service catalogue](./diagrams/service-catalogue.png)
+![A diagram showing the architecture of the different components of the service catalogue](./packages/diagrams/output.png)

@@ -4,7 +4,7 @@
 	"description": "Diagrams as code",
 	"type": "module",
 	"scripts": {
-		"generate": "mmdc -i diagram.mmd -o output.svg -b transparent"
+		"generate": "mmdc -i diagram.mmd -o output.png -b transparent"
 	},
 	"devDependencies": {
 		"@mermaid-js/mermaid-cli": "10.7.0"
