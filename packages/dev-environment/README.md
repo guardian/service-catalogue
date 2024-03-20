@@ -66,12 +66,6 @@ that data will be collected first.
 If cloudquery can't detect credentials for Snyk or GitHub, it will skip those jobs. If you're not interested in GitHub
 data, you don't need to generate a token. It will still collect data from other sources.
 
-## Architecture
-
-The architecture of the local and production CloudQuery services are very similar. The only key difference is that the production service splits the work between several fargate jobs, and locally we use one Docker container
-
-![Diagram showing the architecture of CloudQuery](./../../diagrams/cloudquery.png)
-
 ## TODO
 
 - Use the same configuration files as PROD?
