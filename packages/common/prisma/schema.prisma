@@ -314,6 +314,8 @@ model github_repositories {
   text_matches                   Json?
   visibility                     String?
   role_name                      String?
+  web_commit_signoff_required    Boolean?
+  custom_properties              Json?
 
   @@id([org, id], map: "github_repositories_cqpk")
 }
@@ -443,6 +445,8 @@ model github_team_repositories {
   text_matches                   Json?
   visibility                     String?
   role_name                      String?
+  web_commit_signoff_required    Boolean?
+  custom_properties              Json?
 
   @@id([org, team_id, id], map: "github_team_repositories_cqpk")
 }
