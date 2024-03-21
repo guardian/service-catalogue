@@ -83,14 +83,14 @@ describe('createDigest', () => {
 	it('returns a digest when a result contains a vulnerability', () => {
 		const vuln: RepocopVulnerability = {
 			source: 'Dependabot',
-			fullName,
+			full_name: fullName,
 			open: true,
 			severity: 'high',
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
 			alert_issue_date: '2023-01-01',
-			isPatchable: true,
+			is_patchable: true,
 			CVEs: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
@@ -115,14 +115,14 @@ This vulnerability is patchable.`,
 	it('recognises that a SBT dependency could come from Maven', () => {
 		const vuln: RepocopVulnerability = {
 			source: 'Dependabot',
-			fullName,
+			full_name: fullName,
 			open: true,
 			severity: 'high',
 			package: 'jackson',
 			urls: ['example.com'],
 			ecosystem: 'maven',
 			alert_issue_date: '',
-			isPatchable: true,
+			is_patchable: true,
 			CVEs: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
@@ -137,14 +137,14 @@ This vulnerability is patchable.`,
 	it('returns the correct digest for the correct team', () => {
 		const vuln: RepocopVulnerability = {
 			source: 'Dependabot',
-			fullName,
+			full_name: fullName,
 			open: true,
 			severity: 'high',
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
 			alert_issue_date: '',
-			isPatchable: true,
+			is_patchable: true,
 			CVEs: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
@@ -153,14 +153,14 @@ This vulnerability is patchable.`,
 		};
 		const anotherVuln: RepocopVulnerability = {
 			source: 'Dependabot',
-			fullName,
+			full_name: fullName,
 			open: true,
 			severity: 'high',
 			package: 'rightpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
 			alert_issue_date: '',
-			isPatchable: true,
+			is_patchable: true,
 			CVEs: ['CVE-123'],
 		};
 		const anotherResultWithVuln: EvaluationResult = {
@@ -188,21 +188,21 @@ This vulnerability is patchable.`,
 describe('getTopVulns', () => {
 	it('returns results are sorted by repo', () => {
 		const vulns = [
-			{ fullName: 'guardian/repo-a', severity: 'critical' },
-			{ fullName: 'guardian/repo-b', severity: 'high' },
-			{ fullName: 'guardian/repo-a', severity: 'high' },
-			{ fullName: 'guardian/repo-c', severity: 'high' },
+			{ full_name: 'guardian/repo-a', severity: 'critical' },
+			{ full_name: 'guardian/repo-b', severity: 'high' },
+			{ full_name: 'guardian/repo-a', severity: 'high' },
+			{ full_name: 'guardian/repo-c', severity: 'high' },
 		] as RepocopVulnerability[];
 		expect(getTopVulns(vulns)).toStrictEqual([
-			{ fullName: 'guardian/repo-a', severity: 'critical' },
-			{ fullName: 'guardian/repo-a', severity: 'high' },
-			{ fullName: 'guardian/repo-b', severity: 'high' },
-			{ fullName: 'guardian/repo-c', severity: 'high' },
+			{ full_name: 'guardian/repo-a', severity: 'critical' },
+			{ full_name: 'guardian/repo-a', severity: 'high' },
+			{ full_name: 'guardian/repo-b', severity: 'high' },
+			{ full_name: 'guardian/repo-c', severity: 'high' },
 		]);
 	});
 
 	const v = {
-		fullName: 'guardian/repo-a',
+		full_name: 'guardian/repo-a',
 		severity: 'critical',
 	};
 

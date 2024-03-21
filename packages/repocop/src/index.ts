@@ -102,8 +102,8 @@ export async function main() {
 		severityPredicate,
 	);
 
-	const highPatchable = high.filter((x) => x.isPatchable).length;
-	const criticalPatchable = critical.filter((x) => x.isPatchable).length;
+	const highPatchable = high.filter((x) => x.is_patchable).length;
+	const criticalPatchable = critical.filter((x) => x.is_patchable).length;
 
 	console.warn(
 		`Found ${high.length} out of date high vulnerabilities, of which ${highPatchable} are patchable`,
@@ -117,9 +117,10 @@ export async function main() {
 	 */
 	const vulnerabilities: repocop_vulnerabilities[] = evaluationResults
 		.flatMap((result) => result.vulnerabilities)
+
 		.flatMap((vuln) => {
 			const owners = repoOwners.filter(
-				(owner) => vuln.fullName === owner.full_repo_name,
+				(owner) => vuln.full_name === owner.full_repo_name,
 			);
 			return owners.length > 0
 				? owners.map((owner) => ({

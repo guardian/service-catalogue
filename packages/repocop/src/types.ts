@@ -163,14 +163,14 @@ export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
 
 export type RepocopVulnerability = {
 	source: 'Dependabot' | 'Snyk';
-	fullName: string;
+	full_name: string;
 	open: boolean;
 	severity: Severity;
 	package: string;
 	urls: string[];
 	ecosystem: string;
 	alert_issue_date: string;
-	isPatchable: boolean;
+	is_patchable: boolean;
 	CVEs: string[];
 };
 

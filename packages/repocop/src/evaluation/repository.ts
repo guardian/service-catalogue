@@ -451,14 +451,14 @@ export function dependabotAlertToRepocopVulnerability(
 
 	return {
 		open: alert.state === 'open',
-		fullName,
+		full_name: fullName,
 		source: 'Dependabot',
 		severity: alert.security_advisory.severity,
 		package: alert.security_vulnerability.package.name,
 		urls: alert.security_advisory.references.map((ref) => ref.url),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: alert.created_at,
-		isPatchable: !!alert.security_vulnerability.first_patched_version,
+		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		CVEs,
 	};
 }
@@ -486,7 +486,7 @@ export function snykAlertToRepocopVulnerability(
 	].join(', ');
 
 	return {
-		fullName,
+		full_name: fullName,
 		open: issue.attributes.status === 'open',
 		source: 'Snyk',
 		severity: stringToSeverity(issue.attributes.effective_severity_level),
@@ -494,7 +494,7 @@ export function snykAlertToRepocopVulnerability(
 		urls: issue.attributes.problems.map((p) => p.url),
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: issue.attributes.created_at,
-		isPatchable,
+		is_patchable: isPatchable,
 		CVEs: issue.attributes.problems.map((p) => p.id),
 	};
 }

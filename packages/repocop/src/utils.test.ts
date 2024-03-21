@@ -59,9 +59,9 @@ describe('vulnSortingPredicate', () => {
 		const criticalPatchable: RepocopVulnerability = {
 			package: 'test',
 			severity: 'critical',
-			fullName: 'test',
+			full_name: 'test',
 			ecosystem: 'test',
-			isPatchable: true,
+			is_patchable: true,
 			urls: [],
 			open: true,
 			source: 'Dependabot',
@@ -70,7 +70,7 @@ describe('vulnSortingPredicate', () => {
 		};
 		const criticalNotPatchable: RepocopVulnerability = {
 			...criticalPatchable,
-			isPatchable: false,
+			is_patchable: false,
 		};
 		const highPatchable: RepocopVulnerability = {
 			...criticalPatchable,
@@ -78,7 +78,7 @@ describe('vulnSortingPredicate', () => {
 		};
 		const highNotPatchable: RepocopVulnerability = {
 			...highPatchable,
-			isPatchable: false,
+			is_patchable: false,
 		};
 
 		const vulns = [
