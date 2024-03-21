@@ -116,9 +116,8 @@ export async function main() {
 	 * Create repocop vulnerabilities and write to repocop_vulnerabilities table
 	 */
 	const vulnerabilities: repocop_vulnerabilities[] = evaluationResults
-		.map((result) => result.vulnerabilities)
-		.flat()
-		.map((vuln) => {
+		.flatMap((result) => result.vulnerabilities)
+		.flatMap((vuln) => {
 			const owners = repoOwners.filter(
 				(owner) => vuln.fullName === owner.full_repo_name,
 			);
@@ -128,8 +127,7 @@ export async function main() {
 						repo_owner: owner.github_team_slug,
 					}))
 				: { ...vuln, repo_owner: 'unknown' };
-		})
-		.flat() as unknown as repocop_vulnerabilities[];
+		}) as unknown as repocop_vulnerabilities[];
 
 	await writeVulnerabilitiesTable(vulnerabilities, prisma);
 
