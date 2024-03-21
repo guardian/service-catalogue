@@ -42,22 +42,15 @@ createPrismaZip() {
   )
 }
 
-verifyDiagrams() {
-  npm run generate -w diagrams
-  if [[ $(git status -z) == *"packages/diagrams/output.png"* ]]; then
-    echo "The diagrams package is out of date. Please regenerate the project and commit the changes."
+verify() {
+  npm run generate -w "$1"
+
+  if [[ $(git status -z) == *"$2"* ]]; then
+    echo "$1 package is out of date. Please regenerate the project and commit the changes."
     exit 1
   fi
 }
 
-verifyMarkdown() {
-  npm run generate -w best-practices
-
-  if [[ $(git status -z) == *"packages/best-practices/best-practices.md"* ]]; then
-    echo "Best practices markdown file is out of date. Please regenerate the project and commit the changes."
-    exit 1
-  fi
-}
 
 npm ci
 npm test
@@ -67,8 +60,8 @@ npm test
 # See https://github.com/mysticatea/npm-run-all.
 npx npm-run-all --print-label --parallel typecheck lint synth build
 
-verifyMarkdown
-verifyDiagrams
+verify best-practices "packages/best-practices/best-practices.md"
+verify diagrams "packages/diagrams/output.svg"
 createZip "interactive-monitor"
 createZip "snyk-integrator"
 createZip "dependency-graph-integrator"
