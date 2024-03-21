@@ -135,7 +135,7 @@ spec:
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v8.0.0
+		  version: v8.1.3
 		  tables:
 		    - github_repositories
 		  destinations:
