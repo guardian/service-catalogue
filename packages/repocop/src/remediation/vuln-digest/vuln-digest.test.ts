@@ -106,8 +106,8 @@ describe('createDigest', () => {
 Displaying the top 1 most urgent.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.
 
-**leftpad** contains a [HIGH vulnerability](example.com).
-Introduced to [guardian/repo](https://github.com/guardian/repo) on Sun Jan 01 2023 via pip.
+[guardian/repo](https://github.com/guardian/repo) contains a [HIGH vulnerability](example.com).
+Introduced via **leftpad** on Sun Jan 01 2023, from pip.
 This vulnerability is patchable.`,
 		});
 	});
