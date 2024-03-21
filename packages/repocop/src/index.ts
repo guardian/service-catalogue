@@ -29,7 +29,11 @@ import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
-import type { AwsCloudFormationStack, EvaluationResult } from './types';
+import type {
+	AwsCloudFormationStack,
+	EvaluationResult,
+	RepocopVulnerability,
+} from './types';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -92,15 +96,14 @@ export async function main() {
 	);
 
 	const repocopRules = evaluationResults.map((r) => r.repocopRules);
-	const severityPredicate = (x: repocop_vulnerabilities) =>
-		x.severity === 'high';
+	const severityPredicate = (x: RepocopVulnerability) => x.severity === 'high';
 	const [high, critical] = partition(
 		evaluationResults.flatMap((r) => r.vulnerabilities),
 		severityPredicate,
 	);
 
-	const highPatchable = high.filter((x) => x.is_patchable).length;
-	const criticalPatchable = critical.filter((x) => x.is_patchable).length;
+	const highPatchable = high.filter((x) => x.isPatchable).length;
+	const criticalPatchable = critical.filter((x) => x.isPatchable).length;
 
 	console.warn(
 		`Found ${high.length} out of date high vulnerabilities, of which ${highPatchable} are patchable`,
@@ -117,7 +120,7 @@ export async function main() {
 		.flat()
 		.map((vuln) => {
 			const owners = repoOwners.filter(
-				(owner) => vuln.full_name === owner.full_repo_name,
+				(owner) => vuln.fullName === owner.full_repo_name,
 			);
 			return owners.length > 0
 				? owners.map((owner) => ({
