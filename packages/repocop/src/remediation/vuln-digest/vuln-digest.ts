@@ -45,8 +45,8 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
-	return String.raw`**${vuln.package}** contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
-Introduced to [${vuln.fullName}](https://github.com/${vuln.fullName}) on ${dateString} via ${ecosystem}.
+	return String.raw`[${vuln.fullName}](https://github.com/${vuln.fullName}) contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
+Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}.
 This vulnerability ${vuln.isPatchable ? 'is ' : 'may *not* be '}patchable.`;
 }
 
