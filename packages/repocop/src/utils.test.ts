@@ -66,7 +66,7 @@ describe('vulnSortingPredicate', () => {
 			open: true,
 			source: 'Dependabot',
 			alert_issue_date: '',
-			CVEs: [],
+			cves: [],
 		};
 		const criticalNotPatchable: RepocopVulnerability = {
 			...criticalPatchable,

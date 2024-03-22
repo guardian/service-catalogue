@@ -571,7 +571,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	ecosystem: 'pip',
 	alert_issue_date: '2021-01-01T00:00:00.000Z',
 	is_patchable: true,
-	CVEs: ['CVE-2021-1234'],
+	cves: ['CVE-2021-1234'],
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -866,7 +866,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			ecosystem: 'pip',
 			alert_issue_date: '2022-06-15T07:43:03Z',
 			is_patchable: true,
-			CVEs: ['CVE-2018-6188'],
+			cves: ['CVE-2018-6188'],
 		};
 
 		const expected2: RepocopVulnerability = {
@@ -883,7 +883,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			ecosystem: 'pip',
 			alert_issue_date: '2022-06-14T15:21:52Z',
 			is_patchable: true,
-			CVEs: ['CVE-2021-20191'],
+			cves: ['CVE-2021-20191'],
 		};
 
 		expect(result).toStrictEqual([expected1, expected2]);
@@ -909,7 +909,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			ecosystem: 'npm',
 			alert_issue_date: 'someTZdate',
 			is_patchable: true,
-			CVEs: ['CVE-1234'],
+			cves: ['CVE-1234'],
 		});
 	});
 
@@ -934,7 +934,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		ecosystem: 'pip',
 		alert_issue_date: '2022-06-15T07:43:03Z',
 		is_patchable: true,
-		CVEs: ['CVE-2018-6188'],
+		cves: ['CVE-2018-6188'],
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
@@ -946,7 +946,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		ecosystem: 'pip',
 		alert_issue_date: '2022-06-15T07:43:03Z',
 		is_patchable: true,
-		CVEs: ['CVE-2018-6188'],
+		cves: ['CVE-2018-6188'],
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	test('Should happen if two vulnerabilities share the same CVEs', () => {
@@ -959,7 +959,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 	test('Should not happen if two vulnerabilities have different CVEs', () => {
 		const vuln3: RepocopVulnerability = {
 			...vuln1,
-			CVEs: ['CVE-2018-6189'],
+			cves: ['CVE-2018-6189'],
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln3]);
 		expect(actual.length).toStrictEqual(2);
@@ -967,7 +967,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 	test('Should not happen if no CVEs are provided', () => {
 		const vuln4: RepocopVulnerability = {
 			...vuln1,
-			CVEs: [],
+			cves: [],
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
 		expect(actual.length).toStrictEqual(2);

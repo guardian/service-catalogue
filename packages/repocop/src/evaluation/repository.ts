@@ -370,19 +370,19 @@ export function deduplicateVulnerabilitiesByCve(
 	const vulnsWithSortedCVEs = vulns.map((v) => {
 		return {
 			...v,
-			CVEs: v.CVEs.sort(),
+			cves: v.cves.sort(),
 		};
 	});
 	const [withCVEs, withoutCVEs] = partition(
 		vulnsWithSortedCVEs,
-		(v) => v.CVEs.length > 0,
+		(v) => v.cves.length > 0,
 	);
 
 	//group withCVEs by CVEs
 	const dedupedWithCVEs = withCVEs
 		.sort(vulnSortPredicate)
 		.reduce<Record<string, RepocopVulnerability>>((acc, vuln) => {
-			const key = vuln.CVEs.join(',');
+			const key = vuln.cves.join(',');
 			if (!acc[key]) {
 				acc[key] = vuln;
 			}
@@ -459,7 +459,7 @@ export function dependabotAlertToRepocopVulnerability(
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: alert.created_at,
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
-		CVEs,
+		cves: CVEs,
 	};
 }
 
@@ -495,7 +495,7 @@ export function snykAlertToRepocopVulnerability(
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: issue.attributes.created_at,
 		is_patchable: isPatchable,
-		CVEs: issue.attributes.problems.map((p) => p.id),
+		cves: issue.attributes.problems.map((p) => p.id),
 	};
 }
 

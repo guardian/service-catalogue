@@ -171,7 +171,7 @@ export type RepocopVulnerability = {
 	ecosystem: string;
 	alert_issue_date: string;
 	is_patchable: boolean;
-	CVEs: string[];
+	cves: string[];
 };
 
 export interface EvaluationResult {

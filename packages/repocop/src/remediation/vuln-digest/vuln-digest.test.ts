@@ -91,7 +91,7 @@ describe('createDigest', () => {
 			ecosystem: 'pip',
 			alert_issue_date: '2023-01-01',
 			is_patchable: true,
-			CVEs: ['CVE-123'],
+			cves: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
 			...result,
@@ -123,7 +123,7 @@ This vulnerability is patchable.`,
 			ecosystem: 'maven',
 			alert_issue_date: '',
 			is_patchable: true,
-			CVEs: ['CVE-123'],
+			cves: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
 			...result,
@@ -145,7 +145,7 @@ This vulnerability is patchable.`,
 			ecosystem: 'pip',
 			alert_issue_date: '',
 			is_patchable: true,
-			CVEs: ['CVE-123'],
+			cves: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
 			...result,
@@ -161,7 +161,7 @@ This vulnerability is patchable.`,
 			ecosystem: 'pip',
 			alert_issue_date: '',
 			is_patchable: true,
-			CVEs: ['CVE-123'],
+			cves: ['CVE-123'],
 		};
 		const anotherResultWithVuln: EvaluationResult = {
 			...anotherResult,
