@@ -7,8 +7,55 @@ ROOT_DIR=$DIR/../../..
 
 MAIN_ENV_FILE=$ROOT_DIR/.env
 LOCAL_ENV_FILE=$HOME/.gu/service_catalogue/.env.local
+clear='\033[0m'
+cyan='\033[0;36m'
 
-echo "Checking AWS credentials"
+step(){
+  ((STEP_COUNT++))
+  echo -e "\n${cyan}Step ${STEP_COUNT}${clear}: $1"
+}
+
+add_to_path ()
+{
+    if [[ "$PATH" =~ (^|:)"${1}"(:|$) ]]
+    then
+        return 0
+    fi
+    export PATH=${1}:$PATH
+}
+
+setup_libpq() {
+    step "Setting up libpq"
+    brew install libpq
+    add_to_path "/opt/homebrew/opt/libpq/bin"
+}
+
+get_db_password() {
+    step "Getting DB password"
+    SECRET_NAME=$(aws secretsmanager list-secrets \
+    --profile deployTools --region eu-west-1 \
+    --filters Key=tag-value,Values=CODE  | jq '.SecretList[].Name' | grep Postgres | tr -d '"')
+    SECRET_STRING=$(aws secretsmanager get-secret-value \
+    --secret-id "$SECRET_NAME" \
+    --profile deployTools --region eu-west-1 | jq '.SecretString | fromjson')
+    CODE_DB_PASSWORD=$(echo "$SECRET_STRING" | jq -r '.password')
+    CODE_HOST=$(echo "$SECRET_STRING" | jq -r '.host')
+    unset SECRET_STRING
+    unset SECRET_NAME
+}
+
+copy(){
+    step "Copying $1 data to local database"
+    PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
+    -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1*" -f "$1.sql" \
+    --no-owner --no-privileges --verbose --inserts
+
+    PGPASSWORD=${DATABASE_PASSWORD}  psql \
+    -U postgres -h "${DATABASE_HOSTNAME}" -p 5432 -d "${DATABASE_NAME}" -f "$1.sql"
+    rm "$1.sql"
+}
+
+step "Checking AWS credentials"
 STATUS=$(aws sts get-caller-identity --profile deployTools 2>&1 || true)
 if [[ ${STATUS} =~ (ExpiredToken) ]]; then
   echo "Credentials for the deployTools profile have expired. Please fetch new credentials, and run this script again."
@@ -20,9 +67,20 @@ else
   echo "AWS credentials are valid"
 fi
 
+step "Launching Docker containers"
 if (docker info) 2>&1 >/dev/null; then
   docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d
 else
   echo "Docker is not running. Please start Docker."
   exit 1
 fi
+
+setup_libpq
+get_db_password
+
+source "$MAIN_ENV_FILE"
+
+copy "snyk"
+
+unset CODE_DB_PASSWORD
+unset CODE_HOST

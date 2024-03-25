@@ -74,18 +74,6 @@ spec:
 ---
 kind: source
 spec:
-  name: 'snyk'
-  path: 'cloudquery/snyk'
-  version: v${CQ_SNYK}
-  destinations: ['postgresql']
-  tables:
-    - snyk_projects
-    - snyk_issues
-  spec:
-    api_key: ${SNYK_TOKEN}
----
-kind: source
-spec:
   name: galaxies
   path: guardian/galaxies
   version: v1.1.0
