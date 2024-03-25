@@ -74,19 +74,6 @@ spec:
 ---
 kind: source
 spec:
-  name: galaxies
-  path: guardian/galaxies
-  version: v1.1.0
-  destinations:
-    - postgresql
-  tables:
-    - galaxies_teams_table
-  registry: github
-  spec:
-    bucket: ${GALAXIES_BUCKET}
----
-kind: source
-spec:
   name: 'github-languages'
   # https://github.com/guardian/cq-source-github-languages
   path: 'guardian/github-languages'

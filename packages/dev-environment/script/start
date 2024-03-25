@@ -81,6 +81,7 @@ get_db_password
 source "$MAIN_ENV_FILE"
 
 copy "snyk"
+copy "galaxies"
 
 unset CODE_DB_PASSWORD
 unset CODE_HOST
