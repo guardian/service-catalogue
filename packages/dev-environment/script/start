@@ -19,6 +19,7 @@ add_to_path ()
 {
     if [[ "$PATH" =~ (^|:)"${1}"(:|$) ]]
     then
+        echo "Path already contains ${1}"
         return 0
     fi
     export PATH=${1}:$PATH
