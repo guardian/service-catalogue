@@ -491,7 +491,7 @@ export function snykAlertToRepocopVulnerability(
 		source: 'Snyk',
 		severity: stringToSeverity(issue.attributes.effective_severity_level),
 		package: packageName,
-		urls: issue.attributes.problems.map((p) => p.url),
+		urls: issue.attributes.problems.map((p) => p.url).filter((u) => !!u),
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: issue.attributes.created_at,
 		is_patchable: isPatchable,

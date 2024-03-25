@@ -634,8 +634,7 @@ model repocop_vulnerabilities {
   is_patchable     Boolean
   cves             String[]
   repo_owner       String
-
-  @@id([full_name, alert_issue_date, repo_owner])
+  id               String   @id @default(uuid())
 }
 
 view view_repo_ownership {

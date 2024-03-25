@@ -11,6 +11,7 @@ CREATE TABLE "repocop_vulnerabilities" (
     "is_patchable" BOOLEAN NOT NULL,
     "cves" TEXT[],
     "repo_owner" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
 
-    CONSTRAINT "repocop_vulnerabilities_pkey" PRIMARY KEY ("full_name","alert_issue_date","repo_owner")
+    CONSTRAINT "repocop_vulnerabilities_pkey" PRIMARY KEY ("id")
 );
