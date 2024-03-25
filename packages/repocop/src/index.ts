@@ -3,6 +3,7 @@ import type {
 	PrismaClient,
 	repocop_github_repository_rules,
 	repocop_vulnerabilities,
+	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
@@ -112,23 +113,27 @@ export async function main() {
 		`Found ${critical.length} out of date critical vulnerabilities, of which ${criticalPatchable} are patchable`,
 	);
 
+	function combineVulnWithOwners(
+		vuln: RepocopVulnerability,
+		repoOwners: view_repo_ownership[],
+	) {
+		const owners = repoOwners.filter(
+			(owner) => vuln.full_name === owner.full_repo_name,
+		);
+		return owners.length > 0
+			? owners.map((owner) => ({ ...vuln, repo_owner: owner.github_team_slug }))
+			: { ...vuln, repo_owner: 'unknown' };
+	}
+
 	/**
 	 * Create repocop vulnerabilities and write to repocop_vulnerabilities table
 	 */
 	const vulnerabilities: repocop_vulnerabilities[] = evaluationResults
 		.flatMap((result) => result.vulnerabilities)
 
-		.flatMap((vuln) => {
-			const owners = repoOwners.filter(
-				(owner) => vuln.full_name === owner.full_repo_name,
-			);
-			return owners.length > 0
-				? owners.map((owner) => ({
-						...vuln,
-						repo_owner: owner.github_team_slug,
-					}))
-				: { ...vuln, repo_owner: 'unknown' };
-		}) as unknown as repocop_vulnerabilities[];
+		.flatMap((vuln) =>
+			combineVulnWithOwners(vuln, repoOwners),
+		) as unknown as repocop_vulnerabilities[];
 
 	await writeVulnerabilitiesTable(vulnerabilities, prisma);
 
