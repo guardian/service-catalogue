@@ -314,6 +314,8 @@ model github_repositories {
   text_matches                   Json?
   visibility                     String?
   role_name                      String?
+  custom_properties              Json?
+  web_commit_signoff_required    Boolean?
 
   @@id([org, id], map: "github_repositories_cqpk")
 }
@@ -443,6 +445,8 @@ model github_team_repositories {
   text_matches                   Json?
   visibility                     String?
   role_name                      String?
+  custom_properties              Json?
+  web_commit_signoff_required    Boolean?
 
   @@id([org, team_id, id], map: "github_team_repositories_cqpk")
 }
@@ -475,23 +479,24 @@ model github_teams {
 }
 
 model github_workflows {
-  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_source_name String?   @map("_cq_source_name")
-  cq_id          String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
-  org            String
-  repository_id  BigInt
-  contents       String?
-  id             BigInt
-  node_id        String?
-  name           String?
-  path           String?
-  state          String?
-  created_at     DateTime? @db.Timestamp(6)
-  updated_at     DateTime? @db.Timestamp(6)
-  url            String?
-  html_url       String?
-  badge_url      String?
+  cq_sync_time     DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name   String?   @map("_cq_source_name")
+  cq_id            String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id     String?   @map("_cq_parent_id") @db.Uuid
+  org              String
+  repository_id    BigInt
+  contents         String?
+  id               BigInt
+  node_id          String?
+  name             String?
+  path             String?
+  state            String?
+  created_at       DateTime? @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  url              String?
+  html_url         String?
+  badge_url        String?
+  contents_as_json Json?
 
   @@id([org, repository_id, id], map: "github_workflows_cqpk")
 }
