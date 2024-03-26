@@ -106,6 +106,10 @@ export class ServiceCatalogue extends GuStack {
 			securityGroups: [dbSecurityGroup],
 			deletionProtection: rdsDeletionProtection,
 			multiAz: multiAz,
+			/*
+			This certificate supports automatic rotation.
+			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities
+			 */
 			caCertificate: CaCertificate.RDS_CA_RDS2048_G1,
 		};
 
