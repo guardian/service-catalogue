@@ -17,7 +17,6 @@ export const Images = {
 		'public.ecr.aws/docker/library/postgres:16-alpine',
 	),
 	prismaMigrate: ContainerImage.fromRegistry(
-		// TODO: Change to the desired SHA once PR is merged into main
-		'ghcr.io/guardian/service-catalogue/prisma-migrate:1',
+		'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-06b60dc3f47bfdfe8997d3d622e91f5508733ece',
 	),
 };

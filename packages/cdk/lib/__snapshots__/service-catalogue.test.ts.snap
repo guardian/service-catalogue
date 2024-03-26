@@ -15905,7 +15905,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/guardian/service-catalogue/prisma-migrate:1",
+            "Image": "ghcr.io/guardian/service-catalogue/prisma-migrate:sha-06b60dc3f47bfdfe8997d3d622e91f5508733ece",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
