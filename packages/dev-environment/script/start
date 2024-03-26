@@ -81,6 +81,9 @@ get_db_password
 
 source "$MAIN_ENV_FILE"
 
+step "Baselining DB"
+npm -w cli start migrate -- --stage DEV --confirm
+
 copy "snyk"
 copy "galaxies"
 copy "github_team"
