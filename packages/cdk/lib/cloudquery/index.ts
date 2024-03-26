@@ -7,6 +7,7 @@ import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
+import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
@@ -33,6 +34,8 @@ interface CloudqueryEcsClusterProps {
 	dbAccess: GuSecurityGroup;
 	nonProdSchedule?: Schedule;
 	snykCredentials: SecretsManager;
+	loggingStreamName: string;
+	logShippingPolicy: PolicyStatement;
 }
 
 export function addCloudqueryEcsCluster(
@@ -40,7 +43,14 @@ export function addCloudqueryEcsCluster(
 	props: CloudqueryEcsClusterProps,
 ) {
 	const { stage, stack, app = 'service-catalogue' } = scope;
-	const { vpc, db, dbAccess, nonProdSchedule } = props;
+	const {
+		vpc,
+		db,
+		dbAccess,
+		nonProdSchedule,
+		loggingStreamName,
+		logShippingPolicy,
+	} = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
 		StringParameter.valueForStringParameter(
@@ -509,6 +519,8 @@ export function addCloudqueryEcsCluster(
 		vpc,
 		db,
 		dbAccess,
+		loggingStreamName,
+		logShippingPolicy,
 		sources: [
 			...individualAwsSources,
 			remainingAwsSources,

@@ -5,6 +5,7 @@ import type {
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import {
 	GuAnghammaradTopicParameter,
+	GuLoggingStreamNameParameter,
 	GuStack,
 } from '@guardian/cdk/lib/constructs/core';
 import {
@@ -23,6 +24,7 @@ import {
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import {
 	CaCertificate,
@@ -41,6 +43,7 @@ import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
+import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { Repocop } from './repocop';
 
 interface ServiceCatalogueProps extends GuStackProps {
@@ -151,12 +154,29 @@ export class ServiceCatalogue extends GuStack {
 			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
 		});
 
-		addCloudqueryEcsCluster(this, {
+		const loggingStreamName =
+			GuLoggingStreamNameParameter.getInstance(this).valueAsString;
+
+		const loggingStreamArn = this.formatArn({
+			service: 'kinesis',
+			resource: 'stream',
+			resourceName: loggingStreamName,
+		});
+
+		const logShippingPolicy = new PolicyStatement({
+			actions: ['kinesis:Describe*', 'kinesis:Put*'],
+			effect: Effect.ALLOW,
+			resources: [loggingStreamArn],
+		});
+
+		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
 			snykCredentials: snykReadOnlyKey,
+			loggingStreamName,
+			logShippingPolicy,
 		});
 
 		const anghammaradTopicParameter =
@@ -226,6 +246,14 @@ export class ServiceCatalogue extends GuStack {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
+		});
+
+		addPrismaMigrateTask(this, {
+			loggingStreamName,
+			logShippingPolicy,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+			cluster: cloudqueryCluster,
 		});
 	}
 }

@@ -1,11 +1,9 @@
-import { GuLoggingStreamNameParameter } from '@guardian/cdk/lib/constructs/core';
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
-import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import type { CloudqueryConfig } from './config';
@@ -116,6 +114,10 @@ interface CloudqueryClusterProps extends AppIdentity {
 	 * Which tables to collect at a frequency other than once a day.
 	 */
 	sources: CloudquerySource[];
+
+	loggingStreamName: string;
+
+	logShippingPolicy: PolicyStatement;
 }
 
 /**
@@ -130,21 +132,8 @@ export class CloudqueryCluster extends Cluster {
 		});
 
 		const { stack, stage } = scope;
-		const { app, db, dbAccess, sources } = props;
-
-		const loggingStreamName =
-			GuLoggingStreamNameParameter.getInstance(scope).valueAsString;
-		const loggingStreamArn = scope.formatArn({
-			service: 'kinesis',
-			resource: 'stream',
-			resourceName: loggingStreamName,
-		});
-
-		const logShippingPolicy = new PolicyStatement({
-			actions: ['kinesis:Describe*', 'kinesis:Put*'],
-			effect: Effect.ALLOW,
-			resources: [loggingStreamArn],
-		});
+		const { app, db, dbAccess, sources, loggingStreamName, logShippingPolicy } =
+			props;
 
 		const taskProps = {
 			app,
