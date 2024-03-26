@@ -642,6 +642,10 @@ model repocop_vulnerabilities {
   id               String   @id @default(uuid())
 }
 
+model test_model {
+  id String @id
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
