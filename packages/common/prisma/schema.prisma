@@ -622,6 +622,21 @@ model guardian_github_actions_usage {
   @@unique([full_name, workflow_path], map: "guardian_github_actions_usage_full_name_key")
 }
 
+model repocop_vulnerabilities {
+  source           String
+  full_name        String
+  open             Boolean
+  severity         String
+  package          String
+  urls             String[]
+  ecosystem        String
+  alert_issue_date DateTime
+  is_patchable     Boolean
+  cves             String[]
+  repo_owner       String
+  id               String   @id @default(uuid())
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String

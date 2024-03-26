@@ -562,7 +562,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 });
 
 const oldCriticalDependabotVuln: RepocopVulnerability = {
-	fullName: 'guardian/some-repo',
+	full_name: 'guardian/some-repo',
 	open: true,
 	source: 'Dependabot',
 	severity: 'critical',
@@ -570,8 +570,8 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	urls: [],
 	ecosystem: 'pip',
 	alert_issue_date: '2021-01-01T00:00:00.000Z',
-	isPatchable: true,
-	CVEs: ['CVE-2021-1234'],
+	is_patchable: true,
+	cves: ['CVE-2021-1234'],
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -796,7 +796,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			],
 			[exampleSnykProject],
 		);
-		expect(result.map((r) => r.isPatchable)).toEqual([false]);
+		expect(result.map((r) => r.is_patchable)).toEqual([false]);
 	});
 	test('Should be considered patchable if there is a possible upgrade path', () => {
 		const pinnableIssue: SnykIssue = {
@@ -840,7 +840,7 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 			[pinnableIssue, patchableIssue, upgradableIssue],
 			[exampleSnykProject],
 		);
-		expect(result.map((r) => r.isPatchable)).toEqual([true, true, true]);
+		expect(result.map((r) => r.is_patchable)).toEqual([true, true, true]);
 	});
 });
 
@@ -851,7 +851,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			dependabotAlertToRepocopVulnerability(fullName, alert),
 		);
 		const expected1: RepocopVulnerability = {
-			fullName,
+			full_name: fullName,
 			source: 'Dependabot',
 			open: false,
 			severity: 'high',
@@ -865,12 +865,12 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			],
 			ecosystem: 'pip',
 			alert_issue_date: '2022-06-15T07:43:03Z',
-			isPatchable: true,
-			CVEs: ['CVE-2018-6188'],
+			is_patchable: true,
+			cves: ['CVE-2018-6188'],
 		};
 
 		const expected2: RepocopVulnerability = {
-			fullName,
+			full_name: fullName,
 			source: 'Dependabot',
 			open: true,
 			severity: 'medium',
@@ -882,8 +882,8 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			],
 			ecosystem: 'pip',
 			alert_issue_date: '2022-06-14T15:21:52Z',
-			isPatchable: true,
-			CVEs: ['CVE-2021-20191'],
+			is_patchable: true,
+			cves: ['CVE-2021-20191'],
 		};
 
 		expect(result).toStrictEqual([expected1, expected2]);
@@ -900,7 +900,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 		expect(result.source).toEqual('Snyk');
 		expect(result.open).toEqual(true);
 		expect(result).toStrictEqual({
-			fullName,
+			full_name: fullName,
 			open: true,
 			source: 'Snyk',
 			severity: 'high',
@@ -908,8 +908,8 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			urls: ['example.com'],
 			ecosystem: 'npm',
 			alert_issue_date: 'someTZdate',
-			isPatchable: true,
-			CVEs: ['CVE-1234'],
+			is_patchable: true,
+			cves: ['CVE-1234'],
 		});
 	});
 
@@ -926,18 +926,18 @@ describe('Deduplication of repocop vulnerabilities', () => {
 	const fullName = 'guardian/myrepo';
 	const vuln1: RepocopVulnerability = {
 		source: 'Dependabot',
-		fullName,
+		full_name: fullName,
 		open: true,
 		severity: 'high',
 		package: 'django',
 		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
 		ecosystem: 'pip',
 		alert_issue_date: '2022-06-15T07:43:03Z',
-		isPatchable: true,
-		CVEs: ['CVE-2018-6188'],
+		is_patchable: true,
+		cves: ['CVE-2018-6188'],
 	};
 	const vuln2: RepocopVulnerability = {
-		fullName,
+		full_name: fullName,
 		source: 'Snyk',
 		open: true,
 		severity: 'critical',
@@ -945,8 +945,8 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
 		ecosystem: 'pip',
 		alert_issue_date: '2022-06-15T07:43:03Z',
-		isPatchable: true,
-		CVEs: ['CVE-2018-6188'],
+		is_patchable: true,
+		cves: ['CVE-2018-6188'],
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	test('Should happen if two vulnerabilities share the same CVEs', () => {
@@ -959,7 +959,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 	test('Should not happen if two vulnerabilities have different CVEs', () => {
 		const vuln3: RepocopVulnerability = {
 			...vuln1,
-			CVEs: ['CVE-2018-6189'],
+			cves: ['CVE-2018-6189'],
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln3]);
 		expect(actual.length).toStrictEqual(2);
@@ -967,7 +967,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 	test('Should not happen if no CVEs are provided', () => {
 		const vuln4: RepocopVulnerability = {
 			...vuln1,
-			CVEs: [],
+			cves: [],
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
 		expect(actual.length).toStrictEqual(2);

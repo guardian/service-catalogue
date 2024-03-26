@@ -32,7 +32,7 @@ export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
 	return vulnerabilities
 		.sort(vulnSortPredicate)
 		.slice(0, 10)
-		.sort((v1, v2) => v1.fullName.localeCompare(v2.fullName));
+		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
 }
 
 function dateStringToHumanReadable(dateString: string) {
@@ -45,9 +45,9 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
-	return String.raw`[${vuln.fullName}](https://github.com/${vuln.fullName}) contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
+	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
 Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}.
-This vulnerability ${vuln.isPatchable ? 'is ' : 'may *not* be '}patchable.`;
+This vulnerability ${vuln.is_patchable ? 'is ' : 'may *not* be '}patchable.`;
 }
 
 export function createDigest(

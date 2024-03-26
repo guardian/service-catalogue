@@ -2,6 +2,7 @@ import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
+	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
@@ -49,6 +50,21 @@ async function writeEvaluationTable(
 	console.log('Finished writing to table');
 }
 
+async function writeVulnerabilitiesTable(
+	vulnerabilities: Array<RepocopVulnerability & { repo_owner: string }>,
+	prisma: PrismaClient,
+) {
+	console.log('Clearing the vulnerabilities table');
+	await prisma.repocop_vulnerabilities.deleteMany({});
+
+	console.log(`Writing ${vulnerabilities.length} vulnerabilities to table`);
+	await prisma.repocop_vulnerabilities.createMany({
+		data: vulnerabilities,
+	});
+
+	console.log('Finished writing to vulnerabilities table');
+}
+
 export async function main() {
 	const config: Config = await getConfig();
 
@@ -86,8 +102,8 @@ export async function main() {
 		severityPredicate,
 	);
 
-	const highPatchable = high.filter((x) => x.isPatchable).length;
-	const criticalPatchable = critical.filter((x) => x.isPatchable).length;
+	const highPatchable = high.filter((x) => x.is_patchable).length;
+	const criticalPatchable = critical.filter((x) => x.is_patchable).length;
 
 	console.warn(
 		`Found ${high.length} out of date high vulnerabilities, of which ${highPatchable} are patchable`,
@@ -95,6 +111,27 @@ export async function main() {
 	console.warn(
 		`Found ${critical.length} out of date critical vulnerabilities, of which ${criticalPatchable} are patchable`,
 	);
+
+	function combineVulnWithOwners(
+		vuln: RepocopVulnerability,
+		repoOwners: view_repo_ownership[],
+	) {
+		const owners = repoOwners.filter(
+			(owner) => vuln.full_name === owner.full_repo_name,
+		);
+		return owners.length > 0
+			? owners.map((owner) => ({ ...vuln, repo_owner: owner.github_team_slug }))
+			: { ...vuln, repo_owner: 'unknown' };
+	}
+
+	/**
+	 * Create repocop vulnerabilities and write to repocop_vulnerabilities table
+	 */
+	const vulnerabilities = evaluationResults
+		.flatMap((result) => result.vulnerabilities)
+		.flatMap((vuln) => combineVulnWithOwners(vuln, repoOwners));
+
+	await writeVulnerabilitiesTable(vulnerabilities, prisma);
 
 	const awsConfig = awsClientConfig(config.stage);
 	const cloudwatch = new CloudWatchClient(awsConfig);

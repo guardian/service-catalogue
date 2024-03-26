@@ -33,7 +33,7 @@ const criticalFirstPredicate = (x: RepocopVulnerability) =>
 	x.severity === 'critical' ? -1 : 1;
 
 const patchableFirstPredicate = (x: RepocopVulnerability) =>
-	x.isPatchable ? -1 : 1;
+	x.is_patchable ? -1 : 1;
 
 export const vulnSortPredicate = (
 	v1: RepocopVulnerability,

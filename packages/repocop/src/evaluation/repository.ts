@@ -370,19 +370,19 @@ export function deduplicateVulnerabilitiesByCve(
 	const vulnsWithSortedCVEs = vulns.map((v) => {
 		return {
 			...v,
-			CVEs: v.CVEs.sort(),
+			cves: v.cves.sort(),
 		};
 	});
 	const [withCVEs, withoutCVEs] = partition(
 		vulnsWithSortedCVEs,
-		(v) => v.CVEs.length > 0,
+		(v) => v.cves.length > 0,
 	);
 
 	//group withCVEs by CVEs
 	const dedupedWithCVEs = withCVEs
 		.sort(vulnSortPredicate)
 		.reduce<Record<string, RepocopVulnerability>>((acc, vuln) => {
-			const key = vuln.CVEs.join(',');
+			const key = vuln.cves.join(',');
 			if (!acc[key]) {
 				acc[key] = vuln;
 			}
@@ -451,15 +451,15 @@ export function dependabotAlertToRepocopVulnerability(
 
 	return {
 		open: alert.state === 'open',
-		fullName,
+		full_name: fullName,
 		source: 'Dependabot',
 		severity: alert.security_advisory.severity,
 		package: alert.security_vulnerability.package.name,
 		urls: alert.security_advisory.references.map((ref) => ref.url),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: alert.created_at,
-		isPatchable: !!alert.security_vulnerability.first_patched_version,
-		CVEs,
+		is_patchable: !!alert.security_vulnerability.first_patched_version,
+		cves: CVEs,
 	};
 }
 
@@ -486,16 +486,16 @@ export function snykAlertToRepocopVulnerability(
 	].join(', ');
 
 	return {
-		fullName,
+		full_name: fullName,
 		open: issue.attributes.status === 'open',
 		source: 'Snyk',
 		severity: stringToSeverity(issue.attributes.effective_severity_level),
 		package: packageName,
-		urls: issue.attributes.problems.map((p) => p.url),
+		urls: issue.attributes.problems.map((p) => p.url).filter((u) => !!u),
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: issue.attributes.created_at,
-		isPatchable,
-		CVEs: issue.attributes.problems.map((p) => p.id),
+		is_patchable: isPatchable,
+		cves: issue.attributes.problems.map((p) => p.id),
 	};
 }
 
