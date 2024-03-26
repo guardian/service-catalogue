@@ -52,7 +52,7 @@ async function writeEvaluationTable(
 }
 
 async function writeVulnerabilitiesTable(
-	vulnerabilities: repocop_vulnerabilities[],
+	vulnerabilities: Array<RepocopVulnerability & { repo_owner: string }>,
 	prisma: PrismaClient,
 ) {
 	console.log('Clearing the vulnerabilities table');
@@ -128,12 +128,9 @@ export async function main() {
 	/**
 	 * Create repocop vulnerabilities and write to repocop_vulnerabilities table
 	 */
-	const vulnerabilities: repocop_vulnerabilities[] = evaluationResults
+	const vulnerabilities = evaluationResults
 		.flatMap((result) => result.vulnerabilities)
-
-		.flatMap((vuln) =>
-			combineVulnWithOwners(vuln, repoOwners),
-		) as unknown as repocop_vulnerabilities[];
+		.flatMap((vuln) => combineVulnWithOwners(vuln, repoOwners));
 
 	await writeVulnerabilitiesTable(vulnerabilities, prisma);
 
