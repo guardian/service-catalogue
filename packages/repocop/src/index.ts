@@ -2,7 +2,6 @@ import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
 	PrismaClient,
 	repocop_github_repository_rules,
-	repocop_vulnerabilities,
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
