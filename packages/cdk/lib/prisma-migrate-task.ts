@@ -130,7 +130,7 @@ export function addPrismaMigrateTask(
 
 	taskDefinition.addToTaskRolePolicy(logShippingPolicy);
 	db.grantConnect(taskDefinition.taskRole);
-	artifactBucket.grantRead(taskDefinition.taskRole);
+	artifactBucket.grantRead(taskDefinition.taskRole, prismaArtifactKey);
 
 	// --- EvenBridge rule + target ---
 
