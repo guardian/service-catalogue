@@ -65,6 +65,11 @@ export function awsSourceConfig(
 				concurrency,
 				regions: AWS_REGIONS,
 				...extraConfig,
+				table_options: {
+					securityhub_findings: {
+						record_state: 'ACTIVE',
+					},
+				},
 			},
 		},
 	};
