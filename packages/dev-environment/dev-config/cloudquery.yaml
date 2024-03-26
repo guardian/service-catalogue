@@ -1,53 +1,3 @@
----
-kind: source
-spec:
-  # Source spec section
-  name: 'github'
-  path: 'cloudquery/github'
-  version: v${CQ_GITHUB}
-  skip_dependent_tables: true
-  tables:
-    - github_repositories
-    - github_repository_branches
-    - github_workflows
-  destinations: ['postgresql']
-  spec:
-    app_auth:
-      - org: guardian
-        private_key_path: /private-key.pem
-        app_id: '${file:/app-id}'
-        installation_id: '${file:/installation-id}'
-    repos: [
-        # example devX owned repos
-        'guardian/cdk',
-        'guardian/service-catalogue',
-
-        # example non-devX repo
-        'guardian/dotcom-rendering',
-
-        # example private repo
-        'guardian/tracker',
-      ]
----
-kind: source
-spec:
-  name: 'github-teams'
-  path: 'cloudquery/github'
-  version: v${CQ_GITHUB}
-  skip_dependent_tables: true
-  tables:
-    - github_teams
-    - github_team_repositories
-  destinations: ['postgresql']
-  spec:
-    app_auth:
-      - org: guardian
-        private_key_path: /private-key.pem
-        app_id: '${file:/app-id}'
-        installation_id: '${file:/installation-id}'
-    orgs:
-      - guardian
----
 kind: source
 spec:
   name: 'aws'
@@ -71,16 +21,6 @@ spec:
     accounts:
       - id: 'deployTools'
         local_profile: 'deployTools'
----
-kind: source
-spec:
-  name: 'github-languages'
-  # https://github.com/guardian/cq-source-github-languages
-  path: 'guardian/github-languages'
-  registry: 'github'
-  version: v0.0.4
-  tables: ['*']
-  destinations: ['postgresql']
 ---
 kind: destination
 spec:
