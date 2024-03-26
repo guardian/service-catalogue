@@ -49,10 +49,10 @@ copy(){
     step "Copying $1 data to local database"
     PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
     -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1*" -f "$1.sql" \
-    --no-owner --no-privileges --verbose --inserts
+    --no-owner --no-privileges --inserts
 
     PGPASSWORD=${DATABASE_PASSWORD}  psql \
-    -U postgres -h "${DATABASE_HOSTNAME}" -p 5432 -d "${DATABASE_NAME}" -f "$1.sql"
+    -U postgres -h "${DATABASE_HOSTNAME}" -p 5432 -d "${DATABASE_NAME}" -f "$1.sql" -q
     rm "$1.sql"
 }
 
@@ -83,6 +83,9 @@ source "$MAIN_ENV_FILE"
 
 copy "snyk"
 copy "galaxies"
-
+copy "github_team"
+copy "github_repo"
+copy "github_workflows"
+copy "github_languages"
 unset CODE_DB_PASSWORD
 unset CODE_HOST
