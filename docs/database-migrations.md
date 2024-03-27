@@ -4,7 +4,8 @@
 > The migration process is currently manual.
 
 ## What are they?
-Service Catalogue uses the [Prisma](https://www.prisma.io) ORM for database migrations, 
+
+Service Catalogue uses the [Prisma](https://www.prisma.io) ORM for database migrations,
 to profit from the audit trail it provides.
 
 Migrations are located in [../packages/common/prisma/migrations](../packages/common/prisma/migrations).
@@ -12,6 +13,7 @@ Migrations are located in [../packages/common/prisma/migrations](../packages/com
 Prisma tracks the migration history in the `_prisma_migrations` table in the database.
 
 ## Creating a new migration
+
 See https://www.prisma.io/docs/guides/migrate/developing-with-prisma-migrate#create-migrations for the recommended process for developing a migration.
 
 To create a migration file, run:
@@ -34,6 +36,16 @@ npx -w common prisma generate
 
 ## Applying a migration to CODE or PROD
 
+### Migrations as part of CD
+
+Upon a RiffRaff deploy (to either CODE or PROD), a `prisma.zip` containing the Prisma schema and migration scripts is uploaded into the account artifact bucket. This action triggers an [ECS task](../packages/cdk/lib/prisma-migrate-task.ts) running the [`prisma-migrate`](../containers/prisma-migrate/Dockerfile) container, which retrieves the `prisma.zip` and applies the corresponding migration to the CODE/PROD RDS instance.
+
+This migrations can fail for a number of reasons - for example attempting to add a `NOT NULL` column to a table with existing data. In this case, manual intervention will be necessary. Prisma provides some useful documentation on [patching and hotfixing](https://www.prisma.io/docs/orm/prisma-migrate/workflows/patching-and-hotfixing).
+
+### Manual migrations
+
+Although migrations are applied automatically on deploy, these documentation is preserved here in case a manual migration is necessary.
+
 Prerequisite:
 
 1. You have an approved Pull Request
@@ -44,6 +56,12 @@ You can apply a migration to CODE or PROD using the [CLI](../packages/cli)):
 
 ```bash
 npm -w cli start migrate -- --stage [CODE|PROD]
+```
+
+The command above will not apply the migration without a `--confirm` flag. If satisfied with the output of the above, you can run:
+
+```bash
+npm -w cli start migrate -- --stage [CODE|PROD] --confirm
 ```
 
 See also:
