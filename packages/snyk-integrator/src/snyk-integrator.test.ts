@@ -58,7 +58,7 @@ describe('A generated PR', () => {
 		);
 	});
 	it('should throw if no supported languages are provided', () => {
-		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
+		expect(() => generateServiceCataloguePr(['Rust'])).toThrow();
 		expect(() => generateServiceCataloguePr([])).toThrow();
 	});
 });
