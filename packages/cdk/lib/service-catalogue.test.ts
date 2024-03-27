@@ -1,5 +1,6 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
+import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
@@ -11,5 +12,27 @@ describe('The ServiceCatalogue stack', () => {
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
+	});
+
+	it('only uses arm64 lambdas', () => {
+		const app = new App();
+		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
+			stack: 'deploy',
+			stage: 'TEST',
+		});
+
+		const lambdas = stack.node
+			.findAll()
+			.filter((child): child is CfnFunction => child instanceof CfnFunction);
+
+		const architectures = new Set(
+			lambdas.flatMap((lambda) => lambda.architectures),
+		);
+
+		// Only 1 architecture is used...
+		expect(architectures.size).toEqual(1);
+
+		// ...and it's arm64
+		expect(architectures.has('arm64')).toEqual(true);
 	});
 });

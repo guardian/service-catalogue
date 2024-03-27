@@ -6,7 +6,7 @@ import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 
 interface GithubActionsUsageProps {
@@ -26,6 +26,7 @@ export function addGithubActionsUsageLambda(
 	const lambda = new GuLambdaFunction(scope, 'GithubActionsUsage', {
 		app,
 		vpc,
+		architecture: Architecture.ARM_64,
 		securityGroups: [dbAccess],
 		fileName: `${app}.zip`,
 		handler: 'index.main',
