@@ -4,6 +4,7 @@ import type {
 	github_repositories,
 	github_teams,
 	repocop_github_repository_rules,
+	repocop_vulnerabilities,
 } from '@prisma/client';
 
 export type NonEmptyArray<T> = [T, ...T[]];
@@ -161,18 +162,10 @@ export interface SnykProject {
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
 
-export type RepocopVulnerability = {
-	source: 'Dependabot' | 'Snyk';
-	full_name: string;
-	open: boolean;
-	severity: Severity;
-	package: string;
-	urls: string[];
-	ecosystem: string;
-	alert_issue_date: string;
-	is_patchable: boolean;
-	cves: string[];
-};
+export type RepocopVulnerability = Omit<
+	repocop_vulnerabilities,
+	'id' | 'repo_owner'
+>;
 
 export interface EvaluationResult {
 	fullName: string;
