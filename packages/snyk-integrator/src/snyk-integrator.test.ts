@@ -50,7 +50,6 @@ describe('A generated PR', () => {
 			'Scala',
 			'TypeScript',
 			'Rust', //unsupported by the action
-			'Kotlin', //unsupported by the action
 			'Go',
 		])[0];
 
@@ -59,7 +58,7 @@ describe('A generated PR', () => {
 		);
 	});
 	it('should throw if no supported languages are provided', () => {
-		expect(() => generateServiceCataloguePr(['Rust', 'Kotlin'])).toThrow();
+		expect(() => generateServiceCataloguePr(['Rust'])).toThrow();
 		expect(() => generateServiceCataloguePr([])).toThrow();
 	});
 });
