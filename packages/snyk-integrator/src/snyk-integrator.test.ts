@@ -50,7 +50,6 @@ describe('A generated PR', () => {
 			'Scala',
 			'TypeScript',
 			'Rust', //unsupported by the action
-			'Kotlin', //unsupported by the action
 			'Go',
 		])[0];
 
