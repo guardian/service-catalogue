@@ -89,7 +89,7 @@ describe('createDigest', () => {
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: '2023-01-01',
+			alert_issue_date: date,
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -107,7 +107,7 @@ Displaying the top 1 most urgent.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.
 
 [guardian/repo](https://github.com/guardian/repo) contains a [HIGH vulnerability](example.com).
-Introduced via **leftpad** on Sun Jan 01 2023, from pip.
+Introduced via **leftpad** on Fri Jan 01 2021, from pip.
 This vulnerability is patchable.`,
 		});
 	});
@@ -121,7 +121,7 @@ This vulnerability is patchable.`,
 			package: 'jackson',
 			urls: ['example.com'],
 			ecosystem: 'maven',
-			alert_issue_date: '',
+			alert_issue_date: date,
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -143,7 +143,7 @@ This vulnerability is patchable.`,
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: '',
+			alert_issue_date: date,
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -159,7 +159,7 @@ This vulnerability is patchable.`,
 			package: 'rightpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: '',
+			alert_issue_date: date,
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};

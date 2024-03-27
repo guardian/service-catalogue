@@ -457,7 +457,7 @@ export function dependabotAlertToRepocopVulnerability(
 		package: alert.security_vulnerability.package.name,
 		urls: alert.security_advisory.references.map((ref) => ref.url),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
-		alert_issue_date: alert.created_at,
+		alert_issue_date: new Date(alert.created_at),
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
 	};
@@ -493,7 +493,7 @@ export function snykAlertToRepocopVulnerability(
 		package: packageName,
 		urls: issue.attributes.problems.map((p) => p.url).filter((u) => !!u),
 		ecosystem: ecosystem ?? 'unknown ecosystem',
-		alert_issue_date: issue.attributes.created_at,
+		alert_issue_date: new Date(issue.attributes.created_at),
 		is_patchable: isPatchable,
 		cves: issue.attributes.problems.map((p) => p.id),
 	};

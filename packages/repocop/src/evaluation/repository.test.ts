@@ -569,14 +569,14 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	package: 'ansible',
 	urls: [],
 	ecosystem: 'pip',
-	alert_issue_date: '2021-01-01T00:00:00.000Z',
+	alert_issue_date: new Date('2021-01-01T00:00:00.000Z'),
 	is_patchable: true,
 	cves: ['CVE-2021-1234'],
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
 	...oldCriticalDependabotVuln,
-	alert_issue_date: new Date().toISOString(),
+	alert_issue_date: new Date(),
 };
 
 const oldHighDependabotVuln: RepocopVulnerability = {
@@ -586,7 +586,7 @@ const oldHighDependabotVuln: RepocopVulnerability = {
 
 const newHighDependabotVuln: RepocopVulnerability = {
 	...oldHighDependabotVuln,
-	alert_issue_date: new Date().toISOString(),
+	alert_issue_date: new Date(),
 };
 
 describe('NO RULE - Dependabot alerts', () => {
@@ -612,7 +612,7 @@ describe('NO RULE - Dependabot alerts', () => {
 
 		const thirteenDayOldHigh: RepocopVulnerability = {
 			...oldHighDependabotVuln,
-			alert_issue_date: thirteenDaysAgo.toISOString(),
+			alert_issue_date: thirteenDaysAgo,
 		};
 
 		expect(hasOldAlerts([thirteenDayOldHigh], thePerfectRepo)).toBe(false);
@@ -636,7 +636,7 @@ const snykIssue: SnykIssue = {
 				discovered_at: '', //or Date?
 			},
 		],
-		created_at: 'someTZdate', //or Date?
+		created_at: '2020-01-01', //or Date?
 		updated_at: '', //or Date?
 		coordinates: [
 			{
@@ -864,7 +864,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 				'http://www.securitytracker.com/id/1040422',
 			],
 			ecosystem: 'pip',
-			alert_issue_date: '2022-06-15T07:43:03Z',
+			alert_issue_date: new Date('2022-06-15T07:43:03Z'),
 			is_patchable: true,
 			cves: ['CVE-2018-6188'],
 		};
@@ -881,7 +881,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 				'https://bugzilla.redhat.com/show_bug.cgi?id=1916813',
 			],
 			ecosystem: 'pip',
-			alert_issue_date: '2022-06-14T15:21:52Z',
+			alert_issue_date: new Date('2022-06-14T15:21:52Z'),
 			is_patchable: true,
 			cves: ['CVE-2021-20191'],
 		};
@@ -907,7 +907,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			package: 'fetch',
 			urls: ['example.com'],
 			ecosystem: 'npm',
-			alert_issue_date: 'someTZdate',
+			alert_issue_date: new Date('2020-01-01'),
 			is_patchable: true,
 			cves: ['CVE-1234'],
 		});
@@ -932,7 +932,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		package: 'django',
 		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
 		ecosystem: 'pip',
-		alert_issue_date: '2022-06-15T07:43:03Z',
+		alert_issue_date: new Date('2022-06-15T07:43:03Z'),
 		is_patchable: true,
 		cves: ['CVE-2018-6188'],
 	};
@@ -944,7 +944,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		package: 'django',
 		urls: ['https://nvd.nist.gov/vuln/detail/CVE-2018-6188'],
 		ecosystem: 'pip',
-		alert_issue_date: '2022-06-15T07:43:03Z',
+		alert_issue_date: new Date('2022-06-15T07:43:03Z'),
 		is_patchable: true,
 		cves: ['CVE-2018-6188'],
 	};

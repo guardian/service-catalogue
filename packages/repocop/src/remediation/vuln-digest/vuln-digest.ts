@@ -35,13 +35,8 @@ export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
 		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
 }
 
-function dateStringToHumanReadable(dateString: string) {
-	const date = new Date(dateString);
-	return date.toDateString();
-}
-
 function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
-	const dateString = dateStringToHumanReadable(vuln.alert_issue_date);
+	const dateString = new Date(vuln.alert_issue_date).toDateString();
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
