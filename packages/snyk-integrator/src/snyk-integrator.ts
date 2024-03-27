@@ -136,6 +136,8 @@ export function generatePr(
 		'TypeScript',
 		'JavaScript',
 		'Python',
+		'Kotlin',
+		'Ruby',
 		'Go',
 	];
 
