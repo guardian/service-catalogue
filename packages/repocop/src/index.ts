@@ -15,6 +15,7 @@ import {
 } from './evaluation/repository';
 import { sendToCloudwatch } from './metrics';
 import {
+	getDependabotVulnerabilities,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
@@ -34,6 +35,7 @@ import type {
 	EvaluationResult,
 	RepocopVulnerability,
 } from './types';
+import { isProduction } from './utils';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -85,6 +87,12 @@ export async function main() {
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
+	const productionRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+	const productionDependabotVulnerabilities: RepocopVulnerability[] =
+		await getDependabotVulnerabilities(productionRepos, octokit);
+
+	console.log(productionDependabotVulnerabilities);
+
 	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
 		branches,
@@ -92,7 +100,7 @@ export async function main() {
 		repoLanguages,
 		snykIssues,
 		snykProjects,
-		octokit,
+		productionDependabotVulnerabilities,
 	);
 
 	const repocopRules = evaluationResults.map((r) => r.repocopRules);
