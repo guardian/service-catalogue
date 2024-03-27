@@ -107,8 +107,6 @@ fi
 
 step "Baselining DB"
 echo -e "${yellow}Please note that this will drop all tables in the local database${clear}"
-echo "Waiting 10 seconds before proceeding..." # Give the user a chance to cancel.
-sleep 10
 npm -w cli start migrate -- --stage DEV --confirm
 
 step "Copying data from CODE DB to local DB"
