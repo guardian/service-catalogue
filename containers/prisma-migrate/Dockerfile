@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20.11.1-alpine
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,8 @@ RUN apk --no-cache add aws-cli
 # Install the Prisma NPM package
 # This will allow us to use the prisma migrate deploy command
 RUN npm init -y
-RUN npm install prisma
+# TODO: Keep the version automatically in sync with common/package.json
+RUN npm install prisma@5.11.0 
 
 COPY ./containers/prisma-migrate/run-prisma-migrate.sh ./run-prisma-migrate.sh
 RUN chmod +x ./run-prisma-migrate.sh
