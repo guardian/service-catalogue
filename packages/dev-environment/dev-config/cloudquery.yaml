@@ -7,11 +7,6 @@ spec:
   tables:
     - aws_lambda_functions
     - aws_s3_buckets
-    - aws_cloudformation_stacks
-    - aws_organizations_accounts
-    - aws_organizations_account_parents
-    - aws_organizations_organizational_units
-    - aws_ec2_instances
     - aws_ec2_images
   skip_dependent_tables: true
   spec:

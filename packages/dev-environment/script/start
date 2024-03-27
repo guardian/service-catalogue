@@ -9,30 +9,22 @@ MAIN_ENV_FILE=$ROOT_DIR/.env
 LOCAL_ENV_FILE=$HOME/.gu/service_catalogue/.env.local
 clear='\033[0m'
 cyan='\033[0;36m'
+yellow="\033[1;33m"
 
 step(){
   ((STEP_COUNT++))
   echo -e "\n${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
-add_to_path ()
-{
-    if [[ "$PATH" =~ (^|:)"${1}"(:|$) ]]
-    then
-        echo "Path already contains ${1}"
-        return 0
-    fi
-    export PATH=${1}:$PATH
-}
-
-setup_libpq() {
-    step "Setting up libpq"
-    brew install libpq
-    add_to_path "/opt/homebrew/opt/libpq/bin"
-}
+step "Setting up libpq"
+if ! brew list "libpq" &>/dev/null; then
+    brew install "libpq"
+else
+    echo "libpq is already installed"
+fi
 
 get_db_password() {
-    step "Getting DB password"
+    step "Getting DB credentials"
     SECRET_NAME=$(aws secretsmanager list-secrets \
     --profile deployTools --region eu-west-1 \
     --filters Key=tag-value,Values=CODE  | jq '.SecretList[].Name' | grep Postgres | tr -d '"')
@@ -45,15 +37,30 @@ get_db_password() {
     unset SECRET_NAME
 }
 
-copy(){
-    step "Copying $1 data to local database"
+insert_into_db() {
+      PGPASSWORD=${DATABASE_PASSWORD}  psql \
+    -U postgres -h "${DATABASE_HOSTNAME}" -p 5432 -d "${DATABASE_NAME}" -f "$1.sql" -q
+    rm "$1.sql"
+
+    echo "Transfer of $1 data complete ✅"
+}
+
+wildcard_copy(){
+    echo "Copying tables prefixed with $1 to local database"
     PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
     -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1*" -f "$1.sql" \
     --no-owner --no-privileges --inserts
 
-    PGPASSWORD=${DATABASE_PASSWORD}  psql \
-    -U postgres -h "${DATABASE_HOSTNAME}" -p 5432 -d "${DATABASE_NAME}" -f "$1.sql" -q
-    rm "$1.sql"
+    insert_into_db "$1"
+}
+
+copy(){
+    echo "Copying table $1 to local database"
+    PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
+    -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1" -f "$1.sql" \
+    --no-owner --no-privileges --inserts
+
+    insert_into_db "$1"
 }
 
 step "Checking AWS credentials"
@@ -68,6 +75,9 @@ else
   echo "AWS credentials are valid"
 fi
 
+get_db_password
+source "$MAIN_ENV_FILE"
+
 step "Launching Docker containers"
 if (docker info) 2>&1 >/dev/null; then
   docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d
@@ -76,16 +86,25 @@ else
   exit 1
 fi
 
-setup_libpq
-get_db_password
+step "Baselining DB"
+echo -e "${yellow}Please note that this will drop all tables in the local database${clear}"
+npm -w cli start migrate -- --stage DEV --confirm
 
-source "$MAIN_ENV_FILE"
+step "Copying data from CODE DB to local DB"
+wildcard_copy "snyk" & \
+wildcard_copy "galaxies" & \
+wildcard_copy "github_team" & \
+wildcard_copy "github_repo" & \
+copy "github_workflows" & \
+copy "github_languages" & \
+copy "aws_cloudformation_stacks" & \
+copy "aws_organizations_accounts" & \
+copy "aws_organizations_account_parents" & \
+copy "aws_organizations_organizational_units" & \
+copy "aws_ec2_instances"
 
-copy "snyk"
-copy "galaxies"
-copy "github_team"
-copy "github_repo"
-copy "github_workflows"
-copy "github_languages"
+wait
+
+step "Cleaning up"
 unset CODE_DB_PASSWORD
 unset CODE_HOST
