@@ -2,7 +2,6 @@ export const ignoredLanguages = [
 	'HTML',
 	'CSS',
 	'Shell',
-	'Jupyter Notebook',
 	'Makefile',
 	'Dockerfile',
 	'PLpgSQL',
@@ -13,6 +12,9 @@ export const ignoredLanguages = [
 	'SCSS',
 	'Less',
 	'Sass',
+	'MDX',
+	'Procfile',
+	'Mermaid',
 ];
 
 const commonSupportedLanguages = [
@@ -20,9 +22,14 @@ const commonSupportedLanguages = [
 	'Go',
 	'Java',
 	'JavaScript',
+	'EJS', // EJS uses JavaScript dependencies
+	'Handlebars', // Handlebars uses JavaScript dependencies
+	'Mustache', // Mustache uses JavaScript dependencies
+	'Astro', // Astro uses JavaScript dependencies
 	'Python',
 	'Jinja', // Jinja uses Python dependencies
 	'Mako', // Mako uses Python dependencies
+	'Jupyter Notebook', // Jupyter Notebook uses Python dependencies
 	'Ruby',
 	'Rust',
 	'Swift',
