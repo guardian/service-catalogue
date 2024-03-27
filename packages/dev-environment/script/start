@@ -16,15 +16,6 @@ step(){
   echo -e "\n${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
-install_brew_formula() {
-    if ! brew list "$1" &>/dev/null; then
-        step "Installing $1"
-        brew install "$1"
-    else
-        echo "$1 is already installed"
-    fi
-}
-
 step "Setting up libpq"
 if ! brew list "libpq" &>/dev/null; then
     brew install "libpq"
@@ -84,7 +75,6 @@ else
   echo "AWS credentials are valid"
 fi
 
-setup_libpq
 get_db_password
 source "$MAIN_ENV_FILE"
 
