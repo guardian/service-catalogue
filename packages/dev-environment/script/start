@@ -25,21 +25,12 @@ install_brew_formula() {
     fi
 }
 
-add_to_path ()
-{
-    if [[ "$PATH" =~ (^|:)"${1}"(:|$) ]]
-    then
-        echo "Path already contains ${1}"
-        return 0
-    fi
-    export PATH=${1}:$PATH
-}
-
-setup_libpq() {
-    step "Setting up libpq"
-    install_brew_formula "libpq"
-    add_to_path "/opt/homebrew/opt/libpq/bin"
-}
+step "Setting up libpq"
+if ! brew list "libpq" &>/dev/null; then
+    brew install "libpq"
+else
+    echo "libpq is already installed"
+fi
 
 get_db_password() {
     step "Getting DB credentials"
