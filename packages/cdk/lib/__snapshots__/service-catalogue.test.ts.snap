@@ -492,6 +492,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -1040,6 +1060,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceDelegatedToSecurityAccountTaskDefinitionD407788D",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -1592,6 +1632,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -2109,6 +2169,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceFastlyServicesTaskDefinitionDCCD3FD4",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -2735,6 +2815,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -2991,6 +3091,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionFA21D536",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -3877,6 +3997,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -4479,6 +4619,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -5087,6 +5247,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -5675,6 +5855,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -6235,6 +6435,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -6745,6 +6965,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceOrgWideBackupTaskDefinition9BAD0C75",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -7337,6 +7577,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -7887,6 +8147,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -8143,6 +8423,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceOrgWideCloudwatchAlarmsTaskDefinitionF28C916F",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -8987,6 +9287,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -9571,6 +9891,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -10083,6 +10423,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -10378,6 +10738,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceOrgWideLoadBalancersTaskDefinitionF1D11F23",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -10929,6 +11309,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceOrgWideRDSTaskDefinitionFDF4F4E5",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -11776,6 +12176,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -12388,6 +12808,26 @@ spec:
               },
             },
             {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "iam:PassRole",
               "Effect": "Allow",
               "Resource": {
@@ -12647,6 +13087,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionFF023225",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -13543,6 +14003,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CloudquerySourceSnykAllTaskDefinitionC8C1F3EC",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
@@ -16060,6 +16540,26 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "prismamigratetaskTaskDefinition6CE347DF",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
             {
