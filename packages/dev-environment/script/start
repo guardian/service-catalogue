@@ -82,20 +82,15 @@ echo -e "${yellow}Please note that this will drop all tables in the local databa
 npm -w cli start migrate -- --stage DEV --confirm
 
 step "Copying data from CODE DB to local DB"
-copy "snyk_issues" & \
-copy "snyk_projects" & \
-copy "galaxies_teams_table" & \
-copy "github_team_repositories" & \
-copy "github_teams" & \
-copy "github_repositories" & \
-copy "github_repository_branches" & \
-copy "github_workflows" & \
-copy "github_languages" & \
-copy "aws_cloudformation_stacks" & \
-copy "aws_organizations_accounts" & \
-copy "aws_organizations_account_parents" & \
-copy "aws_organizations_organizational_units" & \
-copy "aws_ec2_instances"
+for table in "snyk_issues" "snyk_projects" \
+"galaxies_teams_table" \
+"github_team_repositories" "github_teams" \
+"github_repositories" "github_repository_branches" \
+"github_workflows" "github_languages" \
+"aws_organizations_accounts" "aws_organizations_account_parents" "aws_organizations_organizational_units"\
+"aws_ec2_instances" "aws_cloudformation_stacks" \ ; do
+  copy "$table" &
+done
 
 wait
 
