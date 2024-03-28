@@ -9,7 +9,7 @@ import { Duration } from 'aws-cdk-lib';
 import type { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
@@ -48,6 +48,7 @@ export class Repocop {
 
 		const repocopLampdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
+			architecture: Architecture.ARM_64,
 			fileName: 'repocop.zip',
 			handler: 'index.main',
 			memorySize: 1024,
@@ -125,6 +126,7 @@ function stageAwareIntegratorLambda(
 ): GuLambdaFunction {
 	const nonProdLambdaProps = {
 		app,
+		architecture: Architecture.ARM_64,
 		fileName: `${app}.zip`,
 		handler: 'index.handler',
 		memorySize: 1024,

@@ -5,7 +5,7 @@ import { Duration, Tags } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/policies';
 
@@ -61,6 +61,7 @@ export function addDataAuditLambda(scope: GuStack, props: DataAuditProps) {
 		role,
 		app,
 		vpc,
+		architecture: Architecture.ARM_64,
 		securityGroups: [dbAccess],
 		fileName: `${app}.zip`,
 		handler: 'index.main',

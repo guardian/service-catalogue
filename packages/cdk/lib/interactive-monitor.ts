@@ -1,7 +1,7 @@
 import { type GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
@@ -22,6 +22,7 @@ export class InteractiveMonitor {
 
 		const lambda = new GuLambdaFunction(guStack, service, {
 			app: service,
+			architecture: Architecture.ARM_64,
 			fileName: `${service}.zip`,
 			handler: 'index.handler',
 			runtime: Runtime.NODEJS_20_X,
