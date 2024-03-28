@@ -165,11 +165,9 @@ export async function getDependabotVulnerabilities(
 			repos.map(async (repo) => {
 				const alerts = await getAlertsForRepo(octokit, repo.name);
 				if (alerts) {
-					return alerts
-						.filter((a) => a.state === 'open')
-						.map((a) =>
-							dependabotAlertToRepocopVulnerability(repo.full_name, a),
-						);
+					return alerts.map((a) =>
+						dependabotAlertToRepocopVulnerability(repo.full_name, a),
+					);
 				}
 				return [];
 			}),
