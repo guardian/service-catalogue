@@ -81,14 +81,24 @@ step "Baselining DB"
 echo -e "${yellow}Please note that this will drop all tables in the local database${clear}"
 npm -w cli start migrate -- --stage DEV --confirm
 
-step "Copying data from CODE DB to local DB"
-for table in "snyk_issues" "snyk_projects" \
-"galaxies_teams_table" \
-"github_team_repositories" "github_teams" \
-"github_repositories" "github_repository_branches" \
-"github_workflows" "github_languages" \
-"aws_organizations_accounts" "aws_organizations_account_parents" "aws_organizations_organizational_units"\
-"aws_ec2_instances" "aws_cloudformation_stacks" \ ; do
+tables_to_copy=(
+  "snyk_issues"
+  "snyk_projects"
+  "galaxies_teams_table"
+  "github_team_repositories"
+  "github_teams"
+  "github_repositories"
+  "github_repository_branches"
+  "github_workflows"
+  "github_languages"
+  "aws_organizations_accounts"
+  "aws_organizations_account_parents"
+  "aws_organizations_organizational_units"
+  "aws_ec2_instances"
+  "aws_cloudformation_stacks"
+)
+
+for table in "${tables_to_copy[@]}"; do
   copy "$table" &
 done
 
