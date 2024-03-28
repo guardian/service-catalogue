@@ -25,6 +25,6 @@ export const Images = {
 	 * 	https://github.com/guardian/service-catalogue/pkgs/container/service-catalogue%2Fprisma-migrate
 	 */
 	prismaMigrate: ContainerImage.fromRegistry(
-		'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-06b60dc3f47bfdfe8997d3d622e91f5508733ece',
+		'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-cdd0348904373d72dcbbdd3bc943e6b5dc232d3c',
 	),
 };
