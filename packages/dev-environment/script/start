@@ -45,20 +45,11 @@ insert_into_db() {
     echo "Transfer of $1 data complete ✅"
 }
 
-wildcard_copy(){
-    echo "Copying tables prefixed with $1 to local database"
-    PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
-    -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1*" -f "$1.sql" \
-    --no-owner --no-privileges --inserts
-
-    insert_into_db "$1"
-}
-
 copy(){
     echo "Copying table $1 to local database"
     PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
     -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1" -f "$1.sql" \
-    --no-owner --no-privileges --inserts
+    --no-owner --no-privileges --inserts --data-only
 
     insert_into_db "$1"
 }
@@ -91,10 +82,13 @@ echo -e "${yellow}Please note that this will drop all tables in the local databa
 npm -w cli start migrate -- --stage DEV --confirm
 
 step "Copying data from CODE DB to local DB"
-wildcard_copy "snyk" & \
-wildcard_copy "galaxies" & \
-wildcard_copy "github_team" & \
-wildcard_copy "github_repo" & \
+copy "snyk_issues" & \
+copy "snyk_projects" & \
+copy "galaxies_teams_table" & \
+copy "github_team_repositories" & \
+copy "github_teams" & \
+copy "github_repositories" & \
+copy "github_repository_branches" & \
 copy "github_workflows" & \
 copy "github_languages" & \
 copy "aws_cloudformation_stacks" & \
