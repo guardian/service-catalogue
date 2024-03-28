@@ -45,20 +45,11 @@ insert_into_db() {
     echo "Transfer of $1 data complete ✅"
 }
 
-wildcard_copy(){
-    echo "Copying tables prefixed with $1 to local database"
-    PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
-    -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1*" -f "$1.sql" \
-    --no-owner --no-privileges --inserts
-
-    insert_into_db "$1"
-}
-
 copy(){
     echo "Copying table $1 to local database"
     PGPASSWORD=${CODE_DB_PASSWORD} pg_dump \
     -U postgres -h "${CODE_HOST}" -p 5432 -d "${DATABASE_NAME}" -t "$1" -f "$1.sql" \
-    --no-owner --no-privileges --inserts
+    --no-owner --no-privileges --inserts --data-only
 
     insert_into_db "$1"
 }
@@ -90,18 +81,26 @@ step "Baselining DB"
 echo -e "${yellow}Please note that this will drop all tables in the local database${clear}"
 npm -w cli start migrate -- --stage DEV --confirm
 
-step "Copying data from CODE DB to local DB"
-wildcard_copy "snyk" & \
-wildcard_copy "galaxies" & \
-wildcard_copy "github_team" & \
-wildcard_copy "github_repo" & \
-copy "github_workflows" & \
-copy "github_languages" & \
-copy "aws_cloudformation_stacks" & \
-copy "aws_organizations_accounts" & \
-copy "aws_organizations_account_parents" & \
-copy "aws_organizations_organizational_units" & \
-copy "aws_ec2_instances"
+tables_to_copy=(
+  "snyk_issues"
+  "snyk_projects"
+  "galaxies_teams_table"
+  "github_team_repositories"
+  "github_teams"
+  "github_repositories"
+  "github_repository_branches"
+  "github_workflows"
+  "github_languages"
+  "aws_organizations_accounts"
+  "aws_organizations_account_parents"
+  "aws_organizations_organizational_units"
+  "aws_ec2_instances"
+  "aws_cloudformation_stacks"
+)
+
+for table in "${tables_to_copy[@]}"; do
+  copy "$table" &
+done
 
 wait
 
