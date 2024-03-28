@@ -150,6 +150,8 @@ async function getAlertsForRepo(
 			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
 		);
 		console.debug(error);
+		// Return undefined if dependabot is not enabled, to distinguish from
+		// the scenario where it is enabled, but there are no alerts
 		return undefined;
 	}
 }
