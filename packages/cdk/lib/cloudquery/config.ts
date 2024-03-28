@@ -269,11 +269,6 @@ export function snykSourceConfig(
 			destinations: ['postgresql'],
 			spec: {
 				api_key: '${SNYK_API_KEY}',
-				table_options: {
-					snyk_reporting_issues: {
-						period: '30d',
-					},
-				},
 			},
 		},
 	};
