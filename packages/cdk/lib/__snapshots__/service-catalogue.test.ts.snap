@@ -13636,9 +13636,6 @@ spec:
     - postgresql
   spec:
     api_key: \${SNYK_API_KEY}
-    table_options:
-      snyk_reporting_issues:
-        period: 30d
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
