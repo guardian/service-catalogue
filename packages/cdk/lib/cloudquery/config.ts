@@ -101,6 +101,7 @@ export function awsSourceConfigForOrganisation(
 export function awsSourceConfigForAccount(
 	accountNumber: string,
 	tableConfig: CloudqueryTableConfig,
+	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
 	return awsSourceConfig(tableConfig, {
 		accounts: [
@@ -109,6 +110,7 @@ export function awsSourceConfigForAccount(
 				role_arn: `arn:aws:iam::${accountNumber}:role/cloudquery-access`,
 			},
 		],
+		...extraConfig,
 	});
 }
 

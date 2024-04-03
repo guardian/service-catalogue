@@ -128,6 +128,50 @@ spec:
 `);
 	});
 
+	it('Should create an AWS source configuration for a single account with table options', () => {
+		const config = awsSourceConfigForAccount(
+			GuardianAwsAccounts.Security,
+			{
+				tables: ['aws_securityhub_findings'],
+			},
+			{
+				table_options: {
+					securityhub_findings: {
+						record_state: 'ACTIVE',
+					},
+				},
+			},
+		);
+		console.log(dump(config));
+		expect(dump(config)).toMatchInlineSnapshot(`
+"kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v23.6.1
+  tables:
+    - aws_securityhub_findings
+  destinations:
+    - postgresql
+  spec:
+    regions:
+      - eu-west-1
+      - eu-west-2
+      - us-east-1
+      - us-east-2
+      - us-west-1
+      - ap-southeast-2
+      - ca-central-1
+    accounts:
+      - id: cq-for-000000000015
+        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+    table_options:
+      securityhub_findings:
+        record_state: ACTIVE
+"
+`);
+	});
+
 	it('Should create a GitHub source configuration', () => {
 		const config = githubSourceConfig({ tables: ['github_repositories'] });
 		expect(dump(config)).toMatchInlineSnapshot(`
