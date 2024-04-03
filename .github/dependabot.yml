@@ -30,6 +30,11 @@ updates:
           - "@guardian/prettier"
           - "eslint"
           - "eslint-plugin-prettier"
+      octokit:
+        patterns:
+          - "@octokit/*"
+          - "octokit"
+          - "octokit-plugin-create-pull-request"
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
