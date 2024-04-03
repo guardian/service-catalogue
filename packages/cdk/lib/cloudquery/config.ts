@@ -65,11 +65,6 @@ export function awsSourceConfig(
 				concurrency,
 				regions: AWS_REGIONS,
 				...extraConfig,
-				table_options: {
-					securityhub_findings: {
-						record_state: 'ACTIVE',
-					},
-				},
 			},
 		},
 	};
@@ -106,6 +101,7 @@ export function awsSourceConfigForOrganisation(
 export function awsSourceConfigForAccount(
 	accountNumber: string,
 	tableConfig: CloudqueryTableConfig,
+	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
 	return awsSourceConfig(tableConfig, {
 		accounts: [
@@ -114,6 +110,7 @@ export function awsSourceConfigForAccount(
 				role_arn: `arn:aws:iam::${accountNumber}:role/cloudquery-access`,
 			},
 		],
+		...extraConfig,
 	});
 }
 

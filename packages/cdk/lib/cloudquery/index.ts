@@ -93,10 +93,20 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '22' }),
-			config: awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
-				tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
-				concurrency: 2000,
-			}),
+			config: awsSourceConfigForAccount(
+				GuardianAwsAccounts.Security,
+				{
+					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
+					concurrency: 2000,
+				},
+				{
+					table_options: {
+						aws_securityhub_findings: {
+							record_state: 'ACTIVE',
+						},
+					},
+				},
+			),
 			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
 			memoryLimitMiB: 2048,
 			cpu: 1024,
