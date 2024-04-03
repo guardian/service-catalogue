@@ -4,9 +4,14 @@ import type {
 	PrismaClient,
 	view_repo_ownership,
 } from '@prisma/client';
+import type { Octokit } from 'octokit';
+import { dependabotAlertToRepocopVulnerability } from './evaluation/repository';
 import type {
+	Alert,
 	AwsCloudFormationStack,
+	DependabotVulnResponse,
 	NonEmptyArray,
+	RepocopVulnerability,
 	Repository,
 	SnykIssue,
 	SnykProject,
@@ -112,4 +117,66 @@ export async function getRepositoryLanguages(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<github_languages>> {
 	return toNonEmptyArray(await client.github_languages.findMany({}));
+}
+
+//Octokit Queries
+
+async function getAlertsForRepo(
+	octokit: Octokit,
+	name: string,
+): Promise<Alert[] | undefined> {
+	if (name.startsWith('guardian/')) {
+		name = name.replace('guardian/', '');
+	}
+
+	try {
+		const alert: DependabotVulnResponse =
+			await octokit.rest.dependabot.listAlertsForRepo({
+				owner: 'guardian',
+				repo: name,
+				per_page: 100,
+				severity: 'critical,high',
+				state: 'open',
+				sort: 'created',
+				direction: 'asc', //retrieve oldest vulnerabilities first
+			});
+
+		const openRuntimeDependencies = alert.data.filter(
+			(a) => a.dependency.scope !== 'development',
+		);
+		return openRuntimeDependencies;
+	} catch (error) {
+		console.debug(
+			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
+		);
+		console.debug(error);
+		// Return undefined if dependabot is not enabled, to distinguish from
+		// the scenario where it is enabled, but there are no alerts
+		return undefined;
+	}
+}
+
+export async function getDependabotVulnerabilities(
+	repos: Repository[],
+	octokit: Octokit,
+) {
+	const dependabotVulnerabilities: RepocopVulnerability[] = (
+		await Promise.all(
+			repos.map(async (repo) => {
+				const alerts = await getAlertsForRepo(octokit, repo.name);
+				if (alerts) {
+					return alerts.map((a) =>
+						dependabotAlertToRepocopVulnerability(repo.full_name, a),
+					);
+				}
+				return [];
+			}),
+		)
+	).flat();
+
+	console.log(
+		`Found ${dependabotVulnerabilities.length} dependabot vulnerabilities across ${repos.length} repos`,
+	);
+
+	return dependabotVulnerabilities;
 }

@@ -5,7 +5,6 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { partition } from 'common/src/functions';
-import type { Octokit } from 'octokit';
 import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
@@ -13,7 +12,6 @@ import {
 import type {
 	Alert,
 	AwsCloudFormationStack,
-	DependabotVulnResponse,
 	Dependency,
 	EvaluationResult,
 	RepoAndStack,
@@ -217,39 +215,6 @@ function findArchivedReposWithStacks(
 		.filter((result) => result.stacks.length > 0);
 
 	return archivedReposWithPotentialStacks;
-}
-
-export async function getAlertsForRepo(
-	octokit: Octokit,
-	name: string,
-): Promise<Alert[] | undefined> {
-	if (name.startsWith('guardian/')) {
-		name = name.replace('guardian/', '');
-	}
-
-	try {
-		const alert: DependabotVulnResponse =
-			await octokit.rest.dependabot.listAlertsForRepo({
-				owner: 'guardian',
-				repo: name,
-				per_page: 100,
-				severity: 'critical,high',
-				state: 'open',
-				sort: 'created',
-				direction: 'asc', //retrieve oldest vulnerabilities first
-			});
-
-		const openRuntimeDependencies = alert.data.filter(
-			(a) => a.dependency.scope !== 'development',
-		);
-		return openRuntimeDependencies;
-	} catch (error) {
-		console.debug(
-			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
-		);
-		console.debug(error);
-		return undefined;
-	}
 }
 
 function vulnerabilityNeedsAddressing(date: Date, severity: string) {
@@ -499,16 +464,16 @@ export function snykAlertToRepocopVulnerability(
 	};
 }
 
-export async function evaluateRepositories(
+export function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	snykIssues: SnykIssue[],
 	snykProjects: SnykProject[],
-	octokit: Octokit,
+	dependabotVulnerabilities: RepocopVulnerability[],
 ): Promise<EvaluationResult[]> {
-	const evaluatedRepos = repositories.map(async (r) => {
+	const evaluatedRepos = repositories.map((r) => {
 		const isMainBranchPredicate = (x: Tag) =>
 			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
 
@@ -518,17 +483,16 @@ export async function evaluateRepositories(
 			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
 			.filter((x) => x !== undefined) as string[];
 
+		const vulnsForRepo = dependabotVulnerabilities.filter(
+			(v) => v.full_name === r.full_name,
+		);
+
 		const uniqueReposOnSnyk = [...new Set(reposOnSnyk)];
-		const dependabotAlerts = isProduction(r)
-			? (await getAlertsForRepo(octokit, r.name))
-					?.filter((a) => a.state === 'open')
-					.map((a) => dependabotAlertToRepocopVulnerability(r.full_name, a))
-			: [];
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 
 		return evaluateOneRepo(
-			dependabotAlerts,
+			vulnsForRepo,
 			r,
 			branchesForRepo,
 			teamsForRepo,
