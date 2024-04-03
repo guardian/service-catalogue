@@ -6,6 +6,7 @@ spec:
   destinations: ['postgresql']
   tables:
     - aws_lambda_functions
+    - aws_securityhub_findings
     - aws_s3_buckets
     - aws_ec2_images
   skip_dependent_tables: true
@@ -16,6 +17,9 @@ spec:
     accounts:
       - id: 'deployTools'
         local_profile: 'deployTools'
+    table_options:
+      aws_securityhub_findings:
+        record_state: 'ACTIVE'
 ---
 kind: destination
 spec:
