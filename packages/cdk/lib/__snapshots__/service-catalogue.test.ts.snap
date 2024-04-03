@@ -742,7 +742,11 @@ spec:
         role_arn: arn:aws:iam::000000000015:role/cloudquery-access
     table_options:
       aws_securityhub_findings:
-        record_state: ACTIVE
+        get_findings:
+          - filters:
+              record_state:
+                - comparison: EQUALS
+                  value: ACTIVE
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql

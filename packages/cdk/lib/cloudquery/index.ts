@@ -102,7 +102,18 @@ export function addCloudqueryEcsCluster(
 				{
 					table_options: {
 						aws_securityhub_findings: {
-							record_state: 'ACTIVE',
+							get_findings: [
+								{
+									filters: {
+										record_state: [
+											{
+												comparison: 'EQUALS',
+												value: 'ACTIVE',
+											},
+										],
+									},
+								},
+							],
 						},
 					},
 				},
