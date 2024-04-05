@@ -40,7 +40,7 @@ spec:
     - aws_s3_buckets
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4318
+  otel_endpoint: 127.0.0.1:4323
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -76,7 +76,7 @@ spec:
     - aws_s3_buckets
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4318
+  otel_endpoint: 127.0.0.1:4323
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -115,7 +115,7 @@ spec:
     - aws_accessanalyzer_analyzer_findings
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4318
+  otel_endpoint: 127.0.0.1:4323
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -157,7 +157,7 @@ spec:
     - aws_securityhub_findings
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4318
+  otel_endpoint: 127.0.0.1:4323
   otel_endpoint_insecure: true
   spec:
     regions:
