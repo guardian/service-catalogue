@@ -61,6 +61,8 @@ export function awsSourceConfig(
 			tables,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
+			otel_endpoint: '127.0.0.1:4318',
+			otel_endpoint_insecure: true,
 			spec: {
 				concurrency,
 				regions: AWS_REGIONS,
