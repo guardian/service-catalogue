@@ -18132,6 +18132,12 @@ spec:
     },
     "servicecatalogueCluster5FC34DC5": {
       "Properties": {
+        "ClusterSettings": [
+          {
+            "Name": "containerInsights",
+            "Value": "disabled",
+          },
+        ],
         "Tags": [
           {
             "Key": "gu:cdk:version",
