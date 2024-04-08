@@ -85,6 +85,17 @@ export function isFirstOrThirdTuesdayOfMonth(date: Date) {
 	return isTuesday && (inFirstWeek || inThirdWeek);
 }
 
+function createGrafanaAction(teamSlug: string): Action {
+	const url =
+		'https://metrics.gutools.co.uk/explore?schemaVersion=1&panes=%7B%22rwi%22:%7B%22datasource%22:%22RuTckSB4k%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22grafana-postgresql-datasource%22,%22uid%22:%22RuTckSB4k%22%7D,%22format%22:%22table%22,%22rawSql%22:%22SELECT%20%2A%20FROM%20repocop_vulnerabilities%20where%20repo_owner%20%3D%20%27' +
+		teamSlug +
+		'%27%20order%20by%20is_patchable%20desc%22,%22editorMode%22:%22code%22,%22sql%22:%7B%22columns%22:%5B%7B%22type%22:%22function%22,%22parameters%22:%5B%7B%22type%22:%22functionParameter%22,%22name%22:%22%2A%22%7D%5D%7D%5D,%22groupBy%22:%5B%7B%22type%22:%22groupBy%22,%22property%22:%7B%22type%22:%22string%22%7D%7D%5D,%22limit%22:50%7D,%22table%22:%22repocop_vulnerabilities%22,%22rawQuery%22:true%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1';
+	return {
+		cta: "View your teams' vulnerabilities in Grafana",
+		url,
+	};
+}
+
 async function sendVulnerabilityDigests(
 	digests: VulnerabilityDigest[],
 	config: Config,
@@ -106,7 +117,7 @@ async function sendVulnerabilityDigests(
 				await anghammarad.notify({
 					subject: digest.subject,
 					message: digest.message,
-					actions: [action],
+					actions: [action, createGrafanaAction(digest.teamSlug)],
 					target: { GithubTeamSlug: digest.teamSlug },
 					channel: RequestedChannel.PreferHangouts,
 					sourceSystem: `${config.app} ${config.stage}`,
