@@ -9,9 +9,9 @@
     "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma"
   },
   "dependencies": {
-    "@aws-sdk/client-lambda": "^3.548.0",
-    "@aws-sdk/client-organizations": "^3.540.0",
-    "@aws-sdk/client-s3": "^3.540.0",
-    "@aws-sdk/client-sts": "^3.540.0"
+    "@aws-sdk/client-lambda": "^3.549.0",
+    "@aws-sdk/client-organizations": "^3.549.0",
+    "@aws-sdk/client-s3": "^3.550.0",
+    "@aws-sdk/client-sts": "^3.549.0"
   }
 }
