@@ -21,9 +21,12 @@ spec:
       aws_securityhub_findings:
         get_findings:
           - filters:
-              record_state: 
+              record_state:
                 - comparison: 'EQUALS'
                   value: 'ACTIVE'
+              compliance_status:
+                - comparison: 'NOT_EQUALS'
+                  value: 'PASSED'
 ---
 kind: destination
 spec:
