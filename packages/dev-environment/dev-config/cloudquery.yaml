@@ -27,6 +27,9 @@ spec:
               compliance_status:
                 - comparison: 'NOT_EQUALS'
                   value: 'PASSED'
+              workflow_status:
+                - comparison: 'NOT_EQUALS'
+                  value: 'RESOLVED'
 ---
 kind: destination
 spec:
