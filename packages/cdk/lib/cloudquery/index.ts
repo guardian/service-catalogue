@@ -111,6 +111,23 @@ export function addCloudqueryEcsCluster(
 												value: 'ACTIVE',
 											},
 										],
+										compliance_status: [
+											{
+												comparison: 'NOT_EQUALS',
+												value: 'PASSED',
+											},
+										],
+										workflow_status: [
+											{
+												comparison: 'NOT_EQUALS',
+												value: 'RESOLVED',
+											},
+										],
+										severity_normalized: [
+											{
+												Gte: 50,
+											},
+										],
 									},
 								},
 							],
