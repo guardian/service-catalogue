@@ -708,21 +708,3 @@ view view_github_actions {
 
   @@ignore
 }
-
-/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-view view_aws_resources {
-  cq_id              String?   @map("_cq_id") @db.Uuid
-  cq_source_name     String?   @map("_cq_source_name")
-  cq_sync_time       DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_table           String?   @map("_cq_table")
-  account_id         String?
-  request_account_id String?
-  region             String?
-  partition          String?
-  service            String?
-  type               String?
-  arn                String?
-  tags               Json?
-
-  @@ignore
-}
