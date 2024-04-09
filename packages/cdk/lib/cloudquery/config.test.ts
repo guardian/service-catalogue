@@ -40,6 +40,8 @@ spec:
     - aws_s3_buckets
   destinations:
     - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -74,6 +76,8 @@ spec:
     - aws_s3_buckets
   destinations:
     - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -99,7 +103,6 @@ spec:
 				'aws_accessanalyzer_analyzer_findings',
 			],
 		});
-		console.log(dump(config));
 		expect(dump(config)).toMatchInlineSnapshot(`
 "kind: source
 spec:
@@ -112,6 +115,8 @@ spec:
     - aws_accessanalyzer_analyzer_findings
   destinations:
     - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1
@@ -142,7 +147,6 @@ spec:
 				},
 			},
 		);
-		console.log(dump(config));
 		expect(dump(config)).toMatchInlineSnapshot(`
 "kind: source
 spec:
@@ -153,6 +157,8 @@ spec:
     - aws_securityhub_findings
   destinations:
     - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
   spec:
     regions:
       - eu-west-1

@@ -1,6 +1,6 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { Tags } from 'aws-cdk-lib';
+import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import {
 	ContainerDependencyCondition,
@@ -15,7 +15,7 @@ import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
@@ -151,6 +151,10 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			roleName,
 		});
 
+		const xrayPolicy = ManagedPolicy.fromAwsManagedPolicyName(
+			'AWSXrayWriteOnlyAccess',
+		);
+
 		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB,
 			cpu,
@@ -222,6 +226,26 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
+		});
+
+		const otel = task.addContainer(`${id}AWSOTELCollector`, {
+			image: Images.otelCollector,
+			command: ['--config=/etc/ecs/ecs-xray.yaml'],
+			logging: fireLensLogDriver,
+			healthCheck: {
+				command: ['CMD', '/healthcheck'],
+				interval: Duration.seconds(5),
+			},
+			portMappings: [
+				{
+					containerPort: 4318,
+				},
+			],
+		});
+
+		cloudqueryTask.addContainerDependencies({
+			container: otel,
+			condition: ContainerDependencyCondition.HEALTHY,
 		});
 
 		if (dockerDistributedPluginImage) {
@@ -334,6 +358,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
+		task.taskRole.addManagedPolicy(xrayPolicy);
 
 		db.grantConnect(task.taskRole);
 
