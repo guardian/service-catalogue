@@ -20,7 +20,7 @@
 		"prisma": "^5.12.1",
 		"@octokit/graphql": "^8.0.1",
 		"@octokit/types": "^12.5.0",
-		"@types/aws-lambda": "^8.10.136"
+		"@types/aws-lambda": "^8.10.137"
 	},
 	"prisma": {
 		"schema": "prisma/schema.prisma"
