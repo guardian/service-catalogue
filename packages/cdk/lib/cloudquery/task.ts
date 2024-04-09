@@ -231,16 +231,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const otel = task.addContainer(`${id}AWSOTELCollector`, {
 			image: Images.otelCollector,
 			command: ['--config=/etc/ecs/ecs-xray.yaml'],
-			logging: new FireLensLogDriver({
-				options: {
-					Name: `kinesis_streams`,
-					region,
-					stream: loggingStreamName,
-					retry_limit: '2',
-				},
-			}),
+			logging: fireLensLogDriver,
 			healthCheck: {
-				command: ['CMD', './healthcheck'],
+				command: ['CMD', '/healthcheck'],
 				interval: Duration.seconds(5),
 			},
 			portMappings: [

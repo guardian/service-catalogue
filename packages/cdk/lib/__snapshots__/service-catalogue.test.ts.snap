@@ -126,7 +126,7 @@ spec:
     - aws_costexplorer_*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -258,7 +258,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -771,7 +771,7 @@ spec:
     - aws_securityhub_*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     concurrency: 2000
@@ -918,7 +918,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -1400,7 +1400,7 @@ spec:
     - aws_organization*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -1531,7 +1531,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -2152,7 +2152,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -2768,7 +2768,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -3658,7 +3658,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -4064,7 +4064,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -4701,7 +4701,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -5368,7 +5368,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -5998,7 +5998,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -6508,7 +6508,7 @@ spec:
     - aws_autoscaling_groups
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -6640,7 +6640,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -7124,7 +7124,7 @@ spec:
     - aws_backup_vault_recovery_points
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -7256,7 +7256,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -7738,7 +7738,7 @@ spec:
     - aws_acm*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -7870,7 +7870,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -8382,7 +8382,7 @@ spec:
     - aws_cloudformation_*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -8514,7 +8514,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -9196,7 +9196,7 @@ spec:
     - aws_cloudwatch_alarms
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -9328,7 +9328,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -9580,7 +9580,7 @@ spec:
     - aws_dynamodb*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -9712,7 +9712,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -10196,7 +10196,7 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -10332,7 +10332,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -10841,7 +10841,7 @@ spec:
     - aws_inspector2_findings
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -10973,7 +10973,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -11686,7 +11686,7 @@ spec:
     - aws_elbv2_*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -11818,7 +11818,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -12303,7 +12303,7 @@ spec:
     - aws_rds_cluster_snapshots
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -12435,7 +12435,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -12687,7 +12687,7 @@ spec:
     - aws_s3*
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     regions:
@@ -12819,7 +12819,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -13362,7 +13362,7 @@ spec:
     - aws_ec2_images
   destinations:
     - postgresql
-  otel_endpoint: 127.0.0.1:4323
+  otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
     concurrency: 2000
@@ -13495,7 +13495,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -14385,7 +14385,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
@@ -14774,7 +14774,7 @@ spec:
             "HealthCheck": {
               "Command": [
                 "CMD",
-                "./healthcheck",
+                "/healthcheck",
               ],
               "Interval": 5,
               "Retries": 3,
