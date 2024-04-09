@@ -19,11 +19,19 @@ spec:
         local_profile: 'deployTools'
     table_options:
       aws_securityhub_findings:
-        get_findings:
-          - filters:
-              record_state: 
+        get_findings: # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
+          - filters: # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
+              record_state:
                 - comparison: 'EQUALS'
                   value: 'ACTIVE'
+              compliance_status:
+                - comparison: 'NOT_EQUALS'
+                  value: 'PASSED'
+              workflow_status:
+                - comparison: 'NOT_EQUALS'
+                  value: 'RESOLVED'
+              severity_normalized:
+                - Gte: 50 # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
 ---
 kind: destination
 spec:

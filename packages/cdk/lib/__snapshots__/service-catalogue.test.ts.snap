@@ -747,6 +747,14 @@ spec:
               record_state:
                 - comparison: EQUALS
                   value: ACTIVE
+              compliance_status:
+                - comparison: NOT_EQUALS
+                  value: PASSED
+              workflow_status:
+                - comparison: NOT_EQUALS
+                  value: RESOLVED
+              severity_normalized:
+                - Gte: 50
 ' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql

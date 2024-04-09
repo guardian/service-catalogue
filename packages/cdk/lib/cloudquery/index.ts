@@ -101,6 +101,10 @@ export function addCloudqueryEcsCluster(
 				},
 				{
 					table_options: {
+						// For more information on how security hub filtering works, see the following links:
+						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
+						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
+						//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
 						aws_securityhub_findings: {
 							get_findings: [
 								{
@@ -109,6 +113,23 @@ export function addCloudqueryEcsCluster(
 											{
 												comparison: 'EQUALS',
 												value: 'ACTIVE',
+											},
+										],
+										compliance_status: [
+											{
+												comparison: 'NOT_EQUALS',
+												value: 'PASSED',
+											},
+										],
+										workflow_status: [
+											{
+												comparison: 'NOT_EQUALS',
+												value: 'RESOLVED',
+											},
+										],
+										severity_normalized: [
+											{
+												Gte: 50,
 											},
 										],
 									},
