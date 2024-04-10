@@ -1,0 +1,61 @@
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "aws_securityhub_findings" (
+    "_cq_sync_time" TIMESTAMP(6),
+    "_cq_source_name" TEXT,
+    "_cq_id" UUID NOT NULL,
+    "_cq_parent_id" UUID,
+    "request_account_id" TEXT NOT NULL,
+    "request_region" TEXT NOT NULL,
+    "aws_account_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(6) NOT NULL,
+    "description" TEXT NOT NULL,
+    "generator_id" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
+    "product_arn" TEXT NOT NULL,
+    "resources" JSONB,
+    "schema_version" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(6) NOT NULL,
+    "action" JSONB,
+    "aws_account_name" TEXT,
+    "company_name" TEXT,
+    "compliance" JSONB,
+    "confidence" BIGINT,
+    "criticality" BIGINT,
+    "finding_provider_fields" JSONB,
+    "first_observed_at" TIMESTAMP(6),
+    "generator_details" JSONB,
+    "last_observed_at" TIMESTAMP(6),
+    "malware" JSONB,
+    "network" JSONB,
+    "network_path" JSONB,
+    "note" JSONB,
+    "patch_summary" JSONB,
+    "process" JSONB,
+    "processed_at" TIMESTAMP(6),
+    "product_fields" JSONB,
+    "product_name" TEXT,
+    "record_state" TEXT,
+    "region" TEXT NOT NULL,
+    "related_findings" JSONB,
+    "remediation" JSONB,
+    "sample" BOOLEAN,
+    "severity" JSONB,
+    "source_url" TEXT,
+    "threat_intel_indicators" JSONB,
+    "threats" JSONB,
+    "types" TEXT[],
+    "user_defined_fields" JSONB,
+    "verification_state" TEXT,
+    "vulnerabilities" JSONB,
+    "workflow" JSONB,
+    "workflow_state" TEXT,
+
+    CONSTRAINT "aws_securityhub_findings_cqpk" PRIMARY KEY ("request_account_id","request_region","aws_account_id","created_at","description","generator_id","id","product_arn","schema_version","title","updated_at","region")
+);
+-- CreateIndex
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_securityhub_findings__cq_id_key" ON "aws_securityhub_findings"("_cq_id");
+
+CREATE INDEX IF NOT EXISTS idx_aws_account_name ON aws_securityhub_findings ((aws_account_name));
+CREATE INDEX IF NOT EXISTS idx_severity_normalized ON aws_securityhub_findings ((severity->>'Normalized'));
+CREATE INDEX IF NOT EXISTS idx_workflow_status ON aws_securityhub_findings ((workflow->>'Status'));
