@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS "aws_securityhub_findings" (
     CONSTRAINT "aws_securityhub_findings_cqpk" PRIMARY KEY ("request_account_id","request_region","aws_account_id","created_at","description","generator_id","id","product_arn","schema_version","title","updated_at","region")
 );
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_securityhub_findings__cq_id_key" ON "aws_securityhub_findings"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_securityhub_findings__cq_id_key" ON "aws_securityhub_findings"("_cq_id");
 
-CREATE INDEX idx_aws_account_name ON aws_securityhub_findings (aws_account_name);
-CREATE INDEX idx_severity_normalized ON aws_securityhub_findings (severity->>'Normalized');
-CREATE INDEX idx_workflow_status ON aws_securityhub_findings (workflow->>'Status');
+CREATE INDEX IF NOT EXISTS idx_aws_account_name ON aws_securityhub_findings ((aws_account_name));
+CREATE INDEX IF NOT EXISTS idx_severity_normalized ON aws_securityhub_findings ((severity->>'Normalized'));
+CREATE INDEX IF NOT EXISTS idx_workflow_status ON aws_securityhub_findings ((workflow->>'Status'));
