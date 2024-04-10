@@ -28,7 +28,7 @@ AS
 $$
 DECLARE
     cloudquery_table   record;
-    str_sql            text;
+    str_sql            text = '';
     account_id         text;
     request_account_id text;
     region             text;
@@ -128,14 +128,15 @@ BEGIN
                      type,
                      arn,
                      bool_or(taggable) as taggable,
-                     jsonb_agg(tags) as tags
-                FROM (%s) 
+                     jsonb_aggregate(tags) as tags
+                FROM (%s) data 
             GROUP BY account_id,
                      request_account_id,
                      region,
                      partition,
                      service,
-                     type',
+                     type,
+                     arn',
             str_sql);
 END
 $$ LANGUAGE plpgsql;
