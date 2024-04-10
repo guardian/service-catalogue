@@ -1,3 +1,6 @@
+-- Cloudquery cant update the schema of tables referenced by views. 
+-- As this view references any Cloudquery table containing an ARN column It can make Cloudquery behave strangely.
+-- This migration replaces this view with a function which doesn't have the same restriction.
 DROP VIEW view_aws_resources;
 
 -- Custom aggregate function that combines two JSONB objects together. Uses the inbuilt `jsonb_concat` function.
@@ -66,7 +69,7 @@ BEGIN
                                                      AND table_name = cloudquery_table.table_name)
                                           THEN 'request_account_id'
                                       ELSE 'NULL' END;
-            -- Check if table has an region column, or default to NULL
+            -- Check if table has an region column, or default to unavailable
             region := CASE
                           WHEN EXISTS (SELECT 1
                                        FROM information_schema.columns
