@@ -642,6 +642,7 @@ model repocop_vulnerabilities {
   id               String   @id @default(uuid())
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model aws_securityhub_findings {
   cq_sync_time            DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name          String?   @map("_cq_source_name")
@@ -695,6 +696,7 @@ model aws_securityhub_findings {
   workflow_state          String?
 
   @@id([request_account_id, request_region, aws_account_id, created_at, description, generator_id, id, product_arn, schema_version, title, updated_at, region], map: "aws_securityhub_findings_cqpk")
+  @@index([aws_account_name], map: "idx_aws_account_name")
 }
 
 view view_repo_ownership {
