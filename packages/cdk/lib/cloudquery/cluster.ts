@@ -129,7 +129,7 @@ export class CloudqueryCluster extends Cluster {
 		super(scope, id, {
 			vpc: props.vpc,
 			enableFargateCapacityProviders: true,
-			containerInsights: scope.stage === 'PROD',
+			containerInsights: true,
 		});
 
 		const { stack, stage } = scope;

@@ -18135,7 +18135,7 @@ spec:
         "ClusterSettings": [
           {
             "Name": "containerInsights",
-            "Value": "disabled",
+            "Value": "enabled",
           },
         ],
         "Tags": [
