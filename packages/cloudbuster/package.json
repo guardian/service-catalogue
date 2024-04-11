@@ -1,0 +1,13 @@
+{
+	"name": "cloudbuster",
+	"version": "1.0.0",
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.137"
+	},
+	"scripts": {
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"start": "APP=cloudbuster tsx src/run-locally.ts",
+		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects snyk-integrator"
+	},
+	"dependencies": {}
+}
