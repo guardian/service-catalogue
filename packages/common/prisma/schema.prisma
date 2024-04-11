@@ -765,3 +765,18 @@ view view_github_actions {
 
   @@ignore
 }
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view aws_resources {
+  partition       String?
+  service       String?
+  region String?
+  account_id String?
+  resource_type String?
+  type String?
+  arn String?
+  taggable Boolean?
+  tags Json?
+
+  @@ignore
+}
