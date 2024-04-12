@@ -112,7 +112,7 @@ BEGIN
                         %s as taggable,
                         %s as tags
                     FROM %s',
-                    cloudquery_table.table_name, region, account_id, request_account_id, account_id,
+                    cloudquery_table.table_name, region, account_id, owner_id, request_account_id,
                     taggable, tags, cloudquery_table.table_name);
         END LOOP;
 END
