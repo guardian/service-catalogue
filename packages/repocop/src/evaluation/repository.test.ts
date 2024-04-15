@@ -21,6 +21,7 @@ import {
 	hasDependencyTracking,
 	hasOldAlerts,
 	snykAlertToRepocopVulnerability,
+	snykVulnIdFilter,
 } from './repository';
 
 function evaluateRepoTestHelper(
@@ -971,5 +972,25 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
 		expect(actual.length).toStrictEqual(2);
+	});
+});
+
+describe('NO RULE - Snyk vulnerability ID filter', () => {
+	test('Should not remove any IDs if no CVE id is present', () => {
+		const ids = ['SNYK-1234', 'SNYK-1235'];
+		const actual = snykVulnIdFilter(ids);
+		expect(actual).toStrictEqual(ids);
+	});
+
+	test('Should remove vulnerability IDs that start with Snyk, if a CVE id is present', () => {
+		const ids = ['SNYK-1234', 'CVE-1234'];
+		const actual = snykVulnIdFilter(ids);
+		expect(actual).toStrictEqual(['CVE-1234']);
+	});
+
+	test('Should return the original list if only CVEs are present', () => {
+		const ids = ['CVE-1234', 'CVE-1235'];
+		const actual = snykVulnIdFilter(ids);
+		expect(actual).toStrictEqual(ids);
 	});
 });

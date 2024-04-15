@@ -428,6 +428,15 @@ export function dependabotAlertToRepocopVulnerability(
 	};
 }
 
+export function snykVulnIdFilter(ids: string[]): string[] {
+	const hasCvePrefixedIssue = !!ids.find((cve) => cve.startsWith('CVE-'));
+	if (hasCvePrefixedIssue) {
+		return ids.filter((cve) => cve.startsWith('CVE-'));
+	} else {
+		return ids;
+	}
+}
+
 export function snykAlertToRepocopVulnerability(
 	fullName: string,
 	issue: SnykIssue,
@@ -460,7 +469,7 @@ export function snykAlertToRepocopVulnerability(
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: new Date(issue.attributes.created_at),
 		is_patchable: isPatchable,
-		cves: issue.attributes.problems.map((p) => p.id),
+		cves: snykVulnIdFilter(issue.attributes.problems.map((p) => p.id)),
 	};
 }
 
