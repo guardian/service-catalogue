@@ -13417,6 +13417,7 @@ spec:
     - aws_xray_sampling_rules
     - aws_xray_resource_policies
     - aws_xray_groups
+    - aws_wellarchitected_*
     - aws_stepfunctions_map_runs
     - aws_stepfunctions_map_run_executions
     - aws_stepfunctions_executions

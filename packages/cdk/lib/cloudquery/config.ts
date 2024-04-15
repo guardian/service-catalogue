@@ -327,6 +327,9 @@ export const skipTables = [
 	'aws_xray_sampling_rules',
 	'aws_xray_resource_policies',
 	'aws_xray_groups',
+	// We don't really use Wellarchictected and it confuses our Tagging obligation
+	// due to it having many resources managed by AWS without tags
+	'aws_wellarchitected_*',
 
 	// These appear to be heavily rate limited, and not too interesting (yet).
 	// Don't collect them to reduce execution time.
