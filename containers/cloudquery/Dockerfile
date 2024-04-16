@@ -1,4 +1,6 @@
-FROM ghcr.io/cloudquery/cloudquery:5.2.0
+ARG CQ_CLI
+
+FROM ghcr.io/cloudquery/cloudquery:${CQ_CLI}
 
 # Need to install RDS certs before running Cloudquery container due to
 # access to the root filesystem being restricted
