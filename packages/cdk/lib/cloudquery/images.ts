@@ -3,7 +3,7 @@ import { Versions } from './versions';
 
 export const Images = {
 	cloudquery: ContainerImage.fromRegistry(
-		`ghcr.io/cloudquery/cloudquery:${Versions.CloudqueryCli}`,
+		`ghcr.io/guardian/service-catalogue/cloudquery:sha-bacccb49c85d2b461bb5fad1be84c534e476a066`,
 	),
 	devxLogs: ContainerImage.fromRegistry('ghcr.io/guardian/devx-logs:2'),
 	amazonLinux: ContainerImage.fromRegistry(
