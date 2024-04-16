@@ -216,10 +216,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					...additionalCommands,
-					'echo "Getting yaml config"',
 					`printf '${dump(sourceConfig)}' > ${volumePath}/source.yaml`,
 					`printf '${dump(destinationConfig)}' > ${volumePath}/destination.yaml`,
-					'echo "Got yaml config"',
 					`/app/cloudquery sync ${volumePath}/source.yaml ${volumePath}/destination.yaml --log-format json --log-console --no-log-file`,
 				].join(';'),
 			],

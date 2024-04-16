@@ -117,7 +117,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -152,7 +152,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -794,7 +794,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -845,7 +845,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -1457,7 +1457,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -1491,7 +1491,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -2103,7 +2103,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: fastly
   path: cloudquery/fastly
@@ -2131,7 +2131,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -2741,7 +2741,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "echo "Getting yaml config";printf 'kind: source
+                    "printf 'kind: source
 spec:
   name: galaxies
   path: guardian/galaxies
@@ -2791,7 +2791,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
                   ],
                 ],
               },
@@ -3650,7 +3650,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;echo "Getting yaml config";printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -3679,7 +3679,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4129,7 +4129,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: github-languages
   path: guardian/github-languages
@@ -4150,7 +4150,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4748,7 +4748,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;echo "Getting yaml config";printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4784,7 +4784,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -5448,7 +5448,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;echo "Getting yaml config";printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -5484,7 +5484,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6148,7 +6148,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: ns1
   registry: grpc
@@ -6171,7 +6171,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6829,7 +6829,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -6864,7 +6864,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -7476,7 +7476,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7513,7 +7513,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -8125,7 +8125,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -8160,7 +8160,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -8802,7 +8802,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -8837,7 +8837,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -9653,7 +9653,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -9688,7 +9688,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10066,7 +10066,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10101,7 +10101,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10713,7 +10713,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10750,7 +10750,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -11392,7 +11392,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -11428,7 +11428,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12274,7 +12274,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12310,7 +12310,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12922,7 +12922,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12960,7 +12960,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13338,7 +13338,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -13373,7 +13373,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13985,7 +13985,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -14083,7 +14083,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -14942,7 +14942,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: postgresql
   path: cloudquery/postgresql
@@ -14968,7 +14968,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -15388,7 +15388,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Getting yaml config";printf 'kind: source
+              "printf 'kind: source
 spec:
   name: snyk
   path: cloudquery/snyk
@@ -15414,7 +15414,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
