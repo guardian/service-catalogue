@@ -100,6 +100,7 @@ describe('createDigest', () => {
 		expect(
 			createDigest(team, [ownershipRecord], [resultWithVuln]),
 		).toStrictEqual({
+			teamName,
 			teamSlug,
 			subject: `Vulnerability Digest for ${teamName}`,
 			message: String.raw`Found 1 vulnerabilities across 1 repositories.
