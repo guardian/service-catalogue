@@ -72,6 +72,7 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 	const message = `${preamble}\n\n${digestString}`;
 
 	return {
+		teamName: team.name,
 		teamSlug: team.slug,
 		subject: `Vulnerability Digest for ${team.name}`,
 		message,
@@ -85,6 +86,13 @@ export function isFirstOrThirdTuesdayOfMonth(date: Date) {
 	return isTuesday && (inFirstWeek || inThirdWeek);
 }
 
+function createTeamDashboardLinkAction(digest: VulnerabilityDigest) {
+	return {
+		cta: `View Vulnerability dashboard for ${digest.teamName} on Grafana`,
+		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd/dependency-vulnerabilities?orgId=1&var-repo_owner=${digest.teamSlug}`,
+	};
+}
+
 async function sendVulnerabilityDigests(
 	digests: VulnerabilityDigest[],
 	config: Config,
@@ -96,17 +104,18 @@ async function sendVulnerabilityDigests(
 			.join(', ')}`,
 	);
 
-	const action: Action = {
+	const actionObligations: Action = {
 		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
 		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
 	};
+
 	return Promise.all(
 		digests.map(
 			async (digest) =>
 				await anghammarad.notify({
 					subject: digest.subject,
 					message: digest.message,
-					actions: [action],
+					actions: [actionObligations, createTeamDashboardLinkAction(digest)],
 					target: { GithubTeamSlug: digest.teamSlug },
 					channel: RequestedChannel.PreferHangouts,
 					sourceSystem: `${config.app} ${config.stage}`,

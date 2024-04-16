@@ -174,6 +174,7 @@ export interface EvaluationResult {
 }
 
 export interface VulnerabilityDigest {
+	teamName: string;
 	teamSlug: string;
 	subject: string;
 	message: string;
