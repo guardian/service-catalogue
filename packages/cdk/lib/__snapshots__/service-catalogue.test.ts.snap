@@ -191,6 +191,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-AwsCostExplorerContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -855,6 +856,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-DelegatedToSecurityAccountContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -1472,6 +1474,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-DeployToolsListOrgsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -2083,6 +2086,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-FastlyServicesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "FASTLY_API_KEY",
@@ -2717,6 +2721,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GalaxiesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -3573,6 +3578,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubIssuesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -4015,6 +4021,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubLanguagesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_ACCESS_TOKEN",
@@ -4620,6 +4627,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubRepositoriesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -5291,6 +5299,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubTeamsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -5953,6 +5962,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-NS1Container",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "NS1_API_KEY",
@@ -6613,6 +6623,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -7233,6 +7244,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideBackupContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -7851,6 +7863,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCertificatesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -8499,6 +8512,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudFormationContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -9321,6 +9335,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -9705,6 +9720,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideDynamoDBContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -10329,6 +10345,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideEc2Container",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -10974,6 +10991,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideInspectorContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -11827,6 +11845,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideLoadBalancersContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -12448,6 +12467,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideRDSContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -12832,6 +12852,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideS3Container",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -13513,6 +13534,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-RemainingAwsDataContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -14369,6 +14391,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-RiffRaffDataContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "RIFFRAFF_DB_USERNAME",
@@ -14786,6 +14809,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-SnykAllContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "SNYK_API_KEY",

@@ -208,6 +208,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				App: app,
 				Name: name,
 			},
+			readonlyRootFilesystem: true,
 			command: [
 				'/bin/sh',
 				'-c',
