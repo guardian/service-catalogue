@@ -232,6 +232,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		task.addVolume({
 			name: 'cloudquery-volume',
 		});
+		task.addVolume({
+			name: 'tmp-volume',
+		});
 
 		cloudqueryTask.addMountPoints(
 			{
@@ -244,6 +247,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				// So that Cloudquery can write to this directory
 				containerPath: '/app/.cq',
 				sourceVolume: 'cloudquery-volume',
+				readOnly: false,
+			},
+			{
+				// So that Cloudquery can write temporary data
+				containerPath: '/tmp',
+				sourceVolume: 'tmp-volume',
 				readOnly: false,
 			},
 		);

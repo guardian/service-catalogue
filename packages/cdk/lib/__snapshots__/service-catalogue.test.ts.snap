@@ -201,6 +201,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-AwsCostExplorerContainer",
             "ReadonlyRootFilesystem": true,
@@ -461,6 +466,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -886,6 +894,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-DelegatedToSecurityAccountContainer",
             "ReadonlyRootFilesystem": true,
@@ -1146,6 +1159,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -1524,6 +1540,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-DeployToolsListOrgsContainer",
             "ReadonlyRootFilesystem": true,
@@ -1784,6 +1805,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -2156,6 +2180,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-FastlyServicesContainer",
             "ReadonlyRootFilesystem": true,
@@ -2430,6 +2459,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -2811,6 +2843,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-GalaxiesContainer",
             "ReadonlyRootFilesystem": true,
@@ -3071,6 +3108,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -3688,6 +3728,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-GitHubIssuesContainer",
             "ReadonlyRootFilesystem": true,
@@ -3991,6 +4036,9 @@ spec:
           {
             "Name": "cloudquery-volume",
           },
+          {
+            "Name": "tmp-volume",
+          },
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
@@ -4150,6 +4198,11 @@ spec:
                 "ContainerPath": "/app/.cq",
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
               },
             ],
             "Name": "CloudquerySource-GitHubLanguagesContainer",
@@ -4417,6 +4470,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -4777,6 +4833,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-GitHubRepositoriesContainer",
             "ReadonlyRootFilesystem": true,
@@ -5079,6 +5140,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -5469,6 +5533,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-GitHubTeamsContainer",
             "ReadonlyRootFilesystem": true,
@@ -5771,6 +5840,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -6152,6 +6224,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-NS1Container",
             "ReadonlyRootFilesystem": true,
@@ -6444,6 +6521,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -6833,6 +6913,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsContainer",
             "ReadonlyRootFilesystem": true,
@@ -7093,6 +7178,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -7474,6 +7562,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideBackupContainer",
             "ReadonlyRootFilesystem": true,
@@ -7734,6 +7827,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -8113,6 +8209,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideCertificatesContainer",
             "ReadonlyRootFilesystem": true,
@@ -8373,6 +8474,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -8782,6 +8886,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideCloudFormationContainer",
             "ReadonlyRootFilesystem": true,
@@ -9042,6 +9151,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -9625,6 +9737,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsContainer",
             "ReadonlyRootFilesystem": true,
@@ -9886,6 +10003,9 @@ spec:
           {
             "Name": "cloudquery-volume",
           },
+          {
+            "Name": "tmp-volume",
+          },
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
@@ -10029,6 +10149,11 @@ spec:
                 "ContainerPath": "/app/.cq",
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideDynamoDBContainer",
@@ -10290,6 +10415,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -10675,6 +10803,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideEc2Container",
             "ReadonlyRootFilesystem": true,
@@ -10961,6 +11094,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -11341,6 +11477,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideInspectorContainer",
             "ReadonlyRootFilesystem": true,
@@ -11601,6 +11742,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -12215,6 +12359,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideLoadBalancersContainer",
             "ReadonlyRootFilesystem": true,
@@ -12475,6 +12624,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -12857,6 +13009,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-OrgWideRDSContainer",
             "ReadonlyRootFilesystem": true,
@@ -13118,6 +13275,9 @@ spec:
           {
             "Name": "cloudquery-volume",
           },
+          {
+            "Name": "tmp-volume",
+          },
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
@@ -13261,6 +13421,11 @@ spec:
                 "ContainerPath": "/app/.cq",
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideS3Container",
@@ -13522,6 +13687,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -13964,6 +14132,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-RemainingAwsDataContainer",
             "ReadonlyRootFilesystem": true,
@@ -14224,6 +14397,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
@@ -14841,6 +15017,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
             ],
             "Name": "CloudquerySource-RiffRaffDataContainer",
             "ReadonlyRootFilesystem": true,
@@ -15144,6 +15325,9 @@ spec:
           {
             "Name": "cloudquery-volume",
           },
+          {
+            "Name": "tmp-volume",
+          },
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
@@ -15278,6 +15462,11 @@ spec:
                 "ContainerPath": "/app/.cq",
                 "ReadOnly": false,
                 "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
               },
             ],
             "Name": "CloudquerySource-SnykAllContainer",
@@ -15553,6 +15742,9 @@ spec:
           },
           {
             "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
           },
         ],
       },
