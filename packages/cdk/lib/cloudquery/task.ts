@@ -189,6 +189,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		});
 
+		const volumePath = '/data';
+
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: Images.cloudquery,
 			entryPoint: [''],
@@ -214,20 +216,32 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					...additionalCommands,
-
+					'echo "Getting yaml config"',
+					`printf '${dump(sourceConfig)}' > ${volumePath}/source.yaml`,
+					`printf '${dump(destinationConfig)}' > ${volumePath}/destination.yaml`,
+					'echo "Got yaml config"',
 					/*
 					Install the CA bundle for all RDS certificates.
 					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
 					 */
 					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
-
-					`printf '${dump(sourceConfig)}' > /source.yaml`,
-					`printf '${dump(destinationConfig)}' > /destination.yaml`,
-					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
+					`/app/cloudquery sync ${volumePath}/source.yaml ${volumePath}/destination.yaml --log-format json --log-console`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
 		});
+
+		const mountPoint = {
+			containerPath: volumePath,
+			sourceVolume: 'data',
+			readOnly: false,
+		};
+
+		task.addVolume({
+			name: 'data',
+		});
+
+		cloudqueryTask.addMountPoints(mountPoint);
 
 		const otel = task.addContainer(`${id}AWSOTELCollector`, {
 			image: Images.otelCollector,
