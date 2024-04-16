@@ -152,7 +152,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -829,7 +829,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -1459,7 +1459,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -2083,7 +2083,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -2727,7 +2727,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
                   ],
                 ],
               },
@@ -3599,7 +3599,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4054,7 +4054,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4672,7 +4672,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -5356,7 +5356,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6027,7 +6027,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6704,7 +6704,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -7337,7 +7337,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -7968,7 +7968,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -8629,7 +8629,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -9464,7 +9464,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -9861,7 +9861,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10494,7 +10494,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -11156,7 +11156,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12022,7 +12022,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12656,7 +12656,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13053,7 +13053,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13747,7 +13747,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -14616,7 +14616,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -15046,7 +15046,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;echo "Got yaml config";wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console",
+' > /data/destination.yaml;echo "Got yaml config";/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
