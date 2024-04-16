@@ -219,11 +219,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					Install the CA bundle for all RDS certificates.
 					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
 					 */
-					'echo "Dumping yaml config"',
-					`printf '${dump(sourceConfig)}' > /app/source.yaml`,
-					`printf '${dump(destinationConfig)}' > /app/destination.yaml`,
-					'/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console',
 					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
+
+					`printf '${dump(sourceConfig)}' > /source.yaml`,
+					`printf '${dump(destinationConfig)}' > /destination.yaml`,
+					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
 				].join(';'),
 			],
 			logging: fireLensLogDriver,

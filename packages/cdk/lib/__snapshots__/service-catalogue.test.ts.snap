@@ -117,7 +117,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -141,7 +141,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -152,7 +152,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -766,7 +766,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -806,7 +806,7 @@ spec:
                   value: RESOLVED
               severity_normalized:
                 - Gte: 50
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -817,7 +817,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -1401,7 +1401,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -1424,7 +1424,7 @@ spec:
     accounts:
       - id: cq-for-000000000018
         role_arn: arn:aws:iam::000000000018:role/cloudquery-access
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -1435,7 +1435,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -2019,7 +2019,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: fastly
   path: cloudquery/fastly
@@ -2036,7 +2036,7 @@ spec:
   spec:
     concurrency: 1000
     fastly_api_key: \${FASTLY_API_KEY}
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -2047,7 +2047,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -2629,7 +2629,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "echo "Dumping yaml config";printf 'kind: source
+                    "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: galaxies
   path: guardian/galaxies
@@ -2668,7 +2668,7 @@ spec:
                       ],
                     },
                     "
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -2679,7 +2679,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
                   ],
                 ],
               },
@@ -3510,7 +3510,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;echo "Dumping yaml config";printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -3528,7 +3528,7 @@ spec:
         private_key_path: /github-private-key
         app_id: \${file:/github-app-id}
         installation_id: \${file:/github-installation-id}
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -3539,7 +3539,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -3961,7 +3961,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github-languages
   path: guardian/github-languages
@@ -3971,7 +3971,7 @@ spec:
   tables:
     - github_languages
   registry: github
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -3982,7 +3982,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -4552,7 +4552,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;echo "Dumping yaml config";printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4577,7 +4577,7 @@ spec:
         private_key_path: /github-private-key
         app_id: \${file:/github-app-id}
         installation_id: \${file:/github-installation-id}
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -4588,7 +4588,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -5224,7 +5224,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;echo "Dumping yaml config";printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -5249,7 +5249,7 @@ spec:
         private_key_path: /github-private-key
         app_id: \${file:/github-app-id}
         installation_id: \${file:/github-installation-id}
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -5260,7 +5260,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -5896,7 +5896,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: ns1
   registry: grpc
@@ -5908,7 +5908,7 @@ spec:
     - postgresql
   spec:
     apiKey: \${NS1_API_KEY}
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -5919,7 +5919,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -6549,7 +6549,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -6573,7 +6573,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -6584,7 +6584,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -7168,7 +7168,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7194,7 +7194,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -7205,7 +7205,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -7789,7 +7789,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7813,7 +7813,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -7824,7 +7824,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -8438,7 +8438,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -8462,7 +8462,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -8473,7 +8473,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -9261,7 +9261,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -9285,7 +9285,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -9296,7 +9296,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -9646,7 +9646,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -9670,7 +9670,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -9681,7 +9681,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -10265,7 +10265,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10291,7 +10291,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -10302,7 +10302,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -10916,7 +10916,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10941,7 +10941,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -10952,7 +10952,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -11770,7 +11770,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -11795,7 +11795,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -11806,7 +11806,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -12390,7 +12390,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12417,7 +12417,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -12428,7 +12428,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -12778,7 +12778,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12802,7 +12802,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -12813,7 +12813,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -13397,7 +13397,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -13484,7 +13484,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -13495,7 +13495,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -14326,7 +14326,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: postgresql
   path: cloudquery/postgresql
@@ -14341,7 +14341,7 @@ spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
       host=\${RIFFRAFF_DB_HOST} port=5432 dbname=riffraff sslmode=verify-full
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -14352,7 +14352,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
@@ -14744,7 +14744,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo "Dumping yaml config";printf 'kind: source
+              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
 spec:
   name: snyk
   path: cloudquery/snyk
@@ -14759,7 +14759,7 @@ spec:
     - postgresql
   spec:
     api_key: \${SNYK_API_KEY}
-' > /app/source.yaml;printf 'kind: destination
+' > /source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -14770,7 +14770,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /app/destination.yaml;/app/cloudquery sync /app/source.yaml app/destination.yaml --log-format json --log-console;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates",
+' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
             ],
             "DependsOn": [
               {
