@@ -1,28 +1,24 @@
 # Find full documentation here https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-name: prisma-migrate image
+name: CQ image
 
 on:
-  pull_request:
-    paths:
-      - 'containers/prisma-migrate/**'
   push:
     branches:
       - main
-    paths:
-      - 'containers/prisma-migrate/**'
+      - nt/ecs-read-only
 
   # Manual invocation.
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/prisma-migrate
+  IMAGE_NAME: ${{ github.repository }}/cloudquery
 
 # Ensure we only ever have one build running at a time.
 # If we push twice in quick succession, the first build will be stopped once the second starts.
 # This avoids any race conditions.
 concurrency:
-  group: ${{ github.ref }}/prisma-migrate
+  group: ${{ github.ref }}/cloudquery
   cancel-in-progress: true
 
 jobs:
@@ -58,7 +54,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./
-          file: containers/prisma-migrate/Dockerfile
+          file: containers/cloudquery/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
