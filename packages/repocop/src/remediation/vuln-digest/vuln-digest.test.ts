@@ -173,6 +173,7 @@ This vulnerability is patchable.`,
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
 		);
+		expect(digest?.teamName).toBe(team.name);
 		expect(digest?.teamSlug).toBe(team.slug);
 		expect(digest?.message).toContain('leftpad');
 
@@ -181,6 +182,7 @@ This vulnerability is patchable.`,
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
 		);
+		expect(anotherDigest?.teamName).toBe(anotherTeam.name);
 		expect(anotherDigest?.teamSlug).toBe(anotherTeam.slug);
 		expect(anotherDigest?.message).toContain('rightpad');
 	});
