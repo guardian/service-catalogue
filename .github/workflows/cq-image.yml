@@ -2,10 +2,14 @@
 name: CQ image
 
 on:
+  pull_request:
+    paths:
+      - 'containers/cloudquery/**'
   push:
     branches:
       - main
-      - nt/ecs-read-only
+    paths:
+      - 'containers/cloudquery/**'
 
   # Manual invocation.
   workflow_dispatch:
