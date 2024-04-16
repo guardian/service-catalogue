@@ -1,16 +1,17 @@
 -- Cloudquery cant update the schema of tables referenced by views. 
 -- As this view references any Cloudquery table containing an ARN column It can make Cloudquery behave strangely.
 -- This migration replaces this view with a function which doesn't have the same restriction.
-DROP VIEW view_aws_resources;
+DROP VIEW IF EXISTS view_aws_resources;
 
 -- Custom aggregate function that combines two JSONB objects together. Uses the inbuilt `jsonb_concat` function.
 -- Useful for when grouping many rows together that share a JSONB column
-CREATE AGGREGATE jsonb_aggregate (jsonb)(
+CREATE OR REPLACE AGGREGATE jsonb_aggregate (jsonb)(
     SFUNC = jsonb_concat,
     STYPE = jsonb
 );
 
 -- Aggregate rows from all AWS Cloudquery tables
+DROP FUNCTION IF EXISTS aws_resources();
 CREATE FUNCTION aws_resources()
     RETURNS TABLE
             (
