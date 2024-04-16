@@ -194,7 +194,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-AwsCostExplorerContainer",
@@ -452,7 +457,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -871,7 +879,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-DelegatedToSecurityAccountContainer",
@@ -1129,7 +1142,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -1501,7 +1517,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-DeployToolsListOrgsContainer",
@@ -1759,7 +1780,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -2125,7 +2149,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-FastlyServicesContainer",
@@ -2397,7 +2426,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -2772,7 +2804,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-GalaxiesContainer",
@@ -3030,7 +3067,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -3641,7 +3681,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-GitHubIssuesContainer",
@@ -3941,7 +3986,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -4096,7 +4144,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-GitHubLanguagesContainer",
@@ -4360,7 +4413,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -4714,7 +4770,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-GitHubRepositoriesContainer",
@@ -5014,7 +5075,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -5398,7 +5462,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-GitHubTeamsContainer",
@@ -5698,7 +5767,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -6073,7 +6145,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-NS1Container",
@@ -6363,7 +6440,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -6746,7 +6826,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsContainer",
@@ -7004,7 +7089,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -7379,7 +7467,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideBackupContainer",
@@ -7637,7 +7730,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -8010,7 +8106,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideCertificatesContainer",
@@ -8268,7 +8369,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -8671,7 +8775,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideCloudFormationContainer",
@@ -8929,7 +9038,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -9506,7 +9618,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsContainer",
@@ -9764,7 +9881,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -9903,7 +10023,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideDynamoDBContainer",
@@ -10161,7 +10286,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -10540,7 +10668,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideEc2Container",
@@ -10824,7 +10957,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -11198,7 +11334,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideInspectorContainer",
@@ -11456,7 +11597,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -12064,7 +12208,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideLoadBalancersContainer",
@@ -12322,7 +12471,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -12698,7 +12850,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideRDSContainer",
@@ -12956,7 +13113,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -13095,7 +13255,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-OrgWideS3Container",
@@ -13353,7 +13518,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -13789,7 +13957,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-RemainingAwsDataContainer",
@@ -14047,7 +14220,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -14658,7 +14834,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-RiffRaffDataContainer",
@@ -14958,7 +15139,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },
@@ -15088,7 +15272,12 @@ spec:
               {
                 "ContainerPath": "/data",
                 "ReadOnly": false,
-                "SourceVolume": "data",
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
               },
             ],
             "Name": "CloudquerySource-SnykAllContainer",
@@ -15360,7 +15549,10 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "data",
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
           },
         ],
       },

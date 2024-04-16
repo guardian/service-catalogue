@@ -226,17 +226,27 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			logging: fireLensLogDriver,
 		});
 
-		const mountPoint = {
-			containerPath: volumePath,
-			sourceVolume: 'data',
-			readOnly: false,
-		};
-
 		task.addVolume({
-			name: 'data',
+			name: 'config-volume',
+		});
+		task.addVolume({
+			name: 'cloudquery-volume',
 		});
 
-		cloudqueryTask.addMountPoints(mountPoint);
+		cloudqueryTask.addMountPoints(
+			{
+				// So that we can write task config to this directory
+				containerPath: volumePath,
+				sourceVolume: 'config-volume',
+				readOnly: false,
+			},
+			{
+				// So that Cloudquery can write to this directory
+				containerPath: '/app/.cq',
+				sourceVolume: 'cloudquery-volume',
+				readOnly: false,
+			},
+		);
 
 		const otel = task.addContainer(`${id}AWSOTELCollector`, {
 			image: Images.otelCollector,
