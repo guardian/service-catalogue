@@ -82,6 +82,8 @@ export interface ScheduledCloudqueryTaskProps
 	/**
 	 * Any additional commands to run within the CloudQuery container.
 	 * These are executed first.
+	 *
+	 * The containers filesystem is mostly read-only. If you need to write files you can use the /data folder.
 	 */
 	additionalCommands?: string[];
 
