@@ -1,3 +1,4 @@
+import type { Action } from '@guardian/anghammarad';
 import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
@@ -174,8 +175,8 @@ export interface EvaluationResult {
 }
 
 export interface VulnerabilityDigest {
-	teamName: string;
 	teamSlug: string;
 	subject: string;
 	message: string;
+	actions: Action[];
 }

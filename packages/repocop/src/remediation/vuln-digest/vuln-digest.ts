@@ -45,6 +45,13 @@ Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}.
 This vulnerability ${vuln.is_patchable ? 'is ' : 'may *not* be '}patchable.`;
 }
 
+function createTeamDashboardLinkAction(team: Team) {
+	return {
+		cta: `View vulnerability dashboard for ${team.name} on Grafana`,
+		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${team.slug}`,
+	};
+}
+
 export function createDigest(
 	team: Team,
 	repoOwners: view_repo_ownership[],
@@ -71,11 +78,18 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 
 	const message = `${preamble}\n\n${digestString}`;
 
+	const actionObligations: Action = {
+		cta: "See 'Prioritise the vulnerabilities' in these docs for obligations",
+		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
+	};
+
+	const actions = [createTeamDashboardLinkAction(team), actionObligations];
+
 	return {
-		teamName: team.name,
 		teamSlug: team.slug,
 		subject: `Vulnerability Digest for ${team.name}`,
 		message,
+		actions,
 	};
 }
 
@@ -84,13 +98,6 @@ export function isFirstOrThirdTuesdayOfMonth(date: Date) {
 	const inFirstWeek = date.getDate() <= 7;
 	const inThirdWeek = date.getDate() >= 15 && date.getDate() <= 21;
 	return isTuesday && (inFirstWeek || inThirdWeek);
-}
-
-function createTeamDashboardLinkAction(digest: VulnerabilityDigest) {
-	return {
-		cta: `View Vulnerability dashboard for ${digest.teamName} on Grafana`,
-		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd/dependency-vulnerabilities?orgId=1&var-repo_owner=${digest.teamSlug}`,
-	};
 }
 
 async function sendVulnerabilityDigests(
@@ -104,18 +111,13 @@ async function sendVulnerabilityDigests(
 			.join(', ')}`,
 	);
 
-	const actionObligations: Action = {
-		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
-		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
-	};
-
 	return Promise.all(
 		digests.map(
 			async (digest) =>
 				await anghammarad.notify({
 					subject: digest.subject,
 					message: digest.message,
-					actions: [actionObligations, createTeamDashboardLinkAction(digest)],
+					actions: digest.actions,
 					target: { GithubTeamSlug: digest.teamSlug },
 					channel: RequestedChannel.PreferHangouts,
 					sourceSystem: `${config.app} ${config.stage}`,
