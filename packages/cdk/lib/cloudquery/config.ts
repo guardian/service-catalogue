@@ -338,3 +338,5 @@ export const skipTables = [
 	'aws_stepfunctions_map_run_executions',
 	'aws_stepfunctions_executions',
 ];
+
+export const serviceCatalogueConfigDirectory = '/usr/share/cloudquery';

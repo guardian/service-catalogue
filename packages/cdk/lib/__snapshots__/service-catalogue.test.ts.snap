@@ -141,7 +141,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -152,7 +152,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -192,7 +192,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -834,7 +834,7 @@ spec:
                   value: RESOLVED
               severity_normalized:
                 - Gte: 50
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -845,7 +845,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -885,7 +885,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -1480,7 +1480,7 @@ spec:
     accounts:
       - id: cq-for-000000000018
         role_arn: arn:aws:iam::000000000018:role/cloudquery-access
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -1491,7 +1491,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -1531,7 +1531,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -2120,7 +2120,7 @@ spec:
   spec:
     concurrency: 1000
     fastly_api_key: \${FASTLY_API_KEY}
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -2131,7 +2131,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -2171,7 +2171,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -2780,7 +2780,7 @@ spec:
                       ],
                     },
                     "
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -2791,7 +2791,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
                   ],
                 ],
               },
@@ -2834,7 +2834,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -3650,7 +3650,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key;echo -n $GITHUB_APP_ID > /data/github-app-id;echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -3668,7 +3668,7 @@ spec:
         private_key_path: /data/github-private-key
         app_id: \${file:/data/github-app-id}
         installation_id: \${file:/data/github-installation-id}
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -3679,7 +3679,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -3719,7 +3719,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -4139,7 +4139,7 @@ spec:
   tables:
     - github_languages
   registry: github
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -4150,7 +4150,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4190,7 +4190,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -4748,7 +4748,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key;echo -n $GITHUB_APP_ID > /data/github-app-id;echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4773,7 +4773,7 @@ spec:
         private_key_path: /data/github-private-key
         app_id: \${file:/data/github-app-id}
         installation_id: \${file:/data/github-installation-id}
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -4784,7 +4784,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4824,7 +4824,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -5448,7 +5448,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key;echo -n $GITHUB_APP_ID > /data/github-app-id;echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -5473,7 +5473,7 @@ spec:
         private_key_path: /data/github-private-key
         app_id: \${file:/data/github-app-id}
         installation_id: \${file:/data/github-installation-id}
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -5484,7 +5484,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -5524,7 +5524,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -6160,7 +6160,7 @@ spec:
     - postgresql
   spec:
     apiKey: \${NS1_API_KEY}
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -6171,7 +6171,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6215,7 +6215,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -6853,7 +6853,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -6864,7 +6864,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6904,7 +6904,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -7502,7 +7502,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -7513,7 +7513,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -7553,7 +7553,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -8149,7 +8149,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -8160,7 +8160,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -8200,7 +8200,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -8826,7 +8826,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -8837,7 +8837,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -8877,7 +8877,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -9677,7 +9677,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -9688,7 +9688,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -9728,7 +9728,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -10090,7 +10090,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -10101,7 +10101,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10141,7 +10141,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -10739,7 +10739,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -10750,7 +10750,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10794,7 +10794,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -11417,7 +11417,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -11428,7 +11428,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -11468,7 +11468,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -12299,7 +12299,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -12310,7 +12310,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12350,7 +12350,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -12949,7 +12949,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -12960,7 +12960,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13000,7 +13000,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -13362,7 +13362,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -13373,7 +13373,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13413,7 +13413,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -14072,7 +14072,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -14083,7 +14083,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -14123,7 +14123,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -14957,7 +14957,7 @@ spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
       host=\${RIFFRAFF_DB_HOST} port=5432 dbname=riffraff sslmode=verify-full
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -14968,7 +14968,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -15008,7 +15008,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },
@@ -15403,7 +15403,7 @@ spec:
     - postgresql
   spec:
     api_key: \${SNYK_API_KEY}
-' > /data/source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -15414,7 +15414,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /data/destination.yaml;/app/cloudquery sync /data/source.yaml /data/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -15454,7 +15454,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/data",
+                "ContainerPath": "/usr/share/cloudquery",
                 "ReadOnly": false,
                 "SourceVolume": "config-volume",
               },

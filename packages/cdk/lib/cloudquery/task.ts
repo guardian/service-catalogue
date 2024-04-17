@@ -20,7 +20,10 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
-import { postgresDestinationConfig } from './config';
+import {
+	postgresDestinationConfig,
+	serviceCatalogueConfigDirectory,
+} from './config';
 import { Images } from './images';
 import { singletonPolicy } from './policies';
 import { scheduleFrequency } from './schedule';
@@ -83,7 +86,7 @@ export interface ScheduledCloudqueryTaskProps
 	 * Any additional commands to run within the CloudQuery container.
 	 * These are executed first.
 	 *
-	 * The containers filesystem is mostly read-only. If you need to write files you can use the /data folder.
+	 * The containers filesystem is mostly read-only. If you need to write files you can use the /usr/share/cloudquery folder.
 	 */
 	additionalCommands?: string[];
 
@@ -191,8 +194,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		});
 
-		const volumePath = '/data';
-
 		const cloudqueryTask = task.addContainer(`${id}Container`, {
 			image: Images.cloudquery,
 			entryPoint: [''],
@@ -218,9 +219,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					...additionalCommands,
-					`printf '${dump(sourceConfig)}' > ${volumePath}/source.yaml`,
-					`printf '${dump(destinationConfig)}' > ${volumePath}/destination.yaml`,
-					`/app/cloudquery sync ${volumePath}/source.yaml ${volumePath}/destination.yaml --log-format json --log-console --no-log-file`,
+					`printf '${dump(sourceConfig)}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
+					`printf '${dump(destinationConfig)}' > ${serviceCatalogueConfigDirectory}/destination.yaml`,
+					`/app/cloudquery sync ${serviceCatalogueConfigDirectory}/source.yaml ${serviceCatalogueConfigDirectory}/destination.yaml --log-format json --log-console --no-log-file`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
@@ -239,7 +240,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		cloudqueryTask.addMountPoints(
 			{
 				// So that we can write task config to this directory
-				containerPath: volumePath,
+				containerPath: serviceCatalogueConfigDirectory,
 				sourceVolume: 'config-volume',
 				readOnly: false,
 			},
