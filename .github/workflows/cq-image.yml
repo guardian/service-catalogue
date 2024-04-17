@@ -54,11 +54,10 @@ jobs:
           tags: |
             type=sha,format=long
 
-      - name: Load .env file
-        uses: xom9ikk/dotenv@ac290ca23a42155a0cba1031d23afa46240116a9 # v2.3.0
-
-      - name: Echo CQ_VERSION
-        run: echo ${{ env.CQ_CLI }}
+      - name: Set CQ_CLI Github Env variable from .env
+        run: |
+          source .env
+          echo "CQ_CLI=${CQ_CLI}" >> "$GITHUB_ENV"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
