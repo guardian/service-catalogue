@@ -3650,7 +3650,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key;echo -n $GITHUB_APP_ID > /data/github-app-id;echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -3665,9 +3665,9 @@ spec:
       - guardian
     app_auth:
       - org: guardian
-        private_key_path: /github-private-key
-        app_id: \${file:/github-app-id}
-        installation_id: \${file:/github-installation-id}
+        private_key_path: /data/github-private-key
+        app_id: \${file:/data/github-app-id}
+        installation_id: \${file:/data/github-installation-id}
 ' > /data/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -4748,7 +4748,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key;echo -n $GITHUB_APP_ID > /data/github-app-id;echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4770,9 +4770,9 @@ spec:
       - guardian
     app_auth:
       - org: guardian
-        private_key_path: /github-private-key
-        app_id: \${file:/github-app-id}
-        installation_id: \${file:/github-installation-id}
+        private_key_path: /data/github-private-key
+        app_id: \${file:/data/github-app-id}
+        installation_id: \${file:/data/github-installation-id}
 ' > /data/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -5448,7 +5448,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key;echo -n $GITHUB_APP_ID > /data/github-app-id;echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -5470,9 +5470,9 @@ spec:
       - guardian
     app_auth:
       - org: guardian
-        private_key_path: /github-private-key
-        app_id: \${file:/github-app-id}
-        installation_id: \${file:/github-installation-id}
+        private_key_path: /data/github-private-key
+        app_id: \${file:/data/github-app-id}
+        installation_id: \${file:/data/github-installation-id}
 ' > /data/source.yaml;printf 'kind: destination
 spec:
   name: postgresql

@@ -341,9 +341,9 @@ export function addCloudqueryEcsCluster(
 	};
 
 	const additionalGithubCommands = [
-		'echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key',
-		'echo -n $GITHUB_APP_ID > /github-app-id',
-		'echo -n $GITHUB_INSTALLATION_ID > /github-installation-id',
+		'echo -n $GITHUB_PRIVATE_KEY | base64 -d > /data/github-private-key',
+		'echo -n $GITHUB_APP_ID > /data/github-app-id',
+		'echo -n $GITHUB_INSTALLATION_ID > /data/github-installation-id',
 	];
 
 	const githubSources: CloudquerySource[] = [
