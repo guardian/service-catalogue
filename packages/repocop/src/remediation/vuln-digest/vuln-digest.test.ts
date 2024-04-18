@@ -109,6 +109,16 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 [guardian/repo](https://github.com/guardian/repo) contains a [HIGH vulnerability](example.com).
 Introduced via **leftpad** on Fri Jan 01 2021, from pip.
 This vulnerability is patchable.`,
+			actions: [
+				{
+					cta: `View vulnerability dashboard for ${teamName} on Grafana`,
+					url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${teamSlug}`,
+				},
+				{
+					cta: "See 'Prioritise the vulnerabilities' in these docs for obligations",
+					url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
+				},
+			],
 		});
 	});
 
