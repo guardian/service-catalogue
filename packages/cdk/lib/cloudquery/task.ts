@@ -20,7 +20,10 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
-import { postgresDestinationConfig } from './config';
+import {
+	postgresDestinationConfig,
+	serviceCatalogueConfigDirectory,
+} from './config';
 import { Images } from './images';
 import { singletonPolicy } from './policies';
 import { scheduleFrequency } from './schedule';
@@ -82,6 +85,8 @@ export interface ScheduledCloudqueryTaskProps
 	/**
 	 * Any additional commands to run within the CloudQuery container.
 	 * These are executed first.
+	 *
+	 * The containers filesystem is mostly read-only. If you need to write files you can use the /usr/share/cloudquery folder.
 	 */
 	additionalCommands?: string[];
 
@@ -208,25 +213,50 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				App: app,
 				Name: name,
 			},
+			readonlyRootFilesystem: true,
 			command: [
 				'/bin/sh',
 				'-c',
 				[
 					...additionalCommands,
-
-					/*
-					Install the CA bundle for all RDS certificates.
-					See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.CertificatesAllRegions
-					 */
-					'wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates',
-
-					`printf '${dump(sourceConfig)}' > /source.yaml`,
-					`printf '${dump(destinationConfig)}' > /destination.yaml`,
-					'/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console',
+					`printf '${dump(sourceConfig)}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
+					`printf '${dump(destinationConfig)}' > ${serviceCatalogueConfigDirectory}/destination.yaml`,
+					`/app/cloudquery sync ${serviceCatalogueConfigDirectory}/source.yaml ${serviceCatalogueConfigDirectory}/destination.yaml --log-format json --log-console --no-log-file`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
 		});
+
+		task.addVolume({
+			name: 'config-volume',
+		});
+		task.addVolume({
+			name: 'cloudquery-volume',
+		});
+		task.addVolume({
+			name: 'tmp-volume',
+		});
+
+		cloudqueryTask.addMountPoints(
+			{
+				// So that we can write task config to this directory
+				containerPath: serviceCatalogueConfigDirectory,
+				sourceVolume: 'config-volume',
+				readOnly: false,
+			},
+			{
+				// So that Cloudquery can write to this directory
+				containerPath: '/app/.cq',
+				sourceVolume: 'cloudquery-volume',
+				readOnly: false,
+			},
+			{
+				// So that Cloudquery can write temporary data
+				containerPath: '/tmp',
+				sourceVolume: 'tmp-volume',
+				readOnly: false,
+			},
+		);
 
 		const otel = task.addContainer(`${id}AWSOTELCollector`, {
 			image: Images.otelCollector,
