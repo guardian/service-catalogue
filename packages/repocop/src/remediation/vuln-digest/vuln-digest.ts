@@ -70,6 +70,7 @@ export function createDigest(
 	const listedVulnsCount = topVulns.length;
 	const preamble = String.raw`Found ${totalVulnsCount} vulnerabilities across ${resultsForTeam.length} repositories.
 Displaying the top ${listedVulnsCount} most urgent.
+Obligations to resolve: Critical - 1 day; High - 2 weeks.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
 	const digestString = topVulns
@@ -77,13 +78,7 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
-
-	const actionObligations: Action = {
-		cta: "See 'Prioritise the vulnerabilities' in these docs for obligations",
-		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
-	};
-
-	const actions = [createTeamDashboardLinkAction(team), actionObligations];
+	const actions = [createTeamDashboardLinkAction(team)];
 
 	return {
 		teamSlug: team.slug,
