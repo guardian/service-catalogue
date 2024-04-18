@@ -143,9 +143,15 @@ export function githubSourceConfig(
 
 						// For simplicity, read all configuration from disk.
 						//These values are duplicated. Can we use a variable for them?
-						private_key_path: '/data/github-private-key',
-						app_id: '${file:/data/github-app-id}',
-						installation_id: '${file:/data/github-installation-id}',
+						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
+						app_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-app-id` +
+							'}',
+						installation_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
+							'}',
 					},
 				],
 			},

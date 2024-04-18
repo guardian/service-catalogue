@@ -196,9 +196,9 @@ spec:
 		      - guardian
 		    app_auth:
 		      - org: guardian
-		        private_key_path: /data/github-private-key
-		        app_id: \${file:/data/github-app-id}
-		        installation_id: \${file:/data/github-installation-id}
+		        private_key_path: /usr/share/cloudquery/github-private-key
+		        app_id: \${file:/usr/share/cloudquery/github-app-id}
+		        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
 		"
 	`);
 	});
