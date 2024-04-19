@@ -21,6 +21,7 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import {
+	localCache,
 	postgresDestinationConfig,
 	serviceCatalogueConfigDirectory,
 } from './config';
@@ -333,6 +334,17 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				Below, we describe a dependency such that CloudQuery will only start if the singleton step succeeds.
 			 	*/
 				essential: false,
+			});
+
+			const cacheVolume: Volume = {
+				name: 'cache-volume',
+			};
+			task.addVolume(cacheVolume);
+
+			singletonTask.addMountPoints({
+				containerPath: localCache,
+				sourceVolume: cacheVolume.name,
+				readOnly: false,
 			});
 
 			cloudqueryTask.addContainerDependencies({

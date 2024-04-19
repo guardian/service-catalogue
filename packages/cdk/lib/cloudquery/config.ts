@@ -344,4 +344,5 @@ export const skipTables = [
 	'aws_stepfunctions_executions',
 ];
 
-export const serviceCatalogueConfigDirectory = '/usr/share/cloudquery';
+export const yumCache = '/usr/share';
+export const serviceCatalogueConfigDirectory = `${yumCache}/cloudquery`;
