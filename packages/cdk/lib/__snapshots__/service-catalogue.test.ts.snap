@@ -10932,6 +10932,7 @@ spec:
             },
             "MountPoints": [
               {
+                "ContainerPath": "/usr",
                 "ReadOnly": false,
                 "SourceVolume": "cache-volume",
               },
