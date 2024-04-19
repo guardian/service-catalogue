@@ -307,7 +307,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				image: Images.amazonLinux,
 				entryPoint: [''],
 				command: [
-					'/bin/bash',
+					'/bin/sh',
 					'-c',
 					[
 						// Install jq to handle JSON, and awscli to query ECS
