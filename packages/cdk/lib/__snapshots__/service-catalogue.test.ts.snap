@@ -10930,6 +10930,12 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ReadOnly": false,
+                "SourceVolume": "cache-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideEc2AwsCli",
             "ReadonlyRootFilesystem": true,
           },
@@ -11098,6 +11104,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "cache-volume",
           },
         ],
       },
