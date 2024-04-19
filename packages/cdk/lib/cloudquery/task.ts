@@ -11,7 +11,7 @@ import {
 	PropagatedTagSource,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
-import type { Cluster, RepositoryImage } from 'aws-cdk-lib/aws-ecs';
+import type { Cluster, RepositoryImage, Volume } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
@@ -227,33 +227,38 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			logging: fireLensLogDriver,
 		});
 
-		task.addVolume({
+		const configVolume: Volume = {
 			name: 'config-volume',
-		});
-		task.addVolume({
+		};
+		task.addVolume(configVolume);
+
+		const cqVolume: Volume = {
 			name: 'cloudquery-volume',
-		});
-		task.addVolume({
+		};
+		task.addVolume(cqVolume);
+
+		const tmpVolume: Volume = {
 			name: 'tmp-volume',
-		});
+		};
+		task.addVolume(tmpVolume);
 
 		cloudqueryTask.addMountPoints(
 			{
 				// So that we can write task config to this directory
 				containerPath: serviceCatalogueConfigDirectory,
-				sourceVolume: 'config-volume',
+				sourceVolume: configVolume.name,
 				readOnly: false,
 			},
 			{
 				// So that Cloudquery can write to this directory
 				containerPath: '/app/.cq',
-				sourceVolume: 'cloudquery-volume',
+				sourceVolume: cqVolume.name,
 				readOnly: false,
 			},
 			{
 				// So that Cloudquery can write temporary data
 				containerPath: '/tmp',
-				sourceVolume: 'tmp-volume',
+				sourceVolume: tmpVolume.name,
 				readOnly: false,
 			},
 		);
