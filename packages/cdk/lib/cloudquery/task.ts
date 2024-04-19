@@ -320,6 +320,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						`[[ $\{RUNNING} > 1 ]] && exit ${operationInProgress} || exit ${success}`,
 					].join(';'),
 				],
+				readonlyRootFilesystem: true,
 				logging: fireLensLogDriver,
 
 				/*
