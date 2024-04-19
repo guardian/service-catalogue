@@ -21,7 +21,6 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
 import type { CloudqueryConfig } from './config';
 import {
-	localCache,
 	postgresDestinationConfig,
 	serviceCatalogueConfigDirectory,
 } from './config';
