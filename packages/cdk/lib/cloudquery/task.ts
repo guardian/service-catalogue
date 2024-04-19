@@ -337,12 +337,13 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			});
 
 			const cacheVolume: Volume = {
+				// So that yum can install jq and awscli
 				name: 'cache-volume',
 			};
 			task.addVolume(cacheVolume);
 
 			singletonTask.addMountPoints({
-				containerPath: localCache,
+				containerPath: '/usr', //I think jq lives in /usr/bin and awscli in /usr/local/bin
 				sourceVolume: cacheVolume.name,
 				readOnly: false,
 			});
