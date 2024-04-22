@@ -10910,7 +10910,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "yum install -y -q jq awscli;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
+              "yum install -y -q awscli;echo "Installed AWS";echo $(aws --help);curl -L -v -o /usr/local/bin/jq https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-arm64;chmod +x /usr/local/bin/jq;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
             ],
             "EntryPoint": [
               "",
@@ -10932,7 +10932,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/usr",
+                "ContainerPath": "/usr/local/bin",
                 "ReadOnly": false,
                 "SourceVolume": "cache-volume",
               },
