@@ -104,6 +104,7 @@ describe('createDigest', () => {
 			subject: `Vulnerability Digest for ${teamName}`,
 			message: String.raw`Found 1 vulnerabilities across 1 repositories.
 Displaying the top 1 most urgent.
+Obligations to resolve: Critical - 1 day; High - 2 weeks.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.
 
 [guardian/repo](https://github.com/guardian/repo) contains a [HIGH vulnerability](example.com).
@@ -113,10 +114,6 @@ This vulnerability is patchable.`,
 				{
 					cta: `View vulnerability dashboard for ${teamName} on Grafana`,
 					url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${teamSlug}`,
-				},
-				{
-					cta: "See 'Prioritise the vulnerabilities' in these docs for obligations",
-					url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
 				},
 			],
 		});
