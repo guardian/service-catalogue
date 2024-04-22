@@ -6,8 +6,8 @@ export const Images = {
 		`ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e`,
 	),
 	devxLogs: ContainerImage.fromRegistry('ghcr.io/guardian/devx-logs:2'),
-	amazonLinux: ContainerImage.fromRegistry(
-		'public.ecr.aws/amazonlinux/amazonlinux:latest',
+	singletonImage: ContainerImage.fromRegistry(
+		'ghcr.io/guardian/service-catalogue/singleton:latest', //TODO pin this
 	),
 	// https://github.com/guardian/cq-source-ns1
 	ns1Source: ContainerImage.fromRegistry(

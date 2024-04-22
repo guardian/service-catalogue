@@ -304,20 +304,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			const success = 0;
 
 			const singletonTask = task.addContainer(`${id}AwsCli`, {
-				image: Images.amazonLinux,
+				image: Images.singletonImage,
 				entryPoint: [''],
 				command: [
 					'/bin/sh',
 					'-c',
 					[
-						// Install jq to handle JSON, and awscli to query ECS
-						'yum install -y -q awscli',
-						'echo "Installed AWS"',
-						'echo $(aws --help)',
-						// TODO: Make 1.7.1 configurable
-						// TODO: Verify hash matches
-						'curl -L -v -o /usr/local/bin/jq https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-arm64',
-						'chmod +x /usr/local/bin/jq',
 						// Who am I?
 						`ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster')`,
 						`ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family')`,
