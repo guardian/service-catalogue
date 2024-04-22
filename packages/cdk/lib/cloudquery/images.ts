@@ -7,7 +7,7 @@ export const Images = {
 	),
 	devxLogs: ContainerImage.fromRegistry('ghcr.io/guardian/devx-logs:2'),
 	singletonImage: ContainerImage.fromRegistry(
-		'ghcr.io/guardian/service-catalogue/singleton:latest', //TODO pin this
+		'ghcr.io/guardian/service-catalogue/singleton:sha-855e948a9669e1edb9b72a37118f7372bb3282fb',
 	),
 	// https://github.com/guardian/cq-source-ns1
 	ns1Source: ContainerImage.fromRegistry(
