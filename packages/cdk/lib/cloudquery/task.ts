@@ -307,7 +307,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				image: Images.singletonImage,
 				entryPoint: [''],
 				command: [
-					'/bin/sh',
+					'/bin/bash',
 					'-c',
 					[
 						// Who am I?
@@ -322,7 +322,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 						`[[ $\{RUNNING} > 1 ]] && exit ${operationInProgress} || exit ${success}`,
 					].join(';'),
 				],
-				readonlyRootFilesystem: false,
+				readonlyRootFilesystem: true,
 				logging: fireLensLogDriver,
 
 				/*
@@ -330,18 +330,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				Below, we describe a dependency such that CloudQuery will only start if the singleton step succeeds.
 			 	*/
 				essential: false,
-			});
-
-			const cacheVolume: Volume = {
-				// So that yum can install jq and awscli
-				name: 'cache-volume',
-			};
-			task.addVolume(cacheVolume);
-
-			singletonTask.addMountPoints({
-				containerPath: '/usr/local/bin', //I think jq lives in /usr/bin and awscli in /usr/local/bin
-				sourceVolume: cacheVolume.name,
-				readOnly: false,
 			});
 
 			cloudqueryTask.addContainerDependencies({
