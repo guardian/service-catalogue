@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - main
-      - nt/more-readonly
     paths:
       - 'containers/singleton/**'
 
