@@ -142,9 +142,15 @@ export function githubSourceConfig(
 						org: 'guardian',
 
 						// For simplicity, read all configuration from disk.
-						private_key_path: '/github-private-key',
-						app_id: '${file:/github-app-id}',
-						installation_id: '${file:/github-installation-id}',
+						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
+						app_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-app-id` +
+							'}',
+						installation_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
+							'}',
 					},
 				],
 			},
@@ -337,3 +343,5 @@ export const skipTables = [
 	'aws_stepfunctions_map_run_executions',
 	'aws_stepfunctions_executions',
 ];
+
+export const serviceCatalogueConfigDirectory = '/usr/share/cloudquery';
