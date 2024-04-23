@@ -10910,13 +10910,13 @@ spec:
             "Command": [
               "/bin/bash",
               "-c",
-              "yum install -y -q jq awscli;ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
+              "ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
             ],
             "EntryPoint": [
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/amazonlinux/amazonlinux:latest",
+            "Image": "ghcr.io/guardian/service-catalogue/singleton:sha-855e948a9669e1edb9b72a37118f7372bb3282fb",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -10931,6 +10931,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideEc2AwsCli",
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
