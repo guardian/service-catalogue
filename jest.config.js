@@ -11,6 +11,7 @@ const transform = {
 module.exports = {
 	verbose: true,
 	testEnvironment: 'node',
+	reporters: [['github-actions', { silent: false }], 'summary'],
 	projects: [
 		{
 			displayName: 'cdk',
