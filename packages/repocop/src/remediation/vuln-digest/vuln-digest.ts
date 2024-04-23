@@ -1,4 +1,3 @@
-import type { Action } from '@guardian/anghammarad';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
 import type { Config } from '../../config';
@@ -45,6 +44,13 @@ Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}.
 This vulnerability ${vuln.is_patchable ? 'is ' : 'may *not* be '}patchable.`;
 }
 
+function createTeamDashboardLinkAction(team: Team) {
+	return {
+		cta: `View vulnerability dashboard for ${team.name} on Grafana`,
+		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${team.slug}`,
+	};
+}
+
 export function createDigest(
 	team: Team,
 	repoOwners: view_repo_ownership[],
@@ -63,6 +69,7 @@ export function createDigest(
 	const listedVulnsCount = topVulns.length;
 	const preamble = String.raw`Found ${totalVulnsCount} vulnerabilities across ${resultsForTeam.length} repositories.
 Displaying the top ${listedVulnsCount} most urgent.
+Obligations to resolve: Critical - 1 day; High - 2 weeks.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
 	const digestString = topVulns
@@ -70,11 +77,13 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
+	const actions = [createTeamDashboardLinkAction(team)];
 
 	return {
 		teamSlug: team.slug,
 		subject: `Vulnerability Digest for ${team.name}`,
 		message,
+		actions,
 	};
 }
 
@@ -96,17 +105,13 @@ async function sendVulnerabilityDigests(
 			.join(', ')}`,
 	);
 
-	const action: Action = {
-		cta: "See 'Prioritise the vulnerabilities' of these docs for vulnerability obligations",
-		url: 'https://security-hq.gutools.co.uk/documentation/vulnerability-management',
-	};
 	return Promise.all(
 		digests.map(
 			async (digest) =>
 				await anghammarad.notify({
 					subject: digest.subject,
 					message: digest.message,
-					actions: [action],
+					actions: digest.actions,
 					target: { GithubTeamSlug: digest.teamSlug },
 					channel: RequestedChannel.PreferHangouts,
 					sourceSystem: `${config.app} ${config.stage}`,

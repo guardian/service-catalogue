@@ -117,7 +117,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -141,7 +141,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -152,7 +152,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -176,7 +176,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -190,7 +190,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-AwsCostExplorerContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -442,6 +460,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -765,7 +794,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -805,7 +834,7 @@ spec:
                   value: RESOLVED
               severity_normalized:
                 - Gte: 50
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -816,7 +845,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -840,7 +869,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -854,7 +883,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-DelegatedToSecurityAccountContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -1106,6 +1153,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -1399,7 +1457,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -1422,7 +1480,7 @@ spec:
     accounts:
       - id: cq-for-000000000018
         role_arn: arn:aws:iam::000000000018:role/cloudquery-access
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -1433,7 +1491,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -1457,7 +1515,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -1471,7 +1529,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-DeployToolsListOrgsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -1723,6 +1799,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -2016,7 +2103,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: fastly
   path: cloudquery/fastly
@@ -2033,7 +2120,7 @@ spec:
   spec:
     concurrency: 1000
     fastly_api_key: \${FASTLY_API_KEY}
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -2044,7 +2131,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -2068,7 +2155,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -2082,7 +2169,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-FastlyServicesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "FASTLY_API_KEY",
@@ -2348,6 +2453,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -2625,7 +2741,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+                    "printf 'kind: source
 spec:
   name: galaxies
   path: guardian/galaxies
@@ -2664,7 +2780,7 @@ spec:
                       ],
                     },
                     "
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -2675,7 +2791,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
                   ],
                 ],
               },
@@ -2702,7 +2818,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -2716,7 +2832,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-GalaxiesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -2968,6 +3102,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -3505,7 +3650,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -3520,10 +3665,10 @@ spec:
       - guardian
     app_auth:
       - org: guardian
-        private_key_path: /github-private-key
-        app_id: \${file:/github-app-id}
-        installation_id: \${file:/github-installation-id}
-' > /source.yaml;printf 'kind: destination
+        private_key_path: /usr/share/cloudquery/github-private-key
+        app_id: \${file:/usr/share/cloudquery/github-app-id}
+        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -3534,7 +3679,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -3558,7 +3703,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -3572,7 +3717,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubIssuesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -3866,6 +4029,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -3955,7 +4129,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: github-languages
   path: guardian/github-languages
@@ -3965,7 +4139,7 @@ spec:
   tables:
     - github_languages
   registry: github
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -3976,7 +4150,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4000,7 +4174,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4014,7 +4188,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubLanguagesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_ACCESS_TOKEN",
@@ -4272,6 +4464,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -4545,7 +4748,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -4567,10 +4770,10 @@ spec:
       - guardian
     app_auth:
       - org: guardian
-        private_key_path: /github-private-key
-        app_id: \${file:/github-app-id}
-        installation_id: \${file:/github-installation-id}
-' > /source.yaml;printf 'kind: destination
+        private_key_path: /usr/share/cloudquery/github-private-key
+        app_id: \${file:/usr/share/cloudquery/github-app-id}
+        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -4581,7 +4784,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -4605,7 +4808,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4619,7 +4822,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubRepositoriesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -4913,6 +5134,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -5216,7 +5448,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /github-private-key;echo -n $GITHUB_APP_ID > /github-app-id;echo -n $GITHUB_INSTALLATION_ID > /github-installation-id;wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github
   path: cloudquery/github
@@ -5238,10 +5470,10 @@ spec:
       - guardian
     app_auth:
       - org: guardian
-        private_key_path: /github-private-key
-        app_id: \${file:/github-app-id}
-        installation_id: \${file:/github-installation-id}
-' > /source.yaml;printf 'kind: destination
+        private_key_path: /usr/share/cloudquery/github-private-key
+        app_id: \${file:/usr/share/cloudquery/github-app-id}
+        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -5252,7 +5484,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -5276,7 +5508,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5290,7 +5522,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubTeamsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "GITHUB_PRIVATE_KEY",
@@ -5584,6 +5834,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -5887,7 +6148,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: ns1
   registry: grpc
@@ -5899,7 +6160,7 @@ spec:
     - postgresql
   spec:
     apiKey: \${NS1_API_KEY}
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -5910,7 +6171,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -5938,7 +6199,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5952,7 +6213,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-NS1Container",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "NS1_API_KEY",
@@ -6236,6 +6515,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -6539,7 +6829,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -6563,7 +6853,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -6574,7 +6864,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -6598,7 +6888,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -6612,7 +6902,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -6864,6 +7172,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -7157,7 +7476,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7183,7 +7502,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -7194,7 +7513,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -7218,7 +7537,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7232,7 +7551,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideBackupContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -7484,6 +7821,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -7777,7 +8125,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -7801,7 +8149,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -7812,7 +8160,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -7836,7 +8184,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7850,7 +8198,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideCertificatesContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -8102,6 +8468,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -8425,7 +8802,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -8449,7 +8826,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -8460,7 +8837,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -8484,7 +8861,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -8498,7 +8875,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideCloudFormationContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -8750,6 +9145,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -9247,7 +9653,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -9271,7 +9677,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -9282,7 +9688,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -9306,7 +9712,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -9320,7 +9726,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -9572,6 +9996,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -9631,7 +10066,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -9655,7 +10090,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -9666,7 +10101,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -9690,7 +10125,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -9704,7 +10139,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideDynamoDBContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -9956,6 +10409,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -10249,7 +10713,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10275,7 +10739,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -10286,7 +10750,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10314,7 +10778,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -10328,7 +10792,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideEc2Container",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -10606,6 +11088,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -10899,7 +11392,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -10924,7 +11417,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -10935,7 +11428,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -10959,7 +11452,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -10973,7 +11466,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideInspectorContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -11225,6 +11736,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -11752,7 +12274,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -11777,7 +12299,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -11788,7 +12310,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -11812,7 +12334,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -11826,7 +12348,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideLoadBalancersContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -12078,6 +12618,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -12371,7 +12922,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12398,7 +12949,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -12409,7 +12960,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12433,7 +12984,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -12447,7 +12998,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideRDSContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -12699,6 +13268,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -12758,7 +13338,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -12782,7 +13362,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -12793,7 +13373,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -12817,7 +13397,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -12831,7 +13411,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideS3Container",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -13083,6 +13681,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -13376,7 +13985,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
@@ -13463,7 +14072,7 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -13474,7 +14083,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -13498,7 +14107,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -13512,7 +14121,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-RemainingAwsDataContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -13764,6 +14391,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -14304,7 +14942,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: postgresql
   path: cloudquery/postgresql
@@ -14319,7 +14957,7 @@ spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}
       host=\${RIFFRAFF_DB_HOST} port=5432 dbname=riffraff sslmode=verify-full
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -14330,7 +14968,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -14354,7 +14992,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -14368,7 +15006,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-RiffRaffDataContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "RIFFRAFF_DB_USERNAME",
@@ -14662,6 +15318,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -14721,7 +15388,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "wget -O /usr/local/share/ca-certificates/global-bundle.crt -q https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && update-ca-certificates;printf 'kind: source
+              "printf 'kind: source
 spec:
   name: snyk
   path: cloudquery/snyk
@@ -14736,7 +15403,7 @@ spec:
     - postgresql
   spec:
     api_key: \${SNYK_API_KEY}
-' > /source.yaml;printf 'kind: destination
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
   registry: github
@@ -14747,7 +15414,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /destination.yaml;/app/cloudquery sync /source.yaml /destination.yaml --log-format json --log-console",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
             ],
             "DependsOn": [
               {
@@ -14771,7 +15438,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/cloudquery/cloudquery:5.2.0",
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:sha-0f2713edae5157260cfbf4eaa1f2d682e980fe7e",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -14785,7 +15452,25 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
             "Name": "CloudquerySource-SnykAllContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "SNYK_API_KEY",
@@ -15051,6 +15736,17 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
