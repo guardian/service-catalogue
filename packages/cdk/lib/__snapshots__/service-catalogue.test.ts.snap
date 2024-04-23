@@ -16024,6 +16024,9 @@ spec:
           },
         },
         "Handler": "index.main",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
@@ -16323,6 +16326,9 @@ spec:
           },
         },
         "Handler": "index.main",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
@@ -17084,6 +17090,9 @@ spec:
           },
         },
         "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
@@ -17728,6 +17737,9 @@ spec:
           },
         },
         "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 512,
         "ReservedConcurrentExecutions": 1,
         "Role": {
@@ -22341,6 +22353,9 @@ spec:
           },
         },
         "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
         "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
