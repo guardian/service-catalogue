@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   build-and-push:
-    uses: guardian/service-catalogue/.github/workflows/release-image.yml@nt-ac/workflow
+    uses: guardian/service-catalogue/.github/workflows/release-image.yml@release-image.yml@v0.0.1
     with:
       IMAGE_NAME: prisma-migrate
     permissions:
