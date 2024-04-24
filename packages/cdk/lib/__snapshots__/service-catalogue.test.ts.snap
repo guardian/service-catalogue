@@ -303,6 +303,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -1007,6 +1008,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -1664,6 +1666,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -2329,6 +2332,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -2989,6 +2993,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -3927,6 +3932,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -4373,6 +4379,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -5054,6 +5061,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -5765,6 +5773,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -6439,6 +6448,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Essential": false,
@@ -7125,6 +7135,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -7785,6 +7796,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -8443,6 +8455,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -9131,6 +9144,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -9993,6 +10007,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -10417,6 +10432,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -11081,6 +11097,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -11767,6 +11784,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -12660,6 +12678,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -13321,6 +13340,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -13745,6 +13765,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -14466,6 +14487,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -15404,6 +15426,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
@@ -15833,6 +15856,7 @@ spec:
                 "Protocol": "tcp",
               },
             ],
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
