@@ -242,11 +242,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		};
 		task.addVolume(tmpVolume);
 
-		const firelensVolume: Volume = {
-			name: 'firelens-volume',
-		};
-		task.addVolume(tmpVolume);
-
 		cloudqueryTask.addMountPoints(
 			{
 				// So that we can write task config to this directory
@@ -394,6 +389,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 			readonlyRootFilesystem: true,
 		});
+
+		const firelensVolume: Volume = {
+			name: 'firelens-volume',
+		};
+		task.addVolume(firelensVolume);
 
 		firelensLogRouter.addMountPoints({
 			containerPath: '/init/invoke_fluent_bit.sh',
