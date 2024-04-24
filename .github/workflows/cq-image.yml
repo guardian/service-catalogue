@@ -44,7 +44,7 @@ jobs:
 
   build-and-push:
     needs: CQ_CLI
-    uses: guardian/service-catalogue/.github/workflows/release-image.yml@main
+    uses: ./.github/workflows/release-image.yml
     with:
       IMAGE_NAME: cloudquery
       BUILD_ARGS: CQ_CLI=${{ needs.CQ_CLI.outputs.CQ_CLI }}
