@@ -387,6 +387,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			firelensConfig: {
 				type: FirelensLogRouterType.FLUENTBIT,
 			},
+			readonlyRootFilesystem: true,
 		});
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
