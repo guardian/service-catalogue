@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   build-and-push:
-    uses: guardian/service-catalogue/.github/workflows/release-image.yml@v0.0.1
+    uses: ./.github/workflows/release-image.yml
     with:
       IMAGE_NAME: singleton
     permissions:
