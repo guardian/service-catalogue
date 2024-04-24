@@ -242,6 +242,11 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		};
 		task.addVolume(tmpVolume);
 
+		const firelensVolume: Volume = {
+			name: 'firelens-volume',
+		};
+		task.addVolume(tmpVolume);
+
 		cloudqueryTask.addMountPoints(
 			{
 				// So that we can write task config to this directory
@@ -372,7 +377,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			});
 		}
 
-		task.addFirelensLogRouter(`${id}Firelens`, {
+		const firelensLogRouter = task.addFirelensLogRouter(`${id}Firelens`, {
 			image: Images.devxLogs,
 			logging: LogDrivers.awsLogs({
 				streamPrefix: [stack, stage, app].join('/'),
@@ -388,6 +393,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				type: FirelensLogRouterType.FLUENTBIT,
 			},
 			readonlyRootFilesystem: true,
+		});
+
+		firelensLogRouter.addMountPoints({
+			containerPath: '/init/invoke_fluent_bit.sh',
+			sourceVolume: firelensVolume.name,
+			readOnly: false,
 		});
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));

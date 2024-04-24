@@ -416,6 +416,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-AwsCostExplorerFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -470,6 +477,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -1110,6 +1120,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-DelegatedToSecurityAccountFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -1164,6 +1181,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -1757,6 +1777,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-DeployToolsListOrgsFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -1811,6 +1838,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -2412,6 +2442,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-FastlyServicesFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -2466,6 +2503,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -3062,6 +3102,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-GalaxiesFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -3116,6 +3163,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -3990,6 +4040,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubIssuesFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -4044,6 +4101,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -4426,6 +4486,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubLanguagesFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -4480,6 +4547,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -5097,6 +5167,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubRepositoriesFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -5151,6 +5228,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -5798,6 +5878,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-GitHubTeamsFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -5852,6 +5939,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -6480,6 +6570,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-NS1Firelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -6534,6 +6631,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -7138,6 +7238,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -7192,6 +7299,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -7788,6 +7898,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideBackupFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -7842,6 +7959,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -8436,6 +8556,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideCertificatesFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -8490,6 +8617,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -9114,6 +9244,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideCloudFormationFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -9168,6 +9305,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -9966,6 +10106,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -10020,6 +10167,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -10380,6 +10530,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideDynamoDBFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -10434,6 +10591,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -11061,6 +11221,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideEc2Firelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -11115,6 +11282,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -11710,6 +11880,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideInspectorFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -11764,6 +11941,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -12593,6 +12773,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideLoadBalancersFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -12647,6 +12834,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -13244,6 +13434,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideRDSFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -13298,6 +13495,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -13658,6 +13858,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-OrgWideS3Firelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -13712,6 +13919,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -14369,6 +14579,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-RemainingAwsDataFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -14423,6 +14640,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -15297,6 +15517,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-RiffRaffDataFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -15351,6 +15578,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
@@ -15716,6 +15946,13 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "CloudquerySource-SnykAllFirelens",
             "ReadonlyRootFilesystem": true,
           },
@@ -15770,6 +16007,9 @@ spec:
           },
           {
             "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
           },
         ],
       },
