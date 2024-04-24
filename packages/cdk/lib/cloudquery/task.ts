@@ -372,7 +372,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			});
 		}
 
-		task.addFirelensLogRouter(`${id}Firelens`, {
+		const firelensLogRouter = task.addFirelensLogRouter(`${id}Firelens`, {
 			image: Images.devxLogs,
 			logging: LogDrivers.awsLogs({
 				streamPrefix: [stack, stage, app].join('/'),
@@ -387,6 +387,18 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			firelensConfig: {
 				type: FirelensLogRouterType.FLUENTBIT,
 			},
+			readonlyRootFilesystem: true,
+		});
+
+		const firelensVolume: Volume = {
+			name: 'firelens-volume',
+		};
+		task.addVolume(firelensVolume);
+
+		firelensLogRouter.addMountPoints({
+			containerPath: '/init',
+			sourceVolume: firelensVolume.name,
+			readOnly: false,
 		});
 
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
