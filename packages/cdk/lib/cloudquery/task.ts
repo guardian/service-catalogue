@@ -396,7 +396,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		task.addVolume(firelensVolume);
 
 		firelensLogRouter.addMountPoints({
-			containerPath: '/init/invoke_fluent_bit.sh',
+			containerPath: '/init',
 			sourceVolume: firelensVolume.name,
 			readOnly: false,
 		});

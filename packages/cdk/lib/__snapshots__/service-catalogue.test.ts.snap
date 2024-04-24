@@ -403,7 +403,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -418,7 +418,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -1107,7 +1107,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1122,7 +1122,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -1764,7 +1764,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1779,7 +1779,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -2429,7 +2429,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -2444,7 +2444,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -3089,7 +3089,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3104,7 +3104,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -4027,7 +4027,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4042,7 +4042,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -4473,7 +4473,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4488,7 +4488,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -5154,7 +5154,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5169,7 +5169,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -5865,7 +5865,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5880,7 +5880,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -6557,7 +6557,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6572,7 +6572,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -7225,7 +7225,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7240,7 +7240,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -7885,7 +7885,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7900,7 +7900,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -8543,7 +8543,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8558,7 +8558,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -9231,7 +9231,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9246,7 +9246,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -10093,7 +10093,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10108,7 +10108,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -10517,7 +10517,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10532,7 +10532,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -11208,7 +11208,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -11223,7 +11223,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -11867,7 +11867,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -11882,7 +11882,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -12760,7 +12760,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -12775,7 +12775,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -13421,7 +13421,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -13436,7 +13436,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -13845,7 +13845,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -13860,7 +13860,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -14566,7 +14566,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -14581,7 +14581,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -15504,7 +15504,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -15519,7 +15519,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -15933,7 +15933,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -15948,7 +15948,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/init/invoke_fluent_bit.sh",
+                "ContainerPath": "/init",
                 "ReadOnly": false,
                 "SourceVolume": "firelens-volume",
               },
@@ -18480,7 +18480,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:nt-ac-add-volume-directive-to-ecs",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
