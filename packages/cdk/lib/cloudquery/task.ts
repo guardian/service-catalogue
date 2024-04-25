@@ -276,6 +276,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					containerPort: 4318,
 				},
 			],
+			readonlyRootFilesystem: true,
 		});
 
 		cloudqueryTask.addContainerDependencies({
