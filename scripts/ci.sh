@@ -75,3 +75,4 @@ createPrismaZip
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
+createLambdaWithPrisma "obligatron"

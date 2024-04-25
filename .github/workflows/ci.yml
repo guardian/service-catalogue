@@ -70,6 +70,14 @@ jobs:
                 - packages/dependency-graph-integrator/dist/dependency-graph-integrator.zip
             github-actions-usage:
               - packages/github-actions-usage/dist/github-actions-usage.zip
+            obligatron-find-all-teams:
+              - packages/obligatron/dist/obligatron.zip
+            obligatron-obligation-tagging:
+              - packages/obligatron/dist/obligatron.zip
+            obligatron-obligation-fsbp:
+              - packages/obligatron/dist/obligatron.zip
+            obligatron-save-obligation-results:
+              - packages/obligatron/dist/obligatron.zip
             prisma:
               - packages/common/prisma.zip
     env:

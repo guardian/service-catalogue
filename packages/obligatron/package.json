@@ -1,0 +1,10 @@
+{
+	"name": "obligatron",
+	"version": "1.0.0",
+	"description": "A collection of lambdas which evaluate teams adherances to obligations",
+	"scripts": {
+		"start": "APP=cloudbuster tsx src/run-locally.ts",
+		"build": "esbuild lambdas/**/* --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma"
+	},
+	"dependencies": {}
+}
