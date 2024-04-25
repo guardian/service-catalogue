@@ -8,9 +8,22 @@ const transform = {
 	'^.+\\.tsx?$': ['esbuild-jest', { target: 'esnext' }],
 };
 
+/*
+When running in CI (GitHub Actions), use the GitHub Actions reporter to annotate the PR with any test failures.
+Locally, use the default reporter.
+
+See:
+  - https://jestjs.io/docs/configuration#github-actions-reporter
+  - https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+ */
+const reporters = process.env.GITHUB_ACTIONS
+	? [['github-actions', { silent: false }], 'summary']
+	: ['default'];
+
 module.exports = {
 	verbose: true,
 	testEnvironment: 'node',
+	reporters,
 	projects: [
 		{
 			displayName: 'cdk',
