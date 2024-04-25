@@ -77,7 +77,7 @@ async function s3PathIsInConfig(
 		gitHubFile,
 	);
 	if (parsedConfig === undefined) {
-		console.log(`${repo}: Found in ${gitHubFile}: `, false);
+		console.debug(`${repo}: Found in ${gitHubFile}: `, false);
 		return false;
 	} else {
 		return !!(await findInS3(s3, `${s3Prefix ?? ''}/${parsedConfig.path}`));
@@ -94,12 +94,12 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 	async function foundInJs(): Promise<boolean> {
 		const path = await tryToParseJsConfig(octokit, repo);
 		if (!path) {
-			console.log(`${repo}: Found in JS config: `, false);
+			console.debug(`${repo}: Found in JS config: `, false);
 			return false;
 		}
 		const object = await findInS3(s3, `atoms/${path}`);
 		const foundObject = !!object;
-		console.log(`${repo}: Found in JS config: `, foundObject);
+		console.debug(`${repo}: Found in JS config: `, foundObject);
 		return foundObject;
 	}
 	const isFromTemplate = await isFromInteractiveTemplate(repo, owner, octokit);
