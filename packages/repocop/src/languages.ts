@@ -15,6 +15,10 @@ export const ignoredLanguages = [
 	'MDX',
 	'Procfile',
 	'Mermaid',
+        'Apex',
+        'SaltStack',
+        'Cypher',
+        'Awk',
 ];
 
 const commonSupportedLanguages = [
