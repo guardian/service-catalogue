@@ -341,36 +341,38 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			task.addToTaskRolePolicy(singletonPolicy(cluster));
 		}
 
-		const tableValues = sourceConfig.spec.tables
-			?.map((table) => table.replaceAll('*', '%'))
-			.map((table) => `('${table}', '${frequency}')`)
-			.join(',');
+		if (frequency === 'DAILY' || frequency === 'WEEKLY') {
+			const tableValues = sourceConfig.spec.tables
+				?.map((table) => table.replaceAll('*', '%'))
+				.map((table) => `('${table}', '${frequency}')`)
+				.join(',');
 
-		task.addContainer(`${id}PostgresContainer`, {
-			image: Images.postgres,
-			entryPoint: [''],
-			secrets: {
-				PGUSER: Secret.fromSecretsManager(db.secret, 'username'),
-				PGHOST: Secret.fromSecretsManager(db.secret, 'host'),
-				PGPASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
-			},
-			dockerLabels: {
-				Stack: stack,
-				Stage: stage,
-				App: app,
-				Name: name,
-			},
-			command: [
-				'/bin/sh',
-				'-c',
-				[
-					`psql -c "INSERT INTO cloudquery_table_frequency VALUES ${tableValues} ON CONFLICT (table_name) DO UPDATE SET frequency = '${frequency}'"`,
-				].join(';'),
-			],
-			logging: fireLensLogDriver,
-			essential: false,
-			readonlyRootFilesystem: true,
-		});
+			task.addContainer(`${id}PostgresContainer`, {
+				image: Images.postgres,
+				entryPoint: [''],
+				secrets: {
+					PGUSER: Secret.fromSecretsManager(db.secret, 'username'),
+					PGHOST: Secret.fromSecretsManager(db.secret, 'host'),
+					PGPASSWORD: Secret.fromSecretsManager(db.secret, 'password'),
+				},
+				dockerLabels: {
+					Stack: stack,
+					Stage: stage,
+					App: app,
+					Name: name,
+				},
+				command: [
+					'/bin/sh',
+					'-c',
+					[
+						`psql -c "INSERT INTO cloudquery_table_frequency VALUES ${tableValues} ON CONFLICT (table_name) DO UPDATE SET frequency = '${frequency}'"`,
+					].join(';'),
+				],
+				logging: fireLensLogDriver,
+				essential: false,
+				readonlyRootFilesystem: true,
+			});
+		}
 
 		const firelensLogRouter = task.addFirelensLogRouter(`${id}Firelens`, {
 			image: Images.devxLogs,
