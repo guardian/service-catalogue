@@ -65,20 +65,20 @@ export function createDigest(
 		(v) => !vulnerabilityExceedsSla(v.alert_issue_date, v.severity),
 	);
 
-	const totalVulnsCount = recentVulns.length;
+	const totalNewVulnsCount = recentVulns.length;
 
-	if (totalVulnsCount === 0) {
+	const totalOldVulnsCount = vulns.length - totalNewVulnsCount;
+
+	if (totalNewVulnsCount === 0) {
 		return undefined;
 	}
 
-	const topVulns = getTopVulns(recentVulns);
-	const listedVulnsCount = topVulns.length;
-	const preamble = String.raw`Found ${totalVulnsCount} recently introduced vulnerabilities across ${resultsForTeam.length} repositories.
-Displaying the top ${listedVulnsCount} most urgent.
+	const preamble = String.raw`Found ${totalNewVulnsCount} recently introduced vulnerabilities across ${resultsForTeam.length} repositories.
 Obligations to resolve: Critical - ${SLAs.critical} days; High - ${SLAs.high} days.
+There are ${totalOldVulnsCount} vulnerabilities exceeding this obligation, please see the dashboard linked for more information.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
-	const digestString = topVulns
+	const digestString = recentVulns
 		.map((v) => createHumanReadableVulnMessage(v))
 		.join('\n\n');
 
