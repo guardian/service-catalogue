@@ -163,10 +163,21 @@ export interface SnykProject {
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
 
+// The number of days teams have to fix vulnerabilities of a given severity
+export const SLAs: Record<Severity, number | undefined> = {
+	critical: 2,
+	high: 30,
+	medium: undefined,
+	low: undefined,
+	unknown: undefined,
+};
+
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
-	'id' | 'repo_owner'
->;
+	'id' | 'repo_owner' | 'severity'
+> & {
+	severity: Severity;
+};
 
 export interface EvaluationResult {
 	fullName: string;

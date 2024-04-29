@@ -591,7 +591,7 @@ const newHighDependabotVuln: RepocopVulnerability = {
 };
 
 describe('NO RULE - Dependabot alerts', () => {
-	test('should be flagged if there are critical alerts older than one day', () => {
+	test('should be flagged if there are critical alerts older than two days', () => {
 		expect(hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo)).toBe(
 			true,
 		);
@@ -601,15 +601,15 @@ describe('NO RULE - Dependabot alerts', () => {
 			false,
 		);
 	});
-	test('should be flagged if there are high alerts older than 14 days', () => {
+	test('should be flagged if there are high alerts older than 30 days', () => {
 		expect(hasOldAlerts([oldHighDependabotVuln], thePerfectRepo)).toBe(true);
 	});
 	test('should not be flagged if a high alert was raised today', () => {
 		expect(hasOldAlerts([newHighDependabotVuln], thePerfectRepo)).toBe(false);
 	});
-	test('should not be flagged if a high alert was raised 13 days ago', () => {
+	test('should not be flagged if a high alert was raised 29 days ago', () => {
 		const thirteenDaysAgo = new Date();
-		thirteenDaysAgo.setDate(thirteenDaysAgo.getDate() - 13);
+		thirteenDaysAgo.setDate(thirteenDaysAgo.getDate() - 29);
 
 		const thirteenDayOldHigh: RepocopVulnerability = {
 			...oldHighDependabotVuln,

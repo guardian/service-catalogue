@@ -336,6 +336,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-AwsCostExplorerPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -1041,6 +1042,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-DelegatedToSecurityAccountPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -1699,6 +1701,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-DeployToolsListOrgsPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -2365,6 +2368,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-FastlyServicesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -3026,6 +3030,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GalaxiesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -3965,6 +3970,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubIssuesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -4412,6 +4418,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubLanguagesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -5094,6 +5101,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubRepositoriesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -5806,6 +5814,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-GitHubTeamsPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -6499,6 +6508,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-NS1PostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -7168,6 +7178,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideAutoScalingGroupsPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -7829,6 +7840,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideBackupPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -8488,6 +8500,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCertificatesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -9177,6 +9190,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudFormationPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -10040,6 +10054,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideCloudwatchAlarmsPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -10465,6 +10480,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideDynamoDBPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -11157,6 +11173,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideEc2PostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -11817,6 +11834,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideInspectorPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -12711,6 +12729,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideLoadBalancersPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -13373,6 +13392,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideRDSPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -13798,6 +13818,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-OrgWideS3PostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -14520,6 +14541,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-RemainingAwsDataPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -15459,6 +15481,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-RiffRaffDataPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",
@@ -15889,6 +15912,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-SnykAllPostgresContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "PGUSER",

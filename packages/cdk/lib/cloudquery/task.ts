@@ -370,6 +370,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				],
 				logging: fireLensLogDriver,
 				essential: false,
+				readonlyRootFilesystem: true,
 			});
 		}
 
