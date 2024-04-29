@@ -12,29 +12,29 @@ updates:
     ignore:
       # The version of AWS CDK libraries must match those from @guardian/cdk.
       # We'd never be able to update them here independently, so just ignore them.
-      - dependency-name: "aws-cdk"
-      - dependency-name: "aws-cdk-lib"
-      - dependency-name: "constructs"
+      - dependency-name: 'aws-cdk'
+      - dependency-name: 'aws-cdk-lib'
+      - dependency-name: 'constructs'
 
     groups:
       aws-sdk:
         patterns:
-          - "@aws-sdk/*"
+          - '@aws-sdk/*'
       prisma:
         patterns:
-          - "prisma"
-          - "@prisma/client"
+          - 'prisma'
+          - '@prisma/client'
       code-quality:
         patterns:
-          - "@guardian/eslint-config-typescript"
-          - "@guardian/prettier"
-          - "eslint"
-          - "eslint-plugin-prettier"
+          - '@guardian/eslint-config-typescript'
+          - '@guardian/prettier'
+          - 'eslint'
+          - 'eslint-plugin-prettier'
       octokit:
         patterns:
-          - "@octokit/*"
-          - "octokit"
-          - "octokit-plugin-create-pull-request"
+          - '@octokit/*'
+          - 'octokit'
+          - 'octokit-plugin-create-pull-request'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
