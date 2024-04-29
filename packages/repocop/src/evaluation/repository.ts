@@ -9,6 +9,7 @@ import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
 } from '../languages';
+import { SLAs } from '../types';
 import type {
 	Alert,
 	AwsCloudFormationStack,
@@ -17,6 +18,7 @@ import type {
 	RepoAndStack,
 	RepocopVulnerability,
 	Repository,
+	Severity,
 	SnykIssue,
 	SnykProject,
 	Tag,
@@ -217,25 +219,16 @@ function findArchivedReposWithStacks(
 	return archivedReposWithPotentialStacks;
 }
 
-function vulnerabilityNeedsAddressing(date: Date, severity: string) {
-	const criticalDayCount = 1;
-	const highDayCount = 14;
+export function vulnerabilityExceedsSla(date: Date, severity: Severity) {
+	const daysToRemediate = SLAs[severity];
 
-	const criticalVulnCutOff = new Date();
-	criticalVulnCutOff.setDate(criticalVulnCutOff.getDate() - criticalDayCount);
-	criticalVulnCutOff.setHours(0, 0, 0, 0);
-
-	const highVulnCutOff = new Date();
-	highVulnCutOff.setDate(highVulnCutOff.getDate() - highDayCount);
-	highVulnCutOff.setHours(0, 0, 0, 0);
-
-	if (severity === 'critical') {
-		return date < criticalVulnCutOff;
-	} else if (severity === 'high') {
-		return date < highVulnCutOff;
-	} else {
+	if (daysToRemediate === undefined) {
 		return false;
 	}
+
+	const cutOffDate = new Date();
+	cutOffDate.setDate(cutOffDate.getDate() - daysToRemediate);
+	return date < cutOffDate;
 }
 
 export function hasOldAlerts(
@@ -246,7 +239,7 @@ export function hasOldAlerts(
 		return false;
 	}
 	const oldAlerts = alerts.filter((a) =>
-		vulnerabilityNeedsAddressing(new Date(a.alert_issue_date), a.severity),
+		vulnerabilityExceedsSla(new Date(a.alert_issue_date), a.severity),
 	);
 
 	if (oldAlerts.length > 0) {
