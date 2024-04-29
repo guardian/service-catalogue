@@ -36,13 +36,29 @@ export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
 		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
 }
 
+export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
+	const daysToFix = SLAs[vuln.severity];
+	if (!daysToFix) {
+		return undefined;
+	}
+	const fixDate = new Date(vuln.alert_issue_date);
+	fixDate.setDate(fixDate.getDate() + daysToFix);
+	const daysLeftToFix = Math.floor(
+		(fixDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+	);
+
+	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
+}
+
 function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 	const dateString = new Date(vuln.alert_issue_date).toDateString();
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
+	const daysToFix = daysLeftToFix(vuln);
+
 	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
-Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}.
+Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}. There are ${daysToFix} days left to fix this vulnerability.
 This vulnerability ${vuln.is_patchable ? 'is ' : 'may *not* be '}patchable.`;
 }
 

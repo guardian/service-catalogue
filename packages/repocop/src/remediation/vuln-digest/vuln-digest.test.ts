@@ -6,6 +6,7 @@ import type { EvaluationResult, RepocopVulnerability, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
 import {
 	createDigest,
+	daysLeftToFix,
 	getTopVulns,
 	isFirstOrThirdTuesdayOfMonth,
 } from './vuln-digest';
@@ -268,5 +269,38 @@ describe('isFirstOrThirdTuesdayOfMonth', () => {
 		const tuesday = new Date('2024-02-13T00:00:00.000Z'); // Second Tuesday
 		const result = isFirstOrThirdTuesdayOfMonth(tuesday);
 		expect(result).toBe(false);
+	});
+});
+
+describe('daysLeftToFix', () => {
+	const veryOldVuln: RepocopVulnerability = {
+		source: 'Dependabot',
+		full_name: fullName,
+		open: true,
+		severity: 'high',
+		package: 'leftpad',
+		urls: ['example.com'],
+		ecosystem: 'pip',
+		alert_issue_date: new Date('2021-01-01'),
+		is_patchable: true,
+		cves: ['CVE-123'],
+	};
+	test('should return 0 if we exceed the SLA', () => {
+		expect(daysLeftToFix(veryOldVuln)).toBe(0);
+	});
+	test('should return 30 if a high vuln was raised today', () => {
+		const newHighVuln: RepocopVulnerability = {
+			...veryOldVuln,
+			alert_issue_date: new Date(),
+		};
+		expect(daysLeftToFix(newHighVuln)).toBe(30);
+	});
+	test('should return 2 if a critical vuln was raised today', () => {
+		const newCriticalVuln: RepocopVulnerability = {
+			...veryOldVuln,
+			severity: 'critical',
+			alert_issue_date: new Date(),
+		};
+		expect(daysLeftToFix(newCriticalVuln)).toBe(2);
 	});
 });
