@@ -1,11 +1,13 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
 import type { Config } from '../../config';
-import type {
-	EvaluationResult,
-	RepocopVulnerability,
-	Team,
-	VulnerabilityDigest,
+import { vulnerabilityExceedsSla } from '../../evaluation/repository';
+import {
+	type EvaluationResult,
+	type RepocopVulnerability,
+	SLAs,
+	type Team,
+	type VulnerabilityDigest,
 } from '../../types';
 import { vulnSortPredicate } from '../../utils';
 
@@ -59,17 +61,21 @@ export function createDigest(
 	const resultsForTeam = getOwningRepos(team, repoOwners, results);
 	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
 
-	const totalVulnsCount = vulns.length;
+	const recentVulns = vulns.filter(
+		(v) => !vulnerabilityExceedsSla(v.alert_issue_date, v.severity),
+	);
+
+	const totalVulnsCount = recentVulns.length;
 
 	if (totalVulnsCount === 0) {
 		return undefined;
 	}
 
-	const topVulns = getTopVulns(vulns);
+	const topVulns = getTopVulns(recentVulns);
 	const listedVulnsCount = topVulns.length;
-	const preamble = String.raw`Found ${totalVulnsCount} vulnerabilities across ${resultsForTeam.length} repositories.
+	const preamble = String.raw`Found ${totalVulnsCount} recently introduced vulnerabilities across ${resultsForTeam.length} repositories.
 Displaying the top ${listedVulnsCount} most urgent.
-Obligations to resolve: Critical - 1 day; High - 2 weeks.
+Obligations to resolve: Critical - ${SLAs.critical} days; High - ${SLAs.high} days.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
 	const digestString = topVulns

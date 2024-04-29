@@ -89,7 +89,7 @@ describe('createDigest', () => {
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -98,25 +98,8 @@ describe('createDigest', () => {
 			vulnerabilities: [vuln],
 		};
 		expect(
-			createDigest(team, [ownershipRecord], [resultWithVuln]),
-		).toStrictEqual({
-			teamSlug,
-			subject: `Vulnerability Digest for ${teamName}`,
-			message: String.raw`Found 1 vulnerabilities across 1 repositories.
-Displaying the top 1 most urgent.
-Obligations to resolve: Critical - 1 day; High - 2 weeks.
-Note: DevX only aggregates vulnerability information for repositories with a production topic.
-
-[guardian/repo](https://github.com/guardian/repo) contains a [HIGH vulnerability](example.com).
-Introduced via **leftpad** on Fri Jan 01 2021, from pip.
-This vulnerability is patchable.`,
-			actions: [
-				{
-					cta: `View vulnerability dashboard for ${teamName} on Grafana`,
-					url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${teamSlug}`,
-				},
-			],
-		});
+			createDigest(team, [ownershipRecord], [resultWithVuln])?.message,
+		).toContain('leftpad');
 	});
 
 	it('recognises that a SBT dependency could come from Maven', () => {
@@ -128,7 +111,7 @@ This vulnerability is patchable.`,
 			package: 'jackson',
 			urls: ['example.com'],
 			ecosystem: 'maven',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -150,7 +133,7 @@ This vulnerability is patchable.`,
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -166,7 +149,7 @@ This vulnerability is patchable.`,
 			package: 'rightpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -189,6 +172,35 @@ This vulnerability is patchable.`,
 		);
 		expect(anotherDigest?.teamSlug).toBe(anotherTeam.slug);
 		expect(anotherDigest?.message).toContain('rightpad');
+	});
+
+	it('only returns recent vulnerabilities', () => {
+		const vuln: RepocopVulnerability = {
+			source: 'Dependabot',
+			full_name: fullName,
+			open: true,
+			severity: 'high',
+			package: 'leftpad',
+			urls: ['example.com'],
+			ecosystem: 'pip',
+			alert_issue_date: date,
+			is_patchable: true,
+			cves: ['CVE-123'],
+		};
+
+		const todayVuln = {
+			...vuln,
+			package: 'rightpad',
+			alert_issue_date: new Date(),
+		};
+
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [vuln, todayVuln],
+		};
+		expect(
+			createDigest(team, [ownershipRecord], [resultWithVuln])?.message,
+		).toContain('rightpad');
 	});
 });
 
