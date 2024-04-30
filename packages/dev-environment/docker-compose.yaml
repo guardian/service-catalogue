@@ -9,7 +9,10 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
   cloudquery:
-    image: ghcr.io/cloudquery/cloudquery:${CQ_CLI}
+    build:
+      context: ../../containers/cloudquery
+      args:
+        CQ_CLI: ${CQ_CLI}
     platform: linux/amd64
     depends_on:
       - postgres
