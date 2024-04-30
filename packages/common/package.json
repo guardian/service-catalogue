@@ -7,10 +7,10 @@
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects common"
 	},
 	"dependencies": {
-		"@aws-sdk/client-secrets-manager": "^3.556.0",
+		"@aws-sdk/client-secrets-manager": "^3.565.0",
 		"@guardian/anghammarad": "^1.8.2",
-		"@aws-sdk/credential-providers": "^3.556.0",
-		"@aws-sdk/rds-signer": "^3.556.0",
+		"@aws-sdk/credential-providers": "^3.565.0",
+		"@aws-sdk/rds-signer": "^3.565.0",
 		"@octokit/auth-app": "^6.1.1",
 		"octokit": "^3.2.0",
 		"octokit-plugin-create-pull-request": "^5.1.1",
