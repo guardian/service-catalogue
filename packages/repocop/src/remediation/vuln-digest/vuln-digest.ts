@@ -60,13 +60,9 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
-function createTeamDashboardLinkAction(
-	team: Team,
-	vulnCount: number,
-	severity: Severity,
-) {
+function createTeamDashboardLinkAction(team: Team, vulnCount: number) {
 	return {
-		cta: `View all ${vulnCount} ${severity} vulnerabilities on Grafana`,
+		cta: `View all ${vulnCount} vulnerabilities on Grafana`,
 		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${team.slug}`,
 	};
 }
@@ -116,7 +112,7 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
-	const actions = [createTeamDashboardLinkAction(team, vulns.length, severity)];
+	const actions = [createTeamDashboardLinkAction(team, vulns.length)];
 
 	return {
 		teamSlug: team.slug,
