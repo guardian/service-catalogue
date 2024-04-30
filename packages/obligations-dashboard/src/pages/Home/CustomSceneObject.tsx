@@ -1,6 +1,8 @@
-import React from 'react';
-import { SceneComponentProps, SceneObjectBase, SceneObjectState } from '@grafana/scenes';
+import type { SceneComponentProps, SceneObjectState } from "@grafana/scenes";
+// eslint-disable-next-line no-duplicate-imports -- TODO Replace rule? See https://github.com/typescript-eslint/typescript-eslint/issues/2315
+import { SceneObjectBase } from "@grafana/scenes";
 import { Input } from '@grafana/ui';
+import React from 'react';
 
 export interface CustomSceneObjectState extends SceneObjectState {
   counter: number;

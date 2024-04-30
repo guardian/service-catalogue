@@ -1,14 +1,14 @@
 import { ReducerID } from '@grafana/data';
 import {
   EmbeddedScene,
+  PanelBuilders,
+  SceneControlsSpacer,
+  SceneFlexItem,
   SceneFlexLayout,
   SceneQueryRunner,
-  SceneTimeRange,
-  SceneTimePicker,
-  SceneControlsSpacer,
   SceneRefreshPicker,
-  SceneFlexItem,
-  PanelBuilders,
+  SceneTimePicker,
+  SceneTimeRange,
 } from '@grafana/scenes';
 import { DATASOURCE_REF } from '../../constants';
 import { getRoomTemperatureStatPanel } from './panels';

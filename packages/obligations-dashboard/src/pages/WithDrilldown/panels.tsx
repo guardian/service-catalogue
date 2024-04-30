@@ -1,4 +1,4 @@
-import { ReducerID } from '@grafana/data';
+import type { ReducerID } from '@grafana/data';
 import {
   PanelBuilders,
   SceneByFrameRepeater,
@@ -101,7 +101,7 @@ export function getRoomsTemperatureStats() {
         height: '50%',
         minWidth: '20%',
         body: stat
-          .setTitle(frame.name || '')
+          .setTitle(frame.name ?? '')
           .setData(
             new SceneDataNode({
               data: {

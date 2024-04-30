@@ -1,10 +1,13 @@
-import React, { useState, ChangeEvent } from 'react';
-import { Button, Field, Input, useStyles2, FieldSet, SecretInput } from '@grafana/ui';
-import { PluginConfigPageProps, AppPluginMeta, PluginMeta, GrafanaTheme2 } from '@grafana/data';
-import { getBackendSrv, locationService } from '@grafana/runtime';
+/* eslint-disable @typescript-eslint/no-misused-promises -- TODO fix this */
 import { css } from '@emotion/css';
-import { testIds } from '../testIds';
+import type { AppPluginMeta, GrafanaTheme2, PluginConfigPageProps, PluginMeta } from '@grafana/data';
+import { getBackendSrv, locationService } from '@grafana/runtime';
+import { Button, Field, FieldSet, Input, SecretInput, useStyles2 } from '@grafana/ui';
+import type { ChangeEvent } from 'react';
+// eslint-disable-next-line no-duplicate-imports -- TODO Replace rule? See https://github.com/typescript-eslint/typescript-eslint/issues/2315
+import React, { useState } from 'react';
 import { lastValueFrom } from 'rxjs';
+import { testIds } from '../testIds';
 
 export type JsonData = {
   apiUrl?: string;
@@ -28,7 +31,7 @@ export const AppConfig = ({ plugin }: Props) => {
   const s = useStyles2(getStyles);
   const { enabled, pinned, jsonData } = plugin.meta;
   const [state, setState] = useState<State>({
-    apiUrl: jsonData?.apiUrl || '',
+    apiUrl: jsonData?.apiUrl ?? '',
     apiKey: '',
     isApiKeySet: Boolean(jsonData?.isApiKeySet),
   });
@@ -106,7 +109,7 @@ export const AppConfig = ({ plugin }: Props) => {
             width={60}
             data-testid={testIds.appConfig.apiKey}
             id="api-key"
-            value={state?.apiKey}
+            value={state.apiKey}
             isConfigured={state.isApiKeySet}
             placeholder={'Your secret API key'}
             onChange={onChangeApiKey}
@@ -121,7 +124,7 @@ export const AppConfig = ({ plugin }: Props) => {
             id="api-url"
             data-testid={testIds.appConfig.apiUrl}
             label={`API Url`}
-            value={state?.apiUrl}
+            value={state.apiUrl}
             placeholder={`E.g.: http://mywebsite.com/api/v1`}
             onChange={onChangeApiUrl}
           />
