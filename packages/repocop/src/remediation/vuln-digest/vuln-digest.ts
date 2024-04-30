@@ -104,7 +104,7 @@ export function createDigestForSeverity(
 	}
 
 	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}. Teams have ${SLAs[severity]} days to fix these.
-Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
+Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
 	const digestString = vulnsSinceImplementationDate
 		.map((v) => createHumanReadableVulnMessage(v))
