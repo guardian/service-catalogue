@@ -13,3 +13,8 @@ export const DATASOURCE_REF = {
   uid: 'gdev-testdata',
   type: 'testdata',
 };
+
+export const DATASOURCE_CLOUDQUERY = {
+  uid: 'CloudQuery',
+  type: 'postgres',
+};
