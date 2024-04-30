@@ -1,7 +1,6 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
 import type { Config } from '../../config';
-import { vulnerabilityExceedsSla } from '../../evaluation/repository';
 import {
 	type EvaluationResult,
 	type RepocopVulnerability,
@@ -69,32 +68,41 @@ function createTeamDashboardLinkAction(team: Team) {
 	};
 }
 
-export function createDigest(
+export function createDigestForSeverity(
 	team: Team,
+	severity: 'critical' | 'high',
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
 ): VulnerabilityDigest | undefined {
-	const resultsForTeam = getOwningRepos(team, repoOwners, results);
+	const resultsForTeam: EvaluationResult[] = getOwningRepos(
+		team,
+		repoOwners,
+		results,
+	);
 	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
 
-	const recentVulns = vulns.filter(
-		(v) => !vulnerabilityExceedsSla(v.alert_issue_date, v.severity),
+	const startDate = new Date('2024-04-30');
+
+	const vulnsSinceImplementationDate = vulns.filter(
+		(v) => v.severity == severity && new Date(v.alert_issue_date) > startDate,
 	);
 
-	const totalNewVulnsCount = recentVulns.length;
+	const vulnsOlderThanSLA = vulns.filter(
+		(v) => v.severity == severity && daysLeftToFix(v) === 0,
+	);
 
-	const totalOldVulnsCount = vulns.length - totalNewVulnsCount;
+	const totalNewVulnsCount = vulnsSinceImplementationDate.length;
 
 	if (totalNewVulnsCount === 0) {
 		return undefined;
 	}
 
-	const preamble = String.raw`Found ${totalNewVulnsCount} recently introduced vulnerabilities across ${resultsForTeam.length} repositories.
-Obligations to resolve: Critical - ${SLAs.critical} days; High - ${SLAs.high} days.
-There are ${totalOldVulnsCount} vulnerabilities exceeding this obligation, please see the dashboard linked for more information.
+	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}.
+Teams have ${SLAs[severity]} days to fix ${severity} vulnerabilities.
+There are ${vulnsOlderThanSLA} vulnerabilities exceeding this obligation, please see the dashboard linked for more information.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
-	const digestString = recentVulns
+	const digestString = vulnsSinceImplementationDate
 		.map((v) => createHumanReadableVulnMessage(v))
 		.join('\n\n');
 
@@ -150,16 +158,13 @@ export async function createAndSendVulnerabilityDigests(
 	repoOwners: view_repo_ownership[],
 	evaluationResults: EvaluationResult[],
 ) {
-	const digests = teams
-		.map((t) => createDigest(t, repoOwners, evaluationResults))
+	const criticalDigests = teams
+		.map((t) =>
+			createDigestForSeverity(t, 'critical', repoOwners, evaluationResults),
+		)
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
 	console.log('Logging vulnerability digests');
-	digests.forEach((digest) => console.log(JSON.stringify(digest)));
-
-	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-		await sendVulnerabilityDigests(digests, config);
-	} else {
-		console.log('Not sending vulnerability digests');
-	}
+	criticalDigests.forEach((digest) => console.log(JSON.stringify(digest)));
+	await sendVulnerabilityDigests(criticalDigests, config);
 }

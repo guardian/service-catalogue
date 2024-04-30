@@ -5,7 +5,7 @@ import type {
 import type { EvaluationResult, RepocopVulnerability, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
 import {
-	createDigest,
+	createDigestForSeverity,
 	daysLeftToFix,
 	getTopVulns,
 	isFirstOrThirdTuesdayOfMonth,
@@ -77,7 +77,12 @@ const anotherResult: EvaluationResult = {
 describe('createDigest', () => {
 	it('returns undefined when the total vuln count is zero', () => {
 		expect(
-			createDigest(team, [ownershipRecord], [result, anotherResult]),
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[result, anotherResult],
+			),
 		).toBeUndefined();
 	});
 
@@ -99,7 +104,8 @@ describe('createDigest', () => {
 			vulnerabilities: [vuln],
 		};
 		expect(
-			createDigest(team, [ownershipRecord], [resultWithVuln])?.message,
+			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
+				?.message,
 		).toContain('leftpad');
 	});
 
@@ -121,7 +127,8 @@ describe('createDigest', () => {
 			vulnerabilities: [vuln],
 		};
 		expect(
-			createDigest(team, [ownershipRecord], [resultWithVuln])?.message,
+			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
+				?.message,
 		).toContain('sbt or maven');
 	});
 
@@ -158,16 +165,18 @@ describe('createDigest', () => {
 			...anotherResult,
 			vulnerabilities: [anotherVuln],
 		};
-		const digest = createDigest(
+		const digest = createDigestForSeverity(
 			team,
+			'high',
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
 		);
 		expect(digest?.teamSlug).toBe(team.slug);
 		expect(digest?.message).toContain('leftpad');
 
-		const anotherDigest = createDigest(
+		const anotherDigest = createDigestForSeverity(
 			anotherTeam,
+			'high',
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
 		);
@@ -175,7 +184,7 @@ describe('createDigest', () => {
 		expect(anotherDigest?.message).toContain('rightpad');
 	});
 
-	it('only returns recent vulnerabilities', () => {
+	it('only returns vulnerabilities created after 30th April 2024', () => {
 		const vuln: RepocopVulnerability = {
 			source: 'Dependabot',
 			full_name: fullName,
@@ -184,7 +193,7 @@ describe('createDigest', () => {
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date('2024-04-30'),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -192,16 +201,23 @@ describe('createDigest', () => {
 		const todayVuln = {
 			...vuln,
 			package: 'rightpad',
-			alert_issue_date: new Date(),
+			alert_issue_date: new Date('2024-05-01'),
 		};
 
 		const resultWithVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [vuln, todayVuln],
 		};
-		expect(
-			createDigest(team, [ownershipRecord], [resultWithVuln])?.message,
-		).toContain('rightpad');
+
+		const msg = createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+		)?.message;
+		console.log(msg);
+		expect(msg).toContain('rightpad');
+		expect(msg).not.toContain('leftpad');
 	});
 });
 
