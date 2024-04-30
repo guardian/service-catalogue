@@ -1,13 +1,14 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
 import type { Config } from '../../config';
-import {
-	type EvaluationResult,
-	type RepocopVulnerability,
-	SLAs,
-	type Team,
-	type VulnerabilityDigest,
+import type {
+	EvaluationResult,
+	RepocopVulnerability,
+	Severity,
+	Team,
+	VulnerabilityDigest,
 } from '../../types';
+import { SLAs } from '../../types';
 import { vulnSortPredicate } from '../../utils';
 
 function getOwningRepos(
@@ -50,20 +51,22 @@ export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
 }
 
 function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
-	const dateString = new Date(vuln.alert_issue_date).toDateString();
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
 	const daysToFix = daysLeftToFix(vuln);
 
-	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
-Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}. There are ${daysToFix} days left to fix this vulnerability.
-This vulnerability ${vuln.is_patchable ? 'is ' : 'may *not* be '}patchable.`;
+	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) uses [${vuln.package}](${vuln.urls[0]}), introduced via ${ecosystem}.
+There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
-function createTeamDashboardLinkAction(team: Team) {
+function createTeamDashboardLinkAction(
+	team: Team,
+	vulnCount: number,
+	severity: Severity,
+) {
 	return {
-		cta: `View vulnerability dashboard for ${team.name} on Grafana`,
+		cta: `View all ${vulnCount} ${severity} vulnerabilities on Grafana`,
 		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${team.slug}`,
 	};
 }
@@ -83,13 +86,21 @@ export function createDigestForSeverity(
 
 	const startDate = new Date('2024-04-30');
 
-	const vulnsSinceImplementationDate = vulns.filter(
-		(v) => v.severity == severity && new Date(v.alert_issue_date) > startDate,
-	);
+	const patchableFirst = (a: RepocopVulnerability, b: RepocopVulnerability) => {
+		if (a.is_patchable && !b.is_patchable) {
+			return -1;
+		}
+		if (!a.is_patchable && b.is_patchable) {
+			return 1;
+		}
+		return 0;
+	};
 
-	const vulnsOlderThanSLA = vulns.filter(
-		(v) => v.severity == severity && daysLeftToFix(v) === 0,
-	);
+	const vulnsSinceImplementationDate = vulns
+		.filter(
+			(v) => v.severity == severity && new Date(v.alert_issue_date) > startDate,
+		)
+		.sort(patchableFirst);
 
 	const totalNewVulnsCount = vulnsSinceImplementationDate.length;
 
@@ -97,9 +108,7 @@ export function createDigestForSeverity(
 		return undefined;
 	}
 
-	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}.
-Teams have ${SLAs[severity]} days to fix ${severity} vulnerabilities.
-There are ${vulnsOlderThanSLA.length} vulnerabilities exceeding this obligation, please see the dashboard linked for more information.
+	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}. Teams have ${SLAs[severity]} days to fix these.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
 	const digestString = vulnsSinceImplementationDate
@@ -107,7 +116,7 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
-	const actions = [createTeamDashboardLinkAction(team)];
+	const actions = [createTeamDashboardLinkAction(team, vulns.length, severity)];
 
 	return {
 		teamSlug: team.slug,
