@@ -10,7 +10,6 @@
     "lint": "eslint --cache --ignore-path ./.gitignore --ignore-pattern playwright.config.ts --ext .ts,.tsx .",
     "lint:fix": "npm run lint -- --fix",
     "e2e": "playwright test",
-    "server": "docker-compose up --build",
     "sign": "npx --yes @grafana/sign-plugin@latest"
   },
   "devDependencies": {
