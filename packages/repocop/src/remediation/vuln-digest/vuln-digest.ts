@@ -99,7 +99,7 @@ export function createDigestForSeverity(
 
 	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}.
 Teams have ${SLAs[severity]} days to fix ${severity} vulnerabilities.
-There are ${vulnsOlderThanSLA} vulnerabilities exceeding this obligation, please see the dashboard linked for more information.
+There are ${vulnsOlderThanSLA.length} vulnerabilities exceeding this obligation, please see the dashboard linked for more information.
 Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
 
 	const digestString = vulnsSinceImplementationDate
@@ -158,7 +158,9 @@ export async function createAndSendVulnDigestsForSeverity(
 
 	console.log(`Logging ${severity} vulnerability digests`);
 	digests.forEach((digest) => console.log(JSON.stringify(digest)));
-	await sendVulnerabilityDigests(digests, config);
+	if (config.stage === 'PROD') {
+		await sendVulnerabilityDigests(digests, config);
+	}
 }
 
 export async function createAndSendVulnerabilityDigests(
