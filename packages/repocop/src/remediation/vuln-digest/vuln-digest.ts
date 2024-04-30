@@ -117,13 +117,6 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 	};
 }
 
-export function isFirstOrThirdTuesdayOfMonth(date: Date) {
-	const isTuesday = date.getDay() === 2;
-	const inFirstWeek = date.getDate() <= 7;
-	const inThirdWeek = date.getDate() >= 15 && date.getDate() <= 21;
-	return isTuesday && (inFirstWeek || inThirdWeek);
-}
-
 async function sendVulnerabilityDigests(
 	digests: VulnerabilityDigest[],
 	config: Config,
@@ -152,19 +145,44 @@ async function sendVulnerabilityDigests(
 	);
 }
 
+export async function createAndSendVulnDigestsForSeverity(
+	config: Config,
+	teams: Team[],
+	repoOwners: view_repo_ownership[],
+	results: EvaluationResult[],
+	severity: 'critical' | 'high',
+) {
+	const digests = teams
+		.map((t) => createDigestForSeverity(t, severity, repoOwners, results))
+		.filter((d): d is VulnerabilityDigest => d !== undefined);
+
+	console.log(`Logging ${severity} vulnerability digests`);
+	digests.forEach((digest) => console.log(JSON.stringify(digest)));
+	await sendVulnerabilityDigests(digests, config);
+}
+
 export async function createAndSendVulnerabilityDigests(
 	config: Config,
 	teams: Team[],
 	repoOwners: view_repo_ownership[],
 	evaluationResults: EvaluationResult[],
 ) {
-	const criticalDigests = teams
-		.map((t) =>
-			createDigestForSeverity(t, 'critical', repoOwners, evaluationResults),
-		)
-		.filter((d): d is VulnerabilityDigest => d !== undefined);
+	await createAndSendVulnDigestsForSeverity(
+		config,
+		teams,
+		repoOwners,
+		evaluationResults,
+		'critical',
+	);
 
-	console.log('Logging vulnerability digests');
-	criticalDigests.forEach((digest) => console.log(JSON.stringify(digest)));
-	await sendVulnerabilityDigests(criticalDigests, config);
+	const isTuesday = new Date().getDay() === 2;
+	if (isTuesday) {
+		await createAndSendVulnDigestsForSeverity(
+			config,
+			teams,
+			repoOwners,
+			evaluationResults,
+			'high',
+		);
+	}
 }
