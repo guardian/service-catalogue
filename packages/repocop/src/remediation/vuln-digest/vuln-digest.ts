@@ -4,7 +4,6 @@ import type { Config } from '../../config';
 import type {
 	EvaluationResult,
 	RepocopVulnerability,
-	Severity,
 	Team,
 	VulnerabilityDigest,
 } from '../../types';
