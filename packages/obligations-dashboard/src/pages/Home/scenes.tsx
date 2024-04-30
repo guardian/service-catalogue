@@ -58,6 +58,12 @@ export function getBasicScene(templatised = true, seriesToShow = '__server_names
       queryRunner.setState({
         queries: [
           {
+            /*
+            TODO remove default value, as shouldn't be needed.
+             The Grafana scenes generator didn't generate this line.
+             It was added to satisfy tsc.
+             */
+            refId: queryRunner.state.queries[0]?.refId ?? 'TODO',
             ...queryRunner.state.queries[0],
             seriesCount: newState.counter,
           },
