@@ -846,11 +846,12 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 });
 
 describe('NO RULE - Vulnerabilities from Dependabot', () => {
+	const fullName = 'guardian/myrepo';
+	const result: RepocopVulnerability[] = example.map((alert) =>
+		dependabotAlertToRepocopVulnerability(fullName, alert),
+	);
+
 	test('Should be parseable into a common format', () => {
-		const fullName = 'guardian/myrepo';
-		const result: RepocopVulnerability[] = example.map((alert) =>
-			dependabotAlertToRepocopVulnerability(fullName, alert),
-		);
 		const expected1: RepocopVulnerability = {
 			full_name: fullName,
 			source: 'Dependabot',
@@ -858,10 +859,10 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			severity: 'high',
 			package: 'django',
 			urls: [
-				'https://nvd.nist.gov/vuln/detail/CVE-2018-6188',
+				'https://snyk.io/vuln/some-fake-vuln-id',
 				'https://github.com/advisories/GHSA-rf4j-j272-fj86',
+				'https://nvd.nist.gov/vuln/detail/CVE-2018-6188',
 				'https://usn.ubuntu.com/3559-1/',
-				'https://www.djangoproject.com/weblog/2018/feb/01/security-releases/',
 				'http://www.securitytracker.com/id/1040422',
 			],
 			ecosystem: 'pip',
@@ -888,6 +889,10 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		};
 
 		expect(result).toStrictEqual([expected1, expected2]);
+	});
+	test('Should display the most useful URLs first', () => {
+		expect(result[0]?.urls[0]).toContain('snyk.io');
+		expect(result[0]?.urls[1]).toContain('github.com');
 	});
 });
 
