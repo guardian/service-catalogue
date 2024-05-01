@@ -18,7 +18,15 @@ getCodeDatabaseUrl() {
   CODE_DATABASE_HOSTNAME=$(echo "$SECRET_STRING" | jq -r '.host')
   CODE_DATABASE_PORT=$(echo "$SECRET_STRING" | jq -r '.port')
 
-  CODE_DATABASE_URL=postgres://${CODE_DATABASE_USER}:${CODE_DATABASE_PASSWORD}@${CODE_DATABASE_HOSTNAME}:${CODE_DATABASE_PORT}/postgres
+  # This value is not in the AWS Secret Manager resource.
+  # This is likely because we've not explicitly set the `databaseName` property in the infrastructure,
+  # and therefore the default value of "postgres" is used.
+  # See:
+  #   - https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_rds.DatabaseInstance.html#databasename
+  #   - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html#cfn-rds-dbinstance-dbname
+  CODE_DATABASE_NAME=postgres
+
+  CODE_DATABASE_URL=postgres://${CODE_DATABASE_USER}:${CODE_DATABASE_PASSWORD}@${CODE_DATABASE_HOSTNAME}:${CODE_DATABASE_PORT}/${CODE_DATABASE_NAME}
 
   echo "$CODE_DATABASE_URL"
 }

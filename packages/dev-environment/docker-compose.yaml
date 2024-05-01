@@ -36,7 +36,7 @@ services:
     ports:
       - '${DATABASE_PORT}:${DATABASE_PORT}'
     environment:
-      POSTGRES_DB: ${DATABASE_DB}
+      POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
