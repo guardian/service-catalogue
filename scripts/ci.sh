@@ -37,7 +37,7 @@ createZip() {
 createPrismaZip() {
   echo "Creating zip of Prisma files"
   (
-    cd "$ROOT_DIR/packages/common"  
+    cd "$ROOT_DIR/packages/common"
     zip -qr prisma.zip ./prisma
   )
 }
@@ -56,9 +56,10 @@ else
 fi
 }
 
-
 npm ci
 npm test
+
+npm -w obligations-dashboard run lint
 
 # Run the following in parallel.
 # Logs will be interleaved, but the `--print-label` flag will prefix each line with the name of the script being run.
@@ -75,3 +76,8 @@ createPrismaZip
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
+
+# Package the obligations dashboard...
+createZip "obligations-dashboard"
+# ... then rename the file to match the plugin's ID
+mv "$ROOT_DIR/packages/obligations-dashboard/dist/obligations-dashboard.zip" "$ROOT_DIR/packages/obligations-dashboard/dist/theguardian-obligationsdashboard-app.zip"
