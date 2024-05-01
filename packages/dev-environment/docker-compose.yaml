@@ -1,15 +1,56 @@
 version: '3.9'
 services:
+  # This service will copy data from the CODE database, writing .sql files to the sql directory.
+  # The files will then be loaded into the postgres service on launch.
+  db-copy:
+    build:
+      context: ../../containers/db-copy
+      args:
+        alpine_version: 3.19.1
+    volumes:
+      - ~/.aws/credentials:/.aws/credentials
+      - ./sql:/sql
+    environment:
+      AWS_CONFIG_FILE: /.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /.aws/credentials
+      AWS_DEFAULT_PROFILE: deployTools
+      AWS_REGION: eu-west-1
+
+      # These tables will be copied from the CODE database, and loaded into the DEV database.
+      TABLES: |
+        - snyk_issues
+        - snyk_projects
+        - galaxies_teams_table
+        - github_team_repositories
+        - github_teams
+        - github_repositories
+        - github_repository_branches
+        - github_workflows
+        - github_languages
+        - aws_organizations_account_parents
+        - aws_organizations_organizational_units
+        - aws_ec2_instances
+        - aws_cloudformation_stacks
   postgres:
     image: postgres:14.6
     ports:
       - '${DATABASE_PORT}:${DATABASE_PORT}'
     environment:
-      POSTGRES_DB: ${DATABASE_HOSTNAME}
+      POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      # Runs the .sql files from the db-copy service on launch.
+      # See https://hub.docker.com/_/postgres#:~:text=Initialization%20scripts.
+      - ./sql:/docker-entrypoint-initdb.d/
+    depends_on:
+      db-copy:
+        condition: service_completed_successfully
   cloudquery:
-    image: ghcr.io/cloudquery/cloudquery:${CQ_CLI}
+    build:
+      context: ../../containers/cloudquery
+      args:
+        CQ_CLI: ${CQ_CLI}
     platform: linux/amd64
     depends_on:
       - postgres
@@ -29,6 +70,7 @@ services:
       SNYK_TOKEN: ${SNYK_TOKEN}
       GALAXIES_BUCKET: ${GALAXIES_BUCKET}
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
+      DATABASE_URL: ${DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
   grafana:
     image: grafana/grafana-oss:10.3.1

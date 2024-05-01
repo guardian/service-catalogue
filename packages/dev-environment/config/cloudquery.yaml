@@ -46,4 +46,4 @@ spec:
   migrate_mode: 'forced'
 
   spec:
-    connection_string: 'postgresql://postgres:not_at_all_secret@postgres:5432/postgres?sslmode=disable'
+    connection_string: ${DATABASE_URL}
