@@ -7,6 +7,7 @@ import type {
 	Team,
 	VulnerabilityDigest,
 } from '../../types';
+import { SLAs } from '../../types';
 import { vulnSortPredicate } from '../../utils';
 
 function getOwningRepos(
@@ -34,50 +35,83 @@ export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
 		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
 }
 
+export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
+	const daysToFix = SLAs[vuln.severity];
+	if (!daysToFix) {
+		return undefined;
+	}
+	const fixDate = new Date(vuln.alert_issue_date);
+	fixDate.setDate(fixDate.getDate() + daysToFix);
+	const daysLeftToFix = Math.floor(
+		(fixDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+	);
+
+	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
+}
+
 function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
-	const dateString = new Date(vuln.alert_issue_date).toDateString();
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
-	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) contains a [${vuln.severity.toUpperCase()} vulnerability](${vuln.urls[0]}).
-Introduced via **${vuln.package}** on ${dateString}, from ${ecosystem}.
-This vulnerability ${vuln.is_patchable ? 'is ' : 'may *not* be '}patchable.`;
+	const daysToFix = daysLeftToFix(vuln);
+
+	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) uses [${vuln.package}](${vuln.urls[0]}), introduced via ${ecosystem}.
+There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
-function createTeamDashboardLinkAction(team: Team) {
+function createTeamDashboardLinkAction(team: Team, vulnCount: number) {
 	return {
-		cta: `View vulnerability dashboard for ${team.name} on Grafana`,
+		cta: `View all ${vulnCount} vulnerabilities on Grafana`,
 		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${team.slug}`,
 	};
 }
 
-export function createDigest(
+export function createDigestForSeverity(
 	team: Team,
+	severity: 'critical' | 'high',
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
 ): VulnerabilityDigest | undefined {
-	const resultsForTeam = getOwningRepos(team, repoOwners, results);
+	const resultsForTeam: EvaluationResult[] = getOwningRepos(
+		team,
+		repoOwners,
+		results,
+	);
 	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
 
-	const totalVulnsCount = vulns.length;
+	const startDate = new Date('2024-04-30');
 
-	if (totalVulnsCount === 0) {
+	const patchableFirst = (a: RepocopVulnerability, b: RepocopVulnerability) => {
+		if (a.is_patchable && !b.is_patchable) {
+			return -1;
+		}
+		if (!a.is_patchable && b.is_patchable) {
+			return 1;
+		}
+		return 0;
+	};
+
+	const vulnsSinceImplementationDate = vulns
+		.filter(
+			(v) => v.severity == severity && new Date(v.alert_issue_date) > startDate,
+		)
+		.sort(patchableFirst);
+
+	const totalNewVulnsCount = vulnsSinceImplementationDate.length;
+
+	if (totalNewVulnsCount === 0) {
 		return undefined;
 	}
 
-	const topVulns = getTopVulns(vulns);
-	const listedVulnsCount = topVulns.length;
-	const preamble = String.raw`Found ${totalVulnsCount} vulnerabilities across ${resultsForTeam.length} repositories.
-Displaying the top ${listedVulnsCount} most urgent.
-Obligations to resolve: Critical - 1 day; High - 2 weeks.
-Note: DevX only aggregates vulnerability information for repositories with a production topic.`;
+	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}. Teams have ${SLAs[severity]} days to fix these.
+Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
-	const digestString = topVulns
+	const digestString = vulnsSinceImplementationDate
 		.map((v) => createHumanReadableVulnMessage(v))
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
-	const actions = [createTeamDashboardLinkAction(team)];
+	const actions = [createTeamDashboardLinkAction(team, vulns.length)];
 
 	return {
 		teamSlug: team.slug,
@@ -85,13 +119,6 @@ Note: DevX only aggregates vulnerability information for repositories with a pro
 		message,
 		actions,
 	};
-}
-
-export function isFirstOrThirdTuesdayOfMonth(date: Date) {
-	const isTuesday = date.getDay() === 2;
-	const inFirstWeek = date.getDate() <= 7;
-	const inThirdWeek = date.getDate() >= 15 && date.getDate() <= 21;
-	return isTuesday && (inFirstWeek || inThirdWeek);
 }
 
 async function sendVulnerabilityDigests(
@@ -122,22 +149,46 @@ async function sendVulnerabilityDigests(
 	);
 }
 
+export async function createAndSendVulnDigestsForSeverity(
+	config: Config,
+	teams: Team[],
+	repoOwners: view_repo_ownership[],
+	results: EvaluationResult[],
+	severity: 'critical' | 'high',
+) {
+	const digests = teams
+		.map((t) => createDigestForSeverity(t, severity, repoOwners, results))
+		.filter((d): d is VulnerabilityDigest => d !== undefined);
+
+	console.log(`Logging ${severity} vulnerability digests`);
+	digests.forEach((digest) => console.log(JSON.stringify(digest)));
+	if (config.stage === 'PROD') {
+		await sendVulnerabilityDigests(digests, config);
+	}
+}
+
 export async function createAndSendVulnerabilityDigests(
 	config: Config,
 	teams: Team[],
 	repoOwners: view_repo_ownership[],
 	evaluationResults: EvaluationResult[],
 ) {
-	const digests = teams
-		.map((t) => createDigest(t, repoOwners, evaluationResults))
-		.filter((d): d is VulnerabilityDigest => d !== undefined);
+	await createAndSendVulnDigestsForSeverity(
+		config,
+		teams,
+		repoOwners,
+		evaluationResults,
+		'critical',
+	);
 
-	console.log('Logging vulnerability digests');
-	digests.forEach((digest) => console.log(JSON.stringify(digest)));
-
-	if (isFirstOrThirdTuesdayOfMonth(new Date()) && config.stage === 'PROD') {
-		await sendVulnerabilityDigests(digests, config);
-	} else {
-		console.log('Not sending vulnerability digests');
+	const isTuesday = new Date().getDay() === 2;
+	if (isTuesday) {
+		await createAndSendVulnDigestsForSeverity(
+			config,
+			teams,
+			repoOwners,
+			evaluationResults,
+			'high',
+		);
 	}
 }

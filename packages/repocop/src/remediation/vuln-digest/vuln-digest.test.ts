@@ -5,9 +5,9 @@ import type {
 import type { EvaluationResult, RepocopVulnerability, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
 import {
-	createDigest,
+	createDigestForSeverity,
+	daysLeftToFix,
 	getTopVulns,
-	isFirstOrThirdTuesdayOfMonth,
 } from './vuln-digest';
 
 const fullName = 'guardian/repo';
@@ -76,7 +76,12 @@ const anotherResult: EvaluationResult = {
 describe('createDigest', () => {
 	it('returns undefined when the total vuln count is zero', () => {
 		expect(
-			createDigest(team, [ownershipRecord], [result, anotherResult]),
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[result, anotherResult],
+			),
 		).toBeUndefined();
 	});
 
@@ -89,7 +94,7 @@ describe('createDigest', () => {
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -98,25 +103,9 @@ describe('createDigest', () => {
 			vulnerabilities: [vuln],
 		};
 		expect(
-			createDigest(team, [ownershipRecord], [resultWithVuln]),
-		).toStrictEqual({
-			teamSlug,
-			subject: `Vulnerability Digest for ${teamName}`,
-			message: String.raw`Found 1 vulnerabilities across 1 repositories.
-Displaying the top 1 most urgent.
-Obligations to resolve: Critical - 1 day; High - 2 weeks.
-Note: DevX only aggregates vulnerability information for repositories with a production topic.
-
-[guardian/repo](https://github.com/guardian/repo) contains a [HIGH vulnerability](example.com).
-Introduced via **leftpad** on Fri Jan 01 2021, from pip.
-This vulnerability is patchable.`,
-			actions: [
-				{
-					cta: `View vulnerability dashboard for ${teamName} on Grafana`,
-					url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${teamSlug}`,
-				},
-			],
-		});
+			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
+				?.message,
+		).toContain('leftpad');
 	});
 
 	it('recognises that a SBT dependency could come from Maven', () => {
@@ -128,7 +117,7 @@ This vulnerability is patchable.`,
 			package: 'jackson',
 			urls: ['example.com'],
 			ecosystem: 'maven',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -137,7 +126,8 @@ This vulnerability is patchable.`,
 			vulnerabilities: [vuln],
 		};
 		expect(
-			createDigest(team, [ownershipRecord], [resultWithVuln])?.message,
+			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
+				?.message,
 		).toContain('sbt or maven');
 	});
 
@@ -150,7 +140,7 @@ This vulnerability is patchable.`,
 			package: 'leftpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -166,7 +156,7 @@ This vulnerability is patchable.`,
 			package: 'rightpad',
 			urls: ['example.com'],
 			ecosystem: 'pip',
-			alert_issue_date: date,
+			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
 		};
@@ -174,21 +164,59 @@ This vulnerability is patchable.`,
 			...anotherResult,
 			vulnerabilities: [anotherVuln],
 		};
-		const digest = createDigest(
+		const digest = createDigestForSeverity(
 			team,
+			'high',
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
 		);
 		expect(digest?.teamSlug).toBe(team.slug);
 		expect(digest?.message).toContain('leftpad');
 
-		const anotherDigest = createDigest(
+		const anotherDigest = createDigestForSeverity(
 			anotherTeam,
+			'high',
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
 		);
 		expect(anotherDigest?.teamSlug).toBe(anotherTeam.slug);
 		expect(anotherDigest?.message).toContain('rightpad');
+	});
+
+	it('only returns vulnerabilities created after 30th April 2024', () => {
+		const vuln: RepocopVulnerability = {
+			source: 'Dependabot',
+			full_name: fullName,
+			open: true,
+			severity: 'high',
+			package: 'leftpad',
+			urls: ['example.com'],
+			ecosystem: 'pip',
+			alert_issue_date: new Date('2024-04-30'),
+			is_patchable: true,
+			cves: ['CVE-123'],
+		};
+
+		const todayVuln = {
+			...vuln,
+			package: 'rightpad',
+			alert_issue_date: new Date('2024-05-01'),
+		};
+
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [vuln, todayVuln],
+		};
+
+		const msg = createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+		)?.message;
+		console.log(msg);
+		expect(msg).toContain('rightpad');
+		expect(msg).not.toContain('leftpad');
 	});
 });
 
@@ -241,20 +269,35 @@ describe('getTopVulns', () => {
 	});
 });
 
-describe('isFirstOrThirdTuesdayOfMonth', () => {
-	test('should return true if the date is the first or third Tuesday of the month', () => {
-		const tuesday = new Date('2024-02-06T00:00:00.000Z'); // First Tuesday
-		const result = isFirstOrThirdTuesdayOfMonth(tuesday);
-		expect(result).toBe(true);
+describe('daysLeftToFix', () => {
+	const veryOldVuln: RepocopVulnerability = {
+		source: 'Dependabot',
+		full_name: fullName,
+		open: true,
+		severity: 'high',
+		package: 'leftpad',
+		urls: ['example.com'],
+		ecosystem: 'pip',
+		alert_issue_date: new Date('2021-01-01'),
+		is_patchable: true,
+		cves: ['CVE-123'],
+	};
+	test('should return 0 if we exceed the SLA', () => {
+		expect(daysLeftToFix(veryOldVuln)).toBe(0);
 	});
-	test('should return false if the date is not a Tuesday', () => {
-		const wednesday = new Date('2024-02-07T00:00:00.000Z'); // First Wednesday
-		const result = isFirstOrThirdTuesdayOfMonth(wednesday);
-		expect(result).toBe(false);
+	test('should return 30 if a high vuln was raised today', () => {
+		const newHighVuln: RepocopVulnerability = {
+			...veryOldVuln,
+			alert_issue_date: new Date(),
+		};
+		expect(daysLeftToFix(newHighVuln)).toBe(30);
 	});
-	test('should return false if the date is the second Tuesday of the month', () => {
-		const tuesday = new Date('2024-02-13T00:00:00.000Z'); // Second Tuesday
-		const result = isFirstOrThirdTuesdayOfMonth(tuesday);
-		expect(result).toBe(false);
+	test('should return 2 if a critical vuln was raised today', () => {
+		const newCriticalVuln: RepocopVulnerability = {
+			...veryOldVuln,
+			severity: 'critical',
+			alert_issue_date: new Date(),
+		};
+		expect(daysLeftToFix(newCriticalVuln)).toBe(2);
 	});
 });
