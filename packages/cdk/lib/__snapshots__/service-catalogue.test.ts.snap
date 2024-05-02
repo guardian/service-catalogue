@@ -3733,6 +3733,7 @@ spec:
         private_key_path: /usr/share/cloudquery/github-private-key
         app_id: \${file:/usr/share/cloudquery/github-app-id}
         installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+    include_archived_repos: true
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -4865,6 +4866,7 @@ spec:
         private_key_path: /usr/share/cloudquery/github-private-key
         app_id: \${file:/usr/share/cloudquery/github-app-id}
         installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+    include_archived_repos: true
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -5578,6 +5580,7 @@ spec:
         private_key_path: /usr/share/cloudquery/github-private-key
         app_id: \${file:/usr/share/cloudquery/github-app-id}
         installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+    include_archived_repos: true
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
