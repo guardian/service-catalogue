@@ -891,8 +891,12 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		expect(result).toStrictEqual([expected1, expected2]);
 	});
 	test('Should display the most useful URLs first', () => {
-		expect(result[0]?.urls[0]).toContain('snyk.io');
-		expect(result[0]?.urls[1]).toContain('github.com');
+		const actual = result.map((r) => r.urls)[0];
+		const expected = [
+			'https://snyk.io/vuln/some-fake-vuln-id',
+			'https://github.com/advisories/GHSA-rf4j-j272-fj86',
+		];
+		expect(actual?.slice(0, 2)).toEqual(expected);
 	});
 });
 
