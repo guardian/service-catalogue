@@ -4,7 +4,8 @@
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
     "synth": "cdk synth --path-metadata false --version-reporting false",
-    "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE"
+    "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@guardian/cdk": "57.0.0",
