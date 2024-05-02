@@ -3719,7 +3719,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v8.1.3
+  version: v10.0.1
   tables:
     - github_issues
   destinations:
@@ -4843,10 +4843,11 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v8.1.3
+  version: v10.0.1
   tables:
     - github_repositories
     - github_repository_branches
+    - github_repository_collaborators
     - github_workflows
   skip_tables:
     - github_releases
@@ -5074,7 +5075,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_repositories', 'DAILY'),('github_repository_branches', 'DAILY'),('github_workflows', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_repositories', 'DAILY'),('github_repository_branches', 'DAILY'),('github_repository_collaborators', 'DAILY'),('github_workflows', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -5556,7 +5557,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v8.1.3
+  version: v10.0.1
   tables:
     - github_organizations
     - github_organization_members
