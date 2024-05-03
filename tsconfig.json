@@ -1,7 +1,6 @@
 {
   "extends": "@guardian/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
     "module": "commonjs",
     "esModuleInterop": true,
     "baseUrl": ".",

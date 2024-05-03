@@ -6,7 +6,8 @@
     "test": "npm run test --workspaces --if-present",
     "test-update": "jest -u",
     "synth": "npm run synth --workspace=cdk",
-    "typecheck": "tsc",
+    "pretypecheck": "npm -w common run typecheck",
+    "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces --if-present",
     "lint": "eslint packages/** --ext .ts --no-error-on-unmatched-pattern"
   },

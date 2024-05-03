@@ -23,18 +23,24 @@ export function generateBranchName(prefix: string) {
 	return `${prefix}-${randomBytes(8).toString('hex')}`;
 }
 
+/**
+ * Creates or updates a pull request, and return its URL.
+ * On error, an exception is thrown, or undefined is returned.
+ */
 export async function createPullRequest(
 	octokit: Octokit,
-	{
+	props: CreatePullRequestOptions,
+): Promise<string | undefined> {
+	const {
 		repoName,
 		title,
 		body,
 		branchName,
 		baseBranch = 'main',
 		changes,
-	}: CreatePullRequestOptions,
-) {
-	return await composeCreatePullRequest(octokit, {
+	} = props;
+
+	const response = await composeCreatePullRequest(octokit, {
 		owner: 'guardian',
 		repo: repoName,
 		title,
@@ -46,6 +52,8 @@ export async function createPullRequest(
 			files,
 		})),
 	});
+
+	return response?.data.html_url;
 }
 
 type PullRequestParameters =
@@ -99,7 +107,7 @@ export async function createPrAndAddToProject(
 		);
 
 		if (!existingPullRequest) {
-			const response = await createPullRequest(octokit, {
+			const pullRequestUrl = await createPullRequest(octokit, {
 				repoName,
 				title: prTitle,
 				body: prBody,
@@ -113,12 +121,12 @@ export async function createPrAndAddToProject(
 					},
 				],
 			});
-			console.log(
-				'Pull request successfully created:',
-				response?.data.html_url,
-			);
-			await addPrToProject(stage, repoName, boardNumber, author);
-			console.log('Updated project board');
+
+			if (pullRequestUrl) {
+				console.log('Pull request successfully created:', pullRequestUrl);
+				await addPrToProject(stage, repoName, boardNumber, author);
+				console.log('Updated project board');
+			}
 		} else {
 			console.log(
 				`Existing pull request found. Skipping creating a new one.`,
