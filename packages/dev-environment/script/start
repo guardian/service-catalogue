@@ -66,10 +66,19 @@ check_vpn_connection() {
   fi
 }
 
+build_dashboard() {
+  step "Building dashboard"
+
+  # Build the dashboard with production configuration.
+  # To build with development configuration and hot-reloading, run `npm -w dashboard run dev`.
+  npm -w dashboard run build
+}
+
 main() {
   create_sql_migrations
   check_aws_credentials
   check_vpn_connection
+  build_dashboard
   start_containers
 }
 

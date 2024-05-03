@@ -73,11 +73,25 @@ services:
       DATABASE_URL: ${DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
   grafana:
-    image: grafana/grafana-oss:10.3.1
+    user: root
+    platform: linux/amd64
+    build:
+      context: ../dashboard/.config
+      args:
+        grafana_image: ${GRAFANA_IMAGE:-grafana-oss}
+        grafana_version: ${GRAFANA_VERSION:-10.3.3}
+        development: ${DEVELOPMENT:-true}
     depends_on:
       - postgres
     ports:
       - '3000:3000'
     volumes:
-      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ../dashboard/dist:/var/lib/grafana/plugins/theguardian-servicecatalogue-app
+      - ../dashboard:/root/theguardian-servicecatalogue-app
       - ./config/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      NODE_ENV: development
+      GF_LOG_FILTERS: plugin.theguardian-servicecatalogue-app:debug
+      GF_LOG_LEVEL: debug
+      GF_DATAPROXY_LOGGING: 1
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: theguardian-servicecatalogue-app
