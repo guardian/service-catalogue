@@ -1,6 +1,6 @@
-import React from 'react';
-import { SceneComponentProps, SceneObjectBase, SceneObjectState } from '@grafana/scenes';
+import { type SceneComponentProps, SceneObjectBase, type SceneObjectState } from '@grafana/scenes';
 import { Input } from '@grafana/ui';
+import React from 'react';
 
 export interface CustomSceneObjectState extends SceneObjectState {
   counter: number;

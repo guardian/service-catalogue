@@ -1,4 +1,4 @@
-import { ReducerID } from '@grafana/data';
+import type { ReducerID } from '@grafana/data';
 import {
   PanelBuilders,
   SceneByFrameRepeater,
@@ -70,7 +70,10 @@ export function getRoomsTemperatureTable() {
         .overrideCustomFieldConfig('align', 'center')
         .matchFieldsWithName('Room')
         .overrideLinks([
-          { title: 'Go to room overview', url: '${__url.path}/room/${__value.text}/temperature${__url.params}' },
+          {
+            title: 'Go to room overview',
+            url: '${__url.path}/room/${__value.text}/temperature${__url.params}',
+          },
         ])
     )
     .build();
@@ -101,7 +104,7 @@ export function getRoomsTemperatureStats() {
         height: '50%',
         minWidth: '20%',
         body: stat
-          .setTitle(frame.name || '')
+          .setTitle(frame.name ?? '')
           .setData(
             new SceneDataNode({
               data: {

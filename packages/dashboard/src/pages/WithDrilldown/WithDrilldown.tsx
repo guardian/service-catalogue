@@ -1,6 +1,3 @@
-import React, { useMemo } from 'react';
-import { prefixRoute } from '../../utils/utils.routing';
-import { DATASOURCE_REF, ROUTES } from '../../constants';
 import {
   EmbeddedScene,
   SceneApp,
@@ -11,8 +8,11 @@ import {
   SceneTimePicker,
   SceneTimeRange,
 } from '@grafana/scenes';
-import { getHumidityOverviewScene, getTemperatureOverviewScene } from './scenes';
+import React, { useMemo } from 'react';
+import { DATASOURCE_REF, ROUTES } from '../../constants';
+import { prefixRoute } from '../../utils/utils.routing';
 import { getRoomsTemperatureStats, getRoomsTemperatureTable } from './panels';
+import { getHumidityOverviewScene, getTemperatureOverviewScene } from './scenes';
 
 const roomsTemperatureQuery = {
   refId: 'Rooms temperature',
@@ -62,7 +62,8 @@ const getDrilldownsAppScene = () => {
           {
             routePath: prefixRoute(`${ROUTES.WithDrilldown}`) + '/room/:roomName',
             getPage(routeMatch, parent) {
-              const roomName = routeMatch.params.roomName;
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- TODO: Fix this
+              const roomName = routeMatch.params.roomName as string;
 
               return new SceneAppPage({
                 url: prefixRoute(`${ROUTES.WithDrilldown}`) + `/room/${roomName}/temperature`,
@@ -70,7 +71,9 @@ const getDrilldownsAppScene = () => {
                 subTitle: 'This scene is a particular room drilldown. It implements two tabs to organise the data.',
                 getParentPage: () => parent,
                 getScene: () => {
-                  return new EmbeddedScene({ body: new SceneFlexLayout({ children: [] }) });
+                  return new EmbeddedScene({
+                    body: new SceneFlexLayout({ children: [] }),
+                  });
                 },
                 tabs: [
                   new SceneAppPage({

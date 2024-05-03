@@ -73,7 +73,9 @@ export function getBasicScene(templatised = true, seriesToShow = '__server_names
 
   return new EmbeddedScene({
     $timeRange: timeRange,
-    $variables: new SceneVariableSet({ variables: templatised ? [customVariable] : [] }),
+    $variables: new SceneVariableSet({
+      variables: templatised ? [customVariable] : [],
+    }),
     $data: queryRunner,
     body: new SceneFlexLayout({
       children: [
