@@ -1,7 +1,6 @@
 {
   "name": "dashboard",
   "version": "1.0.0",
-  "description": "",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
@@ -14,8 +13,6 @@
     "server": "docker-compose up --build",
     "sign": "npx --yes @grafana/sign-plugin@latest"
   },
-  "author": "The guardian",
-  "license": "Apache-2.0",
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@grafana/eslint-config": "^7.0.0",
@@ -49,9 +46,6 @@
     "webpack-cli": "^5.1.4",
     "webpack-livereload-plugin": "^3.0.2"
   },
-  "engines": {
-    "node": ">=20"
-  },
   "dependencies": {
     "@emotion/css": "11.10.6",
     "@grafana/data": "10.3.3",
@@ -64,6 +58,5 @@
     "react-router-dom": "^5.2.0",
     "rxjs": "7.8.1",
     "tslib": "2.5.3"
-  },
-  "packageManager": "npm@10.5.0"
+  }
 }
