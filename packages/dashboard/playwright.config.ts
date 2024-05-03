@@ -1,3 +1,5 @@
+/* eslint-disable -- this is auto-generated configuration */
+
 import type { PluginOptions } from '@grafana/plugin-e2e';
 import { defineConfig, devices } from '@playwright/test';
 import { dirname } from 'node:path';
