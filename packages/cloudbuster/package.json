@@ -2,6 +2,7 @@
 	"name": "cloudbuster",
 	"version": "1.0.0",
 	"scripts": {
-		"start": "APP=cloudbuster tsx src/run-locally.ts"
+		"start": "APP=cloudbuster tsx src/run-locally.ts",
+		"typecheck": "tsc --noEmit"
 	}
 }

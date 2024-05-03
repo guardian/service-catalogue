@@ -3,7 +3,8 @@
 	"version": "0.0.0",
 	"scripts": {
 		"start": "./script/start",
-		"test": "find . | egrep '.yml|.yaml' | xargs yamllint"
+		"test": "find . | egrep '.yml|.yaml' | xargs yamllint",
+		"typecheck": "echo 'Nothing to typecheck'"
 	},
 	"devDependencies": {
 		"yaml-lint": "^1.7.0"
