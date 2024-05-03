@@ -1,0 +1,16 @@
+name: Snyk
+on:
+  push:
+    branches:
+      - main
+      - integrate-snyk-7fe6613faadc9cbf
+  workflow_dispatch: 
+jobs:
+  security:
+    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
+    with:
+      ORG: <SNYK_ORG_ID>
+      SKIP_NODE: true
+      SKIP_GO: false
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
