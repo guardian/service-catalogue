@@ -14,7 +14,7 @@ export const DATASOURCE_REF = {
 	type: 'testdata',
 };
 
-export const DATASOURCE_CLOUDQUERY = {
-	uid: 'CloudQuery',
+export const DATASOURCE_SERVICE_CATALOGUE = {
+	uid: 'service-catalogue',
 	type: 'postgres',
 };
