@@ -1,6 +1,10 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import type { ICluster } from 'aws-cdk-lib/aws-ecs';
+import type {
+	ContainerDefinition,
+	ICluster,
+	Volume,
+} from 'aws-cdk-lib/aws-ecs';
 import {
 	FargateTaskDefinition,
 	FireLensLogDriver,
@@ -107,7 +111,7 @@ export function addPrismaMigrateTask(
 		artifactBucketName,
 	);
 
-	taskDefinition.addContainer(`${app}Container`, {
+	const prismaTask = taskDefinition.addContainer(`${app}Container`, {
 		image: Images.prismaMigrate,
 		environment: {
 			// These are required so the task can retrieve the Prisma directory
@@ -126,11 +130,25 @@ export function addPrismaMigrateTask(
 			App: app,
 		},
 		logging: fireLensLogDriver,
+		readonlyRootFilesystem: true,
 	});
 
 	taskDefinition.addToTaskRolePolicy(logShippingPolicy);
 	db.grantConnect(taskDefinition.taskRole);
 	artifactBucket.grantRead(taskDefinition.taskRole, prismaArtifactKey);
+
+	const prismaVolume: Volume = {
+		name: 'prisma-volume',
+	};
+
+	taskDefinition.addVolume(prismaVolume);
+
+	prismaTask.addMountPoints({
+		// So that we can download the prisma.zip from the artifact bucket
+		containerPath: '/prisma',
+		sourceVolume: prismaVolume.name,
+		readOnly: false,
+	});
 
 	// --- EvenBridge rule + target ---
 
