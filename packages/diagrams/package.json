@@ -4,7 +4,8 @@
 	"description": "Diagrams as code",
 	"type": "module",
 	"scripts": {
-		"generate": "mmdc -i diagram.mmd -o output.svg "
+		"generate": "mmdc -i diagram.mmd -o output.svg ",
+		"typecheck": "echo 'Nothing to typecheck'"
 	},
 	"devDependencies": {
 		"@mermaid-js/mermaid-cli": "10.8.0"
