@@ -15,6 +15,20 @@ step() {
   echo -e "\n${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
+create_sql_migrations() {
+  step "Copying Prisma Migrations"
+
+  SQL_DIR=$ROOT_DIR/packages/dev-environment/sql
+
+  rm -r $SQL_DIR
+  mkdir -p $SQL_DIR
+
+  MIGRATIONS=$(ls -d $ROOT_DIR/packages/common/prisma/migrations/*/)
+  for MIGRATION in $MIGRATIONS; do
+    cp $MIGRATION/migration.sql $SQL_DIR/$(basename $MIGRATION).sql;
+  done
+}
+
 check_aws_credentials() {
   step "Checking AWS credentials"
 
@@ -53,6 +67,7 @@ check_vpn_connection() {
 }
 
 main() {
+  create_sql_migrations
   check_aws_credentials
   check_vpn_connection
   start_containers
