@@ -70,6 +70,8 @@ jobs:
                 - packages/dependency-graph-integrator/dist/dependency-graph-integrator.zip
             github-actions-usage:
               - packages/github-actions-usage/dist/github-actions-usage.zip
+            obligatron:
+              - packages/obligatron/dist/obligatron.zip
             prisma:
               - packages/common/prisma.zip
             theguardian-servicecatalogue-app:
