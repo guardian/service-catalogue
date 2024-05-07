@@ -1,10 +1,6 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import type {
-	ContainerDefinition,
-	ICluster,
-	Volume,
-} from 'aws-cdk-lib/aws-ecs';
+import type { ICluster, Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	FargateTaskDefinition,
 	FireLensLogDriver,
