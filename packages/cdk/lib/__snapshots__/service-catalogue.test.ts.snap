@@ -18580,7 +18580,15 @@ spec:
                 },
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/prisma",
+                "ReadOnly": false,
+                "SourceVolume": "prisma-volume",
+              },
+            ],
             "Name": "prisma-migrate-taskContainer",
+            "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
                 "Name": "DB_USERNAME",
@@ -18664,6 +18672,11 @@ spec:
             "Arn",
           ],
         },
+        "Volumes": [
+          {
+            "Name": "prisma-volume",
+          },
+        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
