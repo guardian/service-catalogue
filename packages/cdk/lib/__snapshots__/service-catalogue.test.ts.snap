@@ -18582,7 +18582,7 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/prisma",
+                "ContainerPath": "/usr/src/app/prisma",
                 "ReadOnly": false,
                 "SourceVolume": "prisma-volume",
               },
