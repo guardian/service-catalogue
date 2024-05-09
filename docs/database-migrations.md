@@ -1,7 +1,7 @@
 # Database Migrations
 
 > **Note**
-> The migration process is currently manual.
+> The migrations are applied automatically on deploy.
 
 ## What are they?
 
@@ -41,6 +41,8 @@ npx -w common prisma generate
 Upon a RiffRaff deploy (to either CODE or PROD), a `prisma.zip` containing the Prisma schema and migration scripts is uploaded into the account artifact bucket. This action triggers an [ECS task](../packages/cdk/lib/prisma-migrate-task.ts) running the [`prisma-migrate`](../containers/prisma-migrate/Dockerfile) container, which retrieves the `prisma.zip` and applies the corresponding migration to the CODE/PROD RDS instance.
 
 This migrations can fail for a number of reasons - for example attempting to add a `NOT NULL` column to a table with existing data. In this case, manual intervention will be necessary. Prisma provides some useful documentation on [patching and hotfixing](https://www.prisma.io/docs/orm/prisma-migrate/workflows/patching-and-hotfixing).
+
+Check the logs with filter app.keyword:prisma-migrate-task if a migration fails to be applied automatically.
 
 ### Manual migrations
 
