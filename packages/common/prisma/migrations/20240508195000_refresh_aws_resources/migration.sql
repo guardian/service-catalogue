@@ -5,24 +5,13 @@
 -- This migration replaces this view with a function which doesn't have the same restriction.
 -- But will need a cron job to keep the materialized view up to date.
 
--- Decide if taggable when taggable column is present
-CREATE OR REPLACE FUNCTION arn_taggable(arn text, taggable bool) RETURNS boolean AS $$
+-- Decide if the resource is taggable when taggable column is present
+CREATE OR REPLACE FUNCTION is_resource_taggable(arn text, taggable bool) RETURNS boolean AS $$
 BEGIN
     RETURN CASE WHEN arn LIKE '%arn:aws:iam::aws:policy%' THEN 'false'
                 ELSE taggable END;
 END
 $$ LANGUAGE plpgsql;
-
--- Function to refresh the materialized view aws_resources
-CREATE OR REPLACE FUNCTION refresh_aws_resources()
-    RETURNS TEXT AS
-$$
-BEGIN
-    REFRESH MATERIALIZED VIEW aws_resources WITH DATA;
-    RETURN 'Triggered refresh of materialized view aws_resources';
-END;
-$$
-    LANGUAGE plpgsql;
 
 -- Aggregate rows from all AWS Cloudquery tables
 CREATE OR REPLACE FUNCTION aws_resources_raw()
@@ -83,7 +72,7 @@ BEGIN
                         COALESCE(%s, %s, %s, arn_to_account_id(arn)) AS account_id,
                         arn_to_resource_type(arn) as resource_type,
                         arn,
-                        arn_taggable(arn, %s) as taggable,
+                        is_resource_taggable(arn, %s) as taggable,
                         %s as tags
                     FROM %s',
                                         cloudquery_table.table_name, region, account_id, owner_id, request_account_id,
