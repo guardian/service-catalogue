@@ -2,10 +2,12 @@
 
 set -e
 
-echo 'Retrieving Prisma artifact from S3'
+echo 'Run run-prisma-migrate.sh'
+
+echo 'Step1: Retrieving Prisma artifact from S3'
 aws s3 cp "s3://$ARTIFACT_BUCKET/$PRISMA_ARTIFACT_KEY" ./prisma/
 
-echo 'Unzipping Prisma artifact'
+echo 'Step2: Unzipping Prisma artifact'
 unzip -q prisma/prisma.zip
 
 DB_PORT=5432
@@ -17,5 +19,5 @@ if ! [ -x "$(command -v ./node_modules/.bin/prisma)" ]; then
   npm install @prisma/cli --save-dev
 fi
 
-echo 'Running prisma migrate deploy'
+echo 'Step3: Running prisma migrate deploy'
 ./node_modules/.bin/prisma migrate deploy
