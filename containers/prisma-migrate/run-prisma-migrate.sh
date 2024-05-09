@@ -11,5 +11,11 @@ unzip -q prisma/prisma.zip
 DB_PORT=5432
 export DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/postgres
 
+# Check if prisma is installed
+if ! [ -x "$(command -v ./node_modules/.bin/prisma)" ]; then
+  echo 'Prisma is not installed. Installing...'
+  npm install @prisma/cli --save-dev
+fi
+
 echo 'Running prisma migrate deploy'
-/usr/src/app/node_modules/.bin/prisma migrate deploy
+./node_modules/.bin/prisma migrate deploy
