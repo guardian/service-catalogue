@@ -12,4 +12,4 @@ DB_PORT=5432
 export DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/postgres
 
 echo 'Running prisma migrate deploy'
-prisma/node_modules/.bin/prisma migrate deploy
+/usr/src/app/node_modules/.bin/prisma migrate deploy
