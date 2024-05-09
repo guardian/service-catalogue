@@ -5,7 +5,7 @@
 -- This migration replaces this view with a function which doesn't have the same restriction.
 -- But will need a cron job to keep the materialized view up to date.
 
--- Decide if the resource is taggable when taggable column is present
+-- Check for aws managed iam policies and return false for taggable in that case
 CREATE OR REPLACE FUNCTION is_resource_taggable(arn text, taggable bool) RETURNS boolean AS $$
 BEGIN
     RETURN CASE WHEN arn LIKE '%arn:aws:iam::aws:policy%' THEN 'false'
