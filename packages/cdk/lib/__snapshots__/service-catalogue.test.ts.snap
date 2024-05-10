@@ -18566,7 +18566,7 @@ spec:
               },
             ],
             "Essential": true,
-            "Image": "ghcr.io/guardian/service-catalogue/prisma-migrate:stable",
+            "Image": "ghcr.io/guardian/service-catalogue/prisma-migrate:sha-a680ae95cc94254725218366d4aa294416a7b0b8",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -18581,11 +18581,6 @@ spec:
               },
             },
             "MountPoints": [
-              {
-                "ContainerPath": "/prisma",
-                "ReadOnly": false,
-                "SourceVolume": "prisma-volume",
-              },
               {
                 "ContainerPath": "/usr/src/app/prisma",
                 "ReadOnly": false,
