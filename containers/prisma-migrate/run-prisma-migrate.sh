@@ -1,15 +1,6 @@
 #!/bin/bash
-# CI will build a new image with the code here, but you need to update the image
-# in packages/cdk/lib/cloudquery/image.ts and redeploy for any changes in this file to take effect
-#
-# image.ts code snippet:
-# * To use a new image, update the SHA here. The full set of possible tags
-#	* can be found at
-#	* 	https://github.com/guardian/service-catalogue/pkgs/container/service-catalogue%2Fprisma-migrate
-#	*/
-#	prismaMigrate: ContainerImage.fromRegistry(
-#		'ghcr.io/guardian/service-catalogue/prisma-migrate:stable',
-#	),
+# CI will build a new image with the code here, but you need to update the image used
+# in packages/cdk/lib/cloudquery/image.ts to use the new image.
 
 set -e
 

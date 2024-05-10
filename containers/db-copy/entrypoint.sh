@@ -1,4 +1,6 @@
 #!/bin/ash
+# CI will build a new image with the code here, but you need to update the image used
+# in packages/cdk/lib/cloudquery/image.ts to use the new image.
 
 set -e
 

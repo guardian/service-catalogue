@@ -28,7 +28,7 @@ export const Images = {
 	// 	'ghcr.io/guardian/service-catalogue/prisma-migrate:stable',
 	// ),
 	prismaMigrate: ContainerImage.fromRegistry(
-		'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-a680ae95cc94254725218366d4aa294416a7b0b8',
+		'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-b11c160dc36aad2c65505b8191711dd31ad87252',
 	),
 	otelCollector: ContainerImage.fromRegistry(
 		'public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0',
