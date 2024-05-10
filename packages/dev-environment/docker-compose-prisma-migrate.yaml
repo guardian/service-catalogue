@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  # Test environment for prisma migration only
+  prisma-migrate:
+    build:
+      context: ../../containers/prisma-migrate
+    volumes:
+      - ~/.aws/credentials:/.aws/credentials
+    environment:
+      AWS_CONFIG_FILE: /.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /.aws/credentials
+      AWS_DEFAULT_PROFILE: deployTools
+      AWS_REGION: eu-west-1
+      ARTIFACT_BUCKET: deploy-tools-dist
+      PRISMA_ARTIFACT_KEY: deploy/PROD/service-catalogue-prisma-migrations/prisma.zip
+      POSTGRES_DB: ${DATABASE_NAME}
+      DB_USERNAME: ${DATABASE_USER}
+      DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_HOST: 'postgres-prisma-migrate-test'
+      DE_PORT: '5432'
+
+  postgres:
+    container_name: postgres-prisma-migrate-test
+    image: postgres:14.6
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
