@@ -36,5 +36,7 @@ REMOTE_URL=$(getCodeDatabaseUrl)
 tables_to_copy=$(echo "$TABLES" | tr "-" "\n")
 for tbl in $tables_to_copy; do
   echo "Dumping table $tbl to /sql/$tbl.sql"
-  pg_dump "$REMOTE_URL" -t "$tbl" -f "/sql/$tbl.sql" --no-owner --no-privileges --inserts
+  # We use --data-only here as unfortunately pg_dump does not have a --create-if-not-exists to stop it from
+  # erroring when it tries to dump a table that prisma has already created.
+  pg_dump "$REMOTE_URL" -t "$tbl" -f "/sql/$tbl.sql" --no-owner --no-privileges --inserts --data-only
 done
