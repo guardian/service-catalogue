@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "./.config/.eslintrc",
+    "@guardian/eslint-config-typescript"
+  ]
+}

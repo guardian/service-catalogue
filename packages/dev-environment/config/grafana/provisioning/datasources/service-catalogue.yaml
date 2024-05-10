@@ -3,7 +3,7 @@
 
 apiVersion: 1
 datasources:
-  - name: CloudQuery
+  - name: service-catalogue
     type: postgres
     url: postgres:5432
     user: postgres
@@ -17,3 +17,6 @@ datasources:
       connMaxLifetime: 14400
       postgresVersion: 1000
       timescaledb: false
+  - name: gdev-testdata
+    isDefault: false
+    type: testdata
