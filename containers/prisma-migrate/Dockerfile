@@ -12,7 +12,8 @@ RUN npm init -y
 # TODO: Keep the version automatically in sync with common/package.json
 RUN npm install prisma@5.11.0 
 
-COPY ./containers/prisma-migrate/run-prisma-migrate.sh ./run-prisma-migrate.sh
+# Copy from repo to container
+COPY ./run-prisma-migrate.sh ./run-prisma-migrate.sh
 RUN chmod +x ./run-prisma-migrate.sh
 
 # The default entrypoint for the node image is `node ...`

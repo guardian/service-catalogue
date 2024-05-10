@@ -1,6 +1,6 @@
 #!/bin/bash
 # CI will build a new image with the code here, but you need to update the image
-# in packages/cdk/lib/cloudquery/image.ts and redeploy for an changes in this file to take effect
+# in packages/cdk/lib/cloudquery/image.ts and redeploy for any changes in this file to take effect
 #
 # image.ts code snippet:
 # * To use a new image, update the SHA here. The full set of possible tags

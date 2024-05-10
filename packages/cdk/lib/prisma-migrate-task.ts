@@ -141,13 +141,6 @@ export function addPrismaMigrateTask(
 
 	prismaTask.addMountPoints({
 		// So that we can download the prisma.zip from the artifact bucket
-		containerPath: '/prisma',
-		sourceVolume: prismaVolume.name,
-		readOnly: false,
-	});
-
-	prismaTask.addMountPoints({
-		// So that we can download the prisma.zip from the artifact bucket
 		containerPath: '/usr/src/app/prisma',
 		sourceVolume: prismaVolume.name,
 		readOnly: false,
