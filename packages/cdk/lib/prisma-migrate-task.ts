@@ -133,16 +133,16 @@ export function addPrismaMigrateTask(
 	db.grantConnect(taskDefinition.taskRole);
 	artifactBucket.grantRead(taskDefinition.taskRole, prismaArtifactKey);
 
-	const prismaVolume: Volume = {
-		name: 'prisma-volume',
+	const prismaArtifactVolume: Volume = {
+		name: 'artifact-volume',
 	};
 
-	taskDefinition.addVolume(prismaVolume);
+	taskDefinition.addVolume(prismaArtifactVolume);
 
 	prismaTask.addMountPoints({
 		// So that we can download the prisma.zip from the artifact bucket
-		containerPath: '/usr/src/app',
-		sourceVolume: prismaVolume.name,
+		containerPath: '/usr/src/app/prisma',
+		sourceVolume: prismaArtifactVolume.name,
 		readOnly: false,
 	});
 
