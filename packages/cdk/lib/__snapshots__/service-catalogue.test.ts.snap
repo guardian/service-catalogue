@@ -18582,9 +18582,9 @@ spec:
             },
             "MountPoints": [
               {
-                "ContainerPath": "/prisma",
+                "ContainerPath": "/usr/src/app/prisma",
                 "ReadOnly": false,
-                "SourceVolume": "prisma-volume",
+                "SourceVolume": "artifact-volume",
               },
             ],
             "Name": "prisma-migrate-taskContainer",
@@ -18674,7 +18674,7 @@ spec:
         },
         "Volumes": [
           {
-            "Name": "prisma-volume",
+            "Name": "artifact-volume",
           },
         ],
       },

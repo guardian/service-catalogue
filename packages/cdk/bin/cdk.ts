@@ -42,6 +42,18 @@ deployments.set('service-catalogue-prisma-migrations', {
 	},
 	regions: new Set([region]),
 	stacks: new Set([stack]),
+
+	/*
+	The prisma-migrate ECS task is:
+			- Updated via a CloudFormation deployment
+			- Triggered by a file landing in S3
+
+	This deployment uploads the file to S3,
+	and only runs once the CloudFormation deployment succeeds.
+
+	This ensures the correct versions are used.
+	*/
+	dependencies: ['cfn-eu-west-1-deploy-service-catalogue'],
 });
 
 deployments.set('theguardian-servicecatalogue-app', {
