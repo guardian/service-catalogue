@@ -64,7 +64,6 @@ export function awsSourceConfig(
 			otel_endpoint_insecure: true,
 			spec: {
 				concurrency,
-				regions: ['*'],
 				...extraConfig,
 			},
 		},
