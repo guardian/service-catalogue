@@ -6,11 +6,12 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects interactive-monitor",
-		"start": "tsx src/run-locally.ts"
+		"start": "tsx src/run-locally.ts",
+		"typecheck": "tsc --noEmit"
 	},
 	"author": "guardian",
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.565.0",
+		"@aws-sdk/client-s3": "^3.575.0",
 		"@types/aws-lambda": "^8.10.137",
 		"octokit": "^3.2.0"
 	},

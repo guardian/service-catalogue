@@ -37,7 +37,7 @@ createZip() {
 createPrismaZip() {
   echo "Creating zip of Prisma files"
   (
-    cd "$ROOT_DIR/packages/common"  
+    cd "$ROOT_DIR/packages/common"
     zip -qr prisma.zip ./prisma
   )
 }
@@ -75,3 +75,8 @@ createPrismaZip
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
+
+# Package the dashboard...
+createZip "dashboard"
+# ... then rename the file to match the plugin's ID
+mv "$ROOT_DIR/packages/dashboard/dist/dashboard.zip" "$ROOT_DIR/packages/dashboard/dist/theguardian-servicecatalogue-app.zip"

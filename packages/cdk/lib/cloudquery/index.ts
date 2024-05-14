@@ -357,6 +357,7 @@ export function addCloudqueryEcsCluster(
 				tables: [
 					'github_repositories',
 					'github_repository_branches',
+					'github_repository_collaborators',
 					'github_workflows',
 				],
 

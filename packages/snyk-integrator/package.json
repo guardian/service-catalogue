@@ -7,10 +7,11 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
 		"start": "APP=snyk-integrator tsx src/run-locally.ts",
-		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects snyk-integrator"
+		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects snyk-integrator",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@aws-sdk/client-sns": "^3.565.0",
+		"@aws-sdk/client-sns": "^3.575.0",
 		"ts-markdown": "^1.0.0",
 		"yaml": "^2.4.2"
 	}

@@ -152,6 +152,7 @@ export function githubSourceConfig(
 							'}',
 					},
 				],
+				include_archived_repos: true,
 			},
 		},
 	};

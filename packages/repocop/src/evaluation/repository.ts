@@ -399,6 +399,16 @@ export function evaluateOneRepo(
 	};
 }
 
+//create a predicate that orders a list of urls by whether they contain snyk.io first, and then github.com second
+const urlSortPredicate = (url: string) => {
+	if (url.includes('snyk.io')) {
+		return -2;
+	} else if (url.includes('github.com') && url.includes('advisories')) {
+		return -1;
+	}
+	return 0;
+};
+
 export function dependabotAlertToRepocopVulnerability(
 	fullName: string,
 	alert: Alert,
@@ -413,7 +423,9 @@ export function dependabotAlertToRepocopVulnerability(
 		source: 'Dependabot',
 		severity: alert.security_advisory.severity,
 		package: alert.security_vulnerability.package.name,
-		urls: alert.security_advisory.references.map((ref) => ref.url),
+		urls: alert.security_advisory.references
+			.map((ref) => ref.url)
+			.sort(urlSortPredicate),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
 		alert_issue_date: new Date(alert.created_at),
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
@@ -462,7 +474,9 @@ export function snykAlertToRepocopVulnerability(
 		ecosystem: ecosystem ?? 'unknown ecosystem',
 		alert_issue_date: new Date(issue.attributes.created_at),
 		is_patchable: isPatchable,
-		cves: snykVulnIdFilter(issue.attributes.problems.map((p) => p.id)),
+		cves: snykVulnIdFilter(issue.attributes.problems.map((p) => p.id)).sort(
+			urlSortPredicate,
+		),
 	};
 }
 

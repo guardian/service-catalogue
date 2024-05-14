@@ -161,7 +161,7 @@ spec:
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v8.1.3
+		  version: v10.0.1
 		  tables:
 		    - github_repositories
 		  destinations:
@@ -175,6 +175,7 @@ spec:
 		        private_key_path: /usr/share/cloudquery/github-private-key
 		        app_id: \${file:/usr/share/cloudquery/github-app-id}
 		        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+		    include_archived_repos: true
 		"
 	`);
 	});

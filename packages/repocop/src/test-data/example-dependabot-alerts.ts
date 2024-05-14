@@ -77,10 +77,10 @@ export const example: Alert[] = [
 					url: 'https://usn.ubuntu.com/3559-1/',
 				},
 				{
-					url: 'https://www.djangoproject.com/weblog/2018/feb/01/security-releases/',
+					url: 'http://www.securitytracker.com/id/1040422',
 				},
 				{
-					url: 'http://www.securitytracker.com/id/1040422',
+					url: 'https://snyk.io/vuln/some-fake-vuln-id',
 				},
 			],
 			published_at: '2018-10-03T21:13:54Z',

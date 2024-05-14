@@ -49,6 +49,14 @@ It includes:
 > **Note**
 > You can also use other Postgres clients, such as `psql` to query the data, or even your IDE!
 
+## Testing the prima migration container
+To test the prisma migration container you can run the following script:
+
+  ```sh
+   ./packages/dev-environment/script/start-prisma-migrate-test
+   ```
+This will run the run-prisma-migrate.sh script.
+
 ## RepoCop
 
 To develop locally once the tables have been populated follow the steps in the repocop [README](../repocop/README.md)

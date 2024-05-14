@@ -8,11 +8,12 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
 		"start": "APP=repocop tsx src/run-locally.ts",
-		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop"
+		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@aws-sdk/client-cloudwatch": "^3.565.0",
-		"@aws-sdk/client-sns": "^3.565.0",
+		"@aws-sdk/client-cloudwatch": "^3.575.0",
+		"@aws-sdk/client-sns": "^3.575.0",
 		"octokit-plugin-create-pull-request": "^5.1.1",
 		"ts-markdown": "^1.0.0",
 		"yaml": "^2.4.2"
