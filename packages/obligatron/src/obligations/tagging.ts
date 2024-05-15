@@ -25,7 +25,6 @@ const isExemptResource = (resource: AwsResource): boolean => {
 export async function evaluateTaggingObligation(
 	db: PrismaClient,
 ): Promise<ObligationResult[]> {
-	// TODO add `where taggable = true`?
 	const awsResources = await db.$queryRaw<AwsResource[]>`
 		SELECT
 			account_id,
@@ -45,7 +44,8 @@ export async function evaluateTaggingObligation(
 					(tag) =>
 						typeof resource.tags === 'object' &&
 						resource.tags !== null &&
-						resource.tags[tag] === undefined,
+						resource.tags[tag] === undefined &&
+						resource.tags[tag] === '',
 				).map((tag) => `Resource missing '${tag}' tag.`)
 			: [];
 
