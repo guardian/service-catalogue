@@ -30,6 +30,8 @@ export class Obligatron {
 				QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
 			},
 			timeout: Duration.minutes(5),
+			// Unfortunately Prisma doesn't support streaming data from Postgres at the moment https://github.com/prisma/prisma/issues/5055
+			// This means that all rows need to be loaded into memory at the same time whenever a query is ran hence the high memory requirement.
 			memorySize: 4096,
 		});
 
