@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: `${__dirname}/.env` });
 
 const transform = {
-	'^.+\\.tsx?$': ['esbuild-jest', { target: 'esnext' }],
+	'^.+\\.tsx?$': ['@swc/jest', { jsc: { target: 'esnext' } }],
 };
 
 /*
