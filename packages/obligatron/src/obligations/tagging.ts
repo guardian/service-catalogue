@@ -1,14 +1,14 @@
 import type { PrismaClient } from '@prisma/client';
 import type { ObligationResult } from '.';
 
-interface AwsResource {
+export type AwsResource = {
 	account_id: string;
 	arn: string;
 	service: string;
 	resource_type: string;
 	taggable: string;
 	tags?: Record<string, string> | null;
-}
+};
 
 const REQUIRED_TAGS = ['Stack', 'Stage', 'App', 'gu:repo'] as const;
 
@@ -44,8 +44,7 @@ export async function evaluateTaggingObligation(
 					(tag) =>
 						typeof resource.tags === 'object' &&
 						resource.tags !== null &&
-						resource.tags[tag] === undefined &&
-						resource.tags[tag] === '',
+						(resource.tags[tag] === undefined || resource.tags[tag] === ''),
 				).map((tag) => `Resource missing '${tag}' tag.`)
 			: [];
 
