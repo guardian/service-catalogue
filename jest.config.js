@@ -64,5 +64,10 @@ module.exports = {
 			transform,
 			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
 		},
+		{
+			displayName: 'obligatron',
+			transform,
+			testMatch: ['<rootDir>/packages/obligatron/**/*.test.ts'],
+		},
 	],
 };
