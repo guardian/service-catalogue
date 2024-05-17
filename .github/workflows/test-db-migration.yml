@@ -19,7 +19,7 @@ on:
 # If we push twice in quick succession, the first build will be stopped once the second starts.
 # This avoids any race conditions.
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}/test-db-migration
   cancel-in-progress: true
 
 jobs:
