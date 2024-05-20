@@ -26,7 +26,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			registry: 'github',
 			path: 'cloudquery/postgresql',
 			version: `v${Versions.CloudqueryPostgresDestination}`,
-			migrate_mode: 'forced',
+			migrate_mode: 'safe',
 			spec: {
 				connection_string: [
 					'user=${DB_USERNAME}',
