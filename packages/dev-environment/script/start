@@ -20,8 +20,8 @@ create_sql_migrations() {
 
   SQL_DIR=$ROOT_DIR/packages/dev-environment/sql
 
-  rm -r $SQL_DIR
-  mkdir -p $SQL_DIR
+  rm -rf "$SQL_DIR"
+  mkdir -p "$SQL_DIR"
 
   MIGRATIONS=$(ls -d $ROOT_DIR/packages/common/prisma/migrations/*/)
   for MIGRATION in $MIGRATIONS; do
