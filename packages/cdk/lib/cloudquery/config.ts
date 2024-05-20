@@ -1,4 +1,5 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import { AWS_REGIONS } from 'common/src/aws';
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {
@@ -64,6 +65,7 @@ export function awsSourceConfig(
 			otel_endpoint_insecure: true,
 			spec: {
 				concurrency,
+				regions: AWS_REGIONS,
 				...extraConfig,
 			},
 		},
