@@ -17,7 +17,7 @@ describe('Config generation, and converting to YAML', () => {
 		  registry: github
 		  path: cloudquery/postgresql
 		  version: v7.2.0
-		  migrate_mode: safe
+		  migrate_mode: forced
 		  spec:
 		    connection_string: >-
 		      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
