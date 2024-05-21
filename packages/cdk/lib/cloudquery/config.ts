@@ -28,6 +28,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			path: 'cloudquery/postgresql',
 			version: `v${Versions.CloudqueryPostgresDestination}`,
 			migrate_mode: 'forced',
+			send_sync_summary: true,
 			spec: {
 				connection_string: [
 					'user=${DB_USERNAME}',

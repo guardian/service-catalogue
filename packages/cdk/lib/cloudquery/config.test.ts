@@ -18,6 +18,7 @@ describe('Config generation, and converting to YAML', () => {
 		  path: cloudquery/postgresql
 		  version: v7.2.0
 		  migrate_mode: forced
+		  send_sync_summary: true
 		  spec:
 		    connection_string: >-
 		      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
