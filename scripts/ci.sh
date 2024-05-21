@@ -75,6 +75,7 @@ createPrismaZip
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
+createLambdaWithPrisma "obligatron"
 
 # Package the dashboard...
 createZip "dashboard"

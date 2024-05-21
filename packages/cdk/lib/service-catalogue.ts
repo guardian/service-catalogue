@@ -43,6 +43,7 @@ import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
+import { Obligatron } from './obligatron';
 import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { Repocop } from './repocop';
 
@@ -255,6 +256,12 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
 			cluster: cloudqueryCluster,
+		});
+
+		new Obligatron(this, {
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
 		});
 	}
 }
