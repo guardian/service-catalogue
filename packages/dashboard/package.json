@@ -27,7 +27,7 @@
     "@types/lodash": "^4.14.194",
     "@types/react-router-dom": "^5.2.0",
     "@types/testing-library__jest-dom": "5.14.8",
-    "copy-webpack-plugin": "^11.0.0",
+    "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^6.7.3",
     "eslint-plugin-deprecation": "^2.0.0",
     "eslint-webpack-plugin": "^4.0.1",
