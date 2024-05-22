@@ -43,14 +43,6 @@ spec:
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
     org:
       member_role_name: cloudquery-access
       organization_units:
@@ -79,14 +71,6 @@ spec:
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
     org:
       member_role_name: cloudquery-access
       organization_units:
@@ -118,14 +102,6 @@ spec:
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
     accounts:
       - id: cq-for-000000000015
         role_arn: arn:aws:iam::000000000015:role/cloudquery-access
@@ -160,14 +136,6 @@ spec:
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    regions:
-      - eu-west-1
-      - eu-west-2
-      - us-east-1
-      - us-east-2
-      - us-west-1
-      - ap-southeast-2
-      - ca-central-1
     accounts:
       - id: cq-for-000000000015
         role_arn: arn:aws:iam::000000000015:role/cloudquery-access

@@ -43,7 +43,7 @@ export function awsClientConfig(
 /**
  * All regions we support.
  *
- * @see https://github.com/guardian/infosec-platform/blob/main/policies/DenyAccessToNonApprovedRegions.json
+ * @see https://github.com/guardian/infosec-platform/blob/main/policies/DenyEC2ECSLambdaAccessToNonApprovedRegions.json
  */
 export const AWS_REGIONS = [
 	'eu-west-1',
