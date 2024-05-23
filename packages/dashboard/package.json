@@ -49,7 +49,7 @@
   "dependencies": {
     "@emotion/css": "11.11.2",
     "@grafana/data": "10.3.3",
-    "@grafana/runtime": "10.3.3",
+    "@grafana/runtime": "11.0.0",
     "@grafana/ui": "10.3.3",
     "@grafana/schema": "10.4.2",
     "@grafana/scenes": "^4.23.1",
