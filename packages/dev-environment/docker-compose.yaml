@@ -46,6 +46,12 @@ services:
     depends_on:
       db-copy:
         condition: service_completed_successfully
+    healthcheck:
+      # Ensures the initialisation scripts have completed, before accepting connections from CloudQuery, Grafana, etc.
+      test: [ "CMD-SHELL", "pg_isready --host 127.0.0.1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   cloudquery:
     build:
       context: ../../containers/cloudquery
@@ -53,7 +59,8 @@ services:
         CQ_CLI: ${CQ_CLI}
     platform: linux/amd64
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - ~/.aws/credentials:/.aws/credentials
       - ./config/cloudquery.yaml:/cloudquery.yaml
@@ -70,7 +77,7 @@ services:
       SNYK_TOKEN: ${SNYK_TOKEN}
       GALAXIES_BUCKET: ${GALAXIES_BUCKET}
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
   grafana:
     user: root
@@ -82,7 +89,8 @@ services:
         grafana_version: ${GRAFANA_VERSION:-10.3.3}
         development: ${DEVELOPMENT:-true}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - '3000:3000'
     volumes:
