@@ -30,8 +30,6 @@ spec:
               workflow_status:
                 - comparison: 'NOT_EQUALS'
                   value: 'RESOLVED'
-              severity_normalized:
-                - Gte: 50 # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
 ---
 kind: destination
 spec:
