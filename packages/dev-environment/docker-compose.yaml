@@ -70,7 +70,7 @@ services:
       SNYK_TOKEN: ${SNYK_TOKEN}
       GALAXIES_BUCKET: ${GALAXIES_BUCKET}
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
   grafana:
     user: root
