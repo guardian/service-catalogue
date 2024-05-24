@@ -830,8 +830,6 @@ spec:
               workflow_status:
                 - comparison: NOT_EQUALS
                   value: RESOLVED
-              severity_normalized:
-                - Gte: 50
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql

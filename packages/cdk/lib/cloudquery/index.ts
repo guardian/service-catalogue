@@ -128,11 +128,6 @@ export function addCloudqueryEcsCluster(
 												value: 'RESOLVED',
 											},
 										],
-										severity_normalized: [
-											{
-												Gte: 50,
-											},
-										],
 									},
 								},
 							],
