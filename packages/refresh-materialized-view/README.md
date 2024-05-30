@@ -8,3 +8,8 @@ With your local environment running, run:
 ```bash
 npm -w refresh-materialized-view start
 ```
+
+## Running on PROD
+This lambda is triggered whenever an ECS task prefixed `Aws` completes successfully.
+
+If necessary, it can also be triggered on-demand without any input.
