@@ -1,3 +1,4 @@
+import { MetadataKeys } from '@guardian/cdk/lib/constants';
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration, Tags } from 'aws-cdk-lib';
@@ -14,6 +15,7 @@ import {
 import type { Cluster, RepositoryImage, Volume } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
+import type { Tag } from 'aws-cdk-lib/aws-events-targets';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -146,7 +148,12 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			cloudQueryApiKey,
 			dockerDistributedPluginImage,
 		} = props;
-		const { region, stack, stage } = scope;
+		const {
+			region,
+			stack,
+			stage,
+			repositoryName = 'guardian/service-catalogue',
+		} = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
 		const frequency = scheduleFrequency(schedule);
 
@@ -409,6 +416,14 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		db.grantConnect(task.taskRole);
 
+		const tags: Tag[] = Object.entries({
+			Stack: stack,
+			Stage: stage,
+			App: app,
+			[MetadataKeys.REPOSITORY_NAME]: repositoryName,
+			Name: name,
+		}).map(([key, value]) => ({ key, value }));
+
 		super(scope, id, {
 			schedule,
 			cluster,
@@ -420,6 +435,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			securityGroups: [dbAccess, ...additionalSecurityGroups],
 			enabled,
 			propagateTags: PropagatedTagSource.TASK_DEFINITION,
+			tags,
 		});
 
 		this.sourceConfig = sourceConfig;

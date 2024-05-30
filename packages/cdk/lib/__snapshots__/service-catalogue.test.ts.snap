@@ -93,6 +93,28 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsCostExplorer",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsCostExplorerTaskDefinition62DC1A04",
@@ -745,6 +767,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsDelegatedToSecurityAccount",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsDelegatedToSecurityAccountTaskDefinition8FFEB633",
@@ -1411,6 +1455,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsListOrgs",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsListOrgsTaskDefinition15F8AF14",
@@ -2062,6 +2128,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideAutoScalingGroups",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinitionA838A372",
@@ -2714,6 +2802,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideBackup",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideBackupTaskDefinition91A7A518",
@@ -3368,6 +3478,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideCertificates",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideCertificatesTaskDefinitionD275457C",
@@ -4020,6 +4152,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideCloudFormation",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideCloudFormationTaskDefinitionFE550760",
@@ -4672,6 +4826,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideCloudwatchAlarms",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinition1E4F26F4",
@@ -5324,6 +5500,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideDynamoDB",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideDynamoDBTaskDefinition8C3ACD16",
@@ -5976,6 +6174,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideEc2",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideEc2TaskDefinition8CC129B6",
@@ -6661,6 +6881,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideInspector",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideInspectorTaskDefinitionBABA9F5D",
@@ -7314,6 +7556,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideLoadBalancers",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinition333F61F5",
@@ -7967,6 +8231,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideRDS",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideRDSTaskDefinitionB16F3CC7",
@@ -8622,6 +8908,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsOrgWideS3",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsOrgWideS3TaskDefinitionAF066748",
@@ -9274,6 +9582,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "AwsRemainingData",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceAwsRemainingDataTaskDefinitionF2586400",
@@ -9989,6 +10319,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "FastlyServices",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceFastlyServicesTaskDefinitionDCCD3FD4",
@@ -10666,6 +11018,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "Galaxies",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGalaxiesTaskDefinition0777FEFC",
@@ -11348,6 +11722,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "GitHubIssues",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionFA21D536",
@@ -12055,6 +12451,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "GitHubLanguages",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubLanguagesTaskDefinitionDA995E2B",
@@ -12717,6 +13135,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "GitHubRepositories",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinition921DC1BC",
@@ -13432,6 +13872,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "GitHubTeams",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionB01C9D3C",
@@ -14146,6 +14608,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "NS1",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceNS1TaskDefinition56258A70",
@@ -14843,6 +15327,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "RiffRaffData",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionFF023225",
@@ -15546,6 +16052,28 @@ spec:
                 },
               },
               "PropagateTags": "TASK_DEFINITION",
+              "TagList": [
+                {
+                  "Key": "Stack",
+                  "Value": "deploy",
+                },
+                {
+                  "Key": "Stage",
+                  "Value": "TEST",
+                },
+                {
+                  "Key": "App",
+                  "Value": "service-catalogue",
+                },
+                {
+                  "Key": "gu:repo",
+                  "Value": "guardian/service-catalogue",
+                },
+                {
+                  "Key": "Name",
+                  "Value": "SnykAll",
+                },
+              ],
               "TaskCount": 1,
               "TaskDefinitionArn": {
                 "Ref": "CloudquerySourceSnykAllTaskDefinitionC8C1F3EC",
