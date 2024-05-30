@@ -699,6 +699,15 @@ model aws_securityhub_findings {
   @@index([aws_account_name], map: "idx_aws_account_name")
 }
 
+model obligatron_results {
+  date            DateTime @db.Timestamp(6)
+  obligation_name String
+  resource        String
+  reason          String
+  contacts        Json
+  url             String
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
