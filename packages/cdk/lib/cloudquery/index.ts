@@ -70,7 +70,7 @@ export function addCloudqueryEcsCluster(
 
 	const individualAwsSources: CloudquerySource[] = [
 		{
-			name: 'DeployToolsListOrgs',
+			name: 'AwsListOrgs',
 			description:
 				'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
@@ -90,7 +90,7 @@ export function addCloudqueryEcsCluster(
 			],
 		},
 		{
-			name: 'DelegatedToSecurityAccount',
+			name: 'AwsDelegatedToSecurityAccount',
 			description:
 				'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '22' }),
@@ -140,7 +140,7 @@ export function addCloudqueryEcsCluster(
 			cpu: 1024,
 		},
 		{
-			name: 'OrgWideCloudFormation',
+			name: 'AwsOrgWideCloudFormation',
 			description:
 				'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(3)),
@@ -161,7 +161,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideLoadBalancers',
+			name: 'AwsOrgWideLoadBalancers',
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '23' }),
@@ -171,7 +171,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideAutoScalingGroups',
+			name: 'AwsOrgWideAutoScalingGroups',
 			description:
 				'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
@@ -181,7 +181,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideCertificates',
+			name: 'AwsOrgWideCertificates',
 			description:
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '1' }),
@@ -191,7 +191,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideCloudwatchAlarms',
+			name: 'AwsOrgWideCloudwatchAlarms',
 			description:
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
@@ -201,7 +201,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideInspector',
+			name: 'AwsOrgWideInspector',
 			description: 'Collecting Inspector data across the organisation.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
 			config: awsSourceConfigForOrganisation({
@@ -211,7 +211,7 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 1024,
 		},
 		{
-			name: 'OrgWideS3',
+			name: 'AwsOrgWideS3',
 			description:
 				'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
@@ -221,7 +221,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideDynamoDB',
+			name: 'AwsOrgWideDynamoDB',
 			description:
 				'Collecting DynamoDB data across the organisation. Uses include auditing backup configuration.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '5' }),
@@ -231,7 +231,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideRDS',
+			name: 'AwsOrgWideRDS',
 			description:
 				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
@@ -246,7 +246,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideBackup',
+			name: 'AwsOrgWideBackup',
 			description:
 				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '7' }),
@@ -260,7 +260,7 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'OrgWideEc2',
+			name: 'AwsOrgWideEc2',
 			description:
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
 			schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(30)),
@@ -285,7 +285,7 @@ export function addCloudqueryEcsCluster(
   If we identify a table that needs to be updated more often, we should create a dedicated task for it.
    */
 	const remainingAwsSources: CloudquerySource = {
-		name: 'RemainingAwsData',
+		name: 'AwsRemainingData',
 		description: 'Data fetched across all accounts in the organisation.',
 		schedule:
 			nonProdSchedule ??
