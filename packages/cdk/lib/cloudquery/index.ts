@@ -275,6 +275,18 @@ export function addCloudqueryEcsCluster(
 			runAsSingleton: true,
 			memoryLimitMiB: 1024,
 		},
+		{
+			name: 'AwsOrgWideIamCredentialReports',
+			description:
+				'Collecting IAM credential reports to surface information about outdated or inactive users and access keys',
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(4)),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_iam_credential_reports'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			runAsSingleton: true,
+			memoryLimitMiB: 1024,
+		},
 	];
 
 	/*
