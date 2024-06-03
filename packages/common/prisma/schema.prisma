@@ -701,8 +701,8 @@ model aws_securityhub_findings {
 
 model obligatron_results {
   date            DateTime @db.Timestamp(6)
-  obligation_name String
-  resource        String
+  obligation_name String 
+  resource        String @id
   reason          String
   contacts        Json
   url             String
