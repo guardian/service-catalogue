@@ -22,6 +22,14 @@ const isExemptResource = (resource: AwsResource): boolean => {
 	return false;
 };
 
+function resourceHasTag(resource: AwsResource, tag: string): boolean {
+	return (
+		typeof resource.tags === 'object' &&
+		resource.tags?.[tag] !== undefined &&
+		resource.tags[tag] !== ''
+	);
+}
+
 export async function evaluateTaggingObligation(
 	db: PrismaClient,
 ): Promise<ObligationResult[]> {
@@ -38,22 +46,27 @@ export async function evaluateTaggingObligation(
 		GROUP BY account_id, arn, service, resource_type;
   `;
 
-	const result: ObligationResult[] = awsResources.map((resource) => {
-		const reasons = !isExemptResource(resource)
-			? REQUIRED_TAGS.filter(
-					(tag) =>
-						typeof resource.tags === 'object' &&
-						resource.tags !== null &&
-						(resource.tags[tag] === undefined || resource.tags[tag] === ''),
-				).map((tag) => `Resource missing '${tag}' tag.`)
-			: [];
+	const results: ObligationResult[] = [];
 
-		return {
-			resource: resource.arn,
-			result: reasons.length === 0,
-			reasons,
-		};
-	});
+	for (const resource of awsResources) {
+		if (isExemptResource(resource)) {
+			continue;
+		}
 
-	return result;
+		for (const requiredTag of REQUIRED_TAGS) {
+			if (resourceHasTag(resource, requiredTag)) {
+				continue;
+			}
+
+			results.push({
+				resource: resource.arn,
+				reason: `Resource missing '${requiredTag}' tag.`,
+				contacts: {
+					aws_account: resource.account_id,
+				},
+			});
+		}
+	}
+
+	return results;
 }

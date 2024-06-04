@@ -7,27 +7,17 @@ export type ObligationResult = {
 	resource: string;
 
 	/**
-	 * Did this resource meet the obligation check?
-	 */
-	result: boolean;
-
-	/**
 	 * Explanation for the assessment failing.
 	 */
-	reasons: string[];
+	reason: string;
 
 	/**
 	 * Link to where the user can see more details on the resource.
 	 */
-	deep_link?: string;
+	url?: string;
 
 	/**
-	 * Associated AWS account ID (if any)
+	 * Key-value pairs to link failing obligations to the responsible teams.
 	 */
-	aws_account_id?: string;
-
-	/**
-	 * Associated Github teams (if any)
-	 */
-	github_teams?: string[];
+	contacts?: Record<string, string>;
 };
