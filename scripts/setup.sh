@@ -75,6 +75,7 @@ setup_environment() {
   step "Setting up Service Catalogue environment"
 
   local_env_file_dir=$HOME/.gu/service_catalogue
+  mkdir -p "$local_env_file_dir"
 
   local_env_file=$local_env_file_dir/.env.local
 
