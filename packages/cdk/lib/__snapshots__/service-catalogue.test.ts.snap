@@ -6720,10 +6720,6 @@ spec:
                 "Condition": "HEALTHY",
                 "ContainerName": "CloudquerySource-AwsOrgWideIamCredentialReportsAWSOTELCollector",
               },
-              {
-                "Condition": "SUCCESS",
-                "ContainerName": "CloudquerySource-AwsOrgWideIamCredentialReportsAwsCli",
-              },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -6868,33 +6864,6 @@ spec:
                 "Protocol": "tcp",
               },
             ],
-            "ReadonlyRootFilesystem": true,
-          },
-          {
-            "Command": [
-              "/bin/bash",
-              "-c",
-              "ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
-            ],
-            "EntryPoint": [
-              "",
-            ],
-            "Essential": false,
-            "Image": "ghcr.io/guardian/service-catalogue/singleton:stable",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "Name": "CloudquerySource-AwsOrgWideIamCredentialReportsAwsCli",
             "ReadonlyRootFilesystem": true,
           },
           {
@@ -21624,21 +21593,6 @@ spec:
       "Properties": {
         "PolicyDocument": {
           "Statement": [
-            {
-              "Action": "ecs:ListTasks",
-              "Condition": {
-                "StringEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "servicecatalogueCluster5FC34DC5",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": "*",
-            },
             {
               "Action": [
                 "kinesis:Describe*",

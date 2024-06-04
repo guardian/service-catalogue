@@ -284,7 +284,6 @@ export function addCloudqueryEcsCluster(
 				tables: ['aws_iam_credential_reports'],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-			runAsSingleton: true,
 			memoryLimitMiB: 1024,
 		},
 	];
