@@ -35,15 +35,19 @@ export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
 		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
 }
 
-export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
+export function daysLeftToFix(
+	vuln: RepocopVulnerability,
+	currentMoment: Date = new Date(),
+): number | undefined {
 	const daysToFix = SLAs[vuln.severity];
 	if (!daysToFix) {
 		return undefined;
 	}
 	const fixDate = new Date(vuln.alert_issue_date);
 	fixDate.setDate(fixDate.getDate() + daysToFix);
-	const daysLeftToFix = Math.floor(
-		(fixDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+	const millisecondsInADay = 1000 * 60 * 60 * 24;
+	const daysLeftToFix = Math.ceil(
+		(fixDate.getTime() - currentMoment.getTime()) / millisecondsInADay,
 	);
 
 	return daysLeftToFix < 0 ? 0 : daysLeftToFix;

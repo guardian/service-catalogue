@@ -285,12 +285,20 @@ describe('daysLeftToFix', () => {
 	test('should return 0 if we exceed the SLA', () => {
 		expect(daysLeftToFix(veryOldVuln)).toBe(0);
 	});
-	test('should return 30 if a high vuln was raised today', () => {
+	test('should return 30 if a high vuln was raised in the last 24 hours', () => {
 		const newHighVuln: RepocopVulnerability = {
 			...veryOldVuln,
 			alert_issue_date: new Date(),
 		};
+		const twentyThreeHoursAgo = new Date();
+		twentyThreeHoursAgo.setHours(twentyThreeHoursAgo.getHours() - 23);
+		const twentyThreeHourVuln = {
+			...newHighVuln,
+			alert_issue_date: twentyThreeHoursAgo,
+		};
+
 		expect(daysLeftToFix(newHighVuln)).toBe(30);
+		expect(daysLeftToFix(twentyThreeHourVuln)).toBe(30);
 	});
 	test('should return 2 if a critical vuln was raised today', () => {
 		const newCriticalVuln: RepocopVulnerability = {
