@@ -700,12 +700,17 @@ model aws_securityhub_findings {
 }
 
 model obligatron_results {
+  id              Int      @id @default(autoincrement())
   date            DateTime @db.Timestamp(6)
-  obligation_name String 
-  resource        String @id
+  obligation_name String
+  resource        String
   reason          String
   contacts        Json
   url             String
+
+  @@index([date])
+  @@index([obligation_name])
+  @@index([resource])
 }
 
 view view_repo_ownership {

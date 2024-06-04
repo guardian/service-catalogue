@@ -1,4 +1,5 @@
 CREATE TABLE IF NOT EXISTS obligatron_results (
+    "id" SERIAL PRIMARY KEY,
     "date" TIMESTAMP NOT NULL,
     "obligation_name" TEXT NOT NULL,
     "resource" TEXT NOT NULL,
