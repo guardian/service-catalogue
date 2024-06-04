@@ -706,7 +706,7 @@ model obligatron_results {
   resource        String
   reason          String
   contacts        Json
-  url             String
+  url             String?
 
   @@index([date])
   @@index([obligation_name])

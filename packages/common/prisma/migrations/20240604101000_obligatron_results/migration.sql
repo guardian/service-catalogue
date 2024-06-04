@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS obligatron_results (
     "resource" TEXT NOT NULL,
     "reason" TEXT NOT NULL,
     "contacts" JSONB NOT NULL,
-    "url" TEXT NOT NULL
+    "url" TEXT
 );
 
 CREATE INDEX IF NOT EXISTS "obligatron_results_date_idx" ON "obligatron_results" ("date");
