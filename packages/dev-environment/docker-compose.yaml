@@ -57,7 +57,6 @@ services:
       context: ../../containers/cloudquery
       args:
         CQ_CLI: ${CQ_CLI}
-    platform: linux/amd64
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,7 +80,6 @@ services:
     command: sync /cloudquery.yaml --log-console --log-level info
   grafana:
     user: root
-    platform: linux/amd64
     build:
       context: ../dashboard/.config
       args:
