@@ -20737,6 +20737,82 @@ spec:
       },
       "Type": "AWS::Lambda::Permission",
     },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FAA1A9FC8A": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideIamCredentialReportsContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition7300D1E2",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FAAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448A4775AD0": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FAA1A9FC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
     "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideInspectorTaskDefinitionDC3485A7AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944831874BB8": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
