@@ -45,6 +45,7 @@ import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Obligatron } from './obligatron';
 import { addPrismaMigrateTask } from './prisma-migrate-task';
+import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
 import { Repocop } from './repocop';
 
 interface ServiceCatalogueProps extends GuStackProps {
@@ -256,6 +257,12 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
 			cluster: cloudqueryCluster,
+		});
+
+		addRefreshMaterializedViewLambda(this, {
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
 		});
 
 		new Obligatron(this, {

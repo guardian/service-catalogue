@@ -30,13 +30,13 @@
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "eslint-plugin-deprecation": "^2.0.0",
-    "eslint-webpack-plugin": "^4.0.1",
+    "eslint-webpack-plugin": "^4.2.0",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
     "glob": "^10.2.7",
     "identity-obj-proxy": "3.0.0",
     "jest-environment-jsdom": "^29.5.0",
     "replace-in-file-webpack-plugin": "^1.0.6",
-    "sass": "1.77.2",
+    "sass": "1.77.4",
     "sass-loader": "14.2.1",
     "style-loader": "4.0.0",
     "swc-loader": "^0.2.3",
@@ -48,15 +48,15 @@
   },
   "dependencies": {
     "@emotion/css": "11.11.2",
-    "@grafana/data": "10.3.3",
+    "@grafana/data": "11.0.0",
     "@grafana/runtime": "11.0.0",
     "@grafana/ui": "11.0.0",
     "@grafana/schema": "10.4.3",
-    "@grafana/scenes": "^4.24.0",
+    "@grafana/scenes": "^4.25.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^5.2.0",
     "rxjs": "7.8.1",
-    "tslib": "2.5.3"
+    "tslib": "2.6.2"
   }
 }

@@ -72,6 +72,8 @@ jobs:
               - packages/github-actions-usage/dist/github-actions-usage.zip
             obligatron:
               - packages/obligatron/dist/obligatron.zip
+            refresh-materialized-view:
+              - packages/refresh-materialized-view/dist/refresh-materialized-view.zip
             prisma:
               - packages/common/prisma.zip
             theguardian-servicecatalogue-app:

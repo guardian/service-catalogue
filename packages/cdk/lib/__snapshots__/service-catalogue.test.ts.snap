@@ -19,6 +19,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuScheduledLambda",
       "GuLambdaFunction",
       "GuLambdaFunction",
+      "GuLambdaFunction",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -17808,6 +17809,282 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "RefreshMaterializedViewF0E38938": {
+      "DependsOn": [
+        "RefreshMaterializedViewServiceRoleDefaultPolicyCF61664F",
+        "RefreshMaterializedViewServiceRole8A87DE10",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Ref": "DistributionBucketName",
+          },
+          "S3Key": "deploy/TEST/refresh-materialized-view/refresh-materialized-view.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "APP": "refresh-materialized-view",
+            "DATABASE_HOSTNAME": {
+              "Fn::GetAtt": [
+                "PostgresInstance16DE4286E",
+                "Endpoint.Address",
+              ],
+            },
+            "QUERY_LOGGING": "false",
+            "STACK": "deploy",
+            "STAGE": "TEST",
+          },
+        },
+        "Handler": "index.main",
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+        },
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewServiceRole8A87DE10",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "refresh-materialized-view",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "Timeout": 600,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "PrivateSubnets",
+          },
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "RefreshMaterializedViewServiceRole8A87DE10": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "refresh-materialized-view",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RefreshMaterializedViewServiceRoleDefaultPolicyCF61664F": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "DistributionBucketName",
+                      },
+                      "/deploy/TEST/refresh-materialized-view/refresh-materialized-view.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/refresh-materialized-view",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/TEST/deploy/refresh-materialized-view/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/refresh_materialized_view",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RefreshMaterializedViewServiceRoleDefaultPolicyCF61664F",
+        "Roles": [
+          {
+            "Ref": "RefreshMaterializedViewServiceRole8A87DE10",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "RiffRaffDatabaseCredentials2033FD7A": {
       "DeletionPolicy": "Delete",
       "Properties": {
@@ -19699,6 +19976,1146 @@ spec:
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA589285154": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsCostExplorerContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsCostExplorerTaskDefinition62DC1A04",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA5AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944871E048DF": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA589285154",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944804BCC0B4": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358DCB18522",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358DCB18522": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsDelegatedToSecurityAccountContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsDelegatedToSecurityAccountTaskDefinition8FFEB633",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A600599C2A0": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsListOrgsContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsListOrgsTaskDefinition15F8AF14",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A60AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448B643483B": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A600599C2A0",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9AA73E4306": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideAutoScalingGroupsContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinitionA838A372",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E326D7BD": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9AA73E4306",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E7D4F97D": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04F73DB427",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04F73DB427": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideBackupContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideBackupTaskDefinition91A7A518",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41EAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448EB48E93E": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41EBCFEBF4C",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41EBCFEBF4C": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideCertificatesContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideCertificatesTaskDefinitionD275457C",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3AC429D4FA0": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideCloudFormationContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideCloudFormationTaskDefinitionFE550760",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3ACAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488A3427AC": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3AC429D4FA0",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AE2E169362": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideCloudwatchAlarmsContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinition1E4F26F4",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AEAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488838469A": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AE2E169362",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12945D102A": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideDynamoDBContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideDynamoDBTaskDefinition8C3ACD16",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488FBAC13A": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12945D102A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7E56A0E5BB": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideEc2Container",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideEc2TaskDefinition8CC129B6",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7EAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944889C189EC": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7E56A0E5BB",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideInspectorTaskDefinitionDC3485A7AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944831874BB8": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideInspectorTaskDefinitionDC3485A7EE598481",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideInspectorTaskDefinitionDC3485A7EE598481": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideInspectorContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideInspectorTaskDefinitionBABA9F5D",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944890D99406": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3F3FB92EC",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3F3FB92EC": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideLoadBalancersContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinition333F61F5",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944861B51720": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6AEFE0A57D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6AEFE0A57D": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideRDSContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideRDSTaskDefinitionB16F3CC7",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443A7D858435": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideS3Container",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideS3TaskDefinitionAF066748",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94483DC47EE3": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443A7D858435",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33A8780E691": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsRemainingDataContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsRemainingDataTaskDefinitionF2586400",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944883F8E339": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33A8780E691",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "repocop20553EB8": {
       "DependsOn": [
