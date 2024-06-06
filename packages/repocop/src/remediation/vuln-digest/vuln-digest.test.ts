@@ -286,19 +286,29 @@ describe('daysLeftToFix', () => {
 		expect(daysLeftToFix(veryOldVuln)).toBe(0);
 	});
 	test('should return 30 if a high vuln was raised in the last 24 hours', () => {
-		const newHighVuln: RepocopVulnerability = {
+		function hoursAgo(hours: number): Date {
+			const date = new Date();
+			date.setHours(date.getHours() - hours);
+			return date;
+		}
+
+		const oneHourOld: RepocopVulnerability = {
 			...veryOldVuln,
-			alert_issue_date: new Date(),
-		};
-		const twentyThreeHoursAgo = new Date();
-		twentyThreeHoursAgo.setHours(twentyThreeHoursAgo.getHours() - 23);
-		const twentyThreeHourVuln = {
-			...newHighVuln,
-			alert_issue_date: twentyThreeHoursAgo,
+			alert_issue_date: hoursAgo(1),
 		};
 
-		expect(daysLeftToFix(newHighVuln)).toBe(30);
-		expect(daysLeftToFix(twentyThreeHourVuln)).toBe(30);
+		const twentyThreeHoursOld = {
+			...oneHourOld,
+			alert_issue_date: hoursAgo(23),
+		};
+
+		const twentyFiveHoursOld = {
+			...oneHourOld,
+			alert_issue_date: hoursAgo(25),
+		};
+		expect(daysLeftToFix(oneHourOld)).toBe(30);
+		expect(daysLeftToFix(twentyThreeHoursOld)).toBe(30);
+		expect(daysLeftToFix(twentyFiveHoursOld)).toBe(29);
 	});
 	test('should return 2 if a critical vuln was raised today', () => {
 		const newCriticalVuln: RepocopVulnerability = {
