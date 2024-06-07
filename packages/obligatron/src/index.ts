@@ -22,7 +22,21 @@ export async function main(obligation: string) {
 	}
 
 	const config = await getConfig();
+	const startTime = new Date();
+
+	console.log({
+		message: 'Starting Obligatron',
+		obligation,
+		stage: config.stage,
+		withQueryLogging: config.withQueryLogging,
+		startTime,
+	});
+
 	const db = getPrismaClient(config);
+
+	console.log({
+		message: 'Starting to process obligation resources',
+	});
 
 	let results: ObligationResult[];
 
@@ -32,13 +46,23 @@ export async function main(obligation: string) {
 		}
 	}
 
-	// TODO: Save results to DB
-	// log compliance for whole department
-	const compliant = results.filter((r) => r.result).length;
-	const nonCompliant = results.filter((r) => !r.result).length;
-	const total = compliant + nonCompliant;
+	console.log({
+		message: 'Finished processing obligation resources, saving results to DB.',
+		total: results.length,
+	});
 
-	console.log(`Total Compliant: ${compliant}`);
-	console.log(`Total Un-compliant: ${nonCompliant}`);
-	console.log(`Compliance rate: ${(compliant / total) * 100}%`);
+	await db.obligatron_results.createMany({
+		data: results.map((r) => ({
+			date: startTime,
+			obligation_name: obligation,
+			resource: r.resource,
+			reason: r.reason,
+			contacts: r.contacts ?? {},
+			url: r.url,
+		})),
+	});
+
+	console.log({
+		message: 'Saved results to DB. Goodbye!',
+	});
 }

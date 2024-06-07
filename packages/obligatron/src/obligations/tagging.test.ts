@@ -30,12 +30,7 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateTaggingObligation(client);
 
-		expect(results.filter((r) => !r.result)).toHaveLength(0);
-		expect(results[0]).toMatchObject({
-			resource: 'arn:aws:s3:::mybucket',
-			result: true,
-			reasons: [],
-		});
+		expect(results).toHaveLength(0);
 	});
 
 	it('catches missing Stack tags', async () => {
@@ -56,11 +51,11 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateTaggingObligation(client);
 
-		expect(results.filter((r) => !r.result)).toHaveLength(1);
-		expect(results[0]).toMatchObject({
+		expect(results).toHaveLength(1);
+		expect(results[0]).toEqual({
 			resource: 'arn:aws:s3:::mybucket',
-			result: false,
-			reasons: ["Resource missing 'Stack' tag."],
+			reason: "Resource missing 'Stack' tag.",
+			contacts: { aws_account: '123456789012' },
 		});
 	});
 
@@ -82,11 +77,11 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateTaggingObligation(client);
 
-		expect(results.filter((r) => !r.result)).toHaveLength(1);
-		expect(results[0]).toMatchObject({
+		expect(results).toHaveLength(1);
+		expect(results[0]).toEqual({
 			resource: 'arn:aws:s3:::mybucket',
-			result: false,
-			reasons: ["Resource missing 'Stage' tag."],
+			reason: "Resource missing 'Stage' tag.",
+			contacts: { aws_account: '123456789012' },
 		});
 	});
 
@@ -108,11 +103,11 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateTaggingObligation(client);
 
-		expect(results.filter((r) => !r.result)).toHaveLength(1);
-		expect(results[0]).toMatchObject({
+		expect(results).toHaveLength(1);
+		expect(results[0]).toEqual({
 			resource: 'arn:aws:s3:::mybucket',
-			result: false,
-			reasons: ["Resource missing 'App' tag."],
+			reason: "Resource missing 'App' tag.",
+			contacts: { aws_account: '123456789012' },
 		});
 	});
 
@@ -134,11 +129,11 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateTaggingObligation(client);
 
-		expect(results.filter((r) => !r.result)).toHaveLength(1);
-		expect(results[0]).toMatchObject({
+		expect(results).toHaveLength(1);
+		expect(results[0]).toEqual({
 			resource: 'arn:aws:s3:::mybucket',
-			result: false,
-			reasons: ["Resource missing 'gu:repo' tag."],
+			reason: "Resource missing 'gu:repo' tag.",
+			contacts: { aws_account: '123456789012' },
 		});
 	});
 
@@ -161,16 +156,11 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateTaggingObligation(client);
 
-		expect(results.filter((r) => !r.result)).toHaveLength(1);
-		expect(results[0]).toMatchObject({
+		expect(results).toHaveLength(4);
+		expect(results[0]).toEqual({
 			resource: 'arn:aws:s3:::mybucket',
-			result: false,
-			reasons: [
-				"Resource missing 'Stack' tag.",
-				"Resource missing 'Stage' tag.",
-				"Resource missing 'App' tag.",
-				"Resource missing 'gu:repo' tag.",
-			],
+			reason: "Resource missing 'Stack' tag.",
+			contacts: { aws_account: '123456789012' },
 		});
 	});
 });

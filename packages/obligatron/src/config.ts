@@ -22,6 +22,7 @@ export async function getConfig(): Promise<Config> {
 	return {
 		stage,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
-		withQueryLogging: stage === 'DEV',
+		// Our insert queries are VERY big, so don't log them
+		withQueryLogging: false,
 	};
 }
