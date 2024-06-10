@@ -405,10 +405,10 @@ const urlSortPredicate = (url: string) => {
 	const parsedUrl = new URL(url);
 	console.log(parsedUrl.hostname);
 
-	if (parsedUrl.hostname.includes('snyk.io')) {
+	if (parsedUrl.hostname.endsWith('snyk.io')) {
 		return -2;
 	} else if (
-		parsedUrl.hostname.includes('github.com') &&
+		parsedUrl.hostname.endsWith('github.com') &&
 		parsedUrl.pathname.includes('advisories')
 	) {
 		return -1;
