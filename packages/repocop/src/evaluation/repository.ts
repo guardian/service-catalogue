@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import type {
 	github_languages,
 	github_repository_branches,
@@ -401,9 +402,15 @@ export function evaluateOneRepo(
 
 //create a predicate that orders a list of urls by whether they contain snyk.io first, and then github.com second
 const urlSortPredicate = (url: string) => {
-	if (url.includes('snyk.io')) {
+	const parsedUrl = new URL(url);
+	console.log(parsedUrl.hostname);
+
+	if (parsedUrl.hostname.includes('snyk.io')) {
 		return -2;
-	} else if (url.includes('github.com') && url.includes('advisories')) {
+	} else if (
+		parsedUrl.hostname.includes('github.com') &&
+		parsedUrl.pathname.includes('advisories')
+	) {
 		return -1;
 	}
 	return 0;
