@@ -152,13 +152,6 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	await createAndSendVulnerabilityDigests(
-		config,
-		teams,
-		repoOwners,
-		evaluationResults,
-	);
-
 	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
@@ -174,6 +167,14 @@ export async function main() {
 				octokit,
 			);
 		}
+
+		await createAndSendVulnerabilityDigests(
+			config,
+			teams,
+			repoOwners,
+			evaluationResults,
+		);
+
 		await applyProductionTopicAndMessageTeams(
 			teams,
 			unarchivedRepos,
