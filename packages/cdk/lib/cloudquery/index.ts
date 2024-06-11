@@ -164,7 +164,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideLoadBalancers',
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '23' }),
+			schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_elbv1_*', 'aws_elbv2_*'],
 			}),
