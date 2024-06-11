@@ -403,9 +403,11 @@ export function evaluateOneRepo(
 //create a predicate that orders a list of urls by whether they contain snyk.io first, and then github.com second
 const urlSortPredicate = (url: string) => {
 	const parsedUrl = new URL(url);
-	console.log(parsedUrl.hostname);
 
-	if (parsedUrl.hostname == 'snyk.io') {
+	if (
+		parsedUrl.hostname == 'snyk.io' ||
+		parsedUrl.hostname == 'security.snyk.io'
+	) {
 		return -2;
 	} else if (
 		parsedUrl.hostname == 'github.com' &&
