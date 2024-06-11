@@ -42,8 +42,9 @@ export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
 	}
 	const fixDate = new Date(vuln.alert_issue_date);
 	fixDate.setDate(fixDate.getDate() + daysToFix);
-	const daysLeftToFix = Math.floor(
-		(fixDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+	const millisecondsInADay = 1000 * 60 * 60 * 24;
+	const daysLeftToFix = Math.ceil(
+		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
 	);
 
 	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
