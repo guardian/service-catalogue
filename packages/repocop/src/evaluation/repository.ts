@@ -402,20 +402,25 @@ export function evaluateOneRepo(
 
 //create a predicate that orders a list of urls by whether they contain snyk.io first, and then github.com second
 const urlSortPredicate = (url: string) => {
-	const parsedUrl = new URL(url);
+	try {
+		const parsedUrl = new URL(url);
 
-	if (
-		parsedUrl.hostname == 'snyk.io' ||
-		parsedUrl.hostname == 'security.snyk.io'
-	) {
-		return -2;
-	} else if (
-		parsedUrl.hostname == 'github.com' &&
-		parsedUrl.pathname.includes('advisories')
-	) {
-		return -1;
+		if (
+			parsedUrl.hostname == 'snyk.io' ||
+			parsedUrl.hostname == 'security.snyk.io'
+		) {
+			return -2;
+		} else if (
+			parsedUrl.hostname == 'github.com' &&
+			parsedUrl.pathname.includes('advisories')
+		) {
+			return -1;
+		}
+		return 0;
+	} catch {
+		//Do nothing if the url is invalid
+		return 0;
 	}
-	return 0;
 };
 
 export function dependabotAlertToRepocopVulnerability(
