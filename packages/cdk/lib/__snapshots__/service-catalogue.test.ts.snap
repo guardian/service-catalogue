@@ -7938,7 +7938,7 @@ spec:
     },
     "CloudquerySourceAwsOrgWideLoadBalancersScheduledEventRuleE82A6C43": {
       "Properties": {
-        "ScheduleExpression": "cron(0 23 * * ? *)",
+        "ScheduleExpression": "rate(30 minutes)",
         "State": "ENABLED",
         "Targets": [
           {
