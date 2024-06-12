@@ -3,8 +3,11 @@ import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
+import { Rule, RuleTargetInput, Schedule } from 'aws-cdk-lib/aws-events';
+import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import { Obligations } from '../../obligatron/src/obligations';
 
 type ObligatronProps = {
 	vpc: IVpc;
@@ -33,7 +36,23 @@ export class Obligatron {
 			// Unfortunately Prisma doesn't support streaming data from Postgres at the moment https://github.com/prisma/prisma/issues/5055
 			// This means that all rows need to be loaded into memory at the same time whenever a query is ran hence the high memory requirement.
 			memorySize: 4096,
+			errorPercentageMonitoring: {
+				toleratedErrorPercentage: 0,
+				snsTopicName: 'devx-alerts',
+			},
 		});
+
+		for (const obligation of Obligations) {
+			new Rule(stack, `obligatron-${obligation}`, {
+				description: `Daily execution of Obligatron lambda for '${obligation}' obligation`,
+				schedule: Schedule.cron({ minute: '0', hour: '7' }),
+				targets: [
+					new LambdaFunction(lambda, {
+						event: RuleTargetInput.fromText(obligation),
+					}),
+				],
+			});
+		}
 
 		db.grantConnect(lambda, 'obligatron');
 	}

@@ -2,19 +2,18 @@ import type { PrismaClient } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { config } from 'dotenv';
 import { getConfig } from './config';
-import type { ObligationResult } from './obligations';
+import {
+	type Obligation,
+	type ObligationResult,
+	Obligations,
+	stringIsObligation,
+} from './obligations';
 import {
 	evaluateAmiTaggingCoverage,
 	evaluateSecurityHubTaggingCoverage,
 } from './obligations/tagging';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
-
-const Obligations = ['TAGGING'] as const;
-export type Obligation = (typeof Obligations)[number];
-const stringIsObligation = (input: string): input is Obligation => {
-	return Obligations.filter((v) => v === input).length > 0;
-};
 
 async function getResults(
 	obligation: Obligation,
