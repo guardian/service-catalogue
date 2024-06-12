@@ -1,16 +1,11 @@
-import { getPrismaClient } from 'common/database';
 import { config } from 'dotenv';
+import { getPrismaClient } from '../../common/src/database';
 import { getConfig } from './config';
 import type { ObligationResult } from './obligations';
+import { Obligations, stringIsObligation } from './obligations';
 import { evaluateTaggingObligation } from './obligations/tagging';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
-
-const Obligations = ['TAGGING'] as const;
-export type Obligation = (typeof Obligations)[number];
-const stringIsObligation = (input: string): input is Obligation => {
-	return Obligations.filter((v) => v === input).length > 0;
-};
 
 export async function main(obligation: string) {
 	if (!stringIsObligation(obligation)) {
