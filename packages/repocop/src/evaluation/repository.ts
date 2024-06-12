@@ -415,7 +415,6 @@ const urlSortPredicate = (maybeUrl: string) => {
 		}
 		return 0;
 	} catch {
-		//Do nothing if the url is invalid
 		console.debug(`Invalid url: ${maybeUrl}`);
 		return 0;
 	}
