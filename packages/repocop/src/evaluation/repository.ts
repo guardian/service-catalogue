@@ -401,24 +401,22 @@ export function evaluateOneRepo(
 }
 
 //create a predicate that orders a list of urls by whether they contain snyk.io first, and then github.com second
-const urlSortPredicate = (url: string) => {
+const urlSortPredicate = (maybeUrl: string) => {
 	try {
-		const parsedUrl = new URL(url);
+		const url = new URL(maybeUrl);
 
-		if (
-			parsedUrl.hostname == 'snyk.io' ||
-			parsedUrl.hostname == 'security.snyk.io'
-		) {
+		if (url.hostname === 'snyk.io' || url.hostname === 'security.snyk.io') {
 			return -2;
 		} else if (
-			parsedUrl.hostname == 'github.com' &&
-			parsedUrl.pathname.includes('advisories')
+			url.hostname === 'github.com' &&
+			url.pathname.includes('advisories')
 		) {
 			return -1;
 		}
 		return 0;
 	} catch {
 		//Do nothing if the url is invalid
+		console.debug(`Invalid url: ${maybeUrl}`);
 		return 0;
 	}
 };
