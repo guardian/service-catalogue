@@ -769,7 +769,7 @@ view view_running_instances {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view view_github_actions {
-  evaluated_on  DateTime?
+  evaluated_on  DateTime? @db.Timestamp(6)
   full_name     String?
   archived      Boolean?
   workflow_path String?
