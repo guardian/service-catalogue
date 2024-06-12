@@ -3,6 +3,7 @@ import { getPrismaClient } from '../../common/src/database';
 import { getConfig } from './config';
 import type { ObligationResult } from './obligations';
 import { Obligations, stringIsObligation } from './obligations';
+import { evaluateDriftObligation } from './obligations/drift';
 import { evaluateTaggingObligation } from './obligations/tagging';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
@@ -38,6 +39,11 @@ export async function main(obligation: string) {
 	switch (obligation) {
 		case 'TAGGING': {
 			results = await evaluateTaggingObligation(db);
+			break;
+		}
+		case 'DRIFT': {
+			results = await evaluateDriftObligation(db);
+			break;
 		}
 	}
 

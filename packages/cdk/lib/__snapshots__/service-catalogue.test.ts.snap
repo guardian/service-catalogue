@@ -19238,6 +19238,45 @@ spec:
       },
       "Type": "AWS::Lambda::Function",
     },
+    "obligatronDRIFTAllowEventRuleServiceCatalogueobligatron5BD5033EC2E5880F": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "obligatronA58CFCF1",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "obligatronDRIFTDEFBEEA4",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "obligatronDRIFTDEFBEEA4": {
+      "Properties": {
+        "Description": "Daily execution of Obligatron lambda for 'DRIFT' obligation",
+        "ScheduleExpression": "cron(0 7 * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "obligatronA58CFCF1",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+            "Input": ""DRIFT"",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
     "obligatronErrorPercentageAlarmForLambda8AFDF23F": {
       "Properties": {
         "ActionsEnabled": true,
