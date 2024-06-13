@@ -258,6 +258,7 @@ export function addCloudqueryEcsCluster(
 				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'AwsOrgWideEc2',
@@ -320,7 +321,7 @@ export function addCloudqueryEcsCluster(
 		policies: [listOrgsPolicy, cloudqueryAccess('*')],
 
 		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
-		memoryLimitMiB: 2048,
+		memoryLimitMiB: 3072,
 		cpu: 1024,
 	};
 
