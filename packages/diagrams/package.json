@@ -8,6 +8,6 @@
 		"typecheck": "echo 'Nothing to typecheck'"
 	},
 	"devDependencies": {
-		"@mermaid-js/mermaid-cli": "10.8.0"
+		"@mermaid-js/mermaid-cli": "10.9.1"
 	}
 }
