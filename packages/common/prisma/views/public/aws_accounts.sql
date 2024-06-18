@@ -1,15 +1,16 @@
 SELECT
-  DISTINCT acc.id,
-  acc.name,
-  acc.email,
-  acc.status,
-  acc.joined_timestamp,
-  COALESCE(ou.name, 'ROOT' :: text) AS organizational_unit
+  fn_aws_accounts.id,
+  fn_aws_accounts.name,
+  fn_aws_accounts.email,
+  fn_aws_accounts.status,
+  fn_aws_accounts.joined_timestamp,
+  fn_aws_accounts.organizational_unit
 FROM
-  (
-    (
-      aws_organizations_accounts acc
-      LEFT JOIN aws_organizations_account_parents par ON ((acc.id = par.id))
-    )
-    LEFT JOIN aws_organizations_organizational_units ou ON ((par.parent_id = ou.id))
+  fn_aws_accounts() fn_aws_accounts(
+    id,
+    name,
+    email,
+    STATUS,
+    joined_timestamp,
+    organizational_unit
   );
