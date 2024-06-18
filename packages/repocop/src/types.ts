@@ -5,8 +5,8 @@ import type {
 	github_repositories,
 	github_teams,
 	repocop_github_repository_rules,
-	repocop_vulnerabilities,
 } from '@prisma/client';
+import type { RepocopVulnerability } from 'common/src/types';
 
 export type NonEmptyArray<T> = [T, ...T[]];
 
@@ -160,24 +160,6 @@ export interface SnykProject {
 		business_criticality?: unknown[];
 	};
 }
-
-export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
-
-// The number of days teams have to fix vulnerabilities of a given severity
-export const SLAs: Record<Severity, number | undefined> = {
-	critical: 2,
-	high: 30,
-	medium: undefined,
-	low: undefined,
-	unknown: undefined,
-};
-
-export type RepocopVulnerability = Omit<
-	repocop_vulnerabilities,
-	'id' | 'repo_owner' | 'severity'
-> & {
-	severity: Severity;
-};
 
 export interface EvaluationResult {
 	fullName: string;

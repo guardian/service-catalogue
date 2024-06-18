@@ -1,9 +1,5 @@
-import type {
-	NonEmptyArray,
-	RepocopVulnerability,
-	Repository,
-	Severity,
-} from './types';
+import type { RepocopVulnerability, Severity } from 'common/src/types';
+import type { NonEmptyArray, Repository } from './types';
 
 export function isProduction(repo: Repository) {
 	return repo.topics.includes('production') && !repo.archived;
