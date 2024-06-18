@@ -65,6 +65,17 @@ describe('The tagging obligation', () => {
 			},
 			url: 'https://mars-north-1.console.aws.amazon.com/securityhub/home?region=mars-north-1#/findings?search=RecordState%3D%255Coperator%255C%253AEQUALS%255C%253AACTIVE%26Id%3D%255Coperator%255C%253AEQUALS%255C%253A123456789012',
 		});
+		expect(results[1]).toEqual({
+			resource: 'arn:aws:s3:::mybucket',
+			reason: 'failed tagging',
+			contacts: {
+				aws_account_id: '123456789012',
+				Stack: 'my-stack',
+				Stage: 'prod',
+				App: 'myapp',
+			},
+			url: 'https://mars-north-1.console.aws.amazon.com/securityhub/home?region=mars-north-1#/findings?search=RecordState%3D%255Coperator%255C%253AEQUALS%255C%253AACTIVE%26Id%3D%255Coperator%255C%253AEQUALS%255C%253A123456789012',
+		});
 	});
 
 	it('handles findings with no resources', async () => {
