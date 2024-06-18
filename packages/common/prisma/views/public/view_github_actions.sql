@@ -1,25 +1,18 @@
-WITH data AS (
-  SELECT
-    tbl.evaluated_on,
-    tbl.full_name,
-    tbl.workflow_path,
-    use_string.use_string AS ACTION,
-    split_part(use_string.use_string, '@' :: text, 1) AS action_name,
-    split_part(use_string.use_string, '@' :: text, '-1' :: integer) AS version
-  FROM
-    guardian_github_actions_usage tbl,
-    LATERAL unnest(tbl.workflow_uses) use_string(use_string)
-)
 SELECT
-  d.evaluated_on,
-  d.full_name,
-  r.archived,
-  d.workflow_path,
-  d.action,
-  d.action_name,
-  d.version
+  fn_github_actions.evaluated_on,
+  fn_github_actions.full_name,
+  fn_github_actions.archived,
+  fn_github_actions.workflow_path,
+  fn_github_actions.action,
+  fn_github_actions.action_name,
+  fn_github_actions.version
 FROM
-  (
-    data d
-    JOIN github_repositories r ON ((d.full_name = r.full_name))
+  fn_github_actions() fn_github_actions(
+    evaluated_on,
+    full_name,
+    archived,
+    workflow_path,
+    ACTION,
+    action_name,
+    version
   );
