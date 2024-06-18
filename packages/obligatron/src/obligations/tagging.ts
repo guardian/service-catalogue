@@ -78,17 +78,18 @@ export async function evaluateTaggingObligation(
 			});
 		}
 
-		for (const [index, resource] of resources.entries()) {
-			// This in theory should not happen as long as AWS don't change their schema.
-			// if they do change the schema its unlikely to be just this one finding failing,
-			// so lets make sure that we crash the lambda and get a humans attention!
-			if (!isFindingResource(resource)) {
-				throw new Error(
-					`Invalid resource in finding ${finding.id} at index ${index}`,
-				);
-			}
+		const validResources = resources.filter(isFindingResource);
+		const invalidResources = resources.filter((f) => !isFindingResource(f));
 
-			results.push({
+		// This in theory should not happen as long as AWS don't change their schema.
+		// if they do change the schema its unlikely to be just this one finding failing,
+		// so lets make sure that we crash the lambda and get a humans attention!
+		if (invalidResources.length > 0) {
+			throw new Error(`Invalid resource in finding ${finding.id}`);
+		}
+
+		results.push(
+			...validResources.map((resource) => ({
 				resource: resource.Id,
 				reason: finding.title,
 				url: securityHubLink(finding.region, finding.id),
@@ -99,8 +100,8 @@ export async function evaluateTaggingObligation(
 					Stage: resource.Tags.Stage,
 					App: resource.Tags.App,
 				},
-			});
-		}
+			})),
+		);
 	}
 
 	return results;
