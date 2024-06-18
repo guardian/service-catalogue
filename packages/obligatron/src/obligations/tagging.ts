@@ -1,71 +1,107 @@
 import type { PrismaClient } from '@prisma/client';
 import type { ObligationResult } from '.';
 
-export type AwsResource = {
-	account_id: string;
-	arn: string;
-	service: string;
-	resource_type: string;
-	taggable: string;
-	tags?: Record<string, string> | null;
+type FindingResource = {
+	Id: string;
+	Tags: Record<string, string>;
 };
 
-const REQUIRED_TAGS = ['Stack', 'Stage', 'App', 'gu:repo'] as const;
+const securityHubLink = (region: string, findingId: string) => {
+	// Annoyingly AWS doesn't seem to use any standard encoding that I'm aware of
+	// meaning that we can't use encodeURI and must manually build the encoded URL.
+	const BACK_SLASH = '%255C';
+	const SLASH = '%252F';
+	const SEMI_COLON = '%253A';
 
-const isExemptResource = (resource: AwsResource): boolean => {
-	if (resource.resource_type === 'role') {
-		// AWS Creates roles for various services when onboarding them.
-		// Technically we can tag these but they wouldn't belong to a specific App, Stage, or Stack.
-		return resource.arn.includes('/aws-service-role/');
-	}
+	const EQUALS = encodeURIComponent('='); // This one is actually standard encoding for =
+	const AMPERSANS = encodeURIComponent('&'); // This one is actually standard encoding for &
 
-	return false;
+	const queryParameter =
+		`RecordState=\\operator\\:EQUALS\\:ACTIVE&Id=\\operator\\:EQUALS\\:${findingId}`
+			.replaceAll(':', SEMI_COLON)
+			.replaceAll('/', SLASH)
+			.replaceAll('\\', BACK_SLASH)
+			.replaceAll('=', EQUALS)
+			.replaceAll('&', AMPERSANS);
+
+	return `https://${region}.console.aws.amazon.com/securityhub/home?region=${region}#/findings?search=${queryParameter}`;
 };
 
-function resourceHasTag(resource: AwsResource, tag: string): boolean {
-	return (
-		typeof resource.tags === 'object' &&
-		resource.tags?.[tag] !== undefined &&
-		resource.tags[tag] !== ''
-	);
-}
+const isFindingResource = (resource: unknown): resource is FindingResource =>
+	typeof resource === 'object' &&
+	resource != null &&
+	'Id' in resource &&
+	'Tags' in resource;
 
 export async function evaluateTaggingObligation(
 	db: PrismaClient,
 ): Promise<ObligationResult[]> {
-	const awsResources = await db.$queryRaw<AwsResource[]>`
-		SELECT
-			account_id,
-			arn,
-			service,
-			resource_type,
-			bool_or(taggable) as taggable,
-			jsonb_aggregate(tags) as tags
-		FROM aws_resources_raw()
-		WHERE taggable = true
-		GROUP BY account_id, arn, service, resource_type;
-  `;
+	const findings = await db.aws_securityhub_findings.findMany({
+		where: {
+			product_fields: {
+				path: ['StandardsArn'],
+				string_starts_with:
+					'arn:aws:securityhub:::standards/aws-resource-tagging-standard',
+			},
+			compliance: {
+				path: ['Status'],
+				equals: 'FAILED',
+			},
+		},
+	});
+
+	console.log({
+		message: 'Received findings from security hub',
+		total: findings.length,
+	});
 
 	const results: ObligationResult[] = [];
 
-	for (const resource of awsResources) {
-		if (isExemptResource(resource)) {
+	for (const finding of findings) {
+		const resources = finding.resources?.valueOf();
+
+		if (!Array.isArray(resources)) {
+			console.error({
+				message: `Skipping invalid SecurityHub finding, invalid 'resources' field`,
+				finding_id: finding.id,
+			});
 			continue;
 		}
 
-		for (const requiredTag of REQUIRED_TAGS) {
-			if (resourceHasTag(resource, requiredTag)) {
-				continue;
-			}
-
-			results.push({
-				resource: resource.arn,
-				reason: `Resource missing '${requiredTag}' tag.`,
-				contacts: {
-					aws_account: resource.account_id,
-				},
+		// The Security Hub spec indicates that a finding can have multiple resources,
+		// I don't think this will happen for the Tagging rules, but lets be safe by
+		// handling this situation and raising a warning.
+		if (resources.length !== 1) {
+			console.warn({
+				message: `Finding had more (or less) that 1 resource: ${resources.length}`,
+				finding_id: finding.id,
 			});
 		}
+
+		const validResources = resources.filter(isFindingResource);
+		const invalidResources = resources.filter((f) => !isFindingResource(f));
+
+		// This in theory should not happen as long as AWS don't change their schema.
+		// if they do change the schema its unlikely to be just this one finding failing,
+		// so lets make sure that we crash the lambda and get a humans attention!
+		if (invalidResources.length > 0) {
+			throw new Error(`Invalid resource in finding ${finding.id}`);
+		}
+
+		results.push(
+			...validResources.map((resource) => ({
+				resource: resource.Id,
+				reason: finding.title,
+				url: securityHubLink(finding.region, finding.id),
+				contacts: {
+					aws_account_id: finding.aws_account_id,
+					// Resource might only be missing one of these tags which might help us assert ownership
+					Stack: resource.Tags.Stack,
+					Stage: resource.Tags.Stage,
+					App: resource.Tags.App,
+				},
+			})),
+		);
 	}
 
 	return results;

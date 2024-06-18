@@ -19,5 +19,6 @@ export type ObligationResult = {
 	/**
 	 * Key-value pairs to link failing obligations to the responsible teams.
 	 */
-	contacts?: Record<string, string>;
+
+	contacts?: object;
 };
