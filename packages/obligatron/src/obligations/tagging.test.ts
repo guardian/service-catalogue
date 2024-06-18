@@ -141,7 +141,7 @@ describe('The tagging obligation', () => {
 		]);
 
 		await expect(evaluateTaggingObligation(client)).rejects.toEqual(
-			new Error('Invalid resource in finding 123456789012 at index 0'),
+			new Error('Invalid resource in finding 123456789012'),
 		);
 	});
 });
