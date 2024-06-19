@@ -18,7 +18,7 @@
     "@grafana/plugin-e2e": "^1.5.0",
     "@grafana/tsconfig": "^1.2.0-rc1",
     "@playwright/test": "^1.44.1",
-    "@swc/core": "1.5.7",
+    "@swc/core": "1.6.3",
     "@swc/helpers": "0.5.11",
     "@swc/jest": "0.2.36",
     "@swc/register": "0.1.10",
