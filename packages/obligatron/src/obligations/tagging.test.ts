@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
-import { evaluateTaggingObligation } from './tagging';
+import { evaluateSecurityHubTaggingCoverage } from './tagging';
 
 const createPrismaClientWithMockedResponse = (response: unknown[]) => {
 	const aws_securityhub_findings = {
@@ -51,7 +51,7 @@ describe('The tagging obligation', () => {
 			},
 		]);
 
-		const results = await evaluateTaggingObligation(client);
+		const results = await evaluateSecurityHubTaggingCoverage(client);
 
 		expect(results).toHaveLength(2);
 		expect(results[0]).toEqual({
@@ -89,7 +89,7 @@ describe('The tagging obligation', () => {
 			},
 		]);
 
-		const results = await evaluateTaggingObligation(client);
+		const results = await evaluateSecurityHubTaggingCoverage(client);
 
 		expect(results).toHaveLength(0);
 	});
@@ -124,7 +124,7 @@ describe('The tagging obligation', () => {
 			},
 		]);
 
-		const results = await evaluateTaggingObligation(client);
+		const results = await evaluateSecurityHubTaggingCoverage(client);
 
 		expect(results).toHaveLength(2);
 	});
@@ -140,7 +140,7 @@ describe('The tagging obligation', () => {
 			},
 		]);
 
-		await expect(evaluateTaggingObligation(client)).rejects.toEqual(
+		await expect(evaluateSecurityHubTaggingCoverage(client)).rejects.toEqual(
 			new Error('Invalid resource in finding 123456789012'),
 		);
 	});

@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import type { ObligationResult } from '.';
 
 type FindingResource = {
@@ -42,7 +42,52 @@ const isFindingResource = (resource: unknown): resource is FindingResource =>
 	'Id' in resource &&
 	'Tags' in resource;
 
-export async function evaluateTaggingObligation(
+export async function evaluateAmiTaggingCoverage(
+	db: PrismaClient,
+): Promise<ObligationResult[]> {
+	const records = await db.aws_ec2_images.findMany({
+		where: {
+			account_id: {
+				equals: db.aws_ec2_images.fields.owner_id,
+			},
+		},
+	});
+
+	const amiTags = [
+		// The "core" tags
+		'Stack',
+		'Stage',
+		'App',
+		'gu:repo',
+
+		// Tags added by AMIgo
+		'AmigoStage',
+		'SourceAMI',
+		'BuildNumber',
+		'BuiltBy',
+		'Recipe',
+		'BakeId',
+	];
+
+	return records.flatMap<ObligationResult>((record) => {
+		const tagKeys = Object.keys(record.tags as Prisma.JsonObject);
+
+		const missingTags = amiTags.filter((tag) => !tagKeys.includes(tag));
+		console.log(`AMI ${record.arn} is missing tags: ${missingTags.join(', ')}`);
+
+		return missingTags.map<ObligationResult>((tag) => {
+			return {
+				resource: record.arn,
+				reason: `AMIs should be tagged. Missing tag: ${tag}`,
+				contacts: {
+					aws_account: record.account_id,
+				},
+			};
+		});
+	});
+}
+
+export async function evaluateSecurityHubTaggingCoverage(
 	db: PrismaClient,
 ): Promise<ObligationResult[]> {
 	const findings = await db.aws_securityhub_findings.findMany({

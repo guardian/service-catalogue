@@ -1,8 +1,12 @@
+import type { PrismaClient } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
 import { config } from 'dotenv';
 import { getConfig } from './config';
 import type { ObligationResult } from './obligations';
-import { evaluateTaggingObligation } from './obligations/tagging';
+import {
+	evaluateAmiTaggingCoverage,
+	evaluateSecurityHubTaggingCoverage,
+} from './obligations/tagging';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
 
@@ -11,6 +15,20 @@ export type Obligation = (typeof Obligations)[number];
 const stringIsObligation = (input: string): input is Obligation => {
 	return Obligations.filter((v) => v === input).length > 0;
 };
+
+async function getResults(
+	obligation: Obligation,
+	db: PrismaClient,
+): Promise<ObligationResult[]> {
+	switch (obligation) {
+		case 'TAGGING': {
+			return [
+				...(await evaluateSecurityHubTaggingCoverage(db)),
+				...(await evaluateAmiTaggingCoverage(db)),
+			];
+		}
+	}
+}
 
 export async function main(obligation: string) {
 	if (!stringIsObligation(obligation)) {
@@ -38,13 +56,7 @@ export async function main(obligation: string) {
 		message: 'Starting to process obligation resources',
 	});
 
-	let results: ObligationResult[];
-
-	switch (obligation) {
-		case 'TAGGING': {
-			results = await evaluateTaggingObligation(db);
-		}
-	}
+	const results: ObligationResult[] = await getResults(obligation, db);
 
 	console.log({
 		message: 'Finished processing obligation resources, saving results to DB.',
