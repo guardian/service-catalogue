@@ -2,7 +2,7 @@
 	"name": "repocop",
 	"version": "1.0.0",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.138",
+		"@types/aws-lambda": "^8.10.140",
 		"@types/got": "^9.6.12"
 	},
 	"scripts": {
