@@ -7,6 +7,7 @@ import {
 	parseEvent,
 	parseSecretJson,
 	partition,
+	stringToSeverity,
 	topicMonitoringProductionTagCtas,
 } from './functions';
 
@@ -186,5 +187,17 @@ describe('Unwrapping an SNS message', () => {
 		const inputMsg = '{"myString":"goodbye","myArray":["how","are","you","?]}';
 		const inputEvent = eventWithMessage(inputMsg);
 		expect(() => parseEvent<MyEvent>(inputEvent)).toThrow();
+	});
+});
+
+describe('stringToSeverity', () => {
+	test('should return unknown if it is passed an unexpected string', () => {
+		expect(stringToSeverity('foo')).toBe('unknown');
+	});
+	test('should return the correct severity for valid inputs', () => {
+		expect(stringToSeverity('low')).toBe('low');
+		expect(stringToSeverity('medium')).toBe('medium');
+		expect(stringToSeverity('high')).toBe('high');
+		expect(stringToSeverity('critical')).toBe('critical');
 	});
 });

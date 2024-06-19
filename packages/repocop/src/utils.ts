@@ -1,4 +1,4 @@
-import type { RepocopVulnerability, Severity } from 'common/src/types';
+import type { RepocopVulnerability } from 'common/src/types';
 import type { NonEmptyArray, Repository } from './types';
 
 export function isProduction(repo: Repository) {
@@ -10,19 +10,6 @@ export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 		throw new Error(`Expected a non-empty array. Source table may be empty.`);
 	}
 	return value as NonEmptyArray<T>;
-}
-
-export function stringToSeverity(severity: string): Severity {
-	if (
-		severity === 'low' ||
-		severity === 'medium' ||
-		severity === 'high' ||
-		severity === 'critical'
-	) {
-		return severity;
-	} else {
-		return 'unknown';
-	}
 }
 
 const criticalFirstPredicate = (x: RepocopVulnerability) =>

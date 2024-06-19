@@ -5,7 +5,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { partition } from 'common/src/functions';
+import { partition, stringToSeverity } from 'common/src/functions';
 import type { RepocopVulnerability, Severity } from 'common/src/types';
 import { SLAs } from 'common/src/types';
 import {
@@ -23,7 +23,7 @@ import type {
 	SnykProject,
 	Tag,
 } from '../types';
-import { isProduction, stringToSeverity, vulnSortPredicate } from '../utils';
+import { isProduction, vulnSortPredicate } from '../utils';
 
 /**
  * Evaluate the following rule for a Github repository:
