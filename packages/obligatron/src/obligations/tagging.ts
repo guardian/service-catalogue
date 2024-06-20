@@ -2,8 +2,17 @@ import type { PrismaClient } from '@prisma/client';
 import type { ObligationResult } from '.';
 
 type FindingResource = {
+	/**
+	 * The resource identifier, such as the ARN.
+	 */
 	Id: string;
-	Tags: Record<string, string>;
+
+	/**
+	 * The tags on the resource.
+	 *
+	 * A value of `null` represents the absence of tags.
+	 */
+	Tags: null | Record<string, string>;
 };
 
 const securityHubLink = (region: string, findingId: string) => {
@@ -95,10 +104,13 @@ export async function evaluateTaggingObligation(
 				url: securityHubLink(finding.region, finding.id),
 				contacts: {
 					aws_account_id: finding.aws_account_id,
-					// Resource might only be missing one of these tags which might help us assert ownership
-					Stack: resource.Tags.Stack,
-					Stage: resource.Tags.Stage,
-					App: resource.Tags.App,
+
+					...(resource.Tags !== null && {
+						// Resource might only be missing one of these tags which might help us assert ownership
+						Stack: resource.Tags.Stack,
+						Stage: resource.Tags.Stage,
+						App: resource.Tags.App,
+					}),
 				},
 			})),
 		);
