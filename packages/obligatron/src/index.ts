@@ -24,13 +24,15 @@ export async function main(obligation: string) {
 	const config = await getConfig();
 	const startTime = new Date();
 
-	console.log({
-		message: 'Starting Obligatron',
-		obligation,
-		stage: config.stage,
-		withQueryLogging: config.withQueryLogging,
-		startTime,
-	});
+	console.log(
+		JSON.stringify({
+			message: 'Starting Obligatron',
+			obligation,
+			stage: config.stage,
+			withQueryLogging: config.withQueryLogging,
+			startTime,
+		}),
+	);
 
 	const db = getPrismaClient(config);
 
