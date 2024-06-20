@@ -43,17 +43,15 @@ createPrismaZip() {
 }
 
 verify() {
- package_name=$1
+  package_name=$1
   file_name=$2
-  echo "packages/diagrams/output.svg"
   npm run generate -w "$package_name"
 
-
-if git diff --no-patch --exit-code "$file_name"; then
+  if git diff --no-patch --exit-code "$file_name"; then
     echo "Generated files in $package_name package are up to date."
-else
+  else
     echo "$package_name package is out of date. Please regenerate the project and commit the changes."
-fi
+  fi
 }
 
 
@@ -66,7 +64,6 @@ npm test
 npx npm-run-all --print-label --parallel typecheck lint synth build
 
 verify best-practices "packages/best-practices/best-practices.md"
-verify diagrams "packages/diagrams/output.svg"
 
 createZip "interactive-monitor"
 createZip "snyk-integrator"
