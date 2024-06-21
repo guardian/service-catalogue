@@ -191,6 +191,24 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			name: 'AwsLambda',
+			description: 'Collecting lambda data across the organisation.',
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '10', hour: '1' }),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_lambda_*'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		},
+		{
+			name: 'AwsSSMParameters',
+			description: 'Collecting ssm parameters across the organisation.',
+			schedule: nonProdSchedule ?? Schedule.cron({ minute: '20', hour: '1' }),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_ssm_parameters'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		},
+		{
 			name: 'AwsOrgWideCloudwatchAlarms',
 			description:
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
