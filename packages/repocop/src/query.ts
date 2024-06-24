@@ -4,6 +4,7 @@ import type {
 	PrismaClient,
 	view_repo_ownership,
 } from '@prisma/client';
+import type { RepocopVulnerability } from 'common/src/types';
 import type { Octokit } from 'octokit';
 import { dependabotAlertToRepocopVulnerability } from './evaluation/repository';
 import type {
@@ -11,7 +12,6 @@ import type {
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	NonEmptyArray,
-	RepocopVulnerability,
 	Repository,
 	SnykIssue,
 	SnykProject,

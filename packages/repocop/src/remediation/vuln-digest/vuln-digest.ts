@@ -1,13 +1,8 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
+import { type RepocopVulnerability, SLAs } from 'common/src/types';
 import type { Config } from '../../config';
-import type {
-	EvaluationResult,
-	RepocopVulnerability,
-	Team,
-	VulnerabilityDigest,
-} from '../../types';
-import { SLAs } from '../../types';
+import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types';
 import { vulnSortPredicate } from '../../utils';
 
 function getOwningRepos(

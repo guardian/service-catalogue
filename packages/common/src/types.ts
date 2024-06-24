@@ -1,4 +1,5 @@
 import { type StrategyOptions } from '@octokit/auth-app';
+import type { repocop_vulnerabilities } from '@prisma/client';
 
 export type GithubAppSecret = {
 	appId: string;
@@ -51,3 +52,21 @@ export interface ProjectId {
 		};
 	};
 }
+
+export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
+
+export type RepocopVulnerability = Omit<
+	repocop_vulnerabilities,
+	'id' | 'repo_owner' | 'severity'
+> & {
+	severity: Severity;
+};
+
+// The number of days teams have to fix vulnerabilities of a given severity
+export const SLAs: Record<Severity, number | undefined> = {
+	critical: 2,
+	high: 30,
+	medium: undefined,
+	low: undefined,
+	unknown: undefined,
+};

@@ -3,7 +3,7 @@ import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { SNSEvent } from 'aws-lambda';
 import { Octokit } from 'octokit';
-import type { GitHubAppConfig, GithubAppSecret } from 'common/types';
+import type { GitHubAppConfig, GithubAppSecret, Severity } from 'common/types';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
@@ -153,4 +153,17 @@ export async function applyTopics(
 		.names;
 	const names = topics.concat([topic]);
 	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
+}
+
+export function stringToSeverity(severity: string): Severity {
+	if (
+		severity === 'low' ||
+		severity === 'medium' ||
+		severity === 'high' ||
+		severity === 'critical'
+	) {
+		return severity;
+	} else {
+		return 'unknown';
+	}
 }

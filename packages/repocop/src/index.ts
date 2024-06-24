@@ -7,6 +7,7 @@ import type {
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
+import type { RepocopVulnerability } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -30,11 +31,7 @@ import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
-import type {
-	AwsCloudFormationStack,
-	EvaluationResult,
-	RepocopVulnerability,
-} from './types';
+import type { AwsCloudFormationStack, EvaluationResult } from './types';
 import { isProduction } from './utils';
 
 async function writeEvaluationTable(
