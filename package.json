@@ -42,13 +42,7 @@
       "prettier/prettier": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
       "unicorn/prefer-array-flat-map": "error"
-    },
-    "overrides": [
-      {
-        "files": ["packages/dashboard/**"],
-        "extends": ["./packages/dashboard/.eslintrc"]
-      }
-    ]
+    }
   },
   "eslintIgnore": [
     "packages/common/dist"
