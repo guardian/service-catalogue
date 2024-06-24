@@ -84,7 +84,6 @@ model aws_ec2_images {
   virtualization_type   String?
 
   @@id([account_id, region, arn], map: "aws_ec2_images_cqpk")
-  @@ignore
 }
 
 model aws_ec2_instances {
