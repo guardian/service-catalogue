@@ -7,7 +7,7 @@ export const PluginPropsContext = createContext<AppRootProps | null>(null);
 export const usePluginProps = () => useContext(PluginPropsContext);
 
 export const usePluginMeta = () => {
-	const pluginProps = usePluginProps();
+  const pluginProps = usePluginProps();
 
-	return pluginProps?.meta;
+  return pluginProps?.meta;
 };

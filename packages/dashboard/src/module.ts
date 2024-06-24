@@ -3,8 +3,8 @@ import { App } from './components/App';
 import { AppConfig } from './components/AppConfig';
 
 export const plugin = new AppPlugin<object>().setRootPage(App).addConfigPage({
-	title: 'Configuration',
-	icon: 'cog',
-	body: AppConfig,
-	id: 'configuration',
+  title: 'Configuration',
+  icon: 'cog',
+  body: AppConfig,
+  id: 'configuration',
 });
