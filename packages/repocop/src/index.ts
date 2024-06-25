@@ -149,7 +149,10 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	await sendUnprotectedRepo(repocopRules, config, repoLanguages);
+	if (config.snykIntegrationPREnabled) {
+		await sendUnprotectedRepo(repocopRules, config, repoLanguages);
+	}
+
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
