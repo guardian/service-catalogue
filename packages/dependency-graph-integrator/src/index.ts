@@ -27,7 +27,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 		author,
 		branch,
 		title,
-		generatePrBody(branch),
+		generatePrBody(branch, event.name),
 		fileName,
 		createYaml(branch),
 		commitMessage,

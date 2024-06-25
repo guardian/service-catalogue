@@ -16,9 +16,11 @@ export function createYaml(prBranch: string): string {
 				'runs-on': 'ubuntu-latest',
 				steps: [
 					{
+						name: 'Checkout branch',
 						uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
 					},
 					{
+						name: 'Submit dependencies',
 						uses: 'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1',
 					},
 				],
@@ -35,20 +37,22 @@ export function createYaml(prBranch: string): string {
 function createPRChecklist(branchName: string): string[] {
 	const step1 =
 		'A run of this action should have been triggered when the branch was ' +
-		'created. Go to Insights -> Dependency graph and sense check a few of ' +
-		'your dependencies to make sure they show up. There may be a short delay ' +
-		'between submission and them appearing in the UI.';
+		"created. Go to action logs for the 'Submit dependencies' step and follow " +
+		'the link to the snapshot. Sense check that the snapshot looks ' +
+		'reasonable.';
 	const step2 =
 		`When you are happy the action works, remove the branch name \`${branchName}\`` +
-		'trigger from the the yaml file (aka delete line 6), approve, and merge.';
+		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
 	return [step1, step2];
 }
 
-export function generatePrBody(branchName: string): string {
+export function generatePrBody(branchName: string, repoName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
-			'This PR sends your sbt dependencies to GitHub for vulnerability monitoring via Dependabot. ',
+			'This PR sends your sbt dependencies to GitHub for vulnerability monitoring via Dependabot. ' +
+				`The submitted dependencies will appear in the [Dependency Graph](https://github.com/guardian/${repoName}/network/dependencies) ` +
+				'on merge to main (it might take a few minutes to update).',
 		),
 		h2('Why?'),
 		p(
