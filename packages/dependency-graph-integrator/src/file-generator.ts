@@ -27,10 +27,9 @@ export function createYaml(prBranch: string): string {
 		},
 	};
 
-	return stringify(dependencyGraphWorkflowJson, { lineWidth: 120 }).replace(
-		'{}',
-		'',
-	);
+	return stringify(dependencyGraphWorkflowJson, { lineWidth: 120 })
+		.replace('{}', '')
+		.replaceAll('"', '');
 }
 
 function createPRChecklist(branchName: string): string[] {
