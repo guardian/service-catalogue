@@ -14,17 +14,24 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 	const config: Config = getConfig();
 	const branch = generateBranchName('sbt-dependency-graph');
 
+	const boardNumber = 110;
+	const author = 'gu-dependency-graph-integrator'; // TODO: create new 'gu-dependency-graph-integrator' app
+	const title =
+		'Submit sbt dependencies to GitHub for vulnerability monitoring';
+	const fileName = '.github/workflows/sbt-dependency-graph.yaml';
+	const commitMessage = 'Add sbt-dependency-graph.yaml';
+
 	await createPrAndAddToProject(
 		config.stage,
 		event.name,
-		'?????', //TODO - add author
+		author,
 		branch,
-		'Submit sbt dependencies to GitHub for vulnerability monitoring',
-		generatePrBody(branch),
-		'.github/workflows/sbt-dependency-graph.yml',
+		title,
+		generatePrBody(branch, event.name),
+		fileName,
 		createYaml(branch),
-		'Add sbt-dependency-graph.yml',
-		NaN, //TODO - add board number
+		commitMessage,
+		boardNumber,
 	);
 }
 

@@ -13,46 +13,53 @@ export function createYaml(prBranch: string): string {
 		},
 		jobs: {
 			'dependency-graph': {
-				// 'runs-on': 'ubuntu-latest', //let's see how we do without this
+				'runs-on': 'ubuntu-latest',
 				steps: [
-					{ uses: 'actions/checkout@v4' },
-					{ uses: 'scalacenter/sbt-dependency-submission@v2' },
+					{
+						name: 'Checkout branch',
+						uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
+					},
+					{
+						name: 'Submit dependencies',
+						uses: 'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1',
+					},
 				],
 				permissions: { contents: 'write' },
 			},
 		},
 	};
 
-	return stringify(dependencyGraphWorkflowJson, { lineWidth: 120 }).replace(
-		'{}',
-		'',
-	);
+	return stringify(dependencyGraphWorkflowJson, { lineWidth: 120 })
+		.replace('{}', '')
+		.replaceAll('"', '');
 }
 
 function createPRChecklist(branchName: string): string[] {
 	const step1 =
 		'A run of this action should have been triggered when the branch was ' +
-		'created. Go to Insights -> Dependency graph and sense check a few of ' +
-		'your dependencies to make sure they show up. There may be a short delay ' +
-		'between submission and them appearing in the UI.';
+		"created. Go to action logs for the 'Submit dependencies' step and follow " +
+		'the link to the snapshot. Sense check that the snapshot looks ' +
+		'reasonable.';
 	const step2 =
 		`When you are happy the action works, remove the branch name \`${branchName}\`` +
-		'trigger from the the yaml file (aka delete line 6), approve, and merge.';
+		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
 	return [step1, step2];
 }
 
-export function generatePrBody(branchName: string): string {
+export function generatePrBody(branchName: string, repoName: string): string {
 	const body = [
 		h2('What does this change?'),
 		p(
-			'This PR sends your sbt dependencies to GitHub for vulnerability monitoring via Dependabot. ',
+			'This PR sends your sbt dependencies to GitHub for vulnerability monitoring via Dependabot. ' +
+				`The submitted dependencies will appear in the [Dependency Graph](https://github.com/guardian/${repoName}/network/dependencies) ` +
+				'on merge to main (it might take a few minutes to update).',
 		),
 		h2('Why?'),
 		p(
 			'If a repository is in production, we need to track its third party dependencies for vulnerabilities. ' +
 				'Historically, we have done this using Snyk, but we are now moving to GitHub’s native Dependabot. ' +
-				'Scala is not a language that Dependabot supports out of the box, this workflow is required to make it happen' +
-				'As a result, we have raised this PR on your behalf to add it to Snyk.',
+				'Scala is not a language that Dependabot supports out of the box, this workflow is required to make it happen. ' +
+				'As a result, we have raised this PR on your behalf to add it to the Dependency Graph.',
 		),
 		h2('How has it been verified?'),
 		p(

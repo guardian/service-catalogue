@@ -12,9 +12,12 @@ on:
   workflow_dispatch: 
 jobs:
   dependency-graph:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: scalacenter/sbt-dependency-submission@v2
+      - name: Checkout branch
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Submit dependencies
+        uses: scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1
     permissions:
       contents: write
 `;
