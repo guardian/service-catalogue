@@ -13,7 +13,7 @@ export function createYaml(prBranch: string): string {
 		},
 		jobs: {
 			'dependency-graph': {
-				// 'runs-on': 'ubuntu-latest', //let's see how we do without this
+				'runs-on': 'ubuntu-latest',
 				steps: [
 					{
 						uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
