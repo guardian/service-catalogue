@@ -1,3 +1,12 @@
+// Slightly hacky file to allow CDK project to import the list of obligations without having to compile the whole Obligatron project
+
+export const Obligations = ['TAGGING'] as const;
+export type Obligation = (typeof Obligations)[number];
+
+export const stringIsObligation = (input: string): input is Obligation => {
+	return Obligations.filter((v) => v === input).length > 0;
+};
+
 export type ObligationResult = {
 	/**
 	 * Resource identifier. Varies depending on resource platform.
