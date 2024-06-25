@@ -54,7 +54,7 @@ export function generatePrBody(branchName: string): string {
 		p(
 			'If a repository is in production, we need to track its third party dependencies for vulnerabilities. ' +
 				'Historically, we have done this using Snyk, but we are now moving to GitHub’s native Dependabot. ' +
-				'Scala is not a language that Dependabot supports out of the box, this workflow is required to make it happen' +
+				'Scala is not a language that Dependabot supports out of the box, this workflow is required to make it happen. ' +
 				'As a result, we have raised this PR on your behalf to add it to the Dependency Graph.',
 		),
 		h2('How has it been verified?'),
