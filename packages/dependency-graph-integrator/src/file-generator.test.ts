@@ -24,7 +24,7 @@ jobs:
       - name: Log snapshot for user validation
         id: validate
         run: cat` +
-			' ${{ steps.submit.outputs.snapshot-json-path }}' + // Need to split this line to avoid syntax errors due to the template string
+			' ${{ steps.submit.outputs.snapshot-json-path }} | jq' + // Need to split this line to avoid syntax errors due to the template string
 			String.raw`
     permissions:
       contents: write

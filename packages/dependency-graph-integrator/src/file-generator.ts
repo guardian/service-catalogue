@@ -28,7 +28,7 @@ export function createYaml(prBranch: string): string {
 					{
 						name: 'Log snapshot for user validation',
 						id: 'validate',
-						run: 'cat ${{ steps.submit.outputs.snapshot-json-path }}',
+						run: 'cat ${{ steps.submit.outputs.snapshot-json-path }} | jq',
 					},
 				],
 				permissions: { contents: 'write' },
