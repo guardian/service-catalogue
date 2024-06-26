@@ -20495,7 +20495,7 @@ spec:
         },
         "Handler": "index.main",
         "LoggingConfig": {
-          "LogFormat": "JSON",
+          "LogFormat": "Text",
         },
         "MemorySize": 4096,
         "Role": {

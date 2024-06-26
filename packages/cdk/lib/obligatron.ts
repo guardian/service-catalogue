@@ -5,7 +5,7 @@ import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Rule, RuleTargetInput, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
-import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, LoggingFormat, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Obligations } from '../../obligatron/src/obligations';
 
@@ -40,6 +40,17 @@ export class Obligatron {
 				toleratedErrorPercentage: 0,
 				snsTopicName: 'devx-alerts',
 			},
+
+			/*
+			Override the default provided by GuCDK for improved compatability with https://github.com/guardian/cloudwatch-logs-management when producing log lines with markers.
+
+			Note: `logFormat` is a deprecated property, replaced with `loggingFormat`.
+			However, we can only specify one of `logFormat` or `loggingFormat`, and as GuCDK is setting `logFormat`, we have to do the same.
+			TODO - patch GuCDK.
+
+			See also: https://github.com/guardian/cloudwatch-logs-management/issues/326.
+			 */
+			logFormat: LoggingFormat.TEXT,
 		});
 
 		for (const obligation of Obligations) {

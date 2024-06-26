@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
+import { logger } from 'common/logs';
 import { config } from 'dotenv';
 import { getConfig } from './config';
 import {
@@ -41,7 +42,7 @@ export async function main(obligation: string) {
 	const config = await getConfig();
 	const startTime = new Date();
 
-	console.log({
+	logger.log({
 		message: 'Starting Obligatron',
 		obligation,
 		stage: config.stage,
@@ -51,13 +52,13 @@ export async function main(obligation: string) {
 
 	const db = getPrismaClient(config);
 
-	console.log({
+	logger.log({
 		message: 'Starting to process obligation resources',
 	});
 
 	const results: ObligationResult[] = await getResults(obligation, db);
 
-	console.log({
+	logger.log({
 		message: 'Finished processing obligation resources, saving results to DB.',
 		total: results.length,
 	});
@@ -73,7 +74,7 @@ export async function main(obligation: string) {
 		})),
 	});
 
-	console.log({
+	logger.log({
 		message: 'Saved results to DB. Goodbye!',
 	});
 }
