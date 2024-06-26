@@ -45,7 +45,6 @@ export async function main(obligation: string) {
 	logger.log({
 		message: 'Starting Obligatron',
 		obligation,
-		stage: config.stage,
 		withQueryLogging: config.withQueryLogging,
 		startTime,
 	});
