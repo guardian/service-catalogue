@@ -37,3 +37,36 @@ export function getCentralElkLink(props: CentralElkProps): string {
 
 	return `${base}?${queryString}`;
 }
+
+interface LogLine {
+	/**
+	 * The message to log.
+	 */
+	message: string;
+
+	/**
+	 * Any additional markers to log.
+	 */
+	[key: string]: unknown;
+}
+
+/**
+ * Produces a log message with markers compatible with https://github.com/guardian/cloudwatch-logs-management.
+ * Note: if using within AWS Lambda, the Lambda must also log in text format not JSON.
+ *
+ * @see https://github.com/guardian/cloudwatch-logs-management/issues/326
+ */
+export const logger = {
+	log: (line: LogLine) => {
+		console.log(JSON.stringify(line));
+	},
+	debug: (line: LogLine) => {
+		console.debug(JSON.stringify(line));
+	},
+	warn: (line: LogLine) => {
+		console.warn(JSON.stringify(line));
+	},
+	error: (line: LogLine) => {
+		console.error(JSON.stringify(line));
+	},
+};
