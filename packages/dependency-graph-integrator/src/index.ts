@@ -1,13 +1,11 @@
 import type { SNSHandler } from 'aws-lambda';
-import { parseEvent } from 'common/functions';
-import {
-	createPrAndAddToProject,
-	generateBranchName,
-} from 'common/src/pull-requests';
+import { parseEvent, stageAwareOctokit } from 'common/functions';
+import { generateBranchName } from 'common/src/pull-requests';
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { createYaml, generatePrBody } from './file-generator';
+import { createPrAndAddToProject } from './repo-functions';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
@@ -20,19 +18,32 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 		'Submit sbt dependencies to GitHub for vulnerability monitoring';
 	const fileName = '.github/workflows/sbt-dependency-graph.yaml';
 	const commitMessage = 'Add sbt-dependency-graph.yaml';
+	const yamlContents = createYaml(branch);
+	const prContents = generatePrBody(branch, event.name);
 
-	await createPrAndAddToProject(
-		config.stage,
-		event.name,
-		author,
-		branch,
-		title,
-		generatePrBody(branch, event.name),
-		fileName,
-		createYaml(branch),
-		commitMessage,
-		boardNumber,
-	);
+
+	if (config.stage === 'PROD') {
+		const octokit = await stageAwareOctokit(config.stage);
+		await createPrAndAddToProject(
+			config.stage,
+			event.name,
+			author,
+			branch,
+			title,
+			prContents,
+			fileName,
+			yamlContents,
+			commitMessage,
+			boardNumber,
+			octokit,
+		);
+	} else {
+		console.log(`Testing generation of ${fileName} for ${event.name}`);
+		console.log(yamlContents);
+		console.log('Testing PR generation');
+		console.log('Title:\n', title);
+		console.log('Body:\n', prContents);
+	}
 }
 
 export const handler: SNSHandler = async (event) => {
