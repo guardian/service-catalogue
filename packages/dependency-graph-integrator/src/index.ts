@@ -5,7 +5,10 @@ import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
 import { createYaml, generatePrBody } from './file-generator';
-import { createPrAndAddToProject } from './repo-functions';
+import {
+	createPrAndAddToProject,
+	enableDependabotAlerts,
+} from './repo-functions';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
@@ -19,26 +22,37 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 	const fileName = '.github/workflows/sbt-dependency-graph.yaml';
 	const commitMessage = 'Add sbt-dependency-graph.yaml';
 	const yamlContents = createYaml(branch);
-	const prContents = generatePrBody(branch, event.name);
+	const repo = event.name;
+	const prContents = generatePrBody(branch, repo);
+	const stage = config.stage;
 
+	if (stage === 'PROD') {
+		const octokit = await stageAwareOctokit(stage);
 
-	if (config.stage === 'PROD') {
-		const octokit = await stageAwareOctokit(config.stage);
-		await createPrAndAddToProject(
-			config.stage,
-			event.name,
-			author,
-			branch,
-			title,
-			prContents,
-			fileName,
-			yamlContents,
-			commitMessage,
-			boardNumber,
+		const dependabotAlertsEnabledStatusCode = await enableDependabotAlerts(
+			repo,
 			octokit,
 		);
+
+		if (dependabotAlertsEnabledStatusCode === 204) {
+			await createPrAndAddToProject(
+				stage,
+				repo,
+				author,
+				branch,
+				title,
+				prContents,
+				fileName,
+				yamlContents,
+				commitMessage,
+				boardNumber,
+				octokit,
+			);
+		} else {
+			throw Error('Unable to enable Dependabot alerts');
+		}
 	} else {
-		console.log(`Testing generation of ${fileName} for ${event.name}`);
+		console.log(`Testing generation of ${fileName} for ${repo}`);
 		console.log(yamlContents);
 		console.log('Testing PR generation');
 		console.log('Title:\n', title);

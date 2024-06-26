@@ -18,6 +18,8 @@ interface CreatePullRequestOptions {
 	changes: Change[];
 }
 
+const OWNER = 'guardian';
+
 export function generateBranchName(prefix: string) {
 	return `${prefix}-${randomBytes(8).toString('hex')}`;
 }
@@ -40,7 +42,7 @@ export async function createPullRequest(
 	} = props;
 
 	const response = await composeCreatePullRequest(octokit, {
-		owner: 'guardian',
+		owner: OWNER,
 		repo: repoName,
 		title,
 		body,
@@ -71,7 +73,7 @@ export async function getExistingPullRequest(
 	author: string,
 ) {
 	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-		owner: 'guardian',
+		owner: OWNER,
 		repo: repoName,
 		state: 'open',
 	} satisfies PullRequestParameters);
@@ -133,4 +135,38 @@ export async function createPrAndAddToProject(
 	}
 
 	console.log('Done');
+}
+
+const ghHeaders = { 'X-GitHub-Api-Version': '2022-11-28' };
+
+export async function enableDependabotAlerts(
+	repo: string,
+	octokit: Octokit,
+): Promise<number> {
+	const isEnabledResponse = await octokit.request(
+		`GET /repos/${OWNER}/${repo}/vulnerability-alerts`,
+		{
+			owner: OWNER,
+			repo,
+			headers: ghHeaders,
+		},
+	);
+	if (isEnabledResponse.status !== 204) {
+		console.log(`Dependabot alerts not enabled for ${repo}, enabling them now`);
+		const enableResponse = await octokit.request(
+			`PUT /repos/${OWNER}/${repo}/vulnerability-alerts`,
+			{
+				owner: OWNER,
+				repo,
+				headers: ghHeaders,
+			},
+		);
+		if (enableResponse.status !== 204) {
+			console.warn(`Unable to enable Dependabot alerts for ${repo}`);
+		}
+		return enableResponse.status;
+	} else {
+		console.log(`Dependabot alerts are already enabled for ${repo}`);
+		return isEnabledResponse.status;
+	}
 }
