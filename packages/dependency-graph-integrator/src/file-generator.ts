@@ -44,9 +44,9 @@ export function createYaml(prBranch: string): string {
 function createPRChecklist(branchName: string): string[] {
 	const step1 =
 		'A run of this action should have been triggered when the branch was ' +
-		"created. Go to action logs for the 'Submit dependencies' step and follow " +
-		'the link to the snapshot. Sense check that the snapshot looks ' +
-		'reasonable.';
+		'created. Sense check the output of "Log snapshot for user validation", ' +
+		'and make sure that your dependencies look okay.';
+
 	const step2 =
 		`When you are happy the action works, remove the branch name \`${branchName}\`` +
 		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
