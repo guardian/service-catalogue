@@ -49,7 +49,9 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 				octokit,
 			);
 		} else {
-			throw Error('Unable to enable Dependabot alerts');
+			throw Error(
+				'Unable to enable Dependabot alerts - PR not added to project',
+			);
 		}
 	} else {
 		console.log(`Testing generation of ${fileName} for ${repo}`);

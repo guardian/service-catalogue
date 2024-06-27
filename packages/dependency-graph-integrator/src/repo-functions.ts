@@ -143,30 +143,14 @@ export async function enableDependabotAlerts(
 	repo: string,
 	octokit: Octokit,
 ): Promise<number> {
-	const isEnabledResponse = await octokit.request(
-		`GET /repos/${OWNER}/${repo}/vulnerability-alerts`,
+	console.log(`Enabling Dependabot alerts for ${repo}`);
+	const enableResponse = await octokit.request(
+		`PUT /repos/${OWNER}/${repo}/vulnerability-alerts`,
 		{
 			owner: OWNER,
 			repo,
 			headers: ghHeaders,
 		},
 	);
-	if (isEnabledResponse.status !== 204) {
-		console.log(`Dependabot alerts not enabled for ${repo}, enabling them now`);
-		const enableResponse = await octokit.request(
-			`PUT /repos/${OWNER}/${repo}/vulnerability-alerts`,
-			{
-				owner: OWNER,
-				repo,
-				headers: ghHeaders,
-			},
-		);
-		if (enableResponse.status !== 204) {
-			console.warn(`Unable to enable Dependabot alerts for ${repo}`);
-		}
-		return enableResponse.status;
-	} else {
-		console.log(`Dependabot alerts are already enabled for ${repo}`);
-		return isEnabledResponse.status;
-	}
+	return enableResponse.status;
 }
