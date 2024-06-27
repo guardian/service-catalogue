@@ -80,7 +80,7 @@ export async function evaluateAmiTaggingCoverage(
 				resource: record.arn,
 				reason: `AMIs should be tagged. Missing tag: ${tag}`,
 				contacts: {
-					aws_account: record.account_id,
+					aws_account_id: record.account_id,
 				},
 			};
 		});
