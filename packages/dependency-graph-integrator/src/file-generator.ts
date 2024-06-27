@@ -17,11 +17,18 @@ export function createYaml(prBranch: string): string {
 				steps: [
 					{
 						name: 'Checkout branch',
+						id: 'checkout',
 						uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
 					},
 					{
 						name: 'Submit dependencies',
+						id: 'submit',
 						uses: 'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1',
+					},
+					{
+						name: 'Log snapshot for user validation',
+						id: 'validate',
+						run: 'cat ${{ steps.submit.outputs.snapshot-json-path }} | jq',
 					},
 				],
 				permissions: { contents: 'write' },
@@ -37,9 +44,9 @@ export function createYaml(prBranch: string): string {
 function createPRChecklist(branchName: string): string[] {
 	const step1 =
 		'A run of this action should have been triggered when the branch was ' +
-		"created. Go to action logs for the 'Submit dependencies' step and follow " +
-		'the link to the snapshot. Sense check that the snapshot looks ' +
-		'reasonable.';
+		'created. Sense check the output of "Log snapshot for user validation", ' +
+		'and make sure that your dependencies look okay.';
+
 	const step2 =
 		`When you are happy the action works, remove the branch name \`${branchName}\`` +
 		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
