@@ -1,4 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
+import { logger } from 'common/src/logs';
 import type { ObligationResult } from '.';
 
 type FindingResource = {
@@ -73,7 +74,9 @@ export async function evaluateAmiTaggingCoverage(
 		const tagKeys = Object.keys(record.tags as Prisma.JsonObject);
 
 		const missingTags = amiTags.filter((tag) => !tagKeys.includes(tag));
-		console.log(`AMI ${record.arn} is missing tags: ${missingTags.join(', ')}`);
+		logger.log({
+			message: `AMI ${record.arn} is missing tags: ${missingTags.join(', ')}`,
+		});
 
 		return missingTags.map<ObligationResult>((tag) => {
 			return {
@@ -104,7 +107,7 @@ export async function evaluateSecurityHubTaggingCoverage(
 		},
 	});
 
-	console.log({
+	logger.log({
 		message: 'Received findings from security hub',
 		total: findings.length,
 	});
@@ -115,7 +118,7 @@ export async function evaluateSecurityHubTaggingCoverage(
 		const resources = finding.resources?.valueOf();
 
 		if (!Array.isArray(resources)) {
-			console.error({
+			logger.error({
 				message: `Skipping invalid SecurityHub finding, invalid 'resources' field`,
 				finding_id: finding.id,
 			});
@@ -126,7 +129,7 @@ export async function evaluateSecurityHubTaggingCoverage(
 		// I don't think this will happen for the Tagging rules, but lets be safe by
 		// handling this situation and raising a warning.
 		if (resources.length !== 1) {
-			console.warn({
+			logger.warn({
 				message: `Finding had more (or less) that 1 resource: ${resources.length}`,
 				finding_id: finding.id,
 			});

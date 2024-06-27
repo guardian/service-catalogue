@@ -21,7 +21,7 @@
     "@guardian/tsconfig": "^0.3.1",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.12.10",
+    "@types/node": "^20.14.8",
     "dotenv": "^16.4.5",
     "esbuild": "^0.21.3",
     "eslint": "^8.57.0",
@@ -29,7 +29,7 @@
     "eslint-plugin-unicorn": "^54.0.0",
     "jest": "^29.7.0",
     "npm-run-all": "^4.1.5",
-    "tsx": "^4.15.6",
+    "tsx": "^4.15.7",
     "typescript": "5.3.3"
   },
   "eslintConfig": {
@@ -42,13 +42,7 @@
       "prettier/prettier": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
       "unicorn/prefer-array-flat-map": "error"
-    },
-    "overrides": [
-      {
-        "files": ["packages/dashboard/**"],
-        "extends": ["./packages/dashboard/.eslintrc"]
-      }
-    ]
+    }
   },
   "eslintIgnore": [
     "packages/common/dist"
