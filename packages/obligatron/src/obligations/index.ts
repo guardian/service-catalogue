@@ -29,5 +29,10 @@ export type ObligationResult = {
 	 * Key-value pairs to link failing obligations to the responsible teams.
 	 */
 
-	contacts?: object;
+	contacts?: {
+		aws_account_id?: string;
+		Stack?: string;
+		Stage?: string;
+		App?: string;
+	};
 };
