@@ -145,7 +145,7 @@ export async function enableDependabotAlerts(
 ): Promise<number> {
 	console.log(`Enabling Dependabot alerts for ${repo}`);
 	const enableResponse = await octokit.request(
-		`PUT /repos/${OWNER}/${repo}/vulnerability-alerts`,
+		'PUT /repos/{owner}/{repo}/vulnerability-alerts',
 		{
 			owner: OWNER,
 			repo,
