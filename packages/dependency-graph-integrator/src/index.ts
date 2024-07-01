@@ -9,6 +9,7 @@ import {
 	createPrAndAddToProject,
 	enableDependabotAlerts,
 } from './repo-functions';
+import type { StatusCode } from './types';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	console.log(`Generating Dependabot PR for ${event.name}`);
@@ -29,12 +30,12 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 	if (stage === 'PROD') {
 		const octokit = await stageAwareOctokit(stage);
 
-		const dependabotAlertsEnabledStatusCode = await enableDependabotAlerts(
-			repo,
-			octokit,
-		);
+		const dependabotAlertsEnabledStatusCode: StatusCode =
+			await enableDependabotAlerts(repo, octokit);
 
-		if (dependabotAlertsEnabledStatusCode === 204) {
+		const successStatusCode = 204;
+
+		if (dependabotAlertsEnabledStatusCode === successStatusCode) {
 			await createPrAndAddToProject(
 				stage,
 				repo,

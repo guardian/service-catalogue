@@ -3,6 +3,7 @@ import type { Endpoints } from '@octokit/types';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 import { addPrToProject } from '../../common/src/projects-graphql';
+import { StatusCode } from './types';
 
 interface Change {
 	commitMessage: string;
@@ -141,7 +142,7 @@ const ghHeaders = { 'X-GitHub-Api-Version': '2022-11-28' };
 export async function enableDependabotAlerts(
 	repo: string,
 	octokit: Octokit,
-): Promise<number> {
+): Promise<StatusCode> {
 	console.log(`Enabling Dependabot alerts for ${repo}`);
 	const enableResponse = await octokit.request(
 		'PUT /repos/{owner}/{repo}/vulnerability-alerts',
