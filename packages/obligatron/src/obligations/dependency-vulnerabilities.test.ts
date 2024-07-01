@@ -38,7 +38,7 @@ describe('The dependency vulnerabilities obligation', () => {
 		const expected = {
 			resource: 'some/repo',
 			reason: 'Repository has 1 vulnerable packages, some-package',
-			url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
+			url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd/?var-repo_owner=owner1',
 			contacts: { slugs: ['owner1'] },
 		};
 
