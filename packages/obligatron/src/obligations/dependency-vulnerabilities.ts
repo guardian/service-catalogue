@@ -1,17 +1,14 @@
-import type {
-	github_repositories,
-	PrismaClient,
-	repocop_vulnerabilities,
-} from '@prisma/client';
+import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
 import { logger } from 'common/logs';
 import {
 	daysLeftToFix,
 	stringToSeverity,
 	toNonEmptyArray,
 } from 'common/src/functions';
-import {
-	type NonEmptyArray,
-	type RepocopVulnerability,
+import type {
+	NonEmptyArray,
+	RepocopVulnerability,
+	Repository,
 } from 'common/src/types';
 import type { ObligationResult } from '.';
 
@@ -36,9 +33,7 @@ async function getRepocopVulnerabilities(
 	return toNonEmptyArray(rawResponse.map(prismaToCustomType));
 }
 
-async function getProductionRepos(
-	client: PrismaClient,
-): Promise<github_repositories[]> {
+async function getProductionRepos(client: PrismaClient): Promise<Repository[]> {
 	console.debug('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
@@ -48,13 +43,14 @@ async function getProductionRepos(
 			},
 		},
 	});
-	return toNonEmptyArray(repositories);
+
+	return toNonEmptyArray(repositories.map((r) => r as Repository));
 }
 
 //TODO test me
 export function evaluateObligationForOneRepo(
 	vulns: ObligatronRepocopVulnerability[],
-	repo: github_repositories,
+	repo: Repository,
 ): ObligationResult | undefined {
 	const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
 	const vulnOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
@@ -67,7 +63,7 @@ export function evaluateObligationForOneRepo(
 		});
 
 		return {
-			resource: repo.full_name ?? 'unknown', //This will never happen in reality
+			resource: repo.full_name,
 			reason: `Repository has ${vulnNames.length} vulnerable packages, ${vulnNames.join(', ')}`,
 			url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
 			contacts: { slugs: vulnOwners },
