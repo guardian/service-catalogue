@@ -70,3 +70,5 @@ export const SLAs: Record<Severity, number | undefined> = {
 	low: undefined,
 	unknown: undefined,
 };
+
+export type NonEmptyArray<T> = [T, ...T[]];

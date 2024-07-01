@@ -4,20 +4,19 @@ import type {
 	PrismaClient,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { RepocopVulnerability } from 'common/src/types';
+import type { NonEmptyArray, RepocopVulnerability } from 'common/src/types';
 import type { Octokit } from 'octokit';
+import { toNonEmptyArray } from '../../common/src/functions';
 import { dependabotAlertToRepocopVulnerability } from './evaluation/repository';
 import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
-	NonEmptyArray,
 	Repository,
 	SnykIssue,
 	SnykProject,
 	Team,
 } from './types';
-import { toNonEmptyArray } from './utils';
 
 export async function getRepositories(
 	client: PrismaClient,

@@ -3,7 +3,12 @@ import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { SNSEvent } from 'aws-lambda';
 import { Octokit } from 'octokit';
-import type { GitHubAppConfig, GithubAppSecret, Severity } from 'common/types';
+import type {
+	GitHubAppConfig,
+	GithubAppSecret,
+	NonEmptyArray,
+	Severity,
+} from 'common/types';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
@@ -166,4 +171,11 @@ export function stringToSeverity(severity: string): Severity {
 	} else {
 		return 'unknown';
 	}
+}
+
+export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
+	if (value.length === 0) {
+		throw new Error(`Expected a non-empty array. Source table may be empty.`);
+	}
+	return value as NonEmptyArray<T>;
 }

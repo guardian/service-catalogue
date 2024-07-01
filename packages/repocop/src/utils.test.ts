@@ -1,6 +1,6 @@
 import type { RepocopVulnerability } from 'common/src/types';
-import type { NonEmptyArray, Repository } from './types';
-import { isProduction, toNonEmptyArray, vulnSortPredicate } from './utils';
+import type { Repository } from './types';
+import { isProduction, vulnSortPredicate } from './utils';
 
 describe('isProduction', () => {
 	test('should return correct values for prod and non-prod repos', () => {
@@ -22,19 +22,6 @@ describe('isProduction', () => {
 
 		expect(isProduction(prodRepo)).toBe(true);
 		expect(isProduction(nonProdRepo)).toBe(false);
-	});
-});
-
-describe('Failure on empty arrays', () => {
-	test('throw an error if input is an empty array', () => {
-		const emptyArray: string[] = [];
-		const nonEmptyArray: string[] = ['a', 'b'];
-		const typedNonEmptyArray: NonEmptyArray<string> = ['a', 'b'];
-
-		expect(() => toNonEmptyArray(emptyArray)).toThrow();
-		expect(() => toNonEmptyArray(nonEmptyArray)).not.toThrow();
-		expect(toNonEmptyArray(nonEmptyArray)).toEqual(nonEmptyArray);
-		expect(toNonEmptyArray(nonEmptyArray)).toEqual(typedNonEmptyArray);
 	});
 });
 
