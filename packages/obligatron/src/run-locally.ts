@@ -1,6 +1,12 @@
+import { Obligations } from './obligations';
 import { main } from './index';
 
 const [, , obligation] = process.argv;
 
-void main(obligation ?? 'TAGGING');
-void main(obligation ?? 'PRODUCTION_DEPENDENCIES');
+if (obligation) {
+	void main(obligation);
+} else {
+	Obligations.forEach((obligation) => {
+		void main(obligation);
+	});
+}
