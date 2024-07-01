@@ -1,5 +1,8 @@
 import { type StrategyOptions } from '@octokit/auth-app';
-import type { repocop_vulnerabilities } from '@prisma/client';
+import type {
+	github_repositories,
+	repocop_vulnerabilities,
+} from '@prisma/client';
 
 export type GithubAppSecret = {
 	appId: string;
@@ -61,6 +64,26 @@ export type RepocopVulnerability = Omit<
 > & {
 	severity: Severity;
 };
+
+type RepositoryFields = Pick<
+	github_repositories,
+	| 'archived'
+	| 'name'
+	| 'full_name'
+	| 'topics'
+	| 'updated_at'
+	| 'pushed_at'
+	| 'created_at'
+	| 'id'
+	| 'default_branch'
+>;
+
+export interface Repository extends RepositoryFields {
+	archived: NonNullable<RepositoryFields['archived']>;
+	name: NonNullable<RepositoryFields['name']>;
+	full_name: NonNullable<RepositoryFields['full_name']>;
+	id: NonNullable<RepositoryFields['id']>;
+}
 
 // The number of days teams have to fix vulnerabilities of a given severity
 export const SLAs: Record<Severity, number | undefined> = {
