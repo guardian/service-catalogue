@@ -1,9 +1,8 @@
 import { randomBytes } from 'crypto';
-import type { Endpoints } from '@octokit/types';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 import { addPrToProject } from '../../common/src/projects-graphql';
-import { StatusCode } from './types';
+import type { PullRequest, PullRequestParameters, StatusCode } from './types';
 
 interface Change {
 	commitMessage: string;
@@ -57,12 +56,6 @@ export async function createPullRequest(
 	return response?.data.html_url;
 }
 
-type PullRequestParameters =
-	Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
-
-type PullRequest =
-	Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][number];
-
 function isGithubAuthor(pull: PullRequest, author: string) {
 	return pull.user?.login === author && pull.user.type === 'Bot';
 }
@@ -71,7 +64,7 @@ export async function getExistingPullRequest(
 	octokit: Octokit,
 	repoName: string,
 	author: string,
-) {
+): Promise<PullRequest | undefined> {
 	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
 		owner: OWNER,
 		repo: repoName,
@@ -84,7 +77,7 @@ export async function getExistingPullRequest(
 		console.warn(`More than one PR found on ${repoName} - choosing the first.`);
 	}
 
-	return found[0];
+	return found[0] ?? undefined;
 }
 
 export async function createPrAndAddToProject(
