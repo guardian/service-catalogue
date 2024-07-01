@@ -51,6 +51,32 @@ async function getProductionRepos(
 	return toNonEmptyArray(repositories);
 }
 
+//TODO test me
+export function evaluateObligationForOneRepo(
+	vulns: ObligatronRepocopVulnerability[],
+	repo: github_repositories,
+): ObligationResult | undefined {
+	const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
+	const vulnOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
+
+	if (repoVulns.length > 0) {
+		const vulnNames = [...new Set(repoVulns.map((v) => v.package))];
+		logger.log({
+			message: `Repository ${repo.full_name} has ${repoVulns.length} vulnerable packages: ${vulnNames.join(', ')}`,
+			vulnNames,
+		});
+
+		return {
+			resource: repo.full_name ?? 'unknown', //This will never happen in reality
+			reason: `Repository has ${vulnNames.length} vulnerable packages, ${vulnNames.join(', ')}`,
+			url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
+			contacts: { slugs: vulnOwners },
+		};
+	} else {
+		return undefined;
+	}
+}
+
 export async function evaluateDependencyVulnerabilityObligation(
 	client: PrismaClient,
 ): Promise<ObligationResult[]> {
@@ -61,25 +87,7 @@ export async function evaluateDependencyVulnerabilityObligation(
 
 	const resultsOrUndefined: Array<ObligationResult | undefined> = repos.map(
 		(repo) => {
-			const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
-			const vulnOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
-
-			if (repoVulns.length > 0) {
-				const vulnNames = [...new Set(repoVulns.map((v) => v.package))];
-				logger.log({
-					message: `Repository ${repo.full_name} has ${repoVulns.length} vulnerable packages: ${vulnNames.join(', ')}`,
-					vulnNames,
-				});
-
-				return {
-					resource: repo.full_name ?? 'unknown', //This will never happen in reality
-					reason: `Repository has ${vulnNames.length} vulnerable packages, ${vulnNames.join(', ')}`,
-					url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
-					contacts: { slugs: vulnOwners },
-				};
-			} else {
-				return undefined;
-			}
+			return evaluateObligationForOneRepo(vulns, repo);
 		},
 	);
 
