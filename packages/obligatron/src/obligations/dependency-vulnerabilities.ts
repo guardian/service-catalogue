@@ -53,7 +53,11 @@ export function evaluateObligationForOneRepo(
 	repo: Repository,
 ): ObligationResult | undefined {
 	const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
-	const vulnOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
+	const repoOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
+
+	const urlParams = repoOwners
+		.map((owner) => `var-repo_owner=${owner}`)
+		.join('&');
 
 	if (repoVulns.length > 0) {
 		const vulnNames = [...new Set(repoVulns.map((v) => v.package))];
@@ -65,8 +69,8 @@ export function evaluateObligationForOneRepo(
 		return {
 			resource: repo.full_name,
 			reason: `Repository has ${vulnNames.length} vulnerable packages, ${vulnNames.join(', ')}`,
-			url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
-			contacts: { slugs: vulnOwners },
+			url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd/?${urlParams}`,
+			contacts: { slugs: repoOwners },
 		};
 	} else {
 		return undefined;
