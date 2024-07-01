@@ -8,8 +8,6 @@ import type {
 } from '@prisma/client';
 import type { RepocopVulnerability } from 'common/src/types';
 
-export type NonEmptyArray<T> = [T, ...T[]];
-
 export interface RepoAndStack {
 	fullName: string;
 	stacks: string[];
