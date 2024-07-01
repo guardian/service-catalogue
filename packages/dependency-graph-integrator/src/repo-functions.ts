@@ -26,7 +26,6 @@ export function generateBranchName(prefix: string) {
 
 /**
  * Creates or updates a pull request, and return its URL.
- * On error, an exception is thrown, or undefined is returned.
  */
 export async function createPullRequest(
 	octokit: Octokit,
