@@ -48,7 +48,7 @@ async function getProductionRepos(
 
 export async function evaluateDependencyVulnerabilityObligation(
 	client: PrismaClient,
-): Promise<ObligatronRepocopVulnerability[]> {
+): Promise<ObligationResult[]> {
 	const repos = await getProductionRepos(client);
 	const vulns = await getRepocopVulnerabilities(client);
 
@@ -81,15 +81,3 @@ export async function evaluateDependencyVulnerabilityObligation(
 		(r): r is ObligationResult => r !== undefined,
 	);
 }
-
-// export type ObligationResult = {
-// 	resource: string;
-// 	reason: string;
-// 	url?: string;
-// 	contacts?: {
-// 		aws_account_id?: string;
-// 		Stack?: string;
-// 		Stage?: string;
-// 		App?: string;
-// 	};
-// };
