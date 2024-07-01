@@ -10,9 +10,13 @@ import type { ObligationResult } from '.';
 
 // type UserEvent = Event & {UserId: string}
 
+type ObligatronRepocopVulnerability = RepocopVulnerability & {
+	repo_owner: string;
+};
+
 function prismaToCustomType(
 	vuln: repocop_vulnerabilities,
-): RepocopVulnerability {
+): ObligatronRepocopVulnerability {
 	return {
 		...vuln,
 		severity: stringToSeverity(vuln.severity),
@@ -21,7 +25,7 @@ function prismaToCustomType(
 
 async function getRepocopVulnerabilities(
 	client: PrismaClient,
-): Promise<NonEmptyArray<RepocopVulnerability>> {
+): Promise<NonEmptyArray<ObligatronRepocopVulnerability>> {
 	const rawResponse = await client.repocop_vulnerabilities.findMany({});
 
 	return toNonEmptyArray(rawResponse.map(prismaToCustomType));
@@ -44,7 +48,7 @@ async function getProductionRepos(
 
 export async function evaluateDependencyVulnerabilityObligation(
 	client: PrismaClient,
-): Promise<ObligationResult[]> {
+): Promise<ObligatronRepocopVulnerability[]> {
 	const repos = await getProductionRepos(client);
 	const vulns = await getRepocopVulnerabilities(client);
 
@@ -53,6 +57,7 @@ export async function evaluateDependencyVulnerabilityObligation(
 		.slice(0, 40)
 		.map((repo) => {
 			const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
+			const vulnOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
 
 			if (repoVulns.length > 0) {
 				const vulnNames = [...new Set(repoVulns.map((v) => v.package))];
@@ -65,6 +70,7 @@ export async function evaluateDependencyVulnerabilityObligation(
 					resource: repo.full_name ?? 'unknown', //This will never happen in reality
 					reason: `Repository has ${vulnNames.length} vulnerable packages, ${vulnNames.join(', ')}`,
 					url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
+					contacts: { slugs: vulnOwners },
 				};
 			} else {
 				return undefined;
