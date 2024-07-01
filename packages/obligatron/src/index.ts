@@ -9,7 +9,7 @@ import {
 	Obligations,
 	stringIsObligation,
 } from './obligations';
-import { evaluateDependencyVulnerabilityObligation } from './obligations/aws-security';
+import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities';
 import {
 	evaluateAmiTaggingCoverage,
 	evaluateSecurityHubTaggingCoverage,

@@ -3,6 +3,7 @@ import type {
 	PrismaClient,
 	repocop_vulnerabilities,
 } from '@prisma/client';
+import { logger } from 'common/logs';
 import { stringToSeverity, toNonEmptyArray } from 'common/src/functions';
 import type { NonEmptyArray, RepocopVulnerability } from 'common/src/types';
 import type { ObligationResult } from '.';
@@ -54,15 +55,15 @@ export async function evaluateDependencyVulnerabilityObligation(
 			const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
 
 			if (repoVulns.length > 0) {
-				const vulnNames = repoVulns.map((v) => v.package);
-				console.log({
+				const vulnNames = [...new Set(repoVulns.map((v) => v.package))];
+				logger.log({
 					message: `Repository ${repo.full_name} has ${repoVulns.length} vulnerabilities`,
 					vulnNames,
 				});
 
 				return {
 					resource: repo.full_name ?? 'unknown', //This will never happen in reality
-					reason: `Repository has ${repoVulns.length} vulnerabilities, ${vulnNames.join(', ')}`,
+					reason: `Repository has ${vulnNames.length} vulnerable packages, ${vulnNames.join(', ')}`,
 					url: 'https://metrics.gutools.co.uk/d/fdib3p8l85jwgd',
 				};
 			} else {
