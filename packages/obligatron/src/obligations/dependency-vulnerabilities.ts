@@ -47,7 +47,6 @@ async function getProductionRepos(client: PrismaClient): Promise<Repository[]> {
 	return toNonEmptyArray(repositories.map((r) => r as Repository));
 }
 
-//TODO test me
 export function evaluateObligationForOneRepo(
 	vulns: ObligatronRepocopVulnerability[],
 	repo: Repository,
