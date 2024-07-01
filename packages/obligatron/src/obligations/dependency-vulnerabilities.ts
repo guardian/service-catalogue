@@ -59,10 +59,8 @@ export async function evaluateDependencyVulnerabilityObligation(
 		(v) => daysLeftToFix(v) === 0,
 	);
 
-	// For every repo in repos, log if it shows up in vulns
-	const resultsOrUndefined: Array<ObligationResult | undefined> = repos
-		.slice(0, 40)
-		.map((repo) => {
+	const resultsOrUndefined: Array<ObligationResult | undefined> = repos.map(
+		(repo) => {
 			const repoVulns = vulns.filter((v) => v.full_name === repo.full_name);
 			const vulnOwners = [...new Set(repoVulns.flatMap((v) => v.repo_owner))];
 
@@ -82,7 +80,8 @@ export async function evaluateDependencyVulnerabilityObligation(
 			} else {
 				return undefined;
 			}
-		});
+		},
+	);
 
 	return resultsOrUndefined.filter(
 		(r): r is ObligationResult => r !== undefined,
