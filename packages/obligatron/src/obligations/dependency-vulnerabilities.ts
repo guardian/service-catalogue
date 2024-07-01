@@ -4,11 +4,16 @@ import type {
 	repocop_vulnerabilities,
 } from '@prisma/client';
 import { logger } from 'common/logs';
-import { stringToSeverity, toNonEmptyArray } from 'common/src/functions';
-import type { NonEmptyArray, RepocopVulnerability } from 'common/src/types';
+import {
+	daysLeftToFix,
+	stringToSeverity,
+	toNonEmptyArray,
+} from 'common/src/functions';
+import {
+	type NonEmptyArray,
+	type RepocopVulnerability,
+} from 'common/src/types';
 import type { ObligationResult } from '.';
-
-// type UserEvent = Event & {UserId: string}
 
 type ObligatronRepocopVulnerability = RepocopVulnerability & {
 	repo_owner: string;
@@ -50,7 +55,9 @@ export async function evaluateDependencyVulnerabilityObligation(
 	client: PrismaClient,
 ): Promise<ObligationResult[]> {
 	const repos = await getProductionRepos(client);
-	const vulns = await getRepocopVulnerabilities(client);
+	const vulns = (await getRepocopVulnerabilities(client)).filter(
+		(v) => daysLeftToFix(v) === 0,
+	);
 
 	// For every repo in repos, log if it shows up in vulns
 	const resultsOrUndefined: Array<ObligationResult | undefined> = repos

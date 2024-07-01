@@ -1,5 +1,6 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
+import { daysLeftToFix } from 'common/src/functions';
 import { type RepocopVulnerability, SLAs } from 'common/src/types';
 import type { Config } from '../../config';
 import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types';
@@ -24,25 +25,11 @@ function getOwningRepos(
 }
 
 export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
+	//TODO delete this. It's no longer being used
 	return vulnerabilities
 		.sort(vulnSortPredicate)
 		.slice(0, 10)
 		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
-}
-
-export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
-	const daysToFix = SLAs[vuln.severity];
-	if (!daysToFix) {
-		return undefined;
-	}
-	const fixDate = new Date(vuln.alert_issue_date);
-	fixDate.setDate(fixDate.getDate() + daysToFix);
-	const millisecondsInADay = 1000 * 60 * 60 * 24;
-	const daysLeftToFix = Math.ceil(
-		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
-	);
-
-	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
 }
 
 function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
