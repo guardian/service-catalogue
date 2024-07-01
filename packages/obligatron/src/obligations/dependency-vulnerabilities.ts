@@ -1,10 +1,10 @@
 import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
-import { logger } from 'common/logs';
 import {
 	daysLeftToFix,
 	stringToSeverity,
 	toNonEmptyArray,
 } from 'common/src/functions';
+import { logger } from 'common/src/logs';
 import type {
 	NonEmptyArray,
 	RepocopVulnerability,
@@ -12,7 +12,7 @@ import type {
 } from 'common/src/types';
 import type { ObligationResult } from '.';
 
-type ObligatronRepocopVulnerability = RepocopVulnerability & {
+export type ObligatronRepocopVulnerability = RepocopVulnerability & {
 	repo_owner: string;
 };
 
