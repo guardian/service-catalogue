@@ -223,7 +223,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const prodSchedule = Schedule.cron({
 			weekDay: 'MON-FRI',
-			hour: '10',
+			hour: '9',
 			minute: '30',
 		});
 

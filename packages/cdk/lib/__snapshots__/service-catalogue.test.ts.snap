@@ -20670,6 +20670,45 @@ spec:
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
+    "obligatronPRODUCTIONDEPENDENCIESAllowEventRuleServiceCatalogueobligatron5BD5033E5649B088": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "obligatronA58CFCF1",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "obligatronPRODUCTIONDEPENDENCIESC26096F0",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "obligatronPRODUCTIONDEPENDENCIESC26096F0": {
+      "Properties": {
+        "Description": "Daily execution of Obligatron lambda for 'PRODUCTION_DEPENDENCIES' obligation",
+        "ScheduleExpression": "cron(0 10 * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "obligatronA58CFCF1",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+            "Input": ""PRODUCTION_DEPENDENCIES"",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
     "obligatronServiceRole1E85277A": {
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -20869,7 +20908,7 @@ spec:
     "obligatronTAGGING3F8E9BB2": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'TAGGING' obligation",
-        "ScheduleExpression": "cron(0 7 * * ? *)",
+        "ScheduleExpression": "cron(0 9 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -23157,9 +23196,9 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "repocoprepocopcron3010MONFRI09611B07D": {
+    "repocoprepocopcron309MONFRI042F648A2": {
       "Properties": {
-        "ScheduleExpression": "cron(30 10 ? * MON-FRI *)",
+        "ScheduleExpression": "cron(30 9 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -23175,7 +23214,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoprepocopcron3010MONFRI0AllowEventRuleServiceCataloguerepocop7BEB589205008C24": {
+    "repocoprepocopcron309MONFRI0AllowEventRuleServiceCataloguerepocop7BEB58922EC16074": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -23187,7 +23226,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repocoprepocopcron3010MONFRI09611B07D",
+            "repocoprepocopcron309MONFRI042F648A2",
             "Arn",
           ],
         },
