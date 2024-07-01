@@ -69,7 +69,7 @@ export async function evaluateDependencyVulnerabilityObligation(
 			if (repoVulns.length > 0) {
 				const vulnNames = [...new Set(repoVulns.map((v) => v.package))];
 				logger.log({
-					message: `Repository ${repo.full_name} has ${repoVulns.length} vulnerabilities`,
+					message: `Repository ${repo.full_name} has ${repoVulns.length} vulnerable packages: ${vulnNames.join(', ')}`,
 					vulnNames,
 				});
 
