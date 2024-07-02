@@ -3,12 +3,11 @@ import type {
 	github_repository_branches,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { RepocopVulnerability } from 'common/src/types';
+import type { RepocopVulnerability, Repository } from 'common/src/types';
 import { example } from '../test-data/example-dependabot-alerts';
 import type {
 	AwsCloudFormationStack,
 	Coordinate,
-	Repository,
 	SnykIssue,
 	SnykProject,
 } from '../types';

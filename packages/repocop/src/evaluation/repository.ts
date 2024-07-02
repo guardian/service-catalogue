@@ -6,8 +6,12 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { partition, stringToSeverity } from 'common/src/functions';
-import type { RepocopVulnerability, Severity } from 'common/src/types';
 import { SLAs } from 'common/src/types';
+import type {
+	RepocopVulnerability,
+	Repository,
+	Severity,
+} from 'common/src/types';
 import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
@@ -18,7 +22,6 @@ import type {
 	Dependency,
 	EvaluationResult,
 	RepoAndStack,
-	Repository,
 	SnykIssue,
 	SnykProject,
 	Tag,

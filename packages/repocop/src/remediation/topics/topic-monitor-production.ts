@@ -6,9 +6,10 @@ import {
 	topicMonitoringProductionTagCtas,
 } from 'common/src/functions';
 import { stripMargin } from 'common/src/string';
+import type { Repository } from 'common/src/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import type { AwsCloudFormationStack, Repository, Team } from '../../types';
+import type { AwsCloudFormationStack, Team } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 const MONTHS = 3;

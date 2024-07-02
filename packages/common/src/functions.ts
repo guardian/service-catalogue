@@ -3,12 +3,14 @@ import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { SNSEvent } from 'aws-lambda';
 import { Octokit } from 'octokit';
-import type {
-	GitHubAppConfig,
-	GithubAppSecret,
-	NonEmptyArray,
-	Severity,
-} from 'common/types';
+import {
+	type GitHubAppConfig,
+	type GithubAppSecret,
+	type NonEmptyArray,
+	type RepocopVulnerability,
+	type Severity,
+	SLAs,
+} from 'common/src/types';
 
 export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
@@ -171,6 +173,21 @@ export function stringToSeverity(severity: string): Severity {
 	} else {
 		return 'unknown';
 	}
+}
+
+export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
+	const daysToFix = SLAs[vuln.severity];
+	if (!daysToFix) {
+		return undefined;
+	}
+	const fixDate = new Date(vuln.alert_issue_date);
+	fixDate.setDate(fixDate.getDate() + daysToFix);
+	const millisecondsInADay = 1000 * 60 * 60 * 24;
+	const daysLeftToFix = Math.ceil(
+		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
+	);
+
+	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
 }
 
 export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {

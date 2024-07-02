@@ -1,5 +1,4 @@
-import type { RepocopVulnerability } from 'common/src/types';
-import type { Repository } from './types';
+import type { RepocopVulnerability, Repository } from 'common/src/types';
 import { isProduction, vulnSortPredicate } from './utils';
 
 describe('isProduction', () => {

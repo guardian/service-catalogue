@@ -1,5 +1,6 @@
+import type { Repository } from 'common/src/types';
 import { nullRepo } from '../../evaluation/repository.test';
-import type { AwsCloudFormationStack, Repository } from '../../types';
+import type { AwsCloudFormationStack } from '../../types';
 import {
 	createMessage,
 	findReposInProdWithoutProductionTopic,

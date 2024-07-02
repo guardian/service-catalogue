@@ -2,7 +2,6 @@ import type { Action } from '@guardian/anghammarad';
 import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
-	github_repositories,
 	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
@@ -19,26 +18,6 @@ export interface Team extends TeamFields {
 	slug: NonNullable<TeamFields['slug']>;
 	id: NonNullable<TeamFields['id']>;
 	name: NonNullable<TeamFields['name']>;
-}
-
-type RepositoryFields = Pick<
-	github_repositories,
-	| 'archived'
-	| 'name'
-	| 'full_name'
-	| 'topics'
-	| 'updated_at'
-	| 'pushed_at'
-	| 'created_at'
-	| 'id'
-	| 'default_branch'
->;
-
-export interface Repository extends RepositoryFields {
-	archived: NonNullable<RepositoryFields['archived']>;
-	name: NonNullable<RepositoryFields['name']>;
-	full_name: NonNullable<RepositoryFields['full_name']>;
-	id: NonNullable<RepositoryFields['id']>;
 }
 
 export interface Dependency {

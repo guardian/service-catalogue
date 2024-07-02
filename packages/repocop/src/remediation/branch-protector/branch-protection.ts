@@ -3,10 +3,10 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { shuffle } from 'common/src/functions';
-import type { UpdateMessageEvent } from 'common/types';
+import type { Repository, UpdateMessageEvent } from 'common/src/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import type { Repository, Team } from '../../types';
+import type { Team } from '../../types';
 import { findContactableOwners } from '../shared-utilities';
 import { notify } from './aws-requests';
 import {

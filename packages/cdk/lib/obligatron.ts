@@ -53,17 +53,18 @@ export class Obligatron {
 			logFormat: LoggingFormat.TEXT,
 		});
 
-		for (const obligation of Obligations) {
+		Obligations.forEach((obligation, index) => {
+			const startTime = (9 + index).toString();
 			new Rule(stack, `obligatron-${obligation}`, {
 				description: `Daily execution of Obligatron lambda for '${obligation}' obligation`,
-				schedule: Schedule.cron({ minute: '0', hour: '7' }),
+				schedule: Schedule.cron({ minute: '0', hour: startTime }),
 				targets: [
 					new LambdaFunction(lambda, {
 						event: RuleTargetInput.fromText(obligation),
 					}),
 				],
 			});
-		}
+		});
 
 		db.grantConnect(lambda, 'obligatron');
 	}
