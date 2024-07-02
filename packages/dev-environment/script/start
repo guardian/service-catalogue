@@ -23,9 +23,9 @@ create_sql_migrations() {
   rm -rf "$SQL_DIR"
   mkdir -p "$SQL_DIR"
 
-  MIGRATIONS=$(ls -d $ROOT_DIR/packages/common/prisma/migrations/*/)
+  MIGRATIONS=$(ls -d "$ROOT_DIR"/packages/common/prisma/migrations/*/)
   for MIGRATION in $MIGRATIONS; do
-    cp $MIGRATION/migration.sql $SQL_DIR/$(basename $MIGRATION).sql;
+    cp "$MIGRATION"/migration.sql "$SQL_DIR"/$(basename "$MIGRATION").sql;
   done
 }
 
@@ -46,13 +46,16 @@ check_aws_credentials() {
 
 start_containers() {
   step "Launching Docker containers"
+  open -a Docker
 
-  if (docker info) 2>&1 >/dev/null; then
-    docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
-  else
-    echo "Docker is not running. Please start Docker."
-    exit 1
-  fi
+while (! docker stats --no-stream ); do
+  # Docker takes a few seconds to initialize
+  echo "Waiting for Docker to launch..."
+  sleep 1
+done
+
+docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
+    
 }
 
 check_vpn_connection() {
