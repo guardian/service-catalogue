@@ -12,12 +12,12 @@ datasource db {
 model aws_cloudformation_stacks {
   cq_sync_time                  DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name                String?   @map("_cq_source_name")
-  cq_id                         String    @unique @map("_cq_id") @db.Uuid
+  cq_id                         String    @id(map: "aws_cloudformation_stacks_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id                  String?   @map("_cq_parent_id") @db.Uuid
   account_id                    String?
   region                        String?
   id                            String?
-  arn                           String    @id(map: "aws_cloudformation_stacks_cqpk")
+  arn                           String?
   tags                          Json?
   creation_time                 DateTime? @db.Timestamp(6)
   stack_name                    String?
@@ -26,6 +26,7 @@ model aws_cloudformation_stacks {
   change_set_id                 String?
   deletion_time                 DateTime? @db.Timestamp(6)
   description                   String?
+  detailed_status               String?
   disable_rollback              Boolean?
   drift_information             Json?
   enable_termination_protection Boolean?
