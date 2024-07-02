@@ -2,7 +2,11 @@ DO
 $do$
     BEGIN
         -- This user is used by the refresh-materialized-view lambda
-        CREATE USER refresh_materialized_view WITH LOGIN;
+        -- Create the `refresh_materialized_view` user if it doesn't exist
+        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE  rolname = 'refresh_materialized_view') THEN
+            CREATE USER refresh_materialized_view WITH LOGIN;
+        END IF;
+
 
         GRANT USAGE ON SCHEMA public to refresh_materialized_view;
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO refresh_materialized_view;
