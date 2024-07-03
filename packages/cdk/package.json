@@ -4,6 +4,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
     "synth": "cdk synth --path-metadata false --version-reporting false",
+    "build": "npm run synth",
     "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE",
     "typecheck": "tsc --noEmit"
   },

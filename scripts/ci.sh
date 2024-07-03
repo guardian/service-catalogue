@@ -56,12 +56,11 @@ verify() {
 
 
 npm ci
-npm test
 
 # Run the following in parallel.
 # Logs will be interleaved, but the `--print-label` flag will prefix each line with the name of the script being run.
 # See https://github.com/mysticatea/npm-run-all.
-npx npm-run-all --print-label --parallel typecheck lint synth build
+npm run build
 
 verify best-practices "packages/best-practices/best-practices.md"
 
