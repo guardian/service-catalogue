@@ -1,5 +1,5 @@
 import { type StrategyOptions } from '@octokit/auth-app';
-import type { repocop_vulnerabilities } from '@prisma/client';
+import type { github_teams, repocop_vulnerabilities } from '@prisma/client';
 
 export type GithubAppSecret = {
 	appId: string;
@@ -72,3 +72,11 @@ export const SLAs: Record<Severity, number | undefined> = {
 };
 
 export type NonEmptyArray<T> = [T, ...T[]];
+
+type TeamFields = Pick<github_teams, 'slug' | 'id' | 'name'>;
+
+export interface Team extends TeamFields {
+	slug: NonNullable<TeamFields['slug']>;
+	id: NonNullable<TeamFields['id']>;
+	name: NonNullable<TeamFields['name']>;
+}

@@ -7,6 +7,7 @@ import type {
 import { awsClientConfig } from 'common/aws';
 import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
+import { getTeams } from 'common/queries';
 import type { RepocopVulnerability } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -24,7 +25,6 @@ import {
 	getSnykIssues,
 	getSnykProjects,
 	getStacks,
-	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
 import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';

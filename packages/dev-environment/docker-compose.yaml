@@ -29,8 +29,7 @@ services:
         - github_languages
         - aws_organizations_account_parents
         - aws_organizations_organizational_units
-        - aws_ec2_instances
-        - aws_cloudformation_stacks
+        - aws_securityhub_findings
   postgres:
     image: postgres:14.6
     ports:
