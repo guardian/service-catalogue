@@ -24,10 +24,8 @@ model aws_cloudformation_stacks {
   stack_status                  String?
   capabilities                  String[]
   change_set_id                 String?
-  deletion_mode                 String?
   deletion_time                 DateTime? @db.Timestamp(6)
   description                   String?
-  detailed_status               String?
   disable_rollback              Boolean?
   drift_information             Json?
   enable_termination_protection Boolean?
@@ -43,6 +41,8 @@ model aws_cloudformation_stacks {
   stack_id                      String?
   stack_status_reason           String?
   timeout_in_minutes            BigInt?
+  deletion_mode                 String?
+  detailed_status               String?
 }
 
 model aws_ec2_images {
@@ -59,7 +59,6 @@ model aws_ec2_images {
   boot_mode                 String?
   creation_date             DateTime? @db.Timestamp(6)
   deprecation_time          DateTime? @db.Timestamp(6)
-  deregistration_protection String?
   description               String?
   ena_support               Boolean?
   hypervisor                String?
@@ -69,7 +68,6 @@ model aws_ec2_images {
   image_type                String?
   imds_support              String?
   kernel_id                 String?
-  last_launched_time        String?
   name                      String?
   owner_id                  String?
   platform                  String?
@@ -86,6 +84,8 @@ model aws_ec2_images {
   tpm_support               String?
   usage_operation           String?
   virtualization_type       String?
+  deregistration_protection String?
+  last_launched_time        String?
 }
 
 model aws_ec2_instances {
