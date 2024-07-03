@@ -16,13 +16,13 @@ DROP INDEX IF EXISTS "aws_securityhub_findings__cq_id_key";
 DROP INDEX IF EXISTS "idx_aws_account_name";
 
 ALTER TABLE "aws_cloudformation_stacks" DROP CONSTRAINT "aws_cloudformation_stacks_cqpk",
-ADD COLUMN     "deletion_mode" TEXT,
-ADD COLUMN     "detailed_status" TEXT,
+ADD COLUMN IF NOT EXISTS    "deletion_mode" TEXT,
+ADD COLUMN IF NOT EXISTS    "detailed_status" TEXT,
 ADD CONSTRAINT "aws_cloudformation_stacks_cqpk" PRIMARY KEY ("_cq_id");
 
 ALTER TABLE "aws_ec2_images" DROP CONSTRAINT "aws_ec2_images_cqpk",
-ADD COLUMN     "deregistration_protection" TEXT,
-ADD COLUMN     "last_launched_time" TEXT,
+ADD COLUMN IF NOT EXISTS    "deregistration_protection" TEXT,
+ADD COLUMN IF NOT EXISTS    "last_launched_time" TEXT,
 ADD CONSTRAINT "aws_ec2_images_cqpk" PRIMARY KEY ("_cq_id");
 
 ALTER TABLE "aws_ec2_instances" DROP CONSTRAINT "aws_ec2_instances_cqpk",
