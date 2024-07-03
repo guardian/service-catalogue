@@ -9,6 +9,7 @@ import {
 	Obligations,
 	stringIsObligation,
 } from './obligations';
+import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities';
 import {
 	evaluateAmiTaggingCoverage,
 	evaluateSecurityHubTaggingCoverage,
@@ -26,6 +27,9 @@ async function getResults(
 				...(await evaluateSecurityHubTaggingCoverage(db)),
 				...(await evaluateAmiTaggingCoverage(db)),
 			];
+		}
+		case 'PRODUCTION_DEPENDENCIES': {
+			return await evaluateDependencyVulnerabilityObligation(db);
 		}
 	}
 }

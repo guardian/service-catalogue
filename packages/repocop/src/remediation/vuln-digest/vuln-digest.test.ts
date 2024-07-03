@@ -5,11 +5,7 @@ import type {
 import type { RepocopVulnerability } from 'common/src/types';
 import type { EvaluationResult, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
-import {
-	createDigestForSeverity,
-	daysLeftToFix,
-	getTopVulns,
-} from './vuln-digest';
+import { createDigestForSeverity, getTopVulns } from './vuln-digest';
 
 const fullName = 'guardian/repo';
 const anotherFullName = 'guardian/another-repo';
@@ -267,56 +263,5 @@ describe('getTopVulns', () => {
 
 		expect(criticalCount).toBe(8);
 		expect(highCount).toBe(2);
-	});
-});
-
-describe('daysLeftToFix', () => {
-	const veryOldVuln: RepocopVulnerability = {
-		source: 'Dependabot',
-		full_name: fullName,
-		open: true,
-		severity: 'high',
-		package: 'leftpad',
-		urls: ['example.com'],
-		ecosystem: 'pip',
-		alert_issue_date: new Date('2021-01-01'),
-		is_patchable: true,
-		cves: ['CVE-123'],
-	};
-	test('should return 0 if we exceed the SLA', () => {
-		expect(daysLeftToFix(veryOldVuln)).toBe(0);
-	});
-	test('should return 30 if a high vuln was raised in the last 24 hours', () => {
-		function hoursAgo(hours: number): Date {
-			const date = new Date();
-			date.setHours(date.getHours() - hours);
-			return date;
-		}
-
-		const oneHourOld: RepocopVulnerability = {
-			...veryOldVuln,
-			alert_issue_date: hoursAgo(1),
-		};
-
-		const twentyThreeHoursOld = {
-			...oneHourOld,
-			alert_issue_date: hoursAgo(23),
-		};
-
-		const twentyFiveHoursOld = {
-			...oneHourOld,
-			alert_issue_date: hoursAgo(25),
-		};
-		expect(daysLeftToFix(oneHourOld)).toBe(30);
-		expect(daysLeftToFix(twentyThreeHoursOld)).toBe(30);
-		expect(daysLeftToFix(twentyFiveHoursOld)).toBe(29);
-	});
-	test('should return 2 if a critical vuln was raised today', () => {
-		const newCriticalVuln: RepocopVulnerability = {
-			...veryOldVuln,
-			severity: 'critical',
-			alert_issue_date: new Date(),
-		};
-		expect(daysLeftToFix(newCriticalVuln)).toBe(2);
 	});
 });
