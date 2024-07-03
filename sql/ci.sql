@@ -3,6 +3,27 @@
 -- Switch to the `repocop` user and test access to `view_repo_ownership`
 SET ROLE repocop;
 SELECT * FROM view_repo_ownership LIMIT 1;
+SELECT * FROM obligatron_results LIMIT 1;
+
+
+-- Obligatron should have read access to all tables, and write access to `obligatron_results`
+SET ROLE obligatron;
+SELECT * FROM github_repositories LIMIT 1;
+INSERT INTO obligatron_results
+(
+    date
+    , obligation_name
+    , resource
+    , reason
+    , contacts
+)
+VALUES (
+    '2020-01-01'
+    , 'OBLIGATION'
+    , 'guardian/myrepo'
+    , 'vulnerabilities'
+    , '{}'
+);
 
 -- Switch to the `dataaudit` user and test access to the tables/views used in the data-audit app
 SET ROLE dataaudit;
