@@ -35,7 +35,7 @@ describe('Config generation, and converting to YAML', () => {
 spec:
   name: aws
   path: cloudquery/aws
-  version: v26.0.0
+  version: v27.5.0
   tables:
     - aws_s3_buckets
   destinations:
@@ -61,7 +61,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v26.0.0
+  version: v27.5.0
   tables:
     - '*'
   skip_tables:
@@ -92,7 +92,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v26.0.0
+  version: v27.5.0
   tables:
     - aws_accessanalyzer_analyzers
     - aws_accessanalyzer_analyzer_archive_rules
@@ -128,7 +128,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v26.0.0
+  version: v27.5.0
   tables:
     - aws_securityhub_findings
   destinations:
