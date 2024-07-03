@@ -92,8 +92,8 @@ jobs:
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
-      - name: Run script/ci
-        run: ./scripts/ci.sh
+      - name: Build zip files
+        run: ./scripts/build.sh
 
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@68a3a1914dda09a4a965f310c6be368715e97018 # v4.0.5

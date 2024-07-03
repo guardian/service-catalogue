@@ -54,7 +54,6 @@ verify() {
   fi
 }
 
-
 npm ci
 
 # Run the following in parallel.
