@@ -56,22 +56,10 @@ jobs:
           script: typecheck
           deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
-  synth:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - uses: ./.github/actions/npm-run
-        with:
-          script: synth
-          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
-
   CI:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: [lint, test, typecheck, synth]
+    needs: [lint, test, typecheck]
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
     permissions:
