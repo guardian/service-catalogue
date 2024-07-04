@@ -78,8 +78,7 @@ function transformFinding(finding: aws_securityhub_findings): Finding {
 		resources: resources as string[],
 		severity,
 		priority,
-		remediationUrl: remediationUrl,
-		firstObservedAt: finding.first_observed_at,
+		remediationUrl,
 		isWithinSla: isWithinSlaTime(finding.first_observed_at, severity),
 	};
 }
