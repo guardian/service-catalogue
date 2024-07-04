@@ -54,7 +54,7 @@ describe('FBSP SLA window', () => {
 		expect(isWithinSla).toBe(false);
 	});
 
-	it('Returns false if a low finding is outside the window', () => {
+	it('Returns false if a low finding was observed within one day', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
 		const severity = 'LOW';
 
