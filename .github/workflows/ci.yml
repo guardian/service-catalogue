@@ -20,9 +20,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./.github/actions/npm-run
+        with:
+          script: lint
+          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./.github/actions/npm-run
+        with:
+          script: test
+          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
+  typecheck:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./.github/actions/npm-run
+        with:
+          script: typecheck
+          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
   CI:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    needs: [lint, test, typecheck]
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
     permissions:
@@ -43,8 +80,8 @@ jobs:
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
-      - name: Run script/ci
-        run: ./scripts/ci.sh
+      - name: Build zip files
+        run: ./scripts/build.sh
 
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@68a3a1914dda09a4a965f310c6be368715e97018 # v4.0.5
