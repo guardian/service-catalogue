@@ -1,5 +1,6 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
+	guardian_github_actions_usage,
 	PrismaClient,
 	repocop_github_repository_rules,
 	view_repo_ownership,
@@ -17,6 +18,7 @@ import {
 import { sendToCloudwatch } from './metrics';
 import {
 	getDependabotVulnerabilities,
+	getProductionWorkflowUsages,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
@@ -27,6 +29,7 @@ import {
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
+import { sendOneRepo } from './remediation/dependency_graph-integrator/send-to-sns';
 import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
@@ -151,6 +154,18 @@ export async function main() {
 
 	if (config.snykIntegrationPREnabled) {
 		await sendUnprotectedRepo(repocopRules, config, repoLanguages);
+	}
+
+	if (config.dependencyGraphIntegrationPrEnabled) {
+		const productionWorkflowUsages: guardian_github_actions_usage[] =
+			await getProductionWorkflowUsages(prisma, productionRepos);
+
+		await sendOneRepo(
+			config,
+			repoLanguages,
+			productionRepos,
+			productionWorkflowUsages,
+		);
 	}
 
 	await writeEvaluationTable(repocopRules, prisma);
