@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"scripts": {
 		"start": "APP=cloudbuster tsx src/run-locally.ts",
+		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cloudbuster",
 		"typecheck": "tsc --noEmit"
 	}
 }

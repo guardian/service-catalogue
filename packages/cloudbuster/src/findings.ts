@@ -4,7 +4,7 @@ import type { Digest, Finding, SecurityHubSeverity } from './types';
 /**
  * Determines whether a Security Hub finding is within the SLA window
  */
-function isWithinSlaTime(
+export function isWithinSlaTime(
 	firstObservedAt: Date | null,
 	severity: SecurityHubSeverity | null,
 ): boolean {
