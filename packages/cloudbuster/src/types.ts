@@ -6,7 +6,6 @@ export interface Finding {
 	remediationUrl: string | null;
 	severity: SecurityHubSeverity | null;
 	priority: number | null;
-	firstObservedAt: Date | null;
 	isWithinSla: boolean;
 }
 
