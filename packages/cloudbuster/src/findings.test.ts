@@ -5,7 +5,7 @@ const MOCK_ONE_DAY_AGO = new Date('2024-01-09');
 const MOCK_TWO_DAYS_AGO = new Date('2024-01-08');
 const MOCK_ONE_WEEK_AGO = new Date('2024-01-03');
 
-describe('SLA window', () => {
+describe('FBSP SLA window', () => {
 	beforeEach(() => {
 		jest.useFakeTimers().setSystemTime(MOCK_TODAY);
 	});
