@@ -22,7 +22,7 @@ describe('FBSP SLA window', () => {
 		expect(isWithinSla).toBe(true);
 	});
 
-	it('Returns true if a critical finding was first observed within a day', () => {
+	it('Returns true if a high finding was first observed within a day', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
 		const severity = 'HIGH';
 
@@ -57,6 +57,15 @@ describe('FBSP SLA window', () => {
 	it('Returns false if a low finding was observed within one day', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
 		const severity = 'LOW';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(false);
+	});
+
+	it('Returns false if a critical finding has no information about when it was first observed', () => {
+		// This can happen as it's a nullable column in the DB
+		const firstObservedAt = null;
+		const severity = 'CRITICAL';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(false);
