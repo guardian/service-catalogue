@@ -20,6 +20,7 @@ export interface Team extends TeamFields {
 	id: NonNullable<TeamFields['id']>;
 	name: NonNullable<TeamFields['name']>;
 }
+
 type RepositoryFields = Pick<
 	github_repositories,
 	| 'archived'
