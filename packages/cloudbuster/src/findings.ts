@@ -90,6 +90,21 @@ function transformFinding(finding: aws_securityhub_findings): Finding {
 	};
 }
 
+function createEmailBody(findings: Finding[]): string {
+	const findingsSortedByPriority = findings.sort(
+		(a, b) => (b.priority ?? 0) - (a.priority ?? 0),
+	);
+
+	return `The following vulnerabilities have been found in your account\n: 
+        ${findingsSortedByPriority
+					.map(
+						(f) => `[${f.severity}] ${f.title}
+Affected resource(s): ${f.resources.join(',')}
+Remediation: ${f.remediationUrl}}`,
+					)
+					.join('\n\n')}`;
+}
+
 export function createDigestForTeam(
 	findings: Record<string, Finding[]>,
 	awsAccountId: string,
@@ -103,15 +118,7 @@ export function createDigestForTeam(
 	return {
 		accountId: awsAccountId,
 		subject: `Security Hub vulnerabilities detected in AWS account ${teamFindings[0]?.awsAccountName}`,
-		message: `The following vulnerabilities have been found in your account\n: 
-        ${teamFindings
-					.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
-					.map(
-						(f) => `[${f.severity}] ${f.title}
-Affected resource(s): ${f.resources.join(',')}
-Remediation: ${f.remediationUrl}}`,
-					)
-					.join('\n\n')}`,
+		message: createEmailBody(teamFindings),
 	};
 }
 
