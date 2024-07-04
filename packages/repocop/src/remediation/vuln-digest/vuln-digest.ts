@@ -5,6 +5,7 @@ import { type RepocopVulnerability, SLAs } from 'common/src/types';
 import type { Config } from '../../config';
 import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types';
 import { vulnSortPredicate } from '../../utils';
+import { removeRepoOwner } from '../shared-utilities';
 
 function getOwningRepos(
 	team: Team,
@@ -44,7 +45,7 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 
 	const cveHyperlink = vuln.cves[0] ? vuln.cves[0] : 'no CVE provided';
 
-	return String.raw`[${vuln.full_name}](https://github.com/${vuln.full_name}) contains a high severity vulnerability, ${cveHyperlink}, from ${vulnHyperlink}, introduced via ${ecosystem}.
+	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) contains a high severity vulnerability, ${cveHyperlink}, from ${vulnHyperlink}, introduced via ${ecosystem}.
 There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
