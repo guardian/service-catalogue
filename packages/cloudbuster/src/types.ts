@@ -1,10 +1,19 @@
-export interface FsbpDigest {
+export interface Finding {
+	awsAccountId: string;
 	awsAccountName: string | null;
 	title: string;
+	resources: string[];
 	remediationUrl: string | null;
 	severity: SecurityHubSeverity | null;
+	priority: number | null;
 	firstObservedAt: Date | null;
 	isWithinSla: boolean;
+}
+
+export interface Digest {
+	accountId: string;
+	subject: string;
+	message: string;
 }
 
 export type SecurityHubSeverity =

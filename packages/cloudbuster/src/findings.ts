@@ -1,5 +1,5 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { FsbpDigest, SecurityHubSeverity } from './types';
+import type { Digest, Finding, SecurityHubSeverity } from './types';
 
 /**
  * Determines whether a Security Hub finding is within the SLA window
@@ -32,18 +32,22 @@ function isWithinSlaTime(finding: aws_securityhub_findings): boolean {
 }
 
 /**
- * Transforms a SQL row into a vulnerability digest
+ * Transforms a SQL row into a finding
  */
-function fsbpDigestFromFinding(finding: aws_securityhub_findings): FsbpDigest {
+function transformFinding(finding: aws_securityhub_findings): Finding {
 	let severity = null;
+	let priority = null;
 	let remediationUrl = null;
+	let resources = null;
 
 	if (
 		finding.severity &&
 		typeof finding.severity === 'object' &&
-		'Label' in finding.severity
+		'Label' in finding.severity &&
+		'Normalized' in finding.severity
 	) {
 		severity = finding.severity['Label'] as SecurityHubSeverity;
+		priority = finding.severity['Normalized'] as number;
 	}
 
 	if (finding.remediation && typeof finding.remediation === 'object') {
@@ -62,20 +66,76 @@ function fsbpDigestFromFinding(finding: aws_securityhub_findings): FsbpDigest {
 		}
 	}
 
+	if (finding.resources && Array.isArray(finding.resources)) {
+		resources = finding.resources
+			.map((r) => {
+				if (r && typeof r === 'object' && 'Id' in r) {
+					return r['Id'] as string;
+				}
+				return null;
+			})
+			.filter(Boolean);
+	}
+
 	return {
+		awsAccountId: finding.aws_account_id,
 		awsAccountName: finding.aws_account_name,
 		title: finding.title,
+		resources: resources as string[],
 		severity,
+		priority,
 		remediationUrl: remediationUrl,
 		firstObservedAt: finding.first_observed_at,
 		isWithinSla: isWithinSlaTime(finding),
 	};
 }
 
+export function createDigestForTeam(
+	findings: Record<string, Finding[]>,
+	awsAccountId: string,
+): Digest | undefined {
+	const teamFindings = findings[awsAccountId];
+
+	if (!teamFindings || teamFindings.length == 0) {
+		return undefined;
+	}
+
+	return {
+		accountId: awsAccountId,
+		subject: `Security Hub vulnerabilities detected in AWS account ${teamFindings[0]?.awsAccountName}`,
+		message: `The following vulnerabilities have been found in your account\n: 
+        ${teamFindings
+					.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
+					.map(
+						(f) => `[${f.severity}] ${f.title}
+Affected resource(s): ${f.resources.join(',')}
+Remediation: ${f.remediationUrl}}`,
+					)
+					.join('\n\n')}`,
+	};
+}
+
+export function groupFindingsByTeam(
+	findings: Finding[],
+): Record<string, Finding[]> {
+	const findingsGroupedByAwsAccount = findings.reduce<
+		Record<string, Finding[]>
+	>((acc, finding) => {
+		const { awsAccountId } = finding;
+		if (!acc[awsAccountId]) {
+			acc[awsAccountId] = [];
+		}
+		acc[awsAccountId]?.push(finding);
+		return acc;
+	}, {});
+
+	return findingsGroupedByAwsAccount;
+}
+
 export async function getFsbpFindings(
 	prisma: PrismaClient,
 	severities: SecurityHubSeverity[],
-): Promise<FsbpDigest[]> {
+): Promise<Finding[]> {
 	const findings = await prisma.aws_securityhub_findings.findMany({
 		where: {
 			OR: severities.map((s) => ({
@@ -84,8 +144,5 @@ export async function getFsbpFindings(
 		},
 	});
 
-	const digests = findings.map(fsbpDigestFromFinding);
-
-	console.log(digests);
-	return digests;
+	return findings.map(transformFinding);
 }
