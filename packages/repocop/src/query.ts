@@ -15,6 +15,7 @@ import type {
 	Repository,
 	SnykIssue,
 	SnykProject,
+	Team,
 } from './types';
 
 export async function getRepositories(
@@ -51,6 +52,20 @@ export async function getRepositoryBranches(
 
 	return toNonEmptyArray(branches);
 }
+
+export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
+	const teams = (
+		await client.github_teams.findMany({
+			select: {
+				slug: true,
+				id: true,
+				name: true,
+			},
+		})
+	).map((t) => t as Team);
+	console.debug(`Found ${teams.length} teams.`);
+	return toNonEmptyArray(teams);
+};
 
 export async function getRepoOwnership(
 	client: PrismaClient,

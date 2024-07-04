@@ -3,6 +3,7 @@ import type { Endpoints } from '@octokit/types';
 import type {
 	aws_cloudformation_stacks,
 	github_repositories,
+	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
 import type { RepocopVulnerability } from 'common/src/types';
@@ -12,6 +13,13 @@ export interface RepoAndStack {
 	stacks: string[];
 }
 
+type TeamFields = Pick<github_teams, 'slug' | 'id' | 'name'>;
+
+export interface Team extends TeamFields {
+	slug: NonNullable<TeamFields['slug']>;
+	id: NonNullable<TeamFields['id']>;
+	name: NonNullable<TeamFields['name']>;
+}
 type RepositoryFields = Pick<
 	github_repositories,
 	| 'archived'
