@@ -70,6 +70,19 @@ const anotherResult: EvaluationResult = {
 	vulnerabilities: [],
 };
 
+const highRecentVuln: RepocopVulnerability = {
+	source: 'Dependabot',
+	full_name: fullName,
+	open: true,
+	severity: 'high',
+	package: 'leftpad',
+	urls: ['example.com'],
+	ecosystem: 'pip',
+	alert_issue_date: new Date(),
+	is_patchable: true,
+	cves: ['CVE-123'],
+};
+
 describe('createDigest', () => {
 	it('returns undefined when the total vuln count is zero', () => {
 		expect(
@@ -83,21 +96,9 @@ describe('createDigest', () => {
 	});
 
 	it('returns a digest when a result contains a vulnerability', () => {
-		const vuln: RepocopVulnerability = {
-			source: 'Dependabot',
-			full_name: fullName,
-			open: true,
-			severity: 'high',
-			package: 'leftpad',
-			urls: ['example.com'],
-			ecosystem: 'pip',
-			alert_issue_date: new Date(),
-			is_patchable: true,
-			cves: ['CVE-123'],
-		};
 		const resultWithVuln: EvaluationResult = {
 			...result,
-			vulnerabilities: [vuln],
+			vulnerabilities: [highRecentVuln],
 		};
 		expect(
 			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
@@ -107,16 +108,10 @@ describe('createDigest', () => {
 
 	it('recognises that a SBT dependency could come from Maven', () => {
 		const vuln: RepocopVulnerability = {
-			source: 'Dependabot',
-			full_name: fullName,
-			open: true,
-			severity: 'high',
+			...highRecentVuln,
 			package: 'jackson',
 			urls: ['example.com'],
 			ecosystem: 'maven',
-			alert_issue_date: new Date(),
-			is_patchable: true,
-			cves: ['CVE-123'],
 		};
 		const resultWithVuln: EvaluationResult = {
 			...result,
@@ -129,21 +124,9 @@ describe('createDigest', () => {
 	});
 
 	it('returns the correct digest for the correct team', () => {
-		const vuln: RepocopVulnerability = {
-			source: 'Dependabot',
-			full_name: fullName,
-			open: true,
-			severity: 'high',
-			package: 'leftpad',
-			urls: ['example.com'],
-			ecosystem: 'pip',
-			alert_issue_date: new Date(),
-			is_patchable: true,
-			cves: ['CVE-123'],
-		};
 		const resultWithVuln: EvaluationResult = {
 			...result,
-			vulnerabilities: [vuln],
+			vulnerabilities: [highRecentVuln],
 		};
 		const anotherVuln: RepocopVulnerability = {
 			source: 'Dependabot',
@@ -182,16 +165,8 @@ describe('createDigest', () => {
 
 	it('only returns vulnerabilities created after 30th April 2024', () => {
 		const vuln: RepocopVulnerability = {
-			source: 'Dependabot',
-			full_name: fullName,
-			open: true,
-			severity: 'high',
-			package: 'leftpad',
-			urls: ['example.com'],
-			ecosystem: 'pip',
+			...highRecentVuln,
 			alert_issue_date: new Date('2024-04-30'),
-			is_patchable: true,
-			cves: ['CVE-123'],
 		};
 
 		const todayVuln = {
@@ -214,6 +189,40 @@ describe('createDigest', () => {
 		console.log(msg);
 		expect(msg).toContain('rightpad');
 		expect(msg).not.toContain('leftpad');
+	});
+});
+
+describe('createDigestForSeverity', () => {
+	it('should take notice when there are no valid CVEs', () => {
+		const noCveVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: [],
+		};
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [noCveVuln],
+		};
+		expect(
+			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
+				?.message,
+		).toContain('no CVE provided');
+	});
+});
+
+describe('createDigestForSeverity', () => {
+	it('should take notice when there are no valid URLs', () => {
+		const noUrlVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			urls: [],
+		};
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [noUrlVuln],
+		};
+		expect(
+			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
+				?.message,
+		).not.toContain(`[${noUrlVuln.package}](`);
 	});
 });
 
