@@ -11,7 +11,7 @@ export async function main() {
 	const config = await getConfig();
 	const prisma = getPrismaClient(config);
 
-	const severities: SecurityHubSeverity[] = ['HIGH', 'LOW'];
+	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
 	const findings = await getFsbpFindings(prisma, severities);
 	const groupedFindings = groupFindingsByTeam(findings);
 
