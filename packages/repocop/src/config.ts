@@ -62,6 +62,16 @@ export interface Config extends PrismaConfig {
 	 * The ARN of the Snyk Integrator input topic.
 	 */
 	snykIntegratorTopic: string;
+
+	/**
+	 * Flag to enable creation of dependency graph integration PRs
+	 */
+	dependencyGraphIntegrationPrEnabled: boolean;
+
+	/**
+	 * The ARN of the Dependency Graph Integrator input topic.
+	 */
+	dependencyGraphIntegratorTopic: string;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -92,5 +102,10 @@ export async function getConfig(): Promise<Config> {
 		snykIntegrationPREnabled:
 			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
 		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
+		dependencyGraphIntegrationPrEnabled:
+			process.env.DEPENDENCY_GRAPH_INTEGRATION_ENABLED === 'true',
+		dependencyGraphIntegratorTopic: getEnvOrThrow(
+			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
+		),
 	};
 }
