@@ -4,26 +4,20 @@ import type { Digest, Finding, SecurityHubSeverity } from './types';
 /**
  * Determines whether a Security Hub finding is within the SLA window
  */
-function isWithinSlaTime(finding: aws_securityhub_findings): boolean {
-	if (!finding.first_observed_at) {
+function isWithinSlaTime(
+	firstObservedAt: Date | null,
+	severity: SecurityHubSeverity | null,
+): boolean {
+	if (!firstObservedAt || !severity) {
 		return false;
 	}
 
 	const today = new Date();
-	const timeDifference = today.getTime() - finding.first_observed_at.getTime();
+	const timeDifference = today.getTime() - firstObservedAt.getTime();
 	const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
 
 	const isWithinTwoDays = Math.abs(dayDifference) <= 2;
 	const isWithinThirtyDays = Math.abs(dayDifference) <= 30;
-
-	let severity;
-	if (
-		finding.severity &&
-		typeof finding.severity === 'object' &&
-		'Label' in finding.severity
-	) {
-		severity = finding.severity['Label'];
-	}
 
 	return (
 		(severity === 'CRITICAL' && isWithinTwoDays) ||
@@ -86,7 +80,7 @@ function transformFinding(finding: aws_securityhub_findings): Finding {
 		priority,
 		remediationUrl: remediationUrl,
 		firstObservedAt: finding.first_observed_at,
-		isWithinSla: isWithinSlaTime(finding),
+		isWithinSla: isWithinSlaTime(finding.first_observed_at, severity),
 	};
 }
 
