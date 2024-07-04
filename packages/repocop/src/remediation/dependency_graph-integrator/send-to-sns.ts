@@ -24,7 +24,7 @@ export function checkRepoForLanguage(
 	return languagesInRepo.includes(targetLanguage);
 }
 
-function doesRepoHaveWorkflow(
+export function doesRepoHaveWorkflow(
 	repo: Repository,
 	workflow_usages: guardian_github_actions_usage[],
 ): boolean {
