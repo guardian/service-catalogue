@@ -29,15 +29,22 @@ create_sql_migrations() {
   done
 }
 
+open_janus() {
+  echo "$1"
+  echo "Opening Janus"
+  sleep 3
+  open "https://janus.gutools.co.uk"
+}
+
 check_aws_credentials() {
   step "Checking AWS credentials"
 
   STATUS=$(aws sts get-caller-identity --profile deployTools 2>&1 || true)
   if [[ ${STATUS} =~ (ExpiredToken) ]]; then
-    echo "Credentials for the deployTools profile have expired. Please fetch new credentials, and run this script again."
+    open_janus "Credentials for the deployTools profile have expired. Please fetch new credentials, and run this script again."
     exit 1
   elif [[ ${STATUS} =~ ("could not be found") ]]; then
-    echo "Credentials for the deployTools profile are missing. Please fetch some, and run this script again."
+    open_janus "Credentials for the deployTools profile are missing. Please fetch some, and run this script again."
     exit 1
   else
     echo "AWS credentials are valid"
