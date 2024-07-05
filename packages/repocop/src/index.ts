@@ -29,7 +29,7 @@ import {
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
-import { sendOneRepo } from './remediation/dependency_graph-integrator/send-to-sns';
+import { sendOneRepoToDepGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
 import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
@@ -156,18 +156,6 @@ export async function main() {
 		await sendUnprotectedRepo(repocopRules, config, repoLanguages);
 	}
 
-	if (config.dependencyGraphIntegrationPrEnabled) {
-		const productionWorkflowUsages: guardian_github_actions_usage[] =
-			await getProductionWorkflowUsages(prisma, productionRepos);
-
-		await sendOneRepo(
-			config,
-			repoLanguages,
-			productionRepos,
-			productionWorkflowUsages,
-		);
-	}
-
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
@@ -203,6 +191,16 @@ export async function main() {
 			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
 		);
 	}
+
+	// Dependency Graph Integrator
+	const productionWorkflowUsages: guardian_github_actions_usage[] =
+		await getProductionWorkflowUsages(prisma, productionRepos);
+	await sendOneRepoToDepGraphIntegrator(
+		config,
+		repoLanguages,
+		productionRepos,
+		productionWorkflowUsages,
+	);
 
 	console.log('Done');
 }

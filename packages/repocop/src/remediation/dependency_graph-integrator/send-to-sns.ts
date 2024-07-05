@@ -20,7 +20,6 @@ export function checkRepoForLanguage(
 	const languagesInRepo: string[] =
 		languages.find((language) => language.full_name === repo.full_name)
 			?.languages ?? [];
-
 	return languagesInRepo.includes(targetLanguage);
 }
 
@@ -28,16 +27,13 @@ export function doesRepoHaveWorkflow(
 	repo: Repository,
 	workflow_usages: guardian_github_actions_usage[],
 ): boolean {
-	const usagesForRepo = workflow_usages.find(
-		(usages) => repo.full_name === usages.full_name,
-	) as guardian_github_actions_usage;
-
-	const actionsForRepo: string[] = usagesForRepo.workflow_uses;
+	const actionsForRepo = workflow_usages
+		.filter((usages) => repo.full_name === usages.full_name)
+		.flatMap((workflow) => workflow.workflow_uses);
 
 	const dependencySubmissionWorkflow = actionsForRepo.find((action) =>
 		action.includes('scalacenter/sbt-dependency-submission'),
 	);
-
 	if (dependencySubmissionWorkflow) {
 		return true;
 	}
@@ -53,20 +49,24 @@ export function getSuitableRepoEvents(
 		checkRepoForLanguage(repo, languages, 'Scala'),
 	);
 
+	console.log(`Found ${scalaRepos.length} Scala repos in production`);
+
 	const scalaReposWithoutWorkflows = scalaRepos.filter(
 		(repo) => !doesRepoHaveWorkflow(repo, workflow_usages),
+	);
+
+	console.log(
+		`Found ${scalaRepos.length} production Scala repos without dependency submission workflows`,
 	);
 
 	const events = scalaReposWithoutWorkflows.map((repo) => ({
 		name: removeRepoOwner(repo.full_name),
 	}));
-
-	console.log(events);
-
+	console.log(`Found ${events.length} events to send to SNS`);
 	return events;
 }
 
-export async function sendOneRepo(
+export async function sendOneRepoToDepGraphIntegrator(
 	config: Config,
 	repoLanguages: github_languages[],
 	productionRepos: Repository[],
@@ -81,7 +81,6 @@ export async function sendOneRepo(
 			Message: JSON.stringify(eventToSend),
 			TopicArn: config.dependencyGraphIntegratorTopic,
 		});
-
 		console.log(`Sending ${eventToSend.name} to Dependency Graph Integrator`);
 		await new SNSClient(awsClientConfig(config.stage)).send(
 			publishRequestEntry,
