@@ -64,11 +64,6 @@ export interface Config extends PrismaConfig {
 	snykIntegratorTopic: string;
 
 	/**
-	 * Flag to enable creation of dependency graph integration PRs
-	 */
-	dependencyGraphIntegrationPrEnabled: boolean;
-
-	/**
 	 * The ARN of the Dependency Graph Integrator input topic.
 	 */
 	dependencyGraphIntegratorTopic: string;
