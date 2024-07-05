@@ -77,14 +77,20 @@ export async function sendOneRepoToDepGraphIntegrator(
 	)[0];
 
 	if (eventToSend) {
-		const publishRequestEntry = new PublishCommand({
-			Message: JSON.stringify(eventToSend),
-			TopicArn: config.dependencyGraphIntegratorTopic,
-		});
-		console.log(`Sending ${eventToSend.name} to Dependency Graph Integrator`);
-		await new SNSClient(awsClientConfig(config.stage)).send(
-			publishRequestEntry,
-		);
+		if (config.stage === 'PROD') {
+			const publishRequestEntry = new PublishCommand({
+				Message: JSON.stringify(eventToSend),
+				TopicArn: config.dependencyGraphIntegratorTopic,
+			});
+			console.log(`Sending ${eventToSend.name} to Dependency Graph Integrator`);
+			await new SNSClient(awsClientConfig(config.stage)).send(
+				publishRequestEntry,
+			);
+		} else {
+			console.log(
+				`Would have sent ${eventToSend.name} to Dependency Graph Integrator`,
+			);
+		}
 	} else {
 		console.log(
 			'No Scala repos found without SBT dependency submission workflow',
