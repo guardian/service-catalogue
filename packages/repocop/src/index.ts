@@ -1,5 +1,6 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
+	guardian_github_actions_usage,
 	PrismaClient,
 	repocop_github_repository_rules,
 	view_repo_ownership,
@@ -17,6 +18,7 @@ import {
 import { sendToCloudwatch } from './metrics';
 import {
 	getDependabotVulnerabilities,
+	getProductionWorkflowUsages,
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
@@ -27,6 +29,7 @@ import {
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
+import { sendOneRepoToDepGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
 import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
@@ -89,6 +92,11 @@ export async function main() {
 		await getDependabotVulnerabilities(productionRepos, octokit);
 
 	console.log(productionDependabotVulnerabilities);
+
+	// Dependency Graph Integrator
+	const productionWorkflowUsages: guardian_github_actions_usage[] =
+		await getProductionWorkflowUsages(prisma, productionRepos);
+
 
 	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
@@ -188,6 +196,13 @@ export async function main() {
 			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
 		);
 	}
+
+	await sendOneRepoToDepGraphIntegrator(
+		config,
+		repoLanguages,
+		productionRepos,
+		productionWorkflowUsages,
+	);
 
 	console.log('Done');
 }
