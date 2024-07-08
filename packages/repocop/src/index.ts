@@ -93,6 +93,11 @@ export async function main() {
 
 	console.log(productionDependabotVulnerabilities);
 
+	// Dependency Graph Integrator
+	const productionWorkflowUsages: guardian_github_actions_usage[] =
+		await getProductionWorkflowUsages(prisma, productionRepos);
+
+
 	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
 		unarchivedRepos,
 		branches,
@@ -192,9 +197,6 @@ export async function main() {
 		);
 	}
 
-	// Dependency Graph Integrator
-	const productionWorkflowUsages: guardian_github_actions_usage[] =
-		await getProductionWorkflowUsages(prisma, productionRepos);
 	await sendOneRepoToDepGraphIntegrator(
 		config,
 		repoLanguages,
