@@ -40,7 +40,7 @@ export function doesRepoHaveWorkflow(
 	return false;
 }
 
-export function getSuitableRepoEvents(
+export function createSnsEventsForDependencyGraphIntegration(
 	languages: github_languages[],
 	productionRepos: Repository[],
 	workflow_usages: guardian_github_actions_usage[],
@@ -73,7 +73,11 @@ export async function sendOneRepoToDepGraphIntegrator(
 	workflowUsages: guardian_github_actions_usage[],
 ) {
 	const eventToSend = shuffle(
-		getSuitableRepoEvents(repoLanguages, productionRepos, workflowUsages),
+		createSnsEventsForDependencyGraphIntegration(
+			repoLanguages,
+			productionRepos,
+			workflowUsages,
+		),
 	)[0];
 
 	if (eventToSend) {
