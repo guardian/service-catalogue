@@ -21,7 +21,7 @@
     "@guardian/tsconfig": "^0.3.1",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.10",
     "dotenv": "^16.4.5",
     "esbuild": "^0.23.0",
     "eslint": "^8.57.0",
