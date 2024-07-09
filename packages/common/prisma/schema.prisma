@@ -751,12 +751,13 @@ view view_repo_ownership {
 }
 
 view aws_accounts {
-  id                  String
-  name                String
-  email               String
-  status              String
-  joined_timestamp    DateTime @db.Timestamp(6)
-  organizational_unit String
+  id                         String
+  name                       String
+  email                      String
+  status                     String
+  joined_timestamp           DateTime @db.Timestamp(6)
+  ancestors                  String[]
+  is_product_and_engineering Boolean
 
   @@unique([id, name])
 }

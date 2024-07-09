@@ -4,7 +4,8 @@ SELECT
   fn_aws_accounts.email,
   fn_aws_accounts.status,
   fn_aws_accounts.joined_timestamp,
-  fn_aws_accounts.organizational_unit
+  fn_aws_accounts.ancestors,
+  fn_aws_accounts.is_product_and_engineering
 FROM
   fn_aws_accounts() fn_aws_accounts(
     id,
@@ -12,5 +13,6 @@ FROM
     email,
     STATUS,
     joined_timestamp,
-    organizational_unit
+    ancestors,
+    is_product_and_engineering
   );
