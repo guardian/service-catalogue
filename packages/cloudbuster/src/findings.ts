@@ -1,33 +1,19 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type {
-	Digest,
-	Finding,
-	GroupedFindings,
-	SecurityHubSeverity,
-} from './types';
+import type { Finding, GroupedFindings, SecurityHubSeverity } from './types';
 
-/**
- * Determines whether a Security Hub finding is within the SLA window
- */
-export function isWithinSlaTime(
-	firstObservedAt: Date | null,
-	severity: SecurityHubSeverity | null,
-): boolean {
-	if (!firstObservedAt || !severity) {
-		return false;
-	}
+export async function getFsbpFindings(
+	prisma: PrismaClient,
+	severities: SecurityHubSeverity[],
+): Promise<Finding[]> {
+	const findings = await prisma.aws_securityhub_findings.findMany({
+		where: {
+			OR: severities.map((s) => ({
+				severity: { path: ['Label'], equals: s },
+			})),
+		},
+	});
 
-	const today = new Date();
-	const timeDifference = today.getTime() - firstObservedAt.getTime();
-	const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
-
-	const isWithinTwoDays = Math.abs(dayDifference) <= 2;
-	const isWithinThirtyDays = Math.abs(dayDifference) <= 30;
-
-	return (
-		(severity === 'CRITICAL' && isWithinTwoDays) ||
-		(severity === 'HIGH' && isWithinThirtyDays)
-	);
+	return findings.map(transformFinding);
 }
 
 /**
@@ -88,37 +74,28 @@ function transformFinding(finding: aws_securityhub_findings): Finding {
 	};
 }
 
-function createEmailBody(findings: Finding[]): string {
-	const findingsSortedByPriority = findings.sort(
-		(a, b) => (b.priority ?? 0) - (a.priority ?? 0),
-	);
-
-	return `The following vulnerabilities have been found in your account\n: 
-        ${findingsSortedByPriority
-					.map(
-						(f) =>
-							`[${f.severity}] ${f.title}
-Affected resource(s): ${f.resources.join(',')}
-Remediation: ${f.remediationUrl ?? 'Unknown'}`,
-					)
-					.join('\n\n')}`;
-}
-
-export function createDigestForTeam(
-	findings: Record<string, Finding[]>,
-	awsAccountId: string,
-): Digest | undefined {
-	const teamFindings = findings[awsAccountId];
-
-	if (!teamFindings || teamFindings.length == 0) {
-		return undefined;
+/**
+ * Determines whether a Security Hub finding is within the SLA window
+ */
+export function isWithinSlaTime(
+	firstObservedAt: Date | null,
+	severity: SecurityHubSeverity | null,
+): boolean {
+	if (!firstObservedAt || !severity) {
+		return false;
 	}
 
-	return {
-		accountId: awsAccountId,
-		subject: `Security Hub vulnerabilities detected in AWS account ${teamFindings[0]?.awsAccountName}`,
-		message: createEmailBody(teamFindings),
-	};
+	const today = new Date();
+	const timeDifference = today.getTime() - firstObservedAt.getTime();
+	const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+	const isWithinTwoDays = Math.abs(dayDifference) <= 2;
+	const isWithinThirtyDays = Math.abs(dayDifference) <= 30;
+
+	return (
+		(severity === 'CRITICAL' && isWithinTwoDays) ||
+		(severity === 'HIGH' && isWithinThirtyDays)
+	);
 }
 
 export function groupFindingsByAccount(findings: Finding[]): GroupedFindings {
@@ -133,19 +110,4 @@ export function groupFindingsByAccount(findings: Finding[]): GroupedFindings {
 	}
 
 	return findingsGroupedByAwsAccount;
-}
-
-export async function getFsbpFindings(
-	prisma: PrismaClient,
-	severities: SecurityHubSeverity[],
-): Promise<Finding[]> {
-	const findings = await prisma.aws_securityhub_findings.findMany({
-		where: {
-			OR: severities.map((s) => ({
-				severity: { path: ['Label'], equals: s },
-			})),
-		},
-	});
-
-	return findings.map(transformFinding);
 }

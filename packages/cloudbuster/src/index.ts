@@ -1,10 +1,7 @@
 import { getPrismaClient } from 'common/database';
 import { getConfig } from './config';
-import {
-	createDigestForTeam,
-	getFsbpFindings,
-	groupFindingsByAccount,
-} from './findings';
+import { createDigestForAccount } from './digest';
+import { getFsbpFindings, groupFindingsByAccount } from './findings';
 import type { Digest, SecurityHubSeverity } from './types';
 
 export async function main() {
@@ -16,7 +13,9 @@ export async function main() {
 	const groupedFindings = groupFindingsByAccount(findings);
 
 	const digests = Object.keys(groupedFindings)
-		.map((awsAccountId) => createDigestForTeam(groupedFindings, awsAccountId))
+		.map((awsAccountId) =>
+			createDigestForAccount(awsAccountId, groupedFindings),
+		)
 		.filter(Boolean) as Digest[];
 
 	for (const digest of digests) {
