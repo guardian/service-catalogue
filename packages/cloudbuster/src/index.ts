@@ -3,7 +3,7 @@ import { getConfig } from './config';
 import {
 	createDigestForTeam,
 	getFsbpFindings,
-	groupFindingsByTeam,
+	groupFindingsByAccount,
 } from './findings';
 import type { Digest, SecurityHubSeverity } from './types';
 
@@ -13,7 +13,7 @@ export async function main() {
 
 	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
 	const findings = await getFsbpFindings(prisma, severities);
-	const groupedFindings = groupFindingsByTeam(findings);
+	const groupedFindings = groupFindingsByAccount(findings);
 
 	const digests = Object.keys(groupedFindings)
 		.map((awsAccountId) => createDigestForTeam(groupedFindings, awsAccountId))

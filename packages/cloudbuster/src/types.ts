@@ -21,3 +21,5 @@ export type SecurityHubSeverity =
 	| 'INFORMATION'
 	| 'LOW'
 	| 'MEDIUM';
+
+export type GroupedFindings = Record<string, Finding[]>;

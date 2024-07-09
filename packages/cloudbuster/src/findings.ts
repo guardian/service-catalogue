@@ -1,5 +1,10 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { Digest, Finding, SecurityHubSeverity } from './types';
+import type {
+	Digest,
+	Finding,
+	GroupedFindings,
+	SecurityHubSeverity,
+} from './types';
 
 /**
  * Determines whether a Security Hub finding is within the SLA window
@@ -116,19 +121,16 @@ export function createDigestForTeam(
 	};
 }
 
-export function groupFindingsByTeam(
-	findings: Finding[],
-): Record<string, Finding[]> {
-	const findingsGroupedByAwsAccount = findings.reduce<
-		Record<string, Finding[]>
-	>((acc, finding) => {
+export function groupFindingsByAccount(findings: Finding[]): GroupedFindings {
+	const findingsGroupedByAwsAccount: GroupedFindings = {};
+
+	for (const finding of findings) {
 		const { awsAccountId } = finding;
-		if (!acc[awsAccountId]) {
-			acc[awsAccountId] = [];
+		if (!findingsGroupedByAwsAccount[awsAccountId]) {
+			findingsGroupedByAwsAccount[awsAccountId] = [];
 		}
-		acc[awsAccountId]?.push(finding);
-		return acc;
-	}, {});
+		findingsGroupedByAwsAccount[awsAccountId].push(finding);
+	}
 
 	return findingsGroupedByAwsAccount;
 }
