@@ -802,3 +802,14 @@ view view_github_actions {
 
   @@ignore
 }
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view aws_organizations_tree {
+  id                         String?
+  type                       String?
+  name                       String?
+  ancestors                  String[]
+  is_product_and_engineering Boolean?
+
+  @@ignore
+}
