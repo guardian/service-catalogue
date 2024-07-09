@@ -51,7 +51,7 @@ function createPRChecklist(branchName: string): string[] {
 		'and make sure that your dependencies look okay.';
 
 	const step3 =
-		`When you are happy the action works, remove the branch name \`${branchName}\`` +
+		`When you are happy the action works, remove the branch name \`${branchName}\` ` +
 		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
 
 	return [step1, step2, step3];
