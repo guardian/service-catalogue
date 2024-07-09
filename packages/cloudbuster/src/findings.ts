@@ -91,9 +91,10 @@ function createEmailBody(findings: Finding[]): string {
 	return `The following vulnerabilities have been found in your account\n: 
         ${findingsSortedByPriority
 					.map(
-						(f) => `[${f.severity}] ${f.title}
+						(f) =>
+							`[${f.severity}] ${f.title}
 Affected resource(s): ${f.resources.join(',')}
-Remediation: ${f.remediationUrl}}`,
+Remediation: ${f.remediationUrl ?? 'Unknown'}`,
 					)
 					.join('\n\n')}`;
 }
