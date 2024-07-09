@@ -43,14 +43,18 @@ export function createYaml(prBranch: string): string {
 
 function createPRChecklist(branchName: string): string[] {
 	const step1 =
+		'Ensure that the [version of sbt in the project is v1.5 or above](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file#support) in order for the dependency submission action to run.';
+
+	const step2 =
 		'A run of this action should have been triggered when the branch was ' +
 		'created. Sense check the output of "Log snapshot for user validation", ' +
 		'and make sure that your dependencies look okay.';
 
-	const step2 =
+	const step3 =
 		`When you are happy the action works, remove the branch name \`${branchName}\`` +
 		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
-	return [step1, step2];
+
+	return [step1, step2, step3];
 }
 
 export function generatePrBody(branchName: string, repoName: string): string {
