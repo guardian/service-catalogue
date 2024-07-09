@@ -10,8 +10,8 @@
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces --if-present",
     "lint": "eslint packages/** --ext .ts,.tsx --no-error-on-unmatched-pattern",
-    "cloudbuster::start": "npm run start --workspace cloudbuster",
-    "cloudbuster::test": "npm run test --workspace cloudbuster"
+    "cloudbuster:start": "npm run start --workspace cloudbuster",
+    "cloudbuster:test": "npm run test --workspace cloudbuster"
   },
   "author": "Guardian Developers",
   "workspaces": [
