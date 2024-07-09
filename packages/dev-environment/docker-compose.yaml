@@ -28,8 +28,6 @@ services:
         - github_repository_branches
         - github_workflows
         - github_languages
-        - aws_organizations_account_parents
-        - aws_organizations_organizational_units
         - aws_ec2_instances
         - aws_cloudformation_stacks
   postgres:

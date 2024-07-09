@@ -202,6 +202,34 @@ model aws_organizations_organizational_units {
   @@ignore
 }
 
+model aws_organizations_organizational_unit_parents {
+  cq_sync_time       DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name     String?   @map("_cq_source_name")
+  cq_id              String    @id(map: "aws_organizations_organizational_unit_parents_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
+  request_account_id String
+  id                 String
+  parent_id          String
+  type               String
+
+  @@ignore
+}
+
+model aws_organizations_roots {
+  cq_sync_time       DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name     String?   @map("_cq_source_name")
+  cq_id              String    @id(map: "aws_organizations_roots_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
+  request_account_id String
+  tags               Json?
+  arn                String
+  id                 String
+  name               String
+  policy_types       Json?
+
+  @@ignore
+}
+
 model github_repositories {
   cq_sync_time                   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name                 String?   @map("_cq_source_name")
