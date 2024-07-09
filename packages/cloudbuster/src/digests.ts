@@ -2,7 +2,7 @@ import { groupFindingsByAccount } from './findings';
 import type { Digest, Finding, GroupedFindings } from './types';
 
 /**
- * Given a list of findings, create a list of digests ready to be emailed out
+ * Given a list of findings, creates a list of digests ready to be emailed out
  */
 export function createDigestsFromFindings(findings: Finding[]): Digest[] {
 	const groupedFindings = groupFindingsByAccount(findings);

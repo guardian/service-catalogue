@@ -1,6 +1,9 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
 import type { Finding, GroupedFindings, SecurityHubSeverity } from './types';
 
+/**
+ * Queries the database for FSBP findings
+ */
 export async function getFsbpFindings(
 	prisma: PrismaClient,
 	severities: SecurityHubSeverity[],
@@ -36,17 +39,17 @@ function transformFinding(finding: aws_securityhub_findings): Finding {
 	}
 
 	if (finding.remediation && typeof finding.remediation === 'object') {
-		const recommendation = finding.remediation as {
+		const remediation = finding.remediation as {
 			Recommendation: {
 				Url: string | null;
 			};
 		} | null;
-		if (recommendation) {
+		if (remediation) {
 			if (
-				'Url' in recommendation['Recommendation'] &&
-				recommendation['Recommendation']['Url']
+				'Url' in remediation['Recommendation'] &&
+				remediation['Recommendation']['Url']
 			) {
-				remediationUrl = recommendation['Recommendation']['Url'];
+				remediationUrl = remediation['Recommendation']['Url'];
 			}
 		}
 	}
@@ -98,6 +101,17 @@ export function isWithinSlaTime(
 	);
 }
 
+/**
+ * @param findings An array of FSBP findings.
+ * @returns An object mapping account numbers to findings.
+ * E.g.
+ * ```ts
+ *  {
+ *  accountNumber123: ["finding1", "finding2"],
+ *  accountNumber345: ["finding4", "finding5", "finding6"]
+ *  }
+ * ```
+ */
 export function groupFindingsByAccount(findings: Finding[]): GroupedFindings {
 	const findingsGroupedByAwsAccount: GroupedFindings = {};
 

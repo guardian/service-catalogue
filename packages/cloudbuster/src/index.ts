@@ -11,8 +11,7 @@ export async function main() {
 	const digests = createDigestsFromFindings(findings);
 
 	for (const digest of digests) {
+		// TODO: Send an email out for each digest
 		console.log({ digest });
 	}
-
-	// TODO: Send an email out for each digest
 }
