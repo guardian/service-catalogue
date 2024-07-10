@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import type { aws_ec2_images, Prisma, PrismaClient } from '@prisma/client';
 import { logger } from 'common/src/logs';
 import type { ObligationResult } from '.';
 
@@ -46,10 +46,22 @@ const isFindingResource = (resource: unknown): resource is FindingResource =>
 export async function evaluateAmiTaggingCoverage(
 	db: PrismaClient,
 ): Promise<ObligationResult[]> {
-	const records = await db.aws_ec2_images.findMany({
+	// The tagging obligation currently only applies to accounts owned by P&E
+	const filteredAccounts = await db.aws_accounts.findMany({
+		where: { is_product_and_engineering: true },
+	});
+
+	const accountIds = filteredAccounts.map((_) => _.id);
+
+	logger.log({
+		message: `Evaluating AMI tagging for ${accountIds.length} accounts`,
+	});
+
+	const records: aws_ec2_images[] = await db.aws_ec2_images.findMany({
 		where: {
 			account_id: {
 				equals: db.aws_ec2_images.fields.owner_id,
+				in: accountIds,
 			},
 		},
 	});

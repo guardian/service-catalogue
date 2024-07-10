@@ -35,6 +35,9 @@ updates:
           - '@octokit/*'
           - 'octokit'
           - 'octokit-plugin-create-pull-request'
+      grafana:
+        patterns:
+          - '@grafana/*'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:

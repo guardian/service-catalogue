@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	github_repository_branches,
+	guardian_github_actions_usage,
 	PrismaClient,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -181,4 +182,16 @@ export async function getDependabotVulnerabilities(
 	);
 
 	return dependabotVulnerabilities;
+}
+
+export async function getProductionWorkflowUsages(
+	client: PrismaClient,
+	productionRepos: Repository[],
+): Promise<NonEmptyArray<guardian_github_actions_usage>> {
+	const actions_usage = await client.guardian_github_actions_usage.findMany({
+		where: {
+			full_name: { in: productionRepos.map((repo) => repo.full_name) },
+		},
+	});
+	return toNonEmptyArray(actions_usage);
 }

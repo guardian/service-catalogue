@@ -87,6 +87,8 @@ setup_environment() {
 
   SNYK_INTEGRATOR_INPUT_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep snykintegratorinputtopicCODE)
 
+  DEPENDENCY_GRAPH_INPUT_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep dependencygraphintegratorinputtopicCODE)
+
   CLOUDQUERY_API_KEY=$(
     aws secretsmanager get-secret-value \
     --secret-id /CODE/deploy/service-catalogue/cloudquery-api-key \
@@ -113,6 +115,7 @@ INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
 GITHUB_PRIVATE_KEY_PATH=${GITHUB_PRIVATE_KEY_PATH}
 CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
 SNYK_INTEGRATOR_INPUT_TOPIC_ARN=${SNYK_INTEGRATOR_INPUT_TOPIC_ARN}
+DEPENDENCY_GRAPH_INPUT_TOPIC_ARN=${DEPENDENCY_GRAPH_INPUT_TOPIC_ARN}
 "
 
   # Check if .env.local file exists in ~/.gu/service_catalogue/

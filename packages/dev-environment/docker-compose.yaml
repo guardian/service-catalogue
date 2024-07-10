@@ -18,6 +18,7 @@ services:
 
       # These tables will be copied from the CODE database, and loaded into the DEV database.
       TABLES: |
+        - guardian_github_actions_usage
         - snyk_issues
         - snyk_projects
         - galaxies_teams_table
@@ -27,8 +28,6 @@ services:
         - github_repository_branches
         - github_workflows
         - github_languages
-        - aws_organizations_account_parents
-        - aws_organizations_organizational_units
         - aws_ec2_instances
         - aws_cloudformation_stacks
   postgres:
