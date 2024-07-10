@@ -1,6 +1,6 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
-import { daysLeftToFix } from 'common/functions';
+import { daysLeftToFix } from 'common/src/functions';
 import { SLAs } from 'common/src/types';
 import type { RepocopVulnerability } from 'common/src/types';
 import type { Config } from '../../config';
