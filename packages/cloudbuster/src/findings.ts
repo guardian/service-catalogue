@@ -13,6 +13,11 @@ export async function getFsbpFindings(
 			OR: severities.map((s) => ({
 				severity: { path: ['Label'], equals: s },
 			})),
+			AND: {
+				generator_id: {
+					startsWith: 'aws-foundational-security-best-practices/v/1.0.0',
+				},
+			},
 		},
 	});
 
