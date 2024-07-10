@@ -29,4 +29,4 @@ runs:
 
     - name: Run script
       shell: bash
-      run: npm run ${{ github.event.inputs.script }}
+      run: npm run ${{ inputs.script }}
