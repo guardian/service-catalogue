@@ -11,7 +11,7 @@ export function createDigestsFromFindings(findings: Finding[]): Digest[] {
 		.map((awsAccountId) =>
 			createDigestForAccount(awsAccountId, groupedFindings),
 		)
-		.filter((d) => d !== undefined);
+		.filter((d): d is Digest => d !== undefined);
 }
 
 function createDigestForAccount(
