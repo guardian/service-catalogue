@@ -5,20 +5,21 @@ import { createDigestsFromFindings } from './digests';
 import { getFsbpFindings } from './findings';
 import type { SecurityHubSeverity } from './types';
 
-export async function main(
-	input: { severities: SecurityHubSeverity[] } | null,
-) {
+export async function main(input: { severities: SecurityHubSeverity[] }) {
 	const config = await getConfig();
 	const prisma = getPrismaClient(config);
 	const anghammarad = new Anghammarad();
 
-	const findings = await getFsbpFindings(
-		prisma,
-		input ? input.severities : config.severities,
-	);
+	const findings = await getFsbpFindings(prisma, input.severities);
 	const digests = createDigestsFromFindings(findings);
 
 	if (config.stage === 'PROD') {
+		if (!config.anghammaradSnsTopic) {
+			throw new Error(
+				'ANGHAMMARAD_SNS_ARN environment variable not found. Cannot send digests.',
+			);
+		}
+
 		await Promise.all(
 			digests.map(
 				async (d) =>
@@ -34,7 +35,7 @@ export async function main(
 						target: { AwsAccount: d.accountId },
 						channel: RequestedChannel.PreferHangouts,
 						sourceSystem: `cloudbuster ${config.stage}`,
-						topicArn: config.anghammaradSnsTopic,
+						topicArn: config.anghammaradSnsTopic as string,
 					}),
 			),
 		);
