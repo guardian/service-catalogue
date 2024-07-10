@@ -1,5 +1,4 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import { logger } from 'common/logs';
 import { getFsbpFindings } from 'common/src/database-queries';
 import type { ObligationResult } from '.';
 
@@ -15,9 +14,9 @@ type ProductFields = {
 	StandardsArn: string;
 };
 
-type SecurityHubFinding = Pick<
+export type SecurityHubFinding = Pick<
 	aws_securityhub_findings,
-	'first_observed_at'
+	'first_observed_at' | 'aws_account_id'
 > & {
 	severity: { Label: string; Normalized: number };
 	resources: Resource[];
@@ -27,40 +26,63 @@ type SecurityHubFinding = Pick<
 type Failure = {
 	resource: string;
 	controlId: string;
+	accountId: string;
+	tags: Record<string, string>;
 };
 
 function findingToFailures(finding: SecurityHubFinding): Failure[] {
 	return finding.resources.map((resource) => ({
 		resource: resource.Id,
 		controlId: finding.product_fields.ControlId,
+		accountId: finding.aws_account_id,
+		tags: resource.Tags,
 	}));
 }
 
 function groupFailuresByResource(
 	failures: Failure[],
-): Record<string, string[]> {
-	const grouped: Record<string, string[]> = {};
+): Record<string, Failure[]> {
+	const grouped: Record<string, Failure[]> = {};
 
 	for (const failure of failures) {
 		if (!grouped[failure.resource]) {
 			grouped[failure.resource] = [];
 		}
 		// @ts-expect-error - TS doesn't understand that we've just checked for the key
-		grouped[failure.resource].push(failure.controlId);
+		grouped[failure.resource].push(failure);
 	}
 
 	return grouped;
 }
 
-function failuresToObligationResults(
-	failuresByResource: Record<string, string[]>,
-): ObligationResult[] {
-	return Object.entries(failuresByResource).map(([resource, controlIds]) => ({
-		resource,
+function failuresToObligationResult(
+	arn: string,
+	failures: Failure[],
+): ObligationResult {
+	const oneFailure = failures[0]; //this should always exist because groupFailuresByResource should always return at least one failure
+
+	const controlIds: string[] = failures.map((f) => f.controlId);
+	const accountId: string | undefined = oneFailure?.accountId;
+	const tags = oneFailure?.tags;
+	return {
+		resource: arn,
 		reason: `The following AWS FSBP controls are failing: ${controlIds.join(', ')}`,
 		url: 'https://docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html',
-		//TODO get AWS account ID
-	}));
+		contacts: {
+			aws_account_id: accountId,
+			Stack: tags?.Stack,
+			Stage: tags?.Stage,
+			App: tags?.App,
+		},
+	};
+}
+
+function failuresToObligationResults(
+	failuresByResource: Record<string, Failure[]>,
+): ObligationResult[] {
+	return Object.entries(failuresByResource).map(([resource, failures]) =>
+		failuresToObligationResult(resource, failures),
+	);
 }
 
 export function fsbpFindingsToObligatronResults(
