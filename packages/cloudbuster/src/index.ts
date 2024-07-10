@@ -1,14 +1,17 @@
-import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
 import { getPrismaClient } from 'common/database';
-import { config } from 'dotenv';
 import { getConfig } from './config';
-
-config({ path: `../../.env` }); // Load `.env` file at the root of the repository
+import { createDigestsFromFindings } from './digests';
+import { getFsbpFindings } from './findings';
 
 export async function main() {
 	const config = await getConfig();
-	const prisma: PrismaClient = getPrismaClient(config);
-	const findings: aws_securityhub_findings[] =
-		await prisma.aws_securityhub_findings.findMany();
-	console.log(findings.slice(0, 5));
+	const prisma = getPrismaClient(config);
+
+	const findings = await getFsbpFindings(prisma, config.severities);
+	const digests = createDigestsFromFindings(findings);
+
+	for (const digest of digests) {
+		// TODO: Send an email out for each digest
+		console.log({ digest });
+	}
 }
