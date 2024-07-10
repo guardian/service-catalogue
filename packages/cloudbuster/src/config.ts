@@ -27,7 +27,7 @@ export async function getConfig(): Promise<Config> {
 		: await getDatabaseConfig(stage, 'repocop'); //TODO create a new db user for cloudbuster before deploying.
 
 	const severities: SecurityHubSeverity[] = isDev
-		? ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATION']
+		? ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATION'] // Using all severities in DEV for more data.
 		: ['CRITICAL', 'HIGH'];
 
 	return {
