@@ -1,11 +1,11 @@
-import type { PrismaConfig } from 'common/database';
+import { getEnvOrThrow } from 'common/functions';
+import type { PrismaConfig } from 'common/src/database-setup';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
-} from 'common/database';
-import { getEnvOrThrow } from 'common/functions';
-import type { SecurityHubSeverity } from './types';
+} from 'common/src/database-setup';
+import type { SecurityHubSeverity } from 'common/src/types';
 
 export interface Config extends PrismaConfig {
 	/**

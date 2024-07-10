@@ -1,4 +1,4 @@
-import { getPrismaClient } from 'common/database';
+import { getPrismaClient } from 'common/src/database-setup';
 import { getConfig } from './config';
 import { getWorkflows } from './db-read';
 import { saveResults } from './db-write';
