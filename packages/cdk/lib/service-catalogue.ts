@@ -39,6 +39,7 @@ import {
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
 import { getCentralElkLink } from 'common/src/logs';
+import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
@@ -269,6 +270,13 @@ export class ServiceCatalogue extends GuStack {
 			vpc,
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
+		});
+
+		new CloudBuster(this, {
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+			anghammaradTopic,
 		});
 	}
 }

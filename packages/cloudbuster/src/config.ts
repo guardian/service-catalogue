@@ -16,6 +16,10 @@ export interface Config extends PrismaConfig {
 	 * The digests will only include findings with these severities.
 	 */
 	severities: SecurityHubSeverity[];
+	/**
+	 * Anghammarad's topic ARN
+	 */
+	anghammaradSnsTopic: string;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -30,10 +34,13 @@ export async function getConfig(): Promise<Config> {
 		? ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATION'] // Using all severities in DEV for more data.
 		: ['CRITICAL', 'HIGH'];
 
+	const anghammaradSnsTopic = getEnvOrThrow('ANGHAMMARAD_SNS_ARN');
+
 	return {
 		stage,
 		severities,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: isDev,
+		anghammaradSnsTopic,
 	};
 }
