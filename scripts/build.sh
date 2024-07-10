@@ -68,7 +68,7 @@ createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
 createLambdaWithPrisma "obligatron"
 createLambdaWithPrisma "refresh-materialized-view"
-createLambdaWithPrisma "cloudburst"
+createLambdaWithPrisma "cloudbuster"
 
 # Package the dashboard...
 createZip "dashboard"
