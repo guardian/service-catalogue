@@ -17,7 +17,7 @@
     "@grafana/plugin-e2e": "^1.6.0",
     "@grafana/tsconfig": "^1.2.0-rc1",
     "@playwright/test": "^1.45.1",
-    "@swc/core": "1.6.5",
+    "@swc/core": "1.6.13",
     "@swc/helpers": "0.5.11",
     "@swc/jest": "0.2.36",
     "@swc/register": "0.1.10",
@@ -48,13 +48,13 @@
   "dependencies": {
     "@emotion/css": "11.11.2",
     "@grafana/data": "11.1.0",
-    "@grafana/runtime": "11.0.0",
+    "@grafana/runtime": "11.1.0",
     "@grafana/ui": "11.1.0",
-    "@grafana/schema": "10.4.5",
+    "@grafana/schema": "11.1.0",
     "@grafana/scenes": "^5.3.7",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router-dom": "^6.24.1",
+    "react-router-dom": "^5.2.0",
     "rxjs": "7.8.1",
     "tslib": "2.6.3"
   }
