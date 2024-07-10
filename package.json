@@ -8,7 +8,7 @@
 		"synth": "npm run synth --workspace=cdk",
 		"pretypecheck": "npm -w common run typecheck",
 		"typecheck": "wsrun --parallel --fast-exit --prefix --report typecheck",
-		"build": "wsrun --parallel --fast-exit --prefix --report build",
+		"build": "wsrun --parallel --fast-exit --prefix --report --exclude-missing build",
 		"lint": "eslint packages/** --ext .ts,.tsx --no-error-on-unmatched-pattern",
 		"cloudbuster:start": "npm run start --workspace cloudbuster",
 		"cloudbuster:test": "npm run test --workspace cloudbuster"
