@@ -9,6 +9,7 @@ import {
 	Obligations,
 	stringIsObligation,
 } from './obligations';
+import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities';
 import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities';
 import {
 	evaluateAmiTaggingCoverage,
@@ -30,6 +31,9 @@ async function getResults(
 		}
 		case 'PRODUCTION_DEPENDENCIES': {
 			return await evaluateDependencyVulnerabilityObligation(db);
+		}
+		case 'AWS_VULNERABILITIES': {
+			return await evaluateFsbpVulnerabilities(db);
 		}
 	}
 }
