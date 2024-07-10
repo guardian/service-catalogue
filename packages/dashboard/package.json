@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
-    "@grafana/plugin-e2e": "^1.6.0",
+    "@grafana/plugin-e2e": "^1.6.1",
     "@grafana/tsconfig": "^1.2.0-rc1",
     "@playwright/test": "^1.45.1",
     "@swc/core": "1.6.13",
