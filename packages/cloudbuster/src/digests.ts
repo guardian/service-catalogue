@@ -53,38 +53,37 @@ function createEmailBody(findings: Finding[]): string {
 		(a, b) => (b.priority ?? 0) - (a.priority ?? 0),
 	);
 
-	const MAX_FINDINGS = 8;
-
-	const emailBody = `The following vulnerabilities have been found in your account:\n\n 
+	return `The following vulnerabilities have been found in your account:
         ${findingsSortedByPriority
 					.map(
 						(f) =>
 							`**[${f.severity}] ${f.title}**
-Affected resource(s): ${f.resources.map((r) => `\`${r}\``).join(',')}
+Affected resource(s): ${f.resources.join(',')}
 Remediation: ${f.remediationUrl ? `[Documentation](${f.remediationUrl})` : 'Unknown'}`,
 					)
-					.join('\n\n')
-					.slice(MAX_FINDINGS)}`;
-
-	const extraText = `Only the first ${MAX_FINDINGS} findings are shown. To see all findings, click the link below.`;
-
-	if (findings.length > MAX_FINDINGS) {
-		return `${emailBody}\n${extraText}`;
-	}
-
-	return emailBody;
+					.join('\n\n')}`;
 }
 
 export async function sendDigest(
 	anghammaradClient: Anghammarad,
 	config: Config,
 	digest: Digest,
+	numberOfFindings: number,
 ): Promise<void> {
 	console.log(`Sending digest to ${digest.accountId}...`);
 
+	const MAX_FINDINGS = 8;
+
+	const extraText = `Only the first ${MAX_FINDINGS} findings are shown. To see all findings, click the link below.`;
+
+	const message =
+		numberOfFindings > MAX_FINDINGS
+			? `${digest.message}\n\n${extraText}`
+			: digest.message;
+
 	await anghammaradClient.notify({
 		subject: digest.subject,
-		message: digest.message,
+		message,
 		actions: digest.actions,
 		// target: { AwsAccount: digest.accountId },
 		target: { Stack: 'testing-alerts' },
