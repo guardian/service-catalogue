@@ -65,6 +65,6 @@ export class CloudBuster {
 			],
 		});
 
-		db.grantConnect(lambda, 'cloudbuster');
+		db.grantConnect(lambda, 'repocop');
 	}
 }
