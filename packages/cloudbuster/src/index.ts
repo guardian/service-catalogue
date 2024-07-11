@@ -33,7 +33,7 @@ export async function main(input: { severities: SecurityHubSeverity[] }) {
 							},
 						],
 						target: { AwsAccount: d.accountId },
-						channel: RequestedChannel.PreferHangouts,
+						channel: RequestedChannel.HangoutsChat,
 						sourceSystem: `cloudbuster ${config.stage}`,
 						topicArn: config.anghammaradSnsTopic as string,
 					}),
