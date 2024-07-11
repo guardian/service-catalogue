@@ -21,6 +21,8 @@ export async function getFsbpFindings(
 		},
 	});
 
+	console.log(`Fetched ${findings.length} findings from the database`);
+
 	return findings.map(transformFinding);
 }
 

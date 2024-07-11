@@ -1,3 +1,6 @@
+import { RequestedChannel } from '@guardian/anghammarad';
+import type { Anghammarad } from '@guardian/anghammarad';
+import type { Config } from './config';
 import { groupFindingsByAccount } from './findings';
 import type { Digest, Finding, GroupedFindings } from './types';
 
@@ -36,13 +39,37 @@ function createEmailBody(findings: Finding[]): string {
 		(a, b) => (b.priority ?? 0) - (a.priority ?? 0),
 	);
 
-	return `The following vulnerabilities have been found in your account\n: 
+	return `The following vulnerabilities have been found in your account:\n 
         ${findingsSortedByPriority
 					.map(
 						(f) =>
 							`[${f.severity}] ${f.title}
 Affected resource(s): ${f.resources.join(',')}
-Remediation: ${f.remediationUrl ?? 'Unknown'}`,
+Remediation: ${`[Documentation](${f.remediationUrl})`} ?? 'Unknown'}`,
 					)
 					.join('\n\n')}`;
+}
+
+export async function sendDigest(
+	anghammaradClient: Anghammarad,
+	config: Config,
+	digest: Digest,
+): Promise<void> {
+	console.log(`Sending digest to ${digest.accountId}...`);
+
+	await anghammaradClient.notify({
+		subject: digest.subject,
+		message: digest.message,
+		actions: [
+			{
+				cta: 'View all findings on Grafana',
+				url: 'https://metrics.gutools.co.uk/d/ddi3x35x70jy8d/fsbp-compliance',
+			},
+		],
+		target: { AwsAccount: digest.accountId },
+		threadKey: digest.accountId,
+		channel: RequestedChannel.HangoutsChat,
+		sourceSystem: `cloudbuster ${config.stage}`,
+		topicArn: config.anghammaradSnsTopic as string,
+	});
 }
