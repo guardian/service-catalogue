@@ -57,7 +57,7 @@ function createEmailBody(findings: Finding[]): string {
         ${findingsSortedByPriority
 					.map(
 						(f) =>
-							`[${f.severity}] ${f.title}
+							`**[${f.severity}] ${f.title}**
 Affected resource(s): ${f.resources.join(',')}
 Remediation: ${f.remediationUrl ? `[Documentation](${f.remediationUrl})` : 'Unknown'}`,
 					)
