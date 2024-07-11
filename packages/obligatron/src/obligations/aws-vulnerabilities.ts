@@ -48,8 +48,8 @@ function groupFailuresByResource(
 		if (!grouped[failure.resource]) {
 			grouped[failure.resource] = [];
 		}
-		// @ts-expect-error - TS doesn't understand that we've just checked for the key
-		grouped[failure.resource].push(failure);
+
+		grouped[failure.resource]?.push(failure);
 	}
 
 	return grouped;
