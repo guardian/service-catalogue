@@ -1,3 +1,5 @@
+import type { SecurityHubSeverity } from 'common/src/types';
+
 export interface Finding {
 	awsAccountId: string;
 	awsAccountName: string | null;
@@ -14,12 +16,5 @@ export interface Digest {
 	subject: string;
 	message: string;
 }
-
-export type SecurityHubSeverity =
-	| 'CRITICAL'
-	| 'HIGH'
-	| 'INFORMATION'
-	| 'LOW'
-	| 'MEDIUM';
 
 export type GroupedFindings = Record<string, Finding[]>;

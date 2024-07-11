@@ -6,8 +6,8 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws';
-import { getPrismaClient } from 'common/database';
 import { partition, stageAwareOctokit } from 'common/functions';
+import { getPrismaClient } from 'common/src/database-setup';
 import type { RepocopVulnerability } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';

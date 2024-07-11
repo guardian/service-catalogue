@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
-import { getPrismaClient } from 'common/database';
 import { logger } from 'common/logs';
+import { getPrismaClient } from 'common/src/database-setup';
 import { config } from 'dotenv';
 import { getConfig } from './config';
 import {

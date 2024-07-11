@@ -4,7 +4,7 @@ import {
 	paginateListAccounts,
 } from '@aws-sdk/client-organizations';
 import { awsClientConfig } from 'common/aws';
-import { getPrismaClient } from 'common/database';
+import { getPrismaClient } from 'common/src/database-setup';
 import { auditAwsAccounts } from './audit/aws-accounts';
 import { auditLambdaFunctions } from './audit/aws-lambda';
 import { auditS3Buckets } from './audit/aws-s3-buckets';

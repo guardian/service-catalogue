@@ -1,4 +1,4 @@
-import { getPrismaClient } from 'common/database';
+import { getPrismaClient } from 'common/src/database-setup';
 import { getConfig } from './config';
 
 export async function main(...args: unknown[]) {
