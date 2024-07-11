@@ -20544,6 +20544,45 @@ spec:
       },
       "Type": "AWS::Lambda::Function",
     },
+    "obligatronAWSVULNERABILITIES8E81FCF9": {
+      "Properties": {
+        "Description": "Daily execution of Obligatron lambda for 'AWS_VULNERABILITIES' obligation",
+        "ScheduleExpression": "cron(0 11 * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "obligatronA58CFCF1",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+            "Input": ""AWS_VULNERABILITIES"",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "obligatronAWSVULNERABILITIESAllowEventRuleServiceCatalogueobligatron5BD5033E8F5FADB8": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "obligatronA58CFCF1",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "obligatronAWSVULNERABILITIES8E81FCF9",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
     "obligatronErrorPercentageAlarmForLambda8AFDF23F": {
       "Properties": {
         "ActionsEnabled": true,
