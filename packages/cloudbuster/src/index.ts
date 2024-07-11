@@ -26,7 +26,8 @@ export async function main(input: { severities: SecurityHubSeverity[] }) {
 		}
 		await Promise.all(
 			digests.map(
-				async (digest) => await sendDigest(anghammarad, config, digest),
+				async (digest) =>
+					await sendDigest(anghammarad, config, digest, findings.length),
 			),
 		);
 	} else {
