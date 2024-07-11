@@ -1,6 +1,6 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Anghammarad } from '@guardian/anghammarad';
-import type { Config } from './config';
+import { type Config, MAX_FINDINGS } from './config';
 import { groupFindingsByAccount } from './findings';
 import type { Digest, Finding, GroupedFindings } from './types';
 
@@ -71,8 +71,6 @@ export async function sendDigest(
 	numberOfFindings: number,
 ): Promise<void> {
 	console.log(`Sending digest to ${digest.accountId}...`);
-
-	const MAX_FINDINGS = 8;
 
 	const extraText = `Only the first ${MAX_FINDINGS} findings are shown. To see all findings, click the link below.`;
 

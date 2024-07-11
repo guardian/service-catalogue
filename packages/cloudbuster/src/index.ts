@@ -1,6 +1,6 @@
 import { Anghammarad } from '@guardian/anghammarad';
 import { getPrismaClient } from 'common/database';
-import { getConfig } from './config';
+import { getConfig, MAX_FINDINGS } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
 import { getFsbpFindings } from './findings';
 import type { SecurityHubSeverity } from './types';
@@ -16,7 +16,7 @@ export async function main(input: { severities: SecurityHubSeverity[] }) {
 	const anghammarad = new Anghammarad();
 
 	const findings = await getFsbpFindings(prisma, input.severities);
-	const digests = createDigestsFromFindings(findings);
+	const digests = createDigestsFromFindings(findings).slice(0, MAX_FINDINGS);
 
 	if (stage === 'PROD' || stage === 'CODE') {
 		if (!anghammaradSnsTopic) {
