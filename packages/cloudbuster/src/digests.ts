@@ -18,18 +18,29 @@ export function createDigestsFromFindings(findings: Finding[]): Digest[] {
 }
 
 function createDigestForAccount(
-	awsAccountId: string,
+	accountId: string,
 	findings: GroupedFindings,
 ): Digest | undefined {
-	const teamFindings = findings[awsAccountId];
+	const teamFindings = findings[accountId];
 
 	if (!teamFindings || teamFindings.length == 0) {
 		return undefined;
 	}
 
+	const accountName = teamFindings[0]?.awsAccountName as string;
+
+	const actions = [
+		{
+			cta: 'View all findings on Grafana',
+			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d/fsbp-compliance?var-account_name=${accountName}`,
+		},
+	];
+
 	return {
-		accountId: awsAccountId,
-		subject: `Security Hub vulnerabilities detected in AWS account ${teamFindings[0]?.awsAccountName}`,
+		accountId,
+		accountName,
+		actions,
+		subject: `Security Hub vulnerabilities detected in AWS account ${accountName}`,
 		message: createEmailBody(teamFindings),
 	};
 }
@@ -45,7 +56,7 @@ function createEmailBody(findings: Finding[]): string {
 						(f) =>
 							`[${f.severity}] ${f.title}
 Affected resource(s): ${f.resources.join(',')}
-Remediation: ${`[Documentation](${f.remediationUrl})`} ?? 'Unknown'}`,
+Remediation: ${f.remediationUrl ? `[Documentation](${f.remediationUrl})` : 'Unknown'}`,
 					)
 					.join('\n\n')}`;
 }
@@ -60,13 +71,9 @@ export async function sendDigest(
 	await anghammaradClient.notify({
 		subject: digest.subject,
 		message: digest.message,
-		actions: [
-			{
-				cta: 'View all findings on Grafana',
-				url: 'https://metrics.gutools.co.uk/d/ddi3x35x70jy8d/fsbp-compliance',
-			},
-		],
-		target: { AwsAccount: digest.accountId },
+		actions: digest.actions,
+		// target: { AwsAccount: digest.accountId },
+		target: { Stack: 'testing-alerts' },
 		threadKey: digest.accountId,
 		channel: RequestedChannel.HangoutsChat,
 		sourceSystem: `cloudbuster ${config.stage}`,

@@ -1,3 +1,5 @@
+import type { Action } from '@guardian/anghammarad';
+
 export interface Finding {
 	awsAccountId: string;
 	awsAccountName: string | null;
@@ -11,6 +13,8 @@ export interface Finding {
 
 export interface Digest {
 	accountId: string;
+	accountName: string;
+	actions: Action[];
 	subject: string;
 	message: string;
 }

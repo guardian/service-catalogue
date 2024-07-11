@@ -5,9 +5,7 @@ import { createDigestsFromFindings, sendDigest } from './digests';
 import { getFsbpFindings } from './findings';
 import type { SecurityHubSeverity } from './types';
 
-export async function main(
-	input: { severities: SecurityHubSeverity[] } = { severities: ['CRITICAL'] },
-) {
+export async function main(input: { severities: SecurityHubSeverity[] }) {
 	console.log(
 		`Starting Cloudbuster. Level of severities that will be scanned: ${input.severities.join(',')}`,
 	);
