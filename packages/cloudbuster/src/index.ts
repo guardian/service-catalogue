@@ -13,7 +13,7 @@ export async function main(input: { severities: SecurityHubSeverity[] }) {
 	const findings = await getFsbpFindings(prisma, input.severities);
 	const digests = createDigestsFromFindings(findings);
 
-	if (config.stage === 'PROD') {
+	if (config.stage === 'PROD' || config.stage === 'CODE') {
 		if (!config.anghammaradSnsTopic) {
 			throw new Error(
 				'ANGHAMMARAD_SNS_ARN environment variable not found. Cannot send digests.',
