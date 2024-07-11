@@ -85,6 +85,7 @@ function failuresToObligationResults(
 	);
 }
 
+//TODO filter out findings that are within the SLA window
 export function fsbpFindingsToObligatronResults(
 	findings: SecurityHubFinding[],
 ): ObligationResult[] {
