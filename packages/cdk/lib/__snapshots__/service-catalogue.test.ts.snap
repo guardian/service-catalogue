@@ -19508,7 +19508,7 @@ spec:
         "LoggingConfig": {
           "LogFormat": "Text",
         },
-        "MemorySize": 4096,
+        "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
             "cloudbusterServiceRoleFE532A3F",
@@ -19945,7 +19945,7 @@ spec:
     "cloudbusterhighD73CECDC": {
       "Properties": {
         "Description": "Weekly execution of the Cloudbuster lambda for high findings",
-        "ScheduleExpression": "cron(0 9 ? * MON *)",
+        "ScheduleExpression": "cron(0 9 ? * TUE *)",
         "State": "ENABLED",
         "Targets": [
           {

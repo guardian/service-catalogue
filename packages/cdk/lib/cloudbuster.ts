@@ -35,9 +35,7 @@ export class CloudBuster {
 				QUERY_LOGGING: 'false',
 			},
 			timeout: Duration.minutes(5),
-			// Unfortunately Prisma doesn't support streaming data from Postgres at the moment https://github.com/prisma/prisma/issues/5055
-			// This means that all rows need to be loaded into memory at the same time whenever a query is ran hence the high memory requirement.
-			memorySize: 4096,
+			memorySize: 1024,
 			errorPercentageMonitoring: {
 				toleratedErrorPercentage: 0,
 				snsTopicName: 'devx-alerts',
@@ -59,7 +57,7 @@ export class CloudBuster {
 
 		new Rule(stack, `cloudbuster-high`, {
 			description: `Weekly execution of the Cloudbuster lambda for high findings`,
-			schedule: Schedule.cron({ weekDay: 'MON', hour: '9', minute: '0' }),
+			schedule: Schedule.cron({ weekDay: 'TUE', hour: '9', minute: '0' }),
 			targets: [
 				new LambdaFunction(lambda, {
 					event: RuleTargetInput.fromObject({ severities: ['HIGH'] }),
