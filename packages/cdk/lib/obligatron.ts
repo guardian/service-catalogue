@@ -40,6 +40,11 @@ export class Obligatron {
 				toleratedErrorPercentage: 0,
 				snsTopicName: 'devx-alerts',
 			},
+
+			/*
+			Override the default provided by GuCDK for improved compatability with https://github.com/guardian/cloudwatch-logs-management when producing log lines with markers.
+			See also: https://github.com/guardian/cloudwatch-logs-management/issues/326.
+			 */
 			loggingFormat: LoggingFormat.TEXT,
 		});
 
