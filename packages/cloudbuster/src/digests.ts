@@ -53,15 +53,26 @@ function createEmailBody(findings: Finding[]): string {
 		(a, b) => (b.priority ?? 0) - (a.priority ?? 0),
 	);
 
-	return `The following vulnerabilities have been found in your account:\n 
+	const MAX_FINDINGS = 8;
+
+	const emailBody = `The following vulnerabilities have been found in your account:\n\n 
         ${findingsSortedByPriority
 					.map(
 						(f) =>
 							`**[${f.severity}] ${f.title}**
-Affected resource(s): ${f.resources.join(',')}
+Affected resource(s): ${f.resources.map((r) => `\`${r}\``).join(',')}
 Remediation: ${f.remediationUrl ? `[Documentation](${f.remediationUrl})` : 'Unknown'}`,
 					)
-					.join('\n\n')}`;
+					.join('\n\n')
+					.slice(MAX_FINDINGS)}`;
+
+	const extraText = `Only the first ${MAX_FINDINGS} findings are shown. To see all findings, click the link below.`;
+
+	if (findings.length > MAX_FINDINGS) {
+		return `${emailBody}\n${extraText}`;
+	}
+
+	return emailBody;
 }
 
 export async function sendDigest(
