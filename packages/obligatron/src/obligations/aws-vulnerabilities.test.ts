@@ -31,7 +31,6 @@ describe('The dependency vulnerabilities obligation', () => {
 
 	it('should return a result in the expected format', () => {
 		const actual = fsbpFindingsToObligatronResults([oneResourceFinding]);
-		console.log(actual);
 
 		const expected = {
 			contacts: {
@@ -50,8 +49,6 @@ describe('The dependency vulnerabilities obligation', () => {
 
 	it('should return multiple results if two resources are referenced in the same finding', () => {
 		const actual = fsbpFindingsToObligatronResults([twoResourceFinding]);
-		console.log(actual);
-
 		expect(actual.length).toEqual(2);
 	});
 
@@ -65,7 +62,6 @@ describe('The dependency vulnerabilities obligation', () => {
 			oneResourceFinding,
 			extraFinding,
 		])[0]?.reason;
-		console.log(actual);
 
 		expect(actual).toContain('S.1');
 		expect(actual).toContain('S.2');
