@@ -9,7 +9,7 @@ import { Duration } from 'aws-cdk-lib';
 import type { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, LoggingFormat, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
@@ -69,7 +69,7 @@ export class Repocop {
 			vpc,
 			securityGroups: [dbSecurityGroup],
 			timeout: Duration.minutes(5),
-			logFormat: 'JSON',
+			loggingFormat: LoggingFormat.JSON,
 		};
 
 		const repocopLambda = new GuScheduledLambda(
