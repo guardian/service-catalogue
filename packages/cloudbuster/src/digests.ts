@@ -31,16 +31,19 @@ function createDigestForAccount(
 
 	const actions = [
 		{
-			cta: 'View all findings on Grafana',
+			cta: `View all ${teamFindings.length} findings on Grafana`,
 			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d/fsbp-compliance?var-account_name=${accountName}`,
 		},
 	];
+
+	const severity = teamFindings[0]?.severity;
+	const severityText = severity ? ` (${severity})` : '';
 
 	return {
 		accountId,
 		accountName,
 		actions,
-		subject: `Security Hub vulnerabilities detected in AWS account ${accountName}`,
+		subject: `Security Hub Digest${severityText} for AWS account ${accountName}`,
 		message: createEmailBody(teamFindings),
 	};
 }
