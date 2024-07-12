@@ -4,13 +4,6 @@ import type {
 	repocop_vulnerabilities,
 } from '@prisma/client';
 
-export type SecurityHubSeverity =
-	| 'CRITICAL'
-	| 'HIGH'
-	| 'INFORMATION'
-	| 'LOW'
-	| 'MEDIUM';
-
 export type GithubAppSecret = {
 	appId: string;
 	base64PrivateKey: string;
@@ -63,7 +56,13 @@ export interface ProjectId {
 	};
 }
 
-export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
+export type Severity =
+	| 'critical'
+	| 'high'
+	| 'medium'
+	| 'low'
+	| 'information'
+	| 'unknown';
 
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
@@ -98,6 +97,7 @@ export const SLAs: Record<Severity, number | undefined> = {
 	high: 30,
 	medium: undefined,
 	low: undefined,
+	information: undefined,
 	unknown: undefined,
 };
 

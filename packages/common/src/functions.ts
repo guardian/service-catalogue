@@ -162,13 +162,16 @@ export async function applyTopics(
 }
 
 export function stringToSeverity(severity: string): Severity {
+	const lowerCaseSeverity = severity.toLowerCase();
+
 	if (
-		severity === 'low' ||
-		severity === 'medium' ||
-		severity === 'high' ||
-		severity === 'critical'
+		lowerCaseSeverity === 'information' ||
+		lowerCaseSeverity === 'low' ||
+		lowerCaseSeverity === 'medium' ||
+		lowerCaseSeverity === 'high' ||
+		lowerCaseSeverity === 'critical'
 	) {
-		return severity;
+		return lowerCaseSeverity;
 	} else {
 		return 'unknown';
 	}

@@ -1,5 +1,6 @@
 import type { aws_securityhub_findings } from '@prisma/client';
-import type { SecurityHubSeverity } from 'common/src/types';
+import { daysLeftToFix, stringToSeverity } from 'common/src/functions';
+import type { Severity } from 'common/src/types';
 import type { Finding, GroupedFindings } from './types';
 
 /**
@@ -17,7 +18,7 @@ export function transformFinding(finding: aws_securityhub_findings): Finding {
 		'Label' in finding.severity &&
 		'Normalized' in finding.severity
 	) {
-		severity = finding.severity['Label'] as SecurityHubSeverity;
+		severity = stringToSeverity(finding.severity['Label'] as string);
 		priority = finding.severity['Normalized'] as number;
 	}
 
@@ -65,23 +66,24 @@ export function transformFinding(finding: aws_securityhub_findings): Finding {
  */
 export function isWithinSlaTime(
 	firstObservedAt: Date | null,
-	severity: SecurityHubSeverity | null,
+	severity: Severity | null,
 ): boolean {
-	if (!firstObservedAt || !severity) {
+	if (!firstObservedAt) {
+		console.warn('No first observed date provided');
+		return false;
+	}
+	if (!severity) {
+		console.warn('No severity provided');
 		return false;
 	}
 
-	const today = new Date();
-	const timeDifference = today.getTime() - firstObservedAt.getTime();
-	const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+	const daysToFix = daysLeftToFix(firstObservedAt, severity);
+	if (daysToFix === undefined) {
+		return false;
+	}
 
-	const isWithinTwoDays = Math.abs(dayDifference) <= 2;
-	const isWithinThirtyDays = Math.abs(dayDifference) <= 30;
-
-	return (
-		(severity === 'CRITICAL' && isWithinTwoDays) ||
-		(severity === 'HIGH' && isWithinThirtyDays)
-	);
+	console.log(`Days to fix: ${daysToFix}`);
+	return daysToFix > 0;
 }
 
 /**

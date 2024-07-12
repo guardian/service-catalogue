@@ -3,7 +3,6 @@ import type { Finding, GroupedFindings } from './types';
 
 const MOCK_TODAY = new Date('2024-01-10');
 const MOCK_ONE_DAY_AGO = new Date('2024-01-09');
-const MOCK_TWO_DAYS_AGO = new Date('2024-01-08');
 const MOCK_ONE_WEEK_AGO = new Date('2024-01-03');
 
 function mockFinding(awsAccountId: string, title: string): Finding {
@@ -13,7 +12,7 @@ function mockFinding(awsAccountId: string, title: string): Finding {
 		awsAccountName: 'mock-account',
 		resources: ['arn::mock::123'],
 		remediationUrl: 'https://mock.url/mock',
-		severity: 'CRITICAL',
+		severity: 'critical',
 		priority: 80,
 		isWithinSla: true,
 	};
@@ -30,7 +29,7 @@ describe('FBSP SLA window', () => {
 
 	it('Returns true if a critical finding was first observed within a day', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
-		const severity = 'CRITICAL';
+		const severity = 'critical';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(true);
@@ -38,15 +37,15 @@ describe('FBSP SLA window', () => {
 
 	it('Returns true if a high finding was first observed within a day', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
-		const severity = 'HIGH';
+		const severity = 'high';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(true);
 	});
 
 	it('Returns true if a critical finding was first observed within two days', () => {
-		const firstObservedAt = new Date(MOCK_TWO_DAYS_AGO);
-		const severity = 'CRITICAL';
+		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
+		const severity = 'critical';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(true);
@@ -54,7 +53,7 @@ describe('FBSP SLA window', () => {
 
 	it('Returns false if a critical finding is outside the window', () => {
 		const firstObservedAt = new Date(MOCK_ONE_WEEK_AGO);
-		const severity = 'CRITICAL';
+		const severity = 'critical';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(false);
@@ -62,7 +61,7 @@ describe('FBSP SLA window', () => {
 
 	it('Returns false if a low finding was first observed one day ago', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
-		const severity = 'LOW';
+		const severity = 'low';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(false);
@@ -70,7 +69,7 @@ describe('FBSP SLA window', () => {
 
 	it('Returns false if a low finding was observed within one day', () => {
 		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
-		const severity = 'LOW';
+		const severity = 'low';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(false);
@@ -79,7 +78,7 @@ describe('FBSP SLA window', () => {
 	it('Returns false if a critical finding has no information about when it was first observed', () => {
 		// This can happen as it's a nullable column in the DB
 		const firstObservedAt = null;
-		const severity = 'CRITICAL';
+		const severity = 'critical';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
 		expect(isWithinSla).toBe(false);

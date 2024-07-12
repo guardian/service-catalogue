@@ -203,6 +203,12 @@ describe('stringToSeverity', () => {
 		expect(stringToSeverity('high')).toBe('high');
 		expect(stringToSeverity('critical')).toBe('critical');
 	});
+	test('Should handle unusual capitalisation gracefully', () => {
+		expect(stringToSeverity('LOW')).toBe('low');
+		expect(stringToSeverity('MeDiUm')).toBe('medium');
+		expect(stringToSeverity('HIGH')).toBe('high');
+		expect(stringToSeverity('CRITICAL')).toBe('critical');
+	});
 });
 
 describe('daysLeftToFix', () => {
