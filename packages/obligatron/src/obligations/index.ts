@@ -1,13 +1,17 @@
 // Slightly hacky file to allow CDK project to import the list of obligations without having to compile the whole Obligatron project
 
-export const Obligations = ['TAGGING', 'PRODUCTION_DEPENDENCIES'] as const;
+export const Obligations = [
+	'TAGGING',
+	'PRODUCTION_DEPENDENCIES',
+	'AWS_VULNERABILITIES',
+] as const;
 export type Obligation = (typeof Obligations)[number];
 
 export const stringIsObligation = (input: string): input is Obligation => {
 	return Obligations.filter((v) => v === input).length > 0;
 };
 
-type AwsContact = {
+export type AwsContact = {
 	aws_account_id?: string;
 	Stack?: string;
 	Stage?: string;
