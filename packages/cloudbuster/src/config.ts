@@ -5,7 +5,7 @@ import {
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
 } from 'common/src/database-setup';
-import type { Severity } from 'common/src/types';
+import type { SecurityHubSeverity } from 'common/src/types';
 
 export interface Config extends PrismaConfig {
 	/**
@@ -15,7 +15,7 @@ export interface Config extends PrismaConfig {
 	/**
 	 * The digests will only include findings with these severities.
 	 */
-	severities: Severity[];
+	severities: SecurityHubSeverity[];
 }
 
 export async function getConfig(): Promise<Config> {
@@ -26,9 +26,9 @@ export async function getConfig(): Promise<Config> {
 		? await getDevDatabaseConfig()
 		: await getDatabaseConfig(stage, 'repocop'); //TODO create a new db user for cloudbuster before deploying.
 
-	const severities: Severity[] = isDev
-		? ['critical', 'high', 'medium', 'low', 'information'] // Using all severities in DEV for more data.
-		: ['critical', 'high'];
+	const severities: SecurityHubSeverity[] = isDev
+		? ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATION'] // Using all severities in DEV for more data.
+		: ['CRITICAL', 'HIGH'];
 
 	return {
 		stage,

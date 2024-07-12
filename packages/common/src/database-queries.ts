@@ -1,16 +1,16 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { Severity } from './types';
+import type { SecurityHubSeverity } from './types';
 /**
  * Queries the database for FSBP findings
  */
 export async function getFsbpFindings(
 	prisma: PrismaClient,
-	severities: Severity[],
+	severities: SecurityHubSeverity[],
 ): Promise<aws_securityhub_findings[]> {
 	const findings = await prisma.aws_securityhub_findings.findMany({
 		where: {
 			OR: severities.map((s) => ({
-				severity: { path: ['Label'], equals: s.toUpperCase() },
+				severity: { path: ['Label'], equals: s },
 			})),
 			AND: {
 				generator_id: {

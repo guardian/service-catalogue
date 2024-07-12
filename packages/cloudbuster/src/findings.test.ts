@@ -3,6 +3,7 @@ import type { Finding, GroupedFindings } from './types';
 
 const MOCK_TODAY = new Date('2024-01-10');
 const MOCK_ONE_DAY_AGO = new Date('2024-01-09');
+const MOCK_NEARLY_TWO_DAYS_AGO = new Date('2024-01-08').setMinutes(1);
 const MOCK_ONE_WEEK_AGO = new Date('2024-01-03');
 
 function mockFinding(awsAccountId: string, title: string): Finding {
@@ -44,7 +45,7 @@ describe('FBSP SLA window', () => {
 	});
 
 	it('Returns true if a critical finding was first observed within two days', () => {
-		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
+		const firstObservedAt = new Date(MOCK_NEARLY_TWO_DAYS_AGO);
 		const severity = 'critical';
 
 		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);

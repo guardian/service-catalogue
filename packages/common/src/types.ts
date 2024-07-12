@@ -4,6 +4,13 @@ import type {
 	repocop_vulnerabilities,
 } from '@prisma/client';
 
+export type SecurityHubSeverity =
+	| 'CRITICAL'
+	| 'HIGH'
+	| 'MEDIUM'
+	| 'LOW'
+	| 'INFORMATION';
+
 export type GithubAppSecret = {
 	appId: string;
 	base64PrivateKey: string;
@@ -56,13 +63,7 @@ export interface ProjectId {
 	};
 }
 
-export type Severity =
-	| 'critical'
-	| 'high'
-	| 'medium'
-	| 'low'
-	| 'information'
-	| 'unknown';
+export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,

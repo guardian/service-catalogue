@@ -66,14 +66,10 @@ export function transformFinding(finding: aws_securityhub_findings): Finding {
  */
 export function isWithinSlaTime(
 	firstObservedAt: Date | null,
-	severity: Severity | null,
+	severity: Severity,
 ): boolean {
 	if (!firstObservedAt) {
 		console.warn('No first observed date provided');
-		return false;
-	}
-	if (!severity) {
-		console.warn('No severity provided');
 		return false;
 	}
 
