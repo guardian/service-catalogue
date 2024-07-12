@@ -6,8 +6,6 @@ import {
 } from 'common/database';
 import { getEnvOrThrow } from 'common/functions';
 
-export const MAX_FINDINGS = 8;
-
 export interface Config extends PrismaConfig {
 	/**
 	 * The stage of the application, e.g. DEV, CODE, PROD.

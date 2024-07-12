@@ -1,24 +1,28 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Anghammarad } from '@guardian/anghammarad';
-import { type Config, MAX_FINDINGS } from './config';
+import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
 import type { Digest, Finding, GroupedFindings } from './types';
 
 /**
  * Given a list of findings, creates a list of digests ready to be emailed out
  */
-export function createDigestsFromFindings(findings: Finding[]): Digest[] {
+export function createDigestsFromFindings(
+	findings: Finding[],
+	subjectPrefix: string,
+): Digest[] {
 	const groupedFindings = groupFindingsByAccount(findings);
 
 	return Object.keys(groupedFindings)
 		.map((awsAccountId) =>
-			createDigestForAccount(awsAccountId, groupedFindings),
+			createDigestForAccount(awsAccountId, subjectPrefix, groupedFindings),
 		)
 		.filter((d): d is Digest => d !== undefined);
 }
 
 function createDigestForAccount(
 	accountId: string,
+	subjectPrefix: string,
 	findings: GroupedFindings,
 ): Digest | undefined {
 	const teamFindings = findings[accountId];
@@ -36,14 +40,11 @@ function createDigestForAccount(
 		},
 	];
 
-	const severity = teamFindings[0]?.severity;
-	const severityText = severity ? ` (${severity})` : '';
-
 	return {
 		accountId,
 		accountName,
 		actions,
-		subject: `Security Hub Digest${severityText} for AWS account ${accountName}`,
+		subject: `${subjectPrefix} for AWS account ${accountName}`,
 		message: createEmailBody(teamFindings),
 	};
 }
@@ -68,20 +69,12 @@ export async function sendDigest(
 	anghammaradClient: Anghammarad,
 	config: Config,
 	digest: Digest,
-	numberOfFindings: number,
 ): Promise<void> {
 	console.log(`Sending digest to ${digest.accountId}...`);
 
-	const extraText = `Only the first ${MAX_FINDINGS} findings are shown. To see all findings, click the link below.`;
-
-	const message =
-		numberOfFindings > MAX_FINDINGS
-			? `${digest.message}\n\n${extraText}`
-			: digest.message;
-
 	await anghammaradClient.notify({
 		subject: digest.subject,
-		message,
+		message: digest.message,
 		actions: digest.actions,
 		// target: { AwsAccount: digest.accountId },
 		target: { Stack: 'testing-alerts' },
