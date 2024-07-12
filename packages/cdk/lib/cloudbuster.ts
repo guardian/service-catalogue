@@ -50,7 +50,10 @@ export class CloudBuster {
 			schedule: Schedule.cron({ minute: '0', hour: '9' }),
 			targets: [
 				new LambdaFunction(lambda, {
-					event: RuleTargetInput.fromObject({ severities: ['CRITICAL'] }),
+					event: RuleTargetInput.fromObject({
+						severities: ['CRITICAL'],
+						subjectPrefix: 'Security Hub Digest (critical findings)',
+					}),
 				}),
 			],
 		});
@@ -60,7 +63,10 @@ export class CloudBuster {
 			schedule: Schedule.cron({ weekDay: 'TUE', hour: '9', minute: '0' }),
 			targets: [
 				new LambdaFunction(lambda, {
-					event: RuleTargetInput.fromObject({ severities: ['HIGH'] }),
+					event: RuleTargetInput.fromObject({
+						severities: ['HIGH'],
+						subjectPrefix: 'Security Hub Digest (high findings)',
+					}),
 				}),
 			],
 		});

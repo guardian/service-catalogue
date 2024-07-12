@@ -1,3 +1,4 @@
+import { Anghammarad } from '@guardian/anghammarad';
 import type { PrismaConfig } from 'common/database';
 import {
 	getDatabaseConfig,
@@ -12,6 +13,10 @@ export interface Config extends PrismaConfig {
 	 */
 	stage: string;
 	/**
+	 * Anghammarad client for sending notifications.
+	 */
+	anghammaradClient?: Anghammarad;
+	/**
 	 * Anghammarad's topic ARN
 	 */
 	anghammaradSnsTopic?: string;
@@ -25,12 +30,14 @@ export async function getConfig(): Promise<Config> {
 		? await getDevDatabaseConfig()
 		: await getDatabaseConfig(stage, 'repocop'); //TODO create a new db user for cloudbuster before deploying.
 
+	const anghammaradClient = isDev ? undefined : new Anghammarad();
 	const anghammaradSnsTopic = process.env['ANGHAMMARAD_SNS_ARN'];
 
 	return {
 		stage,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: isDev,
+		anghammaradClient,
 		anghammaradSnsTopic,
 	};
 }
