@@ -13,7 +13,7 @@
     "sign": "npx --yes @grafana/sign-plugin@latest"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
+    "@babel/core": "^7.24.8",
     "@grafana/plugin-e2e": "^1.6.0",
     "@grafana/tsconfig": "^1.2.0-rc1",
     "@playwright/test": "^1.45.1",
