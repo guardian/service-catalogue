@@ -11,7 +11,7 @@ export const stringIsObligation = (input: string): input is Obligation => {
 	return Obligations.filter((v) => v === input).length > 0;
 };
 
-type AwsContact = {
+export type AwsContact = {
 	aws_account_id?: string;
 	Stack?: string;
 	Stage?: string;

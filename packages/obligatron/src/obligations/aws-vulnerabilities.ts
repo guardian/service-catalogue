@@ -102,6 +102,8 @@ export async function evaluateFsbpVulnerabilities(
 		(v) => v as unknown as SecurityHubFinding,
 	);
 
+	console.log(`Found ${findings.length} FSBP findings`);
+
 	const results = fsbpFindingsToObligatronResults(findings);
 	console.log(results.slice(0, 5));
 

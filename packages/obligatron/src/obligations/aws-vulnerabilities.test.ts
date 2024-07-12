@@ -1,3 +1,4 @@
+import type { AwsContact } from '../obligations/index';
 import {
 	fsbpFindingsToObligatronResults,
 	type SecurityHubFinding,
@@ -65,5 +66,16 @@ describe('The dependency vulnerabilities obligation', () => {
 
 		expect(actual).toContain('S.1');
 		expect(actual).toContain('S.2');
+	});
+	it('should handle a resource with no tags', () => {
+		const finding = {
+			...oneResourceFinding,
+			resources: [{ ...resource1, Tags: {} }],
+		};
+
+		const actual = fsbpFindingsToObligatronResults([finding]);
+		const contacts = actual[0]?.contacts as AwsContact;
+
+		expect(contacts.Stack).toBeUndefined();
 	});
 });
