@@ -6,7 +6,7 @@ export interface Finding {
 	title: string;
 	resources: string[];
 	remediationUrl: string | null;
-	severity: Severity | null;
+	severity: Severity;
 	priority: number | null;
 	isWithinSla: boolean;
 }

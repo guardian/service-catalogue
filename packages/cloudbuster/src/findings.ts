@@ -7,7 +7,7 @@ import type { Finding, GroupedFindings } from './types';
  * Transforms a SQL row into a finding
  */
 export function transformFinding(finding: aws_securityhub_findings): Finding {
-	let severity = null;
+	let severity: Severity = 'unknown';
 	let priority = null;
 	let remediationUrl = null;
 	let resources = null;
@@ -82,7 +82,6 @@ export function isWithinSlaTime(
 		return false;
 	}
 
-	console.log(`Days to fix: ${daysToFix}`);
 	return daysToFix > 0;
 }
 
