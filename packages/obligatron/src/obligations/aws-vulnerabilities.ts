@@ -28,7 +28,7 @@ type Failure = {
 	resource: string;
 	controlId: string;
 	accountId: string;
-	tags: Record<string, string>;
+	tags: Record<string, string> | null;
 };
 
 function findingToFailures(finding: SecurityHubFinding): Failure[] {
@@ -71,9 +71,9 @@ function failuresToObligationResult(
 		url: 'https://docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html',
 		contacts: {
 			aws_account_id: accountId,
-			Stack: tags.Stack,
-			Stage: tags.Stage,
-			App: tags.App,
+			Stack: tags === null ? undefined : tags.Stack,
+			Stage: tags === null ? undefined : tags.Stage,
+			App: tags === null ? undefined : tags.App,
 		},
 	};
 }
