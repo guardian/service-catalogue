@@ -1,5 +1,6 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
 import { getFsbpFindings } from 'common/src/database-queries';
+import { toNonEmptyArray } from 'common/src/functions';
 import type { ObligationResult } from '.';
 
 type Resource = {
@@ -59,20 +60,20 @@ function failuresToObligationResult(
 	arn: string,
 	failures: Failure[],
 ): ObligationResult {
-	const oneFailure = failures[0]; //this should always exist because groupFailuresByResource should always return at least one failure
+	const oneFailure = toNonEmptyArray(failures)[0];
 
 	const controlIds: string[] = failures.map((f) => f.controlId);
-	const accountId: string | undefined = oneFailure?.accountId;
-	const tags = oneFailure?.tags;
+	const accountId: string | undefined = oneFailure.accountId;
+	const tags = oneFailure.tags;
 	return {
 		resource: arn,
 		reason: `The following AWS FSBP controls are failing: ${controlIds.join(', ')}`,
 		url: 'https://docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html',
 		contacts: {
 			aws_account_id: accountId,
-			Stack: tags?.Stack,
-			Stage: tags?.Stage,
-			App: tags?.App,
+			Stack: tags.Stack,
+			Stage: tags.Stage,
+			App: tags.App,
 		},
 	};
 }

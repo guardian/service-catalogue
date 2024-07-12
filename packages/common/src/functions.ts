@@ -192,7 +192,7 @@ export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
 
 export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 	if (value.length === 0) {
-		throw new Error(`Expected a non-empty array. Source table may be empty.`);
+		throw new Error(`Expected a non-empty array.`);
 	}
 	return value as NonEmptyArray<T>;
 }
