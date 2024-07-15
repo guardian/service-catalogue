@@ -1,9 +1,9 @@
 import { getFsbpFindings } from 'common/src/database-queries';
 import { getPrismaClient } from 'common/src/database-setup';
+import type { SecurityHubSeverity } from 'common/types';
 import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
 import { transformFinding } from './findings';
-import { SecurityHubSeverity } from 'common/types';
 
 type LambdaHandlerProps = {
 	severities?: SecurityHubSeverity[];

@@ -1,5 +1,5 @@
-import type { Severity } from 'common/src/types';
 import type { Action } from '@guardian/anghammarad';
+import type { Severity } from 'common/src/types';
 
 export interface Finding {
 	awsAccountId: string;

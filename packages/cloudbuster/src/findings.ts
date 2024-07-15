@@ -1,32 +1,7 @@
-import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { Finding, GroupedFindings } from './types';
-import { SecurityHubSeverity, Severity } from 'common/types';
+import type { aws_securityhub_findings } from '@prisma/client';
 import { daysLeftToFix, stringToSeverity } from 'common/src/functions';
-
-/**
- * Queries the database for FSBP findings
- */
-export async function getFsbpFindings(
-	prisma: PrismaClient,
-	severities: SecurityHubSeverity[],
-): Promise<Finding[]> {
-	const findings = await prisma.aws_securityhub_findings.findMany({
-		where: {
-			OR: severities.map((s) => ({
-				severity: { path: ['Label'], equals: s },
-			})),
-			AND: {
-				generator_id: {
-					startsWith: 'aws-foundational-security-best-practices/v/1.0.0',
-				},
-			},
-		},
-	});
-
-	console.log(`Fetched ${findings.length} findings from the database`);
-
-	return findings.map(transformFinding);
-}
+import type { Severity } from 'common/types';
+import type { Finding, GroupedFindings } from './types';
 
 /**
  * Transforms a SQL row into a finding

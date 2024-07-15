@@ -1,11 +1,11 @@
 import { Anghammarad } from '@guardian/anghammarad';
-import type { PrismaConfig } from 'common/src/database-setup';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
 } from 'common/database-setup';
 import { getEnvOrThrow } from 'common/functions';
+import type { PrismaConfig } from 'common/src/database-setup';
 
 export interface Config extends PrismaConfig {
 	/**
