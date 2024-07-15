@@ -5,6 +5,7 @@ import {
 	daysLeftToFix,
 	getEnvOrThrow,
 	getGithubAppSecret,
+	isWithinSlaTime,
 	parseEvent,
 	parseSecretJson,
 	partition,
@@ -227,6 +228,78 @@ describe('daysLeftToFix', () => {
 	});
 	test('should return 2 if a critical vuln was raised today', () => {
 		expect(daysLeftToFix(new Date(), 'critical')).toBe(2);
+	});
+});
+
+const MOCK_TODAY = new Date('2024-01-10');
+const MOCK_ONE_DAY_AGO = new Date('2024-01-09');
+const MOCK_NEARLY_TWO_DAYS_AGO = new Date('2024-01-08').setMinutes(1);
+const MOCK_ONE_WEEK_AGO = new Date('2024-01-03');
+
+describe('FBSP SLA window', () => {
+	beforeEach(() => {
+		jest.useFakeTimers().setSystemTime(MOCK_TODAY);
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+	});
+
+	it('Returns true if a critical finding was first observed within a day', () => {
+		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
+		const severity = 'critical';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(true);
+	});
+
+	it('Returns true if a high finding was first observed within a day', () => {
+		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
+		const severity = 'high';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(true);
+	});
+
+	it('Returns true if a critical finding was first observed within two days', () => {
+		const firstObservedAt = new Date(MOCK_NEARLY_TWO_DAYS_AGO);
+		const severity = 'critical';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(true);
+	});
+
+	it('Returns false if a critical finding is outside the window', () => {
+		const firstObservedAt = new Date(MOCK_ONE_WEEK_AGO);
+		const severity = 'critical';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(false);
+	});
+
+	it('Returns false if a low finding was first observed one day ago', () => {
+		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
+		const severity = 'low';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(false);
+	});
+
+	it('Returns false if a low finding was observed within one day', () => {
+		const firstObservedAt = new Date(MOCK_ONE_DAY_AGO);
+		const severity = 'low';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(false);
+	});
+
+	it('Returns false if a critical finding has no information about when it was first observed', () => {
+		// This can happen as it's a nullable column in the DB
+		const firstObservedAt = null;
+		const severity = 'critical';
+
+		const isWithinSla = isWithinSlaTime(firstObservedAt, severity);
+		expect(isWithinSla).toBe(false);
 	});
 });
 
