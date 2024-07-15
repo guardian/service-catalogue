@@ -19,7 +19,6 @@ import {
 import type {
 	Alert,
 	AwsCloudFormationStack,
-	Dependency,
 	EvaluationResult,
 	RepoAndStack,
 	SnykIssue,
@@ -462,7 +461,7 @@ export function snykAlertToRepocopVulnerability(
 ): RepocopVulnerability {
 	const packages = (issue.attributes.coordinates ?? [])
 		.flatMap((c) => c.representations)
-		.filter((r) => r !== null) as Dependency[];
+		.filter((r) => r !== null);
 
 	const projectIdFromIssue = issue.relationships.scan_item.data.id;
 
@@ -510,7 +509,7 @@ export function evaluateRepositories(
 			.map((p) => p.attributes.tags)
 			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
 			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
-			.filter((x) => x !== undefined) as string[];
+			.filter((x) => x !== undefined);
 
 		const vulnsForRepo = dependabotVulnerabilities.filter(
 			(v) => v.full_name === r.full_name,

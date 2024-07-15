@@ -7,7 +7,6 @@ import {
 	type GitHubAppConfig,
 	type GithubAppSecret,
 	type NonEmptyArray,
-	type RepocopVulnerability,
 	type Severity,
 	SLAs,
 } from 'common/src/types';
@@ -163,24 +162,30 @@ export async function applyTopics(
 }
 
 export function stringToSeverity(severity: string): Severity {
+	const lowerCaseSeverity = severity.toLowerCase();
+
 	if (
-		severity === 'low' ||
-		severity === 'medium' ||
-		severity === 'high' ||
-		severity === 'critical'
+		lowerCaseSeverity === 'information' ||
+		lowerCaseSeverity === 'low' ||
+		lowerCaseSeverity === 'medium' ||
+		lowerCaseSeverity === 'high' ||
+		lowerCaseSeverity === 'critical'
 	) {
-		return severity;
+		return lowerCaseSeverity;
 	} else {
 		return 'unknown';
 	}
 }
 
-export function daysLeftToFix(vuln: RepocopVulnerability): number | undefined {
-	const daysToFix = SLAs[vuln.severity];
+export function daysLeftToFix(
+	alert_date: Date,
+	severity: Severity,
+): number | undefined {
+	const daysToFix = SLAs[severity];
 	if (!daysToFix) {
 		return undefined;
 	}
-	const fixDate = new Date(vuln.alert_issue_date);
+	const fixDate = new Date(alert_date);
 	fixDate.setDate(fixDate.getDate() + daysToFix);
 	const millisecondsInADay = 1000 * 60 * 60 * 24;
 	const daysLeftToFix = Math.ceil(

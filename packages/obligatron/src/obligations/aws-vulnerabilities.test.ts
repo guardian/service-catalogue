@@ -1,4 +1,3 @@
-import type { AwsContact } from '../obligations/index';
 import {
 	fsbpFindingsToObligatronResults,
 	type SecurityHubFinding,
@@ -74,8 +73,13 @@ describe('The dependency vulnerabilities obligation', () => {
 		};
 
 		const actual = fsbpFindingsToObligatronResults([finding]);
-		const contacts = actual[0]?.contacts as AwsContact;
+		const contacts = actual[0]?.contacts;
 
-		expect(contacts.Stack).toBeUndefined();
+		expect(contacts).toEqual({
+			aws_account_id: '0123456',
+			App: undefined,
+			Stack: undefined,
+			Stage: undefined,
+		});
 	});
 });
