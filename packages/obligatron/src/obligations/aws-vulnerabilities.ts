@@ -118,7 +118,6 @@ export async function evaluateFsbpVulnerabilities(
 	console.log(`Found ${outOfSlaFindings.length} findings out of SLA`);
 
 	const results = fsbpFindingsToObligatronResults(outOfSlaFindings);
-	console.log(results.slice(0, 5));
 
-	return [];
+	return results;
 }
