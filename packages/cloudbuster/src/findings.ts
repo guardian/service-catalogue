@@ -103,6 +103,7 @@ export function groupFindingsByAccount(findings: Finding[]): GroupedFindings {
 		if (!findingsGroupedByAwsAccount[awsAccountId]) {
 			findingsGroupedByAwsAccount[awsAccountId] = [];
 		}
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- to allow ts version bump
 		findingsGroupedByAwsAccount[awsAccountId]?.push(finding);
 	}
 

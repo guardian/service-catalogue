@@ -460,6 +460,7 @@ export function snykAlertToRepocopVulnerability(
 	issue: SnykIssue,
 	projects: SnykProject[],
 ): RepocopVulnerability {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- to allow ts version bump
 	const packages = (issue.attributes.coordinates ?? [])
 		.flatMap((c) => c.representations)
 		.filter((r) => r !== null) as Dependency[];
@@ -506,6 +507,7 @@ export function evaluateRepositories(
 		const isMainBranchPredicate = (x: Tag) =>
 			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
 
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- to allow ts version bump
 		const reposOnSnyk = snykProjects
 			.map((p) => p.attributes.tags)
 			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
