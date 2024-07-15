@@ -8,6 +8,8 @@ const transform = {
 	'^.+\\.tsx?$': ['@swc/jest', { jsc: { target: 'esnext' } }],
 };
 
+const setupFilesAfterEnv = [`<rootDir>/jest.setup.js`];
+
 /*
 When running in CI (GitHub Actions), use the GitHub Actions reporter to annotate the PR with any test failures.
 Locally, use the default reporter.
@@ -37,16 +39,19 @@ module.exports = {
 		{
 			displayName: 'cloudbuster',
 			transform,
+			setupFilesAfterEnv,
 			testMatch: ['<rootDir>/packages/cloudbuster/**/*.test.ts'],
 		},
 		{
 			displayName: 'common',
 			transform,
+			setupFilesAfterEnv,
 			testMatch: ['<rootDir>/packages/common/**/*.test.ts'],
 		},
 		{
 			displayName: 'dependency-graph-integrator',
 			transform,
+			setupFilesAfterEnv,
 			testMatch: [
 				'<rootDir>/packages/dependency-graph-integrator/**/*.test.ts',
 			],
@@ -54,6 +59,7 @@ module.exports = {
 		{
 			displayName: 'repocop',
 			transform,
+			setupFilesAfterEnv,
 			transformIgnorePatterns: [
 				'node_modules/(?!@guardian/private-infrastructure-config)',
 			],
@@ -62,16 +68,19 @@ module.exports = {
 		{
 			displayName: 'interactive-monitor',
 			transform,
+			setupFilesAfterEnv,
 			testMatch: ['<rootDir>/packages/interactive-monitor/**/*.test.ts'],
 		},
 		{
 			displayName: 'snyk-integrator',
 			transform,
+			setupFilesAfterEnv,
 			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
 		},
 		{
 			displayName: 'obligatron',
 			transform,
+			setupFilesAfterEnv,
 			testMatch: ['<rootDir>/packages/obligatron/**/*.test.ts'],
 		},
 	],
