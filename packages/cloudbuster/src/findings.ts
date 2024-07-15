@@ -103,7 +103,7 @@ export function groupFindingsByAccount(findings: Finding[]): GroupedFindings {
 		if (!findingsGroupedByAwsAccount[awsAccountId]) {
 			findingsGroupedByAwsAccount[awsAccountId] = [];
 		}
-		findingsGroupedByAwsAccount[awsAccountId]?.push(finding);
+		findingsGroupedByAwsAccount[awsAccountId].push(finding);
 	}
 
 	return findingsGroupedByAwsAccount;
