@@ -1,5 +1,5 @@
 import type { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import { getDatabaseConnectionString } from 'common/database';
+import { getDatabaseConnectionString } from 'common/src/database-setup';
 import { $ } from 'execa';
 import { getRdsConfig } from './aws';
 

@@ -1,5 +1,6 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { Finding, GroupedFindings, SecurityHubSeverity } from './types';
+import type { Finding, GroupedFindings } from './types';
+import { SecurityHubSeverity } from 'common/types';
 
 /**
  * Queries the database for FSBP findings
@@ -29,7 +30,7 @@ export async function getFsbpFindings(
 /**
  * Transforms a SQL row into a finding
  */
-function transformFinding(finding: aws_securityhub_findings): Finding {
+export function transformFinding(finding: aws_securityhub_findings): Finding {
 	let severity = null;
 	let priority = null;
 	let remediationUrl = null;

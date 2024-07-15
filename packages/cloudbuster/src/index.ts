@@ -1,8 +1,9 @@
-import { getPrismaClient } from 'common/database';
+import { getFsbpFindings } from 'common/src/database-queries';
+import { getPrismaClient } from 'common/src/database-setup';
 import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
-import { getFsbpFindings } from './findings';
-import type { SecurityHubSeverity } from './types';
+import { transformFinding } from './findings';
+import { SecurityHubSeverity } from 'common/types';
 
 type LambdaHandlerProps = {
 	severities?: SecurityHubSeverity[];
@@ -13,10 +14,7 @@ export async function main(input: LambdaHandlerProps) {
 	// When manually invoking the function in AWS for testing,
 	// it can be cumbersome to manually type this object as an input.
 	// Therefore, fall back to default values.
-	const {
-		severities = ['CRITICAL', 'HIGH'],
-		subjectPrefix = 'Security Hub Digest (critical and high findings)',
-	} = input;
+	const { severities = ['CRITICAL', 'HIGH'] } = input;
 
 	// *** SETUP ***
 	const config = await getConfig();
@@ -27,8 +25,11 @@ export async function main(input: LambdaHandlerProps) {
 	console.log(
 		`Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
 	);
-	const findings = await getFsbpFindings(prisma, severities);
-	const digests = createDigestsFromFindings(findings, subjectPrefix);
+
+	const findings = (await getFsbpFindings(prisma, severities)).map((f) =>
+		transformFinding(f),
+	);
+	const digests = createDigestsFromFindings(findings);
 
 	// *** NOTIFICATION SENDING ***
 	if (stage === 'PROD' || stage === 'CODE') {

@@ -13,12 +13,12 @@
     "sign": "npx --yes @grafana/sign-plugin@latest"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
-    "@grafana/plugin-e2e": "^1.6.0",
+    "@babel/core": "^7.24.8",
+    "@grafana/plugin-e2e": "^1.6.1",
     "@grafana/tsconfig": "^1.2.0-rc1",
     "@playwright/test": "^1.45.1",
     "@swc/core": "1.6.13",
-    "@swc/helpers": "0.5.11",
+    "@swc/helpers": "0.5.12",
     "@swc/jest": "0.2.36",
     "@swc/register": "0.1.10",
     "@testing-library/jest-dom": "6.1.4",
@@ -41,7 +41,7 @@
     "swc-loader": "^0.2.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "webpack": "^5.92.1",
+    "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
     "webpack-livereload-plugin": "^3.0.2"
   },
@@ -51,7 +51,7 @@
     "@grafana/runtime": "11.1.0",
     "@grafana/ui": "11.1.0",
     "@grafana/schema": "11.1.0",
-    "@grafana/scenes": "^5.3.7",
+    "@grafana/scenes": "^5.3.8",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^5.2.0",
