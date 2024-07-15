@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@guardian/cdk": "58.1.4",
+    "@guardian/cdk": "58.2.0",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v2.3.0",
     "@types/js-yaml": "^4.0.9",
     "aws-cdk": "2.148.0",
