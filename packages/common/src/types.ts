@@ -7,9 +7,9 @@ import type {
 export type SecurityHubSeverity =
 	| 'CRITICAL'
 	| 'HIGH'
-	| 'INFORMATION'
+	| 'MEDIUM'
 	| 'LOW'
-	| 'MEDIUM';
+	| 'INFORMATION';
 
 export type GithubAppSecret = {
 	appId: string;
@@ -63,7 +63,7 @@ export interface ProjectId {
 	};
 }
 
-export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
+export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
@@ -98,6 +98,7 @@ export const SLAs: Record<Severity, number | undefined> = {
 	high: 30,
 	medium: undefined,
 	low: undefined,
+	information: undefined,
 	unknown: undefined,
 };
 

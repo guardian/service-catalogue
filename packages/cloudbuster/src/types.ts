@@ -1,4 +1,4 @@
-import type { SecurityHubSeverity } from 'common/src/types';
+import type { Severity } from 'common/src/types';
 
 export interface Finding {
 	awsAccountId: string;
@@ -6,7 +6,7 @@ export interface Finding {
 	title: string;
 	resources: string[];
 	remediationUrl: string | null;
-	severity: SecurityHubSeverity | null;
+	severity: Severity;
 	priority: number | null;
 	isWithinSla: boolean;
 }

@@ -38,7 +38,7 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
-	const daysToFix = daysLeftToFix(vuln);
+	const daysToFix = daysLeftToFix(vuln.alert_issue_date, vuln.severity);
 
 	const vulnHyperlink: string = vuln.urls[0]
 		? `[${vuln.package}](${vuln.urls[0]})`
