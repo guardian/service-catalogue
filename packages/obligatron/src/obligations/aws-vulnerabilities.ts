@@ -1,6 +1,10 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
 import { getFsbpFindings } from 'common/src/database-queries';
-import { toNonEmptyArray } from 'common/src/functions';
+import {
+	isWithinSlaTime,
+	stringToSeverity,
+	toNonEmptyArray,
+} from 'common/src/functions';
 import type { ObligationResult } from '.';
 
 type Resource = {
@@ -104,7 +108,16 @@ export async function evaluateFsbpVulnerabilities(
 
 	console.log(`Found ${findings.length} FSBP findings`);
 
-	const results = fsbpFindingsToObligatronResults(findings);
+	const outOfSlaFindings = findings.filter(
+		(f) =>
+			!isWithinSlaTime(f.first_observed_at, stringToSeverity(f.severity.Label)),
+	);
+
+	console.log(`Found ${findings.length} FSBP findings`);
+
+	console.log(`Found ${outOfSlaFindings.length} findings out of SLA`);
+
+	const results = fsbpFindingsToObligatronResults(outOfSlaFindings);
 	console.log(results.slice(0, 5));
 
 	return [];
