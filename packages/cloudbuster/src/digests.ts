@@ -7,22 +7,18 @@ import type { Digest, Finding, GroupedFindings } from './types';
 /**
  * Given a list of findings, creates a list of digests ready to be emailed out
  */
-export function createDigestsFromFindings(
-	findings: Finding[],
-	subjectPrefix: string,
-): Digest[] {
+export function createDigestsFromFindings(findings: Finding[]): Digest[] {
 	const groupedFindings = groupFindingsByAccount(findings);
 
 	return Object.keys(groupedFindings)
 		.map((awsAccountId) =>
-			createDigestForAccount(awsAccountId, subjectPrefix, groupedFindings),
+			createDigestForAccount(awsAccountId, groupedFindings),
 		)
 		.filter((d): d is Digest => d !== undefined);
 }
 
 function createDigestForAccount(
 	accountId: string,
-	subjectPrefix: string,
 	findings: GroupedFindings,
 ): Digest | undefined {
 	const teamFindings = findings[accountId];
@@ -44,7 +40,7 @@ function createDigestForAccount(
 		accountId,
 		accountName,
 		actions,
-		subject: `${subjectPrefix} for AWS account ${accountName}`,
+		subject: `Security Hub findings for AWS account ${accountName}`,
 		message: createEmailBody(teamFindings),
 	};
 }
