@@ -52,7 +52,6 @@ export class CloudBuster {
 				new LambdaFunction(lambda, {
 					event: RuleTargetInput.fromObject({
 						severities: ['CRITICAL'],
-						subjectPrefix: 'Security Hub Digest (critical findings)',
 					}),
 				}),
 			],
@@ -65,7 +64,6 @@ export class CloudBuster {
 				new LambdaFunction(lambda, {
 					event: RuleTargetInput.fromObject({
 						severities: ['HIGH'],
-						subjectPrefix: 'Security Hub Digest (high findings)',
 					}),
 				}),
 			],

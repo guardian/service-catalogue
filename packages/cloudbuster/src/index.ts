@@ -7,7 +7,6 @@ import { transformFinding } from './findings';
 
 type LambdaHandlerProps = {
 	severities?: SecurityHubSeverity[];
-	subjectPrefix?: string;
 };
 
 export async function main(input: LambdaHandlerProps) {
