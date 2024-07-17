@@ -1,3 +1,4 @@
+import { Anghammarad } from '@guardian/anghammarad';
 import { getFsbpFindings } from 'common/src/database-queries';
 import { getPrismaClient } from 'common/src/database-setup';
 import type { SecurityHubSeverity } from 'common/types';
@@ -17,7 +18,6 @@ export async function main(input: LambdaHandlerProps) {
 
 	// *** SETUP ***
 	const config = await getConfig();
-	const { anghammaradClient, anghammaradSnsTopic, stage } = config;
 	const prisma = getPrismaClient(config);
 
 	// *** DATA GATHERING ***
@@ -31,23 +31,11 @@ export async function main(input: LambdaHandlerProps) {
 	const digests = createDigestsFromFindings(findings);
 
 	// *** NOTIFICATION SENDING ***
-	if (stage === 'PROD' || stage === 'CODE') {
-		if (!anghammaradSnsTopic) {
-			throw new Error(
-				'ANGHAMMARAD_SNS_ARN environment variable not found. Cannot send digests.',
-			);
-		}
+	const anghammaradClient = new Anghammarad();
 
-		if (!anghammaradClient) {
-			throw new Error('No Anghammarad client found. Cannot send digests.');
-		}
-
-		await Promise.all(
-			digests.map(
-				async (digest) => await sendDigest(anghammaradClient, config, digest),
-			),
-		);
-	} else {
-		digests.map(console.log);
-	}
+	await Promise.all(
+		digests.map(
+			async (digest) => await sendDigest(anghammaradClient, config, digest),
+		),
+	);
 }

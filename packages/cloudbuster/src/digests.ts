@@ -1,8 +1,8 @@
 import { RequestedChannel } from '@guardian/anghammarad';
-import type { Anghammarad } from '@guardian/anghammarad';
+import type { Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
-import type { Digest, Finding, GroupedFindings } from './types';
+import type { Digest, Finding } from './types';
 
 /**
  * Given a list of findings, creates a list of digests ready to be emailed out
@@ -12,36 +12,35 @@ export function createDigestsFromFindings(findings: Finding[]): Digest[] {
 
 	return Object.keys(groupedFindings)
 		.map((awsAccountId) =>
-			createDigestForAccount(awsAccountId, groupedFindings),
+			createDigestForAccount(groupedFindings[awsAccountId] ?? []),
 		)
 		.filter((d): d is Digest => d !== undefined);
 }
 
 function createDigestForAccount(
-	accountId: string,
-	findings: GroupedFindings,
+	accountFindings: Finding[],
 ): Digest | undefined {
-	const teamFindings = findings[accountId];
-
-	if (!teamFindings || teamFindings.length == 0) {
+	if (accountFindings.length === 0 || !accountFindings[0]) {
 		return undefined;
 	}
 
-	const accountName = teamFindings[0]?.awsAccountName as string;
+	const [finding] = accountFindings;
+
+	const { awsAccountName, awsAccountId } = finding;
 
 	const actions = [
 		{
-			cta: `View all ${teamFindings.length} findings on Grafana`,
-			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d/fsbp-compliance?var-account_name=${accountName}`,
+			cta: `View all ${accountFindings.length} findings on Grafana`,
+			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${awsAccountName}`,
 		},
 	];
 
 	return {
-		accountId,
-		accountName,
+		accountId: awsAccountId,
+		accountName: awsAccountName as string,
 		actions,
-		subject: `Security Hub findings for AWS account ${accountName}`,
-		message: createEmailBody(teamFindings),
+		subject: `Security Hub findings for AWS account ${awsAccountName}`,
+		message: createEmailBody(accountFindings),
 	};
 }
 
@@ -66,17 +65,28 @@ export async function sendDigest(
 	config: Config,
 	digest: Digest,
 ): Promise<void> {
-	console.log(`Sending digest to ${digest.accountId}...`);
+	// TODO replace this with `{ AwsAccount: digest.accountId }` to send real alerts
+	const target = { Stack: 'testing-alerts' };
 
-	await anghammaradClient.notify({
+	const notifyParams: NotifyParams = {
 		subject: digest.subject,
 		message: digest.message,
 		actions: digest.actions,
-		// target: { AwsAccount: digest.accountId },
-		target: { Stack: 'testing-alerts' },
+		target,
 		threadKey: digest.accountId,
 		channel: RequestedChannel.HangoutsChat,
 		sourceSystem: `cloudbuster ${config.stage}`,
 		topicArn: config.anghammaradSnsTopic as string,
-	});
+	};
+
+	if (config.enableMessaging) {
+		console.log(
+			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
+		);
+		await anghammaradClient.notify(notifyParams);
+	} else {
+		console.log(
+			`Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
+		);
+	}
 }
