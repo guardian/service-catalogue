@@ -195,6 +195,26 @@ export function daysLeftToFix(
 	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
 }
 
+/**
+ * Determines whether a vulnerability is within the SLA window
+ */
+export function isWithinSlaTime(
+	firstObservedAt: Date | null,
+	severity: Severity,
+): boolean {
+	if (!firstObservedAt) {
+		console.warn('No first observed date provided');
+		return false;
+	}
+
+	const daysToFix = daysLeftToFix(firstObservedAt, severity);
+	if (daysToFix === undefined) {
+		return false;
+	}
+
+	return daysToFix > 0;
+}
+
 export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 	if (value.length === 0) {
 		throw new Error(`Expected a non-empty array.`);

@@ -1,6 +1,6 @@
 import type { aws_securityhub_findings } from '@prisma/client';
-import { daysLeftToFix, stringToSeverity } from 'common/src/functions';
-import type { Severity } from 'common/types';
+import { isWithinSlaTime, stringToSeverity } from 'common/src/functions';
+import type { Severity } from 'common/src/types';
 import type { Finding, GroupedFindings } from './types';
 
 /**
@@ -59,26 +59,6 @@ export function transformFinding(finding: aws_securityhub_findings): Finding {
 		remediationUrl,
 		isWithinSla: isWithinSlaTime(finding.first_observed_at, severity),
 	};
-}
-
-/**
- * Determines whether a Security Hub finding is within the SLA window
- */
-export function isWithinSlaTime(
-	firstObservedAt: Date | null,
-	severity: Severity,
-): boolean {
-	if (!firstObservedAt) {
-		console.warn('No first observed date provided');
-		return false;
-	}
-
-	const daysToFix = daysLeftToFix(firstObservedAt, severity);
-	if (daysToFix === undefined) {
-		return false;
-	}
-
-	return daysToFix > 0;
 }
 
 /**
