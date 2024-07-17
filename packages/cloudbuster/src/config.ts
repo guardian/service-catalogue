@@ -1,11 +1,10 @@
-import { getEnvOrThrow } from 'common/functions';
-import type { PrismaConfig } from 'common/src/database-setup';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
-} from 'common/src/database-setup';
-import type { SecurityHubSeverity } from 'common/src/types';
+} from 'common/database-setup';
+import { getEnvOrThrow } from 'common/functions';
+import type { PrismaConfig } from 'common/src/database-setup';
 
 export interface Config extends PrismaConfig {
 	/**
@@ -13,27 +12,30 @@ export interface Config extends PrismaConfig {
 	 */
 	stage: string;
 	/**
-	 * The digests will only include findings with these severities.
+	 * Whether to send messages via Anghammarad
 	 */
-	severities: SecurityHubSeverity[];
+	enableMessaging: boolean;
+	/**
+	 * Anghammarad's topic ARN
+	 */
+	anghammaradSnsTopic?: string;
 }
 
 export async function getConfig(): Promise<Config> {
 	const stage = getEnvOrThrow('STAGE');
+	const anghammaradSnsTopic = process.env['ANGHAMMARAD_SNS_ARN'];
+
 	const isDev = stage === 'DEV';
 
 	const databaseConfig = isDev
 		? await getDevDatabaseConfig()
 		: await getDatabaseConfig(stage, 'repocop'); //TODO create a new db user for cloudbuster before deploying.
 
-	const severities: SecurityHubSeverity[] = isDev
-		? ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATION'] // Using all severities in DEV for more data.
-		: ['CRITICAL', 'HIGH'];
-
 	return {
 		stage,
-		severities,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: isDev,
+		enableMessaging: !isDev,
+		anghammaradSnsTopic,
 	};
 }

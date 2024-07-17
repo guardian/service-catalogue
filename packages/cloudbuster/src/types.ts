@@ -1,3 +1,4 @@
+import type { Action } from '@guardian/anghammarad';
 import type { Severity } from 'common/src/types';
 
 export interface Finding {
@@ -13,6 +14,8 @@ export interface Finding {
 
 export interface Digest {
 	accountId: string;
+	accountName: string;
+	actions: Action[];
 	subject: string;
 	message: string;
 }
