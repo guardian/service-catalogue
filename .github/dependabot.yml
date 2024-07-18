@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     ignore:
       # The version of AWS CDK libraries must match those from @guardian/cdk.
       # We'd never be able to update them here independently, so just ignore them.
@@ -41,4 +41,4 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
