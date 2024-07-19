@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.614.0",
-		"ts-markdown": "^1.1.0",
+		"ts-markdown": "^1.2.0",
 		"yaml": "^2.4.5"
 	}
 }
