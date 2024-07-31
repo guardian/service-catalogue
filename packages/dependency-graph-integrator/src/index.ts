@@ -12,19 +12,20 @@ import {
 import type { StatusCode } from './types';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
-	console.log(`Generating Dependabot PR for ${event.name}`);
+	console.log(
+		`Generating Dependabot PR for ${event.name} repo with ${event.language} language`,
+	);
 	const config: Config = getConfig();
-	const branch = generateBranchName('sbt-dependency-graph');
-
+	const languageLowerCase = event.language.toLowerCase();
+	const branch = generateBranchName(`${languageLowerCase}-dependency-graph`);
 	const boardNumber = 110;
-	const author = 'gu-dependency-graph-integrator'; // TODO: create new 'gu-dependency-graph-integrator' app
-	const title =
-		'Submit sbt dependencies to GitHub for vulnerability monitoring';
-	const fileName = '.github/workflows/sbt-dependency-graph.yaml';
-	const commitMessage = 'Add sbt-dependency-graph.yaml';
+	const author = 'gu-dependency-graph-integrator';
+	const title = `Submit ${event.language} dependencies to GitHub for vulnerability monitoring`;
+	const fileName = `.github/workflows/${languageLowerCase}-dependency-graph.yaml`;
+	const commitMessage = `Add ${languageLowerCase}-dependency-graph.yaml`;
 	const yamlContents = createYaml(branch);
 	const repo = event.name;
-	const prContents = generatePrBody(branch, repo);
+	const prContents = generatePrBody(branch, repo, event.language);
 	const stage = config.stage;
 
 	if (stage === 'PROD') {
