@@ -23,7 +23,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 	const title = `Submit ${event.language} dependencies to GitHub for vulnerability monitoring`;
 	const fileName = `.github/workflows/${languageLowerCase}-dependency-graph.yaml`;
 	const commitMessage = `Add ${languageLowerCase}-dependency-graph.yaml`;
-	const yamlContents = createYaml(branch);
+	const yamlContents = createYaml(branch, event.language);
 	const repo = event.name;
 	const prContents = generatePrBody(branch, repo, event.language);
 	const stage = config.stage;
