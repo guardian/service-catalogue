@@ -115,7 +115,7 @@ export async function sendOneRepoToDepGraphIntegrator(
 		}
 	} else {
 		console.log(
-			'No Scala repos found without SBT dependency submission workflow',
+			'No suitable production repos found without dependency submission workflow',
 		);
 	}
 }
