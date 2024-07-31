@@ -1,10 +1,25 @@
 import { markdownChecklist } from 'common/src/string';
+import type {
+	DepGraphLanguage,
+	DepGraphPrSteps,
+	DepGraphStepForLanguage,
+} from 'common/types';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 
-export function createYaml(prBranch: string): string {
+const workflowsForLanguages = {
+	Scala:
+		'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1',
+	Kotlin:
+		'gradle/actions/dependency-submission@d9c87d481d55275bb5441eef3fe0e46805f9ef70 # v3.5.0',
+};
+
+export function createYaml(
+	prBranch: string,
+	language: DepGraphLanguage,
+): string {
 	const dependencyGraphWorkflowJson = {
-		name: 'Update Dependency Graph for SBT',
+		name: `Update Dependency Graph for ${language}`,
 		on: {
 			push: {
 				branches: ['main', prBranch],
@@ -23,7 +38,7 @@ export function createYaml(prBranch: string): string {
 					{
 						name: 'Submit dependencies',
 						id: 'submit',
-						uses: 'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1',
+						uses: workflowsForLanguages[`${language}`],
 					},
 					{
 						name: 'Log snapshot for user validation',
@@ -41,23 +56,36 @@ export function createYaml(prBranch: string): string {
 		.replaceAll('"', '');
 }
 
-function createPRChecklist(branchName: string): string[] {
-	const step1 =
-		'Ensure that the [version of sbt in the project is v1.5 or above](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file#support) in order for the dependency submission action to run.';
-
-	const step2 =
+const stepsForLanguages: DepGraphPrSteps = {
+	Scala: [
+		'Ensure that the [version of sbt in the project is v1.5 or above](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file#support) in order for the dependency submission action to run.',
 		'A run of this action should have been triggered when the branch was ' +
-		'created. Sense check the output of "Log snapshot for user validation", ' +
-		'and make sure that your dependencies look okay.';
+			'created. Sense check the output of "Log snapshot for user validation", ' +
+			'and make sure that your dependencies look okay.',
+	],
+	Kotlin: ['Kotlin step 1', 'Kotlin step 2'],
+};
 
-	const step3 =
+function createPRChecklist(
+	branchName: string,
+	stepsForLanguage: DepGraphStepForLanguage[],
+): string[] {
+	const allSteps: string[] = [];
+
+	const finalStep =
 		`When you are happy the action works, remove the branch name \`${branchName}\` ` +
 		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
 
-	return [step1, step2, step3];
+	stepsForLanguage.forEach((step) => allSteps.push(step));
+	allSteps.push(finalStep);
+	return allSteps;
 }
 
-export function generatePrBody(branchName: string, repoName: string): string {
+export function generatePrBody(
+	branchName: string,
+	repoName: string,
+	language: DepGraphLanguage,
+): string {
 	const body = [
 		h2('What does this change?'),
 		p(
@@ -69,7 +97,7 @@ export function generatePrBody(branchName: string, repoName: string): string {
 		p(
 			'If a repository is in production, we need to track its third party dependencies for vulnerabilities. ' +
 				'Historically, we have done this using Snyk, but we are now moving to GitHub’s native Dependabot. ' +
-				'Scala is not a language that Dependabot supports out of the box, this workflow is required to make it happen. ' +
+				`${language} is not a language that Dependabot supports out of the box, this workflow is required to make it happen. ` +
 				'As a result, we have raised this PR on your behalf to add it to the Dependency Graph.',
 		),
 		h2('How has it been verified?'),
@@ -79,7 +107,9 @@ export function generatePrBody(branchName: string, repoName: string): string {
 				'Please do not hesitate to contact DevX Security if you have any questions or concerns.',
 		),
 		h2('What do I need to do?'),
-		markdownChecklist(createPRChecklist(branchName)),
+		markdownChecklist(
+			createPRChecklist(branchName, stepsForLanguages[`${language}`]),
+		),
 	];
 	return tsMarkdown(body);
 }
