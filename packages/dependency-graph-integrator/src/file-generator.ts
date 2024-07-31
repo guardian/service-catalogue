@@ -1,9 +1,5 @@
 import { markdownChecklist } from 'common/src/string';
-import type {
-	DepGraphLanguage,
-	DepGraphPrSteps,
-	DepGraphStepForLanguage,
-} from 'common/types';
+import type { DepGraphLanguage } from 'common/types';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 
@@ -56,28 +52,35 @@ export function createYaml(
 		.replaceAll('"', '');
 }
 
-const stepsForLanguages: DepGraphPrSteps = {
+const stepsForLanguages: Record<DepGraphLanguage, string[]> = {
 	Scala: [
 		'Ensure that the [version of sbt in the project is v1.5 or above](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file#support) in order for the dependency submission action to run.',
-		'A run of this action should have been triggered when the branch was ' +
-			'created. Sense check the output of "Log snapshot for user validation", ' +
-			'and make sure that your dependencies look okay.',
 	],
-	Kotlin: ['Kotlin step 1', 'Kotlin step 2'],
+	Kotlin: [],
+};
+
+const languageSpecificInfo: Record<DepGraphLanguage, string> = {
+	Scala:
+		'See [the SBT workflow documentation](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file) for further information and configuration options.',
+	Kotlin:
+		'See [the Gradle workflow documentation](https://github.com/gradle/actions/blob/main/docs/dependency-submission.md) for further information and configuration options.',
 };
 
 function createPRChecklist(
 	branchName: string,
-	stepsForLanguage: DepGraphStepForLanguage[],
+	stepsForLanguage: string[],
 ): string[] {
 	const allSteps: string[] = [];
 
-	const finalStep =
+	const finalSteps = [
+		'A run of this action should have been triggered when the branch was ' +
+			'created. Sense check the output of "Log snapshot for user validation", ' +
+			'and make sure that your dependencies look okay.',
 		`When you are happy the action works, remove the branch name \`${branchName}\` ` +
-		'trigger from the the yaml file (aka delete line 6), approve, and merge. ';
-
+			'trigger from the the yaml file (aka delete line 6), approve, and merge. ',
+	];
 	stepsForLanguage.forEach((step) => allSteps.push(step));
-	allSteps.push(finalStep);
+	finalSteps.forEach((step) => allSteps.push(step));
 	return allSteps;
 }
 
@@ -89,7 +92,7 @@ export function generatePrBody(
 	const body = [
 		h2('What does this change?'),
 		p(
-			'This PR sends your sbt dependencies to GitHub for vulnerability monitoring via Dependabot. ' +
+			`This PR sends your ${language} dependencies to GitHub for vulnerability monitoring via Dependabot. ` +
 				`The submitted dependencies will appear in the [Dependency Graph](https://github.com/guardian/${repoName}/network/dependencies) ` +
 				'on merge to main (it might take a few minutes to update).',
 		),
@@ -106,6 +109,8 @@ export function generatePrBody(
 				'However, we have included some instructions below to help you verify that it works for you. ' +
 				'Please do not hesitate to contact DevX Security if you have any questions or concerns.',
 		),
+		h2(`Further information for ${language}`),
+		p(languageSpecificInfo[`${language}`]),
 		h2('What do I need to do?'),
 		markdownChecklist(
 			createPRChecklist(branchName, stepsForLanguages[`${language}`]),
