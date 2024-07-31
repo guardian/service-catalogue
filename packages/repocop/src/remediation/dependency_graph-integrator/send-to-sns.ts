@@ -7,6 +7,8 @@ import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
 import type {
 	DependencyGraphIntegratorEvent,
+	DepGraphLanguage,
+	DepGraphWorkflows,
 	Repository,
 } from 'common/src/types';
 import type { Config } from '../../config';
@@ -26,13 +28,19 @@ export function checkRepoForLanguage(
 export function doesRepoHaveWorkflow(
 	repo: Repository,
 	workflow_usages: guardian_github_actions_usage[],
+	language: DepGraphLanguage,
 ): boolean {
 	const actionsForRepo = workflow_usages
 		.filter((usages) => repo.full_name === usages.full_name)
 		.flatMap((workflow) => workflow.workflow_uses);
 
+	const workflows: DepGraphWorkflows = {
+		Scala: 'scalacenter/sbt-dependency-submission',
+		Kotlin: 'gradle/actions/dependency-submission',
+	};
+
 	const dependencySubmissionWorkflow = actionsForRepo.find((action) =>
-		action.includes('scalacenter/sbt-dependency-submission'),
+		action.includes(workflows[`${language}`]),
 	);
 	if (dependencySubmissionWorkflow) {
 		return true;
@@ -45,25 +53,35 @@ export function createSnsEventsForDependencyGraphIntegration(
 	productionRepos: Repository[],
 	workflow_usages: guardian_github_actions_usage[],
 ): DependencyGraphIntegratorEvent[] {
-	const scalaRepos = productionRepos.filter((repo) =>
-		checkRepoForLanguage(repo, languages, 'Scala'),
-	);
+	const depGraphLanguages: DepGraphLanguage[] = ['Scala', 'Kotlin'];
+	const eventsForAllLanguages: DependencyGraphIntegratorEvent[] = [];
 
-	console.log(`Found ${scalaRepos.length} Scala repos in production`);
+	depGraphLanguages.forEach((language) => {
+		let reposWithDepGraphLanguages: Repository[] = [];
+		const repos = productionRepos.filter((repo) =>
+			checkRepoForLanguage(repo, languages, language),
+		);
+		console.log(`Found ${repos.length} ${language} repos in production`);
 
-	const scalaReposWithoutWorkflows = scalaRepos.filter(
-		(repo) => !doesRepoHaveWorkflow(repo, workflow_usages),
-	);
+		reposWithDepGraphLanguages = reposWithDepGraphLanguages.concat(repos);
 
-	console.log(
-		`Found ${scalaRepos.length} production Scala repos without dependency submission workflows`,
-	);
+		const reposWithoutWorkflows = reposWithDepGraphLanguages.filter(
+			(repo) => !doesRepoHaveWorkflow(repo, workflow_usages, language),
+		);
+		console.log(
+			`Found ${reposWithoutWorkflows.length} production repos without ${language} dependency submission workflows`,
+		);
 
-	const events = scalaReposWithoutWorkflows.map((repo) => ({
-		name: removeRepoOwner(repo.full_name),
-	}));
-	console.log(`Found ${events.length} events to send to SNS`);
-	return events;
+		reposWithoutWorkflows.map((repo) =>
+			eventsForAllLanguages.push({
+				name: removeRepoOwner(repo.full_name),
+				language,
+			}),
+		);
+	});
+
+	console.log(`Found ${eventsForAllLanguages.length} events to send to SNS`);
+	return eventsForAllLanguages;
 }
 
 export async function sendOneRepoToDepGraphIntegrator(
