@@ -28,8 +28,20 @@ export type GitHubAppConfig = {
 	installationId: string;
 };
 
+export type DepGraphLanguage = 'Scala' | 'Kotlin';
+export type DepGraphStepForLanguage = string;
+export type DepGraphWorkflow = string;
+
+export type DepGraphPrSteps = Record<
+	DepGraphLanguage,
+	DepGraphStepForLanguage[]
+>;
+
+export type DepGraphWorkflows = Record<DepGraphLanguage, DepGraphWorkflow>;
+
 export interface DependencyGraphIntegratorEvent {
 	name: string;
+	language: DepGraphLanguage;
 }
 
 export interface SnykIntegratorEvent {
