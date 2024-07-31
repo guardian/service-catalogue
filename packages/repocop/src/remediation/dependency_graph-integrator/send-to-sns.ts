@@ -8,7 +8,6 @@ import { shuffle } from 'common/src/functions';
 import type {
 	DependencyGraphIntegratorEvent,
 	DepGraphLanguage,
-	DepGraphWorkflows,
 	Repository,
 } from 'common/src/types';
 import type { Config } from '../../config';
@@ -34,7 +33,7 @@ export function doesRepoHaveWorkflow(
 		.filter((usages) => repo.full_name === usages.full_name)
 		.flatMap((workflow) => workflow.workflow_uses);
 
-	const workflows: DepGraphWorkflows = {
+	const workflows: Record<DepGraphLanguage, string> = {
 		Scala: 'scalacenter/sbt-dependency-submission',
 		Kotlin: 'gradle/actions/dependency-submission',
 	};
