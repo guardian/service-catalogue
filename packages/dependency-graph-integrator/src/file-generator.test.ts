@@ -1,10 +1,10 @@
 import { createYaml } from './file-generator';
 
-describe('createYaml for Scala', () => {
+describe('createYaml for sbt', () => {
 	it('should generate the following yaml file', () => {
 		const yaml = createYaml('branch', 'Scala', 'repo1');
 		const result =
-			String.raw`name: Update Dependency Graph for Scala
+			String.raw`name: Update Dependency Graph for sbt
 on:
   push:
     branches:
@@ -37,7 +37,7 @@ describe('createYaml for Kotlin', () => {
 	it('should generate the following yaml file', () => {
 		const yaml = createYaml('branch', 'Kotlin', 'repo2');
 		const result =
-			String.raw`name: Update Dependency Graph for Kotlin
+			String.raw`name: Update Dependency Graph for Gradle
 on:
   push:
     branches:

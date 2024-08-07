@@ -3,7 +3,12 @@ import type { DepGraphLanguage } from 'common/types';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 
-function createYamlLanguageSteps(
+export const depGraphPackageManager: Record<DepGraphLanguage, string> = {
+	Scala: 'sbt',
+	Kotlin: 'Gradle',
+};
+
+function createLanguageSpecificWorkflowSteps(
 	repo: string,
 ): Record<DepGraphLanguage, ConcatArray<object>> {
 	return {
@@ -59,7 +64,7 @@ export function createYaml(
 	repo: string,
 ): string {
 	const dependencyGraphWorkflowJson = {
-		name: `Update Dependency Graph for ${language}`,
+		name: `Update Dependency Graph for ${depGraphPackageManager[language]}`,
 		on: {
 			push: {
 				branches: ['main', prBranch],
@@ -69,7 +74,7 @@ export function createYaml(
 		jobs: {
 			'dependency-graph': {
 				'runs-on': 'ubuntu-latest',
-				steps: createYamlLanguageSteps(repo)[language],
+				steps: createLanguageSpecificWorkflowSteps(repo)[language],
 				permissions: { contents: 'write' },
 			},
 		},
@@ -80,28 +85,25 @@ export function createYaml(
 		.replaceAll('"', '');
 }
 
-const stepsForLanguages: Record<DepGraphLanguage, string[]> = {
-	Scala: [
+const stepsForLanguages: Record<DepGraphLanguage, string> = {
+	Scala:
 		'Ensure that the [version of sbt in the project is v1.5 or above](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file#support) in order for the dependency submission action to run.',
-	],
-	Kotlin: [
+
+	Kotlin:
 		'Ensure that the [version of Gradle is v5.2 or above](https://github.com/gradle/actions/blob/main/docs/dependency-submission.md#gradle-version-compatibility)',
-	],
 };
 
 const languageSpecificInfo: Record<DepGraphLanguage, string> = {
 	Scala:
-		'See [the SBT workflow documentation](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file) for further information and configuration options.',
+		'See [the sbt workflow documentation](https://github.com/scalacenter/sbt-dependency-submission?tab=readme-ov-file) for further information and configuration options.',
 	Kotlin:
 		'See [the Gradle workflow documentation](https://github.com/gradle/actions/blob/main/docs/dependency-submission.md) for further information and configuration options, and the [FAQ for troubleshooting](https://github.com/gradle/actions/blob/main/docs/dependency-submission-faq.md).',
 };
 
 function createPRChecklist(
 	branchName: string,
-	stepsForLanguage: string[],
+	stepsForLanguage: string,
 ): string[] {
-	const allSteps: string[] = [];
-
 	const finalSteps = [
 		'A run of this action should have been triggered when the branch was ' +
 			'created. Sense check the output of "Log snapshot for user validation", ' +
@@ -109,9 +111,7 @@ function createPRChecklist(
 		`When you are happy the action works, remove the branch name \`${branchName}\` ` +
 			'trigger from the the yaml file (aka delete line 6), approve, and merge. ',
 	];
-	stepsForLanguage.forEach((step) => allSteps.push(step));
-	finalSteps.forEach((step) => allSteps.push(step));
-	return allSteps;
+	return [stepsForLanguage, ...finalSteps];
 }
 
 export function generatePrBody(
@@ -122,7 +122,7 @@ export function generatePrBody(
 	const body = [
 		h2('What does this change?'),
 		p(
-			`This PR sends your ${language} dependencies to GitHub for vulnerability monitoring via Dependabot. ` +
+			`This PR sends your ${depGraphPackageManager[language]} dependencies to GitHub for vulnerability monitoring via Dependabot. ` +
 				`The submitted dependencies will appear in the [Dependency Graph](https://github.com/guardian/${repoName}/network/dependencies) ` +
 				'on merge to main (it might take a few minutes to update).',
 		),
@@ -139,7 +139,7 @@ export function generatePrBody(
 				'However, we have included some instructions below to help you verify that it works for you. ' +
 				'Please do not hesitate to contact DevX Security if you have any questions or concerns.',
 		),
-		h2(`Further information for ${language}`),
+		h2(`Further information for ${depGraphPackageManager[language]}`),
 		p(languageSpecificInfo[`${language}`]),
 		h2('What do I need to do?'),
 		markdownChecklist(

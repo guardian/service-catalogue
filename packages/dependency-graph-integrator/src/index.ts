@@ -4,7 +4,11 @@ import { generateBranchName } from 'common/src/pull-requests';
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
-import { createYaml, generatePrBody } from './file-generator';
+import {
+	createYaml,
+	depGraphPackageManager,
+	generatePrBody,
+} from './file-generator';
 import {
 	createPrAndAddToProject,
 	enableDependabotAlerts,
@@ -12,21 +16,24 @@ import {
 import type { StatusCode } from './types';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
+	const language = event.language;
+	const name = event.name;
 	console.log(
-		`Generating Dependabot PR for ${event.name} repo with ${event.language} language`,
+		`Generating Dependabot PR for ${name} repo with ${language} language`,
 	);
 	const config: Config = getConfig();
-	const languageLowerCase = event.language.toLowerCase();
-	const branch = generateBranchName(`${languageLowerCase}-dependency-graph`);
+	const stage = config.stage;
+	const branch = generateBranchName(
+		`${depGraphPackageManager[language]}-dependency-graph`,
+	);
 	const boardNumber = 110;
 	const author = 'gu-dependency-graph-integrator';
-	const title = `Submit ${event.language} dependencies to GitHub for vulnerability monitoring`;
-	const fileName = `.github/workflows/${languageLowerCase}-dependency-graph.yaml`;
-	const commitMessage = `Add ${languageLowerCase}-dependency-graph.yaml`;
-	const yamlContents = createYaml(branch, event.language, event.name);
-	const repo = event.name;
-	const prContents = generatePrBody(branch, repo, event.language);
-	const stage = config.stage;
+	const title = `Submit ${depGraphPackageManager[language]} dependencies to GitHub for vulnerability monitoring`;
+	const fileName = `.github/workflows/${depGraphPackageManager[language].toLowerCase()}-dependency-graph.yaml`;
+	const commitMessage = `Add ${depGraphPackageManager[language].toLowerCase()}-dependency-graph.yaml`;
+	const yamlContents = createYaml(branch, language, name);
+	const repo = name;
+	const prContents = generatePrBody(branch, repo, language);
 
 	if (stage === 'PROD') {
 		const octokit = await stageAwareOctokit(stage);
