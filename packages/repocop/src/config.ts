@@ -64,6 +64,11 @@ export interface Config extends PrismaConfig {
 	snykIntegratorTopic: string;
 
 	/**
+	 * Flag to enable creation of Depedency Graph integration PRs
+	 */
+	depGraphIntegrationPREnabled: boolean;
+
+	/**
 	 * The ARN of the Dependency Graph Integrator input topic.
 	 */
 	dependencyGraphIntegratorTopic: string;
@@ -97,6 +102,7 @@ export async function getConfig(): Promise<Config> {
 		snykIntegrationPREnabled:
 			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
 		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
+		depGraphIntegrationPREnabled: false,
 		dependencyGraphIntegratorTopic: getEnvOrThrow(
 			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
 		),
