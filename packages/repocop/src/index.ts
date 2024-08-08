@@ -196,12 +196,18 @@ export async function main() {
 		);
 	}
 
-	await sendOneRepoToDepGraphIntegrator(
-		config,
-		repoLanguages,
-		productionRepos,
-		productionWorkflowUsages,
-	);
+	if (config.depGraphIntegrationPREnabled) {
+		await sendOneRepoToDepGraphIntegrator(
+			config,
+			repoLanguages,
+			productionRepos,
+			productionWorkflowUsages,
+		);
+	} else {
+		console.log(
+			'Messaging to Dependency Graph Integrator is not enabled, use console to send SNS message and raise a PR if required.',
+		);
+	}
 
 	console.log('Done');
 }

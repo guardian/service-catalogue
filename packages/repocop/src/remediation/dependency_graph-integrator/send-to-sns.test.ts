@@ -102,15 +102,19 @@ describe('When trying to find repos using Scala', () => {
 
 describe('When checking a repo for an existing dependency submission workflow', () => {
 	test('return true if repo workflow is present', () => {
-		const result = doesRepoHaveWorkflow(repository(fullName), [
-			repoWithDepSubmissionWorkflow(fullName),
-		]);
+		const result = doesRepoHaveWorkflow(
+			repository(fullName),
+			[repoWithDepSubmissionWorkflow(fullName)],
+			'Scala',
+		);
 		expect(result).toBe(true);
 	});
 	test('return false if workflow is not present', () => {
-		const result = doesRepoHaveWorkflow(repository(fullName), [
-			repoWithoutWorkflow(fullName),
-		]);
+		const result = doesRepoHaveWorkflow(
+			repository(fullName),
+			[repoWithoutWorkflow(fullName)],
+			'Scala',
+		);
 		expect(result).toBe(false);
 	});
 });
@@ -122,7 +126,9 @@ describe('When getting suitable events to send to SNS', () => {
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 		);
-		expect(result).toEqual([{ name: removeRepoOwner(fullName) }]);
+		expect(result).toEqual([
+			{ name: removeRepoOwner(fullName), language: 'Scala' },
+		]);
 	});
 	test('return empty event array when a Scala repo is found with an existing workflow', () => {
 		const result = createSnsEventsForDependencyGraphIntegration(
@@ -147,8 +153,8 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithoutWorkflow(fullName), repoWithoutWorkflow(fullName2)],
 		);
 		expect(result).toEqual([
-			{ name: removeRepoOwner(fullName) },
-			{ name: removeRepoOwner(fullName2) },
+			{ name: removeRepoOwner(fullName), language: 'Scala' },
+			{ name: removeRepoOwner(fullName2), language: 'Scala' },
 		]);
 	});
 });
