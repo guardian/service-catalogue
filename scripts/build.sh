@@ -70,7 +70,3 @@ createLambdaWithPrisma "obligatron"
 createLambdaWithPrisma "refresh-materialized-view"
 createLambdaWithPrisma "cloudbuster"
 
-# Package the dashboard...
-createZip "dashboard"
-# ... then rename the file to match the plugin's ID
-mv "$ROOT_DIR/packages/dashboard/dist/dashboard.zip" "$ROOT_DIR/packages/dashboard/dist/theguardian-servicecatalogue-app.zip"

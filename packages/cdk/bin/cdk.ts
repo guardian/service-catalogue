@@ -56,16 +56,4 @@ deployments.set('service-catalogue-prisma-migrations', {
 	dependencies: ['cfn-eu-west-1-deploy-service-catalogue'],
 });
 
-deployments.set('theguardian-servicecatalogue-app', {
-	type: 'aws-s3',
-	contentDirectory: 'theguardian-servicecatalogue-app',
-	app: 'theguardian-servicecatalogue-app',
-	parameters: {
-		cacheControl: 'no-store',
-		publicReadAcl: false,
-	},
-	regions: new Set([region]),
-	stacks: new Set([stack]),
-});
-
 riffRaff.synth();

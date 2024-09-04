@@ -17,6 +17,3 @@ datasources:
       connMaxLifetime: 14400
       postgresVersion: 1000
       timescaledb: false
-  - name: gdev-testdata
-    isDefault: false
-    type: testdata
