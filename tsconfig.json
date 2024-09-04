@@ -1,7 +1,11 @@
 {
   "extends": "@guardian/tsconfig/tsconfig.json",
+  "files": [],
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "preserve",
+    "lib": ["ESNext"],
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
