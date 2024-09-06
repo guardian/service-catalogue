@@ -1,5 +1,6 @@
 import type { RepocopVulnerability, Repository } from 'common/src/types';
-import { isProduction, vulnSortPredicate } from './utils';
+import type { SnykIssue } from './types';
+import { isOpenSnykIssue, isProduction, vulnSortPredicate } from './utils';
 
 describe('isProduction', () => {
 	test('should return correct values for prod and non-prod repos', () => {
@@ -21,6 +22,76 @@ describe('isProduction', () => {
 
 		expect(isProduction(prodRepo)).toBe(true);
 		expect(isProduction(nonProdRepo)).toBe(false);
+	});
+});
+
+const snykIssue: SnykIssue = {
+	id: 'issue1', //is this correct??
+	attributes: {
+		status: 'open',
+
+		ignored: false,
+		problems: [
+			{
+				id: 'CVE-1234',
+				url: 'example.com',
+				type: 'vulnerability',
+				source: 'NVD',
+				updated_at: '',
+				disclosed_at: '',
+				discovered_at: '',
+			},
+		],
+		created_at: '2020-01-01',
+		updated_at: '',
+		coordinates: [
+			{
+				remedies: null,
+				is_upgradeable: true,
+				is_fixable_snyk: undefined,
+				is_patchable: true,
+				representations: [
+					{
+						dependency: {
+							package_name: 'fetch',
+							package_version: '1.0.0',
+						},
+					},
+				],
+			},
+		],
+		effective_severity_level: 'high',
+	},
+	relationships: {
+		scan_item: {
+			data: { id: 'project1', type: 'project' },
+		},
+		organization: {
+			data: { id: '234', type: 'organization' },
+		},
+	},
+};
+
+describe('isOpenSnykIssue', () => {
+	test('Should return false if the issue has been ignored', () => {
+		const ignoredIssue: SnykIssue = {
+			...snykIssue,
+			attributes: { ...snykIssue.attributes, ignored: true },
+		};
+		const result = isOpenSnykIssue(ignoredIssue);
+		expect(result).toBe(false);
+	});
+	test('Should return false if the issue has been resolved', () => {
+		const resolvedIssue: SnykIssue = {
+			...snykIssue,
+			attributes: { ...snykIssue.attributes, status: 'resolved' },
+		};
+		const result = isOpenSnykIssue(resolvedIssue);
+		expect(result).toEqual(false);
+	});
+	test('Should return true if the issue is open and not ignored', () => {
+		const result = isOpenSnykIssue(snykIssue);
+		expect(result).toBe(true);
 	});
 });
 
