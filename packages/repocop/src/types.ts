@@ -53,7 +53,7 @@ interface Attributes {
 	};
 	type?: string;
 	title?: string;
-	status: string;
+	status: 'resolved' | 'open';
 	classes?: [{ id: string; type: string; source: string }] | null;
 	ignored: boolean;
 	problems: [
