@@ -82,7 +82,10 @@ export async function main() {
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
-	const snykIssues = await getSnykIssues(prisma);
+	const openSnykIssues = (await getSnykIssues(prisma)).filter(
+		(issue) => issue.attributes.status === 'open' && !issue.attributes.ignored,
+	);
+
 	const snykProjects = await getSnykProjects(prisma);
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
@@ -102,7 +105,7 @@ export async function main() {
 		branches,
 		repoOwners,
 		repoLanguages,
-		snykIssues,
+		openSnykIssues,
 		snykProjects,
 		productionDependabotVulnerabilities,
 	);

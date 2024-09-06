@@ -785,18 +785,6 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		);
 		expect(result.length).toEqual(0);
 	});
-	test('Should not be detected if the issue has been resolved', () => {
-		const resolvedIssue: SnykIssue = {
-			...snykIssue,
-			attributes: { ...snykIssue.attributes, status: 'resolved' },
-		};
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[resolvedIssue],
-			[exampleSnykProject],
-		);
-		expect(result.length).toEqual(0);
-	});
 	test('Should not be considered patchable if there is no possible upgrade path', () => {
 		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
