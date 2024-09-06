@@ -620,7 +620,7 @@ describe('NO RULE - Dependabot alerts', () => {
 });
 
 const snykIssue: SnykIssue = {
-	id: 'issue1', //is this correct??
+	id: 'issue1',
 	attributes: {
 		status: 'open',
 
@@ -769,18 +769,6 @@ describe('NO RULE - Snyk vulnerabilities', () => {
 		const result = collectAndFormatUrgentSnykAlerts(
 			thePerfectRepo,
 			[lowSeverity, mediumSeverity],
-			[exampleSnykProject],
-		);
-		expect(result.length).toEqual(0);
-	});
-	test('Should not be detected if the issue has been ignored', () => {
-		const ignoredIssue: SnykIssue = {
-			...snykIssue,
-			attributes: { ...snykIssue.attributes, ignored: true },
-		};
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[ignoredIssue],
 			[exampleSnykProject],
 		);
 		expect(result.length).toEqual(0);

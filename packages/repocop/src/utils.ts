@@ -1,4 +1,5 @@
 import type { RepocopVulnerability, Repository } from 'common/src/types';
+import type { SnykIssue } from './types';
 
 export function isProduction(repo: Repository) {
 	return repo.topics.includes('production') && !repo.archived;
@@ -20,3 +21,9 @@ export const vulnSortPredicate = (
 		return criticalFirstPredicate(v1);
 	}
 };
+
+export function isOpenSnykIssue(snykIssue: SnykIssue): boolean {
+	const isOpen = snykIssue.attributes.status === 'open';
+	const isIgnored = snykIssue.attributes.ignored;
+	return isOpen && !isIgnored;
+}

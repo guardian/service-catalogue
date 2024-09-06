@@ -35,7 +35,7 @@ import { sendPotentialInteractives } from './remediation/topics/topic-monitor-in
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
 import type { AwsCloudFormationStack, EvaluationResult } from './types';
-import { isProduction } from './utils';
+import { isOpenSnykIssue, isProduction } from './utils';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
@@ -82,7 +82,8 @@ export async function main() {
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
 		await getStacks(prisma)
 	).filter((s) => s.tags.Stack !== 'playground');
-	const snykIssues = await getSnykIssues(prisma);
+	const openSnykIssues = (await getSnykIssues(prisma)).filter(isOpenSnykIssue);
+
 	const snykProjects = await getSnykProjects(prisma);
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
@@ -102,7 +103,7 @@ export async function main() {
 		branches,
 		repoOwners,
 		repoLanguages,
-		snykIssues,
+		openSnykIssues,
 		snykProjects,
 		productionDependabotVulnerabilities,
 	);

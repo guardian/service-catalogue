@@ -98,14 +98,16 @@ export async function getStacks(
 
 export async function getSnykIssues(
 	client: PrismaClient,
-): Promise<SnykIssue[]> {
-	return (await client.snyk_issues.findMany({})).map((i) => {
+): Promise<NonEmptyArray<SnykIssue>> {
+	const resp = (await client.snyk_issues.findMany({})).map((i) => {
 		return {
 			id: i.id,
 			attributes: i.attributes as unknown as SnykIssue['attributes'],
 			relationships: i.relationships as unknown as SnykIssue['relationships'],
 		};
 	});
+
+	return toNonEmptyArray(resp);
 }
 
 export async function getSnykProjects(
