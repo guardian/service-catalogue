@@ -5,7 +5,19 @@ const dotenv = require('dotenv');
 dotenv.config({ path: `${__dirname}/.env` });
 
 const transform = {
-	'^.+\\.tsx?$': ['@swc/jest', { jsc: { target: 'esnext' } }],
+	'^.+\\.tsx?$': [
+		'@swc/jest',
+		{
+			jsc: {
+				parser: {
+					syntax: 'typescript',
+					tsx: true,
+					decorators: false,
+					dynamicImport: true,
+				},
+			},
+		},
+	],
 };
 
 const setupFilesAfterEnv = [`<rootDir>/jest.setup.js`];
