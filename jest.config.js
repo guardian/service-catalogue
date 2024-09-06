@@ -6,7 +6,7 @@ dotenv.config({ path: `${__dirname}/.env` });
 
 const transform = {
 	'^.+\\.tsx?$': [
-		'@swc/jest',
+		'ts-jest',
 		{
 			jsc: {
 				parser: {
