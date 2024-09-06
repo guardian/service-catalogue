@@ -89,6 +89,18 @@ describe('isOpenSnykIssue', () => {
 		const result = isOpenSnykIssue(resolvedIssue);
 		expect(result).toEqual(false);
 	});
+	test('Should return false if the issue is both ignored and resolved', () => {
+		const resolvedIgnoredIssue: SnykIssue = {
+			...snykIssue,
+			attributes: {
+				...snykIssue.attributes,
+				status: 'resolved',
+				ignored: true,
+			},
+		};
+		const result = isOpenSnykIssue(resolvedIgnoredIssue);
+		expect(result).toBe(false);
+	});
 	test('Should return true if the issue is open and not ignored', () => {
 		const result = isOpenSnykIssue(snykIssue);
 		expect(result).toBe(true);
