@@ -620,7 +620,7 @@ describe('NO RULE - Dependabot alerts', () => {
 });
 
 const snykIssue: SnykIssue = {
-	id: 'issue1', //is this correct??
+	id: 'issue1',
 	attributes: {
 		status: 'open',
 

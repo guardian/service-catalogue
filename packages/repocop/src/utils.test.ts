@@ -26,7 +26,7 @@ describe('isProduction', () => {
 });
 
 const snykIssue: SnykIssue = {
-	id: 'issue1', //is this correct??
+	id: 'issue1',
 	attributes: {
 		status: 'open',
 
