@@ -18,7 +18,6 @@
 		"packages/*"
 	],
 	"devDependencies": {
-		"@babel/core": "^7.25.2",
 		"@guardian/eslint-config-typescript": "11.0.0",
 		"@guardian/prettier": "8.0.1",
 		"@guardian/tsconfig": "^0.3.1",
