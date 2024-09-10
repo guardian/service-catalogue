@@ -3,8 +3,8 @@ import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Rule, RuleTargetInput, Schedule } from 'aws-cdk-lib/aws-events';
-import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+// import { Rule, RuleTargetInput, Schedule } from 'aws-cdk-lib/aws-events';
+// import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Architecture, LoggingFormat, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { ITopic } from 'aws-cdk-lib/aws-sns';
@@ -45,29 +45,29 @@ export class CloudBuster {
 
 		anghammaradTopic.grantPublish(lambda);
 
-		new Rule(stack, `cloudbuster-critical`, {
-			description: `Daily execution of the Cloudbuster lambda for critical findings`,
-			schedule: Schedule.cron({ minute: '0', hour: '9' }),
-			targets: [
-				new LambdaFunction(lambda, {
-					event: RuleTargetInput.fromObject({
-						severities: ['CRITICAL'],
-					}),
-				}),
-			],
-		});
+		// new Rule(stack, `cloudbuster-critical`, {
+		// 	description: `Daily execution of the Cloudbuster lambda for critical findings`,
+		// 	schedule: Schedule.cron({ minute: '0', hour: '9' }),
+		// 	targets: [
+		// 		new LambdaFunction(lambda, {
+		// 			event: RuleTargetInput.fromObject({
+		// 				severities: ['CRITICAL'],
+		// 			}),
+		// 		}),
+		// 	],
+		// });
 
-		new Rule(stack, `cloudbuster-high`, {
-			description: `Weekly execution of the Cloudbuster lambda for high findings`,
-			schedule: Schedule.cron({ weekDay: 'TUE', hour: '9', minute: '0' }),
-			targets: [
-				new LambdaFunction(lambda, {
-					event: RuleTargetInput.fromObject({
-						severities: ['HIGH'],
-					}),
-				}),
-			],
-		});
+		// new Rule(stack, `cloudbuster-high`, {
+		// 	description: `Weekly execution of the Cloudbuster lambda for high findings`,
+		// 	schedule: Schedule.cron({ weekDay: 'TUE', hour: '9', minute: '0' }),
+		// 	targets: [
+		// 		new LambdaFunction(lambda, {
+		// 			event: RuleTargetInput.fromObject({
+		// 				severities: ['HIGH'],
+		// 			}),
+		// 		}),
+		// 	],
+		// });
 
 		db.grantConnect(lambda, 'repocop');
 	}
