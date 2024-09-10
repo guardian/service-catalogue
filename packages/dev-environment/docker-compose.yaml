@@ -47,7 +47,7 @@ services:
         condition: service_completed_successfully
     healthcheck:
       # Ensures the initialisation scripts have completed, before accepting connections from CloudQuery, Grafana, etc.
-      test: [ "CMD-SHELL", "pg_isready --host 127.0.0.1" ]
+      test: ['CMD-SHELL', 'pg_isready --host 127.0.0.1']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -79,22 +79,14 @@ services:
       DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
   grafana:
-    user: root
-    platform: linux/amd64
-    build:
-      context: ../dashboard/.config
-      args:
-        grafana_image: ${GRAFANA_IMAGE:-grafana-oss}
-        grafana_version: ${GRAFANA_VERSION:-10.3.3}
-        development: ${DEVELOPMENT:-true}
+    image: grafana/grafana-oss:10.3.1
     depends_on:
       postgres:
         condition: service_healthy
     ports:
       - '3000:3000'
     volumes:
-      - ../dashboard/dist:/var/lib/grafana/plugins/theguardian-servicecatalogue-app
-      - ../dashboard:/root/theguardian-servicecatalogue-app
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./config/grafana/provisioning:/etc/grafana/provisioning
     environment:
       NODE_ENV: development

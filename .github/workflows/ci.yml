@@ -113,8 +113,6 @@ jobs:
               - packages/refresh-materialized-view/dist/refresh-materialized-view.zip
             prisma:
               - packages/common/prisma.zip
-            theguardian-servicecatalogue-app:
-              - packages/dashboard/dist/theguardian-servicecatalogue-app.zip
             cloudbuster:
               - packages/cloudbuster/dist/cloudbuster.zip
     env:
