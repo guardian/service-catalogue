@@ -5,7 +5,6 @@ import { SLAs } from 'common/src/types';
 import type { RepocopVulnerability } from 'common/src/types';
 import type { Config } from '../../config';
 import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types';
-import { vulnSortPredicate } from '../../utils';
 import { removeRepoOwner } from '../shared-utilities';
 
 function getOwningRepos(
@@ -24,14 +23,6 @@ function getOwningRepos(
 		.filter((result): result is EvaluationResult => result !== undefined);
 
 	return resultsOwnedByTeam;
-}
-
-export function getTopVulns(vulnerabilities: RepocopVulnerability[]) {
-	//TODO delete this. It's no longer being used
-	return vulnerabilities
-		.sort(vulnSortPredicate)
-		.slice(0, 10)
-		.sort((v1, v2) => v1.full_name.localeCompare(v2.full_name));
 }
 
 function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
