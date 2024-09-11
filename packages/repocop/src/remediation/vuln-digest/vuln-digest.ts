@@ -70,7 +70,8 @@ export function createDigestForSeverity(
 	);
 	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
 
-	const startDate = new Date('2024-04-30');
+	const sixtyDaysAgo = new Date();
+	sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
 	const patchableFirst = (a: RepocopVulnerability, b: RepocopVulnerability) => {
 		if (a.is_patchable && !b.is_patchable) {
@@ -84,7 +85,8 @@ export function createDigestForSeverity(
 
 	const vulnsSinceImplementationDate = vulns
 		.filter(
-			(v) => v.severity == severity && new Date(v.alert_issue_date) > startDate,
+			(v) =>
+				v.severity == severity && new Date(v.alert_issue_date) > sixtyDaysAgo,
 		)
 		.sort(patchableFirst);
 
@@ -94,7 +96,7 @@ export function createDigestForSeverity(
 		return undefined;
 	}
 
-	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}. Teams have ${SLAs[severity]} days to fix these.
+	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced in the last 60 days. Teams have ${SLAs[severity]} days to fix these.
 Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
 	const digestString = vulnsSinceImplementationDate

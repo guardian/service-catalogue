@@ -163,21 +163,26 @@ describe('createDigest', () => {
 		expect(anotherDigest?.message).toContain('rightpad');
 	});
 
-	it('only returns vulnerabilities created after 30th April 2024', () => {
-		const vuln: RepocopVulnerability = {
+	it('only returns vulnerabilities created in  the last 60 days', () => {
+		const fiftyNineDaysAgo = new Date();
+		fiftyNineDaysAgo.setDate(fiftyNineDaysAgo.getDate() - 59);
+		const sixtyOneDaysAgo = new Date();
+		sixtyOneDaysAgo.setDate(sixtyOneDaysAgo.getDate() - 61);
+
+		const excluded: RepocopVulnerability = {
 			...highRecentVuln,
-			alert_issue_date: new Date('2024-04-30'),
+			alert_issue_date: sixtyOneDaysAgo,
 		};
 
-		const todayVuln = {
-			...vuln,
+		const included = {
+			...excluded,
 			package: 'rightpad',
-			alert_issue_date: new Date('2024-05-01'),
+			alert_issue_date: fiftyNineDaysAgo,
 		};
 
 		const resultWithVuln: EvaluationResult = {
 			...result,
-			vulnerabilities: [vuln, todayVuln],
+			vulnerabilities: [excluded, included],
 		};
 
 		const msg = createDigestForSeverity(
@@ -187,8 +192,8 @@ describe('createDigest', () => {
 			[resultWithVuln],
 		)?.message;
 		console.log(msg);
-		expect(msg).toContain('rightpad');
-		expect(msg).not.toContain('leftpad');
+		expect(msg).toContain(included.package);
+		expect(msg).not.toContain(excluded.package);
 	});
 });
 
