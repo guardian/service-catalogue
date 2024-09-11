@@ -78,16 +78,16 @@ flowchart TB
     repocop[Repocop Lambdas]
     aws[AWS APIs]
     
-    snyk --> |Data from snyk populates \nCloudquery tables|cq
-    github --> |Data from snyk populates \nCloudquery tables|cq
-    aws --> |Data from snyk populates \nCloudquery tables|cq
+    snyk --> |Data from snyk populates Cloudquery tables|cq
+    github --> |Data from snyk populates Cloudquery tables|cq
+    aws --> |Data from snyk populates Cloudquery tables|cq
     cq --> |Cloudquery writes data to the DB|DB
-    DB --> |1. Cloudquery data is used \n to calculate departmental \n compliance with obligations|repocop
-    repocop --> |2. Repocop stores compliance \n information about repos as a table \n in the cloudquery DB|DB
-    repocop --> |Repocop raises PRs to fix issues, \n that are reviewed by developers|dev
-    Grafana --> |Compliance dashboards are used\n by DevX developers to track \n departmental progress towards obligations|devxDev
-    repocop --> |Repocop sends notifications of \n events, or warnings to teams\n  via Anghammarad|Anghammarad
-    Anghammarad --> |Anghammarad delivers messages \n to developers about changes \n to their systems|dev
+    DB --> |1 - Cloudquery data is used to calculate departmental compliance with obligations|repocop
+    repocop --> |2 - Repocop stores compliance information about repos as a table in the cloudquery DB|DB
+    repocop --> |Repocop raises PRs to fix issues, that are reviewed by developers|dev
+    Grafana --> |Compliance dashboards are used by DevX developers to track departmental progress towards obligations|devxDev
+    repocop --> |Repocop sends notifications of events, or warnings to teams  via Anghammarad|Anghammarad
+    Anghammarad --> |Anghammarad delivers messages to developers about changes to their systems|dev
     DB --> |Cloudquery data powers \n grafana dashboards|Grafana
-    Grafana --> |Compliance dashboards are used \n by developers to track \n their team's progress towards \n obligations. They also have read \n access to raw cloudquery tables.|dev
+    Grafana --> |Compliance dashboards are used by developers to track their team's progress towards obligations. They also have read access to raw cloudquery tables.|dev
 ```
