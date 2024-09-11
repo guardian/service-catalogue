@@ -1,9 +1,14 @@
 # RepoCop
 
-RepoCop is a tool to help us discover and apply best practices and obligations across our estate.
-It is deployed as an AWS Lambda, and powers the [Dependency Vulnerability dashboard](https://metrics.gutools.co.uk/d/fdib3p8l85jwgd), as well as the [Best Practices Compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz)
+RepoCop is a tool to help us discover and apply best practices and security obligations across our estate. In particular, it's concerned with the security of our GitHub repositories.
+It is deployed as an AWS Lambda, and powers:
 
-See the [Grafana dashboard](https://metrics.gutools.co.uk/d/2uaV8PiIz/repocop?orgId=1) for a definition of the rules and how they are met.
+- The [Dependency Vulnerability dashboard](https://metrics.gutools.co.uk/d/fdib3p8l85jwgd)
+- The [Best Practices Compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz)
+- Team vulnerability digests
+- The [interactive-monitor](../interactive-monitor/README.md) lambda
+- The [dependency-graph-integrator](../dependency-graph-integrator/README.md) lambda
+- The [snyk-integrator](../snyk-integrator/README.md) lambda
 
 ## Running RepoCop locally
 
