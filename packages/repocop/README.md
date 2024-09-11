@@ -14,7 +14,7 @@ It is deployed as an AWS Lambda, and powers:
 
 From the root of the repo:
 
-1. Connect to the VPN
+1. Connect to the VPN (even in the office)
 2. Retrieve Deploy Tools credentials
 3. Run the setup script (only if running for the first time, or for the first time in a while)
 4. Create a local [CloudQuery](../dev-environment/README.md) database by running `npm run start -w dev-environment`, and wait for the tables to be populated (this will take a few minutes)
