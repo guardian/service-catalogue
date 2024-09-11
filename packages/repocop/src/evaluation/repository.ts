@@ -2,20 +2,24 @@ import { URL } from 'url';
 import type {
 	github_languages,
 	github_repository_branches,
+	guardian_github_actions_usage,
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
 import { partition, stringToSeverity } from 'common/src/functions';
 import { SLAs } from 'common/src/types';
 import type {
+	DepGraphLanguage,
 	RepocopVulnerability,
 	Repository,
 	Severity,
 } from 'common/src/types';
 import {
+	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
 } from '../languages';
+import { doesRepoHaveWorkflow } from '../remediation/dependency_graph-integrator/send-to-sns';
 import type {
 	Alert,
 	AwsCloudFormationStack,
@@ -131,6 +135,7 @@ export function hasDependencyTracking(
 	repo: Repository,
 	repoLanguages: github_languages[],
 	reposOnSnyk: string[],
+	workflowsForRepo: guardian_github_actions_usage[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
 		return true;
@@ -143,6 +148,9 @@ export function hasDependencyTracking(
 
 	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
 	const repoIsOnSnyk = reposOnSnyk.includes(repo.full_name);
+	const containsOnlyDependabotSupportedLanguages = languages.every((language) =>
+		supportedDependabotLanguages.includes(language),
+	);
 
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
@@ -150,27 +158,57 @@ export function hasDependencyTracking(
 		);
 		if (!containsOnlySnykSupportedLanguages) {
 			console.log(
-				`${repo.name} contains the following languages not supported by Snyk: `,
+				`${repo.name} is on Snyk, but contains the following languages not supported by Snyk: `,
 				languages.filter(
 					(language) => !supportedSnykLanguages.includes(language),
 				),
 			);
 		}
 		return containsOnlySnykSupportedLanguages;
+	} else if (containsOnlyDependabotSupportedLanguages) {
+		return true;
 	} else {
-		const containsOnlyDependabotSupportedLanguages = languages.every(
-			(language) => supportedDependabotLanguages.includes(language),
+		//not covered by Snyk or native Dependabot
+		const languagesNotSupportedByDependabot = languages.filter(
+			(language) => !supportedDependabotLanguages.includes(language),
 		);
-		if (!containsOnlyDependabotSupportedLanguages) {
+		// are all unsupported languages supported by dep graph integrator?
+		const allUnsupportedLanguagesSupportedByDepGraphIntegrator =
+			languagesNotSupportedByDependabot.every((language) =>
+				depGraphIntegratorSupportedLanguages.includes(language),
+			);
+
+		if (allUnsupportedLanguagesSupportedByDepGraphIntegrator) {
+			// Do all these languages have dep graph workflows?
+			const allDepGraphSupportedLanguagesHaveWorkflows =
+				languagesNotSupportedByDependabot.every((language) =>
+					doesRepoHaveWorkflow(
+						repo,
+						workflowsForRepo,
+						language as DepGraphLanguage,
+					),
+				);
+
+			if (!allDepGraphSupportedLanguagesHaveWorkflows) {
+				console.log(
+					`${repo.name} contains the following languages supported by Dependency Graph Integrator for Dependabot, but that don't currently have a dependency submission workflow on the repo `,
+					languagesNotSupportedByDependabot.filter((language) =>
+						depGraphIntegratorSupportedLanguages.includes(language),
+					),
+				);
+			}
+			return allDepGraphSupportedLanguagesHaveWorkflows;
+		} else {
 			console.log(
-				`${repo.name} contains the following languages not supported by Dependabot: `,
+				`${repo.name} contains the following languages not supported by Dependabot or Dependency Graph Integrator`,
 				languages.filter(
-					(language) => !supportedDependabotLanguages.includes(language),
+					(language) =>
+						!depGraphIntegratorSupportedLanguages.includes(language) ||
+						!supportedDependabotLanguages.includes(language),
 				),
 			);
+			return false;
 		}
-
-		return containsOnlyDependabotSupportedLanguages;
 	}
 }
 
@@ -365,6 +403,7 @@ export function evaluateOneRepo(
 	latestSnykIssues: SnykIssue[],
 	snykProjects: SnykProject[],
 	reposOnSnyk: string[],
+	workflowsForRepo: guardian_github_actions_usage[],
 ): EvaluationResult {
 	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
 		repo,
@@ -390,6 +429,7 @@ export function evaluateOneRepo(
 			repo,
 			repoLanguages,
 			reposOnSnyk,
+			workflowsForRepo,
 		),
 		evaluated_on: new Date(),
 	};
@@ -500,6 +540,7 @@ export function evaluateRepositories(
 	snykIssues: SnykIssue[],
 	snykProjects: SnykProject[],
 	dependabotVulnerabilities: RepocopVulnerability[],
+	productionWorkflowUsages: guardian_github_actions_usage[],
 ): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map((r) => {
 		const isMainBranchPredicate = (x: Tag) =>
@@ -518,6 +559,9 @@ export function evaluateRepositories(
 		const uniqueReposOnSnyk = [...new Set(reposOnSnyk)];
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
+		const workflowsForRepo = productionWorkflowUsages.filter(
+			(repo) => (repo.full_name = r.full_name),
+		);
 
 		return evaluateOneRepo(
 			vulnsForRepo,
@@ -528,6 +572,7 @@ export function evaluateRepositories(
 			snykIssues,
 			snykProjects,
 			uniqueReposOnSnyk,
+			workflowsForRepo,
 		);
 	});
 	return Promise.all(evaluatedRepos);

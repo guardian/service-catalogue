@@ -110,6 +110,7 @@ export async function main() {
 		openSnykIssues,
 		snykProjects,
 		productionDependabotVulnerabilities,
+		productionWorkflowUsages,
 	);
 
 	const repocopRules = evaluationResults.map((r) => r.repocopRules);
