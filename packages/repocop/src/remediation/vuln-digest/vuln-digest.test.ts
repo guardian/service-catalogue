@@ -91,6 +91,7 @@ describe('createDigest', () => {
 				'high',
 				[ownershipRecord],
 				[result, anotherResult],
+				60,
 			),
 		).toBeUndefined();
 	});
@@ -101,8 +102,13 @@ describe('createDigest', () => {
 			vulnerabilities: [highRecentVuln],
 		};
 		expect(
-			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
-				?.message,
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			)?.message,
 		).toContain('leftpad');
 	});
 
@@ -118,8 +124,13 @@ describe('createDigest', () => {
 			vulnerabilities: [vuln],
 		};
 		expect(
-			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
-				?.message,
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			)?.message,
 		).toContain('sbt or maven');
 	});
 
@@ -149,6 +160,7 @@ describe('createDigest', () => {
 			'high',
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
+			60,
 		);
 		expect(digest?.teamSlug).toBe(team.slug);
 		expect(digest?.message).toContain('leftpad');
@@ -158,6 +170,7 @@ describe('createDigest', () => {
 			'high',
 			[ownershipRecord, anotherOwnershipRecord],
 			[resultWithVuln, anotherResultWithVuln],
+			60,
 		);
 		expect(anotherDigest?.teamSlug).toBe(anotherTeam.slug);
 		expect(anotherDigest?.message).toContain('rightpad');
@@ -190,6 +203,7 @@ describe('createDigest', () => {
 			'high',
 			[ownershipRecord],
 			[resultWithVuln],
+			60,
 		)?.message;
 		console.log(msg);
 		expect(msg).toContain(included.package);
@@ -208,8 +222,13 @@ describe('createDigestForSeverity', () => {
 			vulnerabilities: [noCveVuln],
 		};
 		expect(
-			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
-				?.message,
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			)?.message,
 		).toContain('no CVE provided');
 	});
 });
@@ -225,8 +244,13 @@ describe('createDigestForSeverity', () => {
 			vulnerabilities: [noUrlVuln],
 		};
 		expect(
-			createDigestForSeverity(team, 'high', [ownershipRecord], [resultWithVuln])
-				?.message,
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			)?.message,
 		).not.toContain(`[${noUrlVuln.package}](`);
 	});
 });
