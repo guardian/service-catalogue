@@ -46,6 +46,20 @@ jobs:
 
 After creating the YAML file, it raises a pull request on the named repository for teams to review.
 
+On PROD, the process looks like this (Dependency Graph Integrator has been abbreviated to DGI):
+
+```mermaid
+flowchart LR
+    github[GitHub]
+    dev[P&E Dev]
+    repocop[RepoCop]
+	dgi[DGI]
+
+    repocop --> |RepoCop sends an event to DGI|dgi
+    dgi --> |DGI raises a PR against the named repo|github
+    github --> |Developer recieves a notification to review the PR|dev
+```
+
 ### Running on non-production environments
 
 In non-production environments, such as CODE, or when running locally, the dependency graph integrator will not create a PR. Instead, it will print the contents of the YAML file to the console. This allows developers to test the the core logic (creating the yaml file), without unintended side effects.
@@ -59,3 +73,19 @@ The format of input to the lambda on the CODE environment is that of an SNS mess
 #### DEV
 
 The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the snyk-integrator package. The input can be configured by modifying [this file](./src/run-locally.ts)
+
+### How does dependency submission work once the action is in use?
+
+```mermaid
+flowchart LR
+	github[GitHub]
+	dev[P&E Dev]
+	depGraph[Dependency Graph]
+	workflow[Dependency Submission Workflow]
+	Dependabot[Dependabot]
+
+	dev --> |Merges any subsequent PR, i.e. a version bump to main|github
+	github --> |Triggers workflow run| workflow
+	workflow --> |Dependencies are sent to Dependency Graph| depGraph
+	depGraph --> |Dependabot analyses dependency graph for new vulnerabilities| Dependabot
+```
