@@ -5,7 +5,7 @@ import type {
 import type { RepocopVulnerability } from 'common/src/types';
 import type { EvaluationResult, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
-import { createDigestForSeverity, getTopVulns } from './vuln-digest';
+import { createDigestForSeverity } from './vuln-digest';
 
 const fullName = 'guardian/repo';
 const anotherFullName = 'guardian/another-repo';
@@ -252,54 +252,5 @@ describe('createDigestForSeverity', () => {
 				60,
 			)?.message,
 		).not.toContain(`[${noUrlVuln.package}](`);
-	});
-});
-
-describe('getTopVulns', () => {
-	it('returns results are sorted by repo', () => {
-		const vulns = [
-			{ full_name: 'guardian/repo-a', severity: 'critical' },
-			{ full_name: 'guardian/repo-b', severity: 'high' },
-			{ full_name: 'guardian/repo-a', severity: 'high' },
-			{ full_name: 'guardian/repo-c', severity: 'high' },
-		] as RepocopVulnerability[];
-		expect(getTopVulns(vulns)).toStrictEqual([
-			{ full_name: 'guardian/repo-a', severity: 'critical' },
-			{ full_name: 'guardian/repo-a', severity: 'high' },
-			{ full_name: 'guardian/repo-b', severity: 'high' },
-			{ full_name: 'guardian/repo-c', severity: 'high' },
-		]);
-	});
-
-	const v = {
-		full_name: 'guardian/repo-a',
-		severity: 'critical',
-	};
-
-	const vHigh = {
-		...v,
-		severity: 'high',
-	};
-
-	it('returns 10 results', () => {
-		const vulns = new Array(20).fill(v) as RepocopVulnerability[];
-		expect(getTopVulns(vulns).length).toBe(10);
-	});
-
-	it('returns results sorted by severity', () => {
-		const vulns = [
-			...(new Array(8).fill(vHigh) as RepocopVulnerability[]),
-			...(new Array(8).fill(v) as RepocopVulnerability[]),
-		];
-
-		const topVulns = getTopVulns(vulns);
-
-		const criticalCount = topVulns.filter(
-			(v) => v.severity === 'critical',
-		).length;
-		const highCount = topVulns.filter((v) => v.severity === 'high').length;
-
-		expect(criticalCount).toBe(8);
-		expect(highCount).toBe(2);
 	});
 });
