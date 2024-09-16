@@ -62,6 +62,7 @@ export function createDigestForSeverity(
 	severity: 'critical' | 'high',
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
+	cutOffInDays: number,
 ): VulnerabilityDigest | undefined {
 	const resultsForTeam: EvaluationResult[] = getOwningRepos(
 		team,
@@ -70,7 +71,8 @@ export function createDigestForSeverity(
 	);
 	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
 
-	const startDate = new Date('2024-04-30');
+	const cutOffDate = new Date();
+	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
 
 	const patchableFirst = (a: RepocopVulnerability, b: RepocopVulnerability) => {
 		if (a.is_patchable && !b.is_patchable) {
@@ -84,7 +86,8 @@ export function createDigestForSeverity(
 
 	const vulnsSinceImplementationDate = vulns
 		.filter(
-			(v) => v.severity == severity && new Date(v.alert_issue_date) > startDate,
+			(v) =>
+				v.severity == severity && new Date(v.alert_issue_date) > cutOffDate,
 		)
 		.sort(patchableFirst);
 
@@ -94,7 +97,7 @@ export function createDigestForSeverity(
 		return undefined;
 	}
 
-	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced since ${startDate.toDateString()}. Teams have ${SLAs[severity]} days to fix these.
+	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced in the last ${cutOffInDays} days. Teams have ${SLAs[severity]} days to fix these.
 Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
 	const digestString = vulnsSinceImplementationDate
@@ -146,9 +149,18 @@ export async function createAndSendVulnDigestsForSeverity(
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
 	severity: 'critical' | 'high',
+	maxVulnAgeInDays: number = 60,
 ) {
 	const digests = teams
-		.map((t) => createDigestForSeverity(t, severity, repoOwners, results))
+		.map((t) =>
+			createDigestForSeverity(
+				t,
+				severity,
+				repoOwners,
+				results,
+				maxVulnAgeInDays,
+			),
+		)
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
 	console.log(`Logging ${severity} vulnerability digests`);
