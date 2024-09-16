@@ -90,7 +90,11 @@ export async function main() {
 
 	const productionRepos = unarchivedRepos.filter((repo) => isProduction(repo));
 	const productionDependabotVulnerabilities: RepocopVulnerability[] =
-		await getDependabotVulnerabilities(productionRepos, octokit);
+		await getDependabotVulnerabilities(
+			productionRepos,
+			config.gitHubOrg,
+			octokit,
+		);
 
 	console.log(productionDependabotVulnerabilities);
 

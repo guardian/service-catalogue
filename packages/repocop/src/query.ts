@@ -128,17 +128,19 @@ export async function getRepositoryLanguages(
 
 async function getAlertsForRepo(
 	octokit: Octokit,
-	name: string,
+	orgName: string,
+	repoName: string,
 ): Promise<Alert[] | undefined> {
-	if (name.startsWith('guardian/')) {
-		name = name.replace('guardian/', '');
+	const prefix = `${orgName}/`;
+	if (repoName.startsWith(prefix)) {
+		repoName = repoName.replace(prefix, '');
 	}
 
 	try {
 		const alert: DependabotVulnResponse =
 			await octokit.rest.dependabot.listAlertsForRepo({
-				owner: 'guardian',
-				repo: name,
+				owner: orgName,
+				repo: repoName,
 				per_page: 100,
 				severity: 'critical,high',
 				state: 'open',
@@ -152,7 +154,7 @@ async function getAlertsForRepo(
 		return openRuntimeDependencies;
 	} catch (error) {
 		console.debug(
-			`Dependabot - ${name}: Could not get alerts. Dependabot may not be enabled.`,
+			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
 		);
 		console.debug(error);
 		// Return undefined if dependabot is not enabled, to distinguish from
@@ -163,12 +165,13 @@ async function getAlertsForRepo(
 
 export async function getDependabotVulnerabilities(
 	repos: Repository[],
+	orgName: string,
 	octokit: Octokit,
 ) {
 	const dependabotVulnerabilities: RepocopVulnerability[] = (
 		await Promise.all(
 			repos.map(async (repo) => {
-				const alerts = await getAlertsForRepo(octokit, repo.name);
+				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
 				if (alerts) {
 					return alerts.map((a) =>
 						dependabotAlertToRepocopVulnerability(repo.full_name, a),

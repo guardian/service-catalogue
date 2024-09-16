@@ -72,6 +72,11 @@ export interface Config extends PrismaConfig {
 	 * The ARN of the Dependency Graph Integrator input topic.
 	 */
 	dependencyGraphIntegratorTopic: string;
+
+	/**
+	 * The name of the GitHub organisation that owns the repositories.
+	 */
+	gitHubOrg: string;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -106,5 +111,6 @@ export async function getConfig(): Promise<Config> {
 		dependencyGraphIntegratorTopic: getEnvOrThrow(
 			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
 		),
+		gitHubOrg: process.env['GITHUB_ORG'] ?? 'guardian',
 	};
 }
