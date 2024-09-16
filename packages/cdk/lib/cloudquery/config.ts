@@ -117,6 +117,7 @@ export function awsSourceConfigForAccount(
 export function githubSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 ): CloudqueryConfig {
+	const org = 'guardian';
 	const { tables, skipTables } = tableConfig;
 
 	if (!tables && !skipTables) {
@@ -134,10 +135,10 @@ export function githubSourceConfig(
 			destinations: ['postgresql'],
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
-				orgs: ['guardian'],
+				orgs: [org],
 				app_auth: [
 					{
-						org: 'guardian',
+						org,
 
 						// For simplicity, read all configuration from disk.
 						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
