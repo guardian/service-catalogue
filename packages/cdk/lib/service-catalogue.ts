@@ -173,6 +173,8 @@ export class ServiceCatalogue extends GuStack {
 			resources: [loggingStreamArn],
 		});
 
+		const gitHubOrg = 'guardian';
+
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
@@ -181,6 +183,7 @@ export class ServiceCatalogue extends GuStack {
 			snykCredentials: snykReadOnlyKey,
 			loggingStreamName,
 			logShippingPolicy,
+			gitHubOrg,
 		});
 
 		const anghammaradTopicParameter =
@@ -238,6 +241,7 @@ export class ServiceCatalogue extends GuStack {
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
 			githubCredentials,
+			gitHubOrg,
 		);
 
 		addDataAuditLambda(this, {

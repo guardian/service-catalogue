@@ -23342,6 +23342,7 @@ spec:
             "GITHUB_APP_SECRET": {
               "Ref": "branchprotectorgithubappauth4E91892E",
             },
+            "GITHUB_ORG": "guardian",
             "INTERACTIVES_COUNT": "3",
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",

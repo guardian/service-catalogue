@@ -15,6 +15,10 @@ interface CloudqueryTableConfig {
 	concurrency?: number;
 }
 
+interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
+	org: string;
+}
+
 /**
  * Create a ServiceCatalogue destination configuration for Postgres.
  */
@@ -115,10 +119,9 @@ export function awsSourceConfigForAccount(
 }
 
 export function githubSourceConfig(
-	tableConfig: CloudqueryTableConfig,
+	tableConfig: GitHubCloudqueryTableConfig,
 ): CloudqueryConfig {
-	const org = 'guardian';
-	const { tables, skipTables } = tableConfig;
+	const { tables, skipTables, org } = tableConfig;
 
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
