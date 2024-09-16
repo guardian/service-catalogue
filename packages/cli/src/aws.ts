@@ -364,12 +364,13 @@ function printLogsUrl(app: string, stage: string, taskDefinition: string) {
 		columns: ['table', 'resources', 'errors', 'client', 'message', 'error'],
 	});
 
-	terminalLink.isSupported
-		? console.log(
-				terminalLink(
-					'✅ View logs (Note: ECS takes a few seconds to start)',
-					url,
-				),
-			)
-		: console.log(url);
+	if (terminalLink.isSupported) {
+		const link = terminalLink(
+			'✅ View logs (Note: ECS takes a few seconds to start)',
+			url,
+		);
+		console.log(link);
+	} else {
+		console.log(url);
+	}
 }
