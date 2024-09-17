@@ -62,6 +62,11 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 */
 	rdsDeletionProtection?: boolean;
 	multiAz?: boolean;
+
+	/**
+	 * The GitHub org to search for repositories in.
+	 */
+	gitHubOrg?: string;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -71,7 +76,11 @@ export class ServiceCatalogue extends GuStack {
 		const { stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
 
-		const { rdsDeletionProtection = true, multiAz = false } = props;
+		const {
+			rdsDeletionProtection = true,
+			multiAz = false,
+			gitHubOrg = 'guardian',
+		} = props;
 
 		const nonProdSchedule = props.schedule;
 
@@ -172,8 +181,6 @@ export class ServiceCatalogue extends GuStack {
 			effect: Effect.ALLOW,
 			resources: [loggingStreamArn],
 		});
-
-		const gitHubOrg = 'guardian';
 
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
