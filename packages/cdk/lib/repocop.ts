@@ -29,6 +29,7 @@ export class Repocop {
 		interactiveMonitorTopic: Topic,
 		dbSecurityGroup: SecurityGroup,
 		repocopGithubSecret: Secret,
+		gitHubOrg: string,
 	) {
 		const snykIntegratorInputTopic = new Topic(
 			guStack,
@@ -65,6 +66,7 @@ export class Repocop {
 				SNYK_INTEGRATOR_INPUT_TOPIC_ARN: snykIntegratorInputTopic.topicArn,
 				DEPENDENCY_GRAPH_INPUT_TOPIC_ARN:
 					dependencyGraphIntegratorInputTopic.topicArn,
+				GITHUB_ORG: gitHubOrg,
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],

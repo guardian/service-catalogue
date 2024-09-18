@@ -147,7 +147,10 @@ spec:
 	});
 
 	it('Should create a GitHub source configuration', () => {
-		const config = githubSourceConfig({ tables: ['github_repositories'] });
+		const config = githubSourceConfig({
+			tables: ['github_repositories'],
+			org: 'guardian',
+		});
 		expect(dump(config)).toMatchInlineSnapshot(`
 		"kind: source
 		spec:

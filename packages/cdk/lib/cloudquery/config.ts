@@ -15,6 +15,10 @@ interface CloudqueryTableConfig {
 	concurrency?: number;
 }
 
+interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
+	org: string;
+}
+
 /**
  * Create a ServiceCatalogue destination configuration for Postgres.
  */
@@ -115,9 +119,9 @@ export function awsSourceConfigForAccount(
 }
 
 export function githubSourceConfig(
-	tableConfig: CloudqueryTableConfig,
+	tableConfig: GitHubCloudqueryTableConfig,
 ): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
+	const { tables, skipTables, org } = tableConfig;
 
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
@@ -134,10 +138,10 @@ export function githubSourceConfig(
 			destinations: ['postgresql'],
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
-				orgs: ['guardian'],
+				orgs: [org],
 				app_auth: [
 					{
-						org: 'guardian',
+						org,
 
 						// For simplicity, read all configuration from disk.
 						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,

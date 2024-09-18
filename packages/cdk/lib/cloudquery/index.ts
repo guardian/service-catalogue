@@ -37,6 +37,7 @@ interface CloudqueryEcsClusterProps {
 	snykCredentials: SecretsManager;
 	loggingStreamName: string;
 	logShippingPolicy: PolicyStatement;
+	gitHubOrg: string;
 }
 
 export function addCloudqueryEcsCluster(
@@ -51,6 +52,7 @@ export function addCloudqueryEcsCluster(
 		nonProdSchedule,
 		loggingStreamName,
 		logShippingPolicy,
+		gitHubOrg: gitHubOrgName,
 	} = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
@@ -379,6 +381,7 @@ export function addCloudqueryEcsCluster(
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
 			config: githubSourceConfig({
+				org: gitHubOrgName,
 				tables: [
 					'github_repositories',
 					'github_repository_branches',
@@ -407,6 +410,7 @@ export function addCloudqueryEcsCluster(
 				nonProdSchedule ??
 				Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
 			config: githubSourceConfig({
+				org: gitHubOrgName,
 				tables: [
 					'github_organizations',
 					'github_organization_members',
@@ -435,6 +439,7 @@ export function addCloudqueryEcsCluster(
 			description: 'Collect GitHub issue data (PRs and Issues)',
 			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
 			config: githubSourceConfig({
+				org: gitHubOrgName,
 				tables: ['github_issues'],
 			}),
 			secrets: githubSecrets,

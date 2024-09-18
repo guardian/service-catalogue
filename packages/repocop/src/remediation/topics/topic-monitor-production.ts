@@ -135,12 +135,11 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 	octokit: Octokit,
 	config: Config,
 ): Promise<void> {
-	const owner = 'guardian';
 	const topic = 'production';
 	const shortRepoName = removeRepoOwner(fullRepoName);
 	const { stage } = config;
 	if (stage === 'PROD') {
-		await applyTopics(shortRepoName, owner, octokit, topic);
+		await applyTopics(shortRepoName, config.gitHubOrg, octokit, topic);
 	} else {
 		console.log(
 			`Would have applied the ${topic} topic to ${shortRepoName} with stack ${stackName} if stage was PROD.`,
