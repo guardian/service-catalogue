@@ -179,7 +179,7 @@ export function hasDependencyTracking(
 			);
 
 		if (allUnsupportedLanguagesSupportedByDepGraphIntegrator) {
-			// Do all these languages have dep graph workflows?
+			// Do all these languages have dependency submission workflows?
 			const allDepGraphSupportedLanguagesHaveWorkflows =
 				languagesNotSupportedByDependabot.every((language) =>
 					doesRepoHaveWorkflow(

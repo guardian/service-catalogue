@@ -61,6 +61,23 @@ const nullBranch: github_repository_branches = {
 	protected: null,
 };
 
+const nullWorkflows: guardian_github_actions_usage = {
+	evaluated_on: new Date('2024-01-01'),
+	full_name: '',
+	workflow_path: '',
+	workflow_uses: [],
+};
+
+const sbtWorkflows: guardian_github_actions_usage = {
+	...nullWorkflows,
+	full_name: 'guardian/some-repo',
+	workflow_path: '.github/workflows/sbt-dependency-graph.yaml',
+	workflow_uses: [
+		'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332',
+		'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e',
+	],
+};
+
 export const nullRepo: Repository = {
 	full_name: '',
 	name: '',
@@ -468,6 +485,13 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		...emptyLanguages,
 		full_name: 'guardian/some-repo',
 		name: 'some-repo',
+		languages: ['JavaScript', 'Objective-C'],
+	};
+
+	const dependabotAndDepGraphSupportedLanguages: github_languages = {
+		...emptyLanguages,
+		full_name: 'guardian/some-repo',
+		name: 'some-repo',
 		languages: ['JavaScript', 'Scala'],
 	};
 
@@ -516,7 +540,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		expect(actual).toEqual(true);
 	});
 	//TODO: update this test to include dep graph integrator
-	test('is not valid if a project is not on snyk, and uses a language dependabot does not support', () => {
+	test('is not valid if a project is not on snyk, and uses a language dependabot/dependency graph integrator does not support', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
@@ -530,7 +554,35 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		);
 		expect(actual).toEqual(false);
 	});
-	test('is not valids not valid if a project is on snyk, and uses a language not supported by snyk', () => {
+	test('is not valid if a project is not on snyk, uses a language supported by dependency graph integrator but there is no submission workflow for that language', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasDependencyTracking(
+			repo,
+			[snykSupportedLanguages],
+			[],
+			[nullWorkflows],
+		);
+		expect(actual).toEqual(false);
+	});
+	test('is valid if a project is not on snyk, uses a language supported by dependency graph integrator and has associated submission workflow for that language', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasDependencyTracking(
+			repo,
+			[dependabotAndDepGraphSupportedLanguages],
+			[],
+			[sbtWorkflows],
+		);
+		expect(actual).toEqual(true);
+	});
+	test('is not valid if a project is on snyk, and uses a language not supported by snyk', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
