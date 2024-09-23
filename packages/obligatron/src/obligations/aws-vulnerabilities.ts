@@ -1,32 +1,12 @@
-import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { getFsbpFindings } from 'common/src/database-queries';
 import {
 	isWithinSlaTime,
 	stringToSeverity,
 	toNonEmptyArray,
 } from 'common/src/functions';
+import type { SecurityHubFinding } from 'common/src/types';
 import type { ObligationResult } from '.';
-
-type Resource = {
-	Id: string;
-	Tags: Record<string, string>;
-	Region: string;
-	Type: string;
-};
-
-type ProductFields = {
-	ControlId: string;
-	StandardsArn: string;
-};
-
-export type SecurityHubFinding = Pick<
-	aws_securityhub_findings,
-	'first_observed_at' | 'aws_account_id'
-> & {
-	severity: { Label: string; Normalized: number };
-	resources: Resource[];
-	product_fields: ProductFields;
-};
 
 type Failure = {
 	resource: string;
