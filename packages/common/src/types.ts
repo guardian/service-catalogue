@@ -110,7 +110,7 @@ export type NonEmptyArray<T> = [T, ...T[]];
 
 type Resource = {
 	Id: string;
-	Tags: Record<string, string>;
+	Tags: Record<string, string> | null;
 	Region: string;
 	Type: string;
 };
