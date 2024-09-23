@@ -18,11 +18,11 @@ describe('The dependency vulnerabilities obligation', () => {
 		resources: [resource1],
 		title: 'title',
 		aws_account_name: 'accountName',
-		remediation: { Recommendation: { Text: 'text', Url: 'url' } },
+		remediation: { Recommendation: { Url: 'url' } },
 		severity: { Label: 'HIGH', Normalized: 75 },
 		aws_account_id: '0123456',
 		first_observed_at: new Date('2020-01-01'),
-		product_fields: { ControlId: 'S.1', StandardsArn: 'arn:1' },
+		product_fields: { ControlId: 'S.1' },
 	};
 
 	const twoResourceFinding: SecurityHubFinding = {
