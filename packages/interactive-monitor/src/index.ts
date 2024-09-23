@@ -92,7 +92,7 @@ export async function assessRepo(repo: string, config: Config) {
 	const onProd = stage === 'PROD';
 
 	async function foundInJs(): Promise<boolean> {
-		const path = await tryToParseJsConfig(octokit, repo);
+		const path = await tryToParseJsConfig(octokit, repo, owner);
 		if (!path) {
 			console.debug(`${repo}: Found in JS config: `, false);
 			return false;

@@ -71,10 +71,11 @@ function isGithubAuthor(pull: PullRequest, author: string) {
 export async function getExistingPullRequest(
 	octokit: Octokit,
 	repoName: string,
+	owner: string,
 	author: string,
 ) {
 	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-		owner: 'guardian',
+		owner,
 		repo: repoName,
 		state: 'open',
 	} satisfies PullRequestParameters);
@@ -106,6 +107,7 @@ export async function createPrAndAddToProject(
 		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			repoName,
+			owner,
 			`${author}[bot]`,
 		);
 
