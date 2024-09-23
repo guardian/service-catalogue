@@ -12,6 +12,7 @@ interface Change {
 
 interface CreatePullRequestOptions {
 	repoName: string;
+	owner: string;
 	title: string;
 	body: string;
 	branchName: string;
@@ -33,6 +34,7 @@ export async function createPullRequest(
 ): Promise<string | undefined> {
 	const {
 		repoName,
+		owner,
 		title,
 		body,
 		branchName,
@@ -41,7 +43,7 @@ export async function createPullRequest(
 	} = props;
 
 	const response = await composeCreatePullRequest(octokit, {
-		owner: 'guardian',
+		owner,
 		repo: repoName,
 		title,
 		body,
@@ -89,6 +91,7 @@ export async function getExistingPullRequest(
 export async function createPrAndAddToProject(
 	stage: string,
 	repoName: string,
+	owner: string,
 	author: string,
 	branch: string,
 	prTitle: string,
@@ -109,6 +112,7 @@ export async function createPrAndAddToProject(
 		if (!existingPullRequest) {
 			const pullRequestUrl = await createPullRequest(octokit, {
 				repoName,
+				owner,
 				title: prTitle,
 				body: prBody,
 				branchName: branch,

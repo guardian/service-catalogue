@@ -19932,6 +19932,7 @@ spec:
             "GITHUB_APP_SECRET": {
               "Ref": "dependencygraphintegratorgithubappauthB8B9DE78",
             },
+            "GITHUB_ORG": "guardian",
             "STACK": "deploy",
             "STAGE": "TEST",
           },
@@ -27520,6 +27521,7 @@ spec:
             "GITHUB_APP_SECRET": {
               "Ref": "snykintegratorgithubappauth8C64864D",
             },
+            "GITHUB_ORG": "guardian",
             "STACK": "deploy",
             "STAGE": "TEST",
           },
