@@ -119,8 +119,8 @@ export type SecurityHubFinding = Pick<
 	aws_securityhub_findings,
 	'first_observed_at' | 'aws_account_id' | 'aws_account_name' | 'title'
 > & {
-	remediation: { Recommendation: { Text: string; Url: string } };
+	remediation: { Recommendation: { Url: string } };
 	severity: { Label: SecurityHubSeverity; Normalized: number };
 	resources: Resource[];
-	product_fields: { ControlId: string; StandardsArn: string };
+	product_fields: { ControlId: string };
 };

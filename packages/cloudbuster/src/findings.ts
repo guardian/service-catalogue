@@ -1,28 +1,26 @@
-import type { aws_securityhub_findings } from '@prisma/client';
 import { isWithinSlaTime, stringToSeverity } from 'common/src/functions';
-import type { Severity } from 'common/src/types';
+import type { SecurityHubFinding, Severity } from 'common/src/types';
 import type { Finding, GroupedFindings } from './types';
 
 /**
  * Transforms a SQL row into a finding
  */
-export function transformFinding(finding: aws_securityhub_findings): Finding {
+export function transformFinding(finding: SecurityHubFinding): Finding {
 	let severity: Severity = 'unknown';
 	let priority = null;
 	let remediationUrl = null;
 	let resources = null;
 
 	if (
-		finding.severity &&
 		typeof finding.severity === 'object' &&
 		'Label' in finding.severity &&
 		'Normalized' in finding.severity
 	) {
 		severity = stringToSeverity(finding.severity['Label'] as string);
-		priority = finding.severity['Normalized'] as number;
+		priority = finding.severity['Normalized'];
 	}
 
-	if (finding.remediation && typeof finding.remediation === 'object') {
+	if (typeof finding.remediation === 'object') {
 		const remediation = finding.remediation as {
 			Recommendation: {
 				Url: string | null;
@@ -38,11 +36,11 @@ export function transformFinding(finding: aws_securityhub_findings): Finding {
 		}
 	}
 
-	if (finding.resources && Array.isArray(finding.resources)) {
+	if (Array.isArray(finding.resources)) {
 		resources = finding.resources
 			.map((r) => {
-				if (r && typeof r === 'object' && 'Id' in r) {
-					return r['Id'] as string;
+				if (typeof r === 'object' && 'Id' in r) {
+					return r['Id'];
 				}
 				return null;
 			})

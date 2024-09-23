@@ -5,6 +5,7 @@ import type { SecurityHubSeverity } from 'common/types';
 import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
 import { transformFinding } from './findings';
+import type { Finding } from './types';
 
 type LambdaHandlerProps = {
 	severities?: SecurityHubSeverity[];
