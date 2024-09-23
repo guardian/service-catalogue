@@ -216,7 +216,7 @@ export class ServiceCatalogue extends GuStack {
 		const repocopMonitoringConfiguration =
 			stage === 'PROD' ? repocopProdMonitoring : repocopCodeMonitoring;
 
-		const interactiveMonitor = new InteractiveMonitor(this);
+		const interactiveMonitor = new InteractiveMonitor(this, gitHubOrg);
 
 		const anghammaradTopic = Topic.fromTopicArn(
 			this,

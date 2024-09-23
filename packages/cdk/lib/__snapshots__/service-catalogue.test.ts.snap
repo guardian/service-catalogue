@@ -20579,6 +20579,7 @@ spec:
                 ],
               ],
             },
+            "GITHUB_ORG": "guardian",
             "STACK": "deploy",
             "STAGE": "TEST",
           },
