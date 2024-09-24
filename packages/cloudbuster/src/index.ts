@@ -1,4 +1,5 @@
 import { Anghammarad } from '@guardian/anghammarad';
+import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { isWithinSlaTime, stringToSeverity } from 'common/functions';
 import { getFsbpFindings } from 'common/src/database-queries';
 import { getPrismaClient } from 'common/src/database-setup';
@@ -11,42 +12,32 @@ type LambdaHandlerProps = {
 	severities?: SecurityHubSeverity[];
 };
 
-interface GuFsbpFinding {
-	severity: SecurityHubSeverity;
-	controlId: string;
-	title: string;
-	repo: string | undefined;
-	stack: string | undefined;
-	stage: string | undefined;
-	app: string | undefined;
-	first_observed_at: Date | undefined;
-	arn: string;
-	aws_account_name: string | undefined;
-	aws_account_id: string;
-	within_sla: boolean;
-}
-
-function shFindingToGuFindings(finding: SecurityHubFinding): GuFsbpFinding[] {
-	const transformedFindings = finding.resources.map((r) => {
-		const guFinding: GuFsbpFinding = {
-			severity: finding.severity.Label,
-			controlId: finding.product_fields.ControlId,
-			title: finding.title,
-			repo: r.Tags?.['gu:repo'] ?? undefined,
-			stack: r.Tags?.Stack ?? undefined,
-			stage: r.Tags?.Stage ?? undefined,
-			app: r.Tags?.App ?? undefined,
-			first_observed_at: finding.first_observed_at ?? undefined,
-			arn: r.Id,
-			aws_account_name: finding.aws_account_name ?? undefined,
-			aws_account_id: finding.aws_account_id,
-			within_sla: isWithinSlaTime(
-				finding.first_observed_at,
-				stringToSeverity(finding.severity.Label),
-			),
-		};
-		return guFinding;
-	});
+function findingsToGuardianFormat(
+	finding: SecurityHubFinding,
+): cloudbuster_fsbp_vulnerabilities[] {
+	const transformedFindings: cloudbuster_fsbp_vulnerabilities[] =
+		finding.resources.map((r) => {
+			const guFinding: cloudbuster_fsbp_vulnerabilities = {
+				severity: finding.severity.Label,
+				control_id: finding.product_fields.ControlId,
+				title: finding.title,
+				aws_region: r.Region,
+				repo: r.Tags?.['gu:repo'] ?? null,
+				stack: r.Tags?.['Stack'] ?? null,
+				stage: r.Tags?.Stage ?? null,
+				app: r.Tags?.App ?? null,
+				first_observed_at: finding.first_observed_at,
+				arn: r.Id,
+				aws_account_name: finding.aws_account_name,
+				aws_account_id: finding.aws_account_id,
+				within_sla: isWithinSlaTime(
+					finding.first_observed_at,
+					stringToSeverity(finding.severity.Label),
+				),
+				remediation: finding.remediation.Recommendation.Url,
+			};
+			return guFinding;
+		});
 	return transformedFindings;
 }
 
@@ -69,11 +60,16 @@ export async function main(input: LambdaHandlerProps) {
 
 	const findings = dbResults.map((f) => transformFinding(f));
 
-	const digests = createDigestsFromFindings(findings);
-
-	const tableContents = dbResults.flatMap(shFindingToGuFindings);
+	const tableContents = dbResults.flatMap(findingsToGuardianFormat);
 
 	console.table(tableContents);
+
+	await prisma.cloudbuster_fsbp_vulnerabilities.deleteMany();
+	await prisma.cloudbuster_fsbp_vulnerabilities.createMany({
+		data: tableContents,
+	});
+
+	const digests = createDigestsFromFindings(findings);
 
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();
