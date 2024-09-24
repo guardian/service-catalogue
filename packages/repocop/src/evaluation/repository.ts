@@ -19,7 +19,7 @@ import {
 	supportedDependabotLanguages,
 	supportedSnykLanguages,
 } from '../languages';
-import { doesRepoHaveWorkflow } from '../remediation/dependency_graph-integrator/send-to-sns';
+import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns';
 import type {
 	Alert,
 	AwsCloudFormationStack,
@@ -127,31 +127,12 @@ function isMaintained(repo: Repository): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
-/**
- * Evaluate the following rule for a Github repository:
- *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
- */
-export function hasDependencyTracking(
+function isSupportedBySnyk(
 	repo: Repository,
-	repoLanguages: github_languages[],
+	languages: string[],
 	reposOnSnyk: string[],
-	workflowsForRepo: guardian_github_actions_usage[],
 ): boolean {
-	if (!repo.topics.includes('production') || repo.archived) {
-		return true;
-	}
-
-	const languages: string[] =
-		repoLanguages.find(
-			(repoLanguage) => repoLanguage.full_name === repo.full_name,
-		)?.languages ?? [];
-
-	//Using both for now so we don't have to delete all the dead snyk project matching code to make the linter happy
 	const repoIsOnSnyk = reposOnSnyk.includes(repo.full_name);
-	const containsOnlyDependabotSupportedLanguages = languages.every((language) =>
-		supportedDependabotLanguages.includes(language),
-	);
-
 	if (repoIsOnSnyk) {
 		const containsOnlySnykSupportedLanguages = languages.every((language) =>
 			supportedSnykLanguages.includes(language),
@@ -163,9 +144,22 @@ export function hasDependencyTracking(
 					(language) => !supportedSnykLanguages.includes(language),
 				),
 			);
+			return false;
 		}
-		return containsOnlySnykSupportedLanguages;
-	} else if (containsOnlyDependabotSupportedLanguages) {
+		return true;
+	}
+	return false;
+}
+
+function isSupportedByDependabot(
+	repo: Repository,
+	languages: string[],
+	workflowsForRepo: guardian_github_actions_usage[],
+): boolean {
+	const containsOnlyDependabotSupportedLanguages = languages.every((language) =>
+		supportedDependabotLanguages.includes(language),
+	);
+	if (containsOnlyDependabotSupportedLanguages) {
 		return true;
 	} else {
 		//not covered by Snyk or native Dependabot
@@ -182,7 +176,7 @@ export function hasDependencyTracking(
 			// Do all these languages have dependency submission workflows?
 			const allDepGraphSupportedLanguagesHaveWorkflows =
 				languagesNotSupportedByDependabot.every((language) =>
-					doesRepoHaveWorkflow(
+					doesRepoHaveDepSubmissionWorkflowForLanguage(
 						repo,
 						workflowsForRepo,
 						language as DepGraphLanguage,
@@ -196,8 +190,9 @@ export function hasDependencyTracking(
 						depGraphIntegratorSupportedLanguages.includes(language),
 					),
 				);
+				return false;
 			}
-			return allDepGraphSupportedLanguagesHaveWorkflows;
+			return true;
 		} else {
 			console.log(
 				`${repo.name} contains the following languages not supported by Dependabot or Dependency Graph Integrator`,
@@ -210,6 +205,30 @@ export function hasDependencyTracking(
 			return false;
 		}
 	}
+}
+
+/**
+ * Evaluate the following rule for a Github repository:
+ *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
+ */
+export function hasDependencyTracking(
+	repo: Repository,
+	repoLanguages: github_languages[],
+	reposOnSnyk: string[],
+	workflowsForRepo: guardian_github_actions_usage[],
+): boolean {
+	if (!repo.topics.includes('production') || repo.archived) {
+		return true;
+	}
+	const languages: string[] =
+		repoLanguages.find(
+			(repoLanguage) => repoLanguage.full_name === repo.full_name,
+		)?.languages ?? [];
+
+	return (
+		isSupportedBySnyk(repo, languages, reposOnSnyk) ||
+		isSupportedByDependabot(repo, languages, workflowsForRepo)
+	);
 }
 
 /**
