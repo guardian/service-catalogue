@@ -1,5 +1,55 @@
-import { groupFindingsByAccount } from './findings';
+import type { SecurityHubFinding } from 'common/types';
+import { findingsToGuardianFormat, groupFindingsByAccount } from './findings';
 import type { Finding, GroupedFindings } from './types';
+
+describe('findingsToGuardianFormat', () => {
+	const resource1 = {
+		Id: 'arn:instance:1',
+		Tags: { Stack: 'myStack', FakeTag: 'fake' },
+		Region: 'some-region',
+		Type: 'some-type',
+	};
+	const resource2 = {
+		...resource1,
+		Id: 'arn:instance:2',
+	};
+
+	const x: SecurityHubFinding = {
+		title: 'title',
+		aws_account_name: 'accountName',
+		remediation: { Recommendation: { Url: 'url' } },
+		severity: { Label: 'HIGH', Normalized: 75 },
+		aws_account_id: '0123456',
+		first_observed_at: new Date('2020-01-01'),
+		product_fields: { ControlId: 'S.1' },
+		resources: [resource1, resource2],
+	};
+	it('should return n elements if n resources are associated with a finding', () => {
+		const actual = findingsToGuardianFormat(x);
+		expect(actual.length).toEqual(2);
+	});
+	it('should return the relevant data in the appropriate fields', () => {
+		const actual = findingsToGuardianFormat(x);
+		const expected = {
+			severity: 'HIGH',
+			control_id: 'S.1',
+			title: 'title',
+			aws_region: 'some-region',
+			repo: null,
+			stack: 'myStack',
+			stage: null,
+			app: null,
+			first_observed_at: new Date('2020-01-01'),
+			arn: 'arn:instance:1',
+			aws_account_name: 'accountName',
+			aws_account_id: '0123456',
+			within_sla: false,
+			remediation: 'url',
+		};
+		expect(actual[0]).toEqual(expected);
+		expect(actual[1]).toEqual({ ...expected, arn: 'arn:instance:2' });
+	});
+});
 
 function mockFinding(awsAccountId: string, title: string): Finding {
 	return {
