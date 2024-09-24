@@ -47,33 +47,6 @@ export function doesRepoHaveDepSubmissionWorkflowForLanguage(
 	return false;
 }
 
-export function getDepGraphLanguageReposWithoutWorkflows(
-	languages: github_languages[],
-	productionRepos: Repository[],
-	workflow_usages: guardian_github_actions_usage[],
-	language: DepGraphLanguage,
-): Repository[] {
-	const reposWithDepGraphLanguages: Repository[] = productionRepos.filter(
-		(repo) => checkRepoForLanguage(repo, languages, language),
-	);
-	console.log(
-		`Found ${reposWithDepGraphLanguages.length} ${language} repos in production`,
-	);
-
-	const reposWithoutWorkflows = reposWithDepGraphLanguages.filter(
-		(repo) =>
-			!doesRepoHaveDepSubmissionWorkflowForLanguage(
-				repo,
-				workflow_usages,
-				language,
-			),
-	);
-	console.log(
-		`Found ${reposWithoutWorkflows.length} production repos without ${language} dependency submission workflows`,
-	);
-	return reposWithoutWorkflows;
-}
-
 export function createSnsEventsForDependencyGraphIntegration(
 	languages: github_languages[],
 	productionRepos: Repository[],
@@ -83,11 +56,24 @@ export function createSnsEventsForDependencyGraphIntegration(
 	const eventsForAllLanguages: DependencyGraphIntegratorEvent[] = [];
 
 	depGraphLanguages.forEach((language) => {
-		const reposWithoutWorkflows = getDepGraphLanguageReposWithoutWorkflows(
-			languages,
-			productionRepos,
-			workflow_usages,
-			language,
+		let reposWithDepGraphLanguages: Repository[] = [];
+		const repos = productionRepos.filter((repo) =>
+			checkRepoForLanguage(repo, languages, language),
+		);
+		console.log(`Found ${repos.length} ${language} repos in production`);
+
+		reposWithDepGraphLanguages = reposWithDepGraphLanguages.concat(repos);
+
+		const reposWithoutWorkflows = reposWithDepGraphLanguages.filter(
+			(repo) =>
+				!doesRepoHaveDepSubmissionWorkflowForLanguage(
+					repo,
+					workflow_usages,
+					language,
+				),
+		);
+		console.log(
+			`Found ${reposWithoutWorkflows.length} production repos without ${language} dependency submission workflows`,
 		);
 
 		reposWithoutWorkflows.map((repo) =>
