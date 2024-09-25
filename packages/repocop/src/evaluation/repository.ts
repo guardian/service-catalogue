@@ -133,22 +133,18 @@ function isSupportedBySnyk(
 	reposOnSnyk: string[],
 ): boolean {
 	const repoIsOnSnyk = reposOnSnyk.includes(repo.full_name);
-	if (repoIsOnSnyk) {
-		const containsOnlySnykSupportedLanguages = languages.every((language) =>
-			supportedSnykLanguages.includes(language),
+	const containsOnlySnykSupportedLanguages = languages.every((language) =>
+		supportedSnykLanguages.includes(language),
+	);
+	if (repoIsOnSnyk && !containsOnlySnykSupportedLanguages) {
+		console.log(
+			`${repo.name} is on Snyk, but contains the following languages not supported by Snyk: `,
+			languages.filter(
+				(language) => !supportedSnykLanguages.includes(language),
+			),
 		);
-		if (!containsOnlySnykSupportedLanguages) {
-			console.log(
-				`${repo.name} is on Snyk, but contains the following languages not supported by Snyk: `,
-				languages.filter(
-					(language) => !supportedSnykLanguages.includes(language),
-				),
-			);
-			return false;
-		}
-		return true;
 	}
-	return false;
+	return repoIsOnSnyk && containsOnlySnykSupportedLanguages;
 }
 
 function isSupportedByDependabot(
