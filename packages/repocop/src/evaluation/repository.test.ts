@@ -539,7 +539,6 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		);
 		expect(actual).toEqual(true);
 	});
-	//TODO: update this test to include dep graph integrator
 	test('is not valid if a project is not on snyk, and uses a language dependabot/dependency graph integrator does not support', () => {
 		const repo: Repository = {
 			...nullRepo,
