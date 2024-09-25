@@ -107,7 +107,8 @@ export async function getConfig(): Promise<Config> {
 		snykIntegrationPREnabled:
 			process.env.SNYK_INTEGRATION_PR_ENABLED === 'true',
 		snykIntegratorTopic: getEnvOrThrow('SNYK_INTEGRATOR_INPUT_TOPIC_ARN'),
-		depGraphIntegrationPREnabled: process.env.DEP_GRAPH_INTEGRATION_PR_ENABLED === 'true',
+		depGraphIntegrationPREnabled:
+			process.env.DEP_GRAPH_INTEGRATION_PR_ENABLED === 'true',
 		dependencyGraphIntegratorTopic: getEnvOrThrow(
 			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
 		),
