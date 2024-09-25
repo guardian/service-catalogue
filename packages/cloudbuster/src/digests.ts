@@ -1,13 +1,16 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Anghammarad, NotifyParams } from '@guardian/anghammarad';
+import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
-import type { Digest, Finding } from './types';
+import type { Digest } from './types';
 
 /**
  * Given a list of findings, creates a list of digests ready to be emailed out
  */
-export function createDigestsFromFindings(findings: Finding[]): Digest[] {
+export function createDigestsFromFindings(
+	findings: cloudbuster_fsbp_vulnerabilities[],
+): Digest[] {
 	const groupedFindings = groupFindingsByAccount(findings);
 
 	return Object.keys(groupedFindings)
@@ -18,7 +21,7 @@ export function createDigestsFromFindings(findings: Finding[]): Digest[] {
 }
 
 function createDigestForAccount(
-	accountFindings: Finding[],
+	accountFindings: cloudbuster_fsbp_vulnerabilities[],
 ): Digest | undefined {
 	if (accountFindings.length === 0 || !accountFindings[0]) {
 		return undefined;
@@ -26,36 +29,32 @@ function createDigestForAccount(
 
 	const [finding] = accountFindings;
 
-	const { awsAccountName, awsAccountId } = finding;
+	const { aws_account_name, aws_account_id } = finding;
 
 	const actions = [
 		{
 			cta: `View all ${accountFindings.length} findings on Grafana`,
-			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${awsAccountName}`,
+			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${aws_account_name}`,
 		},
 	];
 
 	return {
-		accountId: awsAccountId,
-		accountName: awsAccountName as string,
+		accountId: aws_account_id,
+		accountName: aws_account_name as string,
 		actions,
-		subject: `Security Hub findings for AWS account ${awsAccountName}`,
+		subject: `Security Hub findings for AWS account ${aws_account_name}`,
 		message: createEmailBody(accountFindings),
 	};
 }
 
-function createEmailBody(findings: Finding[]): string {
-	const findingsSortedByPriority = findings.sort(
-		(a, b) => (b.priority ?? 0) - (a.priority ?? 0),
-	);
-
+function createEmailBody(findings: cloudbuster_fsbp_vulnerabilities[]): string {
 	return `The following vulnerabilities have been found in your account:
-        ${findingsSortedByPriority
+        ${findings
 					.map(
 						(f) =>
 							`**[${f.severity}] ${f.title}**
-Affected resource(s): ${f.resources.join(',')}
-Remediation: ${f.remediationUrl ? `[Documentation](${f.remediationUrl})` : 'Unknown'}`,
+Affected resource: ${f.arn}
+Remediation: ${f.remediation ? `[Documentation](${f.remediation})` : 'Unknown'}`,
 					)
 					.join('\n\n')}`;
 }
