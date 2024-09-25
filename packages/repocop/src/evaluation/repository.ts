@@ -194,7 +194,7 @@ function isSupportedByDependabot(
 				`${repo.name} contains the following languages not supported by Dependabot or Dependency Graph Integrator`,
 				languages.filter(
 					(language) =>
-						!depGraphIntegratorSupportedLanguages.includes(language) ||
+						!depGraphIntegratorSupportedLanguages.includes(language) &&
 						!supportedDependabotLanguages.includes(language),
 				),
 			);
