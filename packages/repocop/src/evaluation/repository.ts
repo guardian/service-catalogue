@@ -147,60 +147,82 @@ function isSupportedBySnyk(
 	return repoIsOnSnyk && containsOnlySnykSupportedLanguages;
 }
 
+function containsSupportedDepGraphLanguagesWithWorkflows(
+	repo: Repository,
+	workflowsForRepo: guardian_github_actions_usage[],
+	languagesNotNativelySupported: string[],
+	languages: string[],
+): boolean {
+	const remainingLanguagesSupportedByDepGraphIntegrator: string[] =
+		languagesNotNativelySupported.filter((language) =>
+			depGraphIntegratorSupportedLanguages.includes(language),
+		);
+
+	// are all unsupported languages supported by dep graph integrator?
+	const allRemainingLanguagesSupportedByDepGraphIntegrator =
+		languagesNotNativelySupported.every((language) =>
+			depGraphIntegratorSupportedLanguages.includes(language),
+		);
+
+	const everyDepGraphSupportedLanguageHasWorkflow =
+		remainingLanguagesSupportedByDepGraphIntegrator.every((language) => {
+			const repoHasWorkflowForLanguage =
+				doesRepoHaveDepSubmissionWorkflowForLanguage(
+					repo,
+					workflowsForRepo,
+					language as DepGraphLanguage,
+				);
+
+			if (!repoHasWorkflowForLanguage) {
+				console.log(
+					`${repo.name} contains ${language} which is supported by Dependency Graph Integrator for Dependabot, but it doesn't have a dependency submission workflow`,
+				);
+			}
+
+			return repoHasWorkflowForLanguage;
+		});
+
+	if (!allRemainingLanguagesSupportedByDepGraphIntegrator) {
+		console.log(
+			`${repo.name} contains the following languages not supported by Dependabot or Dependency Graph Integrator`,
+			languages.filter(
+				(language) =>
+					!depGraphIntegratorSupportedLanguages.includes(language) &&
+					!supportedDependabotLanguages.includes(language),
+			),
+		);
+	}
+	return (
+		allRemainingLanguagesSupportedByDepGraphIntegrator &&
+		everyDepGraphSupportedLanguageHasWorkflow
+	);
+}
+
 function isSupportedByDependabot(
 	repo: Repository,
 	languages: string[],
 	workflowsForRepo: guardian_github_actions_usage[],
 ): boolean {
+	const languagesNotNativelySupported = languages.filter(
+		(language) => !supportedDependabotLanguages.includes(language),
+	);
+
+	const containsOnlyNativeOrDepSubmissionWorkflowSupportedLanguages =
+		containsSupportedDepGraphLanguagesWithWorkflows(
+			repo,
+			workflowsForRepo,
+			languagesNotNativelySupported,
+			languages,
+		);
+
 	const containsOnlyDependabotSupportedLanguages = languages.every((language) =>
 		supportedDependabotLanguages.includes(language),
 	);
-	if (containsOnlyDependabotSupportedLanguages) {
-		return true;
-	} else {
-		//not covered by Snyk or native Dependabot
-		const languagesNotSupportedByDependabot = languages.filter(
-			(language) => !supportedDependabotLanguages.includes(language),
-		);
-		// are all unsupported languages supported by dep graph integrator?
-		const allUnsupportedLanguagesSupportedByDepGraphIntegrator =
-			languagesNotSupportedByDependabot.every((language) =>
-				depGraphIntegratorSupportedLanguages.includes(language),
-			);
 
-		if (allUnsupportedLanguagesSupportedByDepGraphIntegrator) {
-			// Do all these languages have dependency submission workflows?
-			const allDepGraphSupportedLanguagesHaveWorkflows =
-				languagesNotSupportedByDependabot.every((language) =>
-					doesRepoHaveDepSubmissionWorkflowForLanguage(
-						repo,
-						workflowsForRepo,
-						language as DepGraphLanguage,
-					),
-				);
-
-			if (!allDepGraphSupportedLanguagesHaveWorkflows) {
-				console.log(
-					`${repo.name} contains the following languages supported by Dependency Graph Integrator for Dependabot, but that don't currently have a dependency submission workflow on the repo `,
-					languagesNotSupportedByDependabot.filter((language) =>
-						depGraphIntegratorSupportedLanguages.includes(language),
-					),
-				);
-				return false;
-			}
-			return true;
-		} else {
-			console.log(
-				`${repo.name} contains the following languages not supported by Dependabot or Dependency Graph Integrator`,
-				languages.filter(
-					(language) =>
-						!depGraphIntegratorSupportedLanguages.includes(language) &&
-						!supportedDependabotLanguages.includes(language),
-				),
-			);
-			return false;
-		}
-	}
+	return (
+		containsOnlyDependabotSupportedLanguages ||
+		containsOnlyNativeOrDepSubmissionWorkflowSupportedLanguages
+	);
 }
 
 /**
