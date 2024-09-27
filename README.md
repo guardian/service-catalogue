@@ -58,6 +58,11 @@ The data in Service Catalogue is analysed in two ways:
 1. Grafana, at https://metrics.gutools.co.uk
 2. AWS Lambda functions, for example [RepoCop](packages/repocop) or [data-audit](packages/data-audit)
 
+## Support with production issues
+
+Service Catalogue has a runbook [you can access here](https://docs.google.com/document/d/18Z6P5GuIURMLta1B_1_usnZTPJ0l4Ho_lsplH2HDemM)
+that explains how deal with common problems, respond to alerts and how to perform useful operations like triggering tasks manually.
+
 ## How to run locally
 
 Follow the instruction in the dev-environment [README](packages/dev-environment/README.md) to run cloudquery locally.
