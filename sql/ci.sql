@@ -25,6 +25,9 @@ VALUES (
     , '{}'
 );
 
+DELETE FROM obligatron_results
+WHERE obligation_name = 'OBLIGATION';
+
 -- Switch to the `cloudbuster` user and test access to the tables used in the cloudbuster app
 SET ROLE cloudbuster;
 -- It should be able to read from this table
@@ -76,6 +79,9 @@ INSERT INTO audit_results (
 );
 SELECT * FROM audit_results LIMIT 1;
 
+DELETE FROM audit_results
+WHERE name = 'test';
+
 -- The user github_actions_usage...
 SET ROLE github_actions_usage;
 
@@ -96,6 +102,9 @@ INSERT INTO guardian_github_actions_usage (
     , ARRAY['guardian/actions-riffraff@v4']
 );
 SELECT * FROM guardian_github_actions_usage LIMIT 1;
+
+DELETE FROM guardian_github_actions_usage
+WHERE full_name = 'guardian/service-catalogue';
 
 
 -- Switch back to the original user
