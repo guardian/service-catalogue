@@ -7,9 +7,10 @@ $do$
             CREATE USER cloudbuster WITH LOGIN;
         END IF;
 
-        -- Allow cloudbuster to read AWS SecurityHub Findings
+        -- Allow cloudbuster to read from all tables and views in the public schema
         GRANT USAGE ON SCHEMA public to cloudbuster;
-        GRANT SELECT ON public.aws_securityhub_findings TO cloudbuster;
+        -- Grant read access to all future tables, and views
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO cloudbuster;
 
         -- The rds_iam role is created by the RDS IAM extension, which is not available in DEV
         IF EXISTS (select * from pg_roles where rolname='rds_iam') THEN
