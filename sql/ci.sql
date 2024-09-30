@@ -27,7 +27,7 @@ VALUES (
 
 -- Switch to the `cloudbuster` user and test access to the tables used in the cloudbuster app
 SET ROLE cloudbuster;
--- It should only be able to read from this table
+-- It should be able to read from this table
 SELECT * FROM aws_securityhub_findings LIMIT 1;
 
 

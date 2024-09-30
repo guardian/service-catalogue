@@ -8,7 +8,7 @@ $do$
         END IF;
 
         -- Allow cloudbuster to read from all tables and views in the public schema
-        GRANT USAGE ON SCHEMA public to cloudbuster;
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO cloudbuster;
         -- Grant read access to all future tables, and views
         ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO cloudbuster;
 
