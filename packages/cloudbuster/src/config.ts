@@ -29,8 +29,7 @@ export async function getConfig(): Promise<Config> {
 
 	const databaseConfig = isDev
 		? await getDevDatabaseConfig()
-		: await getDatabaseConfig(stage, 'repocop'); //TODO create a new db user for cloudbuster before deploying.
-
+		: await getDatabaseConfig(stage, 'cloudbuster');
 	return {
 		stage,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
