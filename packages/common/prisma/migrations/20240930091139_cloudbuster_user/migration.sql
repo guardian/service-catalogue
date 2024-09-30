@@ -1,4 +1,3 @@
--- This is an empty migration.
 
 DO
 $do$

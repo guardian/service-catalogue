@@ -19802,7 +19802,7 @@ spec:
                         "DbiResourceId",
                       ],
                     },
-                    "/repocop",
+                    "/cloudbuster",
                   ],
                 ],
               },
