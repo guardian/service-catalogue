@@ -1,4 +1,3 @@
--- CreateTable
 CREATE TABLE "cloudbuster_fsbp_vulnerabilities" (
     "arn" TEXT NOT NULL,
     "aws_account_id" TEXT NOT NULL,
@@ -17,3 +16,5 @@ CREATE TABLE "cloudbuster_fsbp_vulnerabilities" (
 
     CONSTRAINT "cloudbuster_fsbp_vulnerabilities_pkey" PRIMARY KEY ("arn","control_id")
 );
+
+GRANT ALL ON public.cloudbuster_fsbp_vulnerabilities TO cloudbuster;

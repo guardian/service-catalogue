@@ -29,6 +29,28 @@ VALUES (
 SET ROLE cloudbuster;
 -- It should be able to read from this table
 SELECT * FROM aws_securityhub_findings LIMIT 1;
+INSERT INTO cloudbuster_fsbp_vulnerabilities
+(
+    arn
+    , aws_account_id
+    , aws_region
+    , control_id
+    , severity
+    , title
+    , within_sla
+)
+VALUES (
+    'arn:aws:securityhub:eu-west-1:123456789012:product/aws/securityhub/finding/12345678901234567890123456789012'
+    , '123456789012'
+    , 'eu-west-1'
+    , 'control-id'
+    , 'CRITICAL'
+    , 'title'
+    , TRUE
+);
+
+DELETE FROM cloudbuster_fsbp_vulnerabilities
+WHERE arn = 'arn:aws:securityhub:eu-west-1:123456789012:product/aws/securityhub/finding/12345678901234567890123456789012';
 
 
 -- Switch to the `dataaudit` user and test access to the tables/views used in the data-audit app
