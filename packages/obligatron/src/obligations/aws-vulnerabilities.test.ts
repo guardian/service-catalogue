@@ -1,7 +1,5 @@
-import {
-	fsbpFindingsToObligatronResults,
-	type SecurityHubFinding,
-} from './aws-vulnerabilities';
+import type { SecurityHubFinding } from 'common/src/types';
+import { fsbpFindingsToObligatronResults } from './aws-vulnerabilities';
 
 describe('The dependency vulnerabilities obligation', () => {
 	const resource1 = {
@@ -18,10 +16,13 @@ describe('The dependency vulnerabilities obligation', () => {
 
 	const oneResourceFinding: SecurityHubFinding = {
 		resources: [resource1],
+		title: 'title',
+		aws_account_name: 'accountName',
+		remediation: { Recommendation: { Url: 'url' } },
 		severity: { Label: 'HIGH', Normalized: 75 },
 		aws_account_id: '0123456',
 		first_observed_at: new Date('2020-01-01'),
-		product_fields: { ControlId: 'S.1', StandardsArn: 'arn:1' },
+		product_fields: { ControlId: 'S.1' },
 	};
 
 	const twoResourceFinding: SecurityHubFinding = {

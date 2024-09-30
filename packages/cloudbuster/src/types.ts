@@ -8,7 +8,7 @@ export interface Finding {
 	resources: string[];
 	remediationUrl: string | null;
 	severity: Severity;
-	priority: number | null;
+	priority: number | null; //TODO remove
 	isWithinSla: boolean;
 }
 

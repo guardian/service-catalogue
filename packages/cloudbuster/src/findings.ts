@@ -1,28 +1,56 @@
-import type { aws_securityhub_findings } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { isWithinSlaTime, stringToSeverity } from 'common/src/functions';
-import type { Severity } from 'common/src/types';
+import type { SecurityHubFinding, Severity } from 'common/src/types';
 import type { Finding, GroupedFindings } from './types';
+
+export function findingsToGuardianFormat(
+	finding: SecurityHubFinding,
+): cloudbuster_fsbp_vulnerabilities[] {
+	const transformedFindings: cloudbuster_fsbp_vulnerabilities[] =
+		finding.resources.map((r) => {
+			const guFinding: cloudbuster_fsbp_vulnerabilities = {
+				severity: finding.severity.Label,
+				control_id: finding.product_fields.ControlId,
+				title: finding.title,
+				aws_region: r.Region,
+				repo: r.Tags?.['gu:repo'] ?? null,
+				stack: r.Tags?.['Stack'] ?? null,
+				stage: r.Tags?.Stage ?? null,
+				app: r.Tags?.App ?? null,
+				first_observed_at: finding.first_observed_at,
+				arn: r.Id,
+				aws_account_name: finding.aws_account_name,
+				aws_account_id: finding.aws_account_id,
+				within_sla: isWithinSlaTime(
+					finding.first_observed_at,
+					stringToSeverity(finding.severity.Label),
+				),
+				remediation: finding.remediation.Recommendation.Url,
+			};
+			return guFinding;
+		});
+	return transformedFindings;
+}
 
 /**
  * Transforms a SQL row into a finding
  */
-export function transformFinding(finding: aws_securityhub_findings): Finding {
+export function transformFinding(finding: SecurityHubFinding): Finding {
 	let severity: Severity = 'unknown';
 	let priority = null;
 	let remediationUrl = null;
 	let resources = null;
 
 	if (
-		finding.severity &&
 		typeof finding.severity === 'object' &&
 		'Label' in finding.severity &&
 		'Normalized' in finding.severity
 	) {
 		severity = stringToSeverity(finding.severity['Label'] as string);
-		priority = finding.severity['Normalized'] as number;
+		priority = finding.severity['Normalized'];
 	}
 
-	if (finding.remediation && typeof finding.remediation === 'object') {
+	if (typeof finding.remediation === 'object') {
 		const remediation = finding.remediation as {
 			Recommendation: {
 				Url: string | null;
@@ -38,11 +66,11 @@ export function transformFinding(finding: aws_securityhub_findings): Finding {
 		}
 	}
 
-	if (finding.resources && Array.isArray(finding.resources)) {
+	if (Array.isArray(finding.resources)) {
 		resources = finding.resources
 			.map((r) => {
-				if (r && typeof r === 'object' && 'Id' in r) {
-					return r['Id'] as string;
+				if (typeof r === 'object' && 'Id' in r) {
+					return r['Id'];
 				}
 				return null;
 			})

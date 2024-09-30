@@ -1,5 +1,6 @@
 import { type StrategyOptions } from '@octokit/auth-app';
 import type {
+	aws_securityhub_findings,
 	github_repositories,
 	repocop_vulnerabilities,
 } from '@prisma/client';
@@ -106,3 +107,20 @@ export const SLAs: Record<Severity, number | undefined> = {
 };
 
 export type NonEmptyArray<T> = [T, ...T[]];
+
+type Resource = {
+	Id: string;
+	Tags: Record<string, string> | null;
+	Region: string;
+	Type: string;
+};
+
+export type SecurityHubFinding = Pick<
+	aws_securityhub_findings,
+	'first_observed_at' | 'aws_account_id' | 'aws_account_name' | 'title'
+> & {
+	remediation: { Recommendation: { Url: string } };
+	severity: { Label: SecurityHubSeverity; Normalized: number };
+	resources: Resource[];
+	product_fields: { ControlId: string };
+};
