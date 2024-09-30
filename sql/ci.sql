@@ -25,6 +25,12 @@ VALUES (
     , '{}'
 );
 
+-- Switch to the `cloudbuster` user and test access to the tables used in the cloudbuster app
+SET ROLE cloudbuster;
+-- It should be able to read from this table
+SELECT * FROM aws_securityhub_findings LIMIT 1;
+
+
 -- Switch to the `dataaudit` user and test access to the tables/views used in the data-audit app
 SET ROLE dataaudit;
 -- It should be able to read from these tables
