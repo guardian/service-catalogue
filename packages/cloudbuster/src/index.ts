@@ -33,7 +33,6 @@ export async function main(input: LambdaHandlerProps) {
 	);
 	console.table(tableContents);
 
-	// *** DATA GATHERING ***
 	await prisma.cloudbuster_fsbp_vulnerabilities.deleteMany();
 	await prisma.cloudbuster_fsbp_vulnerabilities.createMany({
 		data: tableContents,
