@@ -49,6 +49,7 @@ describe('getPullRequest', () => {
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
 			'repo',
+			'owner',
 			'gu-snyk-integrator[bot]',
 		);
 		expect(foundPull).toBeUndefined();
@@ -59,6 +60,7 @@ describe('getPullRequest', () => {
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
 			'repo',
+			'owner',
 			'gu-snyk-integrator[bot]',
 		);
 		expect(foundPull).toEqual(snykBranch);
@@ -70,6 +72,7 @@ describe('getPullRequest', () => {
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
 			'repo',
+			'owner',
 			'gu-snyk-integrator[bot]',
 		);
 		expect(foundPull).toEqual(snykBranch);

@@ -1,64 +1,18 @@
 import { randomBytes } from 'crypto';
+import { createPullRequest } from 'common/src/pull-requests';
 import type { Octokit } from 'octokit';
-import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 import { addPrToProject } from '../../common/src/projects-graphql';
 import type { PullRequest, PullRequestParameters, StatusCode } from './types';
-
-interface Change {
-	commitMessage: string;
-	files: Record<string, string>;
-}
-
-interface CreatePullRequestOptions {
-	repoName: string;
-	title: string;
-	body: string;
-	branchName: string;
-	baseBranch?: string;
-	changes: Change[];
-}
-
-const OWNER = 'guardian';
 
 export function generateBranchName(prefix: string) {
 	return `${prefix}-${randomBytes(8).toString('hex')}`;
 }
 
-/**
- * Creates or updates a pull request, and return its URL.
- */
-export async function createPullRequest(
-	octokit: Octokit,
-	props: CreatePullRequestOptions,
-): Promise<string | undefined> {
-	const {
-		repoName,
-		title,
-		body,
-		branchName,
-		baseBranch = 'main',
-		changes,
-	} = props;
-
-	const response = await composeCreatePullRequest(octokit, {
-		owner: OWNER,
-		repo: repoName,
-		title,
-		body,
-		head: branchName,
-		base: baseBranch,
-		changes: changes.map(({ commitMessage, files }) => ({
-			commit: commitMessage,
-			files,
-		})),
-	});
-
-	return response?.data.html_url;
-}
-
 function isGithubAuthor(pull: PullRequest, author: string) {
 	return pull.user?.login === author && pull.user.type === 'Bot';
 }
+
+const OWNER = 'guardian';
 
 export async function getExistingPullRequest(
 	octokit: Octokit,
@@ -102,6 +56,7 @@ export async function createPrAndAddToProject(
 	if (!existingPullRequest) {
 		const pullRequestUrl = await createPullRequest(octokit, {
 			repoName,
+			owner: OWNER,
 			title: prTitle,
 			body: prBody,
 			branchName: branch,

@@ -84,15 +84,15 @@ async function s3PathIsInConfig(
 	}
 }
 
-export async function assessRepo(repo: string, owner: string, config: Config) {
+export async function assessRepo(repo: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
 	const awsConfig = awsClientConfig(config.stage);
 	const s3 = new S3Client({ ...awsConfig, region: 'us-east-1' });
-	const { stage } = config;
+	const { stage, owner } = config;
 	const onProd = stage === 'PROD';
 
 	async function foundInJs(): Promise<boolean> {
-		const path = await tryToParseJsConfig(octokit, repo);
+		const path = await tryToParseJsConfig(octokit, repo, owner);
 		if (!path) {
 			console.debug(`${repo}: Found in JS config: `, false);
 			return false;
@@ -135,11 +135,8 @@ export async function assessRepo(repo: string, owner: string, config: Config) {
 
 export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
-	const owner = 'guardian';
 	console.log(`Detected stage: ${config.stage}`);
 	const events = parseEvent<string[]>(event).flat();
 
-	await Promise.all(
-		events.map(async (repo) => await assessRepo(repo, owner, config)),
-	);
+	await Promise.all(events.map(async (repo) => await assessRepo(repo, config)));
 };

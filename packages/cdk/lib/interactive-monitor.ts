@@ -9,7 +9,7 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 const service = 'interactive-monitor';
 export class InteractiveMonitor {
 	public readonly topic: Topic;
-	constructor(guStack: GuStack) {
+	constructor(guStack: GuStack, gitHubOrg: string) {
 		const app = guStack.app ?? 'service-catalogue'; //shouldn't be undefined, but make linter happy
 		const { stage, stack } = guStack;
 		const topic = new Topic(guStack, 'Topic', {
@@ -28,6 +28,7 @@ export class InteractiveMonitor {
 			runtime: Runtime.NODEJS_20_X,
 			environment: {
 				GITHUB_APP_SECRET: githubCredentials.secretName,
+				GITHUB_ORG: gitHubOrg,
 			},
 			reservedConcurrentExecutions: 1,
 		});

@@ -102,6 +102,7 @@ export class Repocop {
 			guStack,
 			vpc,
 			'snyk-integrator',
+			gitHubOrg,
 		);
 
 		snykIntegratorInputTopic.addSubscription(
@@ -112,6 +113,7 @@ export class Repocop {
 			guStack,
 			vpc,
 			'dependency-graph-integrator',
+			gitHubOrg,
 		);
 
 		dependencyGraphIntegratorInputTopic.addSubscription(
@@ -124,6 +126,7 @@ function stageAwareIntegratorLambda(
 	guStack: GuStack,
 	vpc: IVpc,
 	app: `${string}-integrator`,
+	gitHubOrg: string,
 ): GuLambdaFunction {
 	const nonProdLambdaProps = {
 		app,
@@ -134,6 +137,9 @@ function stageAwareIntegratorLambda(
 		runtime: Runtime.NODEJS_20_X,
 		vpc,
 		timeout: Duration.minutes(5),
+		environment: {
+			GITHUB_ORG: gitHubOrg,
+		},
 	};
 
 	if (guStack.stage === 'PROD' || guStack.stage === 'TEST') {
@@ -144,6 +150,7 @@ function stageAwareIntegratorLambda(
 		const lambda = new GuLambdaFunction(guStack, app, {
 			...nonProdLambdaProps,
 			environment: {
+				...nonProdLambdaProps.environment,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
 			},
 		});

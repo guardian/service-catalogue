@@ -41,10 +41,11 @@ export function getPathFromConfigFile(
 export async function tryToParseJsConfig(
 	octokit: Octokit,
 	repo: string,
+	owner: string,
 ): Promise<string | undefined> {
 	try {
 		const configFile: ContentResponse = await octokit.rest.repos.getContent({
-			owner: 'guardian',
+			owner,
 			repo,
 			path: 'project.config.js',
 		});

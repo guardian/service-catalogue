@@ -25,6 +25,7 @@ export async function main(event: SnykIntegratorEvent) {
 	await createPrAndAddToProject(
 		config.stage,
 		event.name,
+		config.owner,
 		author,
 		branch,
 		title,

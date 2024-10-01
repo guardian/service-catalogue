@@ -12,6 +12,7 @@ interface Change {
 
 interface CreatePullRequestOptions {
 	repoName: string;
+	owner: string;
 	title: string;
 	body: string;
 	branchName: string;
@@ -33,6 +34,7 @@ export async function createPullRequest(
 ): Promise<string | undefined> {
 	const {
 		repoName,
+		owner,
 		title,
 		body,
 		branchName,
@@ -41,7 +43,7 @@ export async function createPullRequest(
 	} = props;
 
 	const response = await composeCreatePullRequest(octokit, {
-		owner: 'guardian',
+		owner,
 		repo: repoName,
 		title,
 		body,
@@ -69,10 +71,11 @@ function isGithubAuthor(pull: PullRequest, author: string) {
 export async function getExistingPullRequest(
 	octokit: Octokit,
 	repoName: string,
+	owner: string,
 	author: string,
 ) {
 	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-		owner: 'guardian',
+		owner,
 		repo: repoName,
 		state: 'open',
 	} satisfies PullRequestParameters);
@@ -89,6 +92,7 @@ export async function getExistingPullRequest(
 export async function createPrAndAddToProject(
 	stage: string,
 	repoName: string,
+	owner: string,
 	author: string,
 	branch: string,
 	prTitle: string,
@@ -103,12 +107,14 @@ export async function createPrAndAddToProject(
 		const existingPullRequest = await getExistingPullRequest(
 			octokit,
 			repoName,
+			owner,
 			`${author}[bot]`,
 		);
 
 		if (!existingPullRequest) {
 			const pullRequestUrl = await createPullRequest(octokit, {
 				repoName,
+				owner,
 				title: prTitle,
 				body: prBody,
 				branchName: branch,
