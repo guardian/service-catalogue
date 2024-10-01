@@ -1,5 +1,5 @@
 import { RequestedChannel } from '@guardian/anghammarad';
-import type { Anghammarad, NotifyParams } from '@guardian/anghammarad';
+import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
@@ -20,6 +20,22 @@ export function createDigestsFromFindings(
 		.filter((d): d is Digest => d !== undefined);
 }
 
+function createCta(
+	aws_account_name: string | null,
+	accountFindings: cloudbuster_fsbp_vulnerabilities[],
+): Action[] {
+	if (!aws_account_name) {
+		return [];
+	} else {
+		return [
+			{
+				cta: `View all ${accountFindings.length} findings on Grafana`,
+				url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(aws_account_name)}`,
+			},
+		];
+	}
+}
+
 function createDigestForAccount(
 	accountFindings: cloudbuster_fsbp_vulnerabilities[],
 ): Digest | undefined {
@@ -31,17 +47,10 @@ function createDigestForAccount(
 
 	const { aws_account_name, aws_account_id } = finding;
 
-	const actions = [
-		{
-			cta: `View all ${accountFindings.length} findings on Grafana`,
-			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${aws_account_name}`,
-		},
-	];
-
 	return {
 		accountId: aws_account_id,
 		accountName: aws_account_name as string,
-		actions,
+		actions: createCta(aws_account_name, accountFindings),
 		subject: `Security Hub findings for AWS account ${aws_account_name}`,
 		message: createEmailBody(accountFindings),
 	};
@@ -55,7 +64,7 @@ function createEmailBody(findings: cloudbuster_fsbp_vulnerabilities[]): string {
 	const recentFindings = findings.filter(
 		(f) => f.first_observed_at && f.first_observed_at > cutOffDate,
 	);
-	return `The following vulnerabilities have been found in your account in the last $ :
+	return `The following vulnerabilities have been found in your account in the last ${vulnCutOffInDays} days:
         ${recentFindings
 					.map(
 						(f) =>
