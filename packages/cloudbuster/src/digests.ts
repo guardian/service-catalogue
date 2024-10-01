@@ -48,8 +48,15 @@ function createDigestForAccount(
 }
 
 function createEmailBody(findings: cloudbuster_fsbp_vulnerabilities[]): string {
-	return `The following vulnerabilities have been found in your account:
-        ${findings
+	const vulnCutOffInDays = 60;
+
+	const cutOffDate = new Date();
+	cutOffDate.setDate(cutOffDate.getDate() - vulnCutOffInDays);
+	const recentFindings = findings.filter(
+		(f) => f.first_observed_at && f.first_observed_at > cutOffDate,
+	);
+	return `The following vulnerabilities have been found in your account in the last $ :
+        ${recentFindings
 					.map(
 						(f) =>
 							`**[${f.severity}] ${f.title}**
@@ -64,7 +71,6 @@ export async function sendDigest(
 	config: Config,
 	digest: Digest,
 ): Promise<void> {
-	// TODO replace this with `{ AwsAccount: digest.accountId }` to send real alerts
 	const target = { Stack: 'testing-alerts' };
 
 	const notifyParams: NotifyParams = {
