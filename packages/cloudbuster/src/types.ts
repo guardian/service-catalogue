@@ -1,16 +1,5 @@
 import type { Action } from '@guardian/anghammarad';
-import type { Severity } from 'common/src/types';
-
-export interface Finding {
-	awsAccountId: string;
-	awsAccountName: string | null;
-	title: string;
-	resources: string[];
-	remediationUrl: string | null;
-	severity: Severity;
-	priority: number | null; //TODO remove
-	isWithinSla: boolean;
-}
+import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 
 export interface Digest {
 	accountId: string;
@@ -20,4 +9,7 @@ export interface Digest {
 	message: string;
 }
 
-export type GroupedFindings = Record<string, Finding[]>;
+export type GroupedFindings = Record<
+	string,
+	cloudbuster_fsbp_vulnerabilities[]
+>;

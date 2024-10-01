@@ -1,6 +1,7 @@
+import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubFinding } from 'common/types';
 import { findingsToGuardianFormat, groupFindingsByAccount } from './findings';
-import type { Finding, GroupedFindings } from './types';
+import type { GroupedFindings } from './types';
 
 describe('findingsToGuardianFormat', () => {
 	const resource1 = {
@@ -51,16 +52,25 @@ describe('findingsToGuardianFormat', () => {
 	});
 });
 
-function mockFinding(awsAccountId: string, title: string): Finding {
+function mockFinding(
+	aws_account_id: string,
+	title: string,
+): cloudbuster_fsbp_vulnerabilities {
 	return {
-		awsAccountId,
+		aws_account_id,
 		title,
-		awsAccountName: 'mock-account',
-		resources: ['arn::mock::123'],
-		remediationUrl: 'https://mock.url/mock',
+		aws_account_name: 'mock-account',
+		arn: 'arn::mock::123',
+		remediation: 'https://mock.url/mock',
 		severity: 'critical',
-		priority: 80,
-		isWithinSla: true,
+		within_sla: true,
+		first_observed_at: new Date('2020-01-01'),
+		control_id: 'MOCK.1',
+		aws_region: 'eu-mock-1',
+		repo: null,
+		stack: null,
+		stage: null,
+		app: null,
 	};
 }
 
@@ -69,7 +79,7 @@ describe('Grouping logic', () => {
 	const TEAM_B_ACCOUNT_ID = '111111111';
 
 	it('Should return an empty object if there are no findings to report', () => {
-		const findings: Finding[] = [];
+		const findings: cloudbuster_fsbp_vulnerabilities[] = [];
 		const groupedFindings = groupFindingsByAccount(findings);
 
 		expect(groupedFindings).toStrictEqual<GroupedFindings>({});
