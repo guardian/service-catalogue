@@ -18,12 +18,12 @@ export interface Config extends PrismaConfig {
 	/**
 	 * Anghammarad's topic ARN
 	 */
-	anghammaradSnsTopic?: string;
+	anghammaradSnsTopic: string;
 }
 
 export async function getConfig(): Promise<Config> {
 	const stage = getEnvOrThrow('STAGE');
-	const anghammaradSnsTopic = process.env['ANGHAMMARAD_SNS_ARN'];
+	const anghammaradSnsTopic: string = getEnvOrThrow('ANGHAMMARAD_SNS_ARN');
 
 	const isDev = stage === 'DEV';
 

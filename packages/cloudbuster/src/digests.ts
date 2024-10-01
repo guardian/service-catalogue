@@ -71,18 +71,31 @@ export async function sendDigest(
 		subject: digest.subject,
 		message: digest.message,
 		actions: digest.actions,
-		target,
+		target: { AwsAccount: digest.accountId },
 		threadKey: digest.accountId,
 		channel: RequestedChannel.HangoutsChat,
 		sourceSystem: `cloudbuster ${config.stage}`,
-		topicArn: config.anghammaradSnsTopic as string,
+		topicArn: config.anghammaradSnsTopic,
 	};
 
-	if (config.enableMessaging) {
+	const { enableMessaging, stage } = config;
+
+	if (enableMessaging && stage == 'PROD') {
 		console.log(
 			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
 		);
 		await anghammaradClient.notify(notifyParams);
+	} else if (enableMessaging) {
+		const testNotifyParams = {
+			...notifyParams,
+			target: { Stack: 'testing-alerts' },
+		};
+
+		console.log(
+			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
+		);
+
+		await anghammaradClient.notify(testNotifyParams);
 	} else {
 		console.log(
 			`Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
