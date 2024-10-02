@@ -7,7 +7,7 @@ import { removeRepoOwner } from '../shared-utilities';
 import {
 	checkRepoForLanguage,
 	createSnsEventsForDependencyGraphIntegration,
-	doesRepoHaveWorkflow,
+	doesRepoHaveDepSubmissionWorkflowForLanguage,
 } from './send-to-sns';
 
 const fullName = 'guardian/repo-name';
@@ -102,7 +102,7 @@ describe('When trying to find repos using Scala', () => {
 
 describe('When checking a repo for an existing dependency submission workflow', () => {
 	test('return true if repo workflow is present', () => {
-		const result = doesRepoHaveWorkflow(
+		const result = doesRepoHaveDepSubmissionWorkflowForLanguage(
 			repository(fullName),
 			[repoWithDepSubmissionWorkflow(fullName)],
 			'Scala',
@@ -110,7 +110,7 @@ describe('When checking a repo for an existing dependency submission workflow', 
 		expect(result).toBe(true);
 	});
 	test('return false if workflow is not present', () => {
-		const result = doesRepoHaveWorkflow(
+		const result = doesRepoHaveDepSubmissionWorkflowForLanguage(
 			repository(fullName),
 			[repoWithoutWorkflow(fullName)],
 			'Scala',

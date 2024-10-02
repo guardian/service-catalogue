@@ -43,12 +43,14 @@ const snykOnlySupportedLanguages = [
 	'Apex',
 	'Bazel',
 	'Elixir',
-	'Kotlin',
 	'PHP',
-	'Scala',
 	'Objective-C',
 	'Visual Basic .NET',
+	'Scala', // Also supported by dependency graph integrator for Dependabot
+	'Kotlin', // Also supported by dependency graph integrator for Dependabot
 ];
+
+export const depGraphIntegratorSupportedLanguages = ['Scala', 'Kotlin'];
 
 export const actionSupportedLanguages = ignoredLanguages.concat(
 	'Scala',

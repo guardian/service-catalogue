@@ -24,7 +24,7 @@ export function checkRepoForLanguage(
 	return languagesInRepo.includes(targetLanguage);
 }
 
-export function doesRepoHaveWorkflow(
+export function doesRepoHaveDepSubmissionWorkflowForLanguage(
 	repo: Repository,
 	workflow_usages: guardian_github_actions_usage[],
 	language: DepGraphLanguage,
@@ -65,7 +65,12 @@ export function createSnsEventsForDependencyGraphIntegration(
 		reposWithDepGraphLanguages = reposWithDepGraphLanguages.concat(repos);
 
 		const reposWithoutWorkflows = reposWithDepGraphLanguages.filter(
-			(repo) => !doesRepoHaveWorkflow(repo, workflow_usages, language),
+			(repo) =>
+				!doesRepoHaveDepSubmissionWorkflowForLanguage(
+					repo,
+					workflow_usages,
+					language,
+				),
 		);
 		console.log(
 			`Found ${reposWithoutWorkflows.length} production repos without ${language} dependency submission workflows`,

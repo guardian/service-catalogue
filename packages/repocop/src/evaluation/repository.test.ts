@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	github_repository_branches,
+	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { RepocopVulnerability, Repository } from 'common/src/types';
@@ -32,6 +33,7 @@ function evaluateRepoTestHelper(
 	latestSnykIssues: SnykIssue[] = [],
 	snykProjects: SnykProject[] = [],
 	reposOnSnyk: string[] = [],
+	workflowsForRepo: guardian_github_actions_usage[] = [],
 ) {
 	return evaluateOneRepo(
 		dependabotAlerts,
@@ -42,6 +44,7 @@ function evaluateRepoTestHelper(
 		latestSnykIssues,
 		snykProjects,
 		reposOnSnyk,
+		workflowsForRepo,
 	).repocopRules;
 }
 
@@ -56,6 +59,23 @@ const nullBranch: github_repository_branches = {
 	name: '',
 	commit: null,
 	protected: null,
+};
+
+const nullWorkflows: guardian_github_actions_usage = {
+	evaluated_on: new Date('2024-01-01'),
+	full_name: '',
+	workflow_path: '',
+	workflow_uses: [],
+};
+
+const sbtWorkflows: guardian_github_actions_usage = {
+	...nullWorkflows,
+	full_name: 'guardian/some-repo',
+	workflow_path: '.github/workflows/sbt-dependency-graph.yaml',
+	workflow_uses: [
+		'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332',
+		'scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e',
+	],
 };
 
 export const nullRepo: Repository = {
@@ -465,6 +485,13 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		...emptyLanguages,
 		full_name: 'guardian/some-repo',
 		name: 'some-repo',
+		languages: ['JavaScript', 'Objective-C'],
+	};
+
+	const dependabotAndDepGraphSupportedLanguages: github_languages = {
+		...emptyLanguages,
+		full_name: 'guardian/some-repo',
+		name: 'some-repo',
 		languages: ['JavaScript', 'Scala'],
 	};
 
@@ -494,6 +521,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			repo,
 			[snykSupportedLanguages],
 			['guardian/some-repo'],
+			[],
 		);
 		expect(actual).toEqual(true);
 	});
@@ -503,25 +531,63 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [fullySupportedLanguages], []);
+		const actual = hasDependencyTracking(
+			repo,
+			[fullySupportedLanguages],
+			[],
+			[],
+		);
 		expect(actual).toEqual(true);
 	});
-	test('is not valid if a project is not on snyk, and uses a language dependabot does not support', () => {
+	test('is not valid if a project is not on snyk, and uses a language dependabot/dependency graph integrator does not support', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [snykSupportedLanguages], []);
+		const actual = hasDependencyTracking(
+			repo,
+			[snykSupportedLanguages],
+			[],
+			[],
+		);
 		expect(actual).toEqual(false);
 	});
-	test('is not valids not valid if a project is on snyk, and uses a language not supported by snyk', () => {
+	test('is not valid if a project is not on snyk, uses a language supported by dependency graph integrator but there is no submission workflow for that language', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
+		const actual = hasDependencyTracking(
+			repo,
+			[snykSupportedLanguages],
+			[],
+			[nullWorkflows],
+		);
+		expect(actual).toEqual(false);
+	});
+	test('is valid if a project is not on snyk, uses a language supported by dependency graph integrator and has associated submission workflow for that language', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasDependencyTracking(
+			repo,
+			[dependabotAndDepGraphSupportedLanguages],
+			[],
+			[sbtWorkflows],
+		);
+		expect(actual).toEqual(true);
+	});
+	test('is not valid if a project is on snyk, and uses a language not supported by snyk', () => {
+		const repo: Repository = {
+			...nullRepo,
+			topics: ['production'],
+			full_name: 'guardian/some-repo',
+		};
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
 		expect(actual).toEqual(false);
 	});
 	test('is valid if a repository has been archived', () => {
@@ -530,7 +596,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			archived: true,
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
 		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has a non-production tag', () => {
@@ -539,7 +605,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			topics: [],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
 		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has no languages', () => {
@@ -556,7 +622,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			languages: [],
 		};
 
-		const actual = hasDependencyTracking(repo, [noLanguages], []);
+		const actual = hasDependencyTracking(repo, [noLanguages], [], []);
 		expect(actual).toEqual(true);
 	});
 });
