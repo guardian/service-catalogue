@@ -20,7 +20,7 @@ export function createDigestsFromFindings(
 		.filter((d): d is Digest => d !== undefined);
 }
 
-function createCta(aws_account_name: string | null): Action[] {
+function createCta(aws_account_name: string): Action[] {
 	if (!aws_account_name) {
 		return [];
 	} else {

@@ -46,4 +46,14 @@ Remediation: [Documentation](https://example.com)`,
 		const actual = createDigestForAccount([vuln]);
 		expect(actual).toBeUndefined();
 	});
+	it('should correctly encode the account name in the CTA URL', () => {
+		const vuln = { ...testVuln, aws_account_name: 'test account' };
+		const actual = createDigestForAccount([vuln]);
+		expect(actual?.actions[0]?.url).toContain('test%20account');
+	});
+	it('should not return a digest if the account name is null', () => {
+		const vuln = { ...testVuln, aws_account_name: null };
+		const actual = createDigestForAccount([vuln]);
+		expect(actual).toBeUndefined();
+	});
 });
