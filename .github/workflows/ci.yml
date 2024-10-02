@@ -84,7 +84,7 @@ jobs:
         run: ./scripts/build.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@a8a8cabedb56d2d8922017efedba7fd09e5e6980 # v4.0.6
+        uses: guardian/actions-riff-raff@8f9e540befd27a2bf028d94c0a77d0f4d60d4afc # v4.0.8
         with:
           app: service-catalogue
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
