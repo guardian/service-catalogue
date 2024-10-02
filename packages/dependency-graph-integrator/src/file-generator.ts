@@ -47,7 +47,7 @@ function createLanguageSpecificWorkflowSteps(
 			{
 				name: 'Submit dependencies',
 				id: 'submit',
-				uses: 'gradle/actions/dependency-submission@d9c87d481d55275bb5441eef3fe0e46805f9ef70 # v3.5.0',
+				uses: 'gradle/actions/dependency-submission@d156388eb19639ec20ade50009f3d199ce1e2808 # v4.1.0',
 			},
 			{
 				name: 'Log snapshot for user validation',
