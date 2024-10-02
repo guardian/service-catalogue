@@ -20,52 +20,57 @@ export function createDigestsFromFindings(
 		.filter((d): d is Digest => d !== undefined);
 }
 
-function createCta(
-	aws_account_name: string | null,
-	accountFindings: cloudbuster_fsbp_vulnerabilities[],
-): Action[] {
+function createCta(aws_account_name: string | null): Action[] {
 	if (!aws_account_name) {
 		return [];
 	} else {
 		return [
 			{
-				cta: `View all ${accountFindings.length} findings on Grafana`,
+				cta: `View all findings on Grafana`,
 				url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(aws_account_name)}`,
 			},
 		];
 	}
 }
 
-function createDigestForAccount(
+export function createDigestForAccount(
 	accountFindings: cloudbuster_fsbp_vulnerabilities[],
 ): Digest | undefined {
-	if (accountFindings.length === 0 || !accountFindings[0]) {
-		return undefined;
-	}
-
-	const [finding] = accountFindings;
-
-	const { aws_account_name, aws_account_id } = finding;
-
-	return {
-		accountId: aws_account_id,
-		accountName: aws_account_name as string,
-		actions: createCta(aws_account_name, accountFindings),
-		subject: `Security Hub findings for AWS account ${aws_account_name}`,
-		message: createEmailBody(accountFindings),
-	};
-}
-
-function createEmailBody(findings: cloudbuster_fsbp_vulnerabilities[]): string {
 	const vulnCutOffInDays = 60;
 
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - vulnCutOffInDays);
-	const recentFindings = findings.filter(
+	const recentFindings = accountFindings.filter(
 		(f) => f.first_observed_at && f.first_observed_at > cutOffDate,
 	);
-	return `The following vulnerabilities have been found in your account in the last ${vulnCutOffInDays} days:
-        ${recentFindings
+
+	if (recentFindings.length === 0 || !recentFindings[0]) {
+		return undefined;
+	}
+
+	const [finding] = recentFindings;
+
+	const { aws_account_name, aws_account_id } = finding;
+	if (aws_account_name) {
+		return {
+			accountId: aws_account_id,
+
+			accountName: aws_account_name,
+			actions: createCta(aws_account_name),
+			subject: `Security Hub findings for AWS account ${aws_account_name}`,
+			message: createEmailBody(recentFindings, vulnCutOffInDays),
+		};
+	} else {
+		return undefined;
+	}
+}
+
+function createEmailBody(
+	findings: cloudbuster_fsbp_vulnerabilities[],
+	cutOffInDays: number,
+): string {
+	return `The following vulnerabilities have been found in your account in the last ${cutOffInDays} days:
+        ${findings
 					.map(
 						(f) =>
 							`**[${f.severity}] ${f.title}**
