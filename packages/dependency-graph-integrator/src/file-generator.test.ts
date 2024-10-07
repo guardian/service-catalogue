@@ -63,7 +63,7 @@ jobs:
       - name: Log snapshot for user validation
         id: validate
         run: cat ` + // Need to split this line to avoid errors due to new line produced in yaml
-			'/home/runner/work/repo2/repo2/dependency-graph-reports/update_dependency_graph_for_kotlin-dependency-graph.json\n          | jq' +
+			'/home/runner/work/repo2/repo2/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json\n          | jq' +
 			String.raw`
     permissions:
       contents: write
