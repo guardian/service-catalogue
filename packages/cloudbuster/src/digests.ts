@@ -9,7 +9,7 @@ import type { Digest } from './types';
 /**
  * Given a list of findings, creates a list of digests ready to be emailed out
  */
-export function createDigestsFromFindings( //TODO test me
+export function createDigestsFromFindings(
 	findings: cloudbuster_fsbp_vulnerabilities[],
 	severity: SecurityHubSeverity,
 ): Digest[] {
