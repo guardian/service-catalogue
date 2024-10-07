@@ -52,7 +52,7 @@ function createLanguageSpecificWorkflowSteps(
 			{
 				name: 'Log snapshot for user validation',
 				id: 'validate',
-				run: `cat /home/runner/work/${repo}/${repo}/dependency-graph-reports/update_dependency_graph_for_kotlin-dependency-graph.json | jq`,
+				run: `cat /home/runner/work/${repo}/${repo}/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json | jq`,
 			},
 		],
 	};
