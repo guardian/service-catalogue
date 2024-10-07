@@ -7,15 +7,8 @@ import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
 import { findingsToGuardianFormat } from './findings';
 
-type LambdaHandlerProps = {
-	severities?: SecurityHubSeverity[];
-};
-
-export async function main(input: LambdaHandlerProps) {
-	// When manually invoking the function in AWS for testing,
-	// it can be cumbersome to manually type this object as an input.
-	// Therefore, fall back to default values.
-	const { severities = ['CRITICAL', 'HIGH'] } = input;
+export async function main() {
+	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
 
 	// *** SETUP ***
 	const config = await getConfig();
@@ -38,8 +31,12 @@ export async function main(input: LambdaHandlerProps) {
 		data: tableContents,
 	});
 
-	const digests = createDigestsFromFindings(tableContents);
+	const digests = createDigestsFromFindings(tableContents, 'CRITICAL');
 
+	const isTuesday = new Date().getDay() === 2;
+	if (isTuesday) {
+		digests.push(...createDigestsFromFindings(tableContents, 'HIGH'));
+	}
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();
 
