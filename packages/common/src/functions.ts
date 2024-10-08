@@ -11,7 +11,9 @@ import {
 	SLAs,
 } from 'common/src/types';
 
-export async function getGithubClient(githubAppConfig: GitHubAppConfig) {
+export async function getGithubClient(
+	githubAppConfig: GitHubAppConfig,
+): Promise<Octokit> {
 	const auth = createAppAuth(githubAppConfig.strategyOptions);
 
 	const installationAuthentication = await auth({
@@ -63,7 +65,7 @@ export async function getGitHubAppConfig(): Promise<GitHubAppConfig> {
 	return githubAppConfig;
 }
 
-export async function stageAwareOctokit(stage: string) {
+export async function stageAwareOctokit(stage: string): Promise<Octokit> {
 	if (stage === 'CODE' || stage === 'PROD') {
 		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
 		const octokit: Octokit = await getGithubClient(githubAppConfig);
