@@ -1,6 +1,7 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { SecurityHubSeverity } from 'common/src/types';
 import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
 import type { Digest } from './types';
@@ -10,8 +11,11 @@ import type { Digest } from './types';
  */
 export function createDigestsFromFindings(
 	findings: cloudbuster_fsbp_vulnerabilities[],
+	severity: SecurityHubSeverity,
 ): Digest[] {
-	const groupedFindings = groupFindingsByAccount(findings);
+	const filteredFindings = findings.filter((f) => f.severity === severity);
+
+	const groupedFindings = groupFindingsByAccount(filteredFindings);
 
 	return Object.keys(groupedFindings)
 		.map((awsAccountId) =>

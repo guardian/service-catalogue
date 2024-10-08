@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Submit dependencies
         id: submit
-        uses: scalacenter/sbt-dependency-submission@7ebd561e5280336d3d5b445a59013810ff79325e # v3.0.1
+        uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
       - name: Log snapshot for user validation
         id: validate
         run: cat` +
@@ -59,11 +59,11 @@ jobs:
           java-version: 17
       - name: Submit dependencies
         id: submit
-        uses: gradle/actions/dependency-submission@d9c87d481d55275bb5441eef3fe0e46805f9ef70 # v3.5.0
+        uses: gradle/actions/dependency-submission@d156388eb19639ec20ade50009f3d199ce1e2808 # v4.1.0
       - name: Log snapshot for user validation
         id: validate
         run: cat ` + // Need to split this line to avoid errors due to new line produced in yaml
-			'/home/runner/work/repo2/repo2/dependency-graph-reports/update_dependency_graph_for_kotlin-dependency-graph.json\n          | jq' +
+			'/home/runner/work/repo2/repo2/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json\n          | jq' +
 			String.raw`
     permissions:
       contents: write

@@ -6,8 +6,5 @@ config({ path: `../../.env` }); // Load `.env` file at the root of the repositor
 config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
 
 if (require.main === module) {
-	void main({
-		// Using all severities in DEV for more data.
-		severities: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFORMATION'],
-	});
+	void main();
 }
