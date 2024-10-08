@@ -1,5 +1,5 @@
 import { RequestedChannel } from '@guardian/anghammarad';
-import type { Anghammarad, NotifyParams } from '@guardian/anghammarad';
+import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubSeverity } from 'common/src/types';
 import { type Config } from './config';
@@ -24,35 +24,56 @@ export function createDigestsFromFindings(
 		.filter((d): d is Digest => d !== undefined);
 }
 
-function createDigestForAccount(
+function createCta(aws_account_name: string): Action[] {
+	if (!aws_account_name) {
+		return [];
+	} else {
+		return [
+			{
+				cta: `View all findings on Grafana`,
+				url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(aws_account_name)}`,
+			},
+		];
+	}
+}
+
+export function createDigestForAccount(
 	accountFindings: cloudbuster_fsbp_vulnerabilities[],
 ): Digest | undefined {
-	if (accountFindings.length === 0 || !accountFindings[0]) {
+	const vulnCutOffInDays = 60;
+
+	const cutOffDate = new Date();
+	cutOffDate.setDate(cutOffDate.getDate() - vulnCutOffInDays);
+	const recentFindings = accountFindings.filter(
+		(f) => f.first_observed_at && f.first_observed_at > cutOffDate,
+	);
+
+	if (recentFindings.length === 0 || !recentFindings[0]) {
 		return undefined;
 	}
 
-	const [finding] = accountFindings;
+	const [finding] = recentFindings;
 
 	const { aws_account_name, aws_account_id } = finding;
+	if (aws_account_name) {
+		return {
+			accountId: aws_account_id,
 
-	const actions = [
-		{
-			cta: `View all ${accountFindings.length} findings on Grafana`,
-			url: `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${aws_account_name}`,
-		},
-	];
-
-	return {
-		accountId: aws_account_id,
-		accountName: aws_account_name as string,
-		actions,
-		subject: `Security Hub findings for AWS account ${aws_account_name}`,
-		message: createEmailBody(accountFindings),
-	};
+			accountName: aws_account_name,
+			actions: createCta(aws_account_name),
+			subject: `Security Hub findings for AWS account ${aws_account_name}`,
+			message: createEmailBody(recentFindings, vulnCutOffInDays),
+		};
+	} else {
+		return undefined;
+	}
 }
 
-function createEmailBody(findings: cloudbuster_fsbp_vulnerabilities[]): string {
-	return `The following vulnerabilities have been found in your account:
+function createEmailBody(
+	findings: cloudbuster_fsbp_vulnerabilities[],
+	cutOffInDays: number,
+): string {
+	return `The following vulnerabilities have been found in your account in the last ${cutOffInDays} days:
         ${findings
 					.map(
 						(f) =>
@@ -68,25 +89,37 @@ export async function sendDigest(
 	config: Config,
 	digest: Digest,
 ): Promise<void> {
-	// TODO replace this with `{ AwsAccount: digest.accountId }` to send real alerts
 	const target = { Stack: 'testing-alerts' };
 
 	const notifyParams: NotifyParams = {
 		subject: digest.subject,
 		message: digest.message,
 		actions: digest.actions,
-		target,
+		target: { AwsAccount: digest.accountId },
 		threadKey: digest.accountId,
 		channel: RequestedChannel.HangoutsChat,
 		sourceSystem: `cloudbuster ${config.stage}`,
-		topicArn: config.anghammaradSnsTopic as string,
+		topicArn: config.anghammaradSnsTopic,
 	};
 
-	if (config.enableMessaging) {
+	const { enableMessaging, stage } = config;
+
+	if (enableMessaging && stage == 'PROD') {
 		console.log(
 			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
 		);
 		await anghammaradClient.notify(notifyParams);
+	} else if (enableMessaging) {
+		const testNotifyParams = {
+			...notifyParams,
+			target: { Stack: 'testing-alerts' },
+		};
+
+		console.log(
+			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
+		);
+
+		await anghammaradClient.notify(testNotifyParams);
 	} else {
 		console.log(
 			`Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
