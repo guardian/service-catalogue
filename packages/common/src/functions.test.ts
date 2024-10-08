@@ -229,6 +229,35 @@ describe('daysLeftToFix', () => {
 	test('should return 2 if a critical vuln was raised today', () => {
 		expect(daysLeftToFix(new Date(), 'critical')).toBe(2);
 	});
+
+	const monday = new Date('2024-10-07'); // Oct 7th 2024 is a Monday
+	beforeEach(() => {
+		jest.useFakeTimers().setSystemTime(monday);
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+	});
+
+	test('should add an extra two days to fix vulnerabilities raised on a Friday or Saturday', () => {
+		const friday = new Date('2024-10-04'); // Oct 4th 2024 is a Friday
+		const saturday = new Date('2024-10-05'); // Oct 5th 2024 is a Saturday
+		const isSaturday = saturday.getDay() === 6;
+		const isFriday = friday.getDay() === 5;
+
+		expect(isFriday).toBe(true);
+		expect(daysLeftToFix(friday, 'critical')).toBe(1);
+
+		expect(isSaturday).toBe(true);
+		expect(daysLeftToFix(saturday, 'critical')).toBe(2);
+	});
+	test('should add an extra day to fix vulnerabilities raised on a Sunday', () => {
+		const sunday = new Date('2024-10-06'); // Oct 6th 2024 is a Sunday
+		const isSunday = sunday.getDay() === 0;
+
+		expect(isSunday).toBe(true);
+		expect(daysLeftToFix(sunday, 'critical')).toBe(2);
+	});
 });
 
 const MOCK_TODAY = new Date('2024-01-10');

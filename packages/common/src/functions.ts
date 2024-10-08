@@ -179,6 +179,21 @@ export function stringToSeverity(severity: string): Severity {
 	}
 }
 
+function weekendOffset(date: Date): number {
+	const isFriday = date.getDay() === 5;
+	const isSaturday = date.getDay() === 6;
+	const isSunday = date.getDay() === 0;
+
+	if (isSunday) {
+		return 1;
+	}
+	if (isSaturday || isFriday) {
+		return 2;
+	} else {
+		return 0;
+	}
+}
+
 export function daysLeftToFix(
 	alert_date: Date,
 	severity: Severity,
@@ -194,7 +209,12 @@ export function daysLeftToFix(
 		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
 	);
 
-	return daysLeftToFix < 0 ? 0 : daysLeftToFix;
+	if (severity === 'critical') {
+		const weekendOffsetValue = weekendOffset(alert_date);
+		return Math.max(0, daysLeftToFix + weekendOffsetValue);
+	} else {
+		return Math.max(0, daysLeftToFix);
+	}
 }
 
 /**
