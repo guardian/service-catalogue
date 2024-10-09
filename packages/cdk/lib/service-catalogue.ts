@@ -49,6 +49,35 @@ import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
 import { Repocop } from './repocop';
 
+function createProdMonitoringConfiguration(
+	app: string,
+): GuLambdaErrorPercentageMonitoringProps {
+	return {
+		toleratedErrorPercentage: 50,
+		lengthOfEvaluationPeriod: Duration.minutes(1),
+		numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
+		snsTopicName: 'devx-alerts',
+		alarmDescription: `${app} error percentage is too high. Find the logs here ${getCentralElkLink(
+			{
+				filters: {
+					stage: 'PROD',
+					app,
+				},
+			},
+		)}`,
+	};
+}
+
+function createLambdaMonitoringConfiguration(
+	stage: string,
+	app: string,
+): NoMonitoring | GuLambdaErrorPercentageMonitoringProps {
+	if (stage === 'PROD') {
+		return createProdMonitoringConfiguration(app);
+	} else {
+		return { noMonitoring: true };
+	}
+}
 interface ServiceCatalogueProps extends GuStackProps {
 	//TODO add fields for every kind of job to make schedule explicit at a glance.
 	//For code environments, data accuracy is not the main priority.
@@ -196,26 +225,6 @@ export class ServiceCatalogue extends GuStack {
 		const anghammaradTopicParameter =
 			GuAnghammaradTopicParameter.getInstance(this);
 
-		const repocopProdMonitoring: GuLambdaErrorPercentageMonitoringProps = {
-			toleratedErrorPercentage: 50,
-			lengthOfEvaluationPeriod: Duration.minutes(1),
-			numberOfEvaluationPeriodsAboveThresholdBeforeAlarm: 1,
-			snsTopicName: 'devx-alerts',
-			alarmDescription: `RepoCop error percentage is too high. Find the logs here ${getCentralElkLink(
-				{
-					filters: {
-						stage,
-						app: 'repocop',
-					},
-				},
-			)}`,
-		};
-
-		const repocopCodeMonitoring: NoMonitoring = { noMonitoring: true };
-
-		const repocopMonitoringConfiguration =
-			stage === 'PROD' ? repocopProdMonitoring : repocopCodeMonitoring;
-
 		const interactiveMonitor = new InteractiveMonitor(this, gitHubOrg);
 
 		const anghammaradTopic = Topic.fromTopicArn(
@@ -238,12 +247,14 @@ export class ServiceCatalogue extends GuStack {
 			minute: '30',
 		});
 
+		const securityAlertSchedule = nonProdSchedule ?? prodSchedule;
+
 		new Repocop(
 			this,
-			nonProdSchedule ?? prodSchedule,
+			securityAlertSchedule,
 			anghammaradTopic,
 			db,
-			repocopMonitoringConfiguration,
+			createLambdaMonitoringConfiguration(stage, 'repocop'),
 			vpc,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
@@ -288,6 +299,11 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			dbAccess: applicationToPostgresSecurityGroup,
 			anghammaradTopic,
+			monitoringConfiguration: createLambdaMonitoringConfiguration(
+				stage,
+				'cloudbuster',
+			),
+			schedule: securityAlertSchedule,
 		});
 	}
 }
