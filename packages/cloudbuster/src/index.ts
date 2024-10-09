@@ -19,7 +19,7 @@ export async function main() {
 		`Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
 	);
 
-	const dbResults = (await getFsbpFindings(prisma, severities)).slice(0, 5); //TODO: remove slice when ready to go live
+	const dbResults = await getFsbpFindings(prisma, severities);
 
 	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
 		findingsToGuardianFormat,

@@ -34,7 +34,7 @@ export async function getConfig(): Promise<Config> {
 		stage,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: isDev,
-		enableMessaging: !isDev,
+		enableMessaging: false, //!isDev,
 		anghammaradSnsTopic,
 	};
 }
