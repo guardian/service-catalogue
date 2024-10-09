@@ -638,6 +638,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	alert_issue_date: new Date('2021-01-01T00:00:00.000Z'),
 	is_patchable: true,
 	cves: ['CVE-2021-1234'],
+	within_sla: false,
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -922,6 +923,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			alert_issue_date: new Date('2022-06-15T07:43:03Z'),
 			is_patchable: true,
 			cves: ['CVE-2018-6188'],
+			within_sla: false,
 		};
 
 		const expected2: RepocopVulnerability = {
@@ -939,6 +941,7 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			alert_issue_date: new Date('2022-06-14T15:21:52Z'),
 			is_patchable: true,
 			cves: ['CVE-2021-20191'],
+			within_sla: false,
 		};
 
 		expect(result).toStrictEqual([expected1, expected2]);
@@ -973,6 +976,7 @@ describe('NO RULE - Vulnerabilities from Snyk', () => {
 			alert_issue_date: new Date('2020-01-01'),
 			is_patchable: true,
 			cves: ['CVE-1234'],
+			within_sla: false,
 		});
 	});
 
@@ -998,6 +1002,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		alert_issue_date: new Date('2022-06-15T07:43:03Z'),
 		is_patchable: true,
 		cves: ['CVE-2018-6188'],
+		within_sla: false,
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
@@ -1010,6 +1015,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		alert_issue_date: new Date('2022-06-15T07:43:03Z'),
 		is_patchable: true,
 		cves: ['CVE-2018-6188'],
+		within_sla: false,
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	test('Should happen if two vulnerabilities share the same CVEs', () => {
