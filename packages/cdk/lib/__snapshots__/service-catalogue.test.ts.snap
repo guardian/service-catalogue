@@ -21,8 +21,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuLambdaFunction",
       "GuLambdaFunction",
       "GuLambdaErrorPercentageAlarm",
-      "GuLambdaFunction",
-      "GuLambdaErrorPercentageAlarm",
+      "GuScheduledLambda",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -19555,132 +19554,6 @@ spec:
       },
       "Type": "AWS::Lambda::Function",
     },
-    "cloudbusterErrorPercentageAlarmForLambda3A9AF5A0": {
-      "Properties": {
-        "ActionsEnabled": true,
-        "AlarmActions": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:sns:",
-                {
-                  "Ref": "AWS::Region",
-                },
-                ":",
-                {
-                  "Ref": "AWS::AccountId",
-                },
-                ":devx-alerts",
-              ],
-            ],
-          },
-        ],
-        "AlarmDescription": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Ref": "cloudbuster8C461939",
-              },
-              " exceeded 0% error rate",
-            ],
-          ],
-        },
-        "AlarmName": {
-          "Fn::Join": [
-            "",
-            [
-              "High error percentage from ",
-              {
-                "Ref": "cloudbuster8C461939",
-              },
-              " lambda in TEST",
-            ],
-          ],
-        },
-        "ComparisonOperator": "GreaterThanThreshold",
-        "EvaluationPeriods": 1,
-        "Metrics": [
-          {
-            "Expression": "100*m1/m2",
-            "Id": "expr_1",
-            "Label": {
-              "Fn::Join": [
-                "",
-                [
-                  "Error % of ",
-                  {
-                    "Ref": "cloudbuster8C461939",
-                  },
-                ],
-              ],
-            },
-          },
-          {
-            "Id": "m1",
-            "MetricStat": {
-              "Metric": {
-                "Dimensions": [
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "cloudbuster8C461939",
-                    },
-                  },
-                ],
-                "MetricName": "Errors",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-          {
-            "Id": "m2",
-            "MetricStat": {
-              "Metric": {
-                "Dimensions": [
-                  {
-                    "Name": "FunctionName",
-                    "Value": {
-                      "Ref": "cloudbuster8C461939",
-                    },
-                  },
-                ],
-                "MetricName": "Invocations",
-                "Namespace": "AWS/Lambda",
-              },
-              "Period": 60,
-              "Stat": "Sum",
-            },
-            "ReturnData": false,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-        "Threshold": 0,
-        "TreatMissingData": "notBreaching",
-      },
-      "Type": "AWS::CloudWatch::Alarm",
-    },
     "cloudbusterServiceRoleDefaultPolicy173FB27F": {
       "Properties": {
         "PolicyDocument": {
@@ -19883,6 +19756,43 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "cloudbustercloudbustercron309MONFRI0A90AE33E": {
+      "Properties": {
+        "ScheduleExpression": "cron(30 9 ? * MON-FRI *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "cloudbuster8C461939",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "cloudbustercloudbustercron309MONFRI0AllowEventRuleServiceCataloguecloudbuster82FA89E4F5116C2E": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "cloudbuster8C461939",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "cloudbustercloudbustercron309MONFRI0A90AE33E",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "cloudqueryapikeyCCF82F53": {
       "DeletionPolicy": "Delete",
