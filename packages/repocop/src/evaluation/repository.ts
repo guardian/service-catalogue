@@ -6,7 +6,11 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { partition, stringToSeverity } from 'common/src/functions';
+import {
+	isWithinSlaTime,
+	partition,
+	stringToSeverity,
+} from 'common/src/functions';
 import { SLAs } from 'common/src/types';
 import type {
 	DepGraphLanguage,
@@ -506,19 +510,24 @@ export function dependabotAlertToRepocopVulnerability(
 		.filter((i) => i.type === 'CVE')
 		.map((i) => i.value);
 
+	const alertIssueDate = new Date(alert.created_at);
+
+	const severity = alert.security_advisory.severity;
+
 	return {
 		open: alert.state === 'open',
 		full_name: fullName,
 		source: 'Dependabot',
-		severity: alert.security_advisory.severity,
+		severity,
 		package: alert.security_vulnerability.package.name,
 		urls: alert.security_advisory.references
 			.map((ref) => ref.url)
 			.sort(urlSortPredicate),
 		ecosystem: alert.security_vulnerability.package.ecosystem,
-		alert_issue_date: new Date(alert.created_at),
+		alert_issue_date: alertIssueDate,
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
+		within_sla: isWithinSlaTime(alertIssueDate, severity),
 	};
 }
 
@@ -553,19 +562,24 @@ export function snykAlertToRepocopVulnerability(
 		...new Set(packages.map((p) => p.dependency.package_name)),
 	].join(', ');
 
+	const alertIssueDate = new Date(issue.attributes.created_at);
+
+	const severity = stringToSeverity(issue.attributes.effective_severity_level);
+
 	return {
 		full_name: fullName,
 		open: issue.attributes.status === 'open',
 		source: 'Snyk',
-		severity: stringToSeverity(issue.attributes.effective_severity_level),
+		severity,
 		package: packageName,
 		urls: issue.attributes.problems.map((p) => p.url).filter((u) => !!u),
 		ecosystem: ecosystem ?? 'unknown ecosystem',
-		alert_issue_date: new Date(issue.attributes.created_at),
+		alert_issue_date: alertIssueDate,
 		is_patchable: isPatchable,
 		cves: snykVulnIdFilter(issue.attributes.problems.map((p) => p.id)).sort(
 			urlSortPredicate,
 		),
+		within_sla: isWithinSlaTime(alertIssueDate, severity),
 	};
 }
 
