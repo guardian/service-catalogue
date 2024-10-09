@@ -24,7 +24,10 @@ export async function main() {
 	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
 		findingsToGuardianFormat,
 	);
-	console.table(tableContents);
+
+	console.log(
+		`${tableContents.length} high and critical FSBP findings detected`,
+	);
 
 	await prisma.cloudbuster_fsbp_vulnerabilities.deleteMany();
 	await prisma.cloudbuster_fsbp_vulnerabilities.createMany({
