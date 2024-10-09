@@ -81,6 +81,7 @@ const highRecentVuln: RepocopVulnerability = {
 	alert_issue_date: new Date(),
 	is_patchable: true,
 	cves: ['CVE-123'],
+	within_sla: true,
 };
 
 describe('createDigest', () => {
@@ -150,6 +151,7 @@ describe('createDigest', () => {
 			alert_issue_date: new Date(),
 			is_patchable: true,
 			cves: ['CVE-123'],
+			within_sla: true,
 		};
 		const anotherResultWithVuln: EvaluationResult = {
 			...anotherResult,

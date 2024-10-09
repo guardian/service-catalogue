@@ -29,6 +29,7 @@ describe('The dependency vulnerabilities obligation', () => {
 		cves: [''],
 		repo_owner: 'owner1',
 		source: 'Dependabot',
+		within_sla: false,
 	};
 
 	it('should return something if it finds a vulnerability on a repo', () => {
