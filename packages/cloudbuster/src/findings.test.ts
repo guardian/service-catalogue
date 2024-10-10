@@ -24,6 +24,7 @@ describe('findingsToGuardianFormat', () => {
 		first_observed_at: new Date('2020-01-01'),
 		product_fields: { ControlId: 'S.1' },
 		resources: [resource1, resource2],
+		workflow: { Status: 'NEW' },
 	};
 	it('should return n elements if n resources are associated with a finding', () => {
 		const actual = findingsToGuardianFormat(x);
