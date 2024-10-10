@@ -123,4 +123,5 @@ export type SecurityHubFinding = Pick<
 	severity: { Label: SecurityHubSeverity; Normalized: number };
 	resources: Resource[];
 	product_fields: { ControlId: string };
+	workflow: { Status: 'NEW' | 'NOTIFIED' | 'SUPPRESSED' | 'RESOLVED' }; //https://docs.aws.amazon.com/securityhub/latest/userguide/findings-workflow-status.html
 };
