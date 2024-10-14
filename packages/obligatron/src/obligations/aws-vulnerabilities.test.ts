@@ -23,6 +23,7 @@ describe('The dependency vulnerabilities obligation', () => {
 		aws_account_id: '0123456',
 		first_observed_at: new Date('2020-01-01'),
 		product_fields: { ControlId: 'S.1' },
+		workflow: { Status: 'NEW' },
 	};
 
 	const twoResourceFinding: SecurityHubFinding = {

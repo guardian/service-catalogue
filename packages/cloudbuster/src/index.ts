@@ -19,7 +19,9 @@ export async function main() {
 		`Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
 	);
 
-	const dbResults = await getFsbpFindings(prisma, severities);
+	const dbResults = (await getFsbpFindings(prisma, severities)).filter(
+		(f) => f.workflow.Status !== 'SUPPRESSED',
+	);
 
 	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
 		findingsToGuardianFormat,
