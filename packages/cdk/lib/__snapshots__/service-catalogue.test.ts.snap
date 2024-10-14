@@ -19507,7 +19507,7 @@ spec:
         "LoggingConfig": {
           "LogFormat": "Text",
         },
-        "MemorySize": 1024,
+        "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
             "cloudbusterServiceRoleFE532A3F",
@@ -19537,7 +19537,7 @@ spec:
             "Value": "TEST",
           },
         ],
-        "Timeout": 300,
+        "Timeout": 120,
         "VpcConfig": {
           "SecurityGroupIds": [
             {
