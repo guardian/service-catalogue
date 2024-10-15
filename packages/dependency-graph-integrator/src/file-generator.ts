@@ -19,6 +19,11 @@ function createLanguageSpecificWorkflowSteps(
 				uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
 			},
 			{
+				name: 'Install sbt',
+				id: 'install',
+				uses: 'sbt/setup-sbt@8a071aa780c993c7a204c785d04d3e8eb64ef272 # v1.1.0',
+			},
+			{
 				name: 'Submit dependencies',
 				id: 'submit',
 				uses: 'scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0',
