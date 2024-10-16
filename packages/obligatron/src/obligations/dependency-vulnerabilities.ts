@@ -1,9 +1,5 @@
 import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
-import {
-	daysLeftToFix,
-	stringToSeverity,
-	toNonEmptyArray,
-} from 'common/src/functions';
+import { stringToSeverity, toNonEmptyArray } from 'common/src/functions';
 import { logger } from 'common/src/logs';
 import type {
 	NonEmptyArray,
@@ -81,7 +77,7 @@ export async function evaluateDependencyVulnerabilityObligation(
 ): Promise<ObligationResult[]> {
 	const repos = await getProductionRepos(client);
 	const vulns = (await getRepocopVulnerabilities(client)).filter(
-		(v) => daysLeftToFix(v.alert_issue_date, v.severity) === 0,
+		(v) => !v.within_sla,
 	);
 
 	const resultsOrUndefined: Array<ObligationResult | undefined> = repos.map(
