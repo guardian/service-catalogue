@@ -16,11 +16,20 @@ function createLanguageSpecificWorkflowSteps(
 			{
 				name: 'Checkout branch',
 				id: 'checkout',
-				uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
+				uses: 'actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1',
+			},
+			{
+				name: 'Install Java',
+				id: 'java',
+				uses: 'actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.2.0',
+				with: {
+					distribution: 'corretto',
+					'java-version': '17',
+				},
 			},
 			{
 				name: 'Install sbt',
-				id: 'install',
+				id: 'sbt',
 				uses: 'sbt/setup-sbt@8a071aa780c993c7a204c785d04d3e8eb64ef272 # v1.1.0',
 			},
 			{
@@ -38,7 +47,7 @@ function createLanguageSpecificWorkflowSteps(
 			{
 				name: 'Checkout branch',
 				id: 'checkout',
-				uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7',
+				uses: 'actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1',
 			},
 			{
 				name: 'Set up Java',
