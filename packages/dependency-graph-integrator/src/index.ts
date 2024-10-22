@@ -18,8 +18,9 @@ import type { StatusCode } from './types';
 export async function main(event: DependencyGraphIntegratorEvent) {
 	const language = event.language;
 	const name = event.name;
+	const admins = event.admins;
 	console.log(
-		`Generating Dependabot PR for ${name} repo with ${language} language`,
+		`Generating Dependabot PR for ${name} repo with ${language} language, admins: ${admins.join(', ')}.`,
 	);
 	const config: Config = getConfig();
 	const stage = config.stage;
@@ -56,6 +57,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 				commitMessage,
 				boardNumber,
 				octokit,
+				event.admins,
 			);
 		} else {
 			throw Error(

@@ -6,7 +6,7 @@ function findTeamSlugFromId(id: bigint, teams: Team[]): string | undefined {
 	return match?.slug ?? undefined;
 }
 
-export function findContactableOwners(
+export function findContactableOwners( //TODO we don't need teams any more, view_repo_ownership has the team slug
 	repo: string,
 	allRepoOwners: view_repo_ownership[],
 	teams: Team[],

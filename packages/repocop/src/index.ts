@@ -207,6 +207,8 @@ export async function main() {
 		repoLanguages,
 		productionRepos,
 		productionWorkflowUsages,
+		repoOwners,
+		teams,
 	);
 
 	console.log('Done');

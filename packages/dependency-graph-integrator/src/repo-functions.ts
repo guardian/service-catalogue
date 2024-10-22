@@ -46,6 +46,7 @@ export async function createPrAndAddToProject(
 	commitMessage: string,
 	boardNumber: number,
 	octokit: Octokit,
+	admins: string[],
 ) {
 	const existingPullRequest = await getExistingPullRequest(
 		octokit,
@@ -68,6 +69,7 @@ export async function createPrAndAddToProject(
 					},
 				},
 			],
+			admins,
 		});
 
 		if (pullRequestUrl) {
