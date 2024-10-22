@@ -6,7 +6,6 @@ import { shuffle } from 'common/src/functions';
 import type { Repository, UpdateMessageEvent } from 'common/src/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import type { Team } from '../../types';
 import { findContactableOwners } from '../shared-utilities';
 import { notify } from './aws-requests';
 import {
@@ -18,7 +17,6 @@ import {
 export function createBranchProtectionEvents(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
-	teams: Team[],
 	msgCount: number,
 ): UpdateMessageEvent[] {
 	const reposWithoutBranchProtection = evaluatedRepos.filter(
@@ -28,7 +26,7 @@ export function createBranchProtectionEvents(
 		.map((repo) => {
 			return {
 				fullName: repo.full_name,
-				teamNameSlugs: findContactableOwners(repo.full_name, repoOwners, teams),
+				teamNameSlugs: findContactableOwners(repo.full_name, repoOwners),
 			};
 		})
 		.filter((repo) => repo.teamNameSlugs.length > 0);
@@ -43,7 +41,6 @@ export function createBranchProtectionEvents(
 export async function protectBranches(
 	evaluatedRepos: repocop_github_repository_rules[],
 	repoOwners: view_repo_ownership[],
-	teams: Team[],
 	config: Config,
 	unarchivedRepositories: Repository[],
 	octokit: Octokit,
@@ -62,7 +59,7 @@ export async function protectBranches(
 	);
 
 	const branchProtectionEvents: UpdateMessageEvent[] =
-		createBranchProtectionEvents(relevantRepos, repoOwners, teams, 5);
+		createBranchProtectionEvents(relevantRepos, repoOwners, 5);
 
 	await Promise.all(
 		branchProtectionEvents.map((event) =>

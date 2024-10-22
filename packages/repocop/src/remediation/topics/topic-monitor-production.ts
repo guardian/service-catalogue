@@ -9,7 +9,7 @@ import { stripMargin } from 'common/src/string';
 import type { Repository } from 'common/src/types';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
-import type { AwsCloudFormationStack, Team } from '../../types';
+import type { AwsCloudFormationStack } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 const MONTHS = 3;
@@ -162,7 +162,6 @@ async function applyProductionTopicToOneRepoAndMessageTeams(
 }
 
 export async function applyProductionTopicAndMessageTeams(
-	teams: Team[],
 	unarchivedRepos: Repository[],
 	stacks: AwsCloudFormationStack[],
 	repoOwners: view_repo_ownership[],
@@ -182,11 +181,7 @@ export async function applyProductionTopicAndMessageTeams(
 		.map((names) => {
 			const fullRepoName = names.fullRepoName ?? '';
 			const stackName = names.stackName;
-			const teamNameSlugs = findContactableOwners(
-				fullRepoName,
-				repoOwners,
-				teams,
-			);
+			const teamNameSlugs = findContactableOwners(fullRepoName, repoOwners);
 			return {
 				fullName: fullRepoName,
 				stackName: stackName,

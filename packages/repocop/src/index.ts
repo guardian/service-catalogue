@@ -174,7 +174,6 @@ export async function main() {
 			await protectBranches(
 				repocopRules,
 				repoOwners,
-				teams,
 				config,
 				unarchivedRepos,
 				octokit,
@@ -189,7 +188,6 @@ export async function main() {
 		);
 
 		await applyProductionTopicAndMessageTeams(
-			teams,
 			unarchivedRepos,
 			nonPlaygroundStacks,
 			repoOwners,
@@ -208,7 +206,6 @@ export async function main() {
 		productionRepos,
 		productionWorkflowUsages,
 		repoOwners,
-		teams,
 	);
 
 	console.log('Done');

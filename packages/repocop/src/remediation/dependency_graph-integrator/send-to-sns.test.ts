@@ -4,7 +4,6 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { Repository } from 'common/src/types';
-import type { Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
 import {
 	checkRepoForLanguage,
@@ -128,7 +127,6 @@ describe('When getting suitable events to send to SNS', () => {
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[],
-			[],
 		);
 		expect(result).toEqual([
 			{ name: removeRepoOwner(fullName), language: 'Scala', admins: [] },
@@ -140,7 +138,6 @@ describe('When getting suitable events to send to SNS', () => {
 			[repository(fullName)],
 			[repoWithDepSubmissionWorkflow(fullName)],
 			[],
-			[],
 		);
 		expect(result).toEqual([]);
 	});
@@ -150,7 +147,6 @@ describe('When getting suitable events to send to SNS', () => {
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[],
-			[],
 		);
 		expect(result).toEqual([]);
 	});
@@ -159,7 +155,6 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName), repoWithTargetLanguage(fullName2)],
 			[repository(fullName), repository(fullName2)],
 			[repoWithoutWorkflow(fullName), repoWithoutWorkflow(fullName2)],
-			[],
 			[],
 		);
 		expect(result).toEqual([
@@ -179,11 +174,6 @@ describe('When getting suitable events to send to SNS', () => {
 		galaxies_team: 'Team',
 		team_contact_email: 'team@team.com',
 	};
-	const team1: Team = {
-		id: ownershipRecord1.github_team_id,
-		slug: ownershipRecord1.github_team_slug,
-		name: ownershipRecord1.github_team_name,
-	};
 
 	test('return an event with an admins where they exist', () => {
 		const ownershipRecord2: view_repo_ownership = {
@@ -192,18 +182,12 @@ describe('When getting suitable events to send to SNS', () => {
 			github_team_slug: 'team-slug2',
 			github_team_name: 'team-name2',
 		};
-		const team2: Team = {
-			id: ownershipRecord2.github_team_id,
-			slug: ownershipRecord2.github_team_slug,
-			name: ownershipRecord2.github_team_name,
-		};
 
 		const result = createSnsEventsForDependencyGraphIntegration(
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[ownershipRecord1, ownershipRecord2],
-			[team1, team2],
 		);
 		expect(result).toEqual([
 			{
@@ -225,7 +209,6 @@ describe('When getting suitable events to send to SNS', () => {
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[ownershipRecord],
-			[team1],
 		);
 		expect(result).toEqual([
 			{

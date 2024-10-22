@@ -12,7 +12,6 @@ import type {
 	Repository,
 } from 'common/src/types';
 import type { Config } from '../../config';
-import type { Team } from '../../types';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 export function checkRepoForLanguage(
@@ -54,7 +53,6 @@ export function createSnsEventsForDependencyGraphIntegration(
 	productionRepos: Repository[],
 	workflow_usages: guardian_github_actions_usage[],
 	view_repo_ownership: view_repo_ownership[],
-	teams: Team[],
 ): DependencyGraphIntegratorEvent[] {
 	const depGraphLanguages: DepGraphLanguage[] = ['Scala', 'Kotlin'];
 	const eventsForAllLanguages: DependencyGraphIntegratorEvent[] = [];
@@ -83,11 +81,7 @@ export function createSnsEventsForDependencyGraphIntegration(
 			eventsForAllLanguages.push({
 				name: removeRepoOwner(repo.full_name),
 				language,
-				admins: findContactableOwners(
-					repo.full_name,
-					view_repo_ownership,
-					teams,
-				),
+				admins: findContactableOwners(repo.full_name, view_repo_ownership),
 			}),
 		);
 	});
@@ -102,7 +96,6 @@ export async function sendOneRepoToDepGraphIntegrator(
 	productionRepos: Repository[],
 	workflowUsages: guardian_github_actions_usage[],
 	view_repo_ownership: view_repo_ownership[],
-	teams: Team[],
 ) {
 	const eventToSend = shuffle(
 		createSnsEventsForDependencyGraphIntegration(
@@ -110,7 +103,6 @@ export async function sendOneRepoToDepGraphIntegrator(
 			productionRepos,
 			workflowUsages,
 			view_repo_ownership,
-			teams,
 		),
 	)[0];
 
