@@ -135,18 +135,19 @@ export async function createPrAndAddToProject(
 	commitMessage: string,
 	boardNumber: number,
 	admins: string[],
+	octokit?: Octokit,
 ) {
 	if (stage === 'PROD') {
-		const octokit = await stageAwareOctokit(stage);
+		const ghClient = octokit ?? (await stageAwareOctokit(stage));
 		const existingPullRequest = await getExistingPullRequest(
-			octokit,
+			ghClient,
 			repoName,
 			owner,
 			`${author}[bot]`,
 		);
 
 		if (!existingPullRequest) {
-			const pullRequestResponse = await createPullRequest(octokit, {
+			const pullRequestResponse = await createPullRequest(ghClient, {
 				repoName,
 				owner,
 				title: prTitle,
@@ -170,7 +171,7 @@ export async function createPrAndAddToProject(
 				);
 
 				await requestTeamReview(
-					octokit,
+					ghClient,
 					repoName,
 					owner,
 					pullRequestResponse.number,

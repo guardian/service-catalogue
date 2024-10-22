@@ -1,6 +1,9 @@
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
-import { generateBranchName } from 'common/src/pull-requests';
+import {
+	createPrAndAddToProject,
+	generateBranchName,
+} from 'common/src/pull-requests';
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -9,10 +12,7 @@ import {
 	depGraphPackageManager,
 	generatePrBody,
 } from './file-generator';
-import {
-	createPrAndAddToProject,
-	enableDependabotAlerts,
-} from './repo-functions';
+import { enableDependabotAlerts } from './repo-functions';
 import type { StatusCode } from './types';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
@@ -48,6 +48,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 			await createPrAndAddToProject(
 				stage,
 				repo,
+				'guardian', //TODO pass in through CDK as config
 				author,
 				branch,
 				title,
@@ -56,8 +57,8 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 				yamlContents,
 				commitMessage,
 				boardNumber,
+				admins,
 				octokit,
-				event.admins,
 			);
 		} else {
 			throw Error(
