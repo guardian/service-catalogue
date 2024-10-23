@@ -34,6 +34,7 @@ export async function main(event: SnykIntegratorEvent) {
 		snykFileContents,
 		commitMessage,
 		boardNumber,
+		[], //TODO: add admins when snyk integrator is re-enabled
 	);
 }
 

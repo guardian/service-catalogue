@@ -9,5 +9,6 @@ if (require.main === module) {
 	void main({
 		name: 'service-catalogue',
 		language: 'Scala',
+		admins: ['devx-security'],
 	});
 }

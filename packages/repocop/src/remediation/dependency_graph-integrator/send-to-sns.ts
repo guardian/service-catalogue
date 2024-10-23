@@ -2,6 +2,7 @@ import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import type {
 	github_languages,
 	guardian_github_actions_usage,
+	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
@@ -11,7 +12,7 @@ import type {
 	Repository,
 } from 'common/src/types';
 import type { Config } from '../../config';
-import { removeRepoOwner } from '../shared-utilities';
+import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
 export function checkRepoForLanguage(
 	repo: Repository,
@@ -51,6 +52,7 @@ export function createSnsEventsForDependencyGraphIntegration(
 	languages: github_languages[],
 	productionRepos: Repository[],
 	workflow_usages: guardian_github_actions_usage[],
+	view_repo_ownership: view_repo_ownership[],
 ): DependencyGraphIntegratorEvent[] {
 	const depGraphLanguages: DepGraphLanguage[] = ['Scala', 'Kotlin'];
 	const eventsForAllLanguages: DependencyGraphIntegratorEvent[] = [];
@@ -75,11 +77,11 @@ export function createSnsEventsForDependencyGraphIntegration(
 		console.log(
 			`Found ${reposWithoutWorkflows.length} production repos without ${language} dependency submission workflows`,
 		);
-
 		reposWithoutWorkflows.map((repo) =>
 			eventsForAllLanguages.push({
 				name: removeRepoOwner(repo.full_name),
 				language,
+				admins: findContactableOwners(repo.full_name, view_repo_ownership),
 			}),
 		);
 	});
@@ -93,12 +95,14 @@ export async function sendOneRepoToDepGraphIntegrator(
 	repoLanguages: github_languages[],
 	productionRepos: Repository[],
 	workflowUsages: guardian_github_actions_usage[],
+	view_repo_ownership: view_repo_ownership[],
 ) {
 	const eventToSend = shuffle(
 		createSnsEventsForDependencyGraphIntegration(
 			repoLanguages,
 			productionRepos,
 			workflowUsages,
+			view_repo_ownership,
 		),
 	)[0];
 

@@ -34,6 +34,7 @@ export type DepGraphLanguage = 'Scala' | 'Kotlin';
 export interface DependencyGraphIntegratorEvent {
 	name: string;
 	language: DepGraphLanguage;
+	admins: string[];
 }
 
 export interface SnykIntegratorEvent {

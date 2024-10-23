@@ -18,10 +18,16 @@ interface CreatePullRequestOptions {
 	branchName: string;
 	baseBranch?: string;
 	changes: Change[];
+	admins: string[];
 }
 
 export function generateBranchName(prefix: string) {
 	return `${prefix}-${randomBytes(8).toString('hex')}`;
+}
+
+interface UrlAndNumber {
+	html_url: string | undefined;
+	number: number | undefined;
 }
 
 /**
@@ -31,7 +37,7 @@ export function generateBranchName(prefix: string) {
 export async function createPullRequest(
 	octokit: Octokit,
 	props: CreatePullRequestOptions,
-): Promise<string | undefined> {
+): Promise<UrlAndNumber | undefined> {
 	const {
 		repoName,
 		owner,
@@ -55,7 +61,34 @@ export async function createPullRequest(
 		})),
 	});
 
-	return response?.data.html_url;
+	console.log('PR url:', response?.data.html_url);
+	console.log('PR number:', response?.data.number);
+
+	return response?.data as UrlAndNumber;
+}
+
+export async function requestTeamReview(
+	octokit: Octokit,
+	repoName: string,
+	owner: string,
+	pullNumber: number,
+	admins: string[],
+) {
+	console.log('Requesting team review:', admins);
+	if (admins.length > 0) {
+		const response = await octokit.rest.pulls.requestReviewers({
+			owner,
+			repo: repoName,
+			pull_number: pullNumber,
+			team_reviewers: admins,
+		});
+		console.log('Requested team review:', response.data.requested_teams);
+		console.log(response.status);
+		return response;
+	} else {
+		console.log('No team reviewers to request');
+		return undefined;
+	}
 }
 
 type PullRequestParameters =
@@ -101,18 +134,20 @@ export async function createPrAndAddToProject(
 	fileContents: string,
 	commitMessage: string,
 	boardNumber: number,
+	admins: string[],
+	octokit?: Octokit,
 ) {
 	if (stage === 'PROD') {
-		const octokit = await stageAwareOctokit(stage);
+		const ghClient = octokit ?? (await stageAwareOctokit(stage));
 		const existingPullRequest = await getExistingPullRequest(
-			octokit,
+			ghClient,
 			repoName,
 			owner,
 			`${author}[bot]`,
 		);
 
 		if (!existingPullRequest) {
-			const pullRequestUrl = await createPullRequest(octokit, {
+			const pullRequestResponse = await createPullRequest(ghClient, {
 				repoName,
 				owner,
 				title: prTitle,
@@ -126,10 +161,23 @@ export async function createPrAndAddToProject(
 						},
 					},
 				],
+				admins,
 			});
 
-			if (pullRequestUrl) {
-				console.log('Pull request successfully created:', pullRequestUrl);
+			if (pullRequestResponse?.html_url && pullRequestResponse.number) {
+				console.log(
+					'Pull request successfully created:',
+					pullRequestResponse.html_url,
+				);
+
+				await requestTeamReview(
+					ghClient,
+					repoName,
+					owner,
+					pullRequestResponse.number,
+					admins,
+				);
+
 				await addPrToProject(stage, repoName, boardNumber, author);
 				console.log('Updated project board');
 			}

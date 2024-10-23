@@ -1,6 +1,9 @@
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
-import { generateBranchName } from 'common/src/pull-requests';
+import {
+	createPrAndAddToProject,
+	generateBranchName,
+} from 'common/src/pull-requests';
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -9,17 +12,15 @@ import {
 	depGraphPackageManager,
 	generatePrBody,
 } from './file-generator';
-import {
-	createPrAndAddToProject,
-	enableDependabotAlerts,
-} from './repo-functions';
+import { enableDependabotAlerts } from './repo-functions';
 import type { StatusCode } from './types';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	const language = event.language;
 	const name = event.name;
+	const admins = event.admins;
 	console.log(
-		`Generating Dependabot PR for ${name} repo with ${language} language`,
+		`Generating Dependabot PR for ${name} repo with ${language} language, admins: ${admins.join(', ')}.`,
 	);
 	const config: Config = getConfig();
 	const stage = config.stage;
@@ -47,6 +48,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 			await createPrAndAddToProject(
 				stage,
 				repo,
+				'guardian', //TODO pass in through CDK as config
 				author,
 				branch,
 				title,
@@ -55,6 +57,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 				yamlContents,
 				commitMessage,
 				boardNumber,
+				admins,
 				octokit,
 			);
 		} else {

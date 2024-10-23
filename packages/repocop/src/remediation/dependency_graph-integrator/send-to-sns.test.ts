@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	guardian_github_actions_usage,
+	view_repo_ownership,
 } from '@prisma/client';
 import type { Repository } from 'common/src/types';
 import { removeRepoOwner } from '../shared-utilities';
@@ -125,9 +126,10 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
+			[],
 		);
 		expect(result).toEqual([
-			{ name: removeRepoOwner(fullName), language: 'Scala' },
+			{ name: removeRepoOwner(fullName), language: 'Scala', admins: [] },
 		]);
 	});
 	test('return empty event array when a Scala repo is found with an existing workflow', () => {
@@ -135,6 +137,7 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithDepSubmissionWorkflow(fullName)],
+			[],
 		);
 		expect(result).toEqual([]);
 	});
@@ -143,6 +146,7 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithoutTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
+			[],
 		);
 		expect(result).toEqual([]);
 	});
@@ -151,10 +155,67 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName), repoWithTargetLanguage(fullName2)],
 			[repository(fullName), repository(fullName2)],
 			[repoWithoutWorkflow(fullName), repoWithoutWorkflow(fullName2)],
+			[],
 		);
 		expect(result).toEqual([
-			{ name: removeRepoOwner(fullName), language: 'Scala' },
-			{ name: removeRepoOwner(fullName2), language: 'Scala' },
+			{ name: removeRepoOwner(fullName), language: 'Scala', admins: [] },
+			{ name: removeRepoOwner(fullName2), language: 'Scala', admins: [] },
+		]);
+	});
+
+	const ownershipRecord1: view_repo_ownership = {
+		full_repo_name: fullName,
+		github_team_id: BigInt(1),
+		github_team_name: 'team-name',
+		github_team_slug: 'team-slug',
+		short_repo_name: 'repo-name',
+		role_name: 'admin',
+		archived: false,
+		galaxies_team: 'Team',
+		team_contact_email: 'team@team.com',
+	};
+
+	test('return an event with an admins where they exist', () => {
+		const ownershipRecord2: view_repo_ownership = {
+			...ownershipRecord1,
+			github_team_id: BigInt(2),
+			github_team_slug: 'team-slug2',
+			github_team_name: 'team-name2',
+		};
+
+		const result = createSnsEventsForDependencyGraphIntegration(
+			[repoWithTargetLanguage(fullName)],
+			[repository(fullName)],
+			[repoWithoutWorkflow(fullName)],
+			[ownershipRecord1, ownershipRecord2],
+		);
+		expect(result).toEqual([
+			{
+				name: removeRepoOwner(fullName),
+				language: 'Scala',
+				admins: ['team-slug', 'team-slug2'],
+			},
+		]);
+	});
+	test('return not event with an admin if none are correct', () => {
+		const ownershipRecord: view_repo_ownership = {
+			...ownershipRecord1,
+			full_repo_name: 'guardian/other-repo',
+			short_repo_name: 'other-repo',
+		};
+
+		const result = createSnsEventsForDependencyGraphIntegration(
+			[repoWithTargetLanguage(fullName)],
+			[repository(fullName)],
+			[repoWithoutWorkflow(fullName)],
+			[ownershipRecord],
+		);
+		expect(result).toEqual([
+			{
+				name: removeRepoOwner(fullName),
+				language: 'Scala',
+				admins: [],
+			},
 		]);
 	});
 });
