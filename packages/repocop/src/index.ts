@@ -30,7 +30,7 @@ import {
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
 import { sendOneRepoToDepGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
-import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
+import { sendRandomRepoToSnykIntegrator } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
@@ -162,9 +162,7 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	if (config.snykIntegrationPREnabled) {
-		await sendUnprotectedRepo(repocopRules, config, repoLanguages);
-	}
+	await sendRandomRepoToSnykIntegrator(repocopRules, config, repoLanguages);
 
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
