@@ -168,15 +168,13 @@ export async function main() {
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
 
-		if (config.branchProtectionEnabled) {
-			await protectBranches(
-				repocopRules,
-				repoOwners,
-				config,
-				unarchivedRepos,
-				octokit,
-			);
-		}
+		await protectBranches(
+			repocopRules,
+			repoOwners,
+			config,
+			unarchivedRepos,
+			octokit,
+		);
 
 		await createAndSendVulnerabilityDigests(
 			config,
