@@ -69,7 +69,7 @@ export function findUntrackedReposWhereIntegrationWillWork(
 	return reposWhereAllLanguagesAreSupported;
 }
 
-export async function sendUnprotectedRepo(
+export async function sendRandomRepoToSnykIntegrator(
 	evaluatedRepos: repocop_github_repository_rules[],
 	config: Config,
 	githubLanguages: github_languages[],
@@ -78,17 +78,19 @@ export async function sendUnprotectedRepo(
 		findUntrackedReposWhereIntegrationWillWork(evaluatedRepos, githubLanguages),
 	)[0];
 
-	if (eventToSend) {
-		const publishRequestEntry = new PublishCommand({
-			Message: JSON.stringify(eventToSend),
-			TopicArn: config.snykIntegratorTopic,
-		});
+	const publishRequestEntry = new PublishCommand({
+		Message: JSON.stringify(eventToSend),
+		TopicArn: config.snykIntegratorTopic,
+	});
 
+	if (eventToSend && config.snykIntegrationPREnabled) {
 		console.log(`Sending ${eventToSend.name} to Snyk Integrator`);
 		await new SNSClient(awsClientConfig(config.stage)).send(
 			publishRequestEntry,
 		);
 	} else {
-		console.log('No untracked repos found');
+		console.log(
+			`Untracked repos found: ${!!eventToSend}, PR integration enabled: ${config.snykIntegrationPREnabled}`,
+		);
 	}
 }

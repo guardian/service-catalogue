@@ -95,7 +95,7 @@ async function protectBranch(
 
 	const stageIsProd = config.stage === 'PROD';
 
-	if (stageIsProd && !branchIsProtected) {
+	if (stageIsProd && !branchIsProtected && config.branchProtectionEnabled) {
 		await updateBranchProtection(octokit, owner, repo, defaultBranchName);
 		for (const slug of event.teamNameSlugs) {
 			await notify(event.fullName, config, slug);
@@ -104,7 +104,10 @@ async function protectBranch(
 	} else {
 		const reason =
 			(branchIsProtected ? ' Branch is already protected.' : '') +
-			(!stageIsProd ? ' Not running on PROD.' : '');
+			(!stageIsProd ? ' Not running on PROD.' : '') +
+			(!config.branchProtectionEnabled
+				? ' Branch protection is disabled.'
+				: '');
 		console.log(`No action required for ${repo}. ${reason}`);
 	}
 }
