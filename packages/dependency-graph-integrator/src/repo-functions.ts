@@ -10,15 +10,14 @@ function isGithubAuthor(pull: PullRequest, author: string) {
 	return pull.user?.login === author && pull.user.type === 'Bot';
 }
 
-const OWNER = 'guardian';
-
 export async function getExistingPullRequest(
 	octokit: Octokit,
 	repoName: string,
 	author: string,
+	owner: string,
 ): Promise<PullRequest | undefined> {
 	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-		owner: OWNER,
+		owner,
 		repo: repoName,
 		state: 'open',
 	} satisfies PullRequestParameters);
@@ -37,12 +36,13 @@ const ghHeaders = { 'X-GitHub-Api-Version': '2022-11-28' };
 export async function enableDependabotAlerts(
 	repo: string,
 	octokit: Octokit,
+	owner: string,
 ): Promise<StatusCode> {
 	console.log(`Enabling Dependabot alerts for ${repo}`);
 	const enableResponse = await octokit.request(
 		'PUT /repos/{owner}/{repo}/vulnerability-alerts',
 		{
-			owner: OWNER,
+			owner,
 			repo,
 			headers: ghHeaders,
 		},
