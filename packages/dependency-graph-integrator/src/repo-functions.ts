@@ -1,36 +1,7 @@
-import { randomBytes } from 'crypto';
 import type { Octokit } from 'octokit';
-import type { PullRequest, PullRequestParameters, StatusCode } from './types';
-
-export function generateBranchName(prefix: string) {
-	return `${prefix}-${randomBytes(8).toString('hex')}`;
-}
-
-function isGithubAuthor(pull: PullRequest, author: string) {
-	return pull.user?.login === author && pull.user.type === 'Bot';
-}
+import type { StatusCode } from './types';
 
 const OWNER = 'guardian';
-
-export async function getExistingPullRequest(
-	octokit: Octokit,
-	repoName: string,
-	author: string,
-): Promise<PullRequest | undefined> {
-	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-		owner: OWNER,
-		repo: repoName,
-		state: 'open',
-	} satisfies PullRequestParameters);
-
-	const found = pulls.filter((pull) => isGithubAuthor(pull, author));
-
-	if (found.length > 1) {
-		console.warn(`More than one PR found on ${repoName} - choosing the first.`);
-	}
-
-	return found[0] ?? undefined;
-}
 
 const ghHeaders = { 'X-GitHub-Api-Version': '2022-11-28' };
 
