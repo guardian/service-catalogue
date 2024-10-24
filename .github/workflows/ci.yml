@@ -56,68 +56,6 @@ jobs:
           script: typecheck
           deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
-  CI:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    needs: [lint, test, typecheck]
-
-    # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-    permissions:
-      # required by aws-actions/configure-aws-credentials
-      id-token: write
-      contents: read
-      pull-requests: write # required by guardian/actions-riff-raff
-    steps:
-      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
-
-      - name: Setup Node
-        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - uses: guardian/actions-read-private-repos@8792b5279dc2e6dfb6b9aa6ba2f26b6226be444c # v0.1.1
-        with:
-          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
-
-      - name: Build zip files
-        run: ./scripts/build.sh
-
-      - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@8f9e540befd27a2bf028d94c0a77d0f4d60d4afc # v4.0.8
-        with:
-          app: service-catalogue
-          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
-          projectName: deploy::service-catalogue
-          configPath: packages/cdk/cdk.out/riff-raff.yaml
-          contentDirectories: |
-            cdk.out:
-              - packages/cdk/cdk.out
-            repocop:
-              - packages/repocop/dist/repocop.zip
-            interactive-monitor:
-              - packages/interactive-monitor/dist/interactive-monitor.zip
-            data-audit:
-              - packages/data-audit/dist/data-audit.zip
-            snyk-integrator:
-              - packages/snyk-integrator/dist/snyk-integrator.zip
-            dependency-graph-integrator:
-                - packages/dependency-graph-integrator/dist/dependency-graph-integrator.zip
-            github-actions-usage:
-              - packages/github-actions-usage/dist/github-actions-usage.zip
-            obligatron:
-              - packages/obligatron/dist/obligatron.zip
-            refresh-materialized-view:
-              - packages/refresh-materialized-view/dist/refresh-materialized-view.zip
-            prisma:
-              - packages/common/prisma.zip
-            cloudbuster:
-              - packages/cloudbuster/dist/cloudbuster.zip
-    env:
-      NODE_OPTIONS: '--max_old_space_size=4096'
-
   db-migration:
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -181,3 +119,65 @@ jobs:
             git ls-files --others --exclude-standard packages/common/prisma
             exit 1
           fi
+
+  CI:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    needs: [lint, test, typecheck, db-migration]
+
+    # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+    permissions:
+      # required by aws-actions/configure-aws-credentials
+      id-token: write
+      contents: read
+      pull-requests: write # required by guardian/actions-riff-raff
+    steps:
+      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+
+      - name: Setup Node
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - uses: guardian/actions-read-private-repos@8792b5279dc2e6dfb6b9aa6ba2f26b6226be444c # v0.1.1
+        with:
+          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+
+      - name: Build zip files
+        run: ./scripts/build.sh
+
+      - name: Upload to riff-raff
+        uses: guardian/actions-riff-raff@8f9e540befd27a2bf028d94c0a77d0f4d60d4afc # v4.0.8
+        with:
+          app: service-catalogue
+          roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
+          projectName: deploy::service-catalogue
+          configPath: packages/cdk/cdk.out/riff-raff.yaml
+          contentDirectories: |
+            cdk.out:
+              - packages/cdk/cdk.out
+            repocop:
+              - packages/repocop/dist/repocop.zip
+            interactive-monitor:
+              - packages/interactive-monitor/dist/interactive-monitor.zip
+            data-audit:
+              - packages/data-audit/dist/data-audit.zip
+            snyk-integrator:
+              - packages/snyk-integrator/dist/snyk-integrator.zip
+            dependency-graph-integrator:
+                - packages/dependency-graph-integrator/dist/dependency-graph-integrator.zip
+            github-actions-usage:
+              - packages/github-actions-usage/dist/github-actions-usage.zip
+            obligatron:
+              - packages/obligatron/dist/obligatron.zip
+            refresh-materialized-view:
+              - packages/refresh-materialized-view/dist/refresh-materialized-view.zip
+            prisma:
+              - packages/common/prisma.zip
+            cloudbuster:
+              - packages/cloudbuster/dist/cloudbuster.zip
+    env:
+      NODE_OPTIONS: '--max_old_space_size=4096'
