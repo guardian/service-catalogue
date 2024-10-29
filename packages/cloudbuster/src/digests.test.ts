@@ -20,28 +20,50 @@ describe('createDigestForAccount', () => {
 		repo: null,
 		stack: null,
 		stage: null,
-		app: null,
+		app: 'my-app',
 		title: 'test-title',
 		within_sla: false,
 	};
 
-	it('should return a digest with the correct fields', () => {
+	it('should aggregate findings by control ID', () => {
+		const actual = createDigestForAccount([
+			testVuln,
+			testVuln,
+			{ ...testVuln, control_id: 'S.2' },
+		]);
+		expect(actual?.message).toContain(
+			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) for control [S.1](https://example.com), (test-title) in app my-app`,
+		);
+		expect(actual?.message).toContain(
+			`[1 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) for control [S.2](https://example.com), (test-title) in app my-app`,
+		);
+	});
+	it('should aggregate findings by app', () => {
+		const actual = createDigestForAccount([
+			testVuln,
+			testVuln,
+			{ ...testVuln, app: 'my-other-app' },
+		]);
+		expect(actual?.message).toContain(
+			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) for control [S.1](https://example.com), (test-title) in app my-app`,
+		);
+		expect(actual?.message).toContain(
+			`[1 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) for control [S.1](https://example.com), (test-title) in app my-other-app`,
+		);
+	});
+	it('should return the correct fields', () => {
 		const actual = createDigestForAccount([testVuln]);
-		expect(actual).toEqual({
-			accountId: '123456789012',
-			accountName: 'test-account',
-			actions: [
-				{
-					cta: 'View all findings on Grafana',
-					url: 'https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account',
-				},
-			],
-			subject: 'Security Hub findings for AWS account test-account',
-			message: `The following vulnerabilities have been found in your account in the last 60 days:
-        **[CRITICAL] test-title**
-Affected resource: arn:aws:service:eu-west-1:123456789012
-Remediation: [Documentation](https://example.com)`,
-		});
+		expect(actual?.accountId).toBe('123456789012');
+		expect(actual?.accountName).toBe('test-account');
+		expect(actual?.subject).toBe(
+			'Security Hub findings for AWS account test-account',
+		);
+		expect(actual?.actions).toStrictEqual([
+			{
+				cta: 'View all findings on Grafana',
+				url: 'https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account',
+			},
+		]);
 	});
 	it('should return nothing if the first observed date is older than the cut-off', () => {
 		const vuln = { ...testVuln, first_observed_at: new Date(0) };
