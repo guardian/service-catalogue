@@ -18,8 +18,9 @@ The dependency graph integrator takes a repo name as JSON, like so:
 
 ```json
 {
-	"name": "service-catalogue",
-	"language": "Scala"
+ "name": "service-catalogue",
+ "language": "Scala",
+  "admins": ["my-team-slug"],
 }
 ```
 
@@ -78,14 +79,14 @@ The lambda can be invoked locally by running `npm run start -w dependency-graph-
 
 ```mermaid
 flowchart LR
-	github[GitHub]
-	dev[P&E Dev]
-	depGraph[Dependency Graph]
-	workflow[Dependency Submission Workflow]
-	Dependabot[Dependabot]
+ github[GitHub]
+ dev[P&E Dev]
+ depGraph[Dependency Graph]
+ workflow[Dependency Submission Workflow]
+ Dependabot[Dependabot]
 
-	dev --> |Merges any subsequent PR, i.e. a version bump to main|github
-	github --> |Triggers workflow run| workflow
-	workflow --> |Dependencies are sent to Dependency Graph| depGraph
-	depGraph --> |Dependabot analyses dependency graph for new vulnerabilities| Dependabot
+ dev --> |Merges any subsequent PR, i.e. a version bump to main|github
+ github --> |Triggers workflow run| workflow
+ workflow --> |Dependencies are sent to Dependency Graph| depGraph
+ depGraph --> |Dependabot analyses dependency graph for new vulnerabilities| Dependabot
 ```
