@@ -32,11 +32,27 @@ describe('createDigestForAccount', () => {
 			{ ...testVuln, control_id: 'S.2' },
 		]);
 		expect(actual?.message).toContain(
-			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) for control [S.1](https://example.com), (test-title) in app my-app`,
+			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), (test-title)`,
 		);
 		expect(actual?.message).toContain(
-			`[1 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) for control [S.2](https://example.com), (test-title) in app my-app`,
+			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) in app: **my-app**, for control [S.2](https://example.com), (test-title)`,
 		);
+	});
+	it('should show the issues with the most findings first, regardless of input ordering', () => {
+		const actual = createDigestForAccount([
+			{ ...testVuln, control_id: 'S.2' },
+			testVuln,
+			testVuln,
+		]);
+
+		const msg = actual?.message;
+
+		const twoFindingStartPosition = msg?.indexOf('2 findings');
+		const oneFindingStartPosition = msg?.indexOf('1 finding');
+		expect(twoFindingStartPosition).toBeDefined();
+		expect(oneFindingStartPosition).toBeDefined();
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we have checked that these are defined
+		expect(twoFindingStartPosition!).toBeLessThan(oneFindingStartPosition!);
 	});
 	it('should aggregate findings by app', () => {
 		const actual = createDigestForAccount([
@@ -45,10 +61,10 @@ describe('createDigestForAccount', () => {
 			{ ...testVuln, app: 'my-other-app' },
 		]);
 		expect(actual?.message).toContain(
-			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) for control [S.1](https://example.com), (test-title) in app my-app`,
+			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), (test-title)`,
 		);
 		expect(actual?.message).toContain(
-			`[1 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) for control [S.1](https://example.com), (test-title) in app my-other-app`,
+			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-other-app**, for control [S.1](https://example.com), (test-title)`,
 		);
 	});
 	it('should return the correct fields', () => {

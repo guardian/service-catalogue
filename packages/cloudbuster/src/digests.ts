@@ -96,14 +96,14 @@ function formatFindings(
 	account_name: string,
 	findings: cloudbuster_fsbp_vulnerabilities[],
 ) {
-	console.log(`formatting findings for ${key}`);
 	const findingsCount = findings.length;
 	const control_id = findings[0]?.control_id;
-	const app = findings[0]?.app ?? 'unknown-app';
+	const app = findings[0]?.app ?? 'unknown';
 	const remediation = findings[0]?.remediation;
 	const title = findings[0]?.title;
+	const findingsString = findingsCount === 1 ? 'finding' : 'findings';
 	const url = `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(account_name)}&var-control_id=${control_id}`;
-	return `[${findingsCount} findings](${url}) for control [${control_id}](${remediation}), (${title}) in app ${app}`;
+	return `[${findingsCount} ${findingsString}](${url}) in app: **${app}**, for control [${control_id}](${remediation}), (${title})`;
 }
 
 function createEmailBody(
@@ -112,9 +112,12 @@ function createEmailBody(
 	account_name: string,
 	severity: Severity,
 ): string {
-	const listOfLists = Object.values(groupByControlIdAndApp(findings)); //None of the sublists will ever be empty
+	//None of the sublists will ever be empty
+	const listOfGroupedFindings = Object.values(
+		groupByControlIdAndApp(findings),
+	).sort((a, b) => b.length - a.length);
 
-	const msg = listOfLists
+	const msg = listOfGroupedFindings
 		.map((list) => {
 			const key = `${list[0]?.control_id} ${list[0]?.app ?? 'unknown-app'}`;
 			return formatFindings(key, account_name, list);
