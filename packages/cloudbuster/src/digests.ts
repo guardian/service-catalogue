@@ -138,7 +138,7 @@ export async function sendDigest(
 		actions: digest.actions,
 		target: { AwsAccount: digest.accountId },
 		threadKey: digest.accountId,
-		channel: RequestedChannel.HangoutsChat,
+		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: `cloudbuster ${config.stage}`,
 		topicArn: config.anghammaradSnsTopic,
 	};
