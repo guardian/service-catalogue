@@ -90,40 +90,44 @@ export function createSnsEventsForDependencyGraphIntegration(
 	return eventsForAllLanguages;
 }
 
-export async function sendOneRepoToDepGraphIntegrator(
+async function sendOneRepoToDepGraphIntegrator(
+	config: Config,
+	eventToSend: DependencyGraphIntegratorEvent,
+) {
+	if (config.stage === 'PROD') {
+		const publishRequestEntry = new PublishCommand({
+			Message: JSON.stringify(eventToSend),
+			TopicArn: config.dependencyGraphIntegratorTopic,
+		});
+		console.log(`Sending ${eventToSend.name} to Dependency Graph Integrator`);
+		await new SNSClient(awsClientConfig(config.stage)).send(
+			publishRequestEntry,
+		);
+	} else {
+		console.log(
+			`Would have sent ${eventToSend.name} to Dependency Graph Integrator`,
+		);
+	}
+}
+
+export async function sendReposToDependencyGraphIntegrator(
 	config: Config,
 	repoLanguages: github_languages[],
 	productionRepos: Repository[],
-	workflowUsages: guardian_github_actions_usage[],
-	view_repo_ownership: view_repo_ownership[],
-) {
-	const eventToSend = shuffle(
+	productionWorkflowUsages: guardian_github_actions_usage[],
+	repoOwners: view_repo_ownership[],
+	repoCount: number,
+): Promise<void> {
+	const eventsToSend: DependencyGraphIntegratorEvent[] = shuffle(
 		createSnsEventsForDependencyGraphIntegration(
 			repoLanguages,
 			productionRepos,
-			workflowUsages,
-			view_repo_ownership,
+			productionWorkflowUsages,
+			repoOwners,
 		),
-	)[0];
+	).slice(0, repoCount);
 
-	if (eventToSend) {
-		if (config.stage === 'PROD') {
-			const publishRequestEntry = new PublishCommand({
-				Message: JSON.stringify(eventToSend),
-				TopicArn: config.dependencyGraphIntegratorTopic,
-			});
-			console.log(`Sending ${eventToSend.name} to Dependency Graph Integrator`);
-			await new SNSClient(awsClientConfig(config.stage)).send(
-				publishRequestEntry,
-			);
-		} else {
-			console.log(
-				`Would have sent ${eventToSend.name} to Dependency Graph Integrator`,
-			);
-		}
-	} else {
-		console.log(
-			'No suitable production repos found without dependency submission workflow',
-		);
+	for (const event of eventsToSend) {
+		await sendOneRepoToDepGraphIntegrator(config, event);
 	}
 }
