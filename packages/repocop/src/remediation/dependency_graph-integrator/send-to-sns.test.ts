@@ -3,12 +3,17 @@ import type {
 	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { Repository } from 'common/src/types';
+import type {
+	DepGraphLanguage,
+	Repository,
+	RepositoryWithDepGraphLanguage,
+} from 'common/src/types';
 import { removeRepoOwner } from '../shared-utilities';
 import {
 	checkRepoForLanguage,
 	createSnsEventsForDependencyGraphIntegration,
 	doesRepoHaveDepSubmissionWorkflowForLanguage,
+	getReposWithoutWorkflows,
 } from './send-to-sns';
 
 const fullName = 'guardian/repo-name';
@@ -53,6 +58,17 @@ function repository(fullName: string): Repository {
 		pushed_at: null,
 		updated_at: null,
 		topics: [],
+	};
+}
+
+function repositoryWithDepGraphLanguage(
+	fullName: string,
+	language: DepGraphLanguage,
+): RepositoryWithDepGraphLanguage {
+	const repo = repository(fullName);
+	return {
+		...repo,
+		language,
 	};
 }
 
@@ -121,46 +137,44 @@ describe('When checking a repo for an existing dependency submission workflow', 
 });
 
 describe('When getting suitable events to send to SNS', () => {
-	test('return an event when a Scala repo is found without an existing workflow', () => {
-		const result = createSnsEventsForDependencyGraphIntegration(
+	test('return the repo when a Scala repo is found without an existing workflow', () => {
+		const result = getReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
-			[],
 		);
-		expect(result).toEqual([
-			{ name: removeRepoOwner(fullName), language: 'Scala', admins: [] },
-		]);
+		const expected = [repositoryWithDepGraphLanguage(fullName, 'Scala')];
+
+		expect(result).toEqual(expected);
 	});
-	test('return empty event array when a Scala repo is found with an existing workflow', () => {
-		const result = createSnsEventsForDependencyGraphIntegration(
+	test('return empty repo array when a Scala repo is found with an existing workflow', () => {
+		const result = getReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithDepSubmissionWorkflow(fullName)],
-			[],
 		);
 		expect(result).toEqual([]);
 	});
 	test('return empty array when non-Scala repo is found with without an existing workflow', () => {
-		const result = createSnsEventsForDependencyGraphIntegration(
+		const result = getReposWithoutWorkflows(
 			[repoWithoutTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
-			[],
 		);
 		expect(result).toEqual([]);
 	});
 	test('return 2 events when 2 Scala repos are found without an existing workflow', () => {
-		const result = createSnsEventsForDependencyGraphIntegration(
+		const result = getReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName), repoWithTargetLanguage(fullName2)],
 			[repository(fullName), repository(fullName2)],
 			[repoWithoutWorkflow(fullName), repoWithoutWorkflow(fullName2)],
-			[],
 		);
-		expect(result).toEqual([
-			{ name: removeRepoOwner(fullName), language: 'Scala', admins: [] },
-			{ name: removeRepoOwner(fullName2), language: 'Scala', admins: [] },
-		]);
+		const expected = [
+			repositoryWithDepGraphLanguage(fullName, 'Scala'),
+			repositoryWithDepGraphLanguage(fullName2, 'Scala'),
+		];
+
+		expect(result).toEqual(expected);
 	});
 
 	const ownershipRecord1: view_repo_ownership = {
@@ -184,9 +198,7 @@ describe('When getting suitable events to send to SNS', () => {
 		};
 
 		const result = createSnsEventsForDependencyGraphIntegration(
-			[repoWithTargetLanguage(fullName)],
-			[repository(fullName)],
-			[repoWithoutWorkflow(fullName)],
+			[repositoryWithDepGraphLanguage(fullName, 'Scala')],
 			[ownershipRecord1, ownershipRecord2],
 		);
 		expect(result).toEqual([
@@ -197,7 +209,7 @@ describe('When getting suitable events to send to SNS', () => {
 			},
 		]);
 	});
-	test('return not event with an admin if none are correct', () => {
+	test('do not return event with an admin if none are correct', () => {
 		const ownershipRecord: view_repo_ownership = {
 			...ownershipRecord1,
 			full_repo_name: 'guardian/other-repo',
@@ -205,9 +217,7 @@ describe('When getting suitable events to send to SNS', () => {
 		};
 
 		const result = createSnsEventsForDependencyGraphIntegration(
-			[repoWithTargetLanguage(fullName)],
-			[repository(fullName)],
-			[repoWithoutWorkflow(fullName)],
+			[repositoryWithDepGraphLanguage(fullName, 'Scala')],
 			[ownershipRecord],
 		);
 		expect(result).toEqual([
