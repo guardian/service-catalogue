@@ -1,7 +1,8 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
-import type { SecurityHubSeverity } from 'common/src/types';
+import { stringToSeverity } from 'common/src/functions';
+import type { SecurityHubSeverity, Severity } from 'common/src/types';
 import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
 import type { Digest } from './types';
@@ -62,26 +63,69 @@ export function createDigestForAccount(
 			accountName: aws_account_name,
 			actions: createCta(aws_account_name),
 			subject: `Security Hub findings for AWS account ${aws_account_name}`,
-			message: createEmailBody(recentFindings, vulnCutOffInDays),
+			message: createEmailBody(
+				recentFindings,
+				vulnCutOffInDays,
+				aws_account_name,
+				stringToSeverity(finding.severity),
+			),
 		};
 	} else {
 		return undefined;
 	}
 }
 
+function groupByControlIdAndApp(
+	findings: cloudbuster_fsbp_vulnerabilities[],
+): Record<string, cloudbuster_fsbp_vulnerabilities[]> {
+	return findings.reduce<Record<string, cloudbuster_fsbp_vulnerabilities[]>>(
+		(acc, f) => {
+			const key = `${f.control_id} ${f.app ?? 'unknown-app'}`;
+			if (!acc[key]) {
+				acc[key] = [];
+			}
+			acc[key].push(f);
+			return acc;
+		},
+		{},
+	);
+}
+
+function formatFindings(
+	key: string,
+	account_name: string,
+	findings: cloudbuster_fsbp_vulnerabilities[],
+) {
+	const findingsCount = findings.length;
+	const control_id = findings[0]?.control_id;
+	const app = findings[0]?.app ?? 'unknown';
+	const remediation = findings[0]?.remediation;
+	const title = findings[0]?.title;
+	const findingsString = findingsCount === 1 ? 'finding' : 'findings';
+	const url = `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(account_name)}&var-control_id=${control_id}`;
+	return `[${findingsCount} ${findingsString}](${url}) in app: **${app}**, for control [${control_id}](${remediation}), (${title})`;
+}
+
 function createEmailBody(
 	findings: cloudbuster_fsbp_vulnerabilities[],
 	cutOffInDays: number,
+	account_name: string,
+	severity: Severity,
 ): string {
-	return `The following vulnerabilities have been found in your account in the last ${cutOffInDays} days:
-        ${findings
-					.map(
-						(f) =>
-							`**[${f.severity}] ${f.title}**
-Affected resource: ${f.arn}
-Remediation: ${f.remediation ? `[Documentation](${f.remediation})` : 'Unknown'}`,
-					)
-					.join('\n\n')}`;
+	//None of the sublists will ever be empty
+	const listOfGroupedFindings = Object.values(
+		groupByControlIdAndApp(findings),
+	).sort((a, b) => b.length - a.length);
+
+	const msg = listOfGroupedFindings
+		.map((list) => {
+			const key = `${list[0]?.control_id} ${list[0]?.app ?? 'unknown-app'}`;
+			return formatFindings(key, account_name, list);
+		})
+		.join('\n\n');
+
+	return `The following ${severity} vulnerabilities have been found in your account in the last ${cutOffInDays} days:
+	        ${msg}`;
 }
 
 export async function sendDigest(
@@ -97,7 +141,7 @@ export async function sendDigest(
 		actions: digest.actions,
 		target: { AwsAccount: digest.accountId },
 		threadKey: digest.accountId,
-		channel: RequestedChannel.HangoutsChat,
+		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: `cloudbuster ${config.stage}`,
 		topicArn: config.anghammaradSnsTopic,
 	};
