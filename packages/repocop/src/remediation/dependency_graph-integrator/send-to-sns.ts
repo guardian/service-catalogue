@@ -145,9 +145,14 @@ export async function sendReposToDependencyGraphIntegrator(
 		);
 
 	if (suitableRepos.length !== 0) {
-		const eventsToSend: DependencyGraphIntegratorEvent[] = shuffle(
-			createSnsEventsForDependencyGraphIntegration(suitableRepos, repoOwners),
-		).slice(0, repoCount);
+		console.log(
+			`Found ${suitableRepos.length} suitable repos without dependency submission workflows`,
+		);
+
+		const selectedRepos = shuffle(suitableRepos).slice(0, repoCount);
+
+		const eventsToSend: DependencyGraphIntegratorEvent[] =
+			createSnsEventsForDependencyGraphIntegration(selectedRepos, repoOwners);
 
 		for (const event of eventsToSend) {
 			await sendOneRepoToDepGraphIntegrator(config, event);
