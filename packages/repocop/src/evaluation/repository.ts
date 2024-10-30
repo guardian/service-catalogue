@@ -611,7 +611,7 @@ export function evaluateRepositories(
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 		const workflowsForRepo = productionWorkflowUsages.filter(
-			(repo) => (repo.full_name === r.full_name),
+			(repo) => repo.full_name === r.full_name,
 		);
 
 		return evaluateOneRepo(
