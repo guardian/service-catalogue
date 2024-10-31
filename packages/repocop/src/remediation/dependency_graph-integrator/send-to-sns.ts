@@ -137,19 +137,22 @@ export async function sendReposToDependencyGraphIntegrator(
 	repoOwners: view_repo_ownership[],
 	repoCount: number,
 ): Promise<void> {
-	const suitableRepos: RepositoryWithDepGraphLanguage[] =
+	const reposRequiringDepGraphIntegration: RepositoryWithDepGraphLanguage[] =
 		getReposWithoutWorkflows(
 			repoLanguages,
 			productionRepos,
 			productionWorkflowUsages,
 		);
 
-	if (suitableRepos.length !== 0) {
+	if (reposRequiringDepGraphIntegration.length !== 0) {
 		console.log(
-			`Found ${suitableRepos.length} suitable repos without dependency submission workflows`,
+			`Found ${reposRequiringDepGraphIntegration.length} repos requiring dependency graph integration`,
 		);
 
-		const selectedRepos = shuffle(suitableRepos).slice(0, repoCount);
+		const selectedRepos = shuffle(reposRequiringDepGraphIntegration).slice(
+			0,
+			repoCount,
+		);
 
 		const eventsToSend: DependencyGraphIntegratorEvent[] =
 			createSnsEventsForDependencyGraphIntegration(selectedRepos, repoOwners);
