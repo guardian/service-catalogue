@@ -232,7 +232,7 @@ model aws_organizations_roots {
 
 model cloudbuster_fsbp_vulnerabilities {
   arn               String
-  aws_account_id    String
+  aws_account_id    String?
   aws_account_name  String?
   aws_region        String
   control_id        String
@@ -242,7 +242,7 @@ model cloudbuster_fsbp_vulnerabilities {
   stage             String?
   app               String?
   severity          String
-  title             String
+  title             String?
   within_sla        Boolean
   remediation       String?
 

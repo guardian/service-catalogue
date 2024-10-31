@@ -56,7 +56,7 @@ export function createDigestForAccount(
 	const [finding] = recentFindings;
 
 	const { aws_account_name, aws_account_id } = finding;
-	if (aws_account_name) {
+	if (aws_account_name && aws_account_id) {
 		return {
 			accountId: aws_account_id,
 
