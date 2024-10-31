@@ -98,7 +98,7 @@ export interface Repository extends RepositoryFields {
 }
 
 export interface RepositoryWithDepGraphLanguage extends Repository {
-	language: DepGraphLanguage;
+	dependency_graph_language: DepGraphLanguage;
 }
 
 // The number of days teams have to fix vulnerabilities of a given severity

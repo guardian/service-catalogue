@@ -68,7 +68,7 @@ function repositoryWithDepGraphLanguage(
 	const repo = repository(fullName);
 	return {
 		...repo,
-		language,
+		dependency_graph_language: language,
 	};
 }
 

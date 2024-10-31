@@ -56,7 +56,7 @@ export function createSnsEventsForDependencyGraphIntegration(
 	const eventsForAllLanguages: DependencyGraphIntegratorEvent[] =
 		reposWithoutWorkflows.map((repo) => ({
 			name: removeRepoOwner(repo.full_name),
-			language: repo.language,
+			language: repo.dependency_graph_language,
 			admins: findContactableOwners(repo.full_name, repoOwnership),
 		}));
 
@@ -116,7 +116,7 @@ export function getReposWithoutWorkflows(
 				);
 				return result;
 			})
-			.map((repo) => ({ ...repo, language }));
+			.map((repo) => ({ ...repo, dependency_graph_language: language }));
 
 		allReposWithoutWorkflows = allReposWithoutWorkflows.concat(
 			reposWithoutWorkflows,
