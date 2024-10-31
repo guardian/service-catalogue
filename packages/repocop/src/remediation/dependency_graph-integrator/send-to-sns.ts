@@ -91,41 +91,33 @@ export function getReposWithoutWorkflows(
 	productionWorkflowUsages: guardian_github_actions_usage[],
 ): RepositoryWithDepGraphLanguage[] {
 	const depGraphLanguages: DepGraphLanguage[] = ['Scala', 'Kotlin'];
-	let allReposWithoutWorkflows: RepositoryWithDepGraphLanguage[] = [];
 
-	depGraphLanguages.forEach((language) => {
-		let reposWithDepGraphLanguages: Repository[] = [];
+	const allReposWithoutWorkflows: RepositoryWithDepGraphLanguage[] =
+		depGraphLanguages.flatMap((language) => {
+			const reposWithDepGraphLanguages: Repository[] = productionRepos.filter(
+				(repo) => checkRepoForLanguage(repo, languages, language),
+			);
+			console.log(
+				`Found ${reposWithDepGraphLanguages.length} ${language} repos in production`,
+			);
 
-		const repos = productionRepos.filter((repo) =>
-			checkRepoForLanguage(repo, languages, language),
-		);
+			return reposWithDepGraphLanguages
+				.filter((repo) => {
+					const workflowUsagesForRepo = productionWorkflowUsages.filter(
+						(workflow) => workflow.full_name === repo.full_name,
+					);
+					return !doesRepoHaveDepSubmissionWorkflowForLanguage(
+						repo,
+						workflowUsagesForRepo,
+						language,
+					);
+				})
+				.map((repo) => ({ ...repo, dependency_graph_language: language }));
+		});
 
-		console.log(`Found ${repos.length} ${language} repos in production`);
-
-		reposWithDepGraphLanguages = reposWithDepGraphLanguages.concat(repos);
-
-		const reposWithoutWorkflows = reposWithDepGraphLanguages
-			.filter((repo) => {
-				const workflowUsagesForRepo = productionWorkflowUsages.filter(
-					(workflow) => workflow.full_name === repo.full_name,
-				);
-				const result = !doesRepoHaveDepSubmissionWorkflowForLanguage(
-					repo,
-					workflowUsagesForRepo,
-					language,
-				);
-				return result;
-			})
-			.map((repo) => ({ ...repo, dependency_graph_language: language }));
-
-		allReposWithoutWorkflows = allReposWithoutWorkflows.concat(
-			reposWithoutWorkflows,
-		);
-		console.log(
-			`Found ${reposWithoutWorkflows.length} production ${language} repos without dependency submission workflows`,
-		);
-	});
-
+	console.log(
+		`Found ${allReposWithoutWorkflows.length} production repos without dependency submission workflows`,
+	);
 	return allReposWithoutWorkflows;
 }
 
