@@ -29,8 +29,8 @@ import {
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
-import { sendRandomRepoToSnykIntegrator } from './remediation/snyk-integrator/send-to-sns';
 import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
+import { sendRandomRepoToSnykIntegrator } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
