@@ -23,7 +23,7 @@
     "@guardian/tsconfig": "^0.3.1",
     "@swc/core": "1.7.26",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.10",
+    "@types/node": "^22.8.6",
     "@typescript-eslint/eslint-plugin": "^8.5.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.23.1",
