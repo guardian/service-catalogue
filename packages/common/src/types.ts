@@ -97,6 +97,10 @@ export interface Repository extends RepositoryFields {
 	id: NonNullable<RepositoryFields['id']>;
 }
 
+export interface RepositoryWithDepGraphLanguage extends Repository {
+	dependency_graph_language: DepGraphLanguage;
+}
+
 // The number of days teams have to fix vulnerabilities of a given severity
 export const SLAs: Record<Severity, number | undefined> = {
 	critical: 2,
