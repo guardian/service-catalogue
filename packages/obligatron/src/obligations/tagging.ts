@@ -1,4 +1,9 @@
-import type { aws_ec2_images, Prisma, PrismaClient } from '@prisma/client';
+import type {
+	aws_ec2_images,
+	aws_securityhub_findings,
+	Prisma,
+	PrismaClient,
+} from '@prisma/client';
 import { logger } from 'common/src/logs';
 import type { ObligationResult } from '.';
 
@@ -16,7 +21,7 @@ type FindingResource = {
 	Tags: null | Record<string, string>;
 };
 
-const securityHubLink = (region: string, findingId: string) => {
+const securityHubLink = (region: string | null, findingId: string) => {
 	// Annoyingly AWS doesn't seem to use any standard encoding that I'm aware of
 	// meaning that we can't use encodeURI and must manually build the encoded URL.
 	const BACK_SLASH = '%255C';
@@ -36,6 +41,24 @@ const securityHubLink = (region: string, findingId: string) => {
 
 	return `https://${region}.console.aws.amazon.com/securityhub/home?region=${region}#/findings?search=${queryParameter}`;
 };
+
+function createObligationResult(
+	record: aws_ec2_images,
+	tag: string,
+): ObligationResult | undefined {
+	if (record.arn && record.account_id) {
+		return {
+			resource: record.arn,
+			reason: `AMIs should be tagged. Missing tag: ${tag}`,
+			contacts: {
+				aws_account_id: record.account_id,
+			},
+		};
+	} else {
+		// This should never happen, but let's make the types happy
+		return undefined;
+	}
+}
 
 const isFindingResource = (resource: unknown): resource is FindingResource =>
 	typeof resource === 'object' &&
@@ -82,24 +105,48 @@ export async function evaluateAmiTaggingCoverage(
 		'BakeId',
 	];
 
-	return records.flatMap<ObligationResult>((record) => {
-		const tagKeys = Object.keys(record.tags as Prisma.JsonObject);
+	const obligationResults = records.flatMap<ObligationResult | undefined>(
+		(record) => {
+			const tagKeys = Object.keys(record.tags as Prisma.JsonObject);
 
-		const missingTags = amiTags.filter((tag) => !tagKeys.includes(tag));
-		logger.log({
-			message: `AMI ${record.arn} is missing tags: ${missingTags.join(', ')}`,
-		});
+			const missingTags = amiTags.filter((tag) => !tagKeys.includes(tag));
+			logger.log({
+				message: `AMI ${record.arn} is missing tags: ${missingTags.join(', ')}`,
+			});
 
-		return missingTags.map<ObligationResult>((tag) => {
-			return {
-				resource: record.arn,
-				reason: `AMIs should be tagged. Missing tag: ${tag}`,
-				contacts: {
-					aws_account_id: record.account_id,
-				},
-			};
-		});
-	});
+			return missingTags.map<ObligationResult | undefined>((tag) => {
+				return createObligationResult(record, tag);
+			});
+		},
+	);
+
+	return obligationResults.filter((_) => _ !== undefined);
+}
+
+function createResult(
+	resource: FindingResource,
+	finding: aws_securityhub_findings,
+): ObligationResult | undefined {
+	if (finding.id && finding.title && finding.region && finding.aws_account_id) {
+		return {
+			resource: resource.Id,
+			reason: finding.title,
+			url: securityHubLink(finding.region, finding.id),
+			contacts: {
+				aws_account_id: finding.aws_account_id,
+
+				...(resource.Tags !== null && {
+					// Resource might only be missing one of these tags which might help us assert ownership
+					Stack: resource.Tags.Stack,
+					Stage: resource.Tags.Stage,
+					App: resource.Tags.App,
+				}),
+			},
+		};
+	} else {
+		// This should never happen, but let's make the types happy
+		return undefined;
+	}
 }
 
 export async function evaluateSecurityHubTaggingCoverage(
@@ -157,23 +204,11 @@ export async function evaluateSecurityHubTaggingCoverage(
 			throw new Error(`Invalid resource in finding ${finding.id}`);
 		}
 
-		results.push(
-			...validResources.map((resource) => ({
-				resource: resource.Id,
-				reason: finding.title,
-				url: securityHubLink(finding.region, finding.id),
-				contacts: {
-					aws_account_id: finding.aws_account_id,
+		const newResults: ObligationResult[] = validResources
+			.map((resource) => createResult(resource, finding))
+			.filter((_) => _ !== undefined);
 
-					...(resource.Tags !== null && {
-						// Resource might only be missing one of these tags which might help us assert ownership
-						Stack: resource.Tags.Stack,
-						Stage: resource.Tags.Stage,
-						App: resource.Tags.App,
-					}),
-				},
-			})),
-		);
+		results.push(...newResults);
 	}
 
 	return results;

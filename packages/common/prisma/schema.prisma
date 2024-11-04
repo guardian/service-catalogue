@@ -50,9 +50,9 @@ model aws_ec2_images {
   cq_source_name            String?   @map("_cq_source_name")
   cq_id                     String    @id(map: "aws_ec2_images_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id              String?   @map("_cq_parent_id") @db.Uuid
-  account_id                String
-  region                    String
-  arn                       String
+  account_id                String?
+  region                    String?
+  arn                       String?
   tags                      Json?
   architecture              String?
   block_device_mappings     Json?
@@ -163,10 +163,10 @@ model aws_organizations_account_parents {
   cq_source_name     String?   @map("_cq_source_name")
   cq_id              String    @id(map: "aws_organizations_account_parents_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
-  request_account_id String
-  id                 String
-  parent_id          String
-  type               String
+  request_account_id String?
+  id                 String?
+  parent_id          String?
+  type               String?
 
   @@ignore
 }
@@ -176,9 +176,9 @@ model aws_organizations_accounts {
   cq_source_name     String?   @map("_cq_source_name")
   cq_id              String    @id(map: "aws_organizations_accounts_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
-  request_account_id String
+  request_account_id String?
   tags               Json?
-  arn                String
+  arn                String?
   email              String?
   id                 String?
   joined_method      String?
@@ -194,8 +194,8 @@ model aws_organizations_organizational_units {
   cq_source_name     String?   @map("_cq_source_name")
   cq_id              String    @id(map: "aws_organizations_organizational_units_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
-  request_account_id String
-  arn                String
+  request_account_id String?
+  arn                String?
   id                 String?
   name               String?
 
@@ -207,10 +207,10 @@ model aws_organizations_organizational_unit_parents {
   cq_source_name     String?   @map("_cq_source_name")
   cq_id              String    @id(map: "aws_organizations_organizational_unit_parents_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
-  request_account_id String
-  id                 String
-  parent_id          String
-  type               String
+  request_account_id String?
+  id                 String?
+  parent_id          String?
+  type               String?
 
   @@ignore
 }
@@ -220,11 +220,11 @@ model aws_organizations_roots {
   cq_source_name     String?   @map("_cq_source_name")
   cq_id              String    @id(map: "aws_organizations_roots_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id       String?   @map("_cq_parent_id") @db.Uuid
-  request_account_id String
+  request_account_id String?
   tags               Json?
-  arn                String
-  id                 String
-  name               String
+  arn                String?
+  id                 String?
+  name               String?
   policy_types       Json?
 
   @@ignore
@@ -232,7 +232,7 @@ model aws_organizations_roots {
 
 model cloudbuster_fsbp_vulnerabilities {
   arn               String
-  aws_account_id    String
+  aws_account_id    String?
   aws_account_name  String?
   aws_region        String
   control_id        String
@@ -242,7 +242,7 @@ model cloudbuster_fsbp_vulnerabilities {
   stage             String?
   app               String?
   severity          String
-  title             String
+  title             String?
   within_sla        Boolean
   remediation       String?
 
@@ -589,7 +589,7 @@ model aws_lambda_functions {
   cq_parent_id         String?   @map("_cq_parent_id") @db.Uuid
   account_id           String?
   region               String?
-  arn                  String
+  arn                  String?
   policy_revision_id   String?
   policy_document      Json?
   code_signing_config  Json?
@@ -608,7 +608,7 @@ model aws_s3_buckets {
   cq_id          String    @id(map: "aws_s3_buckets_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
   account_id     String?
-  arn            String
+  arn            String?
   creation_date  DateTime? @db.Timestamp(6)
   name           String?
   region         String?
@@ -694,18 +694,18 @@ model aws_securityhub_findings {
   cq_source_name          String?   @map("_cq_source_name")
   cq_id                   String    @id(map: "aws_securityhub_findings_cqpk") @map("_cq_id") @db.Uuid
   cq_parent_id            String?   @map("_cq_parent_id") @db.Uuid
-  request_account_id      String
-  request_region          String
-  aws_account_id          String
-  created_at              DateTime  @db.Timestamp(6)
-  description             String
-  generator_id            String
-  id                      String
-  product_arn             String
+  request_account_id      String?
+  request_region          String?
+  aws_account_id          String?
+  created_at              DateTime? @db.Timestamp(6)
+  description             String?
+  generator_id            String?
+  id                      String?
+  product_arn             String?
   resources               Json?
-  schema_version          String
-  title                   String
-  updated_at              DateTime  @db.Timestamp(6)
+  schema_version          String?
+  title                   String?
+  updated_at              DateTime? @db.Timestamp(6)
   action                  Json?
   aws_account_name        String?
   company_name            String?
@@ -726,7 +726,7 @@ model aws_securityhub_findings {
   product_fields          Json?
   product_name            String?
   record_state            String?
-  region                  String
+  region                  String?
   related_findings        Json?
   remediation             Json?
   sample                  Boolean?

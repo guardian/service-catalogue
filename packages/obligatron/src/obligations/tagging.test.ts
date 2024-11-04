@@ -24,6 +24,8 @@ describe('The tagging obligation', () => {
 				resources: [
 					{
 						Id: 'arn:aws:s3:::mybucket',
+						Region: 'mars-north-1',
+						Type: 'AWS::S3::Bucket',
 						Tags: {
 							Stack: 'my-stack',
 							Stage: 'prod',
@@ -104,6 +106,8 @@ describe('The tagging obligation', () => {
 				resources: [
 					{
 						Id: 'arn:aws:s3:::mybucket',
+						Region: 'mars-north-1',
+						Type: 'AWS::S3::Bucket',
 						Tags: {
 							Stack: 'my-stack',
 							Stage: 'prod',
@@ -113,6 +117,8 @@ describe('The tagging obligation', () => {
 					},
 					{
 						Id: 'arn:aws:s3:::mybucket',
+						Region: 'mars-north-1',
+						Type: 'AWS::S3::Bucket',
 						Tags: {
 							Stack: 'my-stack',
 							Stage: 'prod',
