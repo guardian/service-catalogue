@@ -117,13 +117,17 @@ const languageSpecificInfo: Record<DepGraphLanguage, string> = {
 function createPRChecklist(
 	branchName: string,
 	stepsForLanguage: string,
+	language: DepGraphLanguage,
+	yamlFilename: string,
 ): string[] {
 	const finalSteps = [
-		'A run of this action should have been triggered when the branch was ' +
-			'created. Sense check the output of "Log snapshot for user validation", ' +
-			'and make sure that your dependencies look okay.',
-		`When you are happy the action works, remove the branch name \`${branchName}\` ` +
-			'trigger from the the yaml file (aka delete line 6), approve, and merge. ',
+		`A run of this action (Update Dependency Graph for ${depGraphPackageManager[language]}) ` +
+			`should have been triggered (see the checks below) when the branch \`${branchName}\` ` +
+			'was created. Sense check the output of the step "Log snapshot for user ' +
+			'validation", and make sure that your dependencies look okay.',
+		`When you are happy the action works, remove the branch name trigger \`${branchName}\` ` +
+			`from the file \`${yamlFilename}-dependency-graph.yaml\` ` +
+			`(aka delete line 6), approve this PR, and merge. `,
 	];
 	return [stepsForLanguage, ...finalSteps];
 }
@@ -133,12 +137,24 @@ export function generatePrBody(
 	repoName: string,
 	language: DepGraphLanguage,
 ): string {
+	const yamlFilename = depGraphPackageManager[language];
+	console.log('yamlFileName', yamlFilename);
+
 	const body = [
 		h2('What does this change?'),
 		p(
 			`This PR sends your ${depGraphPackageManager[language]} dependencies to GitHub for vulnerability monitoring via Dependabot. ` +
 				`The submitted dependencies will appear in the [Dependency Graph](https://github.com/guardian/${repoName}/network/dependencies) ` +
 				'on merge to main (it might take a few minutes to update).',
+		),
+		h2('What do I need to do?'),
+		markdownChecklist(
+			createPRChecklist(
+				branchName,
+				stepsForLanguages[`${language}`],
+				language,
+				yamlFilename,
+			),
 		),
 		h2('Why?'),
 		p(
@@ -150,15 +166,11 @@ export function generatePrBody(
 		h2('How has it been verified?'),
 		p(
 			'We have tested this workflow, and the process of raising a PR on DevX repos, and have verified that it works. ' +
-				'However, we have included some instructions below to help you verify that it works for you. ' +
+				'However, we have included some instructions above to help you verify that it works for you. ' +
 				'Please do not hesitate to contact DevX Security if you have any questions or concerns.',
 		),
 		h2(`Further information for ${depGraphPackageManager[language]}`),
 		p(languageSpecificInfo[`${language}`]),
-		h2('What do I need to do?'),
-		markdownChecklist(
-			createPRChecklist(branchName, stepsForLanguages[`${language}`]),
-		),
 	];
 	return tsMarkdown(body);
 }
