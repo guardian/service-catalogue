@@ -163,7 +163,7 @@ export async function main() {
 
 	await sendRandomRepoToSnykIntegrator(repocopRules, config, repoLanguages);
 
-	const dependencyGraphIntegratorRepoCount = 2;
+	const dependencyGraphIntegratorRepoCount = 5;
 
 	await sendReposToDependencyGraphIntegrator(
 		config,
