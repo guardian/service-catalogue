@@ -84,12 +84,6 @@ module.exports = {
 			testMatch: ['<rootDir>/packages/interactive-monitor/**/*.test.ts'],
 		},
 		{
-			displayName: 'snyk-integrator',
-			transform,
-			setupFilesAfterEnv,
-			testMatch: ['<rootDir>/packages/snyk-integrator/**/*.test.ts'],
-		},
-		{
 			displayName: 'obligatron',
 			transform,
 			setupFilesAfterEnv,
