@@ -37,11 +37,6 @@ export interface DependencyGraphIntegratorEvent {
 	admins: string[];
 }
 
-export interface SnykIntegratorEvent {
-	name: string;
-	languages: string[];
-}
-
 //GraphQL types for adding PRs to GitHub Projects
 interface PullRequestIdAndAuthor {
 	author: {

@@ -31,14 +31,6 @@ export class Repocop {
 		repocopGithubSecret: Secret,
 		gitHubOrg: string,
 	) {
-		const snykIntegratorInputTopic = new Topic(
-			guStack,
-			`snyk-integrator-input-topic-${guStack.stage}`,
-			{
-				displayName: 'Snyk Integrator Input Topic',
-			},
-		);
-
 		const dependencyGraphIntegratorInputTopic = new Topic(
 			guStack,
 			`dependency-graph-integrator-input-topic-${guStack.stage}`,
@@ -63,7 +55,6 @@ export class Repocop {
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitorTopic.topicArn,
 				GITHUB_APP_SECRET: repocopGithubSecret.secretArn,
 				INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '40' : '3',
-				SNYK_INTEGRATOR_INPUT_TOPIC_ARN: snykIntegratorInputTopic.topicArn,
 				DEPENDENCY_GRAPH_INPUT_TOPIC_ARN:
 					dependencyGraphIntegratorInputTopic.topicArn,
 				GITHUB_ORG: gitHubOrg,
@@ -94,20 +85,8 @@ export class Repocop {
 		repocopGithubSecret.grantRead(repocopLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
-		snykIntegratorInputTopic.grantPublish(repocopLambda);
 		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
-
-		const snykIntegatorLambda = stageAwareIntegratorLambda(
-			guStack,
-			vpc,
-			'snyk-integrator',
-			gitHubOrg,
-		);
-
-		snykIntegratorInputTopic.addSubscription(
-			new LambdaSubscription(snykIntegatorLambda, {}),
-		);
 
 		const dependencyGraphIntegratorLambda = stageAwareIntegratorLambda(
 			guStack,

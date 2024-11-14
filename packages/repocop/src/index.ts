@@ -30,7 +30,6 @@ import {
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
 import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
-import { sendRandomRepoToSnykIntegrator } from './remediation/snyk-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
@@ -161,9 +160,7 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	await sendRandomRepoToSnykIntegrator(repocopRules, config, repoLanguages);
-
-	const dependencyGraphIntegratorRepoCount = 2;
+	const dependencyGraphIntegratorRepoCount = 5;
 
 	await sendReposToDependencyGraphIntegrator(
 		config,

@@ -18,9 +18,9 @@ The dependency graph integrator takes a repo name as JSON, like so:
 
 ```json
 {
- "name": "service-catalogue",
- "language": "Scala",
-  "admins": ["my-team-slug"],
+	"name": "service-catalogue",
+	"language": "Scala",
+	"admins": ["my-team-slug"]
 }
 ```
 
@@ -73,7 +73,7 @@ The format of input to the lambda on the CODE environment is that of an SNS mess
 
 #### DEV
 
-The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the snyk-integrator package. The input can be configured by modifying [this file](./src/run-locally.ts)
+The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the dependency-graph-integrator package. The input can be configured by modifying [this file](./src/run-locally.ts)
 
 ### How does dependency submission work once the action is in use?
 
