@@ -82,10 +82,10 @@ flowchart TB
     dev[P&E Developer]
     repocop[Repocop Lambdas]
     aws[AWS APIs]
-    
+
     snyk --> |Data from snyk populates Cloudquery tables|cq
-    github --> |Data from snyk populates Cloudquery tables|cq
-    aws --> |Data from snyk populates Cloudquery tables|cq
+    github --> |Data from dependabot populates Cloudquery tables|cq
+    aws --> |Data from aws populates Cloudquery tables|cq
     cq --> |Cloudquery writes data to the DB|DB
     DB --> |1 - Cloudquery data is used to calculate departmental compliance with obligations|repocop
     repocop --> |2 - Repocop stores compliance information about repos as a table in the cloudquery DB|DB

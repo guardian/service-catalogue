@@ -27,20 +27,20 @@ describe('getPullRequest', () => {
 		},
 	};
 
-	const snykBranch = {
+	const dependabotBranch = {
 		head: {
-			ref: 'integrate-snyk-abcd',
+			ref: 'integrate-dependabot-abcd',
 		},
 		user: {
-			login: 'gu-snyk-integrator[bot]',
+			login: 'gu-dependency-graph-integrator[bot]',
 			type: 'Bot',
 		},
 	};
 
-	const snykBranch2 = {
-		...snykBranch,
+	const dependabotBranch2 = {
+		...dependabotBranch,
 		head: {
-			ref: 'integrate-snyk-efgh',
+			ref: 'integrate-dependabot-efgh',
 		},
 	};
 
@@ -50,32 +50,32 @@ describe('getPullRequest', () => {
 			mockOctokit(pulls),
 			'repo',
 			'owner',
-			'gu-snyk-integrator[bot]',
+			'gu-dependency-graph-integrator[bot]',
 		);
 		expect(foundPull).toBeUndefined();
 	});
 
 	it('should return pull request when author matches', async () => {
-		const pulls = [featureBranch, snykBranch];
+		const pulls = [featureBranch, dependabotBranch];
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
 			'repo',
 			'owner',
-			'gu-snyk-integrator[bot]',
+			'gu-dependency-graph-integrator[bot]',
 		);
-		expect(foundPull).toEqual(snykBranch);
+		expect(foundPull).toEqual(dependabotBranch);
 	});
 
 	it('should return first pull request that matches and log warning', async () => {
 		const warn = jest.spyOn(console, 'warn');
-		const pulls = [featureBranch, snykBranch, snykBranch2];
+		const pulls = [featureBranch, dependabotBranch, dependabotBranch2];
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
 			'repo',
 			'owner',
-			'gu-snyk-integrator[bot]',
+			'gu-dependency-graph-integrator[bot]',
 		);
-		expect(foundPull).toEqual(snykBranch);
+		expect(foundPull).toEqual(dependabotBranch);
 		expect(warn).toHaveBeenCalledWith(
 			'More than one PR found on repo - choosing the first.',
 		);
