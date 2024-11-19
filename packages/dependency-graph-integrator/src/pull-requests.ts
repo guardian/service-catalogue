@@ -139,53 +139,40 @@ export async function createPrAndAddToProject(
 ) {
 	if (stage === 'PROD') {
 		const ghClient = octokit ?? (await stageAwareOctokit(stage));
-		const existingPullRequest = await getExistingPullRequest(
-			ghClient,
+
+		const pullRequestResponse = await createPullRequest(ghClient, {
 			repoName,
 			owner,
-			`${author}[bot]`,
-		);
+			title: prTitle,
+			body: prBody,
+			branchName: branch,
+			changes: [
+				{
+					commitMessage,
+					files: {
+						[fileName]: fileContents,
+					},
+				},
+			],
+			admins,
+		});
 
-		if (!existingPullRequest) {
-			const pullRequestResponse = await createPullRequest(ghClient, {
+		if (pullRequestResponse?.html_url && pullRequestResponse.number) {
+			console.log(
+				'Pull request successfully created:',
+				pullRequestResponse.html_url,
+			);
+
+			await requestTeamReview(
+				ghClient,
 				repoName,
 				owner,
-				title: prTitle,
-				body: prBody,
-				branchName: branch,
-				changes: [
-					{
-						commitMessage,
-						files: {
-							[fileName]: fileContents,
-						},
-					},
-				],
+				pullRequestResponse.number,
 				admins,
-			});
-
-			if (pullRequestResponse?.html_url && pullRequestResponse.number) {
-				console.log(
-					'Pull request successfully created:',
-					pullRequestResponse.html_url,
-				);
-
-				await requestTeamReview(
-					ghClient,
-					repoName,
-					owner,
-					pullRequestResponse.number,
-					admins,
-				);
-
-				await addPrToProject(stage, repoName, boardNumber, author);
-				console.log('Updated project board');
-			}
-		} else {
-			console.log(
-				`Existing pull request found. Skipping creating a new one.`,
-				existingPullRequest.html_url,
 			);
+
+			await addPrToProject(stage, repoName, boardNumber, author);
+			console.log('Updated project board');
 		}
 	} else {
 		console.log(`Testing generation of ${fileName} for ${repoName}`);

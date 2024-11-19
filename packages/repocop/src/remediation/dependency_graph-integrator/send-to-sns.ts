@@ -12,6 +12,8 @@ import type {
 	Repository,
 	RepositoryWithDepGraphLanguage,
 } from 'common/src/types';
+import { getExistingPullRequest } from 'dependency-graph-integrator/src/pull-requests';
+import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
 
@@ -128,6 +130,7 @@ export async function sendReposToDependencyGraphIntegrator(
 	productionWorkflowUsages: guardian_github_actions_usage[],
 	repoOwners: view_repo_ownership[],
 	repoCount: number,
+	octokit: Octokit,
 ): Promise<void> {
 	const reposRequiringDepGraphIntegration: RepositoryWithDepGraphLanguage[] =
 		getReposWithoutWorkflows(
@@ -141,10 +144,30 @@ export async function sendReposToDependencyGraphIntegrator(
 			`Found ${reposRequiringDepGraphIntegration.length} repos requiring dependency graph integration`,
 		);
 
-		const selectedRepos = shuffle(reposRequiringDepGraphIntegration).slice(
-			0,
-			repoCount,
-		);
+		const shuffledRepos = shuffle(reposRequiringDepGraphIntegration);
+
+		const selectedRepos: RepositoryWithDepGraphLanguage[] = [];
+
+		while (selectedRepos.length < repoCount && shuffledRepos.length > 0) {
+			const repo = shuffledRepos.pop();
+			if (repo) {
+				console.log('Checking for existing PR for', repo.name);
+				const existingPr = await getExistingPullRequest(
+					octokit,
+					repo.name,
+					'guardian',
+					'gu-dependency-graph-integrator[bot]',
+				);
+				console.log(
+					existingPr
+						? `Existing PR found for ${repo.name}`
+						: `PR not found for ${repo.name}`,
+				);
+				if (!existingPr) {
+					selectedRepos.push(repo);
+				}
+			}
+		}
 
 		const eventsToSend: DependencyGraphIntegratorEvent[] =
 			createSnsEventsForDependencyGraphIntegration(selectedRepos, repoOwners);
