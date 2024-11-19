@@ -1,9 +1,9 @@
 import { randomBytes } from 'crypto';
 import type { Endpoints } from '@octokit/types';
+import { stageAwareOctokit } from 'common/src/functions';
+import { addPrToProject } from 'common/src/projects-graphql';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
-import { stageAwareOctokit } from './functions';
-import { addPrToProject } from './projects-graphql';
 
 interface Change {
 	commitMessage: string;
