@@ -25,7 +25,7 @@ export class InteractiveMonitor {
 			architecture: Architecture.ARM_64,
 			fileName: `${service}.zip`,
 			handler: 'index.handler',
-			runtime: Runtime.NODEJS_20_X,
+			runtime: Runtime.NODEJS_22_X,
 			environment: {
 				GITHUB_APP_SECRET: githubCredentials.secretName,
 				GITHUB_ORG: gitHubOrg,

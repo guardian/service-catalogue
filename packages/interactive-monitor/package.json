@@ -4,7 +4,7 @@
 	"description": "A lambda which applies branch protection to repos that are passed to it via an SQS topic",
 	"main": "index.ts",
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node22 --outdir=dist --external:@aws-sdk",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects interactive-monitor",
 		"start": "tsx src/run-locally.ts",
 		"typecheck": "tsc --noEmit"

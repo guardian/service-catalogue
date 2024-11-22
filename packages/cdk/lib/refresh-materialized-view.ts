@@ -34,7 +34,7 @@ export function addRefreshMaterializedViewLambda(
 			DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 			QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
 		},
-		runtime: Runtime.NODEJS_20_X,
+		runtime: Runtime.NODEJS_22_X,
 		timeout: Duration.minutes(10),
 	});
 

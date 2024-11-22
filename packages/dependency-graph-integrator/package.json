@@ -5,7 +5,7 @@
 		"@types/aws-lambda": "^8.10.141"
 	},
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node22 --outdir=dist --external:@aws-sdk",
 		"start": "tsx src/run-locally.ts",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects dependency-graph-integrator",
 		"typecheck": "tsc --noEmit"
