@@ -6,7 +6,7 @@
 		"@types/got": "^9.6.12"
 	},
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node22--outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
 		"start": "APP=repocop tsx src/run-locally.ts",
 		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects repocop",
 		"typecheck": "tsc --noEmit"
