@@ -99,7 +99,7 @@ export function awsSourceConfigForOrganisation(
  *
  * @param accountNumber The AWS account to query. ServiceCatalogue will assume the role `cloudquery-access` in this account.
  * @param tableConfig Which tables to include or exclude.
- *
+ * @param extraConfig Extra spec fields.
  * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#account
  */
 export function awsSourceConfigForAccount(
@@ -297,6 +297,31 @@ export function githubLanguagesConfig(): CloudqueryConfig {
 			destinations: ['postgresql'],
 			tables: ['github_languages'],
 			registry: 'github',
+		},
+	};
+}
+
+export function amigoBakePackagesConfig(
+	baseImagesTableName: string,
+	recipesTableName: string,
+	bakesTableName: string,
+	packagesBucketName: string,
+): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'image-packages',
+			registry: 'github',
+			path: 'guardian/image-packages',
+			version: `v${Versions.CloudqueryImagePackages}`,
+			destinations: ['postgresql'],
+			tables: ['amigo_bake_packages'],
+			spec: {
+				base_images_table: baseImagesTableName,
+				recipes_table: recipesTableName,
+				bakes_table: bakesTableName,
+				bucket: packagesBucketName,
+			},
 		},
 	};
 }

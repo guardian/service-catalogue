@@ -10,6 +10,7 @@ We are using CloudQuery to collect data from:
 - Snyk
 - Fastly
 - Galaxies of the Guardian
+- Image packages
 
 As it is relatively easy collect data with CloudQuery, we have, largely, opted to collect _all_ the data.
 By collecting this extra data, we enable others to answer their questions. For example:
@@ -20,7 +21,7 @@ By collecting this extra data, we enable others to answer their questions. For e
 
 We have implemented CloudQuery to run on AWS ECS, 
 writing data to [Postgres](https://www.cloudquery.io/docs/plugins/destinations/postgresql/overview).
-This is all [defined using GuCDK](../packages/cdk/lib/cloudquery.ts).
+This is all [defined using GuCDK](../packages/cdk/lib/cloudquery/index.ts).
 
 We have more interest in some data sources than others.
 For example, we'd like to know more about AWS Lambdas across the estate than AWS Elastic Beanstalk deployments.

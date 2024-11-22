@@ -9,6 +9,7 @@ We are using CloudQuery to collect data about how The Guardian uses:
 - Snyk
 - Fastly
 - Galaxies of the Guardian
+- Image packages
 
 CloudQuery generally collects metadata about these resources. That means that we have information like the name of a
 repository, and when it was created, but not the contents of the files in it.

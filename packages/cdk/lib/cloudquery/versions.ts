@@ -27,4 +27,5 @@ export const Versions = {
 	CloudquerySnyk: envOrError('CQ_SNYK'),
 	CloudqueryGithubLanguages: envOrError('CQ_GITHUB_LANGUAGES'),
 	CloudqueryNs1: envOrError('CQ_NS1'),
+	CloudqueryImagePackages: envOrError('CQ_IMAGE_PACKAGES'),
 };

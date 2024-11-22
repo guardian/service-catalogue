@@ -3,7 +3,7 @@ import { GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
-import { Duration } from 'aws-cdk-lib';
+import { Aws, Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
@@ -14,6 +14,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
+	amigoBakePackagesConfig,
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
 	fastlySourceConfig,
@@ -27,7 +28,12 @@ import {
 	snykSourceConfig,
 } from './config';
 import { Images } from './images';
-import { cloudqueryAccess, listOrgsPolicy, readBucketPolicy } from './policies';
+import {
+	cloudqueryAccess,
+	listOrgsPolicy,
+	readBucketPolicy,
+	readDynamoDbTablePolicy,
+} from './policies';
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
@@ -588,6 +594,47 @@ export function addCloudqueryEcsCluster(
 		config: ns1SourceConfig(),
 	};
 
+	const packagesBucketName = new GuStringParameter(
+		scope,
+		'packagesBucketNameParam',
+		{
+			fromSSM: true,
+			default: `/${stage}/deploy/amigo/amigo.data.bucket`,
+		},
+	).valueAsString;
+
+	const packagesBucket = GuS3Bucket.fromBucketName(
+		scope,
+		'packagesBucket',
+		packagesBucketName,
+	);
+
+	const baseImagesTableName = `amigo-${stage}-base-images`;
+	const recipesTableName = `amigo-${stage}-recipes`;
+	const bakesTableName = `amigo-${stage}-bakes`;
+
+	const amigoBakePackagesSource: CloudquerySource = {
+		name: 'AmigoBakePackages',
+		description: 'Packages installed in Amigo bakes.',
+		schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+		config: amigoBakePackagesConfig(
+			baseImagesTableName,
+			recipesTableName,
+			bakesTableName,
+			packagesBucket.bucketName,
+		),
+		policies: [
+			readDynamoDbTablePolicy(
+				GuardianAwsAccounts.DeployTools,
+				Aws.REGION,
+				baseImagesTableName,
+				recipesTableName,
+				bakesTableName,
+			),
+			readBucketPolicy(`${packagesBucket.bucketArn}/packagelists/*`),
+		],
+	};
+
 	return new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
@@ -605,6 +652,7 @@ export function addCloudqueryEcsCluster(
 			riffRaffSources,
 			githubLanguagesSource,
 			ns1Source,
+			amigoBakePackagesSource,
 		],
 	});
 }
