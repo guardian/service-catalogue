@@ -1,4 +1,5 @@
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
+import type { Endpoints } from '@octokit/types';
 import type {
 	github_languages,
 	guardian_github_actions_usage,
@@ -12,7 +13,6 @@ import type {
 	Repository,
 	RepositoryWithDepGraphLanguage,
 } from 'common/src/types';
-import { getExistingPullRequest } from 'dependency-graph-integrator/src/pull-requests';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config';
 import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
@@ -49,6 +49,36 @@ export function doesRepoHaveDepSubmissionWorkflowForLanguage(
 		return true;
 	}
 	return false;
+}
+
+type PullRequestParameters =
+	Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
+
+type PullRequest =
+	Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][number];
+
+function isGithubAuthor(pull: PullRequest, author: string) {
+	return pull.user?.login === author && pull.user.type === 'Bot';
+}
+export async function getExistingPullRequest(
+	octokit: Octokit,
+	repoName: string,
+	owner: string,
+	author: string,
+) {
+	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
+		owner,
+		repo: repoName,
+		state: 'open',
+	} satisfies PullRequestParameters);
+
+	const found = pulls.filter((pull) => isGithubAuthor(pull, author));
+
+	if (found.length > 1) {
+		console.warn(`More than one PR found on ${repoName} - choosing the first.`);
+	}
+
+	return found[0];
 }
 
 export function createSnsEventsForDependencyGraphIntegration(
