@@ -95,7 +95,7 @@ setup_environment() {
 
   github_info_url="https://github.com/settings/tokens?type=beta"
 
-  token_text="# Required permissions are Metadata: Read, Administration: Read, Dependabot alerts: Read. See $github_info_url
+  token_text="# Required permissions are Metadata: Read, Administration: Read, Dependabot alerts: Read, Pull requests: Read. See $github_info_url
 GITHUB_ACCESS_TOKEN=
 "
 
