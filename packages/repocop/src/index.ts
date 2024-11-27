@@ -169,6 +169,7 @@ export async function main() {
 		productionWorkflowUsages,
 		repoOwners,
 		dependencyGraphIntegratorRepoCount,
+		octokit,
 	);
 
 	await writeEvaluationTable(repocopRules, prisma);

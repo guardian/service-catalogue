@@ -1,9 +1,8 @@
 import { randomBytes } from 'crypto';
-import type { Endpoints } from '@octokit/types';
+import { stageAwareOctokit } from 'common/src/functions';
+import { addPrToProject } from 'common/src/projects-graphql';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
-import { stageAwareOctokit } from './functions';
-import { addPrToProject } from './projects-graphql';
 
 interface Change {
 	commitMessage: string;
@@ -91,37 +90,6 @@ export async function requestTeamReview(
 	}
 }
 
-type PullRequestParameters =
-	Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
-
-type PullRequest =
-	Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][number];
-
-function isGithubAuthor(pull: PullRequest, author: string) {
-	return pull.user?.login === author && pull.user.type === 'Bot';
-}
-
-export async function getExistingPullRequest(
-	octokit: Octokit,
-	repoName: string,
-	owner: string,
-	author: string,
-) {
-	const pulls = await octokit.paginate(octokit.rest.pulls.list, {
-		owner,
-		repo: repoName,
-		state: 'open',
-	} satisfies PullRequestParameters);
-
-	const found = pulls.filter((pull) => isGithubAuthor(pull, author));
-
-	if (found.length > 1) {
-		console.warn(`More than one PR found on ${repoName} - choosing the first.`);
-	}
-
-	return found[0];
-}
-
 export async function createPrAndAddToProject(
 	stage: string,
 	repoName: string,
@@ -139,53 +107,40 @@ export async function createPrAndAddToProject(
 ) {
 	if (stage === 'PROD') {
 		const ghClient = octokit ?? (await stageAwareOctokit(stage));
-		const existingPullRequest = await getExistingPullRequest(
-			ghClient,
+
+		const pullRequestResponse = await createPullRequest(ghClient, {
 			repoName,
 			owner,
-			`${author}[bot]`,
-		);
+			title: prTitle,
+			body: prBody,
+			branchName: branch,
+			changes: [
+				{
+					commitMessage,
+					files: {
+						[fileName]: fileContents,
+					},
+				},
+			],
+			admins,
+		});
 
-		if (!existingPullRequest) {
-			const pullRequestResponse = await createPullRequest(ghClient, {
+		if (pullRequestResponse?.html_url && pullRequestResponse.number) {
+			console.log(
+				'Pull request successfully created:',
+				pullRequestResponse.html_url,
+			);
+
+			await requestTeamReview(
+				ghClient,
 				repoName,
 				owner,
-				title: prTitle,
-				body: prBody,
-				branchName: branch,
-				changes: [
-					{
-						commitMessage,
-						files: {
-							[fileName]: fileContents,
-						},
-					},
-				],
+				pullRequestResponse.number,
 				admins,
-			});
-
-			if (pullRequestResponse?.html_url && pullRequestResponse.number) {
-				console.log(
-					'Pull request successfully created:',
-					pullRequestResponse.html_url,
-				);
-
-				await requestTeamReview(
-					ghClient,
-					repoName,
-					owner,
-					pullRequestResponse.number,
-					admins,
-				);
-
-				await addPrToProject(stage, repoName, boardNumber, author);
-				console.log('Updated project board');
-			}
-		} else {
-			console.log(
-				`Existing pull request found. Skipping creating a new one.`,
-				existingPullRequest.html_url,
 			);
+
+			await addPrToProject(stage, repoName, boardNumber, author);
+			console.log('Updated project board');
 		}
 	} else {
 		console.log(`Testing generation of ${fileName} for ${repoName}`);
