@@ -233,11 +233,11 @@ export class ServiceCatalogue extends GuStack {
 			anghammaradTopicParameter.valueAsString,
 		);
 
-		const githubCredentials = new Secret(
+		const repocopGithubCredentials = new Secret(
 			this,
-			`branch-protector-github-app-auth`,
+			`repocop-github-app-auth`,
 			{
-				secretName: `/${stage}/${stack}/service-catalogue/branch-protector-github-app-secret`,
+				secretName: `/${stage}/${stack}/service-catalogue/repocop-github-app-secret`,
 			},
 		);
 
@@ -258,7 +258,7 @@ export class ServiceCatalogue extends GuStack {
 			vpc,
 			interactiveMonitor.topic,
 			applicationToPostgresSecurityGroup,
-			githubCredentials,
+			repocopGithubCredentials,
 			gitHubOrg,
 		);
 
