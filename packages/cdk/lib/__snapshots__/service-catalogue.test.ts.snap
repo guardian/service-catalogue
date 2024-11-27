@@ -19443,33 +19443,6 @@ spec:
       },
       "Type": "AWS::SNS::Topic",
     },
-    "branchprotectorgithubappauth4E91892E": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/branch-protector-github-app-secret",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::SecretsManager::Secret",
-      "UpdateReplacePolicy": "Delete",
-    },
     "cloudbuster8C461939": {
       "DependsOn": [
         "cloudbusterServiceRoleDefaultPolicy173FB27F",
@@ -23251,7 +23224,7 @@ spec:
               "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
             },
             "GITHUB_APP_SECRET": {
-              "Ref": "branchprotectorgithubappauth4E91892E",
+              "Ref": "repocopgithubappauthFDE18F33",
             },
             "GITHUB_ORG": "guardian",
             "INTERACTIVES_COUNT": "3",
@@ -23505,7 +23478,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "branchprotectorgithubappauth4E91892E",
+                "Ref": "repocopgithubappauthFDE18F33",
               },
             },
             {
@@ -23550,6 +23523,33 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "repocopgithubappauthFDE18F33": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/repocop-github-app-secret",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
     },
     "repocoprepocopcron309MONFRI042F648A2": {
       "Properties": {
