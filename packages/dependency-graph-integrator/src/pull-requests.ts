@@ -141,6 +141,8 @@ export async function createPrAndAddToProject(
 
 			await addPrToProject(stage, repoName, boardNumber, author);
 			console.log('Updated project board');
+		} else {
+			console.log('Pull request not created.');
 		}
 	} else {
 		console.log(`Testing generation of ${fileName} for ${repoName}`);
