@@ -60,7 +60,7 @@ start_containers() {
     echo ""
   done
 
-  docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
+  docker compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
 }
 
 check_vpn_connection() {

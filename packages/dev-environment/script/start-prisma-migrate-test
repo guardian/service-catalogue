@@ -34,7 +34,7 @@ start_containers() {
   step "Launching Docker containers"
 
   if (docker info) 2>&1 >/dev/null; then
-    docker-compose -f "${DIR}/../docker-compose-prisma-migrate.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
+    docker compose -f "${DIR}/../docker-compose-prisma-migrate.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
   else
     echo "Docker is not running. Please start Docker."
     exit 1
