@@ -29,8 +29,7 @@ import {
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
-import { sendOneRepoToDepGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
-import { sendUnprotectedRepo } from './remediation/snyk-integrator/send-to-sns';
+import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
@@ -98,7 +97,6 @@ export async function main() {
 
 	console.log(productionDependabotVulnerabilities);
 
-	// Dependency Graph Integrator
 	const productionWorkflowUsages: guardian_github_actions_usage[] =
 		await getProductionWorkflowUsages(prisma, productionRepos);
 
@@ -162,23 +160,29 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
-	if (config.snykIntegrationPREnabled) {
-		await sendUnprotectedRepo(repocopRules, config, repoLanguages);
-	}
+	const dependencyGraphIntegratorRepoCount = 5;
+
+	await sendReposToDependencyGraphIntegrator(
+		config,
+		repoLanguages,
+		productionRepos,
+		productionWorkflowUsages,
+		repoOwners,
+		dependencyGraphIntegratorRepoCount,
+		octokit,
+	);
 
 	await writeEvaluationTable(repocopRules, prisma);
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
 
-		if (config.branchProtectionEnabled) {
-			await protectBranches(
-				repocopRules,
-				repoOwners,
-				config,
-				unarchivedRepos,
-				octokit,
-			);
-		}
+		await protectBranches(
+			repocopRules,
+			repoOwners,
+			config,
+			unarchivedRepos,
+			octokit,
+		);
 
 		await createAndSendVulnerabilityDigests(
 			config,
@@ -199,14 +203,5 @@ export async function main() {
 			'Messaging is not enabled. Set ENABLE_MESSAGING flag to enable.',
 		);
 	}
-
-	await sendOneRepoToDepGraphIntegrator(
-		config,
-		repoLanguages,
-		productionRepos,
-		productionWorkflowUsages,
-		repoOwners,
-	);
-
 	console.log('Done');
 }

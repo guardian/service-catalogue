@@ -8,7 +8,6 @@ It is deployed as an AWS Lambda, and powers:
 - Team vulnerability digests
 - The [interactive-monitor](../interactive-monitor/README.md) lambda
 - The [dependency-graph-integrator](../dependency-graph-integrator/README.md) lambda
-- The [snyk-integrator](../snyk-integrator/README.md) lambda
 
 ## Running RepoCop locally
 

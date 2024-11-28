@@ -11,7 +11,7 @@ import type { ObligationResult } from '.';
 type Failure = {
 	resource: string;
 	controlId: string;
-	accountId: string;
+	accountId: string | null;
 	tags: Record<string, string> | null;
 };
 
@@ -47,14 +47,14 @@ function failuresToObligationResult(
 	const oneFailure = toNonEmptyArray(failures)[0];
 
 	const controlIds: string[] = failures.map((f) => f.controlId);
-	const accountId: string | undefined = oneFailure.accountId;
+	const accountId: string | null = oneFailure.accountId;
 	const tags = oneFailure.tags;
 	return {
 		resource: arn,
 		reason: `The following AWS FSBP controls are failing: ${controlIds.join(', ')}`,
 		url: 'https://docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html',
 		contacts: {
-			aws_account_id: accountId,
+			aws_account_id: accountId ?? undefined,
 			Stack: tags === null ? undefined : tags.Stack,
 			Stage: tags === null ? undefined : tags.Stage,
 			App: tags === null ? undefined : tags.App,

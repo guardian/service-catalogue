@@ -19,7 +19,8 @@ The dependency graph integrator takes a repo name as JSON, like so:
 ```json
 {
 	"name": "service-catalogue",
-	"language": "Scala"
+	"language": "Scala",
+	"admins": ["my-team-slug"]
 }
 ```
 
@@ -72,20 +73,20 @@ The format of input to the lambda on the CODE environment is that of an SNS mess
 
 #### DEV
 
-The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the snyk-integrator package. The input can be configured by modifying [this file](./src/run-locally.ts)
+The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the dependency-graph-integrator package. The input can be configured by modifying [this file](./src/run-locally.ts)
 
 ### How does dependency submission work once the action is in use?
 
 ```mermaid
 flowchart LR
-	github[GitHub]
-	dev[P&E Dev]
-	depGraph[Dependency Graph]
-	workflow[Dependency Submission Workflow]
-	Dependabot[Dependabot]
+ github[GitHub]
+ dev[P&E Dev]
+ depGraph[Dependency Graph]
+ workflow[Dependency Submission Workflow]
+ Dependabot[Dependabot]
 
-	dev --> |Merges any subsequent PR, i.e. a version bump to main|github
-	github --> |Triggers workflow run| workflow
-	workflow --> |Dependencies are sent to Dependency Graph| depGraph
-	depGraph --> |Dependabot analyses dependency graph for new vulnerabilities| Dependabot
+ dev --> |Merges any subsequent PR, i.e. a version bump to main|github
+ github --> |Triggers workflow run| workflow
+ workflow --> |Dependencies are sent to Dependency Graph| depGraph
+ depGraph --> |Dependabot analyses dependency graph for new vulnerabilities| Dependabot
 ```

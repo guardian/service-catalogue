@@ -8,17 +8,17 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
-		"@aws-sdk/client-secrets-manager": "^3.662.0",
+		"@aws-sdk/client-secrets-manager": "^3.682.0",
 		"@guardian/anghammarad": "^1.8.3",
-		"@aws-sdk/credential-providers": "^3.662.0",
-		"@aws-sdk/rds-signer": "^3.662.0",
+		"@aws-sdk/credential-providers": "^3.685.0",
+		"@aws-sdk/rds-signer": "^3.685.0",
 		"@octokit/auth-app": "^6.1.2",
 		"octokit": "^3.2.1",
 		"octokit-plugin-create-pull-request": "^5.1.1",
-		"@prisma/client": "^5.20.0"
+		"@prisma/client": "^5.21.1"
 	},
 	"devDependencies": {
-		"prisma": "^5.20.0",
+		"prisma": "^5.21.1",
 		"@octokit/graphql": "^8.1.1",
 		"@octokit/types": "^13.6.1",
 		"@types/aws-lambda": "^8.10.141"

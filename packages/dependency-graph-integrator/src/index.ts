@@ -1,9 +1,5 @@
 import type { SNSHandler } from 'aws-lambda';
 import { parseEvent, stageAwareOctokit } from 'common/functions';
-import {
-	createPrAndAddToProject,
-	generateBranchName,
-} from 'common/src/pull-requests';
 import type { DependencyGraphIntegratorEvent } from 'common/src/types';
 import type { Config } from './config';
 import { getConfig } from './config';
@@ -12,6 +8,7 @@ import {
 	depGraphPackageManager,
 	generatePrBody,
 } from './file-generator';
+import { createPrAndAddToProject, generateBranchName } from './pull-requests';
 import { enableDependabotAlerts } from './repo-functions';
 import type { StatusCode } from './types';
 

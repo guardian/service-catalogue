@@ -37,11 +37,6 @@ export interface DependencyGraphIntegratorEvent {
 	admins: string[];
 }
 
-export interface SnykIntegratorEvent {
-	name: string;
-	languages: string[];
-}
-
 //GraphQL types for adding PRs to GitHub Projects
 interface PullRequestIdAndAuthor {
 	author: {
@@ -95,6 +90,10 @@ export interface Repository extends RepositoryFields {
 	name: NonNullable<RepositoryFields['name']>;
 	full_name: NonNullable<RepositoryFields['full_name']>;
 	id: NonNullable<RepositoryFields['id']>;
+}
+
+export interface RepositoryWithDepGraphLanguage extends Repository {
+	dependency_graph_language: DepGraphLanguage;
 }
 
 // The number of days teams have to fix vulnerabilities of a given severity

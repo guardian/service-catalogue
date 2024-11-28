@@ -85,8 +85,6 @@ setup_environment() {
 
   INTERACTIVE_MONITOR_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep interactive-monitor-CODE)
 
-  SNYK_INTEGRATOR_INPUT_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep snykintegratorinputtopicCODE)
-
   DEPENDENCY_GRAPH_INPUT_TOPIC_ARN=$(aws sns list-topics --profile "$PROFILE" --region "$REGION" --output text --query 'Topics[*]' | grep dependencygraphintegratorinputtopicCODE)
 
   CLOUDQUERY_API_KEY=$(
@@ -97,7 +95,7 @@ setup_environment() {
 
   github_info_url="https://github.com/settings/tokens?type=beta"
 
-  token_text="# Required permissions are Metadata: Read, Administration: Read, Dependabot alerts: Read. See $github_info_url
+  token_text="# Required permissions are Metadata: Read, Administration: Read, Dependabot alerts: Read, Pull requests: Read. See $github_info_url
 GITHUB_ACCESS_TOKEN=
 "
 
@@ -114,7 +112,6 @@ ANGHAMMARAD_SNS_ARN=${ANGHAMMARAD_SNS_ARN}
 INTERACTIVE_MONITOR_TOPIC_ARN=${INTERACTIVE_MONITOR_TOPIC_ARN}
 GITHUB_PRIVATE_KEY_PATH=${GITHUB_PRIVATE_KEY_PATH}
 CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
-SNYK_INTEGRATOR_INPUT_TOPIC_ARN=${SNYK_INTEGRATOR_INPUT_TOPIC_ARN}
 DEPENDENCY_GRAPH_INPUT_TOPIC_ARN=${DEPENDENCY_GRAPH_INPUT_TOPIC_ARN}
 "
 

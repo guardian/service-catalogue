@@ -46,10 +46,13 @@ export function groupFindingsByAccount(
 
 	for (const finding of findings) {
 		const { aws_account_id } = finding;
-		if (!findingsGroupedByAwsAccount[aws_account_id]) {
-			findingsGroupedByAwsAccount[aws_account_id] = [];
+		if (aws_account_id) {
+			// The account id should always exist, but the type system disagrees
+			if (!findingsGroupedByAwsAccount[aws_account_id]) {
+				findingsGroupedByAwsAccount[aws_account_id] = [];
+			}
+			findingsGroupedByAwsAccount[aws_account_id].push(finding);
 		}
-		findingsGroupedByAwsAccount[aws_account_id].push(finding);
 	}
 
 	return findingsGroupedByAwsAccount;

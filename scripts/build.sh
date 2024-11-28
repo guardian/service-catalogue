@@ -60,7 +60,6 @@ npm run build
 verify best-practices "packages/best-practices/best-practices.md"
 
 createZip "interactive-monitor"
-createZip "snyk-integrator"
 createZip "dependency-graph-integrator"
 createPrismaZip
 createLambdaWithPrisma "repocop"
