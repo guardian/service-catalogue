@@ -138,7 +138,6 @@ export function generatePrBody(
 	language: DepGraphLanguage,
 ): string {
 	const yamlFilename = depGraphPackageManager[language];
-	console.log('yamlFileName', yamlFilename);
 
 	const body = [
 		h2('What does this change?'),
