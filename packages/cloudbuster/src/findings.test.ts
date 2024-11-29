@@ -1,6 +1,10 @@
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubFinding } from 'common/types';
-import { findingsToGuardianFormat, groupFindingsByAccount } from './findings';
+import {
+	findingsToGuardianFormat,
+	groupFindingsByAccount,
+	isSuppressedFinding,
+} from './findings';
 import type { GroupedFindings } from './types';
 
 describe('findingsToGuardianFormat', () => {
@@ -56,6 +60,7 @@ describe('findingsToGuardianFormat', () => {
 function mockFinding(
 	aws_account_id: string,
 	title: string,
+	control_id: string = 'MOCK.1',
 ): cloudbuster_fsbp_vulnerabilities {
 	return {
 		aws_account_id,
@@ -66,7 +71,7 @@ function mockFinding(
 		severity: 'critical',
 		within_sla: true,
 		first_observed_at: new Date('2020-01-01'),
-		control_id: 'MOCK.1',
+		control_id,
 		aws_region: 'eu-mock-1',
 		repo: null,
 		stack: null,
@@ -129,5 +134,24 @@ describe('Grouping logic', () => {
 			[TEAM_A_ACCOUNT_ID]: [mockFinding1],
 			[TEAM_B_ACCOUNT_ID]: [mockFinding2],
 		});
+	});
+});
+
+describe('isSuppressedFinding', () => {
+	it('should return true for Inspector findings', () => {
+		expect(isSuppressedFinding(mockFinding('123', '123', 'Inspector.1'))).toBe(
+			true,
+		);
+		expect(isSuppressedFinding(mockFinding('123', '123', 'Inspector.2'))).toBe(
+			true,
+		);
+		expect(isSuppressedFinding(mockFinding('123', '123', 'Inspector.3'))).toBe(
+			true,
+		);
+		expect(isSuppressedFinding(mockFinding('123', '123', 'Inspector.4'))).toBe(
+			true,
+		);
+
+		expect(isSuppressedFinding(mockFinding('123', '123', 'S3.1'))).toBe(false);
 	});
 });

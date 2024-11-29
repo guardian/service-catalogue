@@ -5,7 +5,7 @@ import { getPrismaClient } from 'common/src/database-setup';
 import type { SecurityHubSeverity } from 'common/src/types';
 import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
-import { findingsToGuardianFormat } from './findings';
+import { findingsToGuardianFormat, isSuppressedFinding } from './findings';
 
 export async function main() {
 	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
@@ -23,9 +23,9 @@ export async function main() {
 		(f) => f.workflow.Status !== 'SUPPRESSED',
 	);
 
-	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
-		findingsToGuardianFormat,
-	);
+	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults
+		.flatMap(findingsToGuardianFormat)
+		.filter((f) => !isSuppressedFinding(f));
 
 	console.log(
 		`${tableContents.length} high and critical FSBP findings detected`,

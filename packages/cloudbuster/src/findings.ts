@@ -28,6 +28,18 @@ export function findingsToGuardianFormat(
 		};
 	});
 }
+
+export function isSuppressedFinding(
+	finding: cloudbuster_fsbp_vulnerabilities,
+): boolean {
+	// Suppress AWS Inspector findings
+	// These currently have a cost impact associated to them and has limited language support.
+	// With InfoSec at the moment to decide what we do with this control:
+	//   https://chat.google.com/room/AAAAag0I08g/5caKQThOs8Q/FHanFOG9rnw
+	return ['Inspector.1', 'Inspector.2', 'Inspector.3', 'Inspector.4'].includes(
+		finding.control_id,
+	);
+}
 /**
  * @param findings An array of FSBP findings.
  * @returns An object mapping account numbers to findings.
