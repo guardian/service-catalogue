@@ -776,11 +776,11 @@ model amigo_bake_packages {
   cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
   base_name       String
   base_ami_id     String
-  base_eol_date   DateTime
+  base_eol_date   DateTime  @db.Timestamp(6)
   recipe_id       String
   bake_number     Int
   source_ami_id   String
-  started_at      DateTime
+  started_at      DateTime  @db.Timestamp(6)
   started_by      String
   package_name    String
   package_version String
