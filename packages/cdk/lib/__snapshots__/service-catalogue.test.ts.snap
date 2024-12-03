@@ -23907,7 +23907,7 @@ spec:
         "LoggingConfig": {
           "LogFormat": "JSON",
         },
-        "MemorySize": 1024,
+        "MemorySize": 1536,
         "Role": {
           "Fn::GetAtt": [
             "repocopServiceRole757D74E8",
