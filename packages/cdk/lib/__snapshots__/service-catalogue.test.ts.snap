@@ -14249,7 +14249,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v10.0.1
+  version: v11.11.1
   tables:
     - github_issues
   destinations:
@@ -15374,7 +15374,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v10.0.1
+  version: v11.11.1
   tables:
     - github_repositories
     - github_repository_branches
@@ -16089,7 +16089,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v10.0.1
+  version: v11.11.1
   tables:
     - github_organizations
     - github_organization_members
