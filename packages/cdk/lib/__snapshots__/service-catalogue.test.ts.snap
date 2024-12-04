@@ -14252,6 +14252,9 @@ spec:
   version: v11.11.1
   tables:
     - github_issues
+  skip_tables:
+    - github_issue_timeline_events
+    - github_issue_pullrequest_reviews
   destinations:
     - postgresql
   spec:
@@ -14295,7 +14298,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "819MiB",
+                "Value": "1638MiB",
               },
             ],
             "Essential": true,
@@ -14602,7 +14605,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubIssuesTaskDefinition750BB414",
-        "Memory": "1024",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -15428,7 +15431,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "819MiB",
+                "Value": "1638MiB",
               },
             ],
             "Essential": true,
@@ -15735,7 +15738,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceGitHubRepositoriesTaskDefinition13A7DF48",
-        "Memory": "1024",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

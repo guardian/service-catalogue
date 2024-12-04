@@ -406,7 +406,7 @@ export function addCloudqueryEcsCluster(
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 1024,
+			memoryLimitMiB: 2048,
 		},
 		{
 			name: 'GitHubTeams',
@@ -447,10 +447,20 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_issues'],
+				skipTables: [
+					/*
+          These tables are children of github_issues.
+          ServiceCatalogue collects child tables automatically.
+          We don't use them as they take a long time to collect, so skip them.
+          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
+           */
+					'github_issue_timeline_events',
+					'github_issue_pullrequest_reviews',
+				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 1024,
+			memoryLimitMiB: 2048,
 		},
 	];
 
