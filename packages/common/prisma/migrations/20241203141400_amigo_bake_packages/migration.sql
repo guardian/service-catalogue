@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "amigo_bake_packages"
+CREATE TABLE IF NOT EXISTS "amigo_bake_packages"
 (
     "_cq_sync_time"   TIMESTAMP(6),
     "_cq_source_name" TEXT,
@@ -18,4 +18,4 @@ CREATE TABLE "amigo_bake_packages"
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "amigo_bake_packages__cq_id_key" ON "amigo_bake_packages" ("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "amigo_bake_packages__cq_id_key" ON "amigo_bake_packages" ("_cq_id");
