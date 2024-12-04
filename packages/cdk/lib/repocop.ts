@@ -44,7 +44,7 @@ export class Repocop {
 			architecture: Architecture.ARM_64,
 			fileName: 'repocop.zip',
 			handler: 'index.main',
-			memorySize: 1536,
+			memorySize: 2048,
 			monitoringConfiguration,
 			rules: [{ schedule }],
 			runtime: Runtime.NODEJS_20_X,
