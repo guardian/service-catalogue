@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "github_repository_custom_properties" (
+CREATE TABLE IF NOT EXISTS "github_repository_custom_properties" (
     "_cq_sync_time" TIMESTAMP(6),
     "_cq_source_name" TEXT,
     "_cq_id" UUID NOT NULL,
@@ -11,4 +11,4 @@ CREATE TABLE "github_repository_custom_properties" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "github_repository_custom_properties__cq_id_key" ON "github_repository_custom_properties"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "github_repository_custom_properties__cq_id_key" ON "github_repository_custom_properties"("_cq_id");
