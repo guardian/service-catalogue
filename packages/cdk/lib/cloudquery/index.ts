@@ -626,13 +626,14 @@ export function addCloudqueryEcsCluster(
 	const amigoBakePackagesSource: CloudquerySource = {
 		name: 'AmigoBakePackages',
 		description: 'Packages installed in Amigo bakes.',
-		schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
 		config: amigoBakePackagesConfig(
 			baseImagesTableName,
 			recipesTableName,
 			bakesTableName,
 			packagesBucket.bucketName,
 		),
+		memoryLimitMiB: 1024,
 		policies: [
 			readDynamoDbTablePolicy(
 				GuardianAwsAccounts.DeployTools,
