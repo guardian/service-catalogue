@@ -1,0 +1,15 @@
+// On demand hour	On demand year	Reserved on year upfront hour	Reserved on year upfront year	Compute 1 year upfront hour	Compute 1 year upfront year	Compute 3 year noupfront hour	Compute 3 year no upfront
+
+Get pricing data for all EC2 instance types currently running in any P&E aws account
+
+Input:
+All EC2 instance types currently running in any P&E aws account
+(gather data from service catalogue)
+
+Output:
+instance_type
+on demand hourly price
+reserved one year upfront hourly price
+compute reserved one year upfront hourly price
+compute reserved three year upfront hourly price
+
