@@ -71,7 +71,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
   "Resources": {
     "CloudquerySourceAmigoBakePackagesScheduledEventRule3FDBCEB5": {
       "Properties": {
-        "ScheduleExpression": "rate(1 day)",
+        "ScheduleExpression": "cron(0 3 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -416,7 +416,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
+                "Value": "819MiB",
               },
             ],
             "Essential": true,
@@ -681,7 +681,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceAmigoBakePackagesTaskDefinition07388B36",
-        "Memory": "512",
+        "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
