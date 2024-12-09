@@ -18886,7 +18886,11 @@ spec:
   destinations:
     - postgresql
   tables:
-    - '*'
+    - tenable_tvm_vulnerabilities
+    - tenable_tvm_scans
+    - tenable_tvm_scans_details
+    - tenable_was2_vulnerabilities
+    - tenable_tvm_assets
   spec:
     access_key: \${TENABLE_ACCESS_KEY}
     secret_key: \${TENABLE_SECRET_KEY}
@@ -18959,6 +18963,34 @@ spec:
             "Name": "CloudquerySource-TenableContainer",
             "ReadonlyRootFilesystem": true,
             "Secrets": [
+              {
+                "Name": "TENABLE_ACCESS_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "tenablecredentialsF2FF9557",
+                      },
+                      ":access_key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "TENABLE_SECRET_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "tenablecredentialsF2FF9557",
+                      },
+                      ":secret_key::",
+                    ],
+                  ],
+                },
+              },
               {
                 "Name": "DB_USERNAME",
                 "ValueFrom": {
@@ -19058,7 +19090,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('tenable_tvm_vulnerabilities', 'DAILY'),('tenable_tvm_scans', 'DAILY'),('tenable_tvm_scans_details', 'DAILY'),('tenable_was2_vulnerabilities', 'DAILY'),('tenable_tvm_assets', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -19425,6 +19457,16 @@ spec:
       "Properties": {
         "PolicyDocument": {
           "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "tenablecredentialsF2FF9557",
+              },
+            },
             {
               "Action": [
                 "secretsmanager:GetSecretValue",
@@ -29025,6 +29067,33 @@ spec:
       "Properties": {
         "GenerateSecretString": {},
         "Name": "/TEST/deploy/service-catalogue/snyk-credentials",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "tenablecredentialsF2FF9557": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/TEST/deploy/service-catalogue/tenable-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
