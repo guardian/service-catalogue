@@ -647,12 +647,26 @@ export function addCloudqueryEcsCluster(
 		],
 	};
 
+	const tenableCredentials = new SecretsManager(scope, 'tenable-credentials', {
+		secretName: `/${stage}/${stack}/${app}/tenable-credentials`,
+	});
+
 	const tenableSource: CloudquerySource = {
 		name: 'Tenable',
 		description: 'Tenable data.',
 		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
 		config: TenableConfig(),
 		memoryLimitMiB: 1024,
+		secrets: {
+			TENABLE_ACCESS_KEY: Secret.fromSecretsManager(
+				tenableCredentials,
+				'access_key',
+			),
+			TENABLE_SECRET_KEY: Secret.fromSecretsManager(
+				tenableCredentials,
+				'secret_key',
+			),
+		},
 	};
 
 	return new CloudqueryCluster(scope, `${app}Cluster`, {
