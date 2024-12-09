@@ -18970,7 +18970,7 @@ spec:
                     "",
                     [
                       {
-                        "Ref": "tenablecredentialsF2FF9557",
+                        "Ref": "tenableaccesscredentials362C8D64",
                       },
                       ":access_key::",
                     ],
@@ -18984,7 +18984,7 @@ spec:
                     "",
                     [
                       {
-                        "Ref": "tenablecredentialsF2FF9557",
+                        "Ref": "tenableaccesscredentials362C8D64",
                       },
                       ":secret_key::",
                     ],
@@ -19464,7 +19464,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "tenablecredentialsF2FF9557",
+                "Ref": "tenableaccesscredentials362C8D64",
               },
             },
             {
@@ -29089,11 +29089,11 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
-    "tenablecredentialsF2FF9557": {
+    "tenableaccesscredentials362C8D64": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/tenable-credentials",
+        "Name": "/TEST/deploy/service-catalogue/tenable-access-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
