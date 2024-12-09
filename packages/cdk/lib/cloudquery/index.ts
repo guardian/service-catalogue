@@ -647,9 +647,13 @@ export function addCloudqueryEcsCluster(
 		],
 	};
 
-	const tenableCredentials = new SecretsManager(scope, 'tenable-credentials', {
-		secretName: `/${stage}/${stack}/${app}/tenable-credentials`,
-	});
+	const tenableCredentials = new SecretsManager(
+		scope,
+		'tenable-access-credentials',
+		{
+			secretName: `/${stage}/${stack}/${app}/tenable-access-credentials`,
+		},
+	);
 
 	const tenableSource: CloudquerySource = {
 		name: 'Tenable',
