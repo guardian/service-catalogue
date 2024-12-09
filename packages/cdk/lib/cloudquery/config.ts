@@ -326,6 +326,30 @@ export function amigoBakePackagesConfig(
 	};
 }
 
+export function TenableConfig(): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'tenable',
+			registry: 'cloudquery',
+			path: 'cloudquery/tenable',
+			version: 'v2.6.2',
+			destinations: ['postgresql'],
+			tables: [
+				'tenable_tvm_vulnerabilities',
+				'tenable_tvm_scans',
+				'tenable_tvm_scans_details',
+				'tenable_was2_vulnerabilities',
+				'tenable_tvm_assets',
+			],
+			spec: {
+				access_key: '${TENABLE_ACCESS_KEY}',
+				secret_key: '${TENABLE_SECRET_KEY}',
+			},
+		},
+	};
+}
+
 // Tables we are skipping because they are slow and or uninteresting to us.
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts

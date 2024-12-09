@@ -26,6 +26,7 @@ import {
 	serviceCatalogueConfigDirectory,
 	skipTables,
 	snykSourceConfig,
+	TenableConfig,
 } from './config';
 import { Images } from './images';
 import {
@@ -646,6 +647,14 @@ export function addCloudqueryEcsCluster(
 		],
 	};
 
+	const tenableSource: CloudquerySource = {
+		name: 'Tenable',
+		description: 'Tenable data.',
+		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
+		config: TenableConfig(),
+		memoryLimitMiB: 1024,
+	};
+
 	return new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
@@ -664,6 +673,7 @@ export function addCloudqueryEcsCluster(
 			githubLanguagesSource,
 			ns1Source,
 			amigoBakePackagesSource,
+			tenableSource,
 		],
 	});
 }
