@@ -308,7 +308,7 @@ describe('getPullRequest', () => {
 		);
 		expect(foundPull).toEqual(dependabotBranch);
 		expect(warn).toHaveBeenCalledWith(
-			'More than one PR found on repo - choosing the first.',
+			`Found 2 PRs on repo - choosing the first.`,
 		);
 		warn.mockRestore();
 	});

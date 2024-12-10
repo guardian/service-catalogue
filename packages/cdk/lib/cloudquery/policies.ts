@@ -36,6 +36,35 @@ export const readBucketPolicy = (...resources: string[]): PolicyStatement => {
 	});
 };
 
+/**
+ * Create a policy statement allowing read access to the given DynamoDB tables.
+ *
+ * @param accountId the AWS account ID
+ * @param region the AWS region
+ * @param tableNames a list of DynamoDB table names
+ * @returns a policy statement allowing read access to the given DynamoDB tables.
+ */
+export const readDynamoDbTablePolicy = (
+	accountId: string,
+	region: string,
+	...tableNames: string[]
+): PolicyStatement => {
+	return new PolicyStatement({
+		effect: Effect.ALLOW,
+		// for each table name, create a resource ARN
+		resources: tableNames.map(
+			(tableName) =>
+				`arn:aws:dynamodb:${region}:${accountId}:table/${tableName}`,
+		),
+		actions: [
+			'dynamodb:GetItem',
+			'dynamodb:BatchGetItem',
+			'dynamodb:Query',
+			'dynamodb:Scan',
+		],
+	});
+};
+
 export function singletonPolicy(cluster: Cluster) {
 	return new PolicyStatement({
 		effect: Effect.ALLOW,

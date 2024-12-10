@@ -75,7 +75,9 @@ export async function getExistingPullRequest(
 	const found = pulls.filter((pull) => isGithubAuthor(pull, author));
 
 	if (found.length > 1) {
-		console.warn(`More than one PR found on ${repoName} - choosing the first.`);
+		console.warn(
+			`Found ${found.length} PRs on ${repoName} - choosing the first.`,
+		);
 	}
 
 	return found[0];

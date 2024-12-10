@@ -26,10 +26,12 @@ services:
         - github_teams
         - github_repositories
         - github_repository_branches
+        - github_repository_custom_properties
         - github_workflows
         - github_languages
         - aws_ec2_instances
         - aws_cloudformation_stacks
+        - amigo_bake_packages
   postgres:
     image: postgres:14.6
     ports:

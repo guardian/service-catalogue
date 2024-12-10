@@ -380,6 +380,19 @@ model github_repository_branches {
   @@id([org, repository_id, name], map: "github_repository_branches_cqpk")
 }
 
+model github_repository_custom_properties {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  cq_id          String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id   String?   @map("_cq_parent_id") @db.Uuid
+  org            String
+  property_name  String
+  repository_id  BigInt
+  value          String?
+
+  @@ignore
+}
+
 model github_team_repositories {
   cq_sync_time                   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
   cq_source_name                 String?   @map("_cq_source_name")
@@ -754,6 +767,25 @@ model obligatron_results {
   @@index([date])
   @@index([obligation_name])
   @@index([resource])
+}
+
+model amigo_bake_packages {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  base_name       String
+  base_ami_id     String
+  base_eol_date   DateTime  @db.Timestamp(6)
+  recipe_id       String
+  bake_number     Int
+  source_ami_id   String
+  started_at      DateTime  @db.Timestamp(6)
+  started_by      String
+  package_name    String
+  package_version String
+
+  @@ignore
 }
 
 view view_repo_ownership {

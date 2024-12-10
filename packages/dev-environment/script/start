@@ -52,16 +52,15 @@ start_containers() {
   open -a Docker
   set -e
 
-while (! docker stats --no-stream ); do
-  # Docker takes a few seconds to initialize
-  sleep 5
-  echo -e "${yellow}Do you have an alternative Docker install, such as podman or minikube, aliased to 'docker'? If so, please launch it now${clear}"
-  echo "Standing by for Docker to start..."
-  echo ""
-done
+  while (! docker stats --no-stream ); do
+    # Docker takes a few seconds to initialize
+    sleep 5
+    echo -e "${yellow}Do you have an alternative Docker install, such as podman or minikube, aliased to 'docker'? If so, please launch it now${clear}"
+    echo "Standing by for Docker to start..."
+    echo ""
+  done
 
-docker-compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
-    
+  docker compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
 }
 
 check_vpn_connection() {
