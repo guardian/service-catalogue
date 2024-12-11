@@ -20,7 +20,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 		`Generating Dependabot PR for ${name} repo with ${language} language, admins: ${admins.join(', ')}.`,
 	);
 	const config: Config = getConfig();
-	const stage = config.stage;
+	const { stage, gitHubOrg } = config;
 	const branch = generateBranchName(
 		`${depGraphPackageManager[language]}-dependency-graph`,
 	);
@@ -37,7 +37,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 		const octokit = await stageAwareOctokit(stage);
 
 		const dependabotAlertsEnabledStatusCode: StatusCode =
-			await enableDependabotAlerts(repo, octokit);
+			await enableDependabotAlerts(repo, octokit, gitHubOrg);
 
 		const successStatusCode = 204;
 
@@ -45,7 +45,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 			await createPrAndAddToProject(
 				stage,
 				repo,
-				'guardian', //TODO pass in through CDK as config
+				gitHubOrg,
 				author,
 				branch,
 				title,
