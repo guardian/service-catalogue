@@ -26,6 +26,7 @@ import {
 	serviceCatalogueConfigDirectory,
 	skipTables,
 	snykSourceConfig,
+	TenableConfig,
 } from './config';
 import { Images } from './images';
 import {
@@ -646,6 +647,32 @@ export function addCloudqueryEcsCluster(
 		],
 	};
 
+	const tenableCredentials = new SecretsManager(
+		scope,
+		'tenable-access-credentials',
+		{
+			secretName: `/${stage}/${stack}/${app}/tenable-access-credentials`,
+		},
+	);
+
+	const tenableSource: CloudquerySource = {
+		name: 'Tenable',
+		description: 'Tenable data.',
+		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
+		config: TenableConfig(),
+		memoryLimitMiB: 1024,
+		secrets: {
+			TENABLE_ACCESS_KEY: Secret.fromSecretsManager(
+				tenableCredentials,
+				'access_key',
+			),
+			TENABLE_SECRET_KEY: Secret.fromSecretsManager(
+				tenableCredentials,
+				'secret_key',
+			),
+		},
+	};
+
 	return new CloudqueryCluster(scope, `${app}Cluster`, {
 		app,
 		vpc,
@@ -664,6 +691,7 @@ export function addCloudqueryEcsCluster(
 			githubLanguagesSource,
 			ns1Source,
 			amigoBakePackagesSource,
+			tenableSource,
 		],
 	});
 }
