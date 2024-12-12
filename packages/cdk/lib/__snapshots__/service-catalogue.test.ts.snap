@@ -18925,7 +18925,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "1638MiB",
+                "Value": "6553MiB",
               },
             ],
             "Essential": true,
@@ -19218,7 +19218,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceTenableTaskDefinition01DF6BF3",
-        "Memory": "2048",
+        "Memory": "8192",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
