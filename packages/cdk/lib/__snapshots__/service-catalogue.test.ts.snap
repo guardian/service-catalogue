@@ -18925,7 +18925,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "3276MiB",
+                "Value": "6553MiB",
               },
             ],
             "Essential": true,
@@ -19210,7 +19210,7 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
         ],
-        "Cpu": "256",
+        "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceTenableTaskDefinitionExecutionRoleA128084D",
@@ -19218,7 +19218,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceTenableTaskDefinition01DF6BF3",
-        "Memory": "4096",
+        "Memory": "8192",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

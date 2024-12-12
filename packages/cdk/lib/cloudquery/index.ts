@@ -663,8 +663,8 @@ export function addCloudqueryEcsCluster(
 			Schedule.cron({ minute: '0', hour: '3', year: '2026' }), // TODO: sync more often if this data is useful
 		config: TenableConfig(),
 		// memoryLimitMiB: 2048, too low
-		memoryLimitMiB: 4096,
-		// memoryLimitMiB: 8192, // No Fargate configuration exists for given values: 256 CPU, 8192 memory
+		memoryLimitMiB: 8192,
+		cpu: 1024, // have to increase to get extra memory - see https://docs.aws.amazon.com/en_us/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
 		secrets: {
 			TENABLE_ACCESS_KEY: Secret.fromSecretsManager(
 				tenableCredentials,
