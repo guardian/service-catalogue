@@ -133,8 +133,6 @@ export async function sendDigest(
 	config: Config,
 	digest: Digest,
 ): Promise<void> {
-	const target = { Stack: 'testing-alerts' };
-
 	const notifyParams: NotifyParams = {
 		subject: digest.subject,
 		message: digest.message,
@@ -150,7 +148,7 @@ export async function sendDigest(
 
 	if (enableMessaging && stage == 'PROD') {
 		console.log(
-			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
+			`Sending ${digest.accountId} digest to ${JSON.stringify(notifyParams.target, null, 4)}...`,
 		);
 		await anghammaradClient.notify(notifyParams);
 	} else if (enableMessaging) {
@@ -160,7 +158,7 @@ export async function sendDigest(
 		};
 
 		console.log(
-			`Sending ${digest.accountId} digest to ${JSON.stringify(target, null, 4)}...`,
+			`Sending ${digest.accountId} digest to ${JSON.stringify(testNotifyParams.target, null, 4)}...`,
 		);
 
 		await anghammaradClient.notify(testNotifyParams);
