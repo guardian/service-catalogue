@@ -333,7 +333,7 @@ export function TenableConfig(): CloudqueryConfig {
 			name: 'tenable',
 			registry: 'cloudquery',
 			path: 'cloudquery/tenable',
-			version: 'v2.6.2',
+			version: `v${Versions.CloudqueryTenable}`,
 			destinations: ['postgresql'],
 			tables: [
 				'tenable_tvm_vulnerabilities',
