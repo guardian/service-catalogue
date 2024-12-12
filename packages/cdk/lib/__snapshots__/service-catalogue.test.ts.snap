@@ -18823,7 +18823,7 @@ spec:
     },
     "CloudquerySourceTenableScheduledEventRule0AC5E644": {
       "Properties": {
-        "ScheduleExpression": "cron(0 3 * * ? *)",
+        "ScheduleExpression": "cron(0 3 * * ? 2026)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -18925,7 +18925,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "819MiB",
+                "Value": "1638MiB",
               },
             ],
             "Essential": true,
@@ -19218,7 +19218,7 @@ spec:
           ],
         },
         "Family": "ServiceCatalogueCloudquerySourceTenableTaskDefinition01DF6BF3",
-        "Memory": "1024",
+        "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",

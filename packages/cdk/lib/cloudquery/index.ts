@@ -658,7 +658,9 @@ export function addCloudqueryEcsCluster(
 	const tenableSource: CloudquerySource = {
 		name: 'Tenable',
 		description: 'Tenable data.',
-		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
+		schedule:
+			nonProdSchedule ??
+			Schedule.cron({ minute: '0', hour: '3', year: '2026' }), // TODO: sync more often if this data is useful
 		config: TenableConfig(),
 		memoryLimitMiB: 2048,
 		secrets: {
