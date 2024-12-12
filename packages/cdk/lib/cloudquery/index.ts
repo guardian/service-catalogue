@@ -660,7 +660,7 @@ export function addCloudqueryEcsCluster(
 		description: 'Tenable data.',
 		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
 		config: TenableConfig(),
-		memoryLimitMiB: 1024,
+		memoryLimitMiB: 2048,
 		secrets: {
 			TENABLE_ACCESS_KEY: Secret.fromSecretsManager(
 				tenableCredentials,
