@@ -663,7 +663,8 @@ export function addCloudqueryEcsCluster(
 			Schedule.cron({ minute: '0', hour: '3', year: '2026' }), // TODO: sync more often if this data is useful
 		config: TenableConfig(),
 		// memoryLimitMiB: 2048, too low
-		memoryLimitMiB: 8192,
+		memoryLimitMiB: 4096,
+		// memoryLimitMiB: 8192, // No Fargate configuration exists for given values: 256 CPU, 8192 memory
 		secrets: {
 			TENABLE_ACCESS_KEY: Secret.fromSecretsManager(
 				tenableCredentials,
