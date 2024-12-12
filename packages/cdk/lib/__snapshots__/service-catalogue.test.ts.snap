@@ -368,7 +368,7 @@ spec:
   name: image-packages
   registry: github
   path: guardian/image-packages
-  version: v1.0.0
+  version: v1.0.1
   destinations:
     - postgresql
   tables:
