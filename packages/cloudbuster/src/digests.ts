@@ -148,32 +148,22 @@ export async function sendDigest(
 	const { enableMessaging, stage } = config;
 
 	if (enableMessaging) {
-		if (stage === 'PROD') {
-			logger.log({
-				message: `Sending ${digest.accountId} (${digest.accountName}) digest to ${JSON.stringify(notifyParams.target, null, 4)}...`,
-				accountName: digest.accountName,
-				target: notifyParams.target,
-				stage,
-				enableMessaging,
-			});
+		const notificationParameters =
+			stage === 'PROD'
+				? notifyParams
+				: {
+						...notifyParams,
+						target: { Stack: 'testing-alerts' },
+					};
+		logger.log({
+			message: `Sending ${digest.accountId} (${digest.accountName}) digest to ${JSON.stringify(notificationParameters.target, null, 4)}...`,
+			accountName: digest.accountName,
+			target: notificationParameters.target,
+			stage,
+			enableMessaging,
+		});
 
-			await anghammaradClient.notify(notifyParams);
-		} else {
-			const testNotifyParams = {
-				...notifyParams,
-				target: { Stack: 'testing-alerts' },
-			};
-
-			logger.log({
-				message: `Sending ${digest.accountId} (${digest.accountName}) digest to ${JSON.stringify(testNotifyParams.target, null, 4)}...`,
-				accountName: digest.accountName,
-				target: testNotifyParams.target,
-				stage,
-				enableMessaging,
-			});
-
-			await anghammaradClient.notify(testNotifyParams);
-		}
+		await anghammaradClient.notify(notificationParameters);
 	} else {
 		logger.log({
 			message: `Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
