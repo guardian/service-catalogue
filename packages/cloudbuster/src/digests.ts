@@ -2,6 +2,7 @@ import { RequestedChannel } from '@guardian/anghammarad';
 import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { stringToSeverity } from 'common/src/functions';
+import { logger } from 'common/src/logs';
 import type { SecurityHubSeverity, Severity } from 'common/src/types';
 import { type Config } from './config';
 import { groupFindingsByAccount } from './findings';
@@ -146,25 +147,40 @@ export async function sendDigest(
 
 	const { enableMessaging, stage } = config;
 
-	if (enableMessaging && stage == 'PROD') {
-		console.log(
-			`Sending ${digest.accountId} digest to ${JSON.stringify(notifyParams.target, null, 4)}...`,
-		);
-		await anghammaradClient.notify(notifyParams);
-	} else if (enableMessaging) {
-		const testNotifyParams = {
-			...notifyParams,
-			target: { Stack: 'testing-alerts' },
-		};
+	if (enableMessaging) {
+		if (stage === 'PROD') {
+			logger.log({
+				message: `Sending ${digest.accountId} (${digest.accountName}) digest to ${JSON.stringify(notifyParams.target, null, 4)}...`,
+				accountName: digest.accountName,
+				target: notifyParams.target,
+				stage,
+				enableMessaging,
+			});
 
-		console.log(
-			`Sending ${digest.accountId} digest to ${JSON.stringify(testNotifyParams.target, null, 4)}...`,
-		);
+			await anghammaradClient.notify(notifyParams);
+		} else {
+			const testNotifyParams = {
+				...notifyParams,
+				target: { Stack: 'testing-alerts' },
+			};
 
-		await anghammaradClient.notify(testNotifyParams);
+			logger.log({
+				message: `Sending ${digest.accountId} (${digest.accountName}) digest to ${JSON.stringify(testNotifyParams.target, null, 4)}...`,
+				accountName: digest.accountName,
+				target: testNotifyParams.target,
+				stage,
+				enableMessaging,
+			});
+
+			await anghammaradClient.notify(testNotifyParams);
+		}
 	} else {
-		console.log(
-			`Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
-		);
+		logger.log({
+			message: `Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
+			accountName: digest.accountName,
+			target: notifyParams.target,
+			stage,
+			enableMessaging,
+		});
 	}
 }

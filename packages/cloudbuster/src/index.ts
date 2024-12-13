@@ -1,5 +1,6 @@
 import { Anghammarad } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import { logger } from 'common/logs';
 import { getFsbpFindings } from 'common/src/database-queries';
 import { getPrismaClient } from 'common/src/database-setup';
 import type { SecurityHubSeverity } from 'common/src/types';
@@ -15,9 +16,9 @@ export async function main() {
 	const prisma = getPrismaClient(config);
 
 	// *** DATA GATHERING ***
-	console.log(
-		`Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
-	);
+	logger.log({
+		message: `Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
+	});
 
 	const dbResults = (await getFsbpFindings(prisma, severities)).filter(
 		(f) => f.workflow.Status !== 'SUPPRESSED',
@@ -27,9 +28,9 @@ export async function main() {
 		findingsToGuardianFormat,
 	);
 
-	console.log(
-		`${tableContents.length} high and critical FSBP findings detected`,
-	);
+	logger.log({
+		message: `${tableContents.length} high and critical FSBP findings detected`,
+	});
 
 	await prisma.cloudbuster_fsbp_vulnerabilities.deleteMany();
 	await prisma.cloudbuster_fsbp_vulnerabilities.createMany({
