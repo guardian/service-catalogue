@@ -156,10 +156,9 @@ export async function sendDigest(
 						target: { Stack: 'testing-alerts' },
 					};
 		logger.log({
-			message: `Sending ${digest.accountId} (${digest.accountName}) digest to ${JSON.stringify(notificationParameters.target, null, 4)}...`,
+			message: `Sending ${digest.accountId} (${digest.accountName}) digest...`,
 			accountName: digest.accountName,
 			target: notificationParameters.target,
-			stage,
 			enableMessaging,
 		});
 
@@ -169,7 +168,6 @@ export async function sendDigest(
 			message: `Messaging disabled. Anghammarad would have sent: ${JSON.stringify(notifyParams, null, 4)}`,
 			accountName: digest.accountName,
 			target: notifyParams.target,
-			stage,
 			enableMessaging,
 		});
 	}
