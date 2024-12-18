@@ -28,4 +28,5 @@ export const Versions = {
 	CloudqueryGithubLanguages: envOrError('CQ_GITHUB_LANGUAGES'),
 	CloudqueryNs1: envOrError('CQ_NS1'),
 	CloudqueryImagePackages: envOrError('CQ_IMAGE_PACKAGES'),
+	CloudqueryTenable: envOrError('CQ_TENABLE'),
 };
