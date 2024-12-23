@@ -6,6 +6,7 @@ import {
 	getDevDatabaseConfig,
 } from 'common/src/database-setup';
 import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup';
+import type { DepGraphLanguage } from 'common/types';
 
 export interface Config extends PrismaConfig {
 	/**
@@ -59,6 +60,11 @@ export interface Config extends PrismaConfig {
 	dependencyGraphIntegratorTopic: string;
 
 	/**
+	 * A list of repos to be excluded by the dependency graph integrator, by language.
+	 */
+	dependencyGraphIgnoredRepos: Record<DepGraphLanguage, string[]>;
+
+	/**
 	 * The name of the GitHub organisation that owns the repositories.
 	 */
 	gitHubOrg: string;
@@ -92,6 +98,10 @@ export async function getConfig(): Promise<Config> {
 		dependencyGraphIntegratorTopic: getEnvOrThrow(
 			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
 		),
+		dependencyGraphIgnoredRepos: {
+			Scala: ['identity-platform'],
+			Kotlin: [],
+		},
 		gitHubOrg: process.env['GITHUB_ORG'] ?? 'guardian',
 	};
 }
