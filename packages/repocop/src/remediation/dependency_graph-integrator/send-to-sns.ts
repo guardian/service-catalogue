@@ -7,6 +7,7 @@ import type {
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
+import { logger } from 'common/src/logs';
 import type {
 	DependencyGraphIntegratorEvent,
 	DepGraphLanguage,
@@ -26,6 +27,22 @@ export function checkRepoForLanguage(
 		languages.find((language) => language.full_name === repo.full_name)
 			?.languages ?? [];
 	return languagesInRepo.includes(targetLanguage);
+}
+
+export function isRepoIgnored(
+	repoName: string,
+	language: DepGraphLanguage,
+	ignoredRepos: Record<DepGraphLanguage, string[]>,
+): boolean {
+	const isIgnored = ignoredRepos[language].includes(repoName);
+	if (isIgnored) {
+		logger.log({
+			message: `Repo is being ignored by dependency graph integrator`,
+			depGraphLanguage: language,
+			repo: repoName,
+		});
+	}
+	return isIgnored;
 }
 
 export function doesRepoHaveDepSubmissionWorkflowForLanguage(
@@ -123,16 +140,17 @@ export function getReposWithoutWorkflows(
 	languages: github_languages[],
 	productionRepos: Repository[],
 	productionWorkflowUsages: guardian_github_actions_usage[],
+	ignoredRepos: Record<DepGraphLanguage, string[]>,
 ): RepositoryWithDepGraphLanguage[] {
 	const depGraphLanguages: DepGraphLanguage[] = ['Scala', 'Kotlin'];
 
 	const allReposWithoutWorkflows: RepositoryWithDepGraphLanguage[] =
 		depGraphLanguages.flatMap((language) => {
-			const reposWithDepGraphLanguages: Repository[] = productionRepos.filter(
-				(repo) => checkRepoForLanguage(repo, languages, language),
-			);
+			const reposWithDepGraphLanguages: Repository[] = productionRepos
+				.filter((repo) => checkRepoForLanguage(repo, languages, language))
+				.filter((repo) => !isRepoIgnored(repo.name, language, ignoredRepos));
 			console.log(
-				`Found ${reposWithDepGraphLanguages.length} ${language} repos in production`,
+				`Found ${reposWithDepGraphLanguages.length} ${language} repos in production suitable for dependency graph integration`,
 			);
 
 			return reposWithDepGraphLanguages
@@ -148,10 +166,6 @@ export function getReposWithoutWorkflows(
 				})
 				.map((repo) => ({ ...repo, dependency_graph_language: language }));
 		});
-
-	console.log(
-		`Found ${allReposWithoutWorkflows.length} production repos without dependency submission workflows`,
-	);
 	return allReposWithoutWorkflows;
 }
 
@@ -169,6 +183,7 @@ export async function sendReposToDependencyGraphIntegrator(
 			repoLanguages,
 			productionRepos,
 			productionWorkflowUsages,
+			config.dependencyGraphIgnoredRepos,
 		);
 
 	if (reposRequiringDepGraphIntegration.length !== 0) {
