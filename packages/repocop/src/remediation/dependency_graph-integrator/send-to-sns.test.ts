@@ -20,7 +20,12 @@ import {
 
 const fullName = 'guardian/repo-name';
 const fullName2 = 'guardian/repo2';
+const ignoredRepo = 'guardian/ignore-me';
 const scalaLang = 'Scala';
+const ignoredRepos = {
+	Scala: ['ignore-me'],
+	Kotlin: [],
+};
 
 function createActionsUsage(
 	fullName: string,
@@ -144,6 +149,7 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
+			ignoredRepos,
 		);
 		const expected = [repositoryWithDepGraphLanguage(fullName, 'Scala')];
 
@@ -154,6 +160,7 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithDepSubmissionWorkflow(fullName)],
+			ignoredRepos,
 		);
 		expect(result).toEqual([]);
 	});
@@ -162,14 +169,16 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithoutTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
+			ignoredRepos,
 		);
 		expect(result).toEqual([]);
 	});
-	test('return 2 events when 2 Scala repos are found without an existing workflow', () => {
+	test('return 2 repos when 2 Scala repos are found without an existing workflow', () => {
 		const result = getReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName), repoWithTargetLanguage(fullName2)],
 			[repository(fullName), repository(fullName2)],
 			[repoWithoutWorkflow(fullName), repoWithoutWorkflow(fullName2)],
+			ignoredRepos,
 		);
 		const expected = [
 			repositoryWithDepGraphLanguage(fullName, 'Scala'),
@@ -177,6 +186,16 @@ describe('When getting suitable events to send to SNS', () => {
 		];
 
 		expect(result).toEqual(expected);
+	});
+	test('return empty array when an ignored Scala repo is found with without an existing workflow', () => {
+		const result = getReposWithoutWorkflows(
+			[repoWithTargetLanguage(ignoredRepo)],
+			[repository(ignoredRepo)],
+			[repoWithoutWorkflow(ignoredRepo)],
+			ignoredRepos,
+		);
+
+		expect(result).toEqual([]);
 	});
 
 	const ownershipRecord1: view_repo_ownership = {
