@@ -20399,9 +20399,9 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "cloudbustercloudbustercron309MONFRI0A90AE33E": {
+    "cloudbustercloudbustercron07MONFRI028B0F781": {
       "Properties": {
-        "ScheduleExpression": "cron(30 9 ? * MON-FRI *)",
+        "ScheduleExpression": "cron(0 7 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -20417,7 +20417,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "cloudbustercloudbustercron309MONFRI0AllowEventRuleServiceCataloguecloudbuster82FA89E4F5116C2E": {
+    "cloudbustercloudbustercron07MONFRI0AllowEventRuleServiceCataloguecloudbuster82FA89E4693980BB": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -20429,7 +20429,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "cloudbustercloudbustercron309MONFRI0A90AE33E",
+            "cloudbustercloudbustercron07MONFRI028B0F781",
             "Arn",
           ],
         },
@@ -24221,9 +24221,9 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
-    "repocoprepocopcron309MONFRI042F648A2": {
+    "repocoprepocopcron07MONFRI08C03526D": {
       "Properties": {
-        "ScheduleExpression": "cron(30 9 ? * MON-FRI *)",
+        "ScheduleExpression": "cron(0 7 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -24239,7 +24239,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "repocoprepocopcron309MONFRI0AllowEventRuleServiceCataloguerepocop7BEB58922EC16074": {
+    "repocoprepocopcron07MONFRI0AllowEventRuleServiceCataloguerepocop7BEB58926BBB25F1": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -24251,7 +24251,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "repocoprepocopcron309MONFRI042F648A2",
+            "repocoprepocopcron07MONFRI08C03526D",
             "Arn",
           ],
         },
