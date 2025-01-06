@@ -20399,9 +20399,9 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "cloudbustercloudbustercron07MONFRI028B0F781": {
+    "cloudbustercloudbustercron03MONFRI086370CEA": {
       "Properties": {
-        "ScheduleExpression": "cron(0 7 ? * MON-FRI *)",
+        "ScheduleExpression": "cron(0 3 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -20417,7 +20417,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "cloudbustercloudbustercron07MONFRI0AllowEventRuleServiceCataloguecloudbuster82FA89E4693980BB": {
+    "cloudbustercloudbustercron03MONFRI0AllowEventRuleServiceCataloguecloudbuster82FA89E47F529A44": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -20429,7 +20429,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "cloudbustercloudbustercron07MONFRI028B0F781",
+            "cloudbustercloudbustercron03MONFRI086370CEA",
             "Arn",
           ],
         },
@@ -24221,9 +24221,28 @@ spec:
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
-    "repocoprepocopcron07MONFRI08C03526D": {
+    "repocoprepocopcron03MONFRI0AllowEventRuleServiceCataloguerepocop7BEB5892318F26C8": {
       "Properties": {
-        "ScheduleExpression": "cron(0 7 ? * MON-FRI *)",
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "repocop20553EB8",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "repocoprepocopcron03MONFRI0E07FE560",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "repocoprepocopcron03MONFRI0E07FE560": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 3 ? * MON-FRI *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -24238,25 +24257,6 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
-    },
-    "repocoprepocopcron07MONFRI0AllowEventRuleServiceCataloguerepocop7BEB58926BBB25F1": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "repocop20553EB8",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "repocoprepocopcron07MONFRI08C03526D",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "servicecatalogueCluster5FC34DC5": {
       "Properties": {
