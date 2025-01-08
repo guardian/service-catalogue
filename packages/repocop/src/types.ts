@@ -151,15 +151,3 @@ export interface VulnerabilityDigest {
 	message: string;
 	actions: Action[];
 }
-
-export type CustomPropertyFields = Pick<
-	github_repository_custom_properties,
-	'property_name' | 'value' | 'repository_id'
-> & {
-	repo_name: string;
-};
-
-export interface CustomProperty extends CustomPropertyFields {
-	property_name: NonNullable<CustomPropertyFields['property_name']>;
-	value: NonNullable<CustomPropertyFields['value']>;
-}
