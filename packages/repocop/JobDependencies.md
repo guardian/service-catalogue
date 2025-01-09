@@ -46,7 +46,7 @@ flowchart LR
     snykLoader[CloudQuery Loader<br>ECS task<br>scheduled daily 06:00]
     ghLangLoader[CloudQuery Loader<br>ECS task<br>scheduled every 7 days]
     galaxiesLoader[CloudQuery Loader<br>ECS task<br>scheduled every 1 day]
-    repocop[Repo Cop<br>lambda<br>scheduled MON-FRI 03:00]
+    repocop[RepoCop<br>lambda<br>scheduled MON-FRI 03:00]
     depGraphIntegrator[Dependency Graph Integrator<br>lambda<br>SNS trigger]
     cloudbuster[CloudBuster<br>lambda<br>scheduled MON-FRI 03:00]
     obligatronTagging[Obligatron<br>Tagging obligation<br>lambda<br>scheduled daily 09:00]
