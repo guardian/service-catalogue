@@ -202,8 +202,6 @@ export async function sendReposToDependencyGraphIntegrator(
 
 		const selectedRepos: RepositoryWithDepGraphLanguage[] = [];
 
-		let reposWithPrs = 0;
-
 		while (selectedRepos.length < repoCount && shuffledRepos.length > 0) {
 			const repo = shuffledRepos.pop();
 			if (repo) {
@@ -221,13 +219,9 @@ export async function sendReposToDependencyGraphIntegrator(
 				);
 				if (!existingPr) {
 					selectedRepos.push(repo);
-				} else {
-					reposWithPrs++;
 				}
 			}
 		}
-
-		console.log(`Found ${reposWithPrs} repos with existing PRs`);
 
 		const eventsToSend: DependencyGraphIntegratorEvent[] =
 			createSnsEventsForDependencyGraphIntegration(selectedRepos, repoOwners);

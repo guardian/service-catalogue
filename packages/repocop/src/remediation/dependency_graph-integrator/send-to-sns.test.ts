@@ -1,5 +1,6 @@
 import type {
 	github_languages,
+	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -119,6 +120,32 @@ describe('When trying to find repos using Scala', () => {
 	});
 });
 
+function exemptedCustomProperty(): github_repository_custom_properties {
+	return {
+		cq_sync_time: null,
+		cq_source_name: null,
+		cq_id: 'id1',
+		cq_parent_id: null,
+		org: 'guardian',
+		property_name: 'gu_dependency_graph_integrator_ignore',
+		repository_id: BigInt(1),
+		value: 'Scala',
+	};
+}
+
+function nonExemptedCustomProperty(): github_repository_custom_properties {
+	return {
+		cq_sync_time: null,
+		cq_source_name: null,
+		cq_id: 'id1',
+		cq_parent_id: null,
+		org: 'guardian',
+		property_name: 'gu_dependency_graph_integrator_ignore',
+		repository_id: BigInt(12345),
+		value: 'Scala',
+	};
+}
+
 describe('When checking a repo for an existing dependency submission workflow', () => {
 	test('return true if repo workflow is present', () => {
 		const result = doesRepoHaveDepSubmissionWorkflowForLanguage(
@@ -138,12 +165,13 @@ describe('When checking a repo for an existing dependency submission workflow', 
 	});
 });
 
-describe('When getting suitable events to send to SNS', () => {
+describe('When getting suitable repos to send to SNS', () => {
 	test('return the repo when a Scala repo is found without an existing workflow', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
+			[],
 		);
 		const expected = [repositoryWithDepGraphLanguage(fullName, 'Scala')];
 
@@ -154,6 +182,7 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithDepSubmissionWorkflow(fullName)],
+			[],
 		);
 		expect(result).toEqual([]);
 	});
@@ -162,14 +191,16 @@ describe('When getting suitable events to send to SNS', () => {
 			[repoWithoutTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
+			[],
 		);
 		expect(result).toEqual([]);
 	});
-	test('return 2 events when 2 Scala repos are found without an existing workflow', () => {
+	test('return both repos when 2 Scala repos are found without an existing workflow', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName), repoWithTargetLanguage(fullName2)],
 			[repository(fullName), repository(fullName2)],
 			[repoWithoutWorkflow(fullName), repoWithoutWorkflow(fullName2)],
+			[],
 		);
 		const expected = [
 			repositoryWithDepGraphLanguage(fullName, 'Scala'),
@@ -177,6 +208,26 @@ describe('When getting suitable events to send to SNS', () => {
 		];
 
 		expect(result).toEqual(expected);
+	});
+	test('return the repo when a Scala repo is found without an existing workflow and repo is not exempt', () => {
+		const result = getSuitableReposWithoutWorkflows(
+			[repoWithTargetLanguage(fullName)],
+			[repository(fullName)],
+			[repoWithoutWorkflow(fullName)],
+			[nonExemptedCustomProperty()],
+		);
+		const expected = [repositoryWithDepGraphLanguage(fullName, 'Scala')];
+
+		expect(result).toEqual(expected);
+	});
+	test('return empty repo array when a Scala repo is found without an existing workflow but is exempt', () => {
+		const result = getSuitableReposWithoutWorkflows(
+			[repoWithTargetLanguage(fullName)],
+			[repository(fullName)],
+			[repoWithoutWorkflow(fullName)],
+			[exemptedCustomProperty()],
+		);
+		expect(result).toEqual([]);
 	});
 
 	const ownershipRecord1: view_repo_ownership = {
