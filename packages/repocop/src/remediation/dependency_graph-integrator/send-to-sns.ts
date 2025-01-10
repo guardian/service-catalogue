@@ -123,18 +123,19 @@ async function sendOneRepoToDepGraphIntegrator(
 
 export function repoIsExempted(
 	repo: Repository,
-	exceptedCustomProperties: github_repository_custom_properties[],
+	exemptedCustomProperties: github_repository_custom_properties[],
+	language: DepGraphLanguage,
 ): boolean {
-	const repoIsExcepted = exceptedCustomProperties.find(
+	const exemptedRepo = exemptedCustomProperties.find(
 		(property) => repo.id === property.repository_id,
 	);
-	if (repoIsExcepted) {
+	if (exemptedRepo && exemptedRepo.value === language) {
 		logger.log({
-			message: `${repo.name} is excepted from dependency graph integration`,
-			numExceptedCustomProperties: exceptedCustomProperties.length,
+			message: `${repo.name} is exempted from dependency graph integration for ${language}`,
+			numexemptedCustomProperties: exemptedCustomProperties.length,
 		});
 	}
-	return repoIsExcepted !== undefined;
+	return exemptedRepo !== undefined;
 }
 
 export function getSuitableReposWithoutWorkflows(
@@ -155,7 +156,9 @@ export function getSuitableReposWithoutWorkflows(
 			);
 
 			return reposWithDepGraphLanguages
-				.filter((repo) => !repoIsExempted(repo, exemptedCustomProperties))
+				.filter(
+					(repo) => !repoIsExempted(repo, exemptedCustomProperties, language),
+				)
 				.filter((repo) => {
 					const workflowUsagesForRepo = productionWorkflowUsages.filter(
 						(workflow) => workflow.full_name === repo.full_name,
