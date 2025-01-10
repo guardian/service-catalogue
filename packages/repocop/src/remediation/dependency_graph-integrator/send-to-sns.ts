@@ -126,10 +126,12 @@ export function repoIsExempted(
 	exemptedCustomProperties: github_repository_custom_properties[],
 	language: DepGraphLanguage,
 ): boolean {
-	const exemptedRepo = exemptedCustomProperties.find(
-		(property) => repo.id === property.repository_id,
-	);
-	if (exemptedRepo && exemptedRepo.value === language) {
+	const exemptedRepo: github_repository_custom_properties | undefined =
+		exemptedCustomProperties.find(
+			(property) =>
+				repo.id === property.repository_id && language === property.value,
+		);
+	if (exemptedRepo) {
 		logger.log({
 			message: `${repo.name} is exempted from dependency graph integration for ${language}`,
 			numexemptedCustomProperties: exemptedCustomProperties.length,
