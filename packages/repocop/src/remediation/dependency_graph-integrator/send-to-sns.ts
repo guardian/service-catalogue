@@ -2,11 +2,13 @@ import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import type { Endpoints } from '@octokit/types';
 import type {
 	github_languages,
+	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/src/aws';
 import { shuffle } from 'common/src/functions';
+import { logger } from 'common/src/logs';
 import type {
 	DependencyGraphIntegratorEvent,
 	DepGraphLanguage,
@@ -119,10 +121,30 @@ async function sendOneRepoToDepGraphIntegrator(
 	}
 }
 
-export function getReposWithoutWorkflows(
+export function repoIsExempted(
+	repo: Repository,
+	exemptedCustomProperties: github_repository_custom_properties[],
+	language: DepGraphLanguage,
+): boolean {
+	const exemptedRepo: github_repository_custom_properties | undefined =
+		exemptedCustomProperties.find(
+			(property) =>
+				repo.id === property.repository_id && language === property.value,
+		);
+	if (exemptedRepo) {
+		logger.log({
+			message: `${repo.name} is exempted from dependency graph integration for ${language}`,
+			numexemptedCustomProperties: exemptedCustomProperties.length,
+		});
+	}
+	return exemptedRepo !== undefined;
+}
+
+export function getSuitableReposWithoutWorkflows(
 	languages: github_languages[],
 	productionRepos: Repository[],
 	productionWorkflowUsages: guardian_github_actions_usage[],
+	exemptedCustomProperties: github_repository_custom_properties[],
 ): RepositoryWithDepGraphLanguage[] {
 	const depGraphLanguages: DepGraphLanguage[] = ['Scala', 'Kotlin'];
 
@@ -136,6 +158,9 @@ export function getReposWithoutWorkflows(
 			);
 
 			return reposWithDepGraphLanguages
+				.filter(
+					(repo) => !repoIsExempted(repo, exemptedCustomProperties, language),
+				)
 				.filter((repo) => {
 					const workflowUsagesForRepo = productionWorkflowUsages.filter(
 						(workflow) => workflow.full_name === repo.full_name,
@@ -160,15 +185,17 @@ export async function sendReposToDependencyGraphIntegrator(
 	repoLanguages: github_languages[],
 	productionRepos: Repository[],
 	productionWorkflowUsages: guardian_github_actions_usage[],
+	repoCustomProperties: github_repository_custom_properties[],
 	repoOwners: view_repo_ownership[],
 	repoCount: number,
 	octokit: Octokit,
 ): Promise<void> {
 	const reposRequiringDepGraphIntegration: RepositoryWithDepGraphLanguage[] =
-		getReposWithoutWorkflows(
+		getSuitableReposWithoutWorkflows(
 			repoLanguages,
 			productionRepos,
 			productionWorkflowUsages,
+			repoCustomProperties,
 		);
 
 	if (reposRequiringDepGraphIntegration.length !== 0) {

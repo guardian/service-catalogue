@@ -1,5 +1,6 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import type {
+	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	PrismaClient,
 	repocop_github_repository_rules,
@@ -22,6 +23,7 @@ import {
 	getRepoOwnership,
 	getRepositories,
 	getRepositoryBranches,
+	getRepositoryCustomProperties,
 	getRepositoryLanguages,
 	getSnykIssues,
 	getSnykProjects,
@@ -160,6 +162,14 @@ export async function main() {
 		nonPlaygroundStacks,
 	);
 
+	const customProperties = await getRepositoryCustomProperties(prisma);
+	const customPropertiesExemptedFromDepGraphIntegration: github_repository_custom_properties[] =
+		customProperties.filter((property) => {
+			return (
+				property.property_name === 'gu_dependency_graph_integrator_ignore' &&
+				property.value
+			);
+		});
 	const dependencyGraphIntegratorRepoCount = 5;
 
 	await sendReposToDependencyGraphIntegrator(
@@ -167,6 +177,7 @@ export async function main() {
 		repoLanguages,
 		productionRepos,
 		productionWorkflowUsages,
+		customPropertiesExemptedFromDepGraphIntegration,
 		repoOwners,
 		dependencyGraphIntegratorRepoCount,
 		octokit,
