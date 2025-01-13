@@ -1,6 +1,7 @@
 import type {
 	github_languages,
 	github_repository_branches,
+	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	PrismaClient,
 	view_repo_ownership,
@@ -199,4 +200,12 @@ export async function getProductionWorkflowUsages(
 		},
 	});
 	return toNonEmptyArray(actions_usage);
+}
+
+export async function getRepositoryCustomProperties(
+	client: PrismaClient,
+): Promise<NonEmptyArray<github_repository_custom_properties>> {
+	const custom_properties =
+		await client.github_repository_custom_properties.findMany({});
+	return toNonEmptyArray(custom_properties);
 }
