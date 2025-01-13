@@ -9,6 +9,8 @@ It is deployed as an AWS Lambda, and powers:
 - The [interactive-monitor](../interactive-monitor/README.md) lambda
 - The [dependency-graph-integrator](../dependency-graph-integrator/README.md) lambda
 
+See the [job dependencies diagram](JobDependencies.md).
+
 ## Running RepoCop locally
 
 From the root of the repo:
