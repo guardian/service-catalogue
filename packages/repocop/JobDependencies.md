@@ -26,7 +26,7 @@ flowchart LR
     
     %% Notifications
     vulnNotice[[SNS: Vulnerability digest]]
-    fsbpNotice[[SNS: FSBP finding]]
+    fsbpNotice[[SNS: FSBP findings digest]]
     ghInteractiveRepoNotice[[SNS: Interactive repo missing topic]]
     ghBranchProtectNotice[[SNS: Branch protection]]
     ghProdRepoNotice[[SNS: Production repo missing topic]]
