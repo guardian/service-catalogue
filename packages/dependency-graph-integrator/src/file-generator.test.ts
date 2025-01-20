@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.2.0
         with:
           distribution: corretto
-          java-version: 17
+          java-version: 21
       - name: Install sbt
         id: sbt
         uses: sbt/setup-sbt@8a071aa780c993c7a204c785d04d3e8eb64ef272 # v1.1.0
@@ -65,7 +65,7 @@ jobs:
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
       - name: Submit dependencies
         id: submit
         uses: gradle/actions/dependency-submission@d156388eb19639ec20ade50009f3d199ce1e2808 # v4.1.0

@@ -24,7 +24,7 @@ function createLanguageSpecificWorkflowSteps(
 				uses: 'actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.2.0',
 				with: {
 					distribution: 'corretto',
-					'java-version': '17',
+					'java-version': '21',
 				},
 			},
 			{
@@ -55,7 +55,7 @@ function createLanguageSpecificWorkflowSteps(
 				uses: 'actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1',
 				with: {
 					distribution: 'temurin',
-					'java-version': '17',
+					'java-version': '21',
 				},
 			},
 			{
