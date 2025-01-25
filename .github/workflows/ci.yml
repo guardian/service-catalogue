@@ -177,5 +177,7 @@ jobs:
               - packages/common/prisma.zip
             cloudbuster:
               - packages/cloudbuster/dist/cloudbuster.zip
+            cloudquery-usage:
+              - packages/cloudquery-usage/dist/cloudquery-usage.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

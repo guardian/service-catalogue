@@ -9,3 +9,6 @@ With your local environment running, run:
 ```bash
 npm -w cloudquery-usage start
 ```
+
+## Running on PROD
+This runs within AWS Lambda.
