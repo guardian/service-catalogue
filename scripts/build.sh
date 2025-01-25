@@ -68,4 +68,4 @@ createLambdaWithPrisma "github-actions-usage"
 createLambdaWithPrisma "obligatron"
 createLambdaWithPrisma "refresh-materialized-view"
 createLambdaWithPrisma "cloudbuster"
-
+createLambdaWithPrisma "cloudquery-usage"
