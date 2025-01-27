@@ -44,6 +44,7 @@ interface CloudqueryEcsClusterProps {
 	loggingStreamName: string;
 	logShippingPolicy: PolicyStatement;
 	gitHubOrg: string;
+	cloudqueryApiKey: SecretsManager;
 }
 
 export function addCloudqueryEcsCluster(
@@ -59,6 +60,7 @@ export function addCloudqueryEcsCluster(
 		loggingStreamName,
 		logShippingPolicy,
 		gitHubOrg: gitHubOrgName,
+		cloudqueryApiKey,
 	} = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
@@ -666,5 +668,6 @@ export function addCloudqueryEcsCluster(
 			ns1Source,
 			amigoBakePackagesSource,
 		],
+		cloudqueryApiKey,
 	});
 }

@@ -5,7 +5,7 @@ import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
+import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import type { CloudqueryConfig } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
@@ -118,6 +118,8 @@ interface CloudqueryClusterProps extends AppIdentity {
 	loggingStreamName: string;
 
 	logShippingPolicy: PolicyStatement;
+
+	cloudqueryApiKey: SecretsManager;
 }
 
 /**
@@ -132,9 +134,15 @@ export class CloudqueryCluster extends Cluster {
 			containerInsights: true,
 		});
 
-		const { stack, stage } = scope;
-		const { app, db, dbAccess, sources, loggingStreamName, logShippingPolicy } =
-			props;
+		const {
+			app,
+			db,
+			dbAccess,
+			sources,
+			loggingStreamName,
+			logShippingPolicy,
+			cloudqueryApiKey,
+		} = props;
 
 		const taskProps = {
 			app,
@@ -143,10 +151,6 @@ export class CloudqueryCluster extends Cluster {
 			dbAccess,
 			loggingStreamName,
 		};
-
-		const cloudqueryApiKey = new SecretsManager(scope, 'cloudquery-api-key', {
-			secretName: `/${stage}/${stack}/${app}/cloudquery-api-key`,
-		});
 
 		sources.forEach(
 			({

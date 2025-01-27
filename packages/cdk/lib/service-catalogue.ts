@@ -41,6 +41,7 @@ import {
 import { getCentralElkLink } from 'common/src/logs';
 import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
+import { addCloudqueryUsageLambda } from './cloudquery-usage';
 import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
@@ -211,6 +212,10 @@ export class ServiceCatalogue extends GuStack {
 			resources: [loggingStreamArn],
 		});
 
+		const cloudqueryApiKey = new Secret(this, 'cloudquery-api-key', {
+			secretName: `/${stage}/${stack}/${app}/cloudquery-api-key`,
+		});
+
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
 			nonProdSchedule,
 			db,
@@ -220,6 +225,14 @@ export class ServiceCatalogue extends GuStack {
 			loggingStreamName,
 			logShippingPolicy,
 			gitHubOrg,
+			cloudqueryApiKey,
+		});
+
+		addCloudqueryUsageLambda(this, {
+			vpc,
+			db,
+			dbAccess: applicationToPostgresSecurityGroup,
+			cloudqueryApiKey,
 		});
 
 		const anghammaradTopicParameter =

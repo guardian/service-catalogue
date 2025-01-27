@@ -1,3 +1,5 @@
+import type { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import { GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import {
 	fromIni,
 	fromTemporaryCredentials,
@@ -54,3 +56,27 @@ export const AWS_REGIONS = [
 	'ap-southeast-2',
 	'ca-central-1',
 ];
+
+export async function getSecretManagerValue(
+	client: SecretsManagerClient,
+	path: string,
+): Promise<string> {
+	const command = new GetSecretValueCommand({
+		SecretId: path,
+	});
+	const response = await client.send(command);
+
+	if (!response.SecretString) {
+		throw new Error(`No secret string found at ${path}`);
+	}
+
+	return response.SecretString;
+}
+
+export async function getSecretManagerValueAsJson<T>(
+	client: SecretsManagerClient,
+	path: string,
+): Promise<T> {
+	const secretString = await getSecretManagerValue(client, path);
+	return JSON.parse(secretString) as T;
+}

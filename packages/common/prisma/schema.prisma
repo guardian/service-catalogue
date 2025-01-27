@@ -786,6 +786,15 @@ model amigo_bake_packages {
   @@ignore
 }
 
+model cloudquery_plugin_usage {
+  timestamp DateTime @db.Timestamp(6)
+  name      String
+  metric    String
+  value     Int
+
+  @@unique([timestamp, name, metric], map: "cloudquery_plugin_usage_key")
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
