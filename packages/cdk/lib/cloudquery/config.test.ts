@@ -38,6 +38,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_s3_buckets
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -64,6 +65,7 @@ spec:
   version: v27.5.0
   tables:
     - '*'
+  skip_dependent_tables: false
   skip_tables:
     - aws_s3_buckets
   destinations:
@@ -97,6 +99,7 @@ spec:
     - aws_accessanalyzer_analyzers
     - aws_accessanalyzer_analyzer_archive_rules
     - aws_accessanalyzer_analyzer_findings
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -131,6 +134,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_securityhub_findings
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -159,6 +163,7 @@ spec:
 		  version: v11.11.1
 		  tables:
 		    - github_repositories
+		  skip_dependent_tables: false
 		  destinations:
 		    - postgresql
 		  spec:
