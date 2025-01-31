@@ -193,10 +193,6 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
-		const snykReadOnlyKey = new Secret(this, 'snyk-credentials', {
-			secretName: `/${stage}/${stack}/${app}/snyk-credentials`,
-		});
-
 		const loggingStreamName =
 			GuLoggingStreamNameParameter.getInstance(this).valueAsString;
 
@@ -221,7 +217,6 @@ export class ServiceCatalogue extends GuStack {
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
-			snykCredentials: snykReadOnlyKey,
 			loggingStreamName,
 			logShippingPolicy,
 			gitHubOrg,

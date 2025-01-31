@@ -262,31 +262,6 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 	};
 }
 
-export function snykSourceConfig(
-	tableConfig: CloudqueryTableConfig,
-): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
-
-	if (!tables && !skipTables) {
-		throw new Error('Must specify either tables or skipTables');
-	}
-
-	return {
-		kind: 'source',
-		spec: {
-			name: 'snyk',
-			path: 'cloudquery/snyk',
-			version: `v${Versions.CloudquerySnyk}`,
-			tables,
-			skip_tables: skipTables,
-			destinations: ['postgresql'],
-			spec: {
-				api_key: '${SNYK_API_KEY}',
-			},
-		},
-	};
-}
-
 export function githubLanguagesConfig(): CloudqueryConfig {
 	return {
 		kind: 'source',
