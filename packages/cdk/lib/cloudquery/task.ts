@@ -30,7 +30,7 @@ import { scheduleFrequency } from './schedule';
 
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,
-		Omit<ScheduledFargateTaskProps, 'Cluster'> {
+		Omit<ScheduledFargateTaskProps, 'cluster'> {
 	/**
 	 * The name of the task.
 	 * This will get added to the `Name` tag of the task definition.
