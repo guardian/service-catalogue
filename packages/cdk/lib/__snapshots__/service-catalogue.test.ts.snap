@@ -795,6 +795,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_costexplorer_*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -1448,6 +1449,7 @@ spec:
   tables:
     - aws_accessanalyzer_*
     - aws_securityhub_*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -2143,6 +2145,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_lambda_*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -2765,6 +2768,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_organization*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -3416,6 +3420,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_autoscaling_groups
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -4070,6 +4075,7 @@ spec:
     - aws_backup_protected_resources
     - aws_backup_vaults
     - aws_backup_vault_recovery_points
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -4752,6 +4758,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_acm*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -5608,6 +5615,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_cloudformation_*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -6026,6 +6034,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_cloudwatch_alarms
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -6678,6 +6687,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_dynamodb*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -7332,6 +7342,7 @@ spec:
     - aws_ec2_instances
     - aws_ec2_security_groups
     - aws_ec2_images
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -8015,6 +8026,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_iam_credential_reports
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -8668,6 +8680,7 @@ spec:
   tables:
     - aws_inspector_findings
     - aws_inspector2_findings
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -9321,6 +9334,7 @@ spec:
   tables:
     - aws_elbv1_*
     - aws_elbv2_*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -9976,6 +9990,7 @@ spec:
     - aws_rds_clusters
     - aws_rds_db_snapshots
     - aws_rds_cluster_snapshots
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -10628,6 +10643,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_s3*
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -11514,6 +11530,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_*
+  skip_dependent_tables: false
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events
@@ -12028,6 +12045,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_ssm_parameters
+  skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -12685,6 +12703,7 @@ spec:
     - fastly_service_domains
     - fastly_service_health_checks
     - fastly_account_users
+  skip_dependent_tables: false
   destinations:
     - postgresql
   spec:
@@ -14253,6 +14272,7 @@ spec:
   version: v11.11.1
   tables:
     - github_issues
+  skip_dependent_tables: false
   skip_tables:
     - github_issue_timeline_events
     - github_issue_pullrequest_reviews
@@ -15385,6 +15405,7 @@ spec:
     - github_repository_collaborators
     - github_repository_custom_properties
     - github_workflows
+  skip_dependent_tables: false
   skip_tables:
     - github_releases
     - github_release_assets
@@ -16101,6 +16122,7 @@ spec:
     - github_teams
     - github_team_members
     - github_team_repositories
+  skip_dependent_tables: false
   skip_tables:
     - github_organization_dependabot_alerts
     - github_organization_dependabot_secrets
