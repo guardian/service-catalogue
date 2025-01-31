@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS aws_scheduler_schedules;
