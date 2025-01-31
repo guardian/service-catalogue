@@ -11569,6 +11569,7 @@ spec:
     - aws_stepfunctions_map_runs
     - aws_stepfunctions_map_run_executions
     - aws_stepfunctions_executions
+    - aws_scheduler_schedules
     - aws_organization*
     - aws_accessanalyzer_*
     - aws_securityhub_*
