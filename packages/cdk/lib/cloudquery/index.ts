@@ -25,7 +25,6 @@ import {
 	riffraffSourcesConfig,
 	serviceCatalogueConfigDirectory,
 	skipTables,
-	snykSourceConfig,
 } from './config';
 import { Images } from './images';
 import {
@@ -40,7 +39,6 @@ interface CloudqueryEcsClusterProps {
 	db: DatabaseInstance;
 	dbAccess: GuSecurityGroup;
 	nonProdSchedule?: Schedule;
-	snykCredentials: SecretsManager;
 	loggingStreamName: string;
 	logShippingPolicy: PolicyStatement;
 	gitHubOrg: string;
@@ -522,30 +520,6 @@ export function addCloudqueryEcsCluster(
 		},
 	];
 
-	const snykSources: CloudquerySource[] = [
-		{
-			name: 'SnykAll',
-			description: 'Collecting all Snyk data, except for projects',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
-			config: snykSourceConfig({
-				tables: [
-					'snyk_issues',
-					'snyk_organizations',
-					'snyk_projects',
-					'snyk_sbom',
-				],
-				skipTables: [],
-			}),
-			secrets: {
-				SNYK_API_KEY: Secret.fromSecretsManager(
-					props.snykCredentials,
-					'api-key',
-				),
-			},
-			memoryLimitMiB: 1024,
-		},
-	];
-
 	const cloudqueryRiffRaffDatabaseCredentials = new SecretsManager(
 		scope,
 		'RiffRaffDatabaseCredentials',
@@ -662,7 +636,6 @@ export function addCloudqueryEcsCluster(
 			...githubSources,
 			...fastlySources,
 			...galaxiesSources,
-			...snykSources,
 			riffRaffSources,
 			githubLanguagesSource,
 			ns1Source,
