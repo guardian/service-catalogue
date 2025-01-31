@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS github_issue_pullrequest_reviews;
