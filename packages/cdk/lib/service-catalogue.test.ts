@@ -15,6 +15,7 @@ describe('The ServiceCatalogue stack', () => {
 				hour: '3',
 				minute: '0',
 			}),
+			enableCloudquerySchedules: true,
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
@@ -30,6 +31,7 @@ describe('The ServiceCatalogue stack', () => {
 				hour: '3',
 				minute: '0',
 			}),
+			enableCloudquerySchedules: true,
 		});
 
 		const lambdas = stack.node

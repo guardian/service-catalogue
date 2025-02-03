@@ -80,11 +80,6 @@ function createLambdaMonitoringConfiguration(
 	}
 }
 interface ServiceCatalogueProps extends GuStackProps {
-	//TODO add fields for every kind of job to make schedule explicit at a glance.
-	//For code environments, data accuracy is not the main priority.
-	// To keep costs low, we can choose to run all the tasks on the same cadence, less frequently than on prod
-	schedule?: Schedule;
-
 	/**
 	 * When to run the RepoCop and CloudBuster apps.
 	 */
@@ -102,6 +97,13 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * The GitHub org to search for repositories in.
 	 */
 	gitHubOrg?: string;
+
+	/**
+	 * Each CloudQuery data collection task has a schedule.
+	 * When true, the schedule will be enabled, and data collection will occur as defined.
+	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
+	 */
+	enableCloudquerySchedules: boolean;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -116,9 +118,8 @@ export class ServiceCatalogue extends GuStack {
 			multiAz = false,
 			gitHubOrg = 'guardian',
 			securityAlertSchedule,
+			enableCloudquerySchedules,
 		} = props;
-
-		const nonProdSchedule = props.schedule;
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
@@ -219,7 +220,7 @@ export class ServiceCatalogue extends GuStack {
 		});
 
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
-			nonProdSchedule,
+			enableCloudquerySchedules,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,

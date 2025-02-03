@@ -38,11 +38,17 @@ interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
 	db: DatabaseInstance;
 	dbAccess: GuSecurityGroup;
-	nonProdSchedule?: Schedule;
 	loggingStreamName: string;
 	logShippingPolicy: PolicyStatement;
 	gitHubOrg: string;
 	cloudqueryApiKey: SecretsManager;
+
+	/**
+	 * Each CloudQuery data collection task has a schedule.
+	 * When true, the schedule will be enabled, and data collection will occur as defined.
+	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
+	 */
+	enableCloudquerySchedules: boolean;
 }
 
 export function addCloudqueryEcsCluster(
@@ -54,11 +60,11 @@ export function addCloudqueryEcsCluster(
 		vpc,
 		db,
 		dbAccess,
-		nonProdSchedule,
 		loggingStreamName,
 		logShippingPolicy,
 		gitHubOrg: gitHubOrgName,
 		cloudqueryApiKey,
+		enableCloudquerySchedules,
 	} = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
@@ -81,7 +87,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsListOrgs',
 			description:
 				'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			schedule: Schedule.rate(Duration.days(1)),
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 				tables: [
 					/*
@@ -101,7 +107,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsDelegatedToSecurityAccount',
 			description:
 				'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '22' }),
+			schedule: Schedule.cron({ minute: '0', hour: '22' }),
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
@@ -151,7 +157,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideCloudFormation',
 			description:
 				'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(3)),
+			schedule: Schedule.rate(Duration.hours(3)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_cloudformation_*'],
 			}),
@@ -162,7 +168,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsCostExplorer',
 			description:
 				'Collecting Aws Cost Explorer Information. This is usefull for reservations',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(7)),
+			schedule: Schedule.rate(Duration.days(7)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_costexplorer_*'],
 			}),
@@ -172,7 +178,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideLoadBalancers',
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(30)),
+			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_elbv1_*', 'aws_elbv2_*'],
 			}),
@@ -182,7 +188,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideAutoScalingGroups',
 			description:
 				'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+			schedule: Schedule.cron({ minute: '0', hour: '0' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_autoscaling_groups'],
 			}),
@@ -192,7 +198,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideCertificates',
 			description:
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '1' }),
+			schedule: Schedule.cron({ minute: '0', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_acm*'],
 			}),
@@ -201,7 +207,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsLambda',
 			description: 'Collecting lambda data across the organisation.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '10', hour: '1' }),
+			schedule: Schedule.cron({ minute: '10', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_lambda_*'],
 			}),
@@ -210,7 +216,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsSSMParameters',
 			description: 'Collecting ssm parameters across the organisation.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '20', hour: '1' }),
+			schedule: Schedule.cron({ minute: '20', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_ssm_parameters'],
 			}),
@@ -220,7 +226,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideCloudwatchAlarms',
 			description:
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
+			schedule: Schedule.cron({ minute: '0', hour: '2' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_cloudwatch_alarms'],
 			}),
@@ -229,7 +235,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsOrgWideInspector',
 			description: 'Collecting Inspector data across the organisation.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
+			schedule: Schedule.cron({ minute: '0', hour: '3' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
 			}),
@@ -240,7 +246,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideS3',
 			description:
 				'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '4' }),
+			schedule: Schedule.cron({ minute: '0', hour: '4' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_s3*'],
 			}),
@@ -250,7 +256,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideDynamoDB',
 			description:
 				'Collecting DynamoDB data across the organisation. Uses include auditing backup configuration.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '5' }),
+			schedule: Schedule.cron({ minute: '0', hour: '5' }),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_dynamodb*'],
 			}),
@@ -260,7 +266,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideRDS',
 			description:
 				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '6' }),
+			schedule: Schedule.cron({ minute: '0', hour: '6' }),
 			config: awsSourceConfigForOrganisation({
 				tables: [
 					'aws_rds_instances',
@@ -275,7 +281,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideBackup',
 			description:
 				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '7' }),
+			schedule: Schedule.cron({ minute: '0', hour: '7' }),
 			config: awsSourceConfigForOrganisation({
 				tables: [
 					'aws_backup_protected_resources',
@@ -290,7 +296,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideEc2',
 			description:
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.minutes(30)),
+			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
 				tables: [
 					'aws_ec2_instances',
@@ -306,7 +312,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideIamCredentialReports',
 			description:
 				'Collecting IAM credential reports to surface information about outdated or inactive users and access keys',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.hours(4)),
+			schedule: Schedule.rate(Duration.hours(4)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_iam_credential_reports'],
 			}),
@@ -325,9 +331,7 @@ export function addCloudqueryEcsCluster(
 	const remainingAwsSources: CloudquerySource = {
 		name: 'AwsRemainingData',
 		description: 'Data fetched across all accounts in the organisation.',
-		schedule:
-			nonProdSchedule ??
-			Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 		config: awsSourceConfigForOrganisation({
 			tables: ['aws_*'],
 			skipTables: [
@@ -385,7 +389,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubRepositories',
 			description:
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+			schedule: Schedule.cron({ minute: '0', hour: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -413,9 +417,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubTeams',
 			description:
 				'Collect GitHub team data. Uses include identifying which repositories a team owns.',
-			schedule:
-				nonProdSchedule ??
-				Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
+			schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -444,7 +446,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'GitHubIssues',
 			description: 'Collect GitHub issue data (PRs and Issues)',
-			schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '2' }),
+			schedule: Schedule.cron({ minute: '0', hour: '2' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_issues'],
@@ -473,7 +475,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'FastlyServices',
 			description: 'Fastly services data',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			schedule: Schedule.rate(Duration.days(1)),
 			config: fastlySourceConfig({
 				tables: [
 					'fastly_services',
@@ -510,7 +512,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'Galaxies',
 			description: 'Galaxies data',
-			schedule: nonProdSchedule ?? Schedule.rate(Duration.days(1)),
+			schedule: Schedule.rate(Duration.days(1)),
 			policies: [
 				readBucketPolicy(
 					`${actionsStaticSiteBucket.bucketArn}/galaxies.gutools.co.uk/data/*`,
@@ -531,7 +533,7 @@ export function addCloudqueryEcsCluster(
 	const riffRaffSources: CloudquerySource = {
 		name: 'RiffRaffData',
 		description: "Source deployment data directly from riff-raff's database",
-		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+		schedule: Schedule.cron({ minute: '0', hour: '0' }),
 		config: riffraffSourcesConfig(),
 		additionalSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
 		secrets: {
@@ -558,7 +560,7 @@ export function addCloudqueryEcsCluster(
 	const githubLanguagesSource: CloudquerySource = {
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
-		schedule: nonProdSchedule ?? Schedule.rate(Duration.days(7)),
+		schedule: Schedule.rate(Duration.days(7)),
 		config: githubLanguagesConfig(),
 		secrets: {
 			GITHUB_ACCESS_TOKEN: Secret.fromSecretsManager(githubLanguagesSecret),
@@ -573,7 +575,7 @@ export function addCloudqueryEcsCluster(
 	const ns1Source: CloudquerySource = {
 		name: 'NS1',
 		description: 'DNS records from NS1',
-		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '0' }),
+		schedule: Schedule.cron({ minute: '0', hour: '0' }),
 		dockerDistributedPluginImage: Images.ns1Source,
 		secrets: {
 			NS1_API_KEY: Secret.fromSecretsManager(ns1ApiKey, 'api-key'),
@@ -603,7 +605,7 @@ export function addCloudqueryEcsCluster(
 	const amigoBakePackagesSource: CloudquerySource = {
 		name: 'AmigoBakePackages',
 		description: 'Packages installed in Amigo bakes.',
-		schedule: nonProdSchedule ?? Schedule.cron({ minute: '0', hour: '3' }),
+		schedule: Schedule.cron({ minute: '0', hour: '3' }),
 		config: amigoBakePackagesConfig(
 			baseImagesTableName,
 			recipesTableName,
@@ -624,6 +626,7 @@ export function addCloudqueryEcsCluster(
 	};
 
 	return new CloudqueryCluster(scope, `${app}Cluster`, {
+		enableCloudquerySchedules,
 		app,
 		vpc,
 		db,

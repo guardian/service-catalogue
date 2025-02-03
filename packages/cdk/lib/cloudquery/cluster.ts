@@ -120,6 +120,13 @@ interface CloudqueryClusterProps extends AppIdentity {
 	logShippingPolicy: PolicyStatement;
 
 	cloudqueryApiKey: SecretsManager;
+
+	/**
+	 * Each CloudQuery data collection task has a schedule.
+	 * When true, the schedule will be enabled, and data collection will occur as defined.
+	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
+	 */
+	enableCloudquerySchedules: boolean;
 }
 
 /**
@@ -142,6 +149,7 @@ export class CloudqueryCluster extends Cluster {
 			loggingStreamName,
 			logShippingPolicy,
 			cloudqueryApiKey,
+			enableCloudquerySchedules,
 		} = props;
 
 		const taskProps = {
@@ -169,6 +177,7 @@ export class CloudqueryCluster extends Cluster {
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
+					enabled: enableCloudquerySchedules,
 					name,
 					managedPolicies,
 					policies: [logShippingPolicy, ...policies],
