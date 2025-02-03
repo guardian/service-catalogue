@@ -23,7 +23,7 @@ import {
 	Peer,
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
-import { Schedule } from 'aws-cdk-lib/aws-events';
+import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import {
@@ -86,6 +86,11 @@ interface ServiceCatalogueProps extends GuStackProps {
 	schedule?: Schedule;
 
 	/**
+	 * When to run the RepoCop and CloudBuster apps.
+	 */
+	securityAlertSchedule: Schedule;
+
+	/**
 	 * Enable deletion protection for the RDS instance?
 	 *
 	 * @default true
@@ -110,6 +115,7 @@ export class ServiceCatalogue extends GuStack {
 			rdsDeletionProtection = true,
 			multiAz = false,
 			gitHubOrg = 'guardian',
+			securityAlertSchedule,
 		} = props;
 
 		const nonProdSchedule = props.schedule;
@@ -248,14 +254,6 @@ export class ServiceCatalogue extends GuStack {
 				secretName: `/${stage}/${stack}/service-catalogue/repocop-github-app-secret`,
 			},
 		);
-
-		const prodSchedule = Schedule.cron({
-			weekDay: 'MON-FRI',
-			hour: '3',
-			minute: '0',
-		});
-
-		const securityAlertSchedule = nonProdSchedule ?? prodSchedule;
 
 		new Repocop(
 			this,

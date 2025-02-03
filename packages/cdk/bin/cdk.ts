@@ -15,6 +15,11 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	env: { region },
 	multiAz: true,
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
+	securityAlertSchedule: Schedule.cron({
+		weekDay: 'MON-FRI',
+		hour: '3',
+		minute: '0',
+	}),
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
@@ -22,6 +27,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stage: 'CODE',
 	env: { region },
 	schedule: Schedule.rate(Duration.days(30)),
+	securityAlertSchedule: Schedule.rate(Duration.days(30)),
 	rdsDeletionProtection: false,
 	cloudFormationStackName: 'deploy-CODE-service-catalogue',
 });
