@@ -23,7 +23,7 @@ import {
 	Peer,
 	Port,
 } from 'aws-cdk-lib/aws-ec2';
-import { Schedule } from 'aws-cdk-lib/aws-events';
+import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
 import {
@@ -80,10 +80,10 @@ function createLambdaMonitoringConfiguration(
 	}
 }
 interface ServiceCatalogueProps extends GuStackProps {
-	//TODO add fields for every kind of job to make schedule explicit at a glance.
-	//For code environments, data accuracy is not the main priority.
-	// To keep costs low, we can choose to run all the tasks on the same cadence, less frequently than on prod
-	schedule?: Schedule;
+	/**
+	 * When to run the RepoCop and CloudBuster apps.
+	 */
+	securityAlertSchedule: Schedule;
 
 	/**
 	 * Enable deletion protection for the RDS instance?
@@ -97,6 +97,13 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * The GitHub org to search for repositories in.
 	 */
 	gitHubOrg?: string;
+
+	/**
+	 * Each CloudQuery data collection task has a schedule.
+	 * When true, the schedule will be enabled, and data collection will occur as defined.
+	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
+	 */
+	enableCloudquerySchedules: boolean;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -110,9 +117,9 @@ export class ServiceCatalogue extends GuStack {
 			rdsDeletionProtection = true,
 			multiAz = false,
 			gitHubOrg = 'guardian',
+			securityAlertSchedule,
+			enableCloudquerySchedules,
 		} = props;
-
-		const nonProdSchedule = props.schedule;
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
@@ -213,7 +220,7 @@ export class ServiceCatalogue extends GuStack {
 		});
 
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
-			nonProdSchedule,
+			enableCloudquerySchedules,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
@@ -248,14 +255,6 @@ export class ServiceCatalogue extends GuStack {
 				secretName: `/${stage}/${stack}/service-catalogue/repocop-github-app-secret`,
 			},
 		);
-
-		const prodSchedule = Schedule.cron({
-			weekDay: 'MON-FRI',
-			hour: '3',
-			minute: '0',
-		});
-
-		const securityAlertSchedule = nonProdSchedule ?? prodSchedule;
 
 		new Repocop(
 			this,

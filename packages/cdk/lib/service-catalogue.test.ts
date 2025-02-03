@@ -1,5 +1,6 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
+import { Schedule } from 'aws-cdk-lib/aws-events';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { ServiceCatalogue } from './service-catalogue';
 
@@ -9,6 +10,12 @@ describe('The ServiceCatalogue stack', () => {
 		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
 			stack: 'deploy',
 			stage: 'TEST',
+			securityAlertSchedule: Schedule.cron({
+				weekDay: 'MON-FRI',
+				hour: '3',
+				minute: '0',
+			}),
+			enableCloudquerySchedules: true,
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
@@ -19,6 +26,12 @@ describe('The ServiceCatalogue stack', () => {
 		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
 			stack: 'deploy',
 			stage: 'TEST',
+			securityAlertSchedule: Schedule.cron({
+				weekDay: 'MON-FRI',
+				hour: '3',
+				minute: '0',
+			}),
+			enableCloudquerySchedules: true,
 		});
 
 		const lambdas = stack.node

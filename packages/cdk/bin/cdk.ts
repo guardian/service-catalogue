@@ -15,15 +15,24 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	env: { region },
 	multiAz: true,
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
+	securityAlertSchedule: Schedule.cron({
+		weekDay: 'MON-FRI',
+		hour: '3',
+		minute: '0',
+	}),
+	enableCloudquerySchedules: true,
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stack,
 	stage: 'CODE',
 	env: { region },
-	schedule: Schedule.rate(Duration.days(30)),
+	securityAlertSchedule: Schedule.rate(Duration.days(30)),
 	rdsDeletionProtection: false,
 	cloudFormationStackName: 'deploy-CODE-service-catalogue',
+
+	// Do not run CloudQuery tasks in CODE, preferring instead to run them manually using the CLI.
+	enableCloudquerySchedules: false,
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml
