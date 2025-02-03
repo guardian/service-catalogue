@@ -95,7 +95,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - uses: guardian/actions-read-private-repos@8792b5279dc2e6dfb6b9aa6ba2f26b6226be444c # v0.1.1
+      - uses: guardian/actions-read-private-repos@48bc5aeef8584a03a3a89ec82f9a7d06c7736855 # v1.0.0
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
@@ -140,7 +140,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - uses: guardian/actions-read-private-repos@8792b5279dc2e6dfb6b9aa6ba2f26b6226be444c # v0.1.1
+      - uses: guardian/actions-read-private-repos@48bc5aeef8584a03a3a89ec82f9a7d06c7736855 # v1.0.0
         with:
           private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
 
