@@ -8,6 +8,6 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"markdown-table": "^3.0.3"
+		"markdown-table": "^3.0.4"
 	}
 }
