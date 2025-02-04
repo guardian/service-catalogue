@@ -19,8 +19,6 @@ services:
       # These tables will be copied from the CODE database, and loaded into the DEV database.
       TABLES: |
         - guardian_github_actions_usage
-        - snyk_issues
-        - snyk_projects
         - galaxies_teams_table
         - github_team_repositories
         - github_teams
@@ -74,7 +72,6 @@ services:
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
-      SNYK_TOKEN: ${SNYK_TOKEN}
       GALAXIES_BUCKET: ${GALAXIES_BUCKET}
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
       DATABASE_URL: ${CQ_DATABASE_URL}

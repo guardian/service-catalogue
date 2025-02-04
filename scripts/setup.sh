@@ -129,7 +129,7 @@ DEPENDENCY_GRAPH_INPUT_TOPIC_ARN=${DEPENDENCY_GRAPH_INPUT_TOPIC_ARN}
       echo "File is not empty. Appending required environment variables only"
       echo "$env_var_text" >> "$local_env_file"
     else
-      echo "File is empty, adding Github and Snyk token names"
+      echo "File is empty, adding Github token name"
       echo "$token_text" >> "$local_env_file"
       echo "Appending required environment variables"
       echo "$env_var_text" >> "$local_env_file"
