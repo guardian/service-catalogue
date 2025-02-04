@@ -17023,7 +17023,7 @@ spec:
           },
           {
             "Essential": false,
-            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.3",
+            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.4",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
