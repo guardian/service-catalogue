@@ -92,13 +92,13 @@ const repository: readonly IBestPractice[] = [
 		name: 'Vulnerability Tracking',
 		owner: guardian,
 		description:
-			'Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.',
+			'Repositories should have their dependencies tracked via Dependabot, depending on the languages present.',
 		howToCheck:
 			'[Repocop compliance dashboard](https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?orgId=1&refresh=15m&var-team=All&var-rule=vulnerability_tracking)',
 		howToExempt:
 			'All archived repos and all repos without a production tag are exempt.',
 		remediation:
-			'Manually set up the [Snyk Github Action](https://github.com/guardian/.github/blob/main/.github/workflows/sbt-node-snyk.yml) in the repository that requires remediation.',
+			'Enable Dependency Graph in GitHub which will enable Dependabot.',
 	},
 ] as const satisfies readonly IBestPractice[];
 
