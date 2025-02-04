@@ -2,7 +2,7 @@ import type { Alert } from '../types';
 
 //These alerts were copied from the GH API docs https://docs.github.com/en/rest/dependabot/alerts?apiVersion=2022-11-28
 
-export const example: Alert[] = [
+export const exampleDependabotAlert: Alert[] = [
 	{
 		number: 2,
 		state: 'dismissed',
@@ -78,9 +78,6 @@ export const example: Alert[] = [
 				},
 				{
 					url: 'http://www.securitytracker.com/id/1040422',
-				},
-				{
-					url: 'https://snyk.io/vuln/some-fake-vuln-id',
 				},
 			],
 			published_at: '2018-10-03T21:13:54Z',
