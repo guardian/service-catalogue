@@ -13,4 +13,3 @@
  view_old_ec2_instances - see prisma migration 20231026180015_view_old_ec2_instances
  view_repo_ownership_view.sql - see prisma migration 20230928084104_view_repo_ownership
  view_running_instances_view.sql - see prisma migration 20231026184250_view_running_instances
- view_snyk_project_tags_view.sql - see prisma migration 20231026185557_snyk_project_tags
