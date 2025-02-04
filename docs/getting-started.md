@@ -6,7 +6,6 @@ We are using CloudQuery to collect data about how The Guardian uses:
 
 - AWS
 - GitHub
-- Snyk
 - Fastly
 - Galaxies of the Guardian
 - Image packages
@@ -26,21 +25,17 @@ is practical:
 
 - Your team email and GitHub team ID/slug
   are [up-to-date in Galaxies](https://github.com/guardian/galaxies/blob/main/shared/data/teams.ts)
-    - **Link created:** Galaxies &harr; Github
-    - **Reason:** We can associate business units with GitHub teams
+  - **Link created:** Galaxies &harr; Github
+  - **Reason:** We can associate business units with GitHub teams
 
 #### Engineers
 
 - Your repositories are administrated by the GitHub team named in Galaxies
-    - **Link created:** Galaxies &harr; Github
-    - **Reason:** We can associate repositories with business units
-- Using the [Guardian's Snyk action](https://github.com/guardian/.github/blob/main/.github/workflows/sbt-node-snyk.yml)
-  after a push to the main branch of production repositories
-    - **Link created:** Snyk &harr; Github
-    - **Reason:** The tags added to Snyk projects using this action are used to link them to GitHub repositories
+  - **Link created:** Galaxies &harr; Github
+  - **Reason:** We can associate repositories with business units
 - Using [guardian/cdk](https://github.com/guardian/cdk) to provision your infrastructure
-    - **Link created:** AWS &harr; Github
-    - **Reason:** Infrastructure stacks created using GuCDK are tagged with the repository that provisioned it.
+  - **Link created:** AWS &harr; Github
+  - **Reason:** Infrastructure stacks created using GuCDK are tagged with the repository that provisioned it.
 
 Some of the CloudQuery scans run less frequently than others. You can see the schedule for each job in the CDK stack, If
 you need your information quickly, prod Operations, and we will rerun the jobs on your behalf. You can find our
