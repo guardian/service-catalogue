@@ -159,7 +159,7 @@ export class ServiceCatalogue extends GuStack {
 			This certificate supports automatic rotation.
 			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities
 			 */
-			caCertificate: CaCertificate.RDS_CA_RDS2048_G1,
+			caCertificate: CaCertificate.RDS_CA_RSA2048_G1,
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
