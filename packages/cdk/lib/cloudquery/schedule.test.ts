@@ -1,52 +1,60 @@
 import { Duration } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-events';
-import { scheduleFrequency } from './schedule';
+import { scheduleFrequencyMs } from './schedule';
 
 describe('EventBridge expression parsing', () => {
 	it('should correctly identify task frequency from CRON', () => {
 		expect(
-			scheduleFrequency(
+			scheduleFrequencyMs(
 				Schedule.cron({
 					hour: '1',
 				}),
 			),
-		).toBe('DAILY');
+		).toBe(Duration.minutes(1).toMilliseconds());
 		expect(
-			scheduleFrequency(
+			scheduleFrequencyMs(
 				Schedule.cron({
 					minute: '1',
 					hour: '1',
 					weekDay: '1',
 				}),
 			),
-		).toBe('WEEKLY');
+		).toBe(Duration.days(7).toMilliseconds());
 		expect(
-			scheduleFrequency(
+			scheduleFrequencyMs(
 				Schedule.cron({
 					minute: '1',
 					hour: '1',
 					day: '1',
 				}),
 			),
-		).toBe('OTHER');
+		).toBe(Duration.days(31).toMilliseconds());
 	});
 
 	it('should correctly identify task frequency from RATE', () => {
-		expect(scheduleFrequency(Schedule.rate(Duration.days(1)))).toBe('DAILY');
-		expect(scheduleFrequency(Schedule.rate(Duration.days(7)))).toBe('WEEKLY');
-		expect(scheduleFrequency(Schedule.rate(Duration.days(30)))).toBe('OTHER');
+		expect(scheduleFrequencyMs(Schedule.rate(Duration.days(1)))).toBe(
+			Duration.days(1).toMilliseconds(),
+		);
+		expect(scheduleFrequencyMs(Schedule.rate(Duration.days(7)))).toBe(
+			Duration.days(7).toMilliseconds(),
+		);
+		expect(scheduleFrequencyMs(Schedule.rate(Duration.days(30)))).toBe(
+			Duration.days(30).toMilliseconds(),
+		);
 	});
 
 	it('should correctly identify task frequency from EXPRESSION', () => {
-		expect(scheduleFrequency(Schedule.expression('rate(1 days)'))).toBe(
-			'DAILY',
+		expect(scheduleFrequencyMs(Schedule.expression('rate(1 days)'))).toBe(
+			Duration.days(1).toMilliseconds(),
 		);
 	});
 
 	it('should throw error from invalid EXPRESSION', () => {
-		expect(() => scheduleFrequency(Schedule.expression('asdf'))).toThrow(Error);
-		expect(() => scheduleFrequency(Schedule.expression('asdf(asdf)'))).toThrow(
+		expect(() => scheduleFrequencyMs(Schedule.expression('asdf'))).toThrow(
 			Error,
 		);
+		expect(() =>
+			scheduleFrequencyMs(Schedule.expression('asdf(asdf)')),
+		).toThrow(Error);
 	});
 });

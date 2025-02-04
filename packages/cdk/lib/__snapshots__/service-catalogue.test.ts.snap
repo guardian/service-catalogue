@@ -554,7 +554,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('amigo_bake_packages', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('amigo_bake_packages', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -973,7 +973,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_%', 'WEEKLY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'WEEKLY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_%', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -1640,7 +1640,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_%', 'DAILY'),('aws_securityhub_%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_%', 86400000),('aws_securityhub_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2323,7 +2323,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_lambda_%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_lambda_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -2945,7 +2945,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_organization%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_organization%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -3598,7 +3598,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_autoscaling_groups', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_autoscaling_groups', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -4253,7 +4253,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_backup_protected_resources', 'DAILY'),('aws_backup_vaults', 'DAILY'),('aws_backup_vault_recovery_points', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_backup_protected_resources', 86400000),('aws_backup_vaults', 86400000),('aws_backup_vault_recovery_points', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -4936,7 +4936,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_acm%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_acm%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -5793,7 +5793,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_cloudformation_%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_cloudformation_%', 10800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 10800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -6212,7 +6212,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_cloudwatch_alarms', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_cloudwatch_alarms', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -6865,7 +6865,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_dynamodb%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_dynamodb%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -7551,7 +7551,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ec2_instances', 'DAILY'),('aws_ec2_security_groups', 'DAILY'),('aws_ec2_images', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ec2_instances', 1800000),('aws_ec2_security_groups', 1800000),('aws_ec2_images', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -8204,7 +8204,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_iam_credential_reports', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_iam_credential_reports', 14400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 14400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -8858,7 +8858,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector_findings', 'DAILY'),('aws_inspector2_findings', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector_findings', 86400000),('aws_inspector2_findings', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -9512,7 +9512,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_%', 'DAILY'),('aws_elbv2_%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_%', 1800000),('aws_elbv2_%', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -10168,7 +10168,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_rds_instances', 'DAILY'),('aws_rds_clusters', 'DAILY'),('aws_rds_db_snapshots', 'DAILY'),('aws_rds_cluster_snapshots', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_rds_instances', 86400000),('aws_rds_clusters', 86400000),('aws_rds_db_snapshots', 86400000),('aws_rds_cluster_snapshots', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -10821,7 +10821,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_s3%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_s3%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11775,7 +11775,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_%', 'WEEKLY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'WEEKLY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_%', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12224,7 +12224,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ssm_parameters', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ssm_parameters', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12892,7 +12892,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('fastly_services', 'DAILY'),('fastly_service_versions', 'DAILY'),('fastly_service_backends', 'DAILY'),('fastly_service_domains', 'DAILY'),('fastly_service_health_checks', 'DAILY'),('fastly_account_users', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('fastly_services', 86400000),('fastly_service_versions', 86400000),('fastly_service_backends', 86400000),('fastly_service_domains', 86400000),('fastly_service_health_checks', 86400000),('fastly_account_users', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13554,7 +13554,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('galaxies_people_table', 'DAILY'),('galaxies_teams_table', 'DAILY'),('galaxies_streams_table', 'DAILY'),('galaxies_people_profile_info_table', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('galaxies_people_table', 86400000),('galaxies_teams_table', 86400000),('galaxies_streams_table', 86400000),('galaxies_people_profile_info_table', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -14499,7 +14499,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_issues', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_issues', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -14947,7 +14947,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_languages', 'WEEKLY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'WEEKLY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_languages', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -15634,7 +15634,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_repositories', 'DAILY'),('github_repository_branches', 'DAILY'),('github_repository_collaborators', 'DAILY'),('github_repository_custom_properties', 'DAILY'),('github_workflows', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_repositories', 86400000),('github_repository_branches', 86400000),('github_repository_collaborators', 86400000),('github_repository_custom_properties', 86400000),('github_workflows', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -16349,7 +16349,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_organizations', 'WEEKLY'),('github_organization_members', 'WEEKLY'),('github_teams', 'WEEKLY'),('github_team_members', 'WEEKLY'),('github_team_repositories', 'WEEKLY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'WEEKLY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_organizations', 604800000),('github_organization_members', 604800000),('github_teams', 604800000),('github_team_members', 604800000),('github_team_repositories', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -17043,7 +17043,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('ns1_%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('ns1_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -17993,7 +17993,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('riffraff_%', 'DAILY') ON CONFLICT (table_name) DO UPDATE SET frequency = 'DAILY'"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('riffraff_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
