@@ -636,8 +636,8 @@ model audit_results {
 }
 
 model cloudquery_table_frequency {
-  table_name String  @id
-  frequency  String?
+  table_name String @id
+  frequency  BigInt
 }
 
 model guardian_non_p_and_e_github_teams {
