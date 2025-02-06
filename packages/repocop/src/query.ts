@@ -18,8 +18,6 @@ import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
-	SnykIssue,
-	SnykProject,
 	Team,
 } from './types';
 
@@ -95,28 +93,6 @@ export async function getStacks(
 
 	console.debug(`Found ${stacks.length} stacks.`);
 	return toNonEmptyArray(stacks);
-}
-
-export async function getSnykIssues(
-	client: PrismaClient,
-): Promise<NonEmptyArray<SnykIssue>> {
-	const resp = (await client.snyk_issues.findMany({})).map((i) => {
-		return {
-			id: i.id,
-			attributes: i.attributes as unknown as SnykIssue['attributes'],
-			relationships: i.relationships as unknown as SnykIssue['relationships'],
-		};
-	});
-
-	return toNonEmptyArray(resp);
-}
-
-export async function getSnykProjects(
-	client: PrismaClient,
-): Promise<SnykProject[]> {
-	return (await client.snyk_projects.findMany({})).map((i) => {
-		return i as unknown as SnykProject;
-	});
 }
 
 export async function getRepositoryLanguages(

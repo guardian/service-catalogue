@@ -5,23 +5,15 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { RepocopVulnerability, Repository } from 'common/src/types';
-import { example } from '../test-data/example-dependabot-alerts';
-import type {
-	AwsCloudFormationStack,
-	Coordinate,
-	SnykIssue,
-	SnykProject,
-} from '../types';
+import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts';
+import type { AwsCloudFormationStack } from '../types';
 import {
-	collectAndFormatUrgentSnykAlerts,
 	deduplicateVulnerabilitiesByCve,
 	dependabotAlertToRepocopVulnerability,
 	evaluateOneRepo,
 	findStacks,
 	hasDependencyTracking,
 	hasOldAlerts,
-	snykAlertToRepocopVulnerability,
-	snykVulnIdFilter,
 } from './repository';
 
 function evaluateRepoTestHelper(
@@ -30,9 +22,6 @@ function evaluateRepoTestHelper(
 	owners: view_repo_ownership[] = [],
 	languages: github_languages[] = [],
 	dependabotAlerts: RepocopVulnerability[] = [],
-	latestSnykIssues: SnykIssue[] = [],
-	snykProjects: SnykProject[] = [],
-	reposOnSnyk: string[] = [],
 	workflowsForRepo: guardian_github_actions_usage[] = [],
 ) {
 	return evaluateOneRepo(
@@ -41,9 +30,6 @@ function evaluateRepoTestHelper(
 		branches,
 		owners,
 		languages,
-		latestSnykIssues,
-		snykProjects,
-		reposOnSnyk,
 		workflowsForRepo,
 	).repocopRules;
 }
@@ -110,23 +96,6 @@ const nullOwner: view_repo_ownership = {
 	archived: false,
 	galaxies_team: null,
 	team_contact_email: null,
-};
-
-const exampleSnykProject: SnykProject = {
-	id: 'project1',
-	attributes: {
-		name: '',
-		type: 'npm',
-		created: '',
-		tags: [
-			{
-				key: 'repo',
-				value: thePerfectRepo.full_name,
-			},
-		],
-		origin: '',
-		status: '',
-	},
 };
 
 describe('REPOSITORY_01 - default_branch_name should be false when the default branch is not main', () => {
@@ -481,13 +450,6 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		languages: [],
 	};
 
-	const snykSupportedLanguages: github_languages = {
-		...emptyLanguages,
-		full_name: 'guardian/some-repo',
-		name: 'some-repo',
-		languages: ['JavaScript', 'Objective-C'],
-	};
-
 	const dependabotAndDepGraphSupportedLanguages: github_languages = {
 		...emptyLanguages,
 		full_name: 'guardian/some-repo',
@@ -495,7 +457,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		languages: ['JavaScript', 'Scala'],
 	};
 
-	const fullySupportedLanguages: github_languages = {
+	const dependabotSupportedLanguages: github_languages = {
 		...emptyLanguages,
 		full_name: 'guardian/some-repo',
 		name: 'some-repo',
@@ -509,65 +471,29 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		languages: ['Julia'],
 	};
 
-	test('is valid if all languages are supported, and the repo is on snyk', () => {
+	test('is valid if all languages are supported by dependabot', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
-			default_branch: 'main',
 		};
-
 		const actual = hasDependencyTracking(
 			repo,
-			[snykSupportedLanguages],
-			['guardian/some-repo'],
+			[dependabotSupportedLanguages],
 			[],
 		);
 		expect(actual).toEqual(true);
 	});
-	test('is valid if all languages are supported by dependabot, even if the repo is not on snyk', () => {
+	test('is not valid if a project uses a language dependabot/dependency graph integrator does not support', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(
-			repo,
-			[fullySupportedLanguages],
-			[],
-			[],
-		);
-		expect(actual).toEqual(true);
-	});
-	test('is not valid if a project is not on snyk, and uses a language dependabot/dependency graph integrator does not support', () => {
-		const repo: Repository = {
-			...nullRepo,
-			topics: ['production'],
-			full_name: 'guardian/some-repo',
-		};
-		const actual = hasDependencyTracking(
-			repo,
-			[snykSupportedLanguages],
-			[],
-			[],
-		);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
 		expect(actual).toEqual(false);
 	});
-	test('is not valid if a project is not on snyk, uses a language supported by dependency graph integrator but there is no submission workflow for that language', () => {
-		const repo: Repository = {
-			...nullRepo,
-			topics: ['production'],
-			full_name: 'guardian/some-repo',
-		};
-		const actual = hasDependencyTracking(
-			repo,
-			[snykSupportedLanguages],
-			[],
-			[nullWorkflows],
-		);
-		expect(actual).toEqual(false);
-	});
-	test('is valid if a project is not on snyk, uses a language supported by dependency graph integrator and has associated submission workflow for that language', () => {
+	test('is not valid if a project uses a language supported by dependency graph integrator but there is no submission workflow for that language', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
@@ -576,19 +502,22 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		const actual = hasDependencyTracking(
 			repo,
 			[dependabotAndDepGraphSupportedLanguages],
-			[],
-			[sbtWorkflows],
+			[nullWorkflows],
 		);
-		expect(actual).toEqual(true);
+		expect(actual).toEqual(false);
 	});
-	test('is not valid if a project is on snyk, and uses a language not supported by snyk', () => {
+	test('is valid if a project uses a language supported by dependency graph integrator and has associated submission workflow for that language', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
-		expect(actual).toEqual(false);
+		const actual = hasDependencyTracking(
+			repo,
+			[dependabotAndDepGraphSupportedLanguages],
+			[sbtWorkflows],
+		);
+		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has been archived', () => {
 		const repo: Repository = {
@@ -596,7 +525,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			archived: true,
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
 		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has a non-production tag', () => {
@@ -605,7 +534,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			topics: [],
 			full_name: 'guardian/some-repo',
 		};
-		const actual = hasDependencyTracking(repo, [unsupportedLanguages], [], []);
+		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
 		expect(actual).toEqual(true);
 	});
 	test('is valid if a repository has no languages', () => {
@@ -622,7 +551,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			languages: [],
 		};
 
-		const actual = hasDependencyTracking(repo, [noLanguages], [], []);
+		const actual = hasDependencyTracking(repo, [noLanguages], []);
 		expect(actual).toEqual(true);
 	});
 });
@@ -686,222 +615,9 @@ describe('NO RULE - Dependabot alerts', () => {
 	});
 });
 
-const snykIssue: SnykIssue = {
-	id: 'issue1',
-	attributes: {
-		status: 'open',
-
-		ignored: false,
-		problems: [
-			{
-				id: 'CVE-1234',
-				url: 'example.com',
-				type: 'vulnerability',
-				source: 'NVD',
-				updated_at: '', //or Date?
-				disclosed_at: '', //or Date?
-				discovered_at: '', //or Date?
-			},
-		],
-		created_at: '2020-01-01', //or Date?
-		updated_at: '', //or Date?
-		coordinates: [
-			{
-				remedies: null,
-				// reachability: 'direct',
-				is_upgradeable: true,
-				is_fixable_snyk: undefined,
-				is_patchable: true,
-				representations: [
-					{
-						dependency: {
-							package_name: 'fetch',
-							package_version: '1.0.0',
-						},
-					},
-				],
-			},
-		],
-		effective_severity_level: 'high',
-	},
-	relationships: {
-		scan_item: {
-			data: { id: 'project1', type: 'project' }, //i think type is only ever project?
-		},
-		organization: {
-			data: { id: '234', type: 'organization' }, //same for organization
-		},
-	},
-};
-
-function fixableVulnerability(
-	package_name: string,
-	package_version: string,
-): Coordinate {
-	return {
-		remedies: null,
-		// reachability: 'direct',
-		is_upgradeable: true,
-		is_fixable_snyk: true,
-		is_patchable: true,
-		representations: [
-			{
-				dependency: {
-					package_name,
-					package_version,
-				},
-			},
-		],
-	};
-}
-
-const snykIssue3Coords = {
-	...snykIssue,
-	attributes: {
-		...snykIssue.attributes,
-		coordinates: [
-			fixableVulnerability('fetch', '1.0.0'),
-			fixableVulnerability('fetch', '2.0.0'),
-			fixableVulnerability('axios', '3.0.0'),
-		],
-		effective_severity_level: 'high',
-	},
-};
-
-describe('NO RULE - Snyk vulnerabilities', () => {
-	const unfixable: Coordinate = {
-		remedies: null,
-		// reachability: 'direct',
-		is_upgradeable: undefined,
-		is_fixable_snyk: undefined,
-		is_patchable: undefined,
-		representations: [
-			{
-				dependency: {
-					package_name: 'fetch',
-					package_version: '1.0.0',
-				},
-			},
-		],
-	};
-
-	test('Should not be detected if no projects or issues are passed', () => {
-		const result = collectAndFormatUrgentSnykAlerts(thePerfectRepo, [], []);
-		expect(result.length).toEqual(0);
-	});
-	test('Should be detected if a repo, project, and issue match', () => {
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[snykIssue],
-			[exampleSnykProject],
-		);
-		expect(result.length).toEqual(1);
-	});
-	test('Should not be detected if a repo, project, and old issue match, but the repo is not in production', () => {
-		const nonProdRepo = {
-			...thePerfectRepo,
-			topics: [],
-		};
-		const result = collectAndFormatUrgentSnykAlerts(
-			nonProdRepo,
-			[snykIssue],
-			[exampleSnykProject],
-		);
-		expect(result.length).toEqual(0);
-	});
-	test('Should not detected if a snyk project has no tags', () => {
-		const untaggedProject = {
-			...exampleSnykProject,
-			attributes: { ...exampleSnykProject.attributes, tags: [] },
-		};
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[snykIssue],
-			[untaggedProject],
-		);
-		expect(result.length).toEqual(0);
-	});
-	test('Should not be detected if they have a low or medium severity', () => {
-		const lowSeverity = {
-			...snykIssue,
-			attributes: { ...snykIssue.attributes, effective_severity_level: 'low' },
-		};
-		const mediumSeverity = {
-			...snykIssue,
-			attributes: {
-				...snykIssue.attributes,
-				effective_severity_level: 'medium',
-			},
-		};
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[lowSeverity, mediumSeverity],
-			[exampleSnykProject],
-		);
-		expect(result.length).toEqual(0);
-	});
-	test('Should not be considered patchable if there is no possible upgrade path', () => {
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[
-				{
-					...snykIssue,
-					attributes: { ...snykIssue.attributes, coordinates: [unfixable] },
-				},
-			],
-			[exampleSnykProject],
-		);
-		expect(result.map((r) => r.is_patchable)).toEqual([false]);
-	});
-	test('Should be considered patchable if there is a possible upgrade path', () => {
-		const pinnableIssue: SnykIssue = {
-			...snykIssue,
-			attributes: {
-				...snykIssue.attributes,
-				coordinates: [
-					{
-						...unfixable,
-						is_pinnable: true,
-					},
-				],
-			},
-		};
-		const patchableIssue: SnykIssue = {
-			...snykIssue,
-			attributes: {
-				...snykIssue.attributes,
-				coordinates: [
-					{
-						...unfixable,
-						is_patchable: true,
-					},
-				],
-			},
-		};
-		const upgradableIssue: SnykIssue = {
-			...snykIssue,
-			attributes: {
-				...snykIssue.attributes,
-				coordinates: [
-					{
-						...unfixable,
-						is_upgradeable: true,
-					},
-				],
-			},
-		};
-		const result = collectAndFormatUrgentSnykAlerts(
-			thePerfectRepo,
-			[pinnableIssue, patchableIssue, upgradableIssue],
-			[exampleSnykProject],
-		);
-		expect(result.map((r) => r.is_patchable)).toEqual([true, true, true]);
-	});
-});
-
 describe('NO RULE - Vulnerabilities from Dependabot', () => {
 	const fullName = 'guardian/myrepo';
-	const result: RepocopVulnerability[] = example.map((alert) =>
+	const result: RepocopVulnerability[] = exampleDependabotAlert.map((alert) =>
 		dependabotAlertToRepocopVulnerability(fullName, alert),
 	);
 
@@ -913,7 +629,6 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			severity: 'high',
 			package: 'django',
 			urls: [
-				'https://snyk.io/vuln/some-fake-vuln-id',
 				'https://github.com/advisories/GHSA-rf4j-j272-fj86',
 				'https://nvd.nist.gov/vuln/detail/CVE-2018-6188',
 				'https://usn.ubuntu.com/3559-1/',
@@ -946,46 +661,10 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 
 		expect(result).toStrictEqual([expected1, expected2]);
 	});
-	test('Should display the most useful URLs first', () => {
+	test('Should display only the most useful URL', () => {
 		const actual = result.map((r) => r.urls)[0];
-		const expected = [
-			'https://snyk.io/vuln/some-fake-vuln-id',
-			'https://github.com/advisories/GHSA-rf4j-j272-fj86',
-		];
-		expect(actual?.slice(0, 2)).toEqual(expected);
-	});
-});
-
-describe('NO RULE - Vulnerabilities from Snyk', () => {
-	test('Should be parseable into a common format', () => {
-		const fullName = 'guardian/myrepo';
-		const result = snykAlertToRepocopVulnerability(fullName, snykIssue, [
-			exampleSnykProject,
-		]);
-		console.log(result);
-		expect(result.source).toEqual('Snyk');
-		expect(result.open).toEqual(true);
-		expect(result).toStrictEqual({
-			full_name: fullName,
-			open: true,
-			source: 'Snyk',
-			severity: 'high',
-			package: 'fetch',
-			urls: ['example.com'],
-			ecosystem: 'npm',
-			alert_issue_date: new Date('2020-01-01'),
-			is_patchable: true,
-			cves: ['CVE-1234'],
-			within_sla: false,
-		});
-	});
-
-	test('Should dedupe package names,', () => {
-		const fullName = 'guardian/myrepo';
-		const result = snykAlertToRepocopVulnerability(fullName, snykIssue3Coords, [
-			exampleSnykProject,
-		]);
-		expect(result.package).toEqual('fetch, axios');
+		const expected = ['https://github.com/advisories/GHSA-rf4j-j272-fj86'];
+		expect(actual?.slice(0, 1)).toEqual(expected);
 	});
 });
 
@@ -1006,7 +685,7 @@ describe('Deduplication of repocop vulnerabilities', () => {
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
-		source: 'Snyk',
+		source: 'Dependabot',
 		open: true,
 		severity: 'critical',
 		package: 'django',
@@ -1040,25 +719,5 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
 		expect(actual.length).toStrictEqual(2);
-	});
-});
-
-describe('NO RULE - Snyk vulnerability ID filter', () => {
-	test('Should not remove any IDs if no CVE id is present', () => {
-		const ids = ['SNYK-1234', 'SNYK-1235'];
-		const actual = snykVulnIdFilter(ids);
-		expect(actual).toStrictEqual(ids);
-	});
-
-	test('Should remove vulnerability IDs that start with Snyk, if a CVE id is present', () => {
-		const ids = ['SNYK-1234', 'CVE-1234'];
-		const actual = snykVulnIdFilter(ids);
-		expect(actual).toStrictEqual(['CVE-1234']);
-	});
-
-	test('Should return the original list if only CVEs are present', () => {
-		const ids = ['CVE-1234', 'CVE-1235'];
-		const actual = snykVulnIdFilter(ids);
-		expect(actual).toStrictEqual(ids);
 	});
 });

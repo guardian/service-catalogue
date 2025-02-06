@@ -1,4 +1,3 @@
-import { URL } from 'url';
 import type {
 	github_languages,
 	github_repository_branches,
@@ -6,11 +5,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import {
-	isWithinSlaTime,
-	partition,
-	stringToSeverity,
-} from 'common/src/functions';
+import { isWithinSlaTime, partition } from 'common/src/functions';
 import { SLAs } from 'common/src/types';
 import type {
 	DepGraphLanguage,
@@ -21,7 +16,6 @@ import type {
 import {
 	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
-	supportedSnykLanguages,
 } from '../languages';
 import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns';
 import type {
@@ -29,9 +23,6 @@ import type {
 	AwsCloudFormationStack,
 	EvaluationResult,
 	RepoAndStack,
-	SnykIssue,
-	SnykProject,
-	Tag,
 } from '../types';
 import { isProduction, vulnSortPredicate } from '../utils';
 
@@ -131,26 +122,6 @@ function isMaintained(repo: Repository): boolean {
 	return isInteractive || recentlyUpdated;
 }
 
-function isSupportedBySnyk(
-	repo: Repository,
-	languages: string[],
-	reposOnSnyk: string[],
-): boolean {
-	const repoIsOnSnyk = reposOnSnyk.includes(repo.full_name);
-	const containsOnlySnykSupportedLanguages = languages.every((language) =>
-		supportedSnykLanguages.includes(language),
-	);
-	if (repoIsOnSnyk && !containsOnlySnykSupportedLanguages) {
-		console.log(
-			`${repo.name} is on Snyk, but contains the following languages not supported by Snyk: `,
-			languages.filter(
-				(language) => !supportedSnykLanguages.includes(language),
-			),
-		);
-	}
-	return repoIsOnSnyk && containsOnlySnykSupportedLanguages;
-}
-
 function containsSupportedDepGraphLanguagesWithWorkflows(
 	repo: Repository,
 	workflowsForRepo: guardian_github_actions_usage[],
@@ -231,12 +202,11 @@ function isSupportedByDependabot(
 
 /**
  * Evaluate the following rule for a Github repository:
- *   > Repositories should have their dependencies tracked via Snyk or Dependabot, depending on the languages present.
+ *   > Repositories should have their dependencies tracked via Dependabot.
  */
 export function hasDependencyTracking(
 	repo: Repository,
 	repoLanguages: github_languages[],
-	reposOnSnyk: string[],
 	workflowsForRepo: guardian_github_actions_usage[],
 ): boolean {
 	if (!repo.topics.includes('production') || repo.archived) {
@@ -247,10 +217,7 @@ export function hasDependencyTracking(
 			(repoLanguage) => repoLanguage.full_name === repo.full_name,
 		)?.languages ?? [];
 
-	return (
-		isSupportedBySnyk(repo, languages, reposOnSnyk) ||
-		isSupportedByDependabot(repo, languages, workflowsForRepo)
-	);
+	return isSupportedByDependabot(repo, languages, workflowsForRepo);
 }
 
 /**
@@ -333,47 +300,6 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
-function getIssuesForProject(
-	projectId: string,
-	issues: SnykIssue[],
-): SnykIssue[] {
-	return issues.filter(
-		(issue) => issue.relationships.scan_item.data.id === projectId,
-	);
-}
-
-export function collectAndFormatUrgentSnykAlerts(
-	repo: Repository,
-	snykIssues: SnykIssue[],
-	snykProjects: SnykProject[],
-): RepocopVulnerability[] {
-	if (!isProduction(repo)) {
-		return [];
-	}
-
-	const snykProjectIdsForRepo = snykProjects
-		.filter((project) => {
-			const tagValues = project.attributes.tags.map((tag) => tag.value);
-			return tagValues.includes(repo.full_name);
-		})
-		.map((project) => project.id);
-
-	const snykIssuesForRepo: SnykIssue[] = snykProjectIdsForRepo.flatMap(
-		(projectId) => getIssuesForProject(projectId, snykIssues),
-	);
-
-	const processedVulns = snykIssuesForRepo.map((v) =>
-		snykAlertToRepocopVulnerability(repo.full_name, v, snykProjects),
-	);
-
-	const relevantVulns = processedVulns.filter(
-		(vuln) =>
-			(vuln.severity === 'high' || vuln.severity === 'critical') && vuln.open,
-	);
-
-	return relevantVulns;
-}
-
 export function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
@@ -441,20 +367,9 @@ export function evaluateOneRepo(
 	allBranches: github_repository_branches[],
 	teams: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	latestSnykIssues: SnykIssue[],
-	snykProjects: SnykProject[],
-	reposOnSnyk: string[],
 	workflowsForRepo: guardian_github_actions_usage[],
 ): EvaluationResult {
-	const snykAlertsForRepo = collectAndFormatUrgentSnykAlerts(
-		repo,
-		latestSnykIssues,
-		snykProjects,
-	);
-
-	const vulnerabilities = snykAlertsForRepo.concat(
-		dependabotAlertsForRepo ?? [],
-	);
+	const vulnerabilities = dependabotAlertsForRepo ?? [];
 	hasOldAlerts(vulnerabilities, repo);
 
 	const repocopRules: repocop_github_repository_rules = {
@@ -469,7 +384,6 @@ export function evaluateOneRepo(
 		vulnerability_tracking: hasDependencyTracking(
 			repo,
 			repoLanguages,
-			reposOnSnyk,
 			workflowsForRepo,
 		),
 		evaluated_on: new Date(),
@@ -482,17 +396,12 @@ export function evaluateOneRepo(
 	};
 }
 
-//create a predicate that orders a list of urls by whether they contain snyk.io first, and then github.com second
+//create a predicate that orders a list of urls by whether they contain github.com first
 const urlSortPredicate = (maybeUrl: string) => {
 	try {
 		const url = new URL(maybeUrl);
 
-		if (url.hostname === 'snyk.io' || url.hostname === 'security.snyk.io') {
-			return -2;
-		} else if (
-			url.hostname === 'github.com' &&
-			url.pathname.includes('advisories')
-		) {
+		if (url.hostname === 'github.com' && url.pathname.includes('advisories')) {
 			return -1;
 		}
 		return 0;
@@ -531,83 +440,19 @@ export function dependabotAlertToRepocopVulnerability(
 	};
 }
 
-export function snykVulnIdFilter(ids: string[]): string[] {
-	const hasCvePrefixedIssue = !!ids.find((cve) => cve.startsWith('CVE-'));
-	if (hasCvePrefixedIssue) {
-		return ids.filter((cve) => cve.startsWith('CVE-'));
-	} else {
-		return ids;
-	}
-}
-
-export function snykAlertToRepocopVulnerability(
-	fullName: string,
-	issue: SnykIssue,
-	projects: SnykProject[],
-): RepocopVulnerability {
-	const packages = (issue.attributes.coordinates ?? [])
-		.flatMap((c) => c.representations)
-		.filter((r) => r !== null);
-
-	const projectIdFromIssue = issue.relationships.scan_item.data.id;
-
-	const ecosystem = projects.find((p) => p.id === projectIdFromIssue)
-		?.attributes.type;
-
-	const isPatchable = (issue.attributes.coordinates ?? [])
-		.map((c) => c.is_patchable ?? c.is_upgradeable ?? c.is_pinnable ?? false)
-		.includes(true);
-
-	const packageName = [
-		...new Set(packages.map((p) => p.dependency.package_name)),
-	].join(', ');
-
-	const alertIssueDate = new Date(issue.attributes.created_at);
-
-	const severity = stringToSeverity(issue.attributes.effective_severity_level);
-
-	return {
-		full_name: fullName,
-		open: issue.attributes.status === 'open',
-		source: 'Snyk',
-		severity,
-		package: packageName,
-		urls: issue.attributes.problems.map((p) => p.url).filter((u) => !!u),
-		ecosystem: ecosystem ?? 'unknown ecosystem',
-		alert_issue_date: alertIssueDate,
-		is_patchable: isPatchable,
-		cves: snykVulnIdFilter(issue.attributes.problems.map((p) => p.id)).sort(
-			urlSortPredicate,
-		),
-		within_sla: isWithinSlaTime(alertIssueDate, severity),
-	};
-}
-
 export function evaluateRepositories(
 	repositories: Repository[],
 	branches: github_repository_branches[],
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
-	snykIssues: SnykIssue[],
-	snykProjects: SnykProject[],
 	dependabotVulnerabilities: RepocopVulnerability[],
 	productionWorkflowUsages: guardian_github_actions_usage[],
 ): Promise<EvaluationResult[]> {
 	const evaluatedRepos = repositories.map((r) => {
-		const isMainBranchPredicate = (x: Tag) =>
-			x.key === 'branch' && (x.value === 'main' || x.value === 'master');
-
-		const reposOnSnyk = snykProjects
-			.map((p) => p.attributes.tags)
-			.filter((tags) => tags.map(isMainBranchPredicate).includes(true))
-			.map((tags) => tags.find((x) => x.key === 'repo')?.value)
-			.filter((x) => x !== undefined);
-
 		const vulnsForRepo = dependabotVulnerabilities.filter(
 			(v) => v.full_name === r.full_name,
 		);
 
-		const uniqueReposOnSnyk = [...new Set(reposOnSnyk)];
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
 		const workflowsForRepo = productionWorkflowUsages.filter(
@@ -620,9 +465,6 @@ export function evaluateRepositories(
 			branchesForRepo,
 			teamsForRepo,
 			repoLanguages,
-			snykIssues,
-			snykProjects,
-			uniqueReposOnSnyk,
 			workflowsForRepo,
 		);
 	});

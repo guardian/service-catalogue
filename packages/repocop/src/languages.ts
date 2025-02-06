@@ -37,36 +37,9 @@ const commonSupportedLanguages = [
 	'CoffeeScript', // Uses JS/TS dependencies
 	'Svelte', // Uses JS/TS dependencies
 ];
-const snykOnlySupportedLanguages = [
-	'C',
-	'C++',
-	'Apex',
-	'Bazel',
-	'Elixir',
-	'PHP',
-	'Objective-C',
-	'Visual Basic .NET',
-	'Scala', // Also supported by dependency graph integrator for Dependabot
-	'Kotlin', // Also supported by dependency graph integrator for Dependabot
-];
 
 export const depGraphIntegratorSupportedLanguages = ['Scala', 'Kotlin'];
-
-export const actionSupportedLanguages = ignoredLanguages.concat(
-	'Scala',
-	'TypeScript',
-	'Go',
-	'Python',
-	'JavaScript',
-	'Swift',
-	'Kotlin',
-	'Ruby',
-);
 
 export const supportedDependabotLanguages = ignoredLanguages.concat(
 	commonSupportedLanguages,
 );
-
-export const supportedSnykLanguages = ignoredLanguages
-	.concat(commonSupportedLanguages)
-	.concat(snykOnlySupportedLanguages);

@@ -1,4 +1,5 @@
 # Job Dependencies
+
 This diagram shows the flow of data and dependencies that RepoCop relies on as well as the downstream events that rely
 on RepoCop.
 
@@ -13,17 +14,15 @@ flowchart LR
     ghBranchData[(github_repository_branches)]
     ghTeamData[(github_teams)]
     ghTeamRepoData[(github_team_repositories)]
-    snykIssueData[(snyk_issues)]
-    snykProjectData[(snyk_projects)]
     galaxyTeamData[(galaxies_teams_table)]
     repoCopVulnData[(repocop_vulnerabilities)]
     fsbpVulnData[(cloudbuster_fsbp_vulnerabilities)]
     obligatronResultData[(obligatron_results)]
-    
+
     %% Data views
     awsAccountView[(aws_accounts)]
     repoOwnerView[(view_repo_ownership)]
-    
+
     %% Notifications
     vulnNotice[[SNS: Vulnerability digest]]
     fsbpNotice[[SNS: FSBP findings digest]]
@@ -31,19 +30,18 @@ flowchart LR
     ghBranchProtectNotice[[SNS: Branch protection]]
     ghProdRepoNotice[[SNS: Production repo missing topic]]
     ghDepGraphMissingNotice[[SNS: Dependency graph submission action missing]]
-    
+
     %% Other writes
     ghDepGraphPR[[Dependency graph submission workflow PRs]]
     ghProdRepo[[Repos updated with Prod topic]]
     ghBranchProtect[[Repos updated with default branch protection]]
-    
+
     %% Processes
     awsWeeklyLoader[CQ AWS weekly sync<br>ECS task<br>scheduled SAT 16:00]
     awsDailyLoader[CQ AWS daily sync<br>ECS task<br>scheduled daily 22:00]
     awsFreqLoader[CQ AWS frequent sync<br>ECS task<br>scheduled every 3 hours]
     ghWeeklyLoader[CQ Github weekly sync<br>ECS task<br>scheduled MON 10:00]
     ghDailyLoader[CQ Github daily sync<br>ECS task<br>scheduled daily 00:00]
-    snykLoader[CQ Snyk sync<br>ECS task<br>scheduled daily 06:00]
     ghLangLoader[CQ Github languages sync<br>ECS task<br>scheduled every 7 days]
     galaxiesLoader[CQ Galaxies sync<br>ECS task<br>scheduled every 1 day]
     repocop[RepoCop<br>lambda<br>scheduled MON-FRI 03:00]
@@ -52,9 +50,9 @@ flowchart LR
     obligatronTagging[Obligatron<br>Tagging obligation<br>lambda<br>scheduled daily 09:00]
     obligatronDeps[Obligatron<br>Dependencies obligation<br>lambda<br>scheduled daily 10:00]
     obligatronVulns[Obligatron<br>AWS Vulnerabilities obligation<br>lambda<br>scheduled daily 11:00]
-    
+
     %% Dependencies
-    
+
     %% Data loading
     awsWeeklyLoader --> awsAccountData
     awsFreqLoader --> awsStackData
@@ -64,22 +62,18 @@ flowchart LR
     ghDailyLoader --> ghBranchData
     ghWeeklyLoader --> ghTeamData
     ghWeeklyLoader --> ghTeamRepoData
-    snykLoader --> snykIssueData
-    snykLoader --> snykProjectData
     galaxiesLoader --> galaxyTeamData
     awsAccountData --> awsAccountView
     ghTeamRepoData --> repoOwnerView
     ghTeamData --> repoOwnerView
     galaxyTeamData --> repoOwnerView
-    
+
     %% RepoCop
     awsStackData --> repocop
     ghLangData --> repocop
     ghRepoData --> repocop
     ghBranchData --> repocop
     ghTeamData --> repocop
-    snykIssueData --> repocop
-    snykProjectData --> repocop
     repoOwnerView --> repocop
     repocop --> repoCopVulnData
     repocop --> ghDepGraphMissingNotice
@@ -89,16 +83,16 @@ flowchart LR
     repocop --> vulnNotice
     repocop --> ghProdRepoNotice
     repocop --> ghProdRepo
-    
+
     %% Dependency graph integrator
     ghDepGraphMissingNotice --> depGraphIntegrator
     depGraphIntegrator --> ghDepGraphPR
-    
+
     %% Cloud Buster
     awsFsbpFindingData --> cloudbuster
     cloudbuster --> fsbpVulnData
     cloudbuster --> fsbpNotice
-    
+
     %% Obligatron
     awsFsbpFindingData --> obligatronTagging
     awsAccountView --> obligatronTagging

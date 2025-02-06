@@ -43,7 +43,7 @@ Service Catalogue has two parts:
 
 ### Data collection
 
-We use [CloudQuery](https://www.cloudquery.io/) to collect data from AWS, GitHub, Snyk, and other sources.
+We use [CloudQuery](https://www.cloudquery.io/) to collect data from AWS, GitHub, and other sources.
 
 We've implemented CloudQuery as a set of ECS tasks, writing to a Postgres database.
 For more details, see [CloudQuery implementation](docs/cloudquery-implementation.md).
@@ -75,7 +75,6 @@ The diagram below outlines the architecture of the major components of the servi
 ```mermaid
 flowchart TB
     DB[(Cloudquery Database)]
-    snyk[Snyk Rest API]
     github[GitHub Rest API]
     cq[CloudQuery Batch Jobs]
     devxDev[Developer on the DevX team]
@@ -83,7 +82,6 @@ flowchart TB
     repocop[Repocop Lambdas]
     aws[AWS APIs]
 
-    snyk --> |Data from snyk populates Cloudquery tables|cq
     github --> |Data from dependabot populates Cloudquery tables|cq
     aws --> |Data from aws populates Cloudquery tables|cq
     cq --> |Cloudquery writes data to the DB|DB

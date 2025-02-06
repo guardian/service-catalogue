@@ -50,11 +50,13 @@ It includes:
 > You can also use other Postgres clients, such as `psql` to query the data, or even your IDE!
 
 ## Testing the prima migration container
+
 To test the prisma migration container you can run the following script:
 
-  ```sh
-   ./packages/dev-environment/script/start-prisma-migrate-test
-   ```
+```sh
+ ./packages/dev-environment/script/start-prisma-migrate-test
+```
+
 This will run the run-prisma-migrate.sh script.
 
 ## RepoCop
@@ -67,11 +69,9 @@ To develop locally once the tables have been populated follow the steps in the r
 
 ## Tips and tricks
 
-The local instance of cloudquery executes sequentially according to the order of the plugins in the config file. If
-you're particularly interested in Snyk data, you can move the Snyk plugin to the top of the list in the config file, and
-that data will be collected first.
+The local instance of cloudquery executes sequentially according to the order of the plugins in the config file.
 
-If cloudquery can't detect credentials for Snyk or GitHub, it will skip those jobs. If you're not interested in GitHub
+If cloudquery can't detect credentials for GitHub, it will skip those jobs. If you're not interested in GitHub
 data, you don't need to generate a token. It will still collect data from other sources.
 
 ## TODO
