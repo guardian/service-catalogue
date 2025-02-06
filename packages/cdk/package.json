@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@guardian/cdk": "61.1.0",
-    "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v2.3.0",
+    "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v4.0.0",
     "@types/js-yaml": "^4.0.9",
     "aws-cdk": "2.172.0",
     "aws-cdk-lib": "2.172.0",
