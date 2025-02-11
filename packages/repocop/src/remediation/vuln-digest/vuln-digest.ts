@@ -37,7 +37,7 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 
 	const cveHyperlink = vuln.cves[0] ?? 'no CVE provided';
 
-	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) contains a high severity vulnerability, ${cveHyperlink}, from ${vulnHyperlink}, introduced via ${ecosystem}.
+	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) contains a ${vuln.severity} severity vulnerability, ${cveHyperlink}, from ${vulnHyperlink}, introduced via ${ecosystem}.
 There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
