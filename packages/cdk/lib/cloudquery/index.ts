@@ -298,11 +298,19 @@ export function addCloudqueryEcsCluster(
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
 			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
-				tables: [
-					'aws_ec2_instances',
-					'aws_ec2_security_groups',
-					'aws_ec2_images',
-				],
+				tables: ['aws_ec2_instances', 'aws_ec2_security_groups'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			runAsSingleton: true,
+			memoryLimitMiB: 1024,
+		},
+		{
+			name: 'AwsOrgWideEc2Images',
+			description:
+				'Collecting EC2 image information. Uses include getting information for base images used in AMIgo.',
+			schedule: Schedule.cron({ minute: '0', hour: '0' }),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_ec2_images'],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			runAsSingleton: true,
