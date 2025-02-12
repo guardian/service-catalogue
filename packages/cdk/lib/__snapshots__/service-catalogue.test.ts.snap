@@ -7277,6 +7277,690 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
+    "CloudquerySourceAwsOrgWideEc2ImagesScheduledEventRule1FA6BC29": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 0 * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "PropagateTags": "TASK_DEFINITION",
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinition10C34618",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionEventsRole86EC6C01",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinition10C34618": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "printf 'kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v27.5.0
+  tables:
+    - aws_ec2_images
+  skip_dependent_tables: false
+  destinations:
+    - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
+  spec:
+    org:
+      member_role_name: cloudquery-access
+      organization_units:
+        - ou-123
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: github
+  path: cloudquery/postgresql
+  version: v7.2.0
+  migrate_mode: forced
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-AwsOrgWideEc2ImagesAWSOTELCollector",
+              },
+              {
+                "Condition": "SUCCESS",
+                "ContainerName": "CloudquerySource-AwsOrgWideEc2ImagesAwsCli",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsOrgWideEc2Images",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "819MiB",
+              },
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:stable",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideEc2ImagesContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "CLOUDQUERY_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "cloudqueryapikeyCCF82F53",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Command": [
+              "--config=/etc/ecs/ecs-xray.yaml",
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsOrgWideEc2ImagesAWSOTELCollector",
+            "PortMappings": [
+              {
+                "ContainerPort": 4318,
+                "Protocol": "tcp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/bash",
+              "-c",
+              "ECS_CLUSTER=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Cluster');ECS_FAMILY=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.Family');ECS_TASK_ARN=$(curl -s $ECS_CONTAINER_METADATA_URI/task | jq -r '.TaskARN');RUNNING=$(aws ecs list-tasks --cluster $ECS_CLUSTER --family $ECS_FAMILY | jq '.taskArns | length');[[ \${RUNNING} > 1 ]] && exit 114 || exit 0",
+            ],
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "ghcr.io/guardian/service-catalogue/singleton:stable",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsOrgWideEc2ImagesAwsCli",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ec2_images', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsOrgWideEc2Images",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsOrgWideEc2ImagesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "PGUSER",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGHOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGPASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "TEST",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideEc2ImagesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionExecutionRole5C4A6434",
+            "Arn",
+          ],
+        },
+        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578A",
+        "Memory": "1024",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsOrgWideEc2Images",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsOrgWideEc2Images",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionEventsRole86EC6C01": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsOrgWideEc2Images",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionEventsRoleDefaultPolicyE42E3BF9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinition10C34618",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionExecutionRole5C4A6434",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionEventsRoleDefaultPolicyE42E3BF9",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionEventsRole86EC6C01",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionExecutionRole5C4A6434": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsOrgWideEc2Images",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionExecutionRoleDefaultPolicy94A17CE2": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionExecutionRoleDefaultPolicy94A17CE2",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionExecutionRole5C4A6434",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "CloudquerySourceAwsOrgWideEc2ScheduledEventRule2C1BD783": {
       "Properties": {
         "ScheduleExpression": "rate(30 minutes)",
@@ -7341,7 +8025,6 @@ spec:
   tables:
     - aws_ec2_instances
     - aws_ec2_security_groups
-    - aws_ec2_images
   skip_dependent_tables: false
   destinations:
     - postgresql
@@ -7551,7 +8234,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ec2_instances', 1800000),('aws_ec2_security_groups', 1800000),('aws_ec2_images', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_ec2_instances', 1800000),('aws_ec2_security_groups', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -23027,6 +23710,82 @@ spec:
       },
       "Type": "AWS::Lambda::Permission",
     },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578A41CCA798": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideEc2ImagesContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinition10C34618",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E5F187E2": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578A41CCA798",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
     "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7E56A0E5BB": {
       "Properties": {
         "EventPattern": {
@@ -25826,6 +26585,162 @@ spec:
         "Roles": [
           {
             "Ref": "servicecatalogueTESTtaskAwsOrgWideEc2D13594C5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-TEST-task-AwsOrgWideEc2Images",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecatalogueTESTtaskAwsOrgWideEc2ImagesDefaultPolicy04D66786": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:ListTasks",
+              "Condition": {
+                "StringEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "organizations:List*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideEc2ImagesDefaultPolicy04D66786",
+        "Roles": [
+          {
+            "Ref": "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC",
           },
         ],
       },
