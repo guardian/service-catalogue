@@ -795,6 +795,80 @@ model cloudquery_plugin_usage {
   @@unique([timestamp, name, metric], map: "cloudquery_plugin_usage_key")
 }
 
+model aws_ec2_route_tables {
+  cq_sync_time     DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name   String?   @map("_cq_source_name")
+  cq_id            String    @id(map: "aws_ec2_route_tables_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id     String?   @map("_cq_parent_id") @db.Uuid
+  account_id       String?
+  region           String?
+  arn              String?
+  tags             Json?
+  associations     Json?
+  owner_id         String?
+  propagating_vgws Json?
+  route_table_id   String?
+  routes           Json?
+  vpc_id           String?
+
+  @@ignore
+}
+
+model aws_ec2_subnets {
+  cq_sync_time                       DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                     String?   @map("_cq_source_name")
+  cq_id                              String    @id(map: "aws_ec2_subnets_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                       String?   @map("_cq_parent_id") @db.Uuid
+  request_account_id                 String?
+  request_region                     String?
+  arn                                String?
+  tags                               Json?
+  assign_ipv6_address_on_creation    Boolean?
+  availability_zone                  String?
+  availability_zone_id               String?
+  available_ip_address_count         BigInt?
+  cidr_block                         String?
+  customer_owned_ipv4_pool           String?
+  default_for_az                     Boolean?
+  enable_dns64                       Boolean?
+  enable_lni_at_device_index         BigInt?
+  ipv6_cidr_block_association_set    Json?
+  ipv6_native                        Boolean?
+  map_customer_owned_ip_on_launch    Boolean?
+  map_public_ip_on_launch            Boolean?
+  outpost_arn                        String?
+  owner_id                           String?
+  private_dns_name_options_on_launch Json?
+  state                              String?
+  subnet_arn                         String?
+  subnet_id                          String?
+  vpc_id                             String?
+
+  @@ignore
+}
+
+model aws_ec2_vpcs {
+  cq_sync_time                    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                  String?   @map("_cq_source_name")
+  cq_id                           String    @id(map: "aws_ec2_vpcs_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                    String?   @map("_cq_parent_id") @db.Uuid
+  account_id                      String?
+  region                          String?
+  arn                             String?
+  tags                            Json?
+  cidr_block                      String?
+  cidr_block_association_set      Json?
+  dhcp_options_id                 String?
+  instance_tenancy                String?
+  ipv6_cidr_block_association_set Json?
+  is_default                      Boolean?
+  owner_id                        String?
+  state                           String?
+  vpc_id                          String?
+
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
