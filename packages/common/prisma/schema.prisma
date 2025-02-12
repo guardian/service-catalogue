@@ -947,3 +947,21 @@ view aws_organizations_tree {
 
   @@ignore
 }
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view view_aws_vpcs {
+  account_id                 String?
+  region                     String?
+  vpc_id                     String?
+  vpc_cidr_block             String?
+  is_default                 Boolean?
+  subnet_id                  String?
+  subnet_type                String?
+  subnet_cidr_block          String?
+  subnet_total_addresses     BigInt?
+  subnet_remaining_addresses BigInt?
+  subnet_in_use              Boolean?
+  subnet_route_table_id      String?
+
+  @@ignore
+}
