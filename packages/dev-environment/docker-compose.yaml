@@ -28,6 +28,9 @@ services:
         - github_workflows
         - github_languages
         - aws_ec2_instances
+        - aws_ec2_route_tables
+        - aws_ec2_subnets
+        - aws_ec2_vpcs
         - aws_cloudformation_stacks
         - amigo_bake_packages
   postgres:

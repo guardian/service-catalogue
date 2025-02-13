@@ -1,0 +1,28 @@
+SELECT
+  fn_view_aws_vpcs.account_id,
+  fn_view_aws_vpcs.region,
+  fn_view_aws_vpcs.vpc_id,
+  fn_view_aws_vpcs.vpc_cidr_block,
+  fn_view_aws_vpcs.is_default,
+  fn_view_aws_vpcs.subnet_id,
+  fn_view_aws_vpcs.subnet_type,
+  fn_view_aws_vpcs.subnet_cidr_block,
+  fn_view_aws_vpcs.subnet_total_addresses,
+  fn_view_aws_vpcs.subnet_remaining_addresses,
+  fn_view_aws_vpcs.subnet_in_use,
+  fn_view_aws_vpcs.subnet_route_table_id
+FROM
+  fn_view_aws_vpcs() fn_view_aws_vpcs(
+    account_id,
+    region,
+    vpc_id,
+    vpc_cidr_block,
+    is_default,
+    subnet_id,
+    subnet_type,
+    subnet_cidr_block,
+    subnet_total_addresses,
+    subnet_remaining_addresses,
+    subnet_in_use,
+    subnet_route_table_id
+  );
