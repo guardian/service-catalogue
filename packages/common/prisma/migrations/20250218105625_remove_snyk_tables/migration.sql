@@ -1,12 +1,12 @@
 -- DropTable
-DROP TABLE "snyk_issues";
+DROP TABLE IF EXISTS "snyk_issues";
 
 -- DropTable
-DROP TABLE "snyk_projects";
+DROP TABLE IF EXISTS "snyk_projects";
 
 -- DropTable
-DROP TABLE "snyk_sbom";
+DROP TABLE IF EXISTS "snyk_sbom";
 
 -- DropTable
-DROP TABLE "snyk_organizations";
+DROP TABLE IF EXISTS "snyk_organizations";
  
