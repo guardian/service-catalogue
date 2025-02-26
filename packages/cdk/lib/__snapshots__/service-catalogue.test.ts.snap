@@ -9363,6 +9363,7 @@ spec:
   tables:
     - aws_inspector_findings
     - aws_inspector2_findings
+    - aws_inspector2_cis_*
   skip_dependent_tables: false
   destinations:
     - postgresql
@@ -9541,7 +9542,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector_findings', 86400000),('aws_inspector2_findings', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector_findings', 86400000),('aws_inspector2_findings', 86400000),('aws_inspector2_cis_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12267,6 +12268,7 @@ spec:
     - aws_cloudwatch_alarms
     - aws_inspector_findings
     - aws_inspector2_findings
+    - aws_inspector2_cis_*
     - aws_s3*
     - aws_dynamodb*
     - aws_rds_instances
