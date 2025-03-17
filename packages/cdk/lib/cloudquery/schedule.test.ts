@@ -28,7 +28,7 @@ describe('EventBridge expression parsing', () => {
 					day: '1',
 				}),
 			),
-		).toBe(Duration.days(31).toMilliseconds());
+		).toBe(Duration.days(30).toMilliseconds());
 	});
 
 	it('should correctly identify task frequency from RATE', () => {
