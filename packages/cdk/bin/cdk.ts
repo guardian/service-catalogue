@@ -1,6 +1,7 @@
 import 'source-map-support/register';
 import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
 import { App, Duration } from 'aws-cdk-lib';
+import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { ServiceCatalogue } from '../lib/service-catalogue';
 
@@ -21,6 +22,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 		minute: '0',
 	}),
 	enableCloudquerySchedules: true,
+	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.XLARGE),
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
@@ -33,6 +35,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 
 	// Do not run CloudQuery tasks in CODE, preferring instead to run them manually using the CLI.
 	enableCloudquerySchedules: false,
+	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml

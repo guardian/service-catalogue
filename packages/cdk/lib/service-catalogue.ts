@@ -16,13 +16,8 @@ import {
 import { GuardianPrivateNetworks } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
-import {
-	InstanceClass,
-	InstanceSize,
-	InstanceType,
-	Peer,
-	Port,
-} from 'aws-cdk-lib/aws-ec2';
+import type { InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { Peer, Port } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
@@ -30,6 +25,7 @@ import {
 	CaCertificate,
 	DatabaseInstance,
 	DatabaseInstanceEngine,
+	StorageType,
 } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
@@ -104,6 +100,11 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
 	 */
 	enableCloudquerySchedules: boolean;
+
+	/**
+	 * The instance type to be used by RDS (e.g. t4g.small)
+	 */
+	instanceType: InstanceType;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -119,6 +120,7 @@ export class ServiceCatalogue extends GuStack {
 			gitHubOrg = 'guardian',
 			securityAlertSchedule,
 			enableCloudquerySchedules,
+			instanceType,
 		} = props;
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
@@ -148,9 +150,9 @@ export class ServiceCatalogue extends GuStack {
 			engine: DatabaseInstanceEngine.POSTGRES,
 			port,
 			vpc,
+			instanceType,
 			vpcSubnets: { subnets: privateSubnets },
 			iamAuthentication: true, // We're not using IAM auth for ECS tasks, however we do use IAM auth when connecting to RDS locally.
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
 			deletionProtection: rdsDeletionProtection,
@@ -160,6 +162,9 @@ export class ServiceCatalogue extends GuStack {
 			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities
 			 */
 			caCertificate: CaCertificate.RDS_CA_RSA2048_G1,
+			storageType: StorageType.GP3,
+			enablePerformanceInsights: true,
+			monitoringInterval: Duration.seconds(10),
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
