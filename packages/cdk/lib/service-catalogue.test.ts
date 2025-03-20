@@ -1,5 +1,6 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
+import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { ServiceCatalogue } from './service-catalogue';
@@ -16,6 +17,7 @@ describe('The ServiceCatalogue stack', () => {
 				minute: '0',
 			}),
 			enableCloudquerySchedules: true,
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
@@ -32,6 +34,7 @@ describe('The ServiceCatalogue stack', () => {
 				minute: '0',
 			}),
 			enableCloudquerySchedules: true,
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 		});
 
 		const lambdas = stack.node
