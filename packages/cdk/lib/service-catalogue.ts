@@ -30,6 +30,7 @@ import {
 	CaCertificate,
 	DatabaseInstance,
 	DatabaseInstanceEngine,
+	StorageType,
 } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Topic } from 'aws-cdk-lib/aws-sns';
@@ -150,7 +151,7 @@ export class ServiceCatalogue extends GuStack {
 			vpc,
 			vpcSubnets: { subnets: privateSubnets },
 			iamAuthentication: true, // We're not using IAM auth for ECS tasks, however we do use IAM auth when connecting to RDS locally.
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.XLARGE),
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
 			deletionProtection: rdsDeletionProtection,
@@ -160,6 +161,9 @@ export class ServiceCatalogue extends GuStack {
 			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities
 			 */
 			caCertificate: CaCertificate.RDS_CA_RSA2048_G1,
+			storageType: StorageType.GP3,
+			enablePerformanceInsights: true,
+			monitoringInterval: Duration.seconds(10),
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);

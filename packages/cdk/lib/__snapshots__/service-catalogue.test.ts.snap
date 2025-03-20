@@ -19919,12 +19919,13 @@ spec:
         "AllocatedStorage": "100",
         "CACertificateIdentifier": "rds-ca-rsa2048-g1",
         "CopyTagsToSnapshot": true,
-        "DBInstanceClass": "db.t4g.small",
+        "DBInstanceClass": "db.t4g.xlarge",
         "DBSubnetGroupName": {
           "Ref": "PostgresInstance1SubnetGroupCAC045A5",
         },
         "DeletionProtection": true,
         "EnableIAMDatabaseAuthentication": true,
+        "EnablePerformanceInsights": true,
         "Engine": "postgres",
         "MasterUserPassword": {
           "Fn::Join": [
@@ -19950,11 +19951,19 @@ spec:
             ],
           ],
         },
+        "MonitoringInterval": 10,
+        "MonitoringRoleArn": {
+          "Fn::GetAtt": [
+            "PostgresInstance1MonitoringRole681B0673",
+            "Arn",
+          ],
+        },
         "MultiAZ": false,
+        "PerformanceInsightsRetentionPeriod": 7,
         "Port": "5432",
         "PubliclyAccessible": false,
         "StorageEncrypted": true,
-        "StorageType": "gp2",
+        "StorageType": "gp3",
         "Tags": [
           {
             "Key": "devx-backup-enabled",
@@ -19988,6 +19997,59 @@ spec:
       },
       "Type": "AWS::RDS::DBInstance",
       "UpdateReplacePolicy": "Snapshot",
+    },
+    "PostgresInstance1MonitoringRole681B0673": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "monitoring.rds.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "devx-backup-enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "PostgresInstance1Secret7FA1A24B": {
       "DeletionPolicy": "Delete",
