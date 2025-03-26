@@ -22,7 +22,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 		minute: '0',
 	}),
 	enableCloudquerySchedules: true,
-	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.XLARGE),
+	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
