@@ -237,7 +237,11 @@ export function addCloudqueryEcsCluster(
 			description: 'Collecting Inspector data across the organisation.',
 			schedule: Schedule.cron({ minute: '0', hour: '3' }),
 			config: awsSourceConfigForOrganisation({
-				tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
+				tables: [
+					'aws_inspector_findings',
+					'aws_inspector2_findings',
+					'aws_inspector2_cis_*',
+				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
