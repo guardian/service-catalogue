@@ -794,17 +794,17 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables:
-    - aws_costexplorer_*
+    - aws_costexplorer_cost_30d
   skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    org:
-      member_role_name: cloudquery-access
-      organization_units:
-        - ou-123
+    use_paid_apis: true
+    accounts:
+      - id: cq-for-000000000000
+        role_arn: arn:aws:iam::000000000000:role/cloudquery-access
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -973,7 +973,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_%', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_cost_30d', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12257,7 +12257,7 @@ spec:
     - aws_accessanalyzer_*
     - aws_securityhub_*
     - aws_cloudformation_*
-    - aws_costexplorer_*
+    - aws_costexplorer_cost_30d
     - aws_elbv1_*
     - aws_elbv2_*
     - aws_autoscaling_groups
