@@ -794,7 +794,7 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables:
-    - aws_costexplorer_cost_30d
+    - aws_costexplorer_cost_custom
   skip_dependent_tables: false
   destinations:
     - postgresql
@@ -805,6 +805,23 @@ spec:
     accounts:
       - id: cq-for-000000000000
         role_arn: arn:aws:iam::000000000000:role/cloudquery-access
+    table_options:
+      aws_costexplorer_cost_custom:
+        get_cost_and_usage:
+          - TimePeriod:
+              Start: '2025-03-01'
+              End: '2025-04-01'
+            Granularity: DAILY
+            GroupBy:
+              - Type: TAG
+                Key: App
+              - Type: TAG
+                Key: Stage
+            Metrics:
+              - NetUnblendedCost
+              - UnblendedCost
+              - NetAmortizedCost
+              - AmortizedCost
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -973,7 +990,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_cost_30d', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_cost_custom', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12257,7 +12274,7 @@ spec:
     - aws_accessanalyzer_*
     - aws_securityhub_*
     - aws_cloudformation_*
-    - aws_costexplorer_cost_30d
+    - aws_costexplorer_cost_custom
     - aws_elbv1_*
     - aws_elbv2_*
     - aws_autoscaling_groups
