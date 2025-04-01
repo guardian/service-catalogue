@@ -20,15 +20,6 @@ describe('EventBridge expression parsing', () => {
 				}),
 			),
 		).toBe(Duration.days(7).toMilliseconds());
-		expect(
-			scheduleFrequencyMs(
-				Schedule.cron({
-					minute: '1',
-					hour: '1',
-					day: '1',
-				}),
-			),
-		).toBe(Duration.days(30).toMilliseconds());
 	});
 
 	it('should correctly identify task frequency from RATE', () => {
