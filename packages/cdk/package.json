@@ -13,7 +13,7 @@
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v4.0.0",
     "@types/js-yaml": "^4.0.9",
     "aws-cdk": "2.178.1",
-    "aws-cdk-lib": "2.178.1",
+    "aws-cdk-lib": "2.186.0",
     "aws-cron-parser": "^1.1.12",
     "constructs": "10.4.2",
     "js-yaml": "^4.1.0",
