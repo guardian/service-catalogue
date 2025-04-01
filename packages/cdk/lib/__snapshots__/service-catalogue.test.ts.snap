@@ -734,7 +734,7 @@ spec:
     },
     "CloudquerySourceAwsCostExplorerScheduledEventRule85BE97F8": {
       "Properties": {
-        "ScheduleExpression": "rate(7 days)",
+        "ScheduleExpression": "cron(0 0 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -788,23 +788,42 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "printf 'kind: source
+              "export START_DATE=$(date -d "@$(($(date +%s) - 172800))" "+%Y-%m-%d");export END_DATE=$(date -d "@$(($(date +%s) - 86400))" "+%Y-%m-%d");printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws
   version: v27.5.0
   tables:
-    - aws_costexplorer_cost_30d
+    - aws_costexplorer_cost_custom
   skip_dependent_tables: false
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    use_paid_apis: true
     accounts:
       - id: cq-for-000000000000
         role_arn: arn:aws:iam::000000000000:role/cloudquery-access
+    use_paid_apis: true
+    table_options:
+      aws_costexplorer_cost_custom:
+        get_cost_and_usage:
+          - TimePeriod:
+              Start: \${START_DATE}
+              End: \${END_DATE}
+            Granularity: DAILY
+            GroupBy:
+              - Type: TAG
+                Key: App
+              - Type: TAG
+                Key: Stack
+              - Type: TAG
+                Key: Stage
+            Metrics:
+              - NetUnblendedCost
+              - UnblendedCost
+              - NetAmortizedCost
+              - AmortizedCost
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -973,7 +992,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_cost_30d', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_costexplorer_cost_custom', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12257,7 +12276,7 @@ spec:
     - aws_accessanalyzer_*
     - aws_securityhub_*
     - aws_cloudformation_*
-    - aws_costexplorer_cost_30d
+    - aws_costexplorer_cost_custom
     - aws_elbv1_*
     - aws_elbv2_*
     - aws_autoscaling_groups

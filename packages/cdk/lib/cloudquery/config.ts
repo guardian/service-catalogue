@@ -13,7 +13,6 @@ interface CloudqueryTableConfig {
 	tables?: string[];
 	skipTables?: string[];
 	concurrency?: number;
-	usePaidApis?: boolean;
 }
 
 interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
@@ -50,7 +49,7 @@ export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
-	const { tables, skipTables, concurrency, usePaidApis } = tableConfig;
+	const { tables, skipTables, concurrency } = tableConfig;
 
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
@@ -70,7 +69,6 @@ export function awsSourceConfig(
 			otel_endpoint_insecure: true,
 			spec: {
 				concurrency,
-				use_paid_apis: usePaidApis,
 				...extraConfig,
 			},
 		},
