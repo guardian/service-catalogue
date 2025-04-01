@@ -169,10 +169,38 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting Cost Explorer information for the Worflow account. This requires the use of paid AWS APIs so we are trialling it in a single account first',
 			schedule: Schedule.rate(Duration.days(7)),
-			config: awsSourceConfigForAccount(GuardianAwsAccounts.Workflow, {
-				tables: ['aws_costexplorer_cost_30d'],
-				usePaidApis: true,
-			}),
+			config: awsSourceConfigForAccount(
+				GuardianAwsAccounts.Workflow,
+				{
+					tables: ['aws_costexplorer_cost_custom'],
+					usePaidApis: true,
+				},
+				{
+					table_options: {
+						aws_costexplorer_cost_custom: {
+							get_cost_and_usage: [
+								{
+									TimePeriod: {
+										Start: '2025-03-01',
+										End: '2025-04-01',
+									},
+									Granularity: 'DAILY',
+									GroupBy: [
+										{ Type: 'TAG', Key: 'App' },
+										{ Type: 'TAG', Key: 'Stage' },
+									],
+									Metrics: [
+										'NetUnblendedCost',
+										'UnblendedCost',
+										'NetAmortizedCost',
+										'AmortizedCost',
+									],
+								},
+							],
+						},
+					},
+				},
+			),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
