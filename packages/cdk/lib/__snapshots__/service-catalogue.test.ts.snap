@@ -17721,6 +17721,7 @@ spec:
               },
             },
             "Name": "CloudquerySource-NS1PluginContainer",
+            "ReadonlyRootFilesystem": true,
           },
           {
             "Command": [
