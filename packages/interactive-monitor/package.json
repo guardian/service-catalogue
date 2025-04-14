@@ -15,6 +15,6 @@
 		"octokit": "^3.2.0"
 	},
 	"devDependencies": {
-		"@octokit/types": "^13.4.1"
+		"@octokit/types": "^14.0.0"
 	}
 }
