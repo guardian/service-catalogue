@@ -940,3 +940,16 @@ view view_aws_vpcs {
 
   @@ignore
 }
+
+view view_domain_to_tags {
+  domain_name           String
+  app                   String?
+  stack                 String?
+  stage                 String?
+  repo                  String?
+  riffraff              String?
+  account_name          String?
+  account_id            String?
+
+  @@ignore
+}
