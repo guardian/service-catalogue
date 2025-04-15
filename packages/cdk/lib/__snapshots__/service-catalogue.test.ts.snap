@@ -22665,7 +22665,15 @@ spec:
                 "awslogs-stream-prefix": "deploy/TEST/prisma-migrate-task",
               },
             },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
             "Name": "prisma-migrate-taskFirelens",
+            "ReadonlyRootFilesystem": true,
           },
           {
             "DockerLabels": {
@@ -22793,6 +22801,9 @@ spec:
           ],
         },
         "Volumes": [
+          {
+            "Name": "firelens-volume",
+          },
           {
             "Name": "artifact-volume",
           },
