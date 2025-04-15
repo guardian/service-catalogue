@@ -23,6 +23,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	}),
 	enableCloudquerySchedules: true,
 	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
+	alertTopicName: 'devx-alerts',
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
@@ -36,6 +37,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	// Do not run CloudQuery tasks in CODE, preferring instead to run them manually using the CLI.
 	enableCloudquerySchedules: false,
 	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+	alertTopicName: 'devx-alerts-code',
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml
