@@ -19579,6 +19579,106 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
+    "EBSByteBalanceAlarm": {
+      "Properties": {
+        "ActionsEnabled": false,
+        "AlarmActions": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:sns:eu-west-1:",
+                {
+                  "Ref": "AWS::AccountId",
+                },
+                ":devx-alerts",
+              ],
+            ],
+          },
+        ],
+        "ComparisonOperator": "LessThanLowerOrGreaterThanUpperThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Expression": "ANOMALY_DETECTION_BAND(m1, 2)",
+            "Id": "ad1",
+            "ReturnData": true,
+          },
+          {
+            "Id": "m1",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "DBInstanceIdentifier",
+                    "Value": {
+                      "Ref": "PostgresInstance16DE4286E",
+                    },
+                  },
+                ],
+                "MetricName": "EBSByteBalance%",
+                "Namespace": "AWS/RDS",
+              },
+              "Period": 300,
+              "Stat": "Average",
+            },
+            "ReturnData": true,
+          },
+        ],
+        "OKActions": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:sns:eu-west-1:",
+                {
+                  "Ref": "AWS::AccountId",
+                },
+                ":devx-alerts",
+              ],
+            ],
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "ThresholdMetricId": "ad1",
+        "TreatMissingData": "breaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "EBSByteBalanceAnomalyDetector": {
+      "Properties": {
+        "Dimensions": [
+          {
+            "Name": "DBInstanceIdentifier",
+            "Value": {
+              "Ref": "PostgresInstance16DE4286E",
+            },
+          },
+        ],
+        "MetricName": "EBSByteBalance%",
+        "Namespace": "AWS/RDS",
+        "Stat": "Average",
+      },
+      "Type": "AWS::CloudWatch::AnomalyDetector",
+    },
     "GithubActionsUsageAC7E0411": {
       "DependsOn": [
         "GithubActionsUsageServiceRoleDefaultPolicyBFE2CD5F",

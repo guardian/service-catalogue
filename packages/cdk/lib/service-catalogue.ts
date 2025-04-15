@@ -16,6 +16,12 @@ import {
 import { GuardianPrivateNetworks } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
+import {
+	CfnAlarm,
+	CfnAnomalyDetector,
+	ComparisonOperator,
+	TreatMissingData,
+} from 'aws-cdk-lib/aws-cloudwatch';
 import type { InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Peer, Port } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
@@ -107,13 +113,18 @@ interface ServiceCatalogueProps extends GuStackProps {
 	 * Should the database be provisioned in multiple availability zones for increased resilience?
 	 */
 	databaseMultiAz: boolean;
+
+	/**
+	 * Should the EBS byte balance metric of the database be monitored?
+	 */
+	databaseEbsByteBalanceAlarm: boolean;
 }
 
 export class ServiceCatalogue extends GuStack {
 	constructor(scope: App, id: string, props: ServiceCatalogueProps) {
 		super(scope, id, props);
 
-		const { stage, stack } = this;
+		const { account, stage, stack } = this;
 		const app = props.app ?? 'service-catalogue';
 
 		const {
@@ -123,7 +134,16 @@ export class ServiceCatalogue extends GuStack {
 			databaseDeletionProtection,
 			databaseMultiAz,
 			databaseInstanceType,
+			databaseEbsByteBalanceAlarm,
 		} = props;
+
+		const alertTopicName = 'devx-alerts';
+
+		const alertTopic = Topic.fromTopicArn(
+			this,
+			'AlertTopic',
+			`arn:aws:sns:eu-west-1:${account}:${alertTopicName}`,
+		);
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
 			type: SubnetType.PRIVATE,
@@ -172,6 +192,61 @@ export class ServiceCatalogue extends GuStack {
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
 
 		Tags.of(db).add('devx-backup-enabled', 'true');
+
+		if (databaseEbsByteBalanceAlarm) {
+			const metric = db.metric('EBSByteBalance%');
+			const metricStat = metric.toMetricConfig().metricStat;
+
+			if (!metricStat) {
+				throw new Error("MetricStat is undefined. This shouldn't happen.");
+			}
+
+			new CfnAnomalyDetector(this, `${metric.metricName}AnomalyDetector`, {
+				metricName: metric.metricName,
+				namespace: metric.namespace,
+				stat: metricStat.statistic,
+				dimensions: metricStat.dimensions,
+			});
+
+			new CfnAlarm(this, `${metric.metricName}Alarm`, {
+				comparisonOperator:
+					ComparisonOperator.LESS_THAN_LOWER_OR_GREATER_THAN_UPPER_THRESHOLD,
+				treatMissingData: TreatMissingData.BREACHING,
+				datapointsToAlarm: 1,
+				evaluationPeriods: 1,
+
+				/*
+				This alarms is using anomaly detection which we're not too familiar with yet.
+				A disabled alarm will provide an activity history we can use to fine-tune the alarm.
+				TODO Enable this once we're confident the alarm is working as we'd like.
+				 */
+				actionsEnabled: false,
+
+				alarmActions: [alertTopic.topicArn],
+				okActions: [alertTopic.topicArn],
+				thresholdMetricId: 'ad1',
+				metrics: [
+					{
+						id: 'ad1',
+						returnData: true,
+						expression: 'ANOMALY_DETECTION_BAND(m1, 2)',
+					},
+					{
+						id: 'm1',
+						returnData: true,
+						metricStat: {
+							metric: {
+								namespace: metric.namespace,
+								metricName: metric.metricName,
+								dimensions: metricStat.dimensions,
+							},
+							period: Duration.minutes(5).toSeconds(),
+							stat: metricStat.statistic,
+						},
+					},
+				],
+			});
+		}
 
 		const applicationToPostgresSecurityGroup = new GuSecurityGroup(
 			this,
