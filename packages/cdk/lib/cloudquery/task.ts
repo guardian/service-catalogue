@@ -291,6 +291,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					image: dockerDistributedPluginImage,
 					logging: fireLensLogDriver,
 					essential: false,
+					readonlyRootFilesystem: true,
 				},
 			);
 
