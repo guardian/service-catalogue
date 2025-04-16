@@ -18,6 +18,7 @@ describe('The ServiceCatalogue stack', () => {
 			}),
 			enableCloudquerySchedules: true,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			alertTopicName: 'devx-alerts-code',
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
@@ -35,6 +36,7 @@ describe('The ServiceCatalogue stack', () => {
 			}),
 			enableCloudquerySchedules: true,
 			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			alertTopicName: 'devx-alerts-code',
 		});
 
 		const lambdas = stack.node
