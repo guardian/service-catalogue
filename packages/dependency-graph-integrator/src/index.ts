@@ -74,6 +74,5 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 export const handler: SNSHandler = async (event) => {
 	const events = parseEvent<DependencyGraphIntegratorEvent>(event);
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we're just testing
 	await main(events[0]!);
 };
