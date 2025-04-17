@@ -55,10 +55,8 @@ export const getRdsConfig = async (
 		);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we've checked the length above
 	const secret: SecretListEntry = SecretList[0]!;
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- AWS's types are odd, the ARN is never `undefined`
 	const secretArn = secret.ARN!;
 
 	const getRequest = new GetSecretValueCommand({ SecretId: secretArn });
@@ -272,7 +270,6 @@ export const runOneTask = async (
 		);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we've checked the length above
 	const task = tasks.at(0)!;
 
 	const cluster = await findCluster(ecsClient, stack, stage, app);

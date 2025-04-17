@@ -51,7 +51,6 @@ describe('createDigestForAccount', () => {
 		const oneFindingStartPosition = msg?.indexOf('1 finding');
 		expect(twoFindingStartPosition).toBeDefined();
 		expect(oneFindingStartPosition).toBeDefined();
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we have checked that these are defined
 		expect(twoFindingStartPosition!).toBeLessThan(oneFindingStartPosition!);
 	});
 	it('should aggregate findings by app', () => {

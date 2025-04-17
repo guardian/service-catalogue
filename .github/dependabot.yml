@@ -26,7 +26,7 @@ updates:
           - '@prisma/client'
       code-quality:
         patterns:
-          - '@guardian/eslint-config-typescript'
+          - '@guardian/eslint-config'
           - '@guardian/prettier'
           - 'eslint'
           - 'eslint-plugin-prettier'

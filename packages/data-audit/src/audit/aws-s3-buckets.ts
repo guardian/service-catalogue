@@ -26,7 +26,6 @@ async function numberOfBucketsFromAws(
 	accounts: Account[],
 ): Promise<number> {
 	const promises = accounts.map((account) =>
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- AWS's types are wrong!
 		numberOfBucketsForAwsAccount(stage, account.Id!),
 	);
 	const results = await Promise.all(promises);
