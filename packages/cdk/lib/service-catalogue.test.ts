@@ -17,7 +17,12 @@ describe('The ServiceCatalogue stack', () => {
 				minute: '0',
 			}),
 			enableCloudquerySchedules: true,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			databaseDeletionProtection: true,
+			databaseMultiAz: false,
+			databaseInstanceType: InstanceType.of(
+				InstanceClass.T4G,
+				InstanceSize.SMALL,
+			),
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
@@ -34,7 +39,12 @@ describe('The ServiceCatalogue stack', () => {
 				minute: '0',
 			}),
 			enableCloudquerySchedules: true,
-			instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+			databaseDeletionProtection: true,
+			databaseMultiAz: true,
+			databaseInstanceType: InstanceType.of(
+				InstanceClass.T4G,
+				InstanceSize.SMALL,
+			),
 		});
 
 		const lambdas = stack.node
