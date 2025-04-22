@@ -28,20 +28,28 @@ export async function main() {
 		findingsToGuardianFormat,
 	);
 
+	const uniqueTableContents = Array.from(new Set(tableContents));
+
 	logger.log({
 		message: `${tableContents.length} high and critical FSBP findings detected`,
 	});
 
+	if (tableContents.length !== uniqueTableContents.length) {
+		logger.warn({
+			message: `${tableContents.length - uniqueTableContents.length} duplicate FSBP findings detected`
+		});
+	}
+
 	await prisma.cloudbuster_fsbp_vulnerabilities.deleteMany();
 	await prisma.cloudbuster_fsbp_vulnerabilities.createMany({
-		data: tableContents,
+		data: uniqueTableContents,
 	});
 
-	const digests = createDigestsFromFindings(tableContents, 'CRITICAL');
+	const digests = createDigestsFromFindings(uniqueTableContents, 'CRITICAL');
 
 	const isTuesday = new Date().getDay() === 2;
 	if (isTuesday) {
-		digests.push(...createDigestsFromFindings(tableContents, 'HIGH'));
+		digests.push(...createDigestsFromFindings(uniqueTableContents, 'HIGH'));
 	}
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();
