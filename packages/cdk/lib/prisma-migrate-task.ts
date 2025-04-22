@@ -65,21 +65,36 @@ export function addPrismaMigrateTask(
 		},
 	);
 
-	taskDefinition.addFirelensLogRouter(`${app}Firelens`, {
-		image: Images.devxLogs,
-		logging: LogDrivers.awsLogs({
-			streamPrefix: [stack, stage, app].join('/'),
-			logRetention: RetentionDays.ONE_DAY,
-		}),
-		environment: {
-			STACK: stack,
-			STAGE: stage,
-			APP: app,
-			GU_REPO: 'guardian/service-catalogue',
+	const firelensLogRouter = taskDefinition.addFirelensLogRouter(
+		`${app}Firelens`,
+		{
+			image: Images.devxLogs,
+			logging: LogDrivers.awsLogs({
+				streamPrefix: [stack, stage, app].join('/'),
+				logRetention: RetentionDays.ONE_DAY,
+			}),
+			environment: {
+				STACK: stack,
+				STAGE: stage,
+				APP: app,
+				GU_REPO: 'guardian/service-catalogue',
+			},
+			firelensConfig: {
+				type: FirelensLogRouterType.FLUENTBIT,
+			},
+			readonlyRootFilesystem: true,
 		},
-		firelensConfig: {
-			type: FirelensLogRouterType.FLUENTBIT,
-		},
+	);
+
+	const firelensVolume: Volume = {
+		name: 'firelens-volume',
+	};
+	taskDefinition.addVolume(firelensVolume);
+
+	firelensLogRouter.addMountPoints({
+		containerPath: '/init',
+		sourceVolume: firelensVolume.name,
+		readOnly: false,
 	});
 
 	/**
