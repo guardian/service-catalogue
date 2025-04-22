@@ -28,7 +28,18 @@ export async function main() {
 		findingsToGuardianFormat,
 	);
 
-	const uniqueTableContents = Array.from(new Set(tableContents));
+	const resourceArns = new Map<string, cloudbuster_fsbp_vulnerabilities>();
+	const duplicateArns: string[] = [];
+	tableContents.forEach((row) => {
+		if (resourceArns.has(row.arn)) {
+			if (!duplicateArns.includes(row.arn)) {
+				duplicateArns.push(row.arn);
+			}
+		} else {
+			resourceArns.set(row.arn, row);
+		}
+	});
+	const uniqueTableContents = Array.from(resourceArns.values());
 
 	logger.log({
 		message: `${tableContents.length} high and critical FSBP findings detected`,
@@ -36,7 +47,7 @@ export async function main() {
 
 	if (tableContents.length !== uniqueTableContents.length) {
 		logger.warn({
-			message: `${tableContents.length - uniqueTableContents.length} duplicate FSBP findings detected`
+			message: `${tableContents.length - uniqueTableContents.length} duplicate FSBP findings detected with ARNs: ${duplicateArns.join(', ')}`,
 		});
 	}
 
