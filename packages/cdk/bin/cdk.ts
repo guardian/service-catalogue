@@ -14,7 +14,6 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	stack,
 	stage: 'PROD',
 	env: { region },
-	multiAz: true,
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
 	securityAlertSchedule: Schedule.cron({
 		weekDay: 'MON-FRI',
@@ -22,7 +21,9 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 		minute: '0',
 	}),
 	enableCloudquerySchedules: true,
-	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
+	databaseDeletionProtection: true,
+	databaseMultiAz: true,
+	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
@@ -30,12 +31,14 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stage: 'CODE',
 	env: { region },
 	securityAlertSchedule: Schedule.rate(Duration.days(30)),
-	rdsDeletionProtection: false,
 	cloudFormationStackName: 'deploy-CODE-service-catalogue',
 
 	// Do not run CloudQuery tasks in CODE, preferring instead to run them manually using the CLI.
 	enableCloudquerySchedules: false,
-	instanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+
+	databaseDeletionProtection: false,
+	databaseMultiAz: false,
+	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml
