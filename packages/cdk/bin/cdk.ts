@@ -24,6 +24,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	databaseDeletionProtection: true,
 	databaseMultiAz: true,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
+	databaseEbsByteBalanceAlarm: true,
 });
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
@@ -39,6 +40,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	databaseDeletionProtection: false,
 	databaseMultiAz: false,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
+	databaseEbsByteBalanceAlarm: false,
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml

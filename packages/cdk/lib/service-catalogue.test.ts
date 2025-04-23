@@ -23,6 +23,7 @@ describe('The ServiceCatalogue stack', () => {
 				InstanceClass.T4G,
 				InstanceSize.SMALL,
 			),
+			databaseEbsByteBalanceAlarm: true,
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
@@ -45,6 +46,7 @@ describe('The ServiceCatalogue stack', () => {
 				InstanceClass.T4G,
 				InstanceSize.SMALL,
 			),
+			databaseEbsByteBalanceAlarm: true,
 		});
 
 		const lambdas = stack.node
