@@ -82,14 +82,6 @@ interface ServiceCatalogueProps extends GuStackProps {
 	securityAlertSchedule: Schedule;
 
 	/**
-	 * Enable deletion protection for the RDS instance?
-	 *
-	 * @default true
-	 */
-	rdsDeletionProtection?: boolean;
-	multiAz?: boolean;
-
-	/**
 	 * The GitHub org to search for repositories in.
 	 */
 	gitHubOrg?: string;
@@ -102,9 +94,19 @@ interface ServiceCatalogueProps extends GuStackProps {
 	enableCloudquerySchedules: boolean;
 
 	/**
+	 * Enable deletion protection for the RDS instance?
+	 */
+	databaseDeletionProtection: boolean;
+
+	/**
 	 * The instance type to be used by RDS (e.g. t4g.small)
 	 */
-	instanceType: InstanceType;
+	databaseInstanceType: InstanceType;
+
+	/**
+	 * Should the database be provisioned in multiple availability zones for increased resilience?
+	 */
+	databaseMultiAz: boolean;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -115,12 +117,12 @@ export class ServiceCatalogue extends GuStack {
 		const app = props.app ?? 'service-catalogue';
 
 		const {
-			rdsDeletionProtection = true,
-			multiAz = false,
 			gitHubOrg = 'guardian',
 			securityAlertSchedule,
 			enableCloudquerySchedules,
-			instanceType,
+			databaseDeletionProtection,
+			databaseMultiAz,
+			databaseInstanceType,
 		} = props;
 
 		const privateSubnets = GuVpc.subnetsFromParameter(this, {
@@ -150,13 +152,13 @@ export class ServiceCatalogue extends GuStack {
 			engine: DatabaseInstanceEngine.POSTGRES,
 			port,
 			vpc,
-			instanceType,
+			instanceType: databaseInstanceType,
 			vpcSubnets: { subnets: privateSubnets },
 			iamAuthentication: true, // We're not using IAM auth for ECS tasks, however we do use IAM auth when connecting to RDS locally.
 			storageEncrypted: true,
 			securityGroups: [dbSecurityGroup],
-			deletionProtection: rdsDeletionProtection,
-			multiAz: multiAz,
+			deletionProtection: databaseDeletionProtection,
+			multiAz: databaseMultiAz,
 			/*
 			This certificate supports automatic rotation.
 			See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html#UsingWithRDS.SSL.RegionCertificateAuthorities

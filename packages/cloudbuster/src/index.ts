@@ -28,20 +28,40 @@ export async function main() {
 		findingsToGuardianFormat,
 	);
 
+	const controlIdArns = new Map<string, cloudbuster_fsbp_vulnerabilities>();
+	const duplicateControlIdArns: string[] = [];
+	tableContents.forEach((row) => {
+		const compositeKey = `${row.control_id}:${row.arn}`;
+		if (controlIdArns.has(compositeKey)) {
+			if (!duplicateControlIdArns.includes(compositeKey)) {
+				duplicateControlIdArns.push(compositeKey);
+			}
+		} else {
+			controlIdArns.set(compositeKey, row);
+		}
+	});
+	const uniqueTableContents = Array.from(controlIdArns.values());
+
 	logger.log({
 		message: `${tableContents.length} high and critical FSBP findings detected`,
 	});
 
+	if (tableContents.length !== uniqueTableContents.length) {
+		logger.warn({
+			message: `${tableContents.length - uniqueTableContents.length} duplicate FSBP findings detected with control IDs and resource ARNs: ${duplicateControlIdArns.join(', ')}`,
+		});
+	}
+
 	await prisma.cloudbuster_fsbp_vulnerabilities.deleteMany();
 	await prisma.cloudbuster_fsbp_vulnerabilities.createMany({
-		data: tableContents,
+		data: uniqueTableContents,
 	});
 
-	const digests = createDigestsFromFindings(tableContents, 'CRITICAL');
+	const digests = createDigestsFromFindings(uniqueTableContents, 'CRITICAL');
 
 	const isTuesday = new Date().getDay() === 2;
 	if (isTuesday) {
-		digests.push(...createDigestsFromFindings(tableContents, 'HIGH'));
+		digests.push(...createDigestsFromFindings(uniqueTableContents, 'HIGH'));
 	}
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();
