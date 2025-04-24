@@ -63,7 +63,6 @@ async function numberOfLambdaFunctionsFromAws(
 		return regions.map((region) => {
 			return numberOfLambdaFunctionsForAwsAccount(
 				stage,
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- AWS's types are wrong!
 				account.Id!,
 				region,
 			);
