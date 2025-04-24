@@ -7,9 +7,9 @@
   },
   "type": "module",
   "devDependencies": {
-    "@aws-sdk/client-ecs": "^3.787.0",
-    "@aws-sdk/client-secrets-manager": "^3.787.0",
-    "@aws-sdk/client-ssm": "^3.787.0",
+    "@aws-sdk/client-ecs": "^3.796.0",
+    "@aws-sdk/client-secrets-manager": "^3.796.0",
+    "@aws-sdk/client-ssm": "^3.796.0",
     "@types/yargs": "^17.0.32",
     "execa": "^9.5.2",
     "terminal-link": "^4.0.0",
