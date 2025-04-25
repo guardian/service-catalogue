@@ -20,9 +20,33 @@ interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 }
 
 /**
+ * Specifies the update method to use when inserting rows to Postgres.
+ *
+ * @see https://cli-docs.cloudquery.io/docs/reference/destination-spec#write_mode
+ */
+export enum CloudqueryWriteMode {
+	/**
+	 * Overwrite existing rows with the same primary key, and delete rows that are no longer present in the cloud.
+	 */
+	OverwriteDeleteStale = 'overwrite-delete-stale',
+
+	/**
+	 * Same as {@link CloudqueryWriteMode.OverwriteDeleteStale}, but doesn't delete stale rows from previous syncs.
+	 */
+	Overwrite = 'overwrite',
+
+	/**
+	 * Rows are never overwritten or deleted, only appended.
+	 */
+	Append = 'append',
+}
+
+/**
  * Create a ServiceCatalogue destination configuration for Postgres.
  */
-export function postgresDestinationConfig(): CloudqueryConfig {
+export function postgresDestinationConfig(
+	writeMode: CloudqueryWriteMode,
+): CloudqueryConfig {
 	return {
 		kind: 'destination',
 		spec: {
@@ -30,6 +54,7 @@ export function postgresDestinationConfig(): CloudqueryConfig {
 			registry: 'github',
 			path: 'cloudquery/postgresql',
 			version: `v${Versions.CloudqueryPostgresDestination}`,
+			write_mode: writeMode,
 			migrate_mode: 'forced',
 			spec: {
 				connection_string: [

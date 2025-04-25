@@ -7,6 +7,7 @@ import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import type { CloudqueryConfig } from './config';
+import { CloudqueryWriteMode } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
 export interface CloudquerySource {
@@ -92,6 +93,13 @@ export interface CloudquerySource {
 	 * @see https://docs.cloudquery.io/docs/reference/source-spec
 	 */
 	dockerDistributedPluginImage?: RepositoryImage;
+
+	/**
+	 * Specifies the update method to use when inserting rows to Postgres.
+	 *
+	 * @default {@link CloudqueryWriteMode.OverwriteDeleteStale}
+	 */
+	writeMode?: CloudqueryWriteMode;
 }
 
 interface CloudqueryClusterProps extends AppIdentity {
@@ -174,6 +182,7 @@ export class CloudqueryCluster extends Cluster {
 				additionalSecurityGroups,
 				runAsSingleton = false,
 				dockerDistributedPluginImage,
+				writeMode = CloudqueryWriteMode.OverwriteDeleteStale,
 			}) => {
 				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
@@ -194,6 +203,7 @@ export class CloudqueryCluster extends Cluster {
 						'api-key',
 					),
 					dockerDistributedPluginImage,
+					writeMode,
 				});
 			},
 		);

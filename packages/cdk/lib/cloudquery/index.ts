@@ -17,6 +17,7 @@ import {
 	amigoBakePackagesConfig,
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	CloudqueryWriteMode,
 	fastlySourceConfig,
 	galaxiesSourceConfig,
 	githubLanguagesConfig,
@@ -177,7 +178,7 @@ export function addCloudqueryEcsCluster(
 				`export START_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(2).toSeconds()}))" "+%Y-%m-%d")`,
 				`export END_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(1).toSeconds()}))" "+%Y-%m-%d")`,
 			],
-
+			writeMode: CloudqueryWriteMode.Overwrite,
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Workflow,
 				{
