@@ -802,9 +802,10 @@ spec:
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
   spec:
-    accounts:
-      - id: cq-for-000000000000
-        role_arn: arn:aws:iam::000000000000:role/cloudquery-access
+    org:
+      member_role_name: cloudquery-access
+      organization_units:
+        - ou-123
     use_paid_apis: true
     table_options:
       aws_costexplorer_cost_custom:

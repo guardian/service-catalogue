@@ -103,11 +103,12 @@ export function awsSourceConfig(
 /**
  * Create a ServiceCatalogue configuration for all AWS accounts in the organisation.
  * @param tableConfig Which tables to include or exclude.
- *
+ * @param extraConfig Extra spec fields.
  * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#org
  */
 export function awsSourceConfigForOrganisation(
 	tableConfig: CloudqueryTableConfig,
+	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
 	return awsSourceConfig(tableConfig, {
 		org: {
@@ -115,6 +116,7 @@ export function awsSourceConfigForOrganisation(
 			member_role_name: 'cloudquery-access',
 			organization_units: [GuardianOrganisationalUnits.Root],
 		},
+		...extraConfig,
 	});
 }
 

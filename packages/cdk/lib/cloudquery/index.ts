@@ -179,8 +179,7 @@ export function addCloudqueryEcsCluster(
 				`export END_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(1).toSeconds()}))" "+%Y-%m-%d")`,
 			],
 			writeMode: CloudqueryWriteMode.Overwrite,
-			config: awsSourceConfigForAccount(
-				GuardianAwsAccounts.Workflow,
+			config: awsSourceConfigForOrganisation(
 				{
 					tables: ['aws_costexplorer_cost_custom'],
 				},
