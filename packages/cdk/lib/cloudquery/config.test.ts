@@ -3,13 +3,16 @@ import { dump } from 'js-yaml';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	CloudqueryWriteMode,
 	githubSourceConfig,
 	postgresDestinationConfig,
 } from './config';
 
 describe('Config generation, and converting to YAML', () => {
 	it('Should create a destination configuration', () => {
-		const config = postgresDestinationConfig();
+		const config = postgresDestinationConfig(
+			CloudqueryWriteMode.OverwriteDeleteStale,
+		);
 		expect(dump(config)).toMatchInlineSnapshot(`
 		"kind: destination
 		spec:
@@ -17,6 +20,7 @@ describe('Config generation, and converting to YAML', () => {
 		  registry: github
 		  path: cloudquery/postgresql
 		  version: v7.2.0
+		  write_mode: overwrite-delete-stale
 		  migrate_mode: forced
 		  spec:
 		    connection_string: >-

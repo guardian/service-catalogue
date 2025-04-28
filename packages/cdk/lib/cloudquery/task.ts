@@ -19,7 +19,7 @@ import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
-import type { CloudqueryConfig } from './config';
+import type { CloudqueryConfig, CloudqueryWriteMode } from './config';
 import {
 	postgresDestinationConfig,
 	serviceCatalogueConfigDirectory,
@@ -120,6 +120,11 @@ export interface ScheduledCloudqueryTaskProps
 	 * @see https://docs.cloudquery.io/docs/reference/source-spec
 	 */
 	dockerDistributedPluginImage?: RepositoryImage;
+
+	/**
+	 * Specifies the update method to use when inserting rows to Postgres.
+	 */
+	writeMode: CloudqueryWriteMode;
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
@@ -145,6 +150,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			runAsSingleton,
 			cloudQueryApiKey,
 			dockerDistributedPluginImage,
+			writeMode,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
@@ -171,7 +177,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		 */
 		Tags.of(task).add('Name', name);
 
-		const destinationConfig = postgresDestinationConfig();
+		const destinationConfig = postgresDestinationConfig(writeMode);
 
 		/*
 		This error shouldn't ever be thrown as AWS CDK creates a secret by default,

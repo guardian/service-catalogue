@@ -17,6 +17,7 @@ import {
 	amigoBakePackagesConfig,
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
+	CloudqueryWriteMode,
 	fastlySourceConfig,
 	galaxiesSourceConfig,
 	githubLanguagesConfig,
@@ -167,12 +168,49 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsCostExplorer',
 			description:
-				'Collecting Cost Explorer information for the Worflow account. This requires the use of paid AWS APIs so we are trialling it in a single account first',
-			schedule: Schedule.rate(Duration.days(7)),
-			config: awsSourceConfigForAccount(GuardianAwsAccounts.Workflow, {
-				tables: ['aws_costexplorer_cost_30d'],
-				usePaidApis: true,
-			}),
+				'Collects daily AWS costs (aggregated by App, Stack and Stage tags). We aim to keep historical data for this table (unlike other tables)',
+			schedule: Schedule.cron({ minute: '0', hour: '0' }),
+
+			// TODO replace with time variable substitution once it supports relative date only strings.
+			//  See https://cli-docs.cloudquery.io/docs/advanced-topics/environment-variable-substitution#time-variable-substitution-example
+			//  See https://github.com/cloudquery/cloudquery/pull/20399
+			additionalCommands: [
+				`export START_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(2).toSeconds()}))" "+%Y-%m-%d")`,
+				`export END_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(1).toSeconds()}))" "+%Y-%m-%d")`,
+			],
+			writeMode: CloudqueryWriteMode.Overwrite,
+			config: awsSourceConfigForOrganisation(
+				{
+					tables: ['aws_costexplorer_cost_custom'],
+				},
+				{
+					use_paid_apis: true,
+					table_options: {
+						aws_costexplorer_cost_custom: {
+							get_cost_and_usage: [
+								{
+									TimePeriod: {
+										Start: '${START_DATE}',
+										End: '${END_DATE}',
+									},
+									Granularity: 'DAILY',
+									GroupBy: [
+										{ Type: 'TAG', Key: 'App' },
+										{ Type: 'TAG', Key: 'Stack' },
+										{ Type: 'TAG', Key: 'Stage' },
+									],
+									Metrics: [
+										'NetUnblendedCost',
+										'UnblendedCost',
+										'NetAmortizedCost',
+										'AmortizedCost',
+									],
+								},
+							],
+						},
+					},
+				},
+			),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
