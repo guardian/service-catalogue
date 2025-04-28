@@ -168,7 +168,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsCostExplorer',
 			description:
-				'Collecting Cost Explorer information for the Worflow account. This requires the use of paid AWS APIs so we are trialling it in a single account first',
+				'Collects daily AWS costs (aggregated by App, Stack and Stage tags). We aim to keep historical data for this table (unlike other tables)',
 			schedule: Schedule.cron({ minute: '0', hour: '0' }),
 
 			// TODO replace with time variable substitution once it supports relative date only strings.
