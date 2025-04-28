@@ -197,7 +197,6 @@ export function addCloudqueryEcsCluster(
 									GroupBy: [
 										{ Type: 'TAG', Key: 'App' },
 										{ Type: 'TAG', Key: 'Stack' },
-										{ Type: 'TAG', Key: 'Stage' },
 									],
 									Metrics: [
 										'NetUnblendedCost',

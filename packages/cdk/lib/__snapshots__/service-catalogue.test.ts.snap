@@ -819,8 +819,6 @@ spec:
                 Key: App
               - Type: TAG
                 Key: Stack
-              - Type: TAG
-                Key: Stage
             Metrics:
               - NetUnblendedCost
               - UnblendedCost
