@@ -73,6 +73,12 @@ const parseCommandLineArguments = () => {
 						description: 'The Name tag of the task to run',
 						type: 'string',
 						demandOption: true,
+					})
+					.option('env', {
+						description:
+							'An environment variable to pass to the task. Syntax: KEY=VALUE',
+						type: 'array',
+						demandOption: false,
 					});
 			})
 			.command(Commands.runAll, 'Run all tasks', (yargs) => {
@@ -140,9 +146,32 @@ parseCommandLineArguments()
 					: tasks.then((tasks) => tasks.map((task) => task['Name']));
 			}
 			case Commands.run: {
-				const { stack, stage, app, name } = argv;
+				const { stack, stage, app, name, env } = argv;
+
 				const ecsClient = getEcsClient();
 				const ssmClient = getSsmClient();
+
+				if (Array.isArray(env)) {
+					const envVars: Record<string, string> = (env as string[])
+						.map((str) => str.split('='))
+						.reduce((acc, [envKey, envValue]) => {
+							return {
+								...acc,
+								[envKey as string]: envValue,
+							};
+						}, {});
+
+					return runOneTask(
+						ecsClient,
+						ssmClient,
+						stack as string,
+						stage as string,
+						app as string,
+						name as string,
+						envVars,
+					);
+				}
+
 				return runOneTask(
 					ecsClient,
 					ssmClient,

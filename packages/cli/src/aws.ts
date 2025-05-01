@@ -230,10 +230,12 @@ const findCluster = async (
 
 const runTaskByArn = async (
 	ecsClient: ECSClient,
+	taskName: string,
 	taskArn: string,
 	clusterArn: string,
 	privateSubnets: string[],
 	securityGroups: string[],
+	envVars?: Record<string, string>,
 ): Promise<RunTaskCommandOutput> => {
 	const command = new RunTaskCommand({
 		cluster: clusterArn,
@@ -246,6 +248,19 @@ const runTaskByArn = async (
 		},
 		propagateTags: 'TASK_DEFINITION',
 		capacityProviderStrategy: [{ capacityProvider: 'FARGATE' }],
+		...(envVars && {
+			overrides: {
+				containerOverrides: [
+					{
+						name: `CloudquerySource-${taskName}Container`, // This matches the AWS CDK auto-generated name
+						environment: Object.entries(envVars).map(([key, value]) => ({
+							name: key,
+							value: value,
+						})),
+					},
+				],
+			},
+		}),
 	});
 
 	return ecsClient.send(command);
@@ -258,6 +273,7 @@ export const runOneTask = async (
 	stage: string,
 	app: string,
 	name: string,
+	envVars?: Record<string, string>,
 ): Promise<void> => {
 	const tasks = (await listTasks(ecsClient, stack, stage, app)).filter(
 		(taskDescription) => taskDescription['Name'] === name,
@@ -292,10 +308,12 @@ export const runOneTask = async (
 
 	const response = await runTaskByArn(
 		ecsClient,
+		name,
 		task.arn,
 		cluster.arn,
 		privateSubnets,
 		securityGroups,
+		envVars,
 	);
 
 	const taskArns: string[] = response.tasks
@@ -336,12 +354,27 @@ export const runAllTasks = async (
 	);
 
 	const result = await Promise.all(
-		tasks.map((task) =>
-			runTaskByArn(ecsClient, task.arn, cluster.arn, privateSubnets, [
-				securityGroup,
-				...(task.arn.includes('RiffRaffData') ? [riffRaffDBSecurityGroup] : []),
-			]),
-		),
+		tasks.map((task) => {
+			const name = task['Name'];
+
+			if (!name) {
+				throw new Error(`Task doesn't have a name. Task ARN: ${task.arn}`);
+			}
+
+			return runTaskByArn(
+				ecsClient,
+				name,
+				task.arn,
+				cluster.arn,
+				privateSubnets,
+				[
+					securityGroup,
+					...(task.arn.includes('RiffRaffData')
+						? [riffRaffDBSecurityGroup]
+						: []),
+				],
+			);
+		}),
 	);
 
 	const taskArns = result
