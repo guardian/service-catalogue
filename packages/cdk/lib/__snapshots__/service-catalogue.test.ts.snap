@@ -789,7 +789,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "export START_DATE=$(date -d "@$(($(date +%s) - 172800))" "+%Y-%m-%d");export END_DATE=$(date -d "@$(($(date +%s) - 86400))" "+%Y-%m-%d");printf 'kind: source
+              "export START_DATE=\${START_DATE:-$(date -d "@$(($(date +%s) - 172800))" "+%Y-%m-%d")};export END_DATE=\${END_DATE:-$(date -d "@$(($(date +%s) - 86400))" "+%Y-%m-%d")};printf 'kind: source
 spec:
   name: aws
   path: cloudquery/aws

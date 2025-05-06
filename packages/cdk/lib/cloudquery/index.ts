@@ -175,8 +175,13 @@ export function addCloudqueryEcsCluster(
 			//  See https://cli-docs.cloudquery.io/docs/advanced-topics/environment-variable-substitution#time-variable-substitution-example
 			//  See https://github.com/cloudquery/cloudquery/pull/20399
 			additionalCommands: [
-				`export START_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(2).toSeconds()}))" "+%Y-%m-%d")`,
-				`export END_DATE=$(date -d "@$(($(date +%s) - ${Duration.days(1).toSeconds()}))" "+%Y-%m-%d")`,
+				/*
+				START_DATE and END_DATE are only set if they're not already set.
+				This allows us to backfill data if we need to via the CLI of this project, which sets the environment variables via container overrides.
+				See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerOverride.html.
+				 */
+				`export START_DATE=$\{START_DATE:-$(date -d "@$(($(date +%s) - ${Duration.days(2).toSeconds()}))" "+%Y-%m-%d")}`,
+				`export END_DATE=$\{END_DATE:-$(date -d "@$(($(date +%s) - ${Duration.days(1).toSeconds()}))" "+%Y-%m-%d")}`,
 			],
 			writeMode: CloudqueryWriteMode.Overwrite,
 			config: awsSourceConfigForOrganisation(
