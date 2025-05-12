@@ -29,7 +29,7 @@ updates:
           - '@guardian/eslint-config'
           - '@guardian/prettier'
           - 'eslint'
-          - 'eslint-plugin-prettier'
+          - 'eslint-plugin-*'
       octokit:
         patterns:
           - '@octokit/*'
