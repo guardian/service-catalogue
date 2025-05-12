@@ -9,11 +9,11 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@guardian/cdk": "61.4.0",
+    "@guardian/cdk": "61.5.2",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v4.0.0",
     "@types/js-yaml": "^4.0.9",
-    "aws-cdk": "2.1007.0",
-    "aws-cdk-lib": "2.189.0",
+    "aws-cdk": "2.1014.0",
+    "aws-cdk-lib": "2.195.0",
     "aws-cron-parser": "^1.1.12",
     "constructs": "10.4.2",
     "js-yaml": "^4.1.0",
