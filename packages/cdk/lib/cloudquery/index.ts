@@ -18,6 +18,7 @@ import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
 	CloudqueryWriteMode,
+	endOfLifeSourceConfig,
 	fastlySourceConfig,
 	galaxiesSourceConfig,
 	githubLanguagesConfig,
@@ -676,6 +677,13 @@ export function addCloudqueryEcsCluster(
 		],
 	};
 
+	const endOfLifeSource: CloudquerySource = {
+		name: 'EndOfLife',
+		description: 'Collecting data from endoflife.date',
+		schedule: Schedule.cron({ day: '1', hour: '0', minute: '0' }),
+		config: endOfLifeSourceConfig(),
+	};
+
 	return new CloudqueryCluster(scope, `${app}Cluster`, {
 		enableCloudquerySchedules,
 		app,
@@ -694,6 +702,7 @@ export function addCloudqueryEcsCluster(
 			githubLanguagesSource,
 			ns1Source,
 			amigoBakePackagesSource,
+			endOfLifeSource,
 		],
 		cloudqueryApiKey,
 	});
