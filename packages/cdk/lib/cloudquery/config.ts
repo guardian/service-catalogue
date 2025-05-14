@@ -225,6 +225,20 @@ export function fastlySourceConfig(
 	};
 }
 
+export function endOfLifeSourceConfig(): CloudqueryConfig {
+	return {
+		kind: 'source',
+		spec: {
+			name: 'endoflife',
+			path: 'cloudquery/endoflife',
+			registry: 'cloudquery',
+			version: `v${Versions.CloudqueryEndOfLife}`,
+			tables: ['endoflife_products'],
+			destinations: ['postgresql'],
+		},
+	};
+}
+
 export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 	return {
 		kind: 'source',
