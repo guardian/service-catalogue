@@ -844,6 +844,212 @@ model aws_ec2_vpcs {
   @@ignore
 }
 
+model aws_acm_certificates {
+  cq_sync_time              DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name            String?   @map("_cq_source_name")
+  cq_id                     String    @id(map: "aws_acm_certificates_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id              String?   @map("_cq_parent_id") @db.Uuid
+  account_id                String?
+  region                    String?
+  arn                       String?
+  tags                      Json?
+  certificate_authority_arn String?
+  created_at                DateTime? @db.Timestamp(6)
+  domain_name               String?
+  domain_validation_options Json?
+  extended_key_usages       Json?
+  failure_reason            String?
+  imported_at               DateTime? @db.Timestamp(6)
+  in_use_by                 String[]
+  issued_at                 DateTime? @db.Timestamp(6)
+  issuer                    String?
+  key_algorithm             String?
+  key_usages                Json?
+  not_after                 DateTime? @db.Timestamp(6)
+  not_before                DateTime? @db.Timestamp(6)
+  options                   Json?
+  renewal_eligibility       String?
+  renewal_summary           Json?
+  revocation_reason         String?
+  revoked_at                DateTime? @db.Timestamp(6)
+  serial                    String?
+  signature_algorithm       String?
+  status                    String?
+  subject                   String?
+  subject_alternative_names String[]
+  type                      String?
+
+  @@ignore
+}
+
+model aws_apigateway_domain_names {
+  cq_sync_time                           DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                         String?   @map("_cq_source_name")
+  cq_id                                  String    @id(map: "aws_apigateway_domain_names_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                           String?   @map("_cq_parent_id") @db.Uuid
+  account_id                             String?
+  region                                 String?
+  arn                                    String?
+  certificate_arn                        String?
+  certificate_name                       String?
+  certificate_upload_date                DateTime? @db.Timestamp(6)
+  distribution_domain_name               String?
+  distribution_hosted_zone_id            String?
+  domain_name                            String?
+  domain_name_status                     String?
+  domain_name_status_message             String?
+  endpoint_configuration                 Json?
+  mutual_tls_authentication              Json?
+  ownership_verification_certificate_arn String?
+  regional_certificate_arn               String?
+  regional_certificate_name              String?
+  regional_domain_name                   String?
+  regional_hosted_zone_id                String?
+  security_policy                        String?
+  tags                                   Json?
+
+  @@ignore
+}
+
+model aws_cloudfront_distributions {
+  cq_sync_time                     DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                   String?   @map("_cq_source_name")
+  cq_id                            String    @id(map: "aws_cloudfront_distributions_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                     String?   @map("_cq_parent_id") @db.Uuid
+  account_id                       String?
+  tags                             Json?
+  arn                              String?
+  distribution_config              Json?
+  domain_name                      String?
+  id                               String?
+  in_progress_invalidation_batches BigInt?
+  last_modified_time               DateTime? @db.Timestamp(6)
+  status                           String?
+  active_trusted_key_groups        Json?
+  active_trusted_signers           Json?
+  alias_icp_recordals              Json?
+
+  @@ignore
+}
+
+model aws_elbv1_load_balancers {
+  cq_sync_time                  DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                String?   @map("_cq_source_name")
+  cq_id                         String    @id(map: "aws_elbv1_load_balancers_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                  String?   @map("_cq_parent_id") @db.Uuid
+  account_id                    String?
+  region                        String?
+  arn                           String?
+  availability_zones            String[]
+  backend_server_descriptions   Json?
+  canonical_hosted_zone_name    String?
+  canonical_hosted_zone_name_id String?
+  created_time                  DateTime? @db.Timestamp(6)
+  dns_name                      String?
+  health_check                  Json?
+  instances                     Json?
+  listener_descriptions         Json?
+  load_balancer_name            String?
+  policies                      Json?
+  scheme                        String?
+  security_groups               String[]
+  source_security_group         Json?
+  subnets                       String[]
+  vpc_id                        String?
+  tags                          Json?
+  attributes                    Json?
+
+  @@ignore
+}
+
+model aws_elbv2_load_balancers {
+  cq_sync_time                                                 DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                                               String?   @map("_cq_source_name")
+  cq_id                                                        String    @id(map: "aws_elbv2_load_balancers_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                                                 String?   @map("_cq_parent_id") @db.Uuid
+  account_id                                                   String?
+  region                                                       String?
+  tags                                                         Json?
+  arn                                                          String?
+  availability_zones                                           Json?
+  canonical_hosted_zone_id                                     String?
+  created_time                                                 DateTime? @db.Timestamp(6)
+  customer_owned_ipv4_pool                                     String?
+  dns_name                                                     String?
+  enforce_security_group_inbound_rules_on_private_link_traffic String?
+  ip_address_type                                              String?
+  load_balancer_arn                                            String?
+  load_balancer_name                                           String?
+  scheme                                                       String?
+  security_groups                                              String[]
+  state                                                        Json?
+  type                                                         String?
+  vpc_id                                                       String?
+
+  @@ignore
+}
+
+model fastly_service_backends {
+  cq_sync_time          DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name        String?   @map("_cq_source_name")
+  cq_id                 String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id          String?   @map("_cq_parent_id") @db.Uuid
+  name                  String
+  sslca_cert            String?
+  service_id            String
+  service_version       BigInt
+  address               String?
+  auto_loadbalance      Boolean?
+  between_bytes_timeout BigInt?
+  comment               String?
+  connect_timeout       BigInt?
+  created_at            DateTime? @db.Timestamp(6)
+  deleted_at            DateTime? @db.Timestamp(6)
+  error_threshold       BigInt?
+  first_byte_timeout    BigInt?
+  health_check          String?
+  hostname              String?
+  max_conn              BigInt?
+  max_tls_version       String?
+  min_tls_version       String?
+  override_host         String?
+  port                  BigInt?
+  request_condition     String?
+  ssl_cert_hostname     String?
+  ssl_check_cert        Boolean?
+  ssl_ciphers           String?
+  ssl_client_cert       String?
+  ssl_client_key        String?
+  ssl_hostname          String?
+  sslsni_hostname       String?
+  shield                String?
+  updated_at            DateTime? @db.Timestamp(6)
+  use_ssl               Boolean?
+  weight                BigInt?
+  keep_alive_time       BigInt?
+  share_key             String?
+
+  @@id([name, service_id, service_version], map: "fastly_service_backends_cqpk")
+  @@ignore
+}
+
+model fastly_service_domains {
+  cq_sync_time    DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name  String?   @map("_cq_source_name")
+  cq_id           String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id    String?   @map("_cq_parent_id") @db.Uuid
+  name            String
+  service_id      String
+  service_version BigInt
+  comment         String?
+  created_at      DateTime? @db.Timestamp(6)
+  deleted_at      DateTime? @db.Timestamp(6)
+  updated_at      DateTime? @db.Timestamp(6)
+
+  @@id([name, service_id, service_version], map: "fastly_service_domains_cqpk")
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
@@ -937,6 +1143,21 @@ view view_aws_vpcs {
   subnet_remaining_addresses BigInt?
   subnet_in_use              Boolean?
   subnet_route_table_id      String?
+
+  @@ignore
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view view_domain_tags {
+  domain_name  String?
+  app          String?
+  stack        String?
+  stage        String?
+  tool         String?
+  repo         String?
+  riffraff     String?
+  account_name String?
+  account_id   String?
 
   @@ignore
 }

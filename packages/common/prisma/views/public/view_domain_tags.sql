@@ -1,0 +1,22 @@
+SELECT
+  fn_view_domain_tags.domain_name,
+  fn_view_domain_tags.app,
+  fn_view_domain_tags.stack,
+  fn_view_domain_tags.stage,
+  fn_view_domain_tags.tool,
+  fn_view_domain_tags.repo,
+  fn_view_domain_tags.riffraff,
+  fn_view_domain_tags.account_name,
+  fn_view_domain_tags.account_id
+FROM
+  fn_view_domain_tags() fn_view_domain_tags(
+    domain_name,
+    app,
+    stack,
+    stage,
+    tool,
+    repo,
+    riffraff,
+    account_name,
+    account_id
+  );
