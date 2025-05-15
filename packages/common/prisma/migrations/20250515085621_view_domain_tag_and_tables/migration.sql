@@ -229,7 +229,7 @@ BEGIN TRANSACTION;
         , stage TEXT
         , tool TEXT
         , repo TEXT
-        , riffraff TEXT
+        , riffraff_project TEXT
         , account_name TEXT
         , account_id TEXT
         ) as $$
@@ -270,10 +270,11 @@ BEGIN TRANSACTION;
                              ARRAY_AGG(tag_sets.tags)
                      )
                      ) as tags,
+                 -- Takes the fist account_id and assume they are all the same
                  (ARRAY_AGG(cert.account_id)) [1] AS account_id
              FROM
                  aws_acm_certificates AS cert
-                     LEFT JOIN arn_tag_sets AS tag_sets ON tag_sets.arn = cert.in_use_by [1]
+                     LEFT JOIN arn_tag_sets AS tag_sets ON tag_sets.arn = ANY (cert.in_use_by)
                      LEFT JOIN aws_apigateway_domain_names AS agw ON agw.domain_name = cert.domain_name
                      LEFT JOIN aws_accounts AS acc ON cert.account_id = acc.id
                      LEFT JOIN fastly_service_backends fb ON fb.hostname = cert.domain_name
@@ -311,7 +312,7 @@ BEGIN TRANSACTION;
                  tags ->> 'Stage' AS stage,
                  tags ->> 'gu:tool' AS tool,
                  COALESCE(tags ->> 'gu:application-repo', tags ->> 'gu:repo') AS repo,
-                 tags ->> 'gu:riff-raff:project' AS riffraff,
+                 tags ->> 'gu:riff-raff:project' AS riffraff_project,
                  acc.name,
                  account_id
         FROM

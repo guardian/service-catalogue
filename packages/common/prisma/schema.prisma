@@ -1149,15 +1149,15 @@ view view_aws_vpcs {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view view_domain_tags {
-  domain_name  String?
-  app          String?
-  stack        String?
-  stage        String?
-  tool         String?
-  repo         String?
-  riffraff     String?
-  account_name String?
-  account_id   String?
+  domain_name      String?
+  app              String?
+  stack            String?
+  stage            String?
+  tool             String?
+  repo             String?
+  riffraff_project String?
+  account_name     String?
+  account_id       String?
 
   @@ignore
 }
