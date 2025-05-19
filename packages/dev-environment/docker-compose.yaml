@@ -33,6 +33,13 @@ services:
         - aws_ec2_vpcs
         - aws_cloudformation_stacks
         - amigo_bake_packages
+        - aws_cloudfront_distributions
+        - aws_elbv1_load_balancers
+        - aws_elbv2_load_balancers
+        - aws_acm_certificates
+        - aws_apigateway_domain_names
+        - fastly_service_backends
+        - fastly_service_domains
   postgres:
     image: postgres:14.6
     ports:
