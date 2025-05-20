@@ -1,9 +1,11 @@
+-- @formatter:off -- this stops IntelliJ from reformatting the SQL
+
 BEGIN TRANSACTION;
     DROP VIEW IF EXISTS view_domain_tags;
     DROP FUNCTION IF EXISTS fn_view_domain_tags;
 
     CREATE FUNCTION fn_view_domain_tags() RETURNS TABLE (
-                                                            domain_name TEXT
+        domain_name TEXT
         , app TEXT
         , stack TEXT
         , stage TEXT
@@ -12,7 +14,7 @@ BEGIN TRANSACTION;
         , riffraff_project TEXT
         , account_name TEXT
         , account_id TEXT
-                                                        ) as $$
+    ) as $$
     WITH arn_tag_sets AS (
         SELECT
             arn,
@@ -86,16 +88,16 @@ BEGIN TRANSACTION;
              WHERE
                  domain_tags.tags ->> 'gu:tool' IS NOT NULL
          )
-    SELECT
-        DISTINCT domain_name,
-                 tags ->> 'App' AS app,
-                 tags ->> 'Stack' AS stack,
-                 tags ->> 'Stage' AS stage,
-                 tags ->> 'gu:tool' AS tool,
-                 COALESCE(tags ->> 'gu:application-repo', tags ->> 'gu:repo') AS repo,
-                 tags ->> 'gu:riff-raff:project' AS riffraff_project,
-                 acc.name,
-                 account_id
+    SELECT DISTINCT
+        domain_name,
+        tags ->> 'App' AS app,
+        tags ->> 'Stack' AS stack,
+        tags ->> 'Stage' AS stage,
+        tags ->> 'gu:tool' AS tool,
+        COALESCE(tags ->> 'gu:application-repo', tags ->> 'gu:repo') AS repo,
+        tags ->> 'gu:riff-raff:project' AS riffraff_project,
+        acc.name,
+        account_id
     FROM
         (
             SELECT
@@ -112,8 +114,8 @@ BEGIN TRANSACTION;
     $$ language sql;
 
     CREATE VIEW view_domain_tags AS (
-                                    SELECT  *
-                                    FROM    fn_view_domain_tags()
-                                        );
+        SELECT  *
+        FROM    fn_view_domain_tags()
+    );
 
 COMMIT TRANSACTION;
