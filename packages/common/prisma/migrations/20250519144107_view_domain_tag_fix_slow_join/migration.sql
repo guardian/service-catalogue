@@ -49,7 +49,7 @@ BEGIN TRANSACTION;
                  COALESCE(fd.name, cert.domain_name) as domain_name,
                  (
                      UNNEST(
-                             ARRAY_AGG(tag_sets.tags)
+                             ARRAY_AGG(cert.tags || tag_sets.tags)
                      )
                      ) as tags,
                  -- Takes the fist account_id and assume they are all the same
