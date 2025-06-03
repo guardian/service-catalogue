@@ -6,6 +6,25 @@ import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
+	beforeAll(() => {
+		/*
+		Each CloudQuery task generates a SQL statement to insert its cadence into the `cloudquery_table_frequency` database table.
+		This value can change depending on how many days there are in the current month.
+
+		For example, for a task that runs on the first of every month (` Schedule.cron({ day: '1', hour: '0', minute: '0' })`):
+		- In May the value will be 2678400000 (31 days)
+		- In June the value will be 2592000000 (30 days)
+
+		Mock the current date to ensure the Jest snapshot is stable.
+		 */
+		const date = new Date('2025-05-01');
+		jest.useFakeTimers().setSystemTime(date);
+	});
+
+	afterAll(() => {
+		jest.useRealTimers();
+	});
+
 	it('matches the snapshot', () => {
 		const app = new App();
 		const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
