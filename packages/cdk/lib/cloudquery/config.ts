@@ -336,7 +336,7 @@ export function githubLanguagesConfig(
 							'}',
 					},
 				],
-				include_archived_repos: true,
+				include_archived_repos: false,
 			},
 		},
 	};
