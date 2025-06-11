@@ -137,7 +137,7 @@ export class ServiceCatalogue extends GuStack {
 			databaseEbsByteBalanceAlarm,
 		} = props;
 
-		const alertTopicName = 'devx-alerts';
+		const alertTopicName = 'devx-sec-ops-reliability-alerts';
 
 		const alertTopic = Topic.fromTopicArn(
 			this,
@@ -214,14 +214,7 @@ export class ServiceCatalogue extends GuStack {
 				treatMissingData: TreatMissingData.BREACHING,
 				datapointsToAlarm: 1,
 				evaluationPeriods: 1,
-
-				/*
-				This alarms is using anomaly detection which we're not too familiar with yet.
-				A disabled alarm will provide an activity history we can use to fine-tune the alarm.
-				TODO Enable this once we're confident the alarm is working as we'd like.
-				 */
-				actionsEnabled: false,
-
+				actionsEnabled: true,
 				alarmActions: [alertTopic.topicArn],
 				okActions: [alertTopic.topicArn],
 				thresholdMetricId: 'ad1',

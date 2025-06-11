@@ -20274,7 +20274,7 @@ spec:
     },
     "EBSByteBalanceAlarm": {
       "Properties": {
-        "ActionsEnabled": false,
+        "ActionsEnabled": true,
         "AlarmActions": [
           {
             "Fn::Join": [
@@ -20284,7 +20284,7 @@ spec:
                 {
                   "Ref": "AWS::AccountId",
                 },
-                ":devx-alerts",
+                ":devx-sec-ops-reliability-alerts",
               ],
             ],
           },
@@ -20328,7 +20328,7 @@ spec:
                 {
                   "Ref": "AWS::AccountId",
                 },
-                ":devx-alerts",
+                ":devx-sec-ops-reliability-alerts",
               ],
             ],
           },
