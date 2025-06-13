@@ -17,7 +17,7 @@ It includes:
 
 ## Setup
 
-1. Get deployTools credentials from Janus
+1. Get deployTools credentials from Janus. Dev level access is required.
 2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
