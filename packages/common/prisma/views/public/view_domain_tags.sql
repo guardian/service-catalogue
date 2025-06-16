@@ -5,7 +5,7 @@ SELECT
   fn_view_domain_tags.stage,
   fn_view_domain_tags.tool,
   fn_view_domain_tags.repo,
-  fn_view_domain_tags.riffraff,
+  fn_view_domain_tags.riffraff_project,
   fn_view_domain_tags.account_name,
   fn_view_domain_tags.account_id
 FROM
@@ -16,7 +16,7 @@ FROM
     stage,
     tool,
     repo,
-    riffraff,
+    riffraff_project,
     account_name,
     account_id
   );
