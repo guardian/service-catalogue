@@ -53,16 +53,6 @@ interface CloudqueryEcsClusterProps {
 	enableCloudquerySchedules: boolean;
 }
 
-interface Comparison {
-	comparison: string;
-	value: string;
-}
-
-const HighOrCritical: Comparison = {
-	comparison: 'Gte',
-	value: '7',
-};
-
 export function addCloudqueryEcsCluster(
 	scope: GuStack,
 	props: CloudqueryEcsClusterProps,
@@ -296,10 +286,6 @@ export function addCloudqueryEcsCluster(
 				},
 				{
 					table_options: {
-						// For more information on how security hub filtering works, see the following links:
-						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
-						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
-						//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
 						aws_inspector2_findings: {
 							list_findings: [
 								{
@@ -309,9 +295,6 @@ export function addCloudqueryEcsCluster(
 												comparison: 'EQUALS',
 												value: 'ACTIVE',
 											},
-										],
-										severity: [
-											HighOrCritical,
 										],
 									},
 								},
@@ -410,12 +393,12 @@ export function addCloudqueryEcsCluster(
 	];
 
 	/*
-  This is a catch-all task, collecting all other AWS data.
-  Although we're not using the data for any particular reason, it is still useful to have.
-
-  It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
-  If we identify a table that needs to be updated more often, we should create a dedicated task for it.
-   */
+	This is a catch-all task, collecting all other AWS data.
+	Although we're not using the data for any particular reason, it is still useful to have.
+	
+	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
+	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
+	*/
 	const remainingAwsSources: CloudquerySource = {
 		name: 'AwsRemainingData',
 		description: 'Data fetched across all accounts in the organisation.',
