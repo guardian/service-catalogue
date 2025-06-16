@@ -93,10 +93,10 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 				tables: [
 					/*
-          Collect all AWS Organisation tables, including account names, and which OU they belong to.
-          A wildcard is used, as there are a lot of tables!
-          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
-           */
+		  Collect all AWS Organisation tables, including account names, and which OU they belong to.
+		  A wildcard is used, as there are a lot of tables!
+		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
+		   */
 					'aws_organization*',
 				],
 			}),
@@ -280,9 +280,28 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideInspector',
 			description: 'Collecting Inspector data across the organisation.',
 			schedule: Schedule.cron({ minute: '0', hour: '3' }),
-			config: awsSourceConfigForOrganisation({
-				tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
-			}),
+			config: awsSourceConfigForOrganisation(
+				{
+					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
+				},
+				{
+					table_options: {
+						aws_inspector2_findings: {
+							list_findings: [
+								{
+									filter_criteria: {
+										finding_status: [
+											{
+												comparison: 'EQUALS',
+												value: 'ACTIVE',
+											},
+										],
+									},
+								},
+							],
+						},
+					},
+				}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
 		},
@@ -374,12 +393,12 @@ export function addCloudqueryEcsCluster(
 	];
 
 	/*
-  This is a catch-all task, collecting all other AWS data.
-  Although we're not using the data for any particular reason, it is still useful to have.
-
-  It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
-  If we identify a table that needs to be updated more often, we should create a dedicated task for it.
-   */
+	This is a catch-all task, collecting all other AWS data.
+	Although we're not using the data for any particular reason, it is still useful to have.
+	
+	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
+	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
+	*/
 	const remainingAwsSources: CloudquerySource = {
 		name: 'AwsRemainingData',
 		description: 'Data fetched across all accounts in the organisation.',
@@ -481,11 +500,11 @@ export function addCloudqueryEcsCluster(
 				],
 				skipTables: [
 					/*
-          These tables are children of github_organizations.
-          ServiceCatalogue collects child tables automatically.
-          We don't use them as they take a long time to collect, so skip them.
-          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-           */
+		  These tables are children of github_organizations.
+		  ServiceCatalogue collects child tables automatically.
+		  We don't use them as they take a long time to collect, so skip them.
+		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
+		   */
 					'github_organization_dependabot_alerts',
 					'github_organization_dependabot_secrets',
 				],
@@ -504,11 +523,11 @@ export function addCloudqueryEcsCluster(
 				tables: ['github_issues'],
 				skipTables: [
 					/*
-          These tables are children of github_issues.
-          ServiceCatalogue collects child tables automatically.
-          We don't use them as they take a long time to collect, so skip them.
-          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-           */
+		  These tables are children of github_issues.
+		  ServiceCatalogue collects child tables automatically.
+		  We don't use them as they take a long time to collect, so skip them.
+		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
+		   */
 					'github_issue_timeline_events',
 					'github_issue_pullrequest_reviews',
 				],
