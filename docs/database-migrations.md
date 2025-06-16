@@ -36,10 +36,10 @@ npx -w common prisma generate
 
 ### Creating a view
 
-When adding view, be sure to create it as a select on function to not block CloudQuery schema changes being applied.
+When adding a view, be sure to create it as a select on a function to not block CloudQuery schema changes being applied.
 
 >[!Warning]
-> Selecting on a function allows for schema changes to take place but may cause the view to break if they occur.
+> Selecting on a function allows for schema changes to take place but may cause the view to break if they do occur.
 
 Example: [view_aws_vpcs](../packages/common/prisma/migrations/20250212092300_view_aws_vpcs)
 
@@ -53,7 +53,7 @@ Example [view](../packages/common/prisma/migrations/20250212092300_view_aws_vpcs
 
 Steps:
 1. Set [docker-composer db_copy tables](../packages/dev-environment/docker-compose.yaml) to include ONLY the missing relation
-2. Remove --data-only flag from db_copy container [entrypoint.sh](../containers/db-copy/entrypoint.sh) (restore later)
+2. Remove --data-only flag from db_copy container [entrypoint.sh](../containers/db-copy/entrypoint.sh) (restore before committing)
 3. Use [introspection to update the Prisma schema](https://www.prisma.io/docs/orm/prisma-migrate/getting-started#introspect-to-create-or-update-your-prisma-schema).
 4. [Optional] Add @@ignore to generated schema entries which types aren't required for
 5. Run Shell```npx -w common prisma migrate reset```
