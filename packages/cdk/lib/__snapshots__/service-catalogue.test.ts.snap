@@ -9412,6 +9412,11 @@ spec:
               finding_status:
                 - comparison: EQUALS
                   value: ACTIVE
+              severity:
+                - comparison: EQUALS
+                  value: CRITICAL
+                - comparison: EQUALS
+                  value: HIGH
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql

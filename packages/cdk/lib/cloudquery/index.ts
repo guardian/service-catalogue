@@ -296,6 +296,16 @@ export function addCloudqueryEcsCluster(
 												value: 'ACTIVE',
 											},
 										],
+										severity: [
+											{
+												comparison: 'EQUALS',
+												value: 'CRITICAL',
+											},
+											{
+												comparison: 'EQUALS',
+												value: 'HIGH',
+											},
+										],
 									},
 								},
 							],
