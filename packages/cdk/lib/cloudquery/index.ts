@@ -53,6 +53,16 @@ interface CloudqueryEcsClusterProps {
 	enableCloudquerySchedules: boolean;
 }
 
+interface Comparison {
+	comparison: string;
+	value: string;
+}
+
+const HighOrCritical: Comparison = {
+	comparison: 'Gte',
+	value: '7',
+};
+
 export function addCloudqueryEcsCluster(
 	scope: GuStack,
 	props: CloudqueryEcsClusterProps,
@@ -93,10 +103,10 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 				tables: [
 					/*
-          Collect all AWS Organisation tables, including account names, and which OU they belong to.
-          A wildcard is used, as there are a lot of tables!
-          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
-           */
+		  Collect all AWS Organisation tables, including account names, and which OU they belong to.
+		  A wildcard is used, as there are a lot of tables!
+		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
+		   */
 					'aws_organization*',
 				],
 			}),
@@ -280,9 +290,35 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideInspector',
 			description: 'Collecting Inspector data across the organisation.',
 			schedule: Schedule.cron({ minute: '0', hour: '3' }),
-			config: awsSourceConfigForOrganisation({
-				tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
-			}),
+			config: awsSourceConfigForOrganisation(
+				{
+					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
+				},
+				{
+					table_options: {
+						// For more information on how security hub filtering works, see the following links:
+						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
+						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
+						//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
+						aws_inspector2_findings: {
+							list_findings: [
+								{
+									filter_criteria: {
+										finding_status: [
+											{
+												comparison: 'EQUALS',
+												value: 'ACTIVE',
+											},
+										],
+										severity: [
+											HighOrCritical,
+										],
+									},
+								},
+							],
+						},
+					},
+				}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
 		},
@@ -481,11 +517,11 @@ export function addCloudqueryEcsCluster(
 				],
 				skipTables: [
 					/*
-          These tables are children of github_organizations.
-          ServiceCatalogue collects child tables automatically.
-          We don't use them as they take a long time to collect, so skip them.
-          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-           */
+		  These tables are children of github_organizations.
+		  ServiceCatalogue collects child tables automatically.
+		  We don't use them as they take a long time to collect, so skip them.
+		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
+		   */
 					'github_organization_dependabot_alerts',
 					'github_organization_dependabot_secrets',
 				],
@@ -504,11 +540,11 @@ export function addCloudqueryEcsCluster(
 				tables: ['github_issues'],
 				skipTables: [
 					/*
-          These tables are children of github_issues.
-          ServiceCatalogue collects child tables automatically.
-          We don't use them as they take a long time to collect, so skip them.
-          See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-           */
+		  These tables are children of github_issues.
+		  ServiceCatalogue collects child tables automatically.
+		  We don't use them as they take a long time to collect, so skip them.
+		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
+		   */
 					'github_issue_timeline_events',
 					'github_issue_pullrequest_reviews',
 				],

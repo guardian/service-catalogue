@@ -9405,6 +9405,16 @@ spec:
       member_role_name: cloudquery-access
       organization_units:
         - ou-123
+    table_options:
+      aws_inspector2_findings:
+        list_findings:
+          - filter_criteria:
+              finding_status:
+                - comparison: EQUALS
+                  value: ACTIVE
+              severity:
+                - comparison: Gte
+                  value: '7'
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
