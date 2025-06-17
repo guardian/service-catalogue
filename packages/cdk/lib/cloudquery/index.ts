@@ -114,7 +114,7 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
-					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*', 'aws_inspector2_findings'],
+					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*', 'aws_guardduty_*', 'aws_inspector2_findings'],
 					concurrency: 2000,
 				},
 				{

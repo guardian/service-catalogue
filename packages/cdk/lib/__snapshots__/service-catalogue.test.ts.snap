@@ -1469,6 +1469,7 @@ spec:
   tables:
     - aws_accessanalyzer_*
     - aws_securityhub_*
+    - aws_guardduty_*
     - aws_inspector2_findings
   skip_dependent_tables: false
   destinations:
@@ -1681,7 +1682,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_%', 86400000),('aws_securityhub_%', 86400000),('aws_inspector2_findings', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_%', 86400000),('aws_securityhub_%', 86400000),('aws_guardduty_%', 86400000),('aws_inspector2_findings', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -11657,6 +11658,7 @@ spec:
     - aws_organization*
     - aws_accessanalyzer_*
     - aws_securityhub_*
+    - aws_guardduty_*
     - aws_inspector2_findings
     - aws_cloudformation_*
     - aws_costexplorer_cost_custom
