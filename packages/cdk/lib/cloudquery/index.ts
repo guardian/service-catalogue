@@ -138,10 +138,27 @@ export function addCloudqueryEcsCluster(
 												value: 'PASSED',
 											},
 										],
-										workflow_status: [
+										product_name: [
 											{
+												comparison: 'EQUALS',
+												value: 'GuardDuty',
+											},
+											{
+												comparison: 'EQUALS',
+												value: 'Inspector',
+											},
+											{
+												comparison: 'EQUALS',
+												value: 'Security Hub',
+											},
+										],
+										severity_label: [
+											{
+												//tagging standard uses 'LOW' and 'INFORMATIONAL'.
+												// For security standards, we are only interested in 'HIGH' and 'CRITICAL'
+												//It may seem unnecessary, but this cuts our row count in half.
 												comparison: 'NOT_EQUALS',
-												value: 'RESOLVED',
+												value: 'MEDIUM',
 											},
 										],
 									},
@@ -405,7 +422,7 @@ export function addCloudqueryEcsCluster(
 	/*
 	This is a catch-all task, collecting all other AWS data.
 	Although we're not using the data for any particular reason, it is still useful to have.
-	
+		
 	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
 	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
 	*/
