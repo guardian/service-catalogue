@@ -35,6 +35,7 @@ import {
 	readBucketPolicy,
 	readDynamoDbTablePolicy,
 } from './policies';
+import { inspector2TableOptions, securityHubTableOptions } from './table-options';
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
@@ -122,49 +123,7 @@ export function addCloudqueryEcsCluster(
 						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
 						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
 						//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
-						aws_securityhub_findings: {
-							get_findings: [
-								{
-									filters: {
-										record_state: [
-											{
-												comparison: 'EQUALS',
-												value: 'ACTIVE',
-											},
-										],
-										compliance_status: [
-											{
-												comparison: 'NOT_EQUALS',
-												value: 'PASSED',
-											},
-										],
-										product_name: [
-											{
-												comparison: 'EQUALS',
-												value: 'GuardDuty',
-											},
-											{
-												comparison: 'EQUALS',
-												value: 'Inspector',
-											},
-											{
-												comparison: 'EQUALS',
-												value: 'Security Hub',
-											},
-										],
-										severity_label: [
-											{
-												//tagging standard uses 'LOW' and 'INFORMATIONAL'.
-												// For security standards, we are only interested in 'HIGH' and 'CRITICAL'
-												//It may seem unnecessary, but this cuts our row count in half.
-												comparison: 'NOT_EQUALS',
-												value: 'MEDIUM',
-											},
-										],
-									},
-								},
-							],
-						},
+						aws_securityhub_findings: securityHubTableOptions,
 					},
 				},
 			),
@@ -302,32 +261,7 @@ export function addCloudqueryEcsCluster(
 					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
 				},
 				{
-					table_options: {
-						aws_inspector2_findings: {
-							list_findings: [
-								{
-									filter_criteria: {
-										finding_status: [
-											{
-												comparison: 'EQUALS',
-												value: 'ACTIVE',
-											},
-										],
-										severity: [
-											{
-												comparison: 'EQUALS',
-												value: 'CRITICAL',
-											},
-											{
-												comparison: 'EQUALS',
-												value: 'HIGH',
-											},
-										],
-									},
-								},
-							],
-						},
-					},
+					table_options: inspector2TableOptions,
 				}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
