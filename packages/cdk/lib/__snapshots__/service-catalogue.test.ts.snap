@@ -1489,9 +1489,16 @@ spec:
               compliance_status:
                 - comparison: NOT_EQUALS
                   value: PASSED
-              workflow_status:
+              product_name:
+                - comparison: EQUALS
+                  value: GuardDuty
+                - comparison: EQUALS
+                  value: Inspector
+                - comparison: EQUALS
+                  value: Security Hub
+              severity_label:
                 - comparison: NOT_EQUALS
-                  value: RESOLVED
+                  value: MEDIUM
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
