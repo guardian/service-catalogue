@@ -321,8 +321,7 @@ export function githubLanguagesConfig(
 			tables: ['github_languages'],
 			registry: 'github',
 			spec: {
-				app_auth: [
-					{
+				app_auth: {
 						org,
 						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
 						app_id:
@@ -334,8 +333,6 @@ export function githubLanguagesConfig(
 							`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
 							'}',
 					},
-				],
-				include_archived_repos: false,
 			},
 		},
 	};
