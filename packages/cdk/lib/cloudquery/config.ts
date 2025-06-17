@@ -321,7 +321,6 @@ export function githubLanguagesConfig(
 			tables: ['github_languages'],
 			registry: 'github',
 			spec: {
-				orgs: [org],
 				app_auth: [
 					{
 						org,
