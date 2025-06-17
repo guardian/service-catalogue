@@ -119,10 +119,6 @@ export function addCloudqueryEcsCluster(
 				},
 				{
 					table_options: {
-						// For more information on how security hub filtering works, see the following links:
-						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
-						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
-						//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
 						aws_securityhub_findings: securityHubTableOptions,
 						aws_inspector2_findings: inspector2TableOptions,
 					},

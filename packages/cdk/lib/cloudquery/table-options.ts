@@ -23,6 +23,7 @@ function stringFilter(
     };
 }
 
+// https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
 export const securityHubTableOptions = {
     get_findings: [
         {
@@ -46,6 +47,7 @@ export const securityHubTableOptions = {
     ],
 }
 
+// https://docs.aws.amazon.com/inspector/v2/APIReference/API_FilterCriteria.html
 export const inspector2TableOptions = {
     aws_inspector2_findings: {
         list_findings: [
