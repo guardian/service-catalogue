@@ -114,7 +114,7 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
-					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*'],
+					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*', 'aws_inspector2_findings'],
 					concurrency: 2000,
 				},
 				{
@@ -124,6 +124,7 @@ export function addCloudqueryEcsCluster(
 						// # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
 						//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_NumberFilter.html
 						aws_securityhub_findings: securityHubTableOptions,
+						aws_inspector2_findings: inspector2TableOptions,
 					},
 				},
 			),
@@ -251,20 +252,6 @@ export function addCloudqueryEcsCluster(
 				tables: ['aws_cloudwatch_alarms'],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-		},
-		{
-			name: 'AwsOrgWideInspector',
-			description: 'Collecting Inspector data across the organisation.',
-			schedule: Schedule.cron({ minute: '0', hour: '3' }),
-			config: awsSourceConfigForOrganisation(
-				{
-					tables: ['aws_inspector_findings', 'aws_inspector2_findings'],
-				},
-				{
-					table_options: inspector2TableOptions,
-				}),
-			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-			memoryLimitMiB: 1024,
 		},
 		{
 			name: 'AwsOrgWideS3',
