@@ -15511,8 +15511,6 @@ spec:
     - github_languages
   registry: github
   spec:
-    orgs:
-      - guardian
     app_auth:
       - org: guardian
         private_key_path: /usr/share/cloudquery/github-private-key
