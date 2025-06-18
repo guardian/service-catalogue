@@ -306,7 +306,11 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 	};
 }
 
-export function githubLanguagesConfig(): CloudqueryConfig {
+export function githubLanguagesConfig(
+	tableConfig: GitHubCloudqueryTableConfig,
+): CloudqueryConfig {
+	const { org } = tableConfig;
+
 	return {
 		kind: 'source',
 		spec: {
@@ -316,6 +320,18 @@ export function githubLanguagesConfig(): CloudqueryConfig {
 			destinations: ['postgresql'],
 			tables: ['github_languages'],
 			registry: 'github',
+			spec: {				
+					org,
+					private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
+					app_id:
+						'${' +
+						`file:${serviceCatalogueConfigDirectory}/github-app-id` +
+						'}',
+					installation_id:
+						'${' +
+						`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
+						'}',
+			},
 		},
 	};
 }
