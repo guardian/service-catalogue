@@ -320,19 +320,17 @@ export function githubLanguagesConfig(
 			destinations: ['postgresql'],
 			tables: ['github_languages'],
 			registry: 'github',
-			spec: {
-				app_auth: {
-						org,
-						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
-						app_id:
-							'${' +
-							`file:${serviceCatalogueConfigDirectory}/github-app-id` +
-							'}',
-						installation_id:
-							'${' +
-							`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
-							'}',
-					},
+			spec: {				
+					org,
+					private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
+					app_id:
+						'${' +
+						`file:${serviceCatalogueConfigDirectory}/github-app-id` +
+						'}',
+					installation_id:
+						'${' +
+						`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
+						'}',
 			},
 		},
 	};
