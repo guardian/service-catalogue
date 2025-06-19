@@ -247,6 +247,9 @@ model cloudbuster_fsbp_vulnerabilities {
   remediation       String?
 
   @@id([arn, control_id])
+  @@index([aws_account_name], map: "idx_account_name")
+  @@index([aws_region], map: "idx_aws_region")
+  @@index([within_sla], map: "idx_within_sla")
 }
 
 model github_repositories {
@@ -726,6 +729,8 @@ model aws_securityhub_findings {
   vulnerabilities         Json?
   workflow                Json?
   workflow_state          String?
+
+  @@index([region], map: "idx_region")
 }
 
 model obligatron_results {
