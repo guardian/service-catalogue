@@ -9,7 +9,8 @@ import type {
 import { awsClientConfig } from 'common/aws';
 import { partition, stageAwareOctokit } from 'common/functions';
 import { getPrismaClient } from 'common/src/database-setup';
-import type { RepocopVulnerability } from 'common/src/types';
+import type { AwsCloudFormationStack, RepocopVulnerability } from 'common/src/types';
+import { getStacks } from '../../common/src/database-queries';
 import type { Config } from './config';
 import { getConfig } from './config';
 import {
@@ -25,7 +26,6 @@ import {
 	getRepositoryBranches,
 	getRepositoryCustomProperties,
 	getRepositoryLanguages,
-	getStacks,
 	getTeams,
 } from './query';
 import { protectBranches } from './remediation/branch-protector/branch-protection';
@@ -33,7 +33,7 @@ import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_g
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
 import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
-import type { AwsCloudFormationStack, EvaluationResult } from './types';
+import type { EvaluationResult } from './types';
 import { isProduction } from './utils';
 
 async function writeEvaluationTable(

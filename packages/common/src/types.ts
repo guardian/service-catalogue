@@ -1,5 +1,6 @@
 import { type StrategyOptions } from '@octokit/auth-app';
 import type {
+	aws_cloudformation_stacks,
 	aws_securityhub_findings,
 	github_repositories,
 	repocop_vulnerabilities,
@@ -11,6 +12,22 @@ export type SecurityHubSeverity =
 	| 'MEDIUM'
 	| 'LOW'
 	| 'INFORMATION';
+
+type StackFields = Pick<
+	aws_cloudformation_stacks,
+	'stack_name' | 'tags' | 'creation_time' | 'last_updated_time' | 'account_id' | 'region'
+>;
+
+type AWSCloudformationTag = Record<string, string>;
+
+export interface AwsCloudFormationStack extends StackFields {
+	stack_name: NonNullable<StackFields['stack_name']>;
+	tags: AWSCloudformationTag;
+	creation_time: NonNullable<StackFields['creation_time']>;
+	last_updated_time: StackFields['last_updated_time'];
+	account_id: NonNullable<StackFields['account_id']>;
+	region: NonNullable<StackFields['region']>;
+}
 
 export type GithubAppSecret = {
 	appId: string;

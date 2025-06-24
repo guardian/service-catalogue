@@ -1,5 +1,6 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { SecurityHubFinding, SecurityHubSeverity } from './types';
+import { toNonEmptyArray } from './functions';
+import type { AwsCloudFormationStack, NonEmptyArray, SecurityHubFinding, SecurityHubSeverity } from './types';
 /**
  * Queries the database for FSBP findings
  */
@@ -23,4 +24,24 @@ export async function getFsbpFindings(
 		});
 
 	return findings as unknown as SecurityHubFinding[];
+}
+
+export async function getStacks(
+	client: PrismaClient,
+): Promise<NonEmptyArray<AwsCloudFormationStack>> {
+	const stacks = (
+		await client.aws_cloudformation_stacks.findMany({
+			select: {
+				stack_name: true,
+				account_id: true,
+				region: true,
+				tags: true,
+				creation_time: true,
+				last_updated_time: true,
+			},
+		})
+	).map((stack) => stack as AwsCloudFormationStack);
+
+	console.debug(`Found ${stacks.length} stacks.`);
+	return toNonEmptyArray(stacks);
 }
