@@ -7,7 +7,6 @@ export function stackToUpdateTime(stack: AwsCloudFormationStack, stackStageAppMa
     const key = `${stack.tags.Stack}-${stack.tags.Stage}-${stack.tags.App}`;
     const lastUpdated = stack.last_updated_time ?? stack.creation_time;
     if (!stackStageAppMap.has(key)) {
-        console.debug(`Adding stack to map: ${key} with last updated time: ${lastUpdated.toDateString()}`);
         stackStageAppMap.set(key, lastUpdated)
     }
 }

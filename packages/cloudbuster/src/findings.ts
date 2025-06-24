@@ -17,9 +17,13 @@ function findingDate(first_observed_at: Date | null, tags: AWSCloudformationTag,
 			return first_observed_at;
 		}
 		else if (!first_observed_at) {
+
 			return stackUpdateTime;
 		}
-		return new Date(Math.min(stackUpdateTime.getTime(), first_observed_at.getTime()));
+		const minDate = new Date(Math.min(stackUpdateTime.getTime(), first_observed_at.getTime()));
+		console.debug(`Using stack update time ${stackUpdateTime.toDateString()}, instead of securityhub observation time ${first_observed_at.toDateString()} for finding with control ID ${controlId}, and tags:`, tags.Stack, tags.Stage, tags.App);
+
+		return minDate;
 	}
 	return first_observed_at;
 }
