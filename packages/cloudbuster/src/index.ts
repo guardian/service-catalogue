@@ -1,12 +1,45 @@
 import { Anghammarad } from '@guardian/anghammarad';
-import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities, PrismaClient } from '@prisma/client';
 import { logger } from 'common/logs';
-import { getFsbpFindings } from 'common/src/database-queries';
+import { getFsbpFindings, getStacks } from 'common/src/database-queries';
 import { getPrismaClient } from 'common/src/database-setup';
-import type { SecurityHubSeverity } from 'common/src/types';
+import type { AwsCloudFormationStack, SecurityHubSeverity } from 'common/src/types';
 import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
 import { findingsToGuardianFormat } from './findings';
+import type { StackUpdateTimes } from './types';
+
+function stackToUpdateTime(stack: AwsCloudFormationStack, stackStageAppMap: StackUpdateTimes) {
+	const key = `${stack.tags.stack}-${stack.tags.stage}-${stack.tags.app}`;
+	const lastUpdated = stack.last_updated_time ?? stack.creation_time;
+	if (!stackStageAppMap.has(key)) {
+		stackStageAppMap.set(key, lastUpdated)
+	}
+}
+
+async function getStackUpdateTimes(prisma: PrismaClient) {
+	/*
+	 * Findings relating to EC2 instances will reset their first_observed_at on relaunch.
+	 * This usually happens weekly, so we have a lot of findings that (erroneously) appear to be within SLA
+	 * If we can match the tags of the instance to a cloudformation stack, using the last_updated_time
+	 * is a better (though still imperfect) approximation of when the issue was introduced.
+	 *
+	 * Writing these to a map is more memory efficient than holding the whole table in memory,
+	 * and is more performant than parsing a list of all stacks each time.
+	 */
+
+	const taggedStacks = (await getStacks(prisma)).filter(
+		(stack) => !!stack.tags.Stack && !!stack.tags.Stage && !!stack.tags.App,
+	);
+	const stackStageAppMap: StackUpdateTimes = new Map<string, Date>();
+	taggedStacks.forEach((stack) => {
+		stackToUpdateTime(stack, stackStageAppMap);
+	});
+	console.log(`Found ${stackStageAppMap.size} stacks with stack, stage and app tags.`);
+	return stackStageAppMap;
+}
+
+
 
 export async function main() {
 	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
@@ -24,8 +57,11 @@ export async function main() {
 		(f) => f.workflow.Status !== 'SUPPRESSED',
 	);
 
-	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
-		findingsToGuardianFormat,
+	const stackUpdateTimes: StackUpdateTimes = await getStackUpdateTimes(prisma);
+
+
+	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap((res) =>
+		findingsToGuardianFormat(res, stackUpdateTimes)
 	);
 
 	const controlIdArns = new Map<string, cloudbuster_fsbp_vulnerabilities>();

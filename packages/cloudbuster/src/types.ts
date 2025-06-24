@@ -13,3 +13,5 @@ export type GroupedFindings = Record<
 	string,
 	cloudbuster_fsbp_vulnerabilities[]
 >;
+
+export type StackUpdateTimes = Map<string, Date>;
