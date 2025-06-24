@@ -32,10 +32,10 @@ describe('createDigestForAccount', () => {
 			{ ...testVuln, control_id: 'S.2' },
 		]);
 		expect(actual?.message).toContain(
-			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), (test-title)`,
+			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1, (test-title)`,
 		);
 		expect(actual?.message).toContain(
-			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) in app: **my-app**, for control [S.2](https://example.com), (test-title)`,
+			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) in app: **my-app**, for control [S.2](https://example.com), in eu-west-1, (test-title)`,
 		);
 	});
 	it('should show the issues with the most findings first, regardless of input ordering', () => {
@@ -60,10 +60,10 @@ describe('createDigestForAccount', () => {
 			{ ...testVuln, app: 'my-other-app' },
 		]);
 		expect(actual?.message).toContain(
-			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), (test-title)`,
+			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1, (test-title)`,
 		);
 		expect(actual?.message).toContain(
-			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-other-app**, for control [S.1](https://example.com), (test-title)`,
+			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-other-app**, for control [S.1](https://example.com), in eu-west-1, (test-title)`,
 		);
 	});
 	it('should return the correct fields', () => {
@@ -155,5 +155,25 @@ describe('createDigestsFromFindings', () => {
 			'CRITICAL',
 		);
 		expect(result.length).toBe(1);
+	});
+	it('should not return each region more than once, for a given control ID-app combo', () => {
+		const findings = [
+			mockFinding('1', 'CRITICAL'),
+			mockFinding('1', 'CRITICAL'),
+			{ ...mockFinding('1', 'CRITICAL'), aws_region: 'eu-mock-2' },
+			{ ...mockFinding('1', 'CRITICAL'), aws_region: 'eu-mock-2' },
+		];
+		const result = createDigestsFromFindings(findings, 'CRITICAL').map(
+			(d) => d.message,
+		).join('\n');
+		const firstIdx1 = result.indexOf('eu-mock-1')
+		const secondIdx1 = result.indexOf('eu-mock-1', firstIdx1 + 1);
+		expect(firstIdx1).toBeGreaterThanOrEqual(0);
+		expect(secondIdx1).toBe(-1); //indicates that the region only appears once
+
+		const firstIdx2 = result.indexOf('eu-mock-2')
+		const secondIdx2 = result.indexOf('eu-mock-2', firstIdx2 + 1);
+		expect(firstIdx2).toBeGreaterThanOrEqual(0);
+		expect(secondIdx2).toBe(-1);
 	});
 });
