@@ -103,8 +103,9 @@ function formatFindings(
 	const remediation = findings[0]?.remediation;
 	const title = findings[0]?.title;
 	const findingsString = findingsCount === 1 ? 'finding' : 'findings';
+	const regions = [...new Set(findings.map((f) => f.aws_region))].join(', ');
 	const url = `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(account_name)}&var-control_id=${control_id}`;
-	return `[${findingsCount} ${findingsString}](${url}) in app: **${app}**, for control [${control_id}](${remediation}), (${title})`;
+	return `[${findingsCount} ${findingsString}](${url}) in app: **${app}**, for control [${control_id}](${remediation}), in ${regions}, (${title})`;
 }
 
 function createEmailBody(
@@ -152,9 +153,9 @@ export async function sendDigest(
 			stage === 'PROD'
 				? notifyParams
 				: {
-						...notifyParams,
-						target: { Stack: 'testing-alerts' },
-					};
+					...notifyParams,
+					target: { Stack: 'testing-alerts' },
+				};
 		logger.log({
 			message: `Sending ${digest.accountId} (${digest.accountName}) digest...`,
 			accountName: digest.accountName,
