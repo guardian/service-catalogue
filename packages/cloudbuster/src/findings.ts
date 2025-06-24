@@ -4,7 +4,7 @@ import type { AWSCloudformationTag, SecurityHubFinding } from 'common/src/types'
 import type { GroupedFindings, StackUpdateTimes } from './types';
 
 function findingDate(first_observed_at: Date | null, tags: AWSCloudformationTag, stackUpdateTimes: StackUpdateTimes, controlId: string): Date | null {
-	const hasCorrectTags = tags.Stack && tags.Stage && tags.App;
+	const hasCorrectTags = !!tags.Stack && !!tags.Stage && !!tags.App;
 	const isRelevantFinding = ['EC2.9', 'EC2.8'].includes(controlId);
 
 	if (hasCorrectTags && isRelevantFinding) {
