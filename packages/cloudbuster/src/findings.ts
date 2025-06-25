@@ -5,9 +5,7 @@ import type { GroupedFindings, StackUpdateTimes } from './types';
 
 function findingDate(firstObservedAt: Date | null, tags: AwsTags, stackUpdateTimes: StackUpdateTimes, controlId: string): Date | null {
 	const hasCorrectTags = !!tags.Stack && !!tags.Stage && !!tags.App;
-	const isRelevantFinding = ['EC2.9', 'EC2.8'].includes(controlId);
-
-	if (hasCorrectTags && isRelevantFinding) {
+	if (hasCorrectTags) {
 		const key = `${tags.Stack}-${tags.Stage}-${tags.App}`;
 		const stackUpdateTime = stackUpdateTimes.get(key);
 		if (!stackUpdateTime && !firstObservedAt) {
@@ -21,7 +19,10 @@ function findingDate(firstObservedAt: Date | null, tags: AwsTags, stackUpdateTim
 			return stackUpdateTime;
 		}
 		const minDate = new Date(Math.min(stackUpdateTime.getTime(), firstObservedAt.getTime()));
-		console.debug(`Using stack update time ${stackUpdateTime.toDateString()}, instead of securityhub observation time ${firstObservedAt.toDateString()} for finding with control ID ${controlId}, and tags:`, tags.Stack, tags.Stage, tags.App);
+		if (minDate.getTime() === stackUpdateTime.getTime()) {
+			console.debug(`Using stack update time ${stackUpdateTime.toDateString()}, instead of securityhub observation time ${firstObservedAt.toDateString()} for finding with control ID ${controlId}, and tags:`, tags.Stack, tags.Stage, tags.App);
+		}
+
 
 		return minDate;
 	}
@@ -33,12 +34,15 @@ export function findingsToGuardianFormat(
 	stackUpdateTimes: StackUpdateTimes,
 ): cloudbuster_fsbp_vulnerabilities[] {
 	return finding.resources.map((r) => {
-		const first_observed_at = findingDate(
+
+		const dateNeedsAdjusting = ['EC2.9', 'EC2.8'].includes(finding.product_fields.ControlId);
+
+		const first_observed_at = dateNeedsAdjusting ? findingDate(
 			finding.first_observed_at,
 			r.Tags ?? {},
 			stackUpdateTimes,
 			finding.product_fields.ControlId,
-		);
+		) : finding.first_observed_at;
 
 		return {
 			severity: finding.severity.Label,
