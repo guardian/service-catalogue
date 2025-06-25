@@ -7,8 +7,6 @@ import type { SecurityHubSeverity } from 'common/src/types';
 import { getConfig } from './config';
 import { createDigestsFromFindings, sendDigest } from './digests';
 import { findingsToGuardianFormat } from './findings';
-import { getStackUpdateTimes } from './query';
-import type { StackUpdateTimes } from './types';
 
 export async function main() {
 	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
@@ -25,10 +23,9 @@ export async function main() {
 	const dbResults = (await getFsbpFindings(prisma, severities)).filter(
 		(f) => f.workflow.Status !== 'SUPPRESSED',
 	);
-	const stackUpdateTimes: StackUpdateTimes = await getStackUpdateTimes(prisma);
 
 	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap((res) =>
-		findingsToGuardianFormat(res, stackUpdateTimes)
+		findingsToGuardianFormat(res)
 	);
 
 	const controlIdArns = new Map<string, cloudbuster_fsbp_vulnerabilities>();

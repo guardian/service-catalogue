@@ -27,11 +27,11 @@ describe('findingsToGuardianFormat', () => {
 		workflow: { Status: 'NEW' },
 	};
 	it('should return n elements if n resources are associated with a finding', () => {
-		const actual = findingsToGuardianFormat(x, new Map());
+		const actual = findingsToGuardianFormat(x);
 		expect(actual.length).toEqual(2);
 	});
 	it('should return the relevant data in the appropriate fields', () => {
-		const actual = findingsToGuardianFormat(x, new Map());
+		const actual = findingsToGuardianFormat(x);
 		const expected = {
 			severity: 'HIGH',
 			control_id: 'S.1',
