@@ -1,5 +1,6 @@
-import type { AwsCloudFormationStack, Repository } from 'common/src/types';
+import type { Repository } from 'common/src/types';
 import { nullRepo } from '../../evaluation/repository.test';
+import type { AwsCloudFormationStack } from '../../types';
 import {
 	createMessage,
 	findReposInProdWithoutProductionTopic,
@@ -13,9 +14,6 @@ const myRepoProdStack: AwsCloudFormationStack = {
 		Stage: 'PROD',
 		'gu:repo': 'guardian/my-repo',
 	},
-	last_updated_time: null,
-	account_id: '123456789012',
-	region: 'eu-west-1',
 };
 
 const myRepo: Repository = {

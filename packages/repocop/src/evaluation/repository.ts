@@ -8,7 +8,6 @@ import type {
 import { isWithinSlaTime, partition } from 'common/src/functions';
 import { SLAs } from 'common/src/types';
 import type {
-	AwsCloudFormationStack,
 	DepGraphLanguage,
 	RepocopVulnerability,
 	Repository,
@@ -21,6 +20,7 @@ import {
 import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns';
 import type {
 	Alert,
+	AwsCloudFormationStack,
 	EvaluationResult,
 	RepoAndStack,
 } from '../types';

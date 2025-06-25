@@ -16,6 +16,7 @@ import { toNonEmptyArray } from '../../common/src/functions';
 import { dependabotAlertToRepocopVulnerability } from './evaluation/repository';
 import type {
 	Alert,
+	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	Team,
 } from './types';
@@ -75,6 +76,24 @@ export async function getRepoOwnership(
 	const data = await client.view_repo_ownership.findMany();
 	console.log(`Found ${data.length} repo ownership records.`);
 	return toNonEmptyArray(data);
+}
+
+
+export async function getStacks(
+	client: PrismaClient,
+): Promise<NonEmptyArray<AwsCloudFormationStack>> {
+	const stacks = (
+		await client.aws_cloudformation_stacks.findMany({
+			select: {
+				stack_name: true,
+				tags: true,
+				creation_time: true,
+			},
+		})
+	).map((stack) => stack as AwsCloudFormationStack);
+
+	console.debug(`Found ${stacks.length} stacks.`);
+	return toNonEmptyArray(stacks);
 }
 
 export async function getRepositoryLanguages(

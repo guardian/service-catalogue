@@ -4,8 +4,9 @@ import type {
 	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { AwsCloudFormationStack, RepocopVulnerability, Repository } from 'common/src/types';
+import type { RepocopVulnerability, Repository } from 'common/src/types';
 import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts';
+import type { AwsCloudFormationStack } from '../types';
 import {
 	deduplicateVulnerabilitiesByCve,
 	dependabotAlertToRepocopVulnerability,
@@ -370,9 +371,6 @@ function mockStack(name: string, tags: Record<string, string> = {}, creation_tim
 		stack_name: name,
 		creation_time,
 		tags,
-		last_updated_time: null,
-		account_id: '1',
-		region: 'mock-1',
 	} as AwsCloudFormationStack;
 }
 

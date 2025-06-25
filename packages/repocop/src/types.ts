@@ -1,10 +1,11 @@
 import type { Action } from '@guardian/anghammarad';
 import type { Endpoints } from '@octokit/types';
 import type {
+	aws_cloudformation_stacks,
 	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { RepocopVulnerability } from 'common/src/types';
+import type { AwsTags, RepocopVulnerability } from 'common/src/types';
 
 export interface RepoAndStack {
 	fullName: string;
@@ -24,6 +25,17 @@ export interface Dependency {
 		package_name: string;
 		package_version: string;
 	};
+}
+
+type StackFields = Pick<
+	aws_cloudformation_stacks,
+	'stack_name' | 'tags' | 'creation_time'
+>;
+
+export interface AwsCloudFormationStack extends StackFields {
+	stack_name: NonNullable<StackFields['stack_name']>;
+	tags: AwsTags;
+	creation_time: NonNullable<StackFields['creation_time']>;
 }
 
 export type DependabotVulnResponse =
