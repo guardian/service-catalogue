@@ -9,7 +9,7 @@ export function findingsToGuardianFormat(
 	const vulns: Array<cloudbuster_fsbp_vulnerabilities | undefined> = finding.resources.map((r) => {
 		const extraneousFinding = ['EC2.9', 'EC2.8'].includes(finding.product_fields.ControlId) && r.Tags?.['aws:autoscaling:groupName'];
 		if (extraneousFinding) {
-			return undefined; //if in an asg these are covered by AutoScaling.3 and AutoScaling.5
+			return undefined; //If an EC2 instance is in an ASG, we are covered by AutoScaling.3 and AutoScaling.5, which have more accurate first_observed_at dates.
 		} else {
 			return {
 				severity: finding.severity.Label,

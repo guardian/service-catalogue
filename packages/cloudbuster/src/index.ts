@@ -24,8 +24,8 @@ export async function main() {
 		(f) => f.workflow.Status !== 'SUPPRESSED',
 	);
 
-	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap((res) =>
-		findingsToGuardianFormat(res)
+	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
+		findingsToGuardianFormat,
 	);
 
 	const controlIdArns = new Map<string, cloudbuster_fsbp_vulnerabilities>();
