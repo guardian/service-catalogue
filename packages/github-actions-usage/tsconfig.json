@@ -1,4 +1,7 @@
 {
   "extends": "../../tsconfig.json",
-  "references": [{ "path": "../common" }]
+  "references": [{ "path": "../common" }],
+  "compilerOptions": {
+    "allowJs": true
+  }
 }
