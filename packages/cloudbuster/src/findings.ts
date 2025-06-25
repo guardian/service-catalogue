@@ -1,31 +1,31 @@
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { isWithinSlaTime, stringToSeverity } from 'common/src/functions';
-import type { AWSCloudformationTag, SecurityHubFinding } from 'common/src/types';
+import type { AwsTags, SecurityHubFinding } from 'common/src/types';
 import type { GroupedFindings, StackUpdateTimes } from './types';
 
-function findingDate(first_observed_at: Date | null, tags: AWSCloudformationTag, stackUpdateTimes: StackUpdateTimes, controlId: string): Date | null {
+function findingDate(firstObservedAt: Date | null, tags: AwsTags, stackUpdateTimes: StackUpdateTimes, controlId: string): Date | null {
 	const hasCorrectTags = !!tags.Stack && !!tags.Stage && !!tags.App;
 	const isRelevantFinding = ['EC2.9', 'EC2.8'].includes(controlId);
 
 	if (hasCorrectTags && isRelevantFinding) {
 		const key = `${tags.Stack}-${tags.Stage}-${tags.App}`;
 		const stackUpdateTime = stackUpdateTimes.get(key);
-		if (!stackUpdateTime && !first_observed_at) {
+		if (!stackUpdateTime && !firstObservedAt) {
 			return null;
 		}
 		else if (!stackUpdateTime) {
-			return first_observed_at;
+			return firstObservedAt;
 		}
-		else if (!first_observed_at) {
+		else if (!firstObservedAt) {
 
 			return stackUpdateTime;
 		}
-		const minDate = new Date(Math.min(stackUpdateTime.getTime(), first_observed_at.getTime()));
-		console.debug(`Using stack update time ${stackUpdateTime.toDateString()}, instead of securityhub observation time ${first_observed_at.toDateString()} for finding with control ID ${controlId}, and tags:`, tags.Stack, tags.Stage, tags.App);
+		const minDate = new Date(Math.min(stackUpdateTime.getTime(), firstObservedAt.getTime()));
+		console.debug(`Using stack update time ${stackUpdateTime.toDateString()}, instead of securityhub observation time ${firstObservedAt.toDateString()} for finding with control ID ${controlId}, and tags:`, tags.Stack, tags.Stage, tags.App);
 
 		return minDate;
 	}
-	return first_observed_at;
+	return firstObservedAt;
 }
 
 export function findingsToGuardianFormat(

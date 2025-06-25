@@ -18,11 +18,11 @@ type StackFields = Pick<
 	'stack_name' | 'tags' | 'creation_time' | 'last_updated_time' | 'account_id' | 'region'
 >;
 
-export type AWSCloudformationTag = Record<string, string>;
+export type AwsTags = Record<string, string>;
 
 export interface AwsCloudFormationStack extends StackFields {
 	stack_name: NonNullable<StackFields['stack_name']>;
-	tags: AWSCloudformationTag;
+	tags: AwsTags;
 	creation_time: NonNullable<StackFields['creation_time']>;
 	last_updated_time: StackFields['last_updated_time'];
 	account_id: NonNullable<StackFields['account_id']>;
@@ -127,7 +127,7 @@ export type NonEmptyArray<T> = [T, ...T[]];
 
 type Resource = {
 	Id: string;
-	Tags: AWSCloudformationTag | null;
+	Tags: AwsTags | null;
 	Region: string;
 	Type: string;
 };
