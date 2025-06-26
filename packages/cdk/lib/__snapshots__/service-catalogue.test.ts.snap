@@ -1503,16 +1503,16 @@ spec:
                   value: MEDIUM
       aws_inspector2_findings:
         aws_inspector2_findings:
-          list_findings:
-            - filter_criteria:
-                finding_status:
-                  - comparison: EQUALS
-                    value: ACTIVE
-                severity:
-                  - comparison: EQUALS
-                    value: CRITICAL
-                  - comparison: EQUALS
-                    value: HIGH
+          - list_findings:
+              - filter_criteria:
+                  finding_status:
+                    - comparison: EQUALS
+                      value: ACTIVE
+                  severity:
+                    - comparison: EQUALS
+                      value: CRITICAL
+                    - comparison: EQUALS
+                      value: HIGH
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
