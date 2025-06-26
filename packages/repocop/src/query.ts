@@ -78,6 +78,7 @@ export async function getRepoOwnership(
 	return toNonEmptyArray(data);
 }
 
+
 export async function getStacks(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<AwsCloudFormationStack>> {

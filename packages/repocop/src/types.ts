@@ -5,7 +5,7 @@ import type {
 	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { RepocopVulnerability } from 'common/src/types';
+import type { AwsTags, RepocopVulnerability } from 'common/src/types';
 
 export interface RepoAndStack {
 	fullName: string;
@@ -32,11 +32,9 @@ type StackFields = Pick<
 	'stack_name' | 'tags' | 'creation_time'
 >;
 
-type AWSCloudformationTag = Record<string, string>;
-
 export interface AwsCloudFormationStack extends StackFields {
 	stack_name: NonNullable<StackFields['stack_name']>;
-	tags: AWSCloudformationTag;
+	tags: AwsTags;
 	creation_time: NonNullable<StackFields['creation_time']>;
 }
 

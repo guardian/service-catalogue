@@ -12,6 +12,8 @@ export type SecurityHubSeverity =
 	| 'LOW'
 	| 'INFORMATION';
 
+export type AwsTags = Record<string, string>;
+
 export type GithubAppSecret = {
 	appId: string;
 	base64PrivateKey: string;
@@ -110,7 +112,7 @@ export type NonEmptyArray<T> = [T, ...T[]];
 
 type Resource = {
 	Id: string;
-	Tags: Record<string, string> | null;
+	Tags: AwsTags | null;
 	Region: string;
 	Type: string;
 };
