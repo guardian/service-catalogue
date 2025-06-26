@@ -1499,8 +1499,10 @@ spec:
                 - comparison: EQUALS
                   value: Security Hub
               severity_label:
-                - comparison: NOT_EQUALS
-                  value: MEDIUM
+                - comparison: EQUALS
+                  value: CRITICAL
+                - comparison: EQUALS
+                  value: HIGH
       aws_inspector2_findings:
         aws_inspector2_findings:
           list_findings:

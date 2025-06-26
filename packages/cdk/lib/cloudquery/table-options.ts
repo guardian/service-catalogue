@@ -36,10 +36,8 @@ export const securityHubTableOptions = {
                     stringFilter(AwsComparison.Equals, 'Security Hub'),
                 ],
                 severity_label: [
-                    //tagging standard uses 'LOW' and 'INFORMATIONAL'.
-                    // For security standards, we are only interested in 'HIGH' and 'CRITICAL'
-                    //It may seem unnecessary, but this cuts our row count in half.
-                    stringFilter(AwsComparison.NotEquals, 'MEDIUM'),
+                    stringFilter(AwsComparison.Equals, 'CRITICAL'),
+                    stringFilter(AwsComparison.Equals, 'HIGH'),
 
                 ],
             },
