@@ -22192,7 +22192,7 @@ spec:
     "obligatronAWSVULNERABILITIES8E81FCF9": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'AWS_VULNERABILITIES' obligation",
-        "ScheduleExpression": "cron(0 11 * * ? *)",
+        "ScheduleExpression": "cron(0 10 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -22376,7 +22376,7 @@ spec:
     "obligatronPRODUCTIONDEPENDENCIESC26096F0": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'PRODUCTION_DEPENDENCIES' obligation",
-        "ScheduleExpression": "cron(0 10 * * ? *)",
+        "ScheduleExpression": "cron(0 9 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -22588,45 +22588,6 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "obligatronTAGGING3F8E9BB2": {
-      "Properties": {
-        "Description": "Daily execution of Obligatron lambda for 'TAGGING' obligation",
-        "ScheduleExpression": "cron(0 9 * * ? *)",
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "obligatronA58CFCF1",
-                "Arn",
-              ],
-            },
-            "Id": "Target0",
-            "Input": ""TAGGING"",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "obligatronTAGGINGAllowEventRuleServiceCatalogueobligatron5BD5033EC1528439": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "obligatronA58CFCF1",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "obligatronTAGGING3F8E9BB2",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "prismamigratetaskTEST59D4C0E8": {
       "Properties": {
