@@ -1,0 +1,29 @@
+name: 'CI security checks'
+
+on:
+  pull_request:
+  # Manual invocation.
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+      - nt/zizmor
+
+# Ensure we only ever have one build running at a time.
+# If we push twice in quick succession, the first build will be stopped once the second starts.
+# This avoids any race conditions.
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  action-check:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: pip install zizmor
+      - run: zizmor . --format=github --persona=pedantic --offline
