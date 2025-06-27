@@ -3,7 +3,7 @@
 name: 'Stale PR Handler'
 
 #no permissions by default
-permissions:
+permissions: {}
 
 on:
   schedule:

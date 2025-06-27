@@ -31,6 +31,6 @@ runs:
 
     - name: Run script
       shell: bash
-      run: npm run ${{ env.SCRIPT }}
+      run: npm run "${SCRIPT}"
       env:
         SCRIPT: ${{ inputs.script }}
