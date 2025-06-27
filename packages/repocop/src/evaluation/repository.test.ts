@@ -366,14 +366,6 @@ describe('NO RULE - Repository maintenance', () => {
 	});
 });
 
-function mockStack(name: string, tags: Record<string, string> = {}, creation_time = new Date(),) {
-	return {
-		stack_name: name,
-		creation_time,
-		tags,
-	} as AwsCloudFormationStack;
-}
-
 describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
 	test('should be findable if a stack has a matching tag', () => {
 		const full_name = 'guardian/repo1';
@@ -386,7 +378,11 @@ describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
 			name: 'repo1',
 			archived: false,
 		};
-		const stack = mockStack('mystack', tags);
+		const stack: AwsCloudFormationStack = {
+			stack_name: 'mystack',
+			creation_time: new Date(),
+			tags,
+		};
 		const result = findStacks(repo, [stack]).stacks.length;
 		expect(result).toEqual(1);
 	});
@@ -397,7 +393,12 @@ describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
 			name: 'repo1',
 			archived: false,
 		};
-		const stack = mockStack('mystack-repo1-PROD')
+
+		const stack: AwsCloudFormationStack = {
+			stack_name: 'mystack-repo1-PROD',
+			tags: {},
+			creation_time: new Date(),
+		};
 		const result = findStacks(repo, [stack]).stacks.length;
 		expect(result).toEqual(1);
 	});
@@ -419,8 +420,20 @@ describe('REPOSITORY_08 - Repositories without any related stacks on AWS', () =>
 			'gu:repo': 'guardian/someOtherRepo',
 			'gu:build-tool': 'unknown',
 		};
-		const stack1 = mockStack('stack1', { 'gu:repo': 'guardian/someOtherRepo' })
-		const stack2 = mockStack('stack2', { ...tags, Stage: 'PROD' });
+
+		const stack1: AwsCloudFormationStack = {
+			stack_name: 'stack1',
+			tags: { 'gu:repo': 'guardian/someOtherRepo' },
+			creation_time: new Date(),
+		};
+		const stack2: AwsCloudFormationStack = {
+			stack_name: 'stack2',
+			tags: {
+				...tags,
+				Stage: 'PROD',
+			},
+			creation_time: new Date(),
+		};
 		const result = findStacks(repo, [stack1, stack2]).stacks.length;
 		expect(result).toEqual(0);
 	});

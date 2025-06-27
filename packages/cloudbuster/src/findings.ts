@@ -6,33 +6,27 @@ import type { GroupedFindings } from './types';
 export function findingsToGuardianFormat(
 	finding: SecurityHubFinding,
 ): cloudbuster_fsbp_vulnerabilities[] {
-	const vulns: Array<cloudbuster_fsbp_vulnerabilities | undefined> = finding.resources.map((r) => {
-		const extraneousFinding = ['EC2.9', 'EC2.8'].includes(finding.product_fields.ControlId) && r.Tags?.['aws:autoscaling:groupName'];
-		if (extraneousFinding) {
-			return undefined; //If an EC2 instance is in an ASG, we are covered by AutoScaling.3 and AutoScaling.5, which have more accurate first_observed_at dates.
-		} else {
-			return {
-				severity: finding.severity.Label,
-				control_id: finding.product_fields.ControlId,
-				title: finding.title,
-				aws_region: r.Region,
-				repo: r.Tags?.['gu:repo'] ?? null,
-				stack: r.Tags?.['Stack'] ?? null,
-				stage: r.Tags?.Stage ?? null,
-				app: r.Tags?.App ?? null,
-				first_observed_at: finding.first_observed_at,
-				arn: r.Id, // even though we're mapping, I've never observed an FSBP finding with multiple resources,so this will pretty much always be a single-element array
-				aws_account_name: finding.aws_account_name,
-				aws_account_id: finding.aws_account_id,
-				within_sla: isWithinSlaTime(
-					finding.first_observed_at,
-					stringToSeverity(finding.severity.Label),
-				),
-				remediation: finding.remediation.Recommendation.Url,
-			};
-		}
+	return finding.resources.map((r) => {
+		return {
+			severity: finding.severity.Label,
+			control_id: finding.product_fields.ControlId,
+			title: finding.title,
+			aws_region: r.Region,
+			repo: r.Tags?.['gu:repo'] ?? null,
+			stack: r.Tags?.['Stack'] ?? null,
+			stage: r.Tags?.Stage ?? null,
+			app: r.Tags?.App ?? null,
+			first_observed_at: finding.first_observed_at,
+			arn: r.Id, // even though we're mapping, I've never observed an FSBP finding with multiple resources,so this will pretty much always be a single-element array
+			aws_account_name: finding.aws_account_name,
+			aws_account_id: finding.aws_account_id,
+			within_sla: isWithinSlaTime(
+				finding.first_observed_at,
+				stringToSeverity(finding.severity.Label),
+			),
+			remediation: finding.remediation.Recommendation.Url,
+		};
 	});
-	return vulns.filter((v) => v !== undefined);
 }
 /**
  * @param findings An array of FSBP findings.
