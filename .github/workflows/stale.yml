@@ -2,6 +2,9 @@
 # then close them 3 days later if there is still no activity.
 name: 'Stale PR Handler'
 
+#no permissions by default
+permissions:
+
 on:
   schedule:
     # Check for Stale PRs every Monday to Thursday morning
