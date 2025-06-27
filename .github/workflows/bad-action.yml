@@ -1,0 +1,17 @@
+# Automatically mark any pull requests that have been inactive for 30 days as "Stale"
+# then close them 3 days later if there is still no activity.
+name: 'Stale PR Handler'
+
+on:
+  pull_request:
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello, world!"
+      
