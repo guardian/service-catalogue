@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   action-check:
+    name: 'Run Zizmor'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:

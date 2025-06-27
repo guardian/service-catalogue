@@ -30,6 +30,7 @@ concurrency:
 
 jobs:
   CQ_CLI:
+    name: 'Set CQ version'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
