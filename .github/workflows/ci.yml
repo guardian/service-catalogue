@@ -1,6 +1,9 @@
 # Find full documentation here https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 name: CI
 
+permissions:
+  contents: read
+
 on:
   pull_request:
   merge_group:
@@ -23,10 +26,10 @@ jobs:
   lint:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/npm-run
         with:
           script: lint
@@ -35,10 +38,10 @@ jobs:
   test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/npm-run
         with:
           script: test
@@ -47,10 +50,10 @@ jobs:
   typecheck:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/npm-run
         with:
           script: typecheck
@@ -61,8 +64,6 @@ jobs:
     runs-on: ubuntu-latest
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-    permissions:
-      contents: read
 
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'
@@ -88,6 +89,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -129,10 +132,11 @@ jobs:
     permissions:
       # required by aws-actions/configure-aws-credentials
       id-token: write
-      contents: read
       pull-requests: write # required by guardian/actions-riff-raff
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
