@@ -2,18 +2,20 @@
 # then close them 3 days later if there is still no activity.
 name: 'Stale PR Handler'
 
+#no permissions by default
+permissions: {}
+
 on:
   schedule:
     # Check for Stale PRs every Monday to Thursday morning
     # Don't check on Fridays as it wouldn't be very nice to have a bot mark your PR as Stale on Friday and then close it on Monday morning!
     - cron: '0 6 * * MON-THU'
 
-permissions:
-  pull-requests: write
-
 jobs:
   stale:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
         id: stale
