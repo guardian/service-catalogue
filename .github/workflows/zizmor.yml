@@ -1,5 +1,8 @@
 name: 'CI security checks'
 
+permissions:
+  contents: read
+
 on:
   pull_request:
   # Manual invocation.
@@ -21,9 +24,9 @@ jobs:
   action-check:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - run: pip install zizmor
       - run: zizmor . --format=github --persona=pedantic --offline
