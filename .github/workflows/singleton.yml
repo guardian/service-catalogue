@@ -1,6 +1,9 @@
 # Find full documentation here https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 name: Singleton image
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     paths:
@@ -31,5 +34,4 @@ jobs:
     with:
       IMAGE_NAME: singleton
     permissions:
-      contents: read
       packages: write

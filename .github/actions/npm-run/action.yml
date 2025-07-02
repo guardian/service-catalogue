@@ -21,7 +21,9 @@ runs:
 
     - uses: guardian/actions-read-private-repos@8792b5279dc2e6dfb6b9aa6ba2f26b6226be444c # v0.1.1
       with:
-        private-ssh-keys: ${{ inputs.deployment_key }}
+        private-ssh-keys: ${{ env.KEY }}
+      env:
+        KEY: ${{ inputs.deployment_key }}
 
     - name: install dependencies
       shell: bash
@@ -29,4 +31,6 @@ runs:
 
     - name: Run script
       shell: bash
-      run: npm run ${{ inputs.script }}
+      run: npm run "${SCRIPT}"
+      env:
+        SCRIPT: ${{ inputs.script }}
