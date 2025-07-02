@@ -568,19 +568,14 @@ export function addCloudqueryEcsCluster(
 		},
 	};
 
-	const githubLanguagesSecret = new SecretsManager(scope, 'github-languages', {
-		secretName: `/${stage}/${stack}/${app}/github-languages`,
-	});
-
 	const githubLanguagesSource: CloudquerySource = {
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
 		schedule: Schedule.rate(Duration.days(7)),
-		config: githubLanguagesConfig(),
-		secrets: {
-			GITHUB_ACCESS_TOKEN: Secret.fromSecretsManager(githubLanguagesSecret),
-		},
-		// additionalCommands: additionalGithubCommands,
+		config: githubLanguagesConfig({org: gitHubOrgName}),
+		secrets: githubSecrets,
+		additionalCommands: additionalGithubCommands
+
 	};
 
 	const ns1ApiKey = new SecretsManager(scope, 'ns1-credentials', {

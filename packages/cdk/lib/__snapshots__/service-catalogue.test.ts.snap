@@ -15500,16 +15500,21 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "printf 'kind: source
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
 spec:
   name: github-languages
   path: guardian/github-languages
-  version: v0.0.5
+  version: v0.0.7
   destinations:
     - postgresql
   tables:
     - github_languages
   registry: github
+  spec:
+    org: guardian
+    private_key_path: /usr/share/cloudquery/github-private-key
+    app_id: \${file:/usr/share/cloudquery/github-app-id}
+    installation_id: \${file:/usr/share/cloudquery/github-installation-id}
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
@@ -15581,9 +15586,45 @@ spec:
             "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
-                "Name": "GITHUB_ACCESS_TOKEN",
+                "Name": "GITHUB_PRIVATE_KEY",
                 "ValueFrom": {
-                  "Ref": "githublanguages5093EDEC",
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":private-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_APP_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":app-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_INSTALLATION_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":installation-id::",
+                    ],
+                  ],
                 },
               },
               {
@@ -16029,7 +16070,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Ref": "githublanguages5093EDEC",
+                "Ref": "githubcredentialsAF453741",
               },
             },
             {
@@ -21620,33 +21661,6 @@ spec:
       "Properties": {
         "GenerateSecretString": {},
         "Name": "/TEST/deploy/service-catalogue/github-credentials",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::SecretsManager::Secret",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "githublanguages5093EDEC": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/github-languages",
         "Tags": [
           {
             "Key": "gu:cdk:version",
