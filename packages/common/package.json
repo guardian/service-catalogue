@@ -8,10 +8,10 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
-		"@aws-sdk/client-secrets-manager": "^3.835.0",
+		"@aws-sdk/client-secrets-manager": "^3.840.0",
 		"@guardian/anghammarad": "^1.8.3",
-		"@aws-sdk/credential-providers": "^3.835.0",
-		"@aws-sdk/rds-signer": "^3.835.0",
+		"@aws-sdk/credential-providers": "^3.840.0",
+		"@aws-sdk/rds-signer": "^3.840.0",
 		"@octokit/auth-app": "^6.1.2",
 		"@octokit/graphql": "^9.0.1",
 		"octokit": "^3.2.1",
