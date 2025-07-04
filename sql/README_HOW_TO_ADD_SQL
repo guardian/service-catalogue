@@ -2,13 +2,14 @@
  see directory packages/repocop/prisma/migrations
 
  One migration per view to be able to see more easily which sql is missing
- aws_accouts -  see prisma migration 20231026134216_view_aws_accounts
+ aws_accounts -  see prisma migration 20231026134216_view_aws_accounts
  cq_last_synced -  see prisma migration 20231026164314_cp_last_synced
 
- elk_index_to_space - missing sql
- Todo: recreate sql for view elk_index_to_space
- grafana_cloudwatch_to_internal_infra - missing sql
- Todo: recreate sql for view grafana_cloudwatch_to_internal
+ elk_index_to_space
+ This is a manually updated lookup table between the elk index and the space it belongs to.
+ grafana_cloudwatch_to_internal_infra
+ This is a manually updated lookup table used in the grafana availability dashboard that maps
+ grafana cloudwatch data sources to the aws accounts.
 
  view_old_ec2_instances - see prisma migration 20231026180015_view_old_ec2_instances
  view_repo_ownership_view.sql - see prisma migration 20230928084104_view_repo_ownership
