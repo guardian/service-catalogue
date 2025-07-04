@@ -49,17 +49,19 @@ export const securityHubTableOptions = {
 
 // https://docs.aws.amazon.com/inspector/v2/APIReference/API_FilterCriteria.html
 export const inspector2TableOptions = {
-    aws_inspector2_findings: {
-        list_findings: [
-            {
-                filter_criteria: {
-                    finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
-                    severity: [
-                        stringFilter(AwsComparison.Equals, 'CRITICAL'),
-                        stringFilter(AwsComparison.Equals, 'HIGH'),
-                    ],
+    aws_inspector2_findings: [
+        {
+            list_findings: [
+                {
+                    filter_criteria: {
+                        finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
+                        severity: [
+                            stringFilter(AwsComparison.Equals, 'CRITICAL'),
+                            stringFilter(AwsComparison.Equals, 'HIGH'),
+                        ],
+                    },
                 },
-            },
-        ],
-    },
+            ],
+        },
+    ],
 }
