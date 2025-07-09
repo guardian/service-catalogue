@@ -99,13 +99,13 @@ function formatFindings(
 ) {
 	const findingsCount = findings.length;
 	const control_id = findings[0]?.control_id;
-	const app = findings[0]?.app ?? 'unknown';
+	const app = findings[0]?.app ? ` in app: **${findings[0]?.app}**,` : '';
 	const remediation = findings[0]?.remediation;
 	const title = findings[0]?.title;
 	const findingsString = findingsCount === 1 ? 'finding' : 'findings';
 	const regions = [...new Set(findings.map((f) => f.aws_region))].join(', ');
 	const url = `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(account_name)}&var-control_id=${control_id}`;
-	return `[${findingsCount} ${findingsString}](${url}) in app: **${app}**, for control [${control_id}](${remediation}), in ${regions}, (${title})`;
+	return `[${findingsCount} ${findingsString}](${url})${app} for control [${control_id}](${remediation}), in ${regions}, (${title})`;
 }
 
 function createEmailBody(

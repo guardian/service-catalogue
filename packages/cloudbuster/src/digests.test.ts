@@ -95,6 +95,15 @@ describe('createDigestForAccount', () => {
 		const actual = createDigestForAccount([vuln]);
 		expect(actual).toBeUndefined();
 	});
+	it('should not include the app tag in the message if app is null', () => {
+		const vuln = { ...testVuln, app: null };
+		const actual = createDigestForAccount([vuln]);
+		expect(actual?.message).not.toContain('in app:');
+	})
+	it('should include the app tag in the message if app exists', () => {
+		const actual = createDigestForAccount([testVuln]);
+		expect(actual?.message).toContain(`in app: **${testVuln.app}**,`);
+	})
 });
 
 function mockFinding(
