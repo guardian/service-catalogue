@@ -1,6 +1,8 @@
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubSeverity } from 'common/types';
+import { describe, expect, it } from 'vitest';
 import { createDigestForAccount, createDigestsFromFindings } from './digests';
+
 
 describe('createDigestForAccount', () => {
 	it('should return nothing if no vulnerabilities are passed to it', () => {
