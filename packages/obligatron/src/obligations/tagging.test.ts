@@ -1,4 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
+import { describe, expect, it } from 'vitest';
 import { evaluateSecurityHubTaggingCoverage } from './tagging';
 
 const createPrismaClientWithMockedResponse = (response: unknown[]) => {

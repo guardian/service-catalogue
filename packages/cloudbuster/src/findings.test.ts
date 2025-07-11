@@ -1,5 +1,6 @@
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubFinding } from 'common/types';
+import { describe, expect, it } from 'vitest';
 import { findingsToGuardianFormat, groupFindingsByAccount } from './findings';
 import type { GroupedFindings } from './types';
 

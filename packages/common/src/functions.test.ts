@@ -1,4 +1,5 @@
 import type { SNSEvent } from 'aws-lambda';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
@@ -232,11 +233,11 @@ describe('daysLeftToFix', () => {
 
 	const monday = new Date('2024-10-07'); // Oct 7th 2024 is a Monday
 	beforeEach(() => {
-		jest.useFakeTimers().setSystemTime(monday);
+		vi.useFakeTimers().setSystemTime(monday);
 	});
 
 	afterEach(() => {
-		jest.useRealTimers();
+		vi.useRealTimers();
 	});
 
 	test('should add an extra two days to fix vulnerabilities raised on a Friday or Saturday', () => {
@@ -267,11 +268,11 @@ const MOCK_ONE_WEEK_AGO = new Date('2024-01-03');
 
 describe('FBSP SLA window', () => {
 	beforeEach(() => {
-		jest.useFakeTimers().setSystemTime(MOCK_TODAY);
+		vi.useFakeTimers().setSystemTime(MOCK_TODAY);
 	});
 
 	afterEach(() => {
-		jest.useRealTimers();
+		vi.useRealTimers();
 	});
 
 	it('Returns true if a critical finding was first observed within a day', () => {

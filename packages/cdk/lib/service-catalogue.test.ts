@@ -3,6 +3,7 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
@@ -18,11 +19,11 @@ describe('The ServiceCatalogue stack', () => {
 		Mock the current date to ensure the Jest snapshot is stable.
 		 */
 		const date = new Date('2025-05-01');
-		jest.useFakeTimers().setSystemTime(date);
+		vi.useFakeTimers().setSystemTime(date);
 	});
 
 	afterAll(() => {
-		jest.useRealTimers();
+		vi.useRealTimers();
 	});
 
 	it('matches the snapshot', () => {

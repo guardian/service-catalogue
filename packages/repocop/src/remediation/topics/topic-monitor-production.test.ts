@@ -1,4 +1,5 @@
 import type { Repository } from 'common/src/types';
+import { describe, expect, it } from 'vitest';
 import { nullRepo } from '../../evaluation/repository.test';
 import type { AwsCloudFormationStack } from '../../types';
 import {

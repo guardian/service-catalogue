@@ -10,6 +10,7 @@ import type {
 	RepositoryWithDepGraphLanguage,
 } from 'common/src/types';
 import type { Octokit } from 'octokit';
+import { describe, expect, it, test, vi } from 'vitest';
 import { removeRepoOwner } from '../shared-utilities';
 import {
 	checkRepoForLanguage,
@@ -375,7 +376,7 @@ describe('getPullRequest', () => {
 	});
 
 	it('should return first pull request that matches and log warning', async () => {
-		const warn = jest.spyOn(console, 'warn');
+		const warn = vi.spyOn(console, 'warn');
 		const pulls = [featureBranch, dependabotBranch, dependabotBranch2];
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),

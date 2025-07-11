@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { getPathFromConfigFile, parseFileToJS } from './js-parser';
 
 describe('getPathFromConfigFile', () => {

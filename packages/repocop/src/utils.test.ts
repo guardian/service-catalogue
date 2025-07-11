@@ -1,4 +1,5 @@
 import type { RepocopVulnerability, Repository } from 'common/src/types';
+import { describe, expect, test } from 'vitest';
 import { isProduction, vulnSortPredicate } from './utils';
 
 describe('isProduction', () => {

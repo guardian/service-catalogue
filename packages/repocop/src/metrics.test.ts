@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { getPercentageTrue } from './metrics';
 
 describe('When evaluating the percentage of trues, an empty array', () => {
