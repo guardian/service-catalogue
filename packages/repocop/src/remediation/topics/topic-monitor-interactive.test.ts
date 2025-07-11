@@ -1,4 +1,5 @@
 import type { repocop_github_repository_rules } from '@prisma/client';
+import { describe, expect, it } from 'vitest';
 import { findPotentialInteractives } from './topic-monitor-interactive';
 
 describe('findPotentialInteractives', () => {
