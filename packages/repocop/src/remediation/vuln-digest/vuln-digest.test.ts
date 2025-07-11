@@ -3,6 +3,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { RepocopVulnerability } from 'common/src/types';
+import { describe, expect, it } from 'vitest';
 import type { EvaluationResult, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
 import { createDigestForSeverity } from './vuln-digest';

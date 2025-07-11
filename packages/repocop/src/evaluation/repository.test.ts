@@ -5,6 +5,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { RepocopVulnerability, Repository } from 'common/src/types';
+import { describe, expect, test } from 'vitest';
 import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts';
 import type { AwsCloudFormationStack } from '../types';
 import {
