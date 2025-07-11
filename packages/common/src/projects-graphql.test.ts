@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { addToProjectQuery, getLastPrsQuery } from './projects-graphql';
 
 /*
