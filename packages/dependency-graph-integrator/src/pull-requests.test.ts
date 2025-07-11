@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { generateBranchName } from './pull-requests';
 
 describe('generateBranchName', () => {
