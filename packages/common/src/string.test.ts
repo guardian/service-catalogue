@@ -1,4 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { markdownChecklist, stripMargin } from './string';
+
 
 describe('stripMargin', () => {
 	it('should strip the margin from a string', () => {
