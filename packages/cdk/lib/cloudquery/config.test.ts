@@ -1,5 +1,6 @@
 import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
 import { dump } from 'js-yaml';
+import { describe, expect, it } from 'vitest';
 import {
 	awsSourceConfigForAccount,
 	awsSourceConfigForOrganisation,
