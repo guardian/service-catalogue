@@ -1,4 +1,5 @@
 import type { Repository } from 'common/types';
+import { describe, expect, it } from 'vitest';
 import type { ObligatronRepocopVulnerability } from './dependency-vulnerabilities';
 import { evaluateObligationForOneRepo } from './dependency-vulnerabilities';
 

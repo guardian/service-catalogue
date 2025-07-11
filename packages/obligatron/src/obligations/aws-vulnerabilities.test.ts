@@ -1,4 +1,5 @@
 import type { SecurityHubFinding } from 'common/src/types';
+import { describe, expect, it } from 'vitest';
 import { fsbpFindingsToObligatronResults } from './aws-vulnerabilities';
 
 describe('The dependency vulnerabilities obligation', () => {
