@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { createYaml } from './file-generator';
 
 describe('createYaml for sbt', () => {
