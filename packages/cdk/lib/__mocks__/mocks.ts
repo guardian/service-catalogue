@@ -1,27 +1,39 @@
 import { vi } from 'vitest';
 
-// Mock Guardian CDK constants
-vi.mock('@guardian/cdk/lib/constants/library-info', () => ({
-  LibraryInfo: {
-    VERSION: 'TEST'
-  }
-}));
+// Set test environment variables that Guardian CDK might check
+process.env.NODE_ENV = 'test';
+process.env.CDK_DEFAULT_REGION = 'eu-west-1';
+process.env.CDK_DEFAULT_ACCOUNT = '123456789012';
+process.env.GUARDIAN_CDK_VERSION = 'TEST';
 
-vi.mock('@guardian/cdk/lib/constants/tracking-tag', () => ({
-  TrackingTag: {
-    Key: 'gu:cdk:version',
-    Value: 'TEST'
-  }
-}));
+// Try mocking at the module level
+const mockTrackingTag = {
+  Key: 'gu:cdk:version',
+  Value: 'TEST'
+};
 
-vi.mock('@guardian/cdk/lib/constants/metadata-keys', () => ({
+const mockLibraryInfo = {
+  VERSION: 'TEST'
+};
+
+// Override the modules after they're loaded
+vi.mock('@guardian/cdk/lib/constants/tracking-tag', () => {
+  return { TrackingTag: mockTrackingTag };
+});
+
+vi.mock('@guardian/cdk/lib/constants/library-info', () => {
+  return { LibraryInfo: mockLibraryInfo };
+});
+
+
+vi.doMock('@guardian/cdk/lib/constants/metadata-keys', () => ({
   MetadataKeys: {
     VERSION: 'gu:cdk:version'
   }
 }));
 
 // Mock private infrastructure config
-vi.mock('@guardian/private-infrastructure-config', () => {
+vi.doMock('@guardian/private-infrastructure-config', () => {
   const mockConfig = {
     organizationUnits: ['ou-123'],
     memberRoleName: 'cloudquery-access',
