@@ -3,18 +3,14 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
-    setupFiles: ['dotenv/config', '../../vitest.setup.ts'],
+    setupFiles: ['./lib/__mocks__/mocks.ts', './vitest.setup.ts'],
     clearMocks: true,
+    restoreMocks: true,
     reporters: process.env.GITHUB_ACTIONS 
       ? ['verbose', 'github-actions'] 
       : ['verbose'],
-    server: {
-      deps: {
-        external: [
-          '@guardian/cdk/lib/constants/tracking-tag',
-          '@guardian/private-infrastructure-config'
-        ]
-      }
-    }
+    update: false,
+    allowOnly: false,
+    passWithNoTests: false
   }
 });

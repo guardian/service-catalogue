@@ -2,7 +2,8 @@
   "name": "cdk",
   "version": "1.0.0",
   "scripts": {
-    "test": "vitest run -no-update",
+    "test": "vitest run --no-coverage --reporter=verbose",
+    "test:update": "vitest run -u",
     "synth": "cdk synth --path-metadata false --version-reporting false",
     "build": "npm run synth",
     "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE",
