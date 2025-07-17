@@ -25,6 +25,7 @@ export function findingsToGuardianFormat(
 				stringToSeverity(finding.severity.Label),
 			),
 			remediation: finding.remediation.Recommendation.Url,
+			suppressed: finding.workflow.Status === 'SUPPRESSED',
 		};
 	});
 }
