@@ -12,7 +12,7 @@
 	"author": "guardian",
 	"dependencies": {
 		"@types/aws-lambda": "^8.10.147",
-		"octokit": "^5.0.3"
+		"octokit": "^3.2.0"
 	},
 	"devDependencies": {
 		"@octokit/types": "^13.4.1"
