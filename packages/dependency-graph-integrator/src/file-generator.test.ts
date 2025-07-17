@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import { createYaml } from './file-generator';
 
-describe('createYaml for sbt', () => {
-	it('should generate the following yaml file', () => {
+void describe( 'createYaml for sbt', () => {
+	void it('should generate the following yaml file', () => {
 		const yaml = createYaml('branch', 'Scala', 'repo1');
 		const result =
 			String.raw`name: Update Dependency Graph for sbt
@@ -39,12 +40,12 @@ jobs:
     permissions:
       contents: write
 `;
-		expect(yaml).toEqual(result);
+		assert.strictEqual(yaml, result);
 	});
 });
 
-describe('createYaml for Kotlin', () => {
-	it('should generate the following yaml file', () => {
+void describe( 'createYaml for Kotlin', () => {
+	void it('should generate the following yaml file', () => {
 		const yaml = createYaml('branch', 'Kotlin', 'repo2');
 		const result =
 			String.raw`name: Update Dependency Graph for Gradle
@@ -78,6 +79,6 @@ jobs:
     permissions:
       contents: write
 `;
-		expect(yaml).toEqual(result);
+		assert.strictEqual(yaml, result);
 	});
 });
