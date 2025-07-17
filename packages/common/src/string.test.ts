@@ -1,20 +1,21 @@
-import { describe, expect, it } from 'vitest';
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import { markdownChecklist, stripMargin } from './string';
 
 
-describe('stripMargin', () => {
-	it('should strip the margin from a string', () => {
+void describe('stripMargin', () => {
+	void it('should strip the margin from a string', () => {
 		const message = stripMargin`
       |Hello
       |From
       |The Guardian`;
-		expect(message).toEqual('Hello\nFrom\nThe Guardian');
+		assert.strictEqual(message, 'Hello\nFrom\nThe Guardian');
 	});
 });
 
-describe('markdownChecklist', () => {
-	it('should generate a markdown checklist', () => {
+void describe('markdownChecklist', () => {
+	void it('should generate a markdown checklist', () => {
 		const checklist = markdownChecklist(['item1', 'item2']);
-		expect(checklist).toEqual('- [ ] item1\n- [ ] item2');
+		assert.strictEqual(checklist, '- [ ] item1\n- [ ] item2');
 	});
 });
