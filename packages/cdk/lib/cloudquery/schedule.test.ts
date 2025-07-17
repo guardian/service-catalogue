@@ -1,6 +1,5 @@
 import { Duration } from 'aws-cdk-lib';
 import { Schedule } from 'aws-cdk-lib/aws-events';
-import { describe, expect, it } from 'vitest';
 import { scheduleFrequencyMs } from './schedule';
 
 describe('EventBridge expression parsing', () => {
