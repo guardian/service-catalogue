@@ -377,36 +377,20 @@ void describe('getPullRequest', () => {
 	});
 
 	void it('should return first pull request that matches and log warning', async () => {
-    const warnMock = mock.method(console, 'warn');
-    const pulls = [featureBranch, dependabotBranch, dependabotBranch2];
-    const foundPull = await getExistingPullRequest(
-        mockOctokit(pulls),
-        'repo',
-        'owner',
-        'gu-dependency-graph-integrator[bot]',
-    );
-    assert.strictEqual(foundPull, dependabotBranch);
-    assert.ok(
-        warnMock.mock.calls.some(
-            call => call.arguments[0] === 'Found 2 PRs on repo - choosing the first.'
-        )
-    );
-    warnMock.mock.restore();
-});
-
-	// void it('should return first pull request that matches and log warning', async () => {
-	// 	const warn = vi.spyOn(console, 'warn');
-	// 	const pulls = [featureBranch, dependabotBranch, dependabotBranch2];
-	// 	const foundPull = await getExistingPullRequest(
-	// 		mockOctokit(pulls),
-	// 		'repo',
-	// 		'owner',
-	// 		'gu-dependency-graph-integrator[bot]',
-	// 	);
-	// 	assert.strictEqual(foundPull, dependabotBranch);
-	// 	expect(warn).toHaveBeenCalledWith(
-	// 		`Found 2 PRs on repo - choosing the first.`,
-	// 	);
-	// 	warn.mockRestore();
-	// });
+		const warnMock = mock.method(console, 'warn');
+		const pulls = [featureBranch, dependabotBranch, dependabotBranch2];
+		const foundPull = await getExistingPullRequest(
+			mockOctokit(pulls),
+			'repo',
+			'owner',
+			'gu-dependency-graph-integrator[bot]',
+		);
+		assert.strictEqual(foundPull, dependabotBranch);
+		assert.ok(
+			warnMock.mock.calls.some(
+				call => call.arguments[0] === 'Found 2 PRs on repo - choosing the first.'
+			)
+		);
+		warnMock.mock.restore();
+	});
 });
