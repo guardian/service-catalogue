@@ -1,8 +1,9 @@
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import type { SecurityHubFinding } from 'common/src/types';
-import { describe, expect, it } from 'vitest';
 import { fsbpFindingsToObligatronResults } from './aws-vulnerabilities';
 
-describe('The dependency vulnerabilities obligation', () => {
+void describe('The dependency vulnerabilities obligation', () => {
 	const resource1 = {
 		Id: 'arn:service:1',
 		Tags: { Stack: 'myStack' },
@@ -32,7 +33,7 @@ describe('The dependency vulnerabilities obligation', () => {
 		resources: [resource1, resource2],
 	};
 
-	it('should return a result in the expected format', () => {
+	void it('should return a result in the expected format', () => {
 		const actual = fsbpFindingsToObligatronResults([oneResourceFinding]);
 
 		const expected = {
@@ -47,15 +48,15 @@ describe('The dependency vulnerabilities obligation', () => {
 			url: 'https://docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html',
 		};
 
-		expect(actual).toEqual([expected]);
+		assert.deepStrictEqual(actual, [expected]);
 	});
 
-	it('should return multiple results if two resources are referenced in the same finding', () => {
+	void it('should return multiple results if two resources are referenced in the same finding', () => {
 		const actual = fsbpFindingsToObligatronResults([twoResourceFinding]);
-		expect(actual.length).toEqual(2);
+		assert.strictEqual(actual.length, 2);
 	});
 
-	it('should list multiple control IDs in one finding if the same resource has failed two controls', () => {
+	void it('should list multiple control IDs in one finding if the same resource has failed two controls', () => {
 		const extraFinding = {
 			...oneResourceFinding,
 			product_fields: { ControlId: 'S.2', StandardsArn: 'arn:1' },
@@ -66,10 +67,10 @@ describe('The dependency vulnerabilities obligation', () => {
 			extraFinding,
 		])[0]?.reason;
 
-		expect(actual).toContain('S.1');
-		expect(actual).toContain('S.2');
+		assert.ok(actual?.includes('S.1'));
+		assert.ok(actual?.includes('S.2'));
 	});
-	it('should handle a resource with no tags', () => {
+	void it('should handle a resource with no tags', () => {
 		const finding = {
 			...oneResourceFinding,
 			resources: [{ ...resource1, Tags: {} }],
@@ -78,7 +79,7 @@ describe('The dependency vulnerabilities obligation', () => {
 		const actual = fsbpFindingsToObligatronResults([finding]);
 		const contacts = actual[0]?.contacts;
 
-		expect(contacts).toEqual({
+		assert.deepStrictEqual(contacts, {
 			aws_account_id: '0123456',
 			App: undefined,
 			Stack: undefined,

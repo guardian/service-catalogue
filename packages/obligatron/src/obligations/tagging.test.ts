@@ -1,5 +1,5 @@
-import type { PrismaClient } from '@prisma/client';
-import { describe, expect, it } from 'vitest';
+import  assert from 'assert';
+import { describe, it } from 'node:test';import type { PrismaClient } from '@prisma/client';
 import { evaluateSecurityHubTaggingCoverage } from './tagging';
 
 const createPrismaClientWithMockedResponse = (response: unknown[]) => {
@@ -14,8 +14,8 @@ const createPrismaClientWithMockedResponse = (response: unknown[]) => {
 	return test;
 };
 
-describe('The tagging obligation', () => {
-	it('catches failed securityhub findings', async () => {
+void describe('The tagging obligation', () => {
+	void it('catches failed securityhub findings', async () => {
 		const client = createPrismaClientWithMockedResponse([
 			{
 				id: '123456789012',
@@ -56,8 +56,8 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateSecurityHubTaggingCoverage(client);
 
-		expect(results).toHaveLength(2);
-		expect(results[0]).toEqual({
+		assert.strictEqual(results.length, 2);
+		assert.deepStrictEqual(results[0], {
 			resource: 'arn:aws:s3:::mybucket',
 			reason: 'failed tagging',
 			contacts: {
@@ -68,7 +68,7 @@ describe('The tagging obligation', () => {
 			},
 			url: 'https://mars-north-1.console.aws.amazon.com/securityhub/home?region=mars-north-1#/findings?search=RecordState%3D%255Coperator%255C%253AEQUALS%255C%253AACTIVE%26Id%3D%255Coperator%255C%253AEQUALS%255C%253A123456789012',
 		});
-		expect(results[1]).toEqual({
+		assert.deepStrictEqual(results[1], {
 			resource: 'arn:aws:s3:::mybucket',
 			reason: 'failed tagging',
 			contacts: {
@@ -81,7 +81,7 @@ describe('The tagging obligation', () => {
 		});
 	});
 
-	it('handles findings with no resources', async () => {
+	void it('handles findings with no resources', async () => {
 		const client = createPrismaClientWithMockedResponse([
 			{
 				id: '123456789012',
@@ -94,10 +94,10 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateSecurityHubTaggingCoverage(client);
 
-		expect(results).toHaveLength(0);
+		assert.strictEqual(results.length, 0);
 	});
 
-	it('handles findings with incorrect amount of resources', async () => {
+	void it('handles findings with incorrect amount of resources', async () => {
 		const client = createPrismaClientWithMockedResponse([
 			{
 				id: '123456789012',
@@ -133,10 +133,10 @@ describe('The tagging obligation', () => {
 
 		const results = await evaluateSecurityHubTaggingCoverage(client);
 
-		expect(results).toHaveLength(2);
+		assert.strictEqual(results.length, 2);
 	});
 
-	it('crashes on findings with an invalid Resource schema', async () => {
+	void it('crashes on findings with an invalid Resource schema', async () => {
 		const client = createPrismaClientWithMockedResponse([
 			{
 				id: '123456789012',
@@ -147,8 +147,11 @@ describe('The tagging obligation', () => {
 			},
 		]);
 
-		await expect(evaluateSecurityHubTaggingCoverage(client)).rejects.toEqual(
-			new Error('Invalid resource in finding 123456789012'),
+		await assert.rejects(
+			() => evaluateSecurityHubTaggingCoverage(client),
+			(err: Error) =>
+				err instanceof Error &&
+				err.message === 'Invalid resource in finding 123456789012'
 		);
 	});
 });
