@@ -4,7 +4,6 @@
   "description": "A lens into your GitHub organisation",
   "scripts": {
     "test": "npm run test --workspaces --if-present",
-    "test-update": "vitest -u",
     "synth": "npm run synth --workspace=cdk",
     "pretypecheck": "npm -w common run typecheck",
     "typecheck": "npm run typecheck --workspaces",
