@@ -5,14 +5,14 @@
 	"main": "index.ts",
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
-		"test": "vitest run",
+		"test": "node --import tsx --test **/**.test.ts",
 		"start": "tsx src/run-locally.ts",
 		"typecheck": "tsc --noEmit"
 	},
 	"author": "guardian",
 	"dependencies": {
 		"@types/aws-lambda": "^8.10.147",
-		"octokit": "^3.2.0"
+		"octokit": "^5.0.3"
 	},
 	"devDependencies": {
 		"@octokit/types": "^13.4.1"
