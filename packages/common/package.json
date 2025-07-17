@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"postinstall": "prisma generate",
-		"test": "node --import tsx --test **/**.test.ts",
+		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc"
 	},
 	"dependencies": {

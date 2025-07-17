@@ -2,7 +2,7 @@
   "name": "github-actions-usage",
   "version": "0.0.0",
   "scripts": {
-    "test": "node --import tsx --test **/*.test.ts",
+    "test": "node --import tsx --test \"**/*.test.ts\"",
     "start": "APP=github-actions-usage tsx src/run-locally.ts",
     "prebuild": "rm -rf dist",
     "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@prisma/client --external:prisma",

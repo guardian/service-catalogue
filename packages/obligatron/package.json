@@ -6,6 +6,6 @@
 		"start": "APP=obligatron tsx src/run-locally.ts",
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@prisma/client --external:prisma",
 		"typecheck": "tsc --noEmit",
-		"test": "node --import tsx --test **/**.test.ts"
+		"test": "node --import tsx --test \"**/*.test.ts\""
 	}
 }
