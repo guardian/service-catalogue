@@ -1,8 +1,8 @@
-import type {
+import  assert from 'assert';
+import { describe, test } from 'node:test';import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { describe, expect, test } from 'vitest';
 import { createBranchProtectionEvents } from './branch-protection';
 
 const nullOwner: view_repo_ownership = {
@@ -17,8 +17,8 @@ const nullOwner: view_repo_ownership = {
 	team_contact_email: null,
 };
 
-describe('Team slugs should be findable for every team associated with a repo', () => {
-	test('A repository that is owned by a team should be included in the list of messages', () => {
+void describe('Team slugs should be findable for every team associated with a repo', () => {
+	void test('A repository that is owned by a team should be included in the list of messages', () => {
 		const repo = 'guardian/repo1';
 		const evaluatedRepo: repocop_github_repository_rules = {
 			full_name: repo,
@@ -47,10 +47,10 @@ describe('Team slugs should be findable for every team associated with a repo', 
 			5,
 		);
 
-		expect(actual).toEqual([{ fullName: repo, teamNameSlugs: ['team-one'] }]);
+		assert.deepStrictEqual(actual, [{ fullName: repo, teamNameSlugs: ['team-one'] }]);
 	});
 
-	test('A repository that has no owner should not be in the list of messages', () => {
+	void test('A repository that has no owner should not be in the list of messages', () => {
 		const repo = 'guardian/repo1';
 		const evaluatedRepo: repocop_github_repository_rules = {
 			full_name: repo,
@@ -67,6 +67,6 @@ describe('Team slugs should be findable for every team associated with a repo', 
 
 		const actual = createBranchProtectionEvents([evaluatedRepo], [], 5);
 
-		expect(actual.length).toEqual(0);
+		assert.strictEqual(actual.length, 0);
 	});
 });

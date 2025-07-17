@@ -1,15 +1,15 @@
-import type { repocop_github_repository_rules } from '@prisma/client';
-import { describe, expect, it } from 'vitest';
+import  assert from 'assert';
+import { describe, it } from 'node:test';import type { repocop_github_repository_rules } from '@prisma/client';
 import { findPotentialInteractives } from './topic-monitor-interactive';
 
-describe('findPotentialInteractives', () => {
-	it('should return an empty array when evaluatedRepos is empty', () => {
+void describe('findPotentialInteractives', () => {
+	void it('should return an empty array when evaluatedRepos is empty', () => {
 		const evaluatedRepos: repocop_github_repository_rules[] = [];
 		const result = findPotentialInteractives(evaluatedRepos);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
 
-	it('should return an only repositories with no valid topics', () => {
+	void it('should return an only repositories with no valid topics', () => {
 		const exampleRepo = {
 			full_name: 'org/repo1',
 			default_branch_name: true,
@@ -30,6 +30,6 @@ describe('findPotentialInteractives', () => {
 		];
 
 		const result = findPotentialInteractives(evaluatedRepos);
-		expect(result).toEqual(['org/repo3']);
+		assert.deepStrictEqual(result, ['org/repo3']);
 	});
 });

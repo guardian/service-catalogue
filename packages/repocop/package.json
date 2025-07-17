@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
 		"start": "APP=repocop tsx src/run-locally.ts",
-		"test": "vitest run",
+		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {

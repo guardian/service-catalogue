@@ -1,9 +1,10 @@
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
 import type { RepocopVulnerability } from 'common/src/types';
-import { describe, expect, it } from 'vitest';
 import type { EvaluationResult, Team } from '../../types';
 import { removeRepoOwner } from '../shared-utilities';
 import { createDigestForSeverity } from './vuln-digest';
@@ -85,36 +86,32 @@ const highRecentVuln: RepocopVulnerability = {
 	within_sla: true,
 };
 
-describe('createDigest', () => {
-	it('returns undefined when the total vuln count is zero', () => {
-		expect(
-			createDigestForSeverity(
+void describe('createDigest', () => {
+	void it('returns undefined when the total vuln count is zero', () => {
+		assert.strictEqual(createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[result, anotherResult],
 				60,
-			),
-		).toBeUndefined();
+			), undefined);
 	});
 
-	it('returns a digest when a result contains a vulnerability', () => {
+	void it('returns a digest when a result contains a vulnerability', () => {
 		const resultWithVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [highRecentVuln],
 		};
-		expect(
-			createDigestForSeverity(
+		assert.ok(createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message,
-		).toContain('leftpad');
+			)?.message.includes('leftpad'));
 	});
 
-	it('recognises that a SBT dependency could come from Maven', () => {
+	void it('recognises that a SBT dependency could come from Maven', () => {
 		const vuln: RepocopVulnerability = {
 			...highRecentVuln,
 			package: 'jackson',
@@ -125,18 +122,16 @@ describe('createDigest', () => {
 			...result,
 			vulnerabilities: [vuln],
 		};
-		expect(
-			createDigestForSeverity(
+		assert.ok(createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message,
-		).toContain('sbt or maven');
+			)?.message.includes('sbt or maven'));
 	});
 
-	it('returns the correct digest for the correct team', () => {
+	void it('returns the correct digest for the correct team', () => {
 		const resultWithVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [highRecentVuln],
@@ -165,8 +160,9 @@ describe('createDigest', () => {
 			[resultWithVuln, anotherResultWithVuln],
 			60,
 		);
-		expect(digest?.teamSlug).toBe(team.slug);
-		expect(digest?.message).toContain('leftpad');
+		assert.strictEqual(digest?.teamSlug, team.slug);
+		assert.ok(digest.message.includes('leftpad'));
+		// expect(digest.message).toContain('leftpad');
 
 		const anotherDigest = createDigestForSeverity(
 			anotherTeam,
@@ -175,11 +171,11 @@ describe('createDigest', () => {
 			[resultWithVuln, anotherResultWithVuln],
 			60,
 		);
-		expect(anotherDigest?.teamSlug).toBe(anotherTeam.slug);
-		expect(anotherDigest?.message).toContain('rightpad');
+		assert.strictEqual(anotherDigest?.teamSlug, anotherTeam.slug);
+		assert.ok(anotherDigest.message.includes('rightpad'));
 	});
 
-	it('only returns vulnerabilities created in  the last 60 days', () => {
+	void it('only returns vulnerabilities created in  the last 60 days', () => {
 		const fiftyNineDaysAgo = new Date();
 		fiftyNineDaysAgo.setDate(fiftyNineDaysAgo.getDate() - 59);
 		const sixtyOneDaysAgo = new Date();
@@ -209,13 +205,14 @@ describe('createDigest', () => {
 			60,
 		)?.message;
 		console.log(msg);
-		expect(msg).toContain(included.package);
-		expect(msg).not.toContain(excluded.package);
+		
+		assert.ok(msg?.includes(included.package));
+		assert.ok(!msg?.includes(excluded.package));
 	});
 });
 
-describe('createDigestForSeverity', () => {
-	it('should take notice when there are no valid CVEs', () => {
+void describe('createDigestForSeverity', () => {
+	void it('should take notice when there are no valid CVEs', () => {
 		const noCveVuln: RepocopVulnerability = {
 			...highRecentVuln,
 			cves: [],
@@ -224,20 +221,19 @@ describe('createDigestForSeverity', () => {
 			...result,
 			vulnerabilities: [noCveVuln],
 		};
-		expect(
-			createDigestForSeverity(
-				team,
-				'high',
-				[ownershipRecord],
-				[resultWithVuln],
-				60,
-			)?.message,
-		).toContain('no CVE provided');
+
+		assert.ok(createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+			60,
+		)?.message.includes('no CVE provided'));
 	});
 });
 
-describe('createDigestForSeverity', () => {
-	it('should take notice when there are no valid URLs', () => {
+void describe('createDigestForSeverity', () => {
+	void it('should take notice when there are no valid URLs', () => {
 		const noUrlVuln: RepocopVulnerability = {
 			...highRecentVuln,
 			urls: [],
@@ -246,14 +242,12 @@ describe('createDigestForSeverity', () => {
 			...result,
 			vulnerabilities: [noUrlVuln],
 		};
-		expect(
-			createDigestForSeverity(
-				team,
-				'high',
-				[ownershipRecord],
-				[resultWithVuln],
-				60,
-			)?.message,
-		).not.toContain(`[${noUrlVuln.package}](`);
+		assert.ok(!createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+			60,
+		)?.message.includes(`[${noUrlVuln.package}](`));
 	});
 });
