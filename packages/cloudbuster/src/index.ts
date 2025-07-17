@@ -31,7 +31,7 @@ export async function main() {
 	const controlIdArns = new Map<string, cloudbuster_fsbp_vulnerabilities>();
 	const duplicateControlIdArns: string[] = [];
 	tableContents.forEach((row) => {
-		const compositeKey = `${row.control_id}:${row.arn}:${row.suppressed}`;
+		const compositeKey = `${row.control_id}:${row.arn}:${row.aws_region}`;
 		if (controlIdArns.has(compositeKey)) {
 			if (!duplicateControlIdArns.includes(compositeKey)) {
 				duplicateControlIdArns.push(compositeKey);
