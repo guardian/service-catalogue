@@ -23,6 +23,7 @@ describe('createDigestForAccount', () => {
 		app: 'my-app',
 		title: 'test-title',
 		within_sla: false,
+		suppressed: false,
 	};
 
 	it('should aggregate findings by control ID', () => {
@@ -125,6 +126,7 @@ function mockFinding(
 		stack: null,
 		stage: null,
 		app: null,
+		suppressed: false,
 	};
 }
 
