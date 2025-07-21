@@ -23,6 +23,3 @@ This view shows the archived status of a repository, the name of the Action bein
 ## Testing
 
 The tests are written with [Node's test runner](https://nodejs.org/api/test.html).
-This is in contrast to other packages in this repository which used Jest.
-This is because Jest had issues with the `@actions/workflow-parser` package;
-Jest was failing with "cannot find module" errors.
