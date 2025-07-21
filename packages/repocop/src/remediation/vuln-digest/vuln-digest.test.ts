@@ -162,7 +162,6 @@ void describe('createDigest', () => {
 		);
 		assert.strictEqual(digest?.teamSlug, team.slug);
 		assert.ok(digest.message.includes('leftpad'));
-		// expect(digest.message).toContain('leftpad');
 
 		const anotherDigest = createDigestForSeverity(
 			anotherTeam,
