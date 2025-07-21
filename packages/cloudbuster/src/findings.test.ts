@@ -57,10 +57,10 @@ void describe('findingsToGuardianFormat', () => {
 		assert.deepStrictEqual(actual[1], { ...expected, arn: 'arn:instance:2' });
 	});
 	void it('should detect whether a finding is suppressed or not', () => {
-		expect(findingsToGuardianFormat(x)[0]?.suppressed).toBe(false);
-		expect(findingsToGuardianFormat({ ...x, workflow: { Status: 'NOTIFIED' } })[0]?.suppressed).toBe(false);
-		expect(findingsToGuardianFormat({ ...x, workflow: { Status: 'SUPPRESSED' } })[0]?.suppressed).toBe(true);
-		expect(findingsToGuardianFormat({ ...x, workflow: { Status: 'RESOLVED' } })[0]?.suppressed).toBe(false);
+		assert.deepStrictEqual(findingsToGuardianFormat(x)[0]?.suppressed, false);
+		assert.deepStrictEqual(findingsToGuardianFormat({ ...x, workflow: { Status: 'NOTIFIED' } })[0]?.suppressed, false);
+		assert.deepStrictEqual(findingsToGuardianFormat({ ...x, workflow: { Status: 'SUPPRESSED' } })[0]?.suppressed, true);
+		assert.deepStrictEqual(findingsToGuardianFormat({ ...x, workflow: { Status: 'RESOLVED' } })[0]?.suppressed, false);
 
 	});
 });
