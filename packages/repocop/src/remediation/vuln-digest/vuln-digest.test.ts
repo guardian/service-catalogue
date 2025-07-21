@@ -241,6 +241,8 @@ void describe('createDigestForSeverity', () => {
 			...result,
 			vulnerabilities: [noUrlVuln],
 		};
+		/**  node:test way of determining if the message doesn't include the noUrlVuln.package 
+			 - equivalent of `not.toContain` in Jest  */
 		assert.ok(!createDigestForSeverity(
 			team,
 			'high',
