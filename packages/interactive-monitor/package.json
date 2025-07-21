@@ -11,10 +11,6 @@
 	},
 	"author": "guardian",
 	"dependencies": {
-		"@types/aws-lambda": "^8.10.147",
-		"octokit": "^3.2.0"
-	},
-	"devDependencies": {
-		"@octokit/types": "^13.4.1"
+		"@types/aws-lambda": "^8.10.147"
 	}
 }
