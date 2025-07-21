@@ -1,3 +1,5 @@
+import  assert from 'assert';
+import { describe, test } from 'node:test';
 import type {
 	github_languages,
 	github_repository_branches,
@@ -98,20 +100,20 @@ const nullOwner: view_repo_ownership = {
 	team_contact_email: null,
 };
 
-describe('REPOSITORY_01 - default_branch_name should be false when the default branch is not main', () => {
-	test('branch is not main', () => {
+void describe('REPOSITORY_01 - default_branch_name should be false when the default branch is not main', () => {
+	void test('branch is not main', () => {
 		const badRepo = { ...thePerfectRepo, default_branch: 'notMain' };
 		const repos: Repository[] = [thePerfectRepo, badRepo];
 		const evaluation = repos.map((repo) => evaluateRepoTestHelper(repo));
 
-		expect(evaluation.map((repo) => repo.default_branch_name)).toEqual([
+		assert.deepStrictEqual(evaluation.map((repo) => repo.default_branch_name), [
 			true,
 			false,
 		]);
 	});
 });
 
-describe('REPOSITORY_02 - Repositories should have branch protection', () => {
+void describe('REPOSITORY_02 - Repositories should have branch protection', () => {
 	const unprotectedMainBranch: github_repository_branches = {
 		...nullBranch,
 		repository_id: BigInt(1),
@@ -124,7 +126,7 @@ describe('REPOSITORY_02 - Repositories should have branch protection', () => {
 		protected: true,
 	};
 
-	test('We should get an affirmative result when the default branch is protected', () => {
+	void test('We should get an affirmative result when the default branch is protected', () => {
 		const unprotectedSideBranch: github_repository_branches = {
 			...unprotectedMainBranch,
 			name: 'side-branch',
@@ -135,36 +137,36 @@ describe('REPOSITORY_02 - Repositories should have branch protection', () => {
 			unprotectedSideBranch,
 		]);
 
-		expect(actual.branch_protection).toEqual(true);
+		assert.strictEqual(actual.branch_protection, true);
 	});
-	test('We should get a negative result when the default branch of a production repo is not protected', () => {
+	void test('We should get a negative result when the default branch of a production repo is not protected', () => {
 		const actual = evaluateRepoTestHelper(thePerfectRepo, [
 			unprotectedMainBranch,
 		]);
-		expect(actual.branch_protection).toEqual(false);
+		assert.strictEqual(actual.branch_protection, false);
 	});
-	test('Repos with no branches do not need protecting, and should be considered protected', () => {
+	void test('Repos with no branches do not need protecting, and should be considered protected', () => {
 		const repo: Repository = {
 			...thePerfectRepo,
 			default_branch: null,
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.branch_protection).toEqual(true);
+		assert.strictEqual(actual.branch_protection, true);
 	});
-	test('Repos with exempted topics should be considered adequately protected, even if they have an unprotected main branch', () => {
+	void test('Repos with exempted topics should be considered adequately protected, even if they have an unprotected main branch', () => {
 		const repo: Repository = {
 			...thePerfectRepo,
 			topics: ['hackday'],
 		};
 
 		const actual = evaluateRepoTestHelper(repo, [unprotectedMainBranch]);
-		expect(actual.branch_protection).toEqual(true);
+		assert.strictEqual(actual.branch_protection, true);
 	});
 });
 
-describe('REPOSITORY_04 - Repository admin access', () => {
-	test('Should return false when there is no admin team', () => {
+void describe('REPOSITORY_04 - Repository admin access', () => {
+	void test('Should return false when there is no admin team', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -180,10 +182,10 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		];
 
 		const actual = evaluateRepoTestHelper(repo, [], teams);
-		expect(actual.admin_access).toEqual(false);
+		assert.strictEqual(actual.admin_access, false);
 	});
 
-	test('Should return true when there is an admin team', () => {
+	void test('Should return true when there is an admin team', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -205,10 +207,10 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		];
 
 		const actual = evaluateRepoTestHelper(repo, [], teams);
-		expect(actual.admin_access).toEqual(true);
+		assert.strictEqual(actual.admin_access, true);
 	});
 
-	test(`Should validate repositories with a 'hackday' topic`, () => {
+	void test(`Should validate repositories with a 'hackday' topic`, () => {
 		//We are not interested in making sure hackday projects are kept up to date
 		const repo: Repository = {
 			...nullRepo,
@@ -218,10 +220,10 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.admin_access).toEqual(true);
+		assert.strictEqual(actual.admin_access, true);
 	});
 
-	test(`Should evaluate repositories with a 'production' topic`, () => {
+	void test(`Should evaluate repositories with a 'production' topic`, () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -243,10 +245,10 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 			},
 		];
 		const actual = evaluateRepoTestHelper(repo, [], teams);
-		expect(actual.admin_access).toEqual(true);
+		assert.strictEqual(actual.admin_access, true);
 	});
 
-	test(`Should return false if all topics are unrecognised`, () => {
+	void test(`Should return false if all topics are unrecognised`, () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -255,22 +257,22 @@ describe('REPOSITORY_04 - Repository admin access', () => {
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.admin_access).toEqual(false);
+		assert.strictEqual(actual.admin_access, false);
 	});
 });
 
-describe('REPOSITORY_06 - Repository topics', () => {
-	test('Should return true when there is a single recognised topic', () => {
+void describe('REPOSITORY_06 - Repository topics', () => {
+	void test('Should return true when there is a single recognised topic', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.topics).toEqual(true);
+		assert.strictEqual(actual.topics, true);
 	});
 
-	test(`Should validate repos with an interactive topic`, () => {
+	void test(`Should validate repos with an interactive topic`, () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/service-catalogue',
@@ -279,10 +281,10 @@ describe('REPOSITORY_06 - Repository topics', () => {
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.topics).toEqual(true);
+		assert.strictEqual(actual.topics, true);
 	});
 
-	test('Should return false when there are multiple recognised topics', () => {
+	void test('Should return false when there are multiple recognised topics', () => {
 		// Having more than one recognised topic creates confusion about how the repo
 		// is being used, and could also confuse repocop.
 		const repo: Repository = {
@@ -291,43 +293,43 @@ describe('REPOSITORY_06 - Repository topics', () => {
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.topics).toEqual(false);
+		assert.strictEqual(actual.topics, false);
 	});
 
-	test('Should return true when there is are multiple topics, not all are recognised', () => {
+	void test('Should return true when there is are multiple topics, not all are recognised', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production', 'android'],
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.topics).toEqual(true);
+		assert.strictEqual(actual.topics, true);
 	});
 
-	test('Should return false when there are no topics', () => {
+	void test('Should return false when there are no topics', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: [],
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.topics).toEqual(false);
+		assert.strictEqual(actual.topics, false);
 	});
 
-	test('Should return false when there are no recognised topics', () => {
+	void test('Should return false when there are no recognised topics', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['android', 'mobile'],
 		};
 
 		const actual = evaluateRepoTestHelper(repo);
-		expect(actual.topics).toEqual(false);
+		assert.strictEqual(actual.topics, false);
 	});
 });
 
 // No rule for this evaluation yet
-describe('NO RULE - Repository maintenance', () => {
-	test('should have happened at some point in the last two years', () => {
+void describe('NO RULE - Repository maintenance', () => {
+	void test('should have happened at some point in the last two years', () => {
 		const recentRepo: Repository = {
 			...nullRepo,
 			created_at: new Date(),
@@ -340,10 +342,10 @@ describe('NO RULE - Repository maintenance', () => {
 
 		const recentEval = evaluateRepoTestHelper(recentRepo);
 		const oldEval = evaluateRepoTestHelper(oldRepo);
-		expect(recentEval.archiving).toEqual(true);
-		expect(oldEval.archiving).toEqual(false);
+		assert.strictEqual(recentEval.archiving, true);
+		assert.strictEqual(oldEval.archiving, false);
 	});
-	test('should be based only on the most recent date provided', () => {
+	void test('should be based only on the most recent date provided', () => {
 		const recentlyUpdatedRepo: Repository = {
 			...nullRepo,
 			updated_at: new Date(),
@@ -354,20 +356,20 @@ describe('NO RULE - Repository maintenance', () => {
 		};
 
 		const actual = evaluateRepoTestHelper(recentlyUpdatedRepo);
-		expect(actual.archiving).toEqual(true);
+		assert.strictEqual(actual.archiving, true);
 	});
-	test('is not a concern if no dates are found', () => {
+	void test('is not a concern if no dates are found', () => {
 		const recentlyUpdatedRepo: Repository = {
 			...nullRepo,
 		};
 
 		const actual = evaluateRepoTestHelper(recentlyUpdatedRepo);
-		expect(actual.archiving).toEqual(true);
+		assert.strictEqual(actual.archiving, true);
 	});
 });
 
-describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
-	test('should be findable if a stack has a matching tag', () => {
+void describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
+	void test('should be findable if a stack has a matching tag', () => {
 		const full_name = 'guardian/repo1';
 		const tags = {
 			'gu:repo': full_name,
@@ -384,9 +386,9 @@ describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
 			tags,
 		};
 		const result = findStacks(repo, [stack]).stacks.length;
-		expect(result).toEqual(1);
+		assert.strictEqual(result, 1);
 	});
-	test('should be findable if the repo name is part of the stack name', () => {
+	void test('should be findable if the repo name is part of the stack name', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/repo1',
@@ -400,12 +402,12 @@ describe('REPOSITORY_08 - Repositories with related stacks on AWS', () => {
 			creation_time: new Date(),
 		};
 		const result = findStacks(repo, [stack]).stacks.length;
-		expect(result).toEqual(1);
+		assert.strictEqual(result, 1);
 	});
 });
 
-describe('REPOSITORY_08 - Repositories without any related stacks on AWS', () => {
-	test('should not be findable', () => {
+void describe('REPOSITORY_08 - Repositories without any related stacks on AWS', () => {
+	void test('should not be findable', () => {
 		const repo: Repository = {
 			...nullRepo,
 			full_name: 'guardian/someRepo',
@@ -435,11 +437,11 @@ describe('REPOSITORY_08 - Repositories without any related stacks on AWS', () =>
 			creation_time: new Date(),
 		};
 		const result = findStacks(repo, [stack1, stack2]).stacks.length;
-		expect(result).toEqual(0);
+		assert.strictEqual(result, 0);
 	});
 });
 
-describe('REPOSITORY_09 - Dependency tracking', () => {
+void describe('REPOSITORY_09 - Dependency tracking', () => {
 	const emptyLanguages: github_languages = {
 		cq_sync_time: null,
 		cq_source_name: null,
@@ -471,7 +473,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		languages: ['Julia'],
 	};
 
-	test('is valid if all languages are supported by dependabot', () => {
+	void test('is valid if all languages are supported by dependabot', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
@@ -482,18 +484,18 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			[dependabotSupportedLanguages],
 			[],
 		);
-		expect(actual).toEqual(true);
+		assert.strictEqual(actual, true);
 	});
-	test('is not valid if a project uses a language dependabot/dependency graph integrator does not support', () => {
+	void test('is not valid if a project uses a language dependabot/dependency graph integrator does not support', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
 			full_name: 'guardian/some-repo',
 		};
 		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
-		expect(actual).toEqual(false);
+		assert.strictEqual(actual, false);
 	});
-	test('is not valid if a project uses a language supported by dependency graph integrator but there is no submission workflow for that language', () => {
+	void test('is not valid if a project uses a language supported by dependency graph integrator but there is no submission workflow for that language', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
@@ -504,9 +506,9 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			[dependabotAndDepGraphSupportedLanguages],
 			[nullWorkflows],
 		);
-		expect(actual).toEqual(false);
+		assert.strictEqual(actual, false);
 	});
-	test('is valid if a project uses a language supported by dependency graph integrator and has associated submission workflow for that language', () => {
+	void test('is valid if a project uses a language supported by dependency graph integrator and has associated submission workflow for that language', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
@@ -517,27 +519,27 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 			[dependabotAndDepGraphSupportedLanguages],
 			[sbtWorkflows],
 		);
-		expect(actual).toEqual(true);
+		assert.strictEqual(actual, true);
 	});
-	test('is valid if a repository has been archived', () => {
+	void test('is valid if a repository has been archived', () => {
 		const repo: Repository = {
 			...nullRepo,
 			archived: true,
 			full_name: 'guardian/some-repo',
 		};
 		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
-		expect(actual).toEqual(true);
+		assert.strictEqual(actual, true);
 	});
-	test('is valid if a repository has a non-production tag', () => {
+	void test('is valid if a repository has a non-production tag', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: [],
 			full_name: 'guardian/some-repo',
 		};
 		const actual = hasDependencyTracking(repo, [unsupportedLanguages], []);
-		expect(actual).toEqual(true);
+		assert.strictEqual(actual, true);
 	});
-	test('is valid if a repository has no languages', () => {
+	void test('is valid if a repository has no languages', () => {
 		const repo: Repository = {
 			...nullRepo,
 			topics: ['production'],
@@ -552,7 +554,7 @@ describe('REPOSITORY_09 - Dependency tracking', () => {
 		};
 
 		const actual = hasDependencyTracking(repo, [noLanguages], []);
-		expect(actual).toEqual(true);
+		assert.strictEqual(actual, true);
 	});
 });
 
@@ -585,24 +587,24 @@ const newHighDependabotVuln: RepocopVulnerability = {
 	alert_issue_date: new Date(),
 };
 
-describe('NO RULE - Dependabot alerts', () => {
-	test('should be flagged if there are critical alerts older than two days', () => {
-		expect(hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo)).toBe(
+void describe('NO RULE - Dependabot alerts', () => {
+	void test('should be flagged if there are critical alerts older than two days', () => {
+		assert.strictEqual(hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo), 
 			true,
 		);
 	});
-	test('should not be flagged if a critical alert was raised today', () => {
-		expect(hasOldAlerts([newCriticalDependabotVuln], thePerfectRepo)).toBe(
+	void test('should not be flagged if a critical alert was raised today', () => {
+		assert.strictEqual(hasOldAlerts([newCriticalDependabotVuln], thePerfectRepo), 
 			false,
 		);
 	});
-	test('should be flagged if there are high alerts older than 30 days', () => {
-		expect(hasOldAlerts([oldHighDependabotVuln], thePerfectRepo)).toBe(true);
+	void test('should be flagged if there are high alerts older than 30 days', () => {
+		assert.strictEqual(hasOldAlerts([oldHighDependabotVuln], thePerfectRepo), true);
 	});
-	test('should not be flagged if a high alert was raised today', () => {
-		expect(hasOldAlerts([newHighDependabotVuln], thePerfectRepo)).toBe(false);
+	void test('should not be flagged if a high alert was raised today', () => {
+		assert.strictEqual(hasOldAlerts([newHighDependabotVuln], thePerfectRepo), false);
 	});
-	test('should not be flagged if a high alert was raised 29 days ago', () => {
+	void test('should not be flagged if a high alert was raised 29 days ago', () => {
 		const thirteenDaysAgo = new Date();
 		thirteenDaysAgo.setDate(thirteenDaysAgo.getDate() - 29);
 
@@ -611,17 +613,17 @@ describe('NO RULE - Dependabot alerts', () => {
 			alert_issue_date: thirteenDaysAgo,
 		};
 
-		expect(hasOldAlerts([thirteenDayOldHigh], thePerfectRepo)).toBe(false);
+		assert.strictEqual(hasOldAlerts([thirteenDayOldHigh], thePerfectRepo), false);
 	});
 });
 
-describe('NO RULE - Vulnerabilities from Dependabot', () => {
+void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 	const fullName = 'guardian/myrepo';
 	const result: RepocopVulnerability[] = exampleDependabotAlert.map((alert) =>
 		dependabotAlertToRepocopVulnerability(fullName, alert),
 	);
 
-	test('Should be parseable into a common format', () => {
+	void test('Should be parseable into a common format', () => {
 		const expected1: RepocopVulnerability = {
 			full_name: fullName,
 			source: 'Dependabot',
@@ -659,16 +661,16 @@ describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			within_sla: false,
 		};
 
-		expect(result).toStrictEqual([expected1, expected2]);
+		assert.deepStrictEqual(result, [expected1, expected2]);
 	});
-	test('Should display only the most useful URL', () => {
+	void test('Should display only the most useful URL', () => {
 		const actual = result.map((r) => r.urls)[0];
 		const expected = ['https://github.com/advisories/GHSA-rf4j-j272-fj86'];
-		expect(actual?.slice(0, 1)).toEqual(expected);
+		assert.deepStrictEqual(actual?.slice(0, 1), expected);
 	});
 });
 
-describe('Deduplication of repocop vulnerabilities', () => {
+void describe('Deduplication of repocop vulnerabilities', () => {
 	const fullName = 'guardian/myrepo';
 	const vuln1: RepocopVulnerability = {
 		source: 'Dependabot',
@@ -697,27 +699,27 @@ describe('Deduplication of repocop vulnerabilities', () => {
 		within_sla: false,
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
-	test('Should happen if two vulnerabilities share the same CVEs', () => {
+	void test('Should happen if two vulnerabilities share the same CVEs', () => {
 		console.log(actual);
-		expect(actual.length).toStrictEqual(1);
+		assert.strictEqual(actual.length, 1);
 	});
-	test('Should return the critical vulnerability, given a choice betwen critical and high', () => {
-		expect(actual.map((x) => x.severity)).toStrictEqual(['critical']);
+	void test('Should return the critical vulnerability, given a choice betwen critical and high', () => {
+		assert.deepStrictEqual(actual.map((x) => x.severity), ['critical']);
 	});
-	test('Should not happen if two vulnerabilities have different CVEs', () => {
+	void test('Should not happen if two vulnerabilities have different CVEs', () => {
 		const vuln3: RepocopVulnerability = {
 			...vuln1,
 			cves: ['CVE-2018-6189'],
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln3]);
-		expect(actual.length).toStrictEqual(2);
+		assert.strictEqual(actual.length, 2);
 	});
-	test('Should not happen if no CVEs are provided', () => {
+	void test('Should not happen if no CVEs are provided', () => {
 		const vuln4: RepocopVulnerability = {
 			...vuln1,
 			cves: [],
 		};
 		const actual = deduplicateVulnerabilitiesByCve([vuln4, vuln4]);
-		expect(actual.length).toStrictEqual(2);
+		assert.strictEqual(actual.length, 2);
 	});
 });

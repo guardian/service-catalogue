@@ -6,6 +6,6 @@
 		"start": "APP=obligatron tsx src/run-locally.ts",
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@prisma/client --external:prisma",
 		"typecheck": "tsc --noEmit",
-		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects obligatron"
+		"test": "node --import tsx --test \"**/*.test.ts\""
 	}
 }

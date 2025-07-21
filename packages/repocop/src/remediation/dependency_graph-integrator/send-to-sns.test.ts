@@ -1,3 +1,5 @@
+import  assert from 'assert';
+import { describe, it, mock, test} from 'node:test';
 import type {
 	github_languages,
 	github_repository_custom_properties,
@@ -104,47 +106,47 @@ function repoWithoutWorkflow(fullName: string): guardian_github_actions_usage {
 	]);
 }
 
-describe('When trying to find repos using Scala', () => {
-	test('return true if Scala is found in the repo', () => {
+void describe('When trying to find repos using Scala', () => {
+	void test('return true if Scala is found in the repo', () => {
 		const result = checkRepoForLanguage(
 			repository(fullName),
 			[repoWithTargetLanguage(fullName, scala)],
 			scala,
 		);
 
-		expect(result).toBe(true);
+		assert.strictEqual(result, true);
 	});
-	test('return false if Scala is not found in the repo', () => {
+	void test('return false if Scala is not found in the repo', () => {
 		const result = checkRepoForLanguage(
 			repository(fullName),
 			[repoWithoutTargetLanguage(fullName)],
 			scala,
 		);
-		expect(result).toBe(false);
+		assert.strictEqual(result, false);
 	});
 });
 
-describe('When checking a repo for an existing dependency submission workflow', () => {
-	test('return true if repo workflow is present', () => {
+void describe('When checking a repo for an existing dependency submission workflow', () => {
+	void test('return true if repo workflow is present', () => {
 		const result = doesRepoHaveDepSubmissionWorkflowForLanguage(
 			repository(fullName),
 			[repoWithDepSubmissionWorkflow(fullName)],
 			scala,
 		);
-		expect(result).toBe(true);
+		assert.strictEqual(result, true);
 	});
-	test('return false if workflow is not present', () => {
+	void test('return false if workflow is not present', () => {
 		const result = doesRepoHaveDepSubmissionWorkflowForLanguage(
 			repository(fullName),
 			[repoWithoutWorkflow(fullName)],
 			scala,
 		);
-		expect(result).toBe(false);
+		assert.strictEqual(result, false);
 	});
 });
 
-describe('When getting suitable repos to send to SNS', () => {
-	test('return the repo when a Scala repo is found without an existing workflow', () => {
+void describe('When getting suitable repos to send to SNS', () => {
+	void test('return the repo when a Scala repo is found without an existing workflow', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName, scala)],
 			[repository(fullName)],
@@ -153,27 +155,27 @@ describe('When getting suitable repos to send to SNS', () => {
 		);
 		const expected = [repositoryWithDepGraphLanguage(fullName, scala)];
 
-		expect(result).toEqual(expected);
+		assert.deepStrictEqual(result, expected);
 	});
-	test('return empty repo array when a Scala repo is found with an existing workflow', () => {
+	void test('return empty repo array when a Scala repo is found with an existing workflow', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName, scala)],
 			[repository(fullName)],
 			[repoWithDepSubmissionWorkflow(fullName)],
 			[],
 		);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
-	test('return empty array when non-Scala/Kotlin repo is found with without an existing workflow', () => {
+	void test('return empty array when non-Scala/Kotlin repo is found with without an existing workflow', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithoutTargetLanguage(fullName)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[],
 		);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
-	test('return both repos when 2 Scala repos are found without an existing workflow', () => {
+	void test('return both repos when 2 Scala repos are found without an existing workflow', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[
 				repoWithTargetLanguage(fullName, scala),
@@ -188,7 +190,7 @@ describe('When getting suitable repos to send to SNS', () => {
 			repositoryWithDepGraphLanguage(fullName2, scala),
 		];
 
-		expect(result).toEqual(expected);
+		assert.deepStrictEqual(result, expected);
 	});
 	function exemptedCustomProperty(): github_repository_custom_properties {
 		return {
@@ -215,7 +217,7 @@ describe('When getting suitable repos to send to SNS', () => {
 			value: null,
 		};
 	}
-	test('return the repo when a Scala repo is found without an existing workflow and repo is not exempt', () => {
+	void test('return the repo when a Scala repo is found without an existing workflow and repo is not exempt', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName, scala)],
 			[repository(fullName)],
@@ -224,9 +226,9 @@ describe('When getting suitable repos to send to SNS', () => {
 		);
 		const expected = [repositoryWithDepGraphLanguage(fullName, scala)];
 
-		expect(result).toEqual(expected);
+		assert.deepStrictEqual(result, expected);
 	});
-	test('return the repo when a Kotlin repo is found without an existing workflow and repo is not exempt', () => {
+	void test('return the repo when a Kotlin repo is found without an existing workflow and repo is not exempt', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName, kotlin)],
 			[repository(fullName)],
@@ -235,25 +237,25 @@ describe('When getting suitable repos to send to SNS', () => {
 		);
 		const expected = [repositoryWithDepGraphLanguage(fullName, kotlin)];
 
-		expect(result).toEqual(expected);
+		assert.deepStrictEqual(result, expected);
 	});
-	test('return empty repo array when a Scala repo is found without an existing workflow but is exempt', () => {
+	void test('return empty repo array when a Scala repo is found without an existing workflow but is exempt', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName, scala)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[exemptedCustomProperty()],
 		);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
-	test('return empty repo array when a Kotlin repo is found without an existing workflow but is exempt', () => {
+	void test('return empty repo array when a Kotlin repo is found without an existing workflow but is exempt', () => {
 		const result = getSuitableReposWithoutWorkflows(
 			[repoWithTargetLanguage(fullName, kotlin)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
 			[{ ...exemptedCustomProperty(), value: kotlin }],
 		);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
 
 	const ownershipRecord1: view_repo_ownership = {
@@ -268,7 +270,7 @@ describe('When getting suitable repos to send to SNS', () => {
 		team_contact_email: 'team@team.com',
 	};
 
-	test('return an event with an admins where they exist', () => {
+	void test('return an event with an admins where they exist', () => {
 		const ownershipRecord2: view_repo_ownership = {
 			...ownershipRecord1,
 			github_team_id: BigInt(2),
@@ -280,7 +282,7 @@ describe('When getting suitable repos to send to SNS', () => {
 			[repositoryWithDepGraphLanguage(fullName, scala)],
 			[ownershipRecord1, ownershipRecord2],
 		);
-		expect(result).toEqual([
+		assert.deepStrictEqual(result, [
 			{
 				name: removeRepoOwner(fullName),
 				language: scala,
@@ -288,7 +290,7 @@ describe('When getting suitable repos to send to SNS', () => {
 			},
 		]);
 	});
-	test('do not return event with an admin if none are correct', () => {
+	void test('do not return event with an admin if none are correct', () => {
 		const ownershipRecord: view_repo_ownership = {
 			...ownershipRecord1,
 			full_repo_name: 'guardian/other-repo',
@@ -299,7 +301,7 @@ describe('When getting suitable repos to send to SNS', () => {
 			[repositoryWithDepGraphLanguage(fullName, scala)],
 			[ownershipRecord],
 		);
-		expect(result).toEqual([
+		assert.deepStrictEqual(result, [
 			{
 				name: removeRepoOwner(fullName),
 				language: scala,
@@ -324,7 +326,7 @@ function mockOctokit(pulls: unknown[]) {
 	} as Octokit;
 }
 
-describe('getPullRequest', () => {
+void describe('getPullRequest', () => {
 	const featureBranch = {
 		head: {
 			ref: 'feature-branch',
@@ -352,7 +354,7 @@ describe('getPullRequest', () => {
 		},
 	};
 
-	it('should return undefined when no matching branch found', async () => {
+	void it('should return undefined when no matching branch found', async () => {
 		const pulls = [featureBranch];
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
@@ -360,10 +362,10 @@ describe('getPullRequest', () => {
 			'owner',
 			'gu-dependency-graph-integrator[bot]',
 		);
-		expect(foundPull).toBeUndefined();
+		assert.strictEqual(foundPull, undefined);
 	});
 
-	it('should return pull request when author matches', async () => {
+	void it('should return pull request when author matches', async () => {
 		const pulls = [featureBranch, dependabotBranch];
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
@@ -371,11 +373,11 @@ describe('getPullRequest', () => {
 			'owner',
 			'gu-dependency-graph-integrator[bot]',
 		);
-		expect(foundPull).toEqual(dependabotBranch);
+		assert.strictEqual(foundPull, dependabotBranch);
 	});
 
-	it('should return first pull request that matches and log warning', async () => {
-		const warn = jest.spyOn(console, 'warn');
+	void it('should return first pull request that matches and log warning', async () => {
+		const warnMock = mock.method(console, 'warn');
 		const pulls = [featureBranch, dependabotBranch, dependabotBranch2];
 		const foundPull = await getExistingPullRequest(
 			mockOctokit(pulls),
@@ -383,10 +385,12 @@ describe('getPullRequest', () => {
 			'owner',
 			'gu-dependency-graph-integrator[bot]',
 		);
-		expect(foundPull).toEqual(dependabotBranch);
-		expect(warn).toHaveBeenCalledWith(
-			`Found 2 PRs on repo - choosing the first.`,
+		assert.strictEqual(foundPull, dependabotBranch);
+		assert.ok(
+			warnMock.mock.calls.some(
+				call => call.arguments[0] === 'Found 2 PRs on repo - choosing the first.'
+			)
 		);
-		warn.mockRestore();
+		warnMock.mock.restore();
 	});
 });

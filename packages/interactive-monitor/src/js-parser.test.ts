@@ -1,14 +1,16 @@
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import { getPathFromConfigFile, parseFileToJS } from './js-parser';
 
-describe('getPathFromConfigFile', () => {
-	it('should return a valid path from a valid js file', () => {
+void describe('getPathFromConfigFile', () => {
+	void it('should return a valid path from a valid js file', () => {
 		const rawFile1 = String.raw`export default {
             title: "Iran protests",
             path: "2022/10/iran-protests"}`;
 
 		const file1 = parseFileToJS(rawFile1)!;
 
-		expect(getPathFromConfigFile(file1)).toEqual('2022/10/iran-protests');
+		assert.strictEqual(getPathFromConfigFile(file1), '2022/10/iran-protests');
 
 		const rawFile2 = String.raw`export default {
             title: "Some Title",
@@ -24,22 +26,22 @@ describe('getPathFromConfigFile', () => {
 		const file2 = parseFileToJS(rawFile2)!;
 
 		const result = getPathFromConfigFile(file2);
-		expect(result).toEqual('2022/10/some-title');
+		assert.strictEqual(result, '2022/10/some-title');
 	});
-	it('should return undefined if the JS file is invalid', () => {
+	void it('should return undefined if the JS file is invalid', () => {
 		const rawFile = String.raw`export default {
 		    title: "Iran protests",
 		    asdf: "2022/10/iran-protests"}`;
 
 		const file = parseFileToJS(rawFile)!;
 
-		expect(getPathFromConfigFile(file)).toBeUndefined();
+		assert.strictEqual(getPathFromConfigFile(file), undefined);
 	});
-	it('should return undefined if the JS file is empty', () => {
+	void it('should return undefined if the JS file is empty', () => {
 		const rawFile = '';
 
 		const file = parseFileToJS(rawFile)!;
 
-		expect(getPathFromConfigFile(file)).toBeUndefined();
+		assert.strictEqual(getPathFromConfigFile(file), undefined);
 	});
 });

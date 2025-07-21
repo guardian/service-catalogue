@@ -1,8 +1,10 @@
+import  assert from 'assert';
+import { describe, test } from 'node:test';
 import type { RepocopVulnerability, Repository } from 'common/src/types';
 import { isProduction, vulnSortPredicate } from './utils';
 
-describe('isProduction', () => {
-	test('should return correct values for prod and non-prod repos', () => {
+void describe('isProduction', () => {
+	void test('should return correct values for prod and non-prod repos', () => {
 		const prodRepo: Repository = {
 			archived: false,
 			full_name: 'test',
@@ -19,13 +21,13 @@ describe('isProduction', () => {
 			topics: [],
 		};
 
-		expect(isProduction(prodRepo)).toBe(true);
-		expect(isProduction(nonProdRepo)).toBe(false);
+		assert.strictEqual(isProduction(prodRepo), true);
+		assert.strictEqual(isProduction(nonProdRepo), false);
 	});
 });
 
-describe('vulnSortingPredicate', () => {
-	test('should order by severity, and then patchability', () => {
+void describe('vulnSortingPredicate', () => {
+	void test('should order by severity, and then patchability', () => {
 		const criticalPatchable: RepocopVulnerability = {
 			package: 'test',
 			severity: 'critical',
@@ -60,7 +62,7 @@ describe('vulnSortingPredicate', () => {
 		];
 		const result = vulns.sort(vulnSortPredicate);
 
-		expect(result).toStrictEqual([
+		assert.deepStrictEqual(result, [
 			criticalPatchable,
 			criticalNotPatchable,
 			highPatchable,
@@ -68,7 +70,7 @@ describe('vulnSortingPredicate', () => {
 		]);
 
 		const vulns2 = [highNotPatchable, criticalPatchable, criticalPatchable];
-		expect(vulns2.sort(vulnSortPredicate)).toStrictEqual([
+		assert.deepStrictEqual(vulns2.sort(vulnSortPredicate), [
 			criticalPatchable,
 			criticalPatchable,
 			highNotPatchable,

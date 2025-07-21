@@ -2,7 +2,7 @@
   "name": "cdk",
   "version": "1.0.0",
   "scripts": {
-    "test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects cdk",
+    "test": "jest --detectOpenHandles --config ./jest.config.js --selectProjects cdk",
     "synth": "cdk synth --path-metadata false --version-reporting false",
     "build": "npm run synth",
     "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE",
@@ -11,12 +11,15 @@
   "devDependencies": {
     "@guardian/cdk": "61.5.2",
     "@guardian/private-infrastructure-config": "github:guardian/private-infrastructure-config#v4.0.0",
+    "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "aws-cdk": "2.1014.0",
     "aws-cdk-lib": "2.195.0",
     "aws-cron-parser": "^1.1.12",
     "constructs": "10.4.2",
+    "jest": "^30.0.4",
     "js-yaml": "^4.1.0",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "ts-jest": "^29.4.0"
   }
 }

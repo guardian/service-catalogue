@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"postinstall": "prisma generate",
-		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects common",
+		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc"
 	},
 	"dependencies": {

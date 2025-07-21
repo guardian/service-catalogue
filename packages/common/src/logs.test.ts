@@ -1,7 +1,10 @@
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import { getCentralElkLink } from './logs';
 
-describe('getCentralElkUrl', () => {
-	it('should form a valid link', () => {
+
+void describe('getCentralElkUrl', () => {
+	void it('should form a valid link', () => {
 		const actual = getCentralElkLink({
 			filters: {
 				stack: 'deploy',
@@ -11,10 +14,10 @@ describe('getCentralElkUrl', () => {
 		});
 		const expected =
 			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stack:'deploy'))),(query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(app:'service-catalogue')))))";
-		expect(actual).toEqual(expected);
+		assert.strictEqual(actual, expected);
 	});
 
-	it('should form a valid link with columns', () => {
+	void it('should form a valid link with columns', () => {
 		const actual = getCentralElkLink({
 			filters: {
 				stack: 'deploy',
@@ -25,6 +28,6 @@ describe('getCentralElkUrl', () => {
 		});
 		const expected =
 			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stack:'deploy'))),(query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(app:'service-catalogue')))))&_a=(columns:!(message))";
-		expect(actual).toEqual(expected);
+		assert.strictEqual(actual, expected);
 	});
 });

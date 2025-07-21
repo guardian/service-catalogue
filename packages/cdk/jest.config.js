@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires -- can't use import here
 const dotenv = require('dotenv');
 
 // Load environment variables from .env file at the root of the repository
@@ -45,8 +44,8 @@ module.exports = {
 			transformIgnorePatterns: [
 				'node_modules/(?!@guardian/private-infrastructure-config)',
 			],
-			setupFilesAfterEnv: [`<rootDir>/packages/cdk/jest.setup.js`],
-			testMatch: ['<rootDir>/packages/cdk/**/*.test.ts'],
+			setupFilesAfterEnv: [`<rootDir>/jest.setup.js`],
+			testMatch: ['<rootDir>/**/*.test.ts'],
 		},
 		{
 			displayName: 'cloudbuster',

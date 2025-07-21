@@ -1,19 +1,21 @@
+import  assert from 'assert';
+import { describe, it } from 'node:test';
 import { findContactableOwners, removeRepoOwner } from './shared-utilities';
 
-describe('removeRepoOwner', () => {
-	it('should strip the owner from the full repo name', () => {
+void describe('removeRepoOwner', () => {
+	void it('should strip the owner from the full repo name', () => {
 		const fullRepoName = 'guardian/repo-1';
 		const result: string = removeRepoOwner(fullRepoName);
-		expect(result).toEqual('repo-1');
+		assert.strictEqual(result, 'repo-1');
 	});
 });
 
-describe('findContactableOwners', () => {
-	it('should not return anything if nothing is passed in', () => {
+void describe('findContactableOwners', () => {
+	void it('should not return anything if nothing is passed in', () => {
 		const result = findContactableOwners('my-repo', []);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
-	it('should not return anything if the repo is not found in the table', () => {
+	void it('should not return anything if the repo is not found in the table', () => {
 		const result = findContactableOwners('my-repo', [
 			{
 				full_repo_name: 'not-my-repo',
@@ -27,9 +29,9 @@ describe('findContactableOwners', () => {
 				team_contact_email: 'team-one@email.com',
 			},
 		]);
-		expect(result).toEqual([]);
+		assert.deepStrictEqual(result, []);
 	});
-	it('should return a team if the full repo name is correct', () => {
+	void it('should return a team if the full repo name is correct', () => {
 		const result = findContactableOwners('my-repo', [
 			{
 				full_repo_name: 'my-repo',
@@ -43,6 +45,6 @@ describe('findContactableOwners', () => {
 				team_contact_email: 'team-one@email.com',
 			},
 		]);
-		expect(result).toEqual(['team-one']);
+		assert.deepStrictEqual(result, ['team-one']);
 	});
 });

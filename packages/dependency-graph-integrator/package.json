@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
 		"start": "tsx src/run-locally.ts",
-		"test": "jest --detectOpenHandles --config ../../jest.config.js --selectProjects dependency-graph-integrator",
+		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {

@@ -1,8 +1,9 @@
-import type { Repository } from 'common/types';
+import  assert from 'assert';
+import { describe, it } from 'node:test';import type { Repository } from 'common/types';
 import type { ObligatronRepocopVulnerability } from './dependency-vulnerabilities';
 import { evaluateObligationForOneRepo } from './dependency-vulnerabilities';
 
-describe('The dependency vulnerabilities obligation', () => {
+void describe('The dependency vulnerabilities obligation', () => {
 	const someDate = new Date('2020-01-01');
 
 	const myRepo: Repository = {
@@ -32,7 +33,7 @@ describe('The dependency vulnerabilities obligation', () => {
 		within_sla: false,
 	};
 
-	it('should return something if it finds a vulnerability on a repo', () => {
+	void it('should return something if it finds a vulnerability on a repo', () => {
 		const actual = evaluateObligationForOneRepo([myVuln], myRepo);
 		console.log(actual);
 
@@ -43,17 +44,17 @@ describe('The dependency vulnerabilities obligation', () => {
 			contacts: { slugs: ['owner1'] },
 		};
 
-		expect(actual).toEqual(expected);
+		assert.deepStrictEqual(actual, expected);
 	});
-	it('should return undefined if it finds no vulnerabilities on a repo', () => {
+	void it('should return undefined if it finds no vulnerabilities on a repo', () => {
 		const actual = evaluateObligationForOneRepo([], myRepo);
-		expect(actual).toBeUndefined();
+		assert.strictEqual(actual, undefined);
 	});
-	it('should return undefined if it finds only vulnerabilities related to other repos', () => {
+	void it('should return undefined if it finds only vulnerabilities related to other repos', () => {
 		const actual = evaluateObligationForOneRepo([myVuln], {
 			...myRepo,
 			full_name: 'other/repo',
 		});
-		expect(actual).toBeUndefined();
+		assert.strictEqual(actual, undefined);
 	});
 });
