@@ -26,13 +26,14 @@ describe('findingsToGuardianFormat', () => {
 		resources: [resource1, resource2],
 		workflow: { Status: 'NEW' },
 	};
+
 	it('should return n elements if n resources are associated with a finding', () => {
 		const actual = findingsToGuardianFormat(x);
 		expect(actual.length).toEqual(2);
 	});
 	it('should return the relevant data in the appropriate fields', () => {
 		const actual = findingsToGuardianFormat(x);
-		const expected = {
+		const expected: cloudbuster_fsbp_vulnerabilities = {
 			severity: 'HIGH',
 			control_id: 'S.1',
 			title: 'title',
@@ -47,9 +48,17 @@ describe('findingsToGuardianFormat', () => {
 			aws_account_id: '0123456',
 			within_sla: false,
 			remediation: 'url',
+			suppressed: false,
 		};
 		expect(actual[0]).toEqual(expected);
 		expect(actual[1]).toEqual({ ...expected, arn: 'arn:instance:2' });
+	});
+	it('should detect whether a finding is suppressed or not', () => {
+		expect(findingsToGuardianFormat(x)[0]?.suppressed).toBe(false);
+		expect(findingsToGuardianFormat({ ...x, workflow: { Status: 'NOTIFIED' } })[0]?.suppressed).toBe(false);
+		expect(findingsToGuardianFormat({ ...x, workflow: { Status: 'SUPPRESSED' } })[0]?.suppressed).toBe(true);
+		expect(findingsToGuardianFormat({ ...x, workflow: { Status: 'RESOLVED' } })[0]?.suppressed).toBe(false);
+
 	});
 });
 
@@ -72,6 +81,7 @@ function mockFinding(
 		stack: null,
 		stage: null,
 		app: null,
+		suppressed: false,
 	};
 }
 

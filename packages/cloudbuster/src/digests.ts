@@ -105,7 +105,7 @@ function formatFindings(
 	const findingsString = findingsCount === 1 ? 'finding' : 'findings';
 	const regions = [...new Set(findings.map((f) => f.aws_region))].join(', ');
 	const url = `https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=${encodeURIComponent(account_name)}&var-control_id=${control_id}`;
-	return `[${findingsCount} ${findingsString}](${url})${app} for control [${control_id}](${remediation}), in ${regions}, (${title})`;
+	return `[${findingsCount} ${findingsString}](${url})${app} for control [${control_id}](${remediation}), in ${regions} (${title})`;
 }
 
 function createEmailBody(

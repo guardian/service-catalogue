@@ -245,8 +245,9 @@ model cloudbuster_fsbp_vulnerabilities {
   title             String?
   within_sla        Boolean
   remediation       String?
+  suppressed        Boolean   @default(false)
 
-  @@id([arn, control_id])
+  @@id([arn, control_id, aws_region])
   @@index([aws_account_name], map: "idx_account_name")
   @@index([aws_region], map: "idx_aws_region")
   @@index([within_sla], map: "idx_within_sla")
