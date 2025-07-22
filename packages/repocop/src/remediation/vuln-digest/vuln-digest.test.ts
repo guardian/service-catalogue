@@ -4,10 +4,10 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { RepocopVulnerability } from 'common/src/types';
-import type { EvaluationResult, Team } from '../../types';
-import { removeRepoOwner } from '../shared-utilities';
-import { createDigestForSeverity } from './vuln-digest';
+import type { RepocopVulnerability } from 'common/src/types.js';
+import type { EvaluationResult, Team } from '../../types.js';
+import { removeRepoOwner } from '../shared-utilities.js';
+import { createDigestForSeverity } from './vuln-digest.js';
 
 const fullName = 'guardian/repo';
 const anotherFullName = 'guardian/another-repo';

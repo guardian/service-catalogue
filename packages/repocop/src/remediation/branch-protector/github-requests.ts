@@ -1,5 +1,5 @@
 import type { Octokit } from 'octokit';
-import type { UpdateBranchProtectionParams } from './model';
+import type { UpdateBranchProtectionParams } from './model.js';
 
 export async function updateBranchProtection(
 	octokit: Octokit,

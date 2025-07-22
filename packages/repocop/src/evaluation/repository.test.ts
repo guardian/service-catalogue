@@ -6,9 +6,9 @@ import type {
 	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
-import type { RepocopVulnerability, Repository } from 'common/src/types';
-import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts';
-import type { AwsCloudFormationStack } from '../types';
+import type { RepocopVulnerability, Repository } from 'common/src/types.js';
+import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts.js';
+import type { AwsCloudFormationStack } from '../types.js';
 import {
 	deduplicateVulnerabilitiesByCve,
 	dependabotAlertToRepocopVulnerability,
@@ -16,7 +16,7 @@ import {
 	findStacks,
 	hasDependencyTracking,
 	hasOldAlerts,
-} from './repository';
+} from './repository.js';
 
 function evaluateRepoTestHelper(
 	repo: Repository,

@@ -4,7 +4,7 @@ import {
 	PutMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
 import type { repocop_github_repository_rules } from '@prisma/client';
-import type { Config } from './config';
+import type { Config } from './config.js';
 
 export function getPercentageTrue(booleanishArray: Array<boolean | null>) {
 	const array = booleanishArray.filter((x): x is boolean => x !== null);

@@ -1,7 +1,7 @@
 import  assert from 'assert';
 import { describe, test } from 'node:test';
-import type { RepocopVulnerability, Repository } from 'common/src/types';
-import { isProduction, vulnSortPredicate } from './utils';
+import type { RepocopVulnerability, Repository } from 'common/src/types.js';
+import { isProduction, vulnSortPredicate } from './utils.js';
 
 void describe('isProduction', () => {
 	void test('should return correct values for prod and non-prod repos', () => {

@@ -6,17 +6,17 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { awsClientConfig } from 'common/aws';
-import { partition, stageAwareOctokit } from 'common/functions';
-import { getPrismaClient } from 'common/src/database-setup';
-import type { RepocopVulnerability } from 'common/src/types';
-import type { Config } from './config';
-import { getConfig } from './config';
+import { awsClientConfig } from 'common/aws.js';
+import { partition, stageAwareOctokit } from 'common/functions.js';
+import { getPrismaClient } from 'common/src/database-setup.js';
+import type { RepocopVulnerability } from 'common/src/types.js';
+import type { Config } from './config.js';
+import { getConfig } from './config.js';
 import {
 	evaluateRepositories,
 	testExperimentalRepocopFeatures,
-} from './evaluation/repository';
-import { sendToCloudwatch } from './metrics';
+} from './evaluation/repository.js';
+import { sendToCloudwatch } from './metrics.js';
 import {
 	getDependabotVulnerabilities,
 	getProductionWorkflowUsages,
@@ -27,14 +27,14 @@ import {
 	getRepositoryLanguages,
 	getStacks,
 	getTeams,
-} from './query';
-import { protectBranches } from './remediation/branch-protector/branch-protection';
-import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns';
-import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive';
-import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production';
-import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest';
-import type { AwsCloudFormationStack, EvaluationResult } from './types';
-import { isProduction } from './utils';
+} from './query.js';
+import { protectBranches } from './remediation/branch-protector/branch-protection.js';
+import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns.js';
+import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive.js';
+import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production.js';
+import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest.js';
+import type { AwsCloudFormationStack, EvaluationResult } from './types.js';
+import { isProduction } from './utils.js';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],

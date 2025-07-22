@@ -10,16 +10,16 @@ import type {
 	NonEmptyArray,
 	RepocopVulnerability,
 	Repository,
-} from 'common/src/types';
+} from 'common/src/types.js';
 import type { Octokit } from 'octokit';
-import { toNonEmptyArray } from '../../common/src/functions';
-import { dependabotAlertToRepocopVulnerability } from './evaluation/repository';
+import { toNonEmptyArray } from '../../common/src/functions.js';
+import { dependabotAlertToRepocopVulnerability } from './evaluation/repository.js';
 import type {
 	Alert,
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	Team,
-} from './types';
+} from './types.js';
 
 export async function getRepositories(
 	client: PrismaClient,

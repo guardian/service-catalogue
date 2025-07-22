@@ -2,17 +2,17 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { shuffle } from 'common/src/functions';
-import type { Repository, UpdateMessageEvent } from 'common/src/types';
+import { shuffle } from 'common/src/functions.js';
+import type { Repository, UpdateMessageEvent } from 'common/src/types.js';
 import type { Octokit } from 'octokit';
-import type { Config } from '../../config';
-import { findContactableOwners } from '../shared-utilities';
-import { notify } from './aws-requests';
+import type { Config } from '../../config.js';
+import { findContactableOwners } from '../shared-utilities.js';
+import { notify } from './aws-requests.js';
 import {
 	getDefaultBranchName,
 	isBranchProtected,
 	updateBranchProtection,
-} from './github-requests';
+} from './github-requests.js';
 
 export function createBranchProtectionEvents(
 	evaluatedRepos: repocop_github_repository_rules[],

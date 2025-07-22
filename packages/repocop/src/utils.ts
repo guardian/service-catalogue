@@ -1,4 +1,4 @@
-import type { RepocopVulnerability, Repository } from 'common/src/types';
+import type { RepocopVulnerability, Repository } from 'common/src/types.js';
 
 export function isProduction(repo: Repository) {
 	return repo.topics.includes('production') && !repo.archived;

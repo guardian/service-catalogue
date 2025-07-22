@@ -2,8 +2,8 @@ import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import {
 	anghammaradThreadKey,
 	branchProtectionCtas,
-} from 'common/src/functions';
-import type { Config } from '../../config';
+} from 'common/src/functions.js';
+import type { Config } from '../../config.js';
 
 export async function notify(
 	fullRepoName: string,

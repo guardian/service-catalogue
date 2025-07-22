@@ -1,12 +1,12 @@
 import  assert from 'assert';
-import { describe, it } from 'node:test';import type { Repository } from 'common/src/types';
-import { nullRepo } from '../../evaluation/repository.test';
-import type { AwsCloudFormationStack } from '../../types';
+import { describe, it } from 'node:test';import type { Repository } from 'common/src/types.js';
+import { nullRepo } from '../../evaluation/repository.test.js';
+import type { AwsCloudFormationStack } from '../../types.js';
 import {
 	createMessage,
 	findReposInProdWithoutProductionTopic,
 	getRepoNamesWithoutProductionTopic,
-} from './topic-monitor-production';
+} from './topic-monitor-production.js';
 
 const myRepoProdStack: AwsCloudFormationStack = {
 	stack_name: 'hello-my-repo-PROD',

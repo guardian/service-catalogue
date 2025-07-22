@@ -4,13 +4,13 @@ import {
 	anghammaradThreadKey,
 	applyTopics,
 	topicMonitoringProductionTagCtas,
-} from 'common/src/functions';
-import { stripMargin } from 'common/src/string';
-import type { Repository } from 'common/src/types';
+} from 'common/src/functions.js';
+import { stripMargin } from 'common/src/string.js';
+import type { Repository } from 'common/src/types.js';
 import type { Octokit } from 'octokit';
-import type { Config } from '../../config';
-import type { AwsCloudFormationStack } from '../../types';
-import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
+import type { Config } from '../../config.js';
+import type { AwsCloudFormationStack } from '../../types.js';
+import { findContactableOwners, removeRepoOwner } from '../shared-utilities.js';
 
 const MONTHS = 3;
 interface AnghammaradTextFields {

@@ -1,11 +1,11 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
-import { daysLeftToFix } from 'common/src/functions';
-import { SLAs } from 'common/src/types';
-import type { RepocopVulnerability } from 'common/src/types';
-import type { Config } from '../../config';
-import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types';
-import { removeRepoOwner } from '../shared-utilities';
+import { daysLeftToFix } from 'common/src/functions.js';
+import { SLAs } from 'common/src/types.js';
+import type { RepocopVulnerability } from 'common/src/types.js';
+import type { Config } from '../../config.js';
+import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types.js';
+import { removeRepoOwner } from '../shared-utilities.js';
 
 function getOwningRepos(
 	team: Team,
