@@ -1,8 +1,8 @@
-import { getPrismaClient } from 'common/src/database-setup';
-import { getConfig } from './config';
-import { getWorkflows } from './db-read';
-import { saveResults } from './db-write';
-import { extractGithubUsesStrings } from './transform';
+import { getPrismaClient } from 'common/src/database-setup.js';
+import { getConfig } from './config.js';
+import { getWorkflows } from './db-read.js';
+import { saveResults } from './db-write.js';
+import { extractGithubUsesStrings } from './transform.js';
 
 export async function main(...args: unknown[]) {
 	console.log(

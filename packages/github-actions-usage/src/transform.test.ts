@@ -1,12 +1,12 @@
 import fs from 'fs';
 import assert from 'node:assert';
 import { describe, test } from 'node:test';
-import type { GithubWorkflow } from './transform';
+import type { GithubWorkflow } from './transform.js';
 import {
 	getUsesInWorkflowTemplate,
 	getWorkflowTemplate,
 	removeUndefined,
-} from './transform';
+} from './transform.js';
 
 const readWorkflowFile = (path: string): string =>
 	fs.readFileSync(`test/fixtures/${path}`, 'utf8');

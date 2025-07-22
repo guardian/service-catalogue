@@ -9,8 +9,8 @@ import type {
 	Step,
 	WorkflowJob,
 } from '@actions/workflow-parser/model/workflow-template';
-import type { RawGithubWorkflow } from './db-read';
-import type { UnsavedGithubActionUsage } from './db-write';
+import type { RawGithubWorkflow } from './db-read.js';
+import type { UnsavedGithubActionUsage } from './db-write.js';
 
 export function removeUndefined<T>(array: Array<T | undefined>): T[] {
 	return array.filter((item): item is T => item !== undefined);
