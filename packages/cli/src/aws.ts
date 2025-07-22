@@ -13,9 +13,9 @@ import {
 	SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
-import { awsClientConfig } from 'common/aws';
-import { getCentralElkLink } from 'common/logs';
-import type { DatabaseConfig } from 'common/src/database-setup';
+import { awsClientConfig } from 'common/aws.js';
+import { getCentralElkLink } from 'common/logs.js';
+import type { DatabaseConfig } from 'common/src/database-setup.js';
 import terminalLink from 'terminal-link';
 
 interface EcsResourceTags {

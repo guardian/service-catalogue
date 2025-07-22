@@ -1,7 +1,7 @@
 import type { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import { getDatabaseConnectionString } from 'common/src/database-setup';
+import { getDatabaseConnectionString } from 'common/src/database-setup.js';
 import { $ } from 'execa';
-import { getRdsConfig } from './aws';
+import { getRdsConfig } from './aws.js';
 
 /**
  * Performs a Prisma migration against the local database.
