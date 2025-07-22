@@ -2,9 +2,9 @@ import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
-} from 'common/database-setup';
-import { getEnvOrThrow } from 'common/functions';
-import type { PrismaConfig } from 'common/src/database-setup';
+} from 'common/database-setup.js';
+import { getEnvOrThrow } from 'common/functions.js';
+import type { PrismaConfig } from 'common/src/database-setup.js';
 
 export interface Config extends PrismaConfig {
 	/**

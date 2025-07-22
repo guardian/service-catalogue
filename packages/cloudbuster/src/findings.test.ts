@@ -1,9 +1,9 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
-import type { SecurityHubFinding } from 'common/types';
-import { findingsToGuardianFormat, groupFindingsByAccount } from './findings';
-import type { GroupedFindings } from './types';
+import type { SecurityHubFinding } from 'common/types.js';
+import { findingsToGuardianFormat, groupFindingsByAccount } from './findings.js';
+import type { GroupedFindings } from './types.js';
 
 
 void describe('findingsToGuardianFormat', () => {

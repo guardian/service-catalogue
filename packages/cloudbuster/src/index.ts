@@ -1,12 +1,12 @@
 import { Anghammarad } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
-import { logger } from 'common/logs';
-import { getFsbpFindings } from 'common/src/database-queries';
-import { getPrismaClient } from 'common/src/database-setup';
-import type { SecurityHubSeverity } from 'common/src/types';
-import { getConfig } from './config';
-import { createDigestsFromFindings, sendDigest } from './digests';
-import { findingsToGuardianFormat } from './findings';
+import { logger } from 'common/logs.js';
+import { getFsbpFindings } from 'common/src/database-queries.js';
+import { getPrismaClient } from 'common/src/database-setup.js';
+import type { SecurityHubSeverity } from 'common/src/types.js';
+import { getConfig } from './config.js';
+import { createDigestsFromFindings, sendDigest } from './digests.js';
+import { findingsToGuardianFormat } from './findings.js';
 
 export async function main() {
 	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];

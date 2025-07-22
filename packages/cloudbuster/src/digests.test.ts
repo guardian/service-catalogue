@@ -1,8 +1,8 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
-import type { SecurityHubSeverity } from 'common/types';
-import { createDigestForAccount, createDigestsFromFindings } from './digests';
+import type { SecurityHubSeverity } from 'common/types.js';
+import { createDigestForAccount, createDigestsFromFindings } from './digests.js';
 
 
 void describe('createDigestForAccount', () => {

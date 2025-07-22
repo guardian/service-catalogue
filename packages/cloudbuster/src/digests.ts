@@ -1,12 +1,12 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
-import { stringToSeverity } from 'common/src/functions';
-import { logger } from 'common/src/logs';
-import type { SecurityHubSeverity, Severity } from 'common/src/types';
-import { type Config } from './config';
-import { groupFindingsByAccount } from './findings';
-import type { Digest } from './types';
+import { stringToSeverity } from 'common/src/functions.js';
+import { logger } from 'common/src/logs.js';
+import type { SecurityHubSeverity, Severity } from 'common/src/types.js';
+import { type Config } from './config.js';
+import { groupFindingsByAccount } from './findings.js';
+import type { Digest } from './types.js';
 
 /**
  * Given a list of findings, creates a list of digests ready to be emailed out
