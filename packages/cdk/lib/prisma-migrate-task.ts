@@ -167,15 +167,15 @@ export function addPrismaMigrateTask(
 	const rule = new Rule(scope, 'PrismaMigrateArtifactPutRule', {
 		eventPattern: {
 			source: ['aws.s3'],
-			detailType: ['AWS API Call via CloudTrail'],
+			detailType: ['Object Created'],
 			detail: {
-				eventSource: ['s3.amazonaws.com'],
-				eventName: ['PutObject'],
-				requestParameters: {
-					bucketName: [artifactBucketName],
-					key: [prismaArtifactKey],
-				},
-			},
+                bucket: {
+                    name: [artifactBucketName],
+                },
+                object: {
+                    key: [prismaArtifactKey],
+                },
+            },
 		},
 	});
 

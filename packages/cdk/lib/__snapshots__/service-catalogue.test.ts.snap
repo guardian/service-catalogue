@@ -20433,25 +20433,21 @@ spec:
       "Properties": {
         "EventPattern": {
           "detail": {
-            "eventName": [
-              "PutObject",
-            ],
-            "eventSource": [
-              "s3.amazonaws.com",
-            ],
-            "requestParameters": {
-              "bucketName": [
+            "bucket": {
+              "name": [
                 {
                   "Ref": "SsmParameterValueaccountservicesartifactbucketC96584B6F00A464EAD1953AFF4B05118Parameter",
                 },
               ],
+            },
+            "object": {
               "key": [
                 "deploy/TEST/service-catalogue-prisma-migrations/prisma.zip",
               ],
             },
           },
           "detail-type": [
-            "AWS API Call via CloudTrail",
+            "Object Created",
           ],
           "source": [
             "aws.s3",
