@@ -5,7 +5,7 @@ import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager/lib/secret';
+import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 
 interface CloudqueryUsageProps {
 	vpc: IVpc;
