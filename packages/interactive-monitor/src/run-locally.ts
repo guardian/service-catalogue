@@ -1,7 +1,7 @@
 import { homedir } from 'os';
 import { config } from 'dotenv';
-import { getConfig } from './config';
-import { assessRepo } from './index';
+import { getConfig } from './config.js';
+import { assessRepo } from './index.js';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
 config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
