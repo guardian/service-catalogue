@@ -1,8 +1,8 @@
 import type { Account } from '@aws-sdk/client-organizations';
 import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3';
 import type { PrismaClient } from '@prisma/client';
-import { awsClientConfig } from 'common/aws';
-import type { Audit } from './database';
+import { awsClientConfig } from 'common/aws.js';
+import type { Audit } from './database.js';
 
 function numberOfBucketsFromDatabase(client: PrismaClient): Promise<number> {
 	return client.aws_s3_buckets.count();
