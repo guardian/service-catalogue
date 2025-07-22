@@ -1,7 +1,7 @@
 import { Signer } from '@aws-sdk/rds-signer';
 import { PrismaClient } from '@prisma/client';
-import { awsClientConfig } from 'common/aws';
-import { getEnvOrThrow } from 'common/functions';
+import { awsClientConfig } from 'common/aws.js';
+import { getEnvOrThrow } from 'common/functions.js';
 
 export interface DatabaseConfig {
 	/**

@@ -1,5 +1,5 @@
 import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
-import type { SecurityHubFinding, SecurityHubSeverity } from './types';
+import type { SecurityHubFinding, SecurityHubSeverity } from './types.js';
 /**
  * Queries the database for FSBP findings
  */

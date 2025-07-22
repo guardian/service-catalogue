@@ -9,7 +9,7 @@ import {
 	type NonEmptyArray,
 	type Severity,
 	SLAs,
-} from 'common/src/types';
+} from 'common/src/types.js';
 
 export async function getGithubClient(
 	githubAppConfig: GitHubAppConfig,

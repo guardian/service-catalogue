@@ -1,5 +1,5 @@
-import { stageAwareOctokit } from 'common/src/functions';
-import type { ProjectId, PullRequestDetails } from 'common/src/types';
+import { stageAwareOctokit } from 'common/src/functions.js';
+import type { ProjectId, PullRequestDetails } from 'common/src/types.js';
 
 /*
  ** GitHub's v2 projects API is accessible via GraphQL only.

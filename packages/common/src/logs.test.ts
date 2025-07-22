@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import { getCentralElkLink } from './logs';
+import { getCentralElkLink } from './logs.js';
 
 
 void describe('getCentralElkUrl', () => {

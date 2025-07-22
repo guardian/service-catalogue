@@ -14,8 +14,8 @@ import {
 	stringToSeverity,
 	toNonEmptyArray,
 	topicMonitoringProductionTagCtas,
-} from './functions';
-import type { NonEmptyArray } from './types';
+} from './functions.js';
+import type { NonEmptyArray } from './types.js';
 
 function isValidUrl(str: string) {
 	try {

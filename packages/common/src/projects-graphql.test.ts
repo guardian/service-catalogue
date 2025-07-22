@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import { addToProjectQuery, getLastPrsQuery } from './projects-graphql';
+import { addToProjectQuery, getLastPrsQuery } from './projects-graphql.js';
 
 /*
  ** We are testing the string interpolation as the query construction logic is
