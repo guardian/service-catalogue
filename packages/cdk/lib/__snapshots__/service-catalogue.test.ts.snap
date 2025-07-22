@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
 {
@@ -1502,17 +1502,16 @@ spec:
                 - comparison: NOT_EQUALS
                   value: MEDIUM
       aws_inspector2_findings:
-        aws_inspector2_findings:
-          list_findings:
-            - filter_criteria:
-                finding_status:
-                  - comparison: EQUALS
-                    value: ACTIVE
-                severity:
-                  - comparison: EQUALS
-                    value: CRITICAL
-                  - comparison: EQUALS
-                    value: HIGH
+        list_findings:
+          - filter_criteria:
+              finding_status:
+                - comparison: EQUALS
+                  value: ACTIVE
+              severity:
+                - comparison: EQUALS
+                  value: CRITICAL
+                - comparison: EQUALS
+                  value: HIGH
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
