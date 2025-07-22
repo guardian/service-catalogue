@@ -41,7 +41,7 @@ export async function extractGithubUsesStrings(
 
 	return workflows.map<UnsavedGithubActionUsage>(
 		({ repository, path, template }) => {
-			const uses = getUsesInWorkflowTemplate(template);
+			const uses = getUsesInWorkflowTemplate(template) as string[];
 			console.log(
 				`The workflow ${path} in repository ${repository} has ${uses.length} 'uses'`,
 			);
