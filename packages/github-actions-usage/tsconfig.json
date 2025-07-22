@@ -2,6 +2,8 @@
   "extends": "../../tsconfig.json",
   "references": [{ "path": "../common" }],
   "compilerOptions": {
-    "allowJs": true
+    "allowJs": true,
+    "module": "es6",
+    "moduleResolution": "node",
   }
 }

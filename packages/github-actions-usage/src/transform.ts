@@ -4,11 +4,6 @@ import {
 	NoOperationTraceWriter,
 	parseWorkflow,
 } from '@actions/workflow-parser';
-import type {
-	ActionStep,
-	Step,
-	WorkflowJob,
-} from '@actions/workflow-parser/model/workflow-template';
 import type { RawGithubWorkflow } from './db-read.js';
 import type { UnsavedGithubActionUsage } from './db-write.js';
 
@@ -41,7 +36,7 @@ export async function extractGithubUsesStrings(
 
 	return workflows.map<UnsavedGithubActionUsage>(
 		({ repository, path, template }) => {
-			const uses = getUsesInWorkflowTemplate(template) as string[];
+			const uses = getUsesInWorkflowTemplate(template);
 			console.log(
 				`The workflow ${path} in repository ${repository} has ${uses.length} 'uses'`,
 			);
@@ -99,40 +94,54 @@ export async function getWorkflowTemplate(
 	};
 }
 
-export function getUsesInWorkflowTemplate(workflowTemplate: WorkflowTemplate) {
-	return removeUndefined(
-		workflowTemplate.jobs.flatMap((job) => {
-			switch (job.type) {
-				case 'job': {
-					return getUsesInJob(job);
-				}
-				case 'reusableWorkflowJob': {
-					if (!job.jobs) {
-						return [job.ref.value];
+export function getUsesInWorkflowTemplate(workflowTemplate: WorkflowTemplate): string[] {
+    return removeUndefined(
+        workflowTemplate.jobs.flatMap((job) => {
+            switch (job.type) {
+                case 'job': {
+                    return getUsesInJob(job);
+                }
+                case 'reusableWorkflowJob': {
+                    const uses: string[] = [];
+                    if (typeof job.ref.value === 'string') {
+						uses.push(job.ref.value);
 					}
-
-					return job.jobs.flatMap((job) => getUsesInJob(job));
+                    if (Array.isArray(job.jobs)) {
+                        uses.push(...job.jobs.flatMap(getUsesInJob));
+                    }
+                    return uses;
+                }
+                default: {
+					throw new Error(`Unhandled job type`);
 				}
-				default: {
-					const _exhaustiveCheck: never = job;
-					return _exhaustiveCheck;
-				}
-			}
-		}),
-	);
+            }
+        }),
+    );
 }
 
+type WorkflowJob = WorkflowTemplate['jobs'][number];
+type Step = { uses?: { value: string } };
+
 function getUsesInJob(job: WorkflowJob): string[] {
-	const actionSteps = stepsFromWorkflowJob(job).filter(
-		(step): step is ActionStep => 'uses' in step,
-	);
-	return actionSteps.map((step) => step.uses.value);
+    const actionSteps = stepsFromWorkflowJob(job).filter(
+        (step): step is Step =>
+            typeof step === 'object' &&
+            'uses' in step &&
+            typeof (step as { uses?: { value?: unknown } }).uses?.value === 'string'
+    );
+    return actionSteps.map((step) => step.uses!.value);
 }
 
 function stepsFromWorkflowJob(workflowJob: WorkflowJob): Step[] {
-	if (workflowJob.type === 'job') {
-		return workflowJob.steps;
+    if (workflowJob.type === 'job' && Array.isArray(workflowJob.steps)) {
+        return workflowJob.steps as Step[];
+    }
+	if (
+		workflowJob.type === 'reusableWorkflowJob' &&
+		Array.isArray(workflowJob.jobs)
+	) {
+		// Collect steps from child jobs
+		return workflowJob.jobs.flatMap(stepsFromWorkflowJob);
 	}
-	const childJobs = workflowJob.jobs ?? [];
-	return childJobs.flatMap(stepsFromWorkflowJob);
+	return [];
 }
