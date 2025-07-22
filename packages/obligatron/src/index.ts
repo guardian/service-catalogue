@@ -3,14 +3,14 @@ import { logger } from 'common/logs.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
 import { config } from 'dotenv';
 import { getConfig } from './config.js';
+import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities.js';
+import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities.js';
 import {
 	type Obligation,
 	type ObligationResult,
 	Obligations,
 	stringIsObligation,
 } from './obligations/index.js';
-import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities.js';
-import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities.js';
 import {
 	evaluateAmiTaggingCoverage,
 	evaluateSecurityHubTaggingCoverage,
