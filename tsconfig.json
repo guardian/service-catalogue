@@ -7,7 +7,8 @@
       "common": ["packages/common/src"],
       "common/*": ["packages/common/src/*"]
     },
-    "skipLibCheck": true
-
+    "skipLibCheck": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
   }
 }
