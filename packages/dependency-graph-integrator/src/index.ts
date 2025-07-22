@@ -1,16 +1,16 @@
 import type { SNSHandler } from 'aws-lambda';
-import { parseEvent, stageAwareOctokit } from 'common/functions';
-import type { DependencyGraphIntegratorEvent } from 'common/src/types';
-import type { Config } from './config';
-import { getConfig } from './config';
+import { parseEvent, stageAwareOctokit } from 'common/functions.js';
+import type { DependencyGraphIntegratorEvent } from 'common/src/types.js';
+import type { Config } from './config.js';
+import { getConfig } from './config.js';
 import {
 	createYaml,
 	depGraphPackageManager,
 	generatePrBody,
-} from './file-generator';
-import { createPrAndAddToProject, generateBranchName } from './pull-requests';
-import { enableDependabotAlerts } from './repo-functions';
-import type { StatusCode } from './types';
+} from './file-generator.js';
+import { createPrAndAddToProject, generateBranchName } from './pull-requests.js';
+import { enableDependabotAlerts } from './repo-functions.js';
+import type { StatusCode } from './types.js';
 
 export async function main(event: DependencyGraphIntegratorEvent) {
 	const language = event.language;

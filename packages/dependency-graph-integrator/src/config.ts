@@ -1,4 +1,4 @@
-import { getEnvOrThrow } from 'common/functions';
+import { getEnvOrThrow } from 'common/functions.js';
 
 export interface Config {
 	/**

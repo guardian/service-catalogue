@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import { createYaml } from './file-generator';
+import { createYaml } from './file-generator.js';
 
 void describe( 'createYaml for sbt', () => {
 	void it('should generate the following yaml file', () => {
