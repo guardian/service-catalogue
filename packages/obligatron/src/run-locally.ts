@@ -1,5 +1,5 @@
-import { Obligations } from './obligations';
-import { main } from './index';
+import { Obligations } from './obligations/index.js';
+import { main } from './index.js';
 
 const [, , obligation] = process.argv;
 

@@ -1,12 +1,12 @@
 import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
-import { stringToSeverity, toNonEmptyArray } from 'common/src/functions';
-import { logger } from 'common/src/logs';
+import { stringToSeverity, toNonEmptyArray } from 'common/src/functions.js';
+import { logger } from 'common/src/logs.js';
 import type {
 	NonEmptyArray,
 	RepocopVulnerability,
 	Repository,
-} from 'common/src/types';
-import type { ObligationResult } from '.';
+} from 'common/src/types.js';
+import type { ObligationResult } from './index.js';
 
 export type ObligatronRepocopVulnerability = RepocopVulnerability & {
 	repo_owner: string;

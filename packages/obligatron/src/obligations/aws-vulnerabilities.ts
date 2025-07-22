@@ -1,12 +1,12 @@
 import type { PrismaClient } from '@prisma/client';
-import { getFsbpFindings } from 'common/src/database-queries';
+import { getFsbpFindings } from 'common/src/database-queries.js';
 import {
 	isWithinSlaTime,
 	stringToSeverity,
 	toNonEmptyArray,
-} from 'common/src/functions';
-import type { SecurityHubFinding } from 'common/src/types';
-import type { ObligationResult } from '.';
+} from 'common/src/functions.js';
+import type { SecurityHubFinding } from 'common/src/types.js';
+import type { ObligationResult } from './index.js';
 
 type Failure = {
 	resource: string;

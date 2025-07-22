@@ -1,20 +1,20 @@
 import type { PrismaClient } from '@prisma/client';
-import { logger } from 'common/logs';
-import { getPrismaClient } from 'common/src/database-setup';
+import { logger } from 'common/logs.js';
+import { getPrismaClient } from 'common/src/database-setup.js';
 import { config } from 'dotenv';
-import { getConfig } from './config';
+import { getConfig } from './config.js';
 import {
 	type Obligation,
 	type ObligationResult,
 	Obligations,
 	stringIsObligation,
-} from './obligations';
-import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities';
-import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities';
+} from './obligations/index.js';
+import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities.js';
+import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities.js';
 import {
 	evaluateAmiTaggingCoverage,
 	evaluateSecurityHubTaggingCoverage,
-} from './obligations/tagging';
+} from './obligations/tagging.js';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
 

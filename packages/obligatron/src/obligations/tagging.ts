@@ -4,8 +4,8 @@ import type {
 	Prisma,
 	PrismaClient,
 } from '@prisma/client';
-import { logger } from 'common/src/logs';
-import type { ObligationResult } from '.';
+import { logger } from 'common/src/logs.js';
+import type { ObligationResult } from './index.js';
 
 type FindingResource = {
 	/**
