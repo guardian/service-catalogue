@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import { describe, test } from 'node:test';
 import type { cloudquery_plugin_usage } from '@prisma/client';
-import { usageSummaryToDatabaseRows } from './transform';
-import type { UsageSummaryResponseForPaidRows } from './types';
+import { usageSummaryToDatabaseRows } from './transform.js';
+import type { UsageSummaryResponseForPaidRows } from './types.js';
 
 void describe('usageSummaryToDatabaseRows', () => {
 	void test('converts a UsageSummaryResponse to an array of guardian_cloudquery_usage', () => {

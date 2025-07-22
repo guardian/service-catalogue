@@ -1,9 +1,9 @@
-import { getPrismaClient } from 'common/src/database-setup';
-import { getPluginUsageSummary } from './cloudquery-api';
-import { getConfig } from './config';
-import { getDateRange } from './date';
-import { saveResults } from './db-write';
-import { usageSummaryToDatabaseRows } from './transform';
+import { getPrismaClient } from 'common/src/database-setup.js';
+import { getPluginUsageSummary } from './cloudquery-api.js';
+import { getConfig } from './config.js';
+import { getDateRange } from './date.js';
+import { saveResults } from './db-write.js';
+import { usageSummaryToDatabaseRows } from './transform.js';
 
 export async function main(...args: unknown[]) {
 	console.debug(

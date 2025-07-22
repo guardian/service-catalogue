@@ -1,4 +1,4 @@
-import type { DateRange } from './types';
+import type { DateRange } from './types.js';
 
 function checkBothPresentOrAbsent<T>(
 	a: T | undefined | null,

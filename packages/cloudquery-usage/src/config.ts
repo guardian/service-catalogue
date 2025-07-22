@@ -1,12 +1,12 @@
 import { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import { awsClientConfig, getSecretManagerValueAsJson } from 'common/aws';
-import { getEnvOrThrow } from 'common/functions';
-import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup';
+import { awsClientConfig, getSecretManagerValueAsJson } from 'common/aws.js';
+import { getEnvOrThrow } from 'common/functions.js';
+import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup.js';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
-} from 'common/src/database-setup';
+} from 'common/src/database-setup.js';
 
 interface SecretsManagerCloudqueryApiKey {
 	'api-key': string;
