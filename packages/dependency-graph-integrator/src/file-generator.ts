@@ -1,5 +1,5 @@
-import { markdownChecklist } from 'common/src/string';
-import type { DepGraphLanguage } from 'common/types';
+import { markdownChecklist } from 'common/src/string.js';
+import type { DepGraphLanguage } from 'common/types.js';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import { stringify } from 'yaml';
 

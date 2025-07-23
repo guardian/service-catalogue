@@ -1,5 +1,5 @@
 import type { Octokit } from 'octokit';
-import type { StatusCode } from './types';
+import type { StatusCode } from './types.js';
 
 const ghHeaders = { 'X-GitHub-Api-Version': '2022-11-28' };
 

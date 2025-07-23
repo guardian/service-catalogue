@@ -6,18 +6,18 @@ import type {
 	guardian_github_actions_usage,
 	view_repo_ownership,
 } from '@prisma/client';
-import { awsClientConfig } from 'common/src/aws';
-import { shuffle } from 'common/src/functions';
-import { logger } from 'common/src/logs';
+import { awsClientConfig } from 'common/src/aws.js';
+import { shuffle } from 'common/src/functions.js';
+import { logger } from 'common/src/logs.js';
 import type {
 	DependencyGraphIntegratorEvent,
 	DepGraphLanguage,
 	Repository,
 	RepositoryWithDepGraphLanguage,
-} from 'common/src/types';
+} from 'common/src/types.js';
 import type { Octokit } from 'octokit';
-import type { Config } from '../../config';
-import { findContactableOwners, removeRepoOwner } from '../shared-utilities';
+import type { Config } from '../../config.js';
+import { findContactableOwners, removeRepoOwner } from '../shared-utilities.js';
 
 export function checkRepoForLanguage(
 	repo: Repository,

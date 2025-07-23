@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import { findContactableOwners, removeRepoOwner } from './shared-utilities';
+import { findContactableOwners, removeRepoOwner } from './shared-utilities.js';
 
 void describe('removeRepoOwner', () => {
 	void it('should strip the owner from the full repo name', () => {

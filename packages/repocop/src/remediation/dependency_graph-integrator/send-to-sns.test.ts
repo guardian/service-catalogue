@@ -10,16 +10,16 @@ import type {
 	DepGraphLanguage,
 	Repository,
 	RepositoryWithDepGraphLanguage,
-} from 'common/src/types';
+} from 'common/src/types.js';
 import type { Octokit } from 'octokit';
-import { removeRepoOwner } from '../shared-utilities';
+import { removeRepoOwner } from '../shared-utilities.js';
 import {
 	checkRepoForLanguage,
 	createSnsEventsForDependencyGraphIntegration,
 	doesRepoHaveDepSubmissionWorkflowForLanguage,
 	getExistingPullRequest,
 	getSuitableReposWithoutWorkflows,
-} from './send-to-sns';
+} from './send-to-sns.js';
 
 const fullName = 'guardian/repo-name';
 const fullName2 = 'guardian/repo2';

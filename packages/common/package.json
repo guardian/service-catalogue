@@ -2,6 +2,9 @@
 	"name": "common",
 	"version": "0.0.0",
 	"type": "module",
+	"engines": {
+		"node": ">=18"
+	},
 	"scripts": {
 		"postinstall": "prisma generate",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
@@ -12,15 +15,15 @@
 		"@guardian/anghammarad": "^1.8.3",
 		"@aws-sdk/credential-providers": "^3.840.0",
 		"@aws-sdk/rds-signer": "^3.840.0",
-		"@octokit/auth-app": "^6.1.2",
+		"@octokit/auth-app": "^8.0.2",
 		"@octokit/graphql": "^9.0.1",
-		"octokit": "^3.2.1",
+		"octokit": "^5.0.3",
 		"octokit-plugin-create-pull-request": "^6.0.1",
 		"@prisma/client": "^6.11.0"
 	},
 	"devDependencies": {
 		"prisma": "^6.11.0",
-		"@octokit/types": "^13.6.1",
+		"@octokit/types": "^14.1.0",
 		"@types/aws-lambda": "^8.10.147"
 	},
 	"prisma": {

@@ -2,8 +2,8 @@ import type { FunctionConfiguration } from '@aws-sdk/client-lambda';
 import { LambdaClient, paginateListFunctions } from '@aws-sdk/client-lambda';
 import type { Account } from '@aws-sdk/client-organizations';
 import type { PrismaClient } from '@prisma/client';
-import { AWS_REGIONS, awsClientConfig } from 'common/aws';
-import type { Audit } from './database';
+import { AWS_REGIONS, awsClientConfig } from 'common/aws.js';
+import type { Audit } from './database.js';
 
 function sleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));

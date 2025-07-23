@@ -1,11 +1,11 @@
 import * as process from 'process';
-import { getEnvOrThrow } from 'common/functions';
+import { getEnvOrThrow } from 'common/functions.js';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
-} from 'common/src/database-setup';
-import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup';
+} from 'common/src/database-setup.js';
+import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup.js';
 
 export interface Config extends PrismaConfig {
 	/**

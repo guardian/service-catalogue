@@ -1,5 +1,5 @@
-import { getPrismaClient } from 'common/src/database-setup';
-import { getConfig } from './config';
+import { getPrismaClient } from 'common/src/database-setup.js';
+import { getConfig } from './config.js';
 
 export async function main(...args: unknown[]) {
 	console.debug(

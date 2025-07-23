@@ -1,5 +1,5 @@
-import type { Config } from './config';
-import type { DateRange, UsageSummaryResponseForPaidRows } from './types';
+import type { Config } from './config.js';
+import type { DateRange, UsageSummaryResponseForPaidRows } from './types.js';
 
 /**
  * Return the CloudQuery plugin usage, by day.

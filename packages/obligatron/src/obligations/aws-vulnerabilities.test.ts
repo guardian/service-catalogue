@@ -1,7 +1,7 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import type { SecurityHubFinding } from 'common/src/types';
-import { fsbpFindingsToObligatronResults } from './aws-vulnerabilities';
+import type { SecurityHubFinding } from 'common/src/types.js';
+import { fsbpFindingsToObligatronResults } from './aws-vulnerabilities.js';
 
 void describe('The dependency vulnerabilities obligation', () => {
 	const resource1 = {

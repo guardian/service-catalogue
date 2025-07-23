@@ -1,6 +1,7 @@
 {
 	"name": "cloudbuster",
 	"version": "1.0.0",
+	"type": "module",
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
 		"start": "APP=cloudbuster tsx src/run-locally.ts",

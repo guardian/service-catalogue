@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
-import { stageAwareOctokit } from 'common/src/functions';
-import { addPrToProject } from 'common/src/projects-graphql';
+import { stageAwareOctokit } from 'common/src/functions.js';
+import { addPrToProject } from 'common/src/projects-graphql.js';
 import type { Octokit } from 'octokit';
 import { composeCreatePullRequest } from 'octokit-plugin-create-pull-request';
 

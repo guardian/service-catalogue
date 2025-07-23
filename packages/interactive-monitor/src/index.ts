@@ -1,10 +1,10 @@
 import type { SNSHandler } from 'aws-lambda';
-import { applyTopics, parseEvent, stageAwareOctokit } from 'common/functions';
+import { applyTopics, parseEvent, stageAwareOctokit } from 'common/functions.js';
 import type { Octokit } from 'octokit';
-import type { Config } from './config';
-import { getConfig } from './config';
+import type { Config } from './config.js';
+import { getConfig } from './config.js';
 import { tryToParseJsConfig } from './js-parser';
-import type { ConfigJsonFile, ContentResponse, FileMetadata } from './types';
+import type { ConfigJsonFile, ContentResponse, FileMetadata } from './types.js';
 
 async function isFromInteractiveTemplate(
 	repo: string,

@@ -5,26 +5,26 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
-import { isWithinSlaTime, partition } from 'common/src/functions';
-import { SLAs } from 'common/src/types';
+import { isWithinSlaTime, partition } from 'common/src/functions.js';
+import { SLAs } from 'common/src/types.js';
 import type {
 	DepGraphLanguage,
 	RepocopVulnerability,
 	Repository,
 	Severity,
-} from 'common/src/types';
+} from 'common/src/types.js';
 import {
 	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
-} from '../languages';
-import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns';
+} from '../languages.js';
+import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns.js';
 import type {
 	Alert,
 	AwsCloudFormationStack,
 	EvaluationResult,
 	RepoAndStack,
-} from '../types';
-import { isProduction, vulnSortPredicate } from '../utils';
+} from '../types.js';
+import { isProduction, vulnSortPredicate } from '../utils.js';
 
 /**
  * Evaluate the following rule for a Github repository:

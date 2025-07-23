@@ -5,7 +5,7 @@ import {
 	ScriptTarget,
 	type SourceFile,
 } from 'typescript';
-import type { ContentResponse, FileMetadata } from './types';
+import type { ContentResponse, FileMetadata } from './types.js';
 
 export function parseFileToJS(input: string): SourceFile | undefined {
 	try {

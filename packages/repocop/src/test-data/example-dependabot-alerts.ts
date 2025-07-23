@@ -1,4 +1,4 @@
-import type { Alert } from '../types';
+import type { Alert } from '../types.js';
 
 //These alerts were copied from the GH API docs https://docs.github.com/en/rest/dependabot/alerts?apiVersion=2022-11-28
 

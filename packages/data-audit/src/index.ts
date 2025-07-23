@@ -3,13 +3,13 @@ import {
 	OrganizationsClient,
 	paginateListAccounts,
 } from '@aws-sdk/client-organizations';
-import { awsClientConfig } from 'common/aws';
-import { getPrismaClient } from 'common/src/database-setup';
+import { awsClientConfig } from 'common/aws.js';
+import { getPrismaClient } from 'common/src/database-setup.js';
 import { auditAwsAccounts } from './audit/aws-accounts';
 import { auditLambdaFunctions } from './audit/aws-lambda';
 import { auditS3Buckets } from './audit/aws-s3-buckets';
 import { saveAudits } from './audit/database';
-import { getConfig } from './config';
+import { getConfig } from './config.js';
 
 async function getAwsAccounts(stage: string) {
 	const client = new OrganizationsClient(awsClientConfig(stage));

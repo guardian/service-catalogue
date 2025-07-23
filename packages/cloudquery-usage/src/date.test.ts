@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { beforeEach, describe, mock, test } from 'node:test';
-import { getDateRange } from './date';
+import { getDateRange } from './date.js';
 
 beforeEach(() => {
 	delete process.env['START_DATE'];

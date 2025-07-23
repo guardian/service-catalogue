@@ -1,7 +1,7 @@
 import  assert from 'assert';
-import { describe, it } from 'node:test';import type { Repository } from 'common/types';
-import type { ObligatronRepocopVulnerability } from './dependency-vulnerabilities';
-import { evaluateObligationForOneRepo } from './dependency-vulnerabilities';
+import { describe, it } from 'node:test';import type { Repository } from 'common/types.js';
+import type { ObligatronRepocopVulnerability } from './dependency-vulnerabilities.js';
+import { evaluateObligationForOneRepo } from './dependency-vulnerabilities.js';
 
 void describe('The dependency vulnerabilities obligation', () => {
 	const someDate = new Date('2020-01-01');

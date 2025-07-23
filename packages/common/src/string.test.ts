@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import { markdownChecklist, stripMargin } from './string';
+import { markdownChecklist, stripMargin } from './string.js';
 
 
 void describe('stripMargin', () => {

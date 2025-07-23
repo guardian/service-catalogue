@@ -7,7 +7,7 @@ import {
 	runAllTasks,
 	runOneTask,
 } from './aws.js';
-import { migrateDevDatabase, migrateRdsDatabase } from './database';
+import { migrateDevDatabase, migrateRdsDatabase } from './database.js';
 
 const Commands = {
 	list: 'list-tasks',

@@ -5,7 +5,7 @@ import type {
 	github_teams,
 	repocop_github_repository_rules,
 } from '@prisma/client';
-import type { RepocopVulnerability } from 'common/src/types';
+import type { RepocopVulnerability } from 'common/src/types.js';
 
 export interface RepoAndStack {
 	fullName: string;

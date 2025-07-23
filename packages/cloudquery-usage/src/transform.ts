@@ -1,5 +1,5 @@
 import type { cloudquery_plugin_usage } from '@prisma/client';
-import type { UsageSummaryResponseForPaidRows } from './types';
+import type { UsageSummaryResponseForPaidRows } from './types.js';
 
 export function usageSummaryToDatabaseRows(
 	response: UsageSummaryResponseForPaidRows,

@@ -1,4 +1,4 @@
-import type { IAllBestPractice, IBestPractice } from './types';
+import type { IAllBestPractice, IBestPractice } from './types.js';
 
 const devXSecurity =
 	'[DevX Security](https://github.com/orgs/guardian/teams/devx-security)';

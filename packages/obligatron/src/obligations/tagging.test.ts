@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';import type { PrismaClient } from '@prisma/client';
-import { evaluateSecurityHubTaggingCoverage } from './tagging';
+import { evaluateSecurityHubTaggingCoverage } from './tagging.js';
 
 const createPrismaClientWithMockedResponse = (response: unknown[]) => {
 	const aws_securityhub_findings = {

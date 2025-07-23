@@ -1,9 +1,9 @@
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import type { repocop_github_repository_rules } from '@prisma/client';
-import { awsClientConfig } from 'common/src/aws';
-import { shuffle } from 'common/src/functions';
-import type { Config } from '../../config';
-import { removeRepoOwner } from '../shared-utilities';
+import { awsClientConfig } from 'common/src/aws.js';
+import { shuffle } from 'common/src/functions.js';
+import type { Config } from '../../config.js';
+import { removeRepoOwner } from '../shared-utilities.js';
 
 export function findPotentialInteractives(
 	evaluatedRepos: repocop_github_repository_rules[],
