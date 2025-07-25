@@ -2,6 +2,8 @@ import assert from 'assert';
 import fs from 'fs';
 import { after, before, describe, it, mock, test } from 'node:test';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { MetadataKeys } from '@guardian/cdk/lib/constants/metadata-keys.js';
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
@@ -9,6 +11,43 @@ import { Schedule } from 'aws-cdk-lib/aws-events';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { ServiceCatalogue } from './service-catalogue.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function getSnapshotPath(name: string) {
+    return path.join(__dirname, '__snapshots__', `${name}.test.ts.json`);
+}
+
+function writeSnapshot(snapshotPath: string, data: unknown) {
+    fs.mkdirSync(path.dirname(snapshotPath), { recursive: true });
+    fs.writeFileSync(snapshotPath, JSON.stringify(data, null, 2) + '\n');
+}
+
+function readSnapshot(snapshotPath: string): string {
+    return fs.readFileSync(snapshotPath, 'utf-8');
+}
+
+function compareSnapshot(name: string, actual: unknown) {
+    const snapshotPath = getSnapshotPath(name);
+    const updateSnapshots = process.argv.includes('--update-snapshots');
+    const actualString = JSON.stringify(actual, null, 2) + '\n';
+
+    if (updateSnapshots || !fs.existsSync(snapshotPath)) {
+        writeSnapshot(snapshotPath, actual);
+        return;
+    }
+
+    const expectedString = readSnapshot(snapshotPath);
+    assert.strictEqual(actualString, expectedString);
+}
+
+// Create a type-safe mock for all metadata keys
+const trackingTagMock: Record<string, string> = Object.fromEntries(
+  Object.values(MetadataKeys).map((key) => [key, "TEST"])
+);
+class TestServiceCatalogue extends ServiceCatalogue {
+    trackingTag: typeof trackingTagMock = trackingTagMock;
+}
 
 void describe('The ServiceCatalogue stack', () => {
 
@@ -34,18 +73,9 @@ void describe('The ServiceCatalogue stack', () => {
 		// jest.useRealTimers();
 	});
 
-void test('matches the snapshot', async (t) => {
-	 // Mock modules before importing your stack
-    await t.mock.import('@guardian/cdk/lib/constants/tracking-tag', {
-        default: 'mocked-tracking-tag',
-        // ...other exports as needed
-    });
-	await t.mock('@guardian/private-infrastructure-config', {
-		default: {},
-		// ...other exports as needed
-	});
+void test('matches the snapshot', () => {
     const app = new App();
-    const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
+    const stack = new TestServiceCatalogue(app, 'ServiceCatalogue', {
         stack: 'deploy',
         stage: 'TEST',
         securityAlertSchedule: Schedule.cron({
@@ -63,20 +93,7 @@ void test('matches the snapshot', async (t) => {
         databaseEbsByteBalanceAlarm: true,
     });
     const template = Template.fromStack(stack);
-    const snapshotPath = path.join(__dirname, '__snapshots__', 'service-catalogue.snapshot.json');
-    const output = template.toJSON();
-
-    // Check for CLI flag
-    const updateSnapshots = process.argv.includes('--update-snapshots');
-
-    if (updateSnapshots || !fs.existsSync(snapshotPath)) {
-        fs.mkdirSync(path.dirname(snapshotPath), { recursive: true });
-        fs.writeFileSync(snapshotPath, JSON.stringify(output, null, 2));
-        return; // Optionally skip assertion when updating
-    }
-
-	const expected: Record<string, unknown> = JSON.parse(fs.readFileSync(snapshotPath, 'utf-8')) as Record<string, unknown>;
-	assert.deepStrictEqual(output, expected);
+    compareSnapshot('service-catalogue', template.toJSON());
 });
 		// expect(template.toJSON()).toMatchSnapshot();
 	// });
@@ -110,7 +127,7 @@ void test('matches the snapshot', async (t) => {
 		);
 
 		// Only 1 architecture is used...
-		 assert(architectures.size, 1);
+		 assert.strictEqual(architectures.size, 1);
 
 		// ...and it's arm64
 		assert.ok(architectures.has('arm64'));
