@@ -42,8 +42,10 @@ export async function assessRepos(events: string[], config: Config) {
 	const results: InteractiveRepoAssessment[] = await Promise.all(events.map(async (repo) => await isInteractive(repo, owner, octokit)));
 	const interactives = results.filter((result) => result.isInteractive);
 	if (interactives.length > 0) {
-		await Promise.all(interactives.map((repo) => applyTopics(repo.repo, owner, octokit, 'interactive')));
 		await notify(onProd, interactives, config);
+		if (onProd) {
+			await Promise.all(interactives.map((repo) => applyTopics(repo.repo, owner, octokit, 'interactive')));
+		}
 	} else {
 		console.log('No interactives found');
 	}

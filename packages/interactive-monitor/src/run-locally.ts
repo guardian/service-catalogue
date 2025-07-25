@@ -8,4 +8,6 @@ config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
 
 const testRepos = ['ofm-awards-label-2019-atom', 'oz-230101-wildfires'];
 const devConfig = getConfig();
-void assessRepos(testRepos, devConfig);
+if (import.meta.url === `file://${process.argv[1]}`) {
+    void assessRepos(testRepos, devConfig);
+}
