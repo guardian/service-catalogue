@@ -1,9 +1,9 @@
 import 'source-map-support/register';
-import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
+import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file/index.js';
 import { App, Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
-import { ServiceCatalogue } from '../lib/service-catalogue';
+import { ServiceCatalogue } from '../lib/service-catalogue.js';
 
 const app = new App();
 

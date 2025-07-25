@@ -1,18 +1,18 @@
 import type {
 	GuLambdaErrorPercentageMonitoringProps,
 	NoMonitoring,
-} from '@guardian/cdk/lib/constructs/cloudwatch';
-import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+} from '@guardian/cdk/lib/constructs/cloudwatch/index.js';
+import type { GuStackProps } from '@guardian/cdk/lib/constructs/core/index.js';
 import {
 	GuAnghammaradTopicParameter,
 	GuLoggingStreamNameParameter,
 	GuStack,
-} from '@guardian/cdk/lib/constructs/core';
+} from '@guardian/cdk/lib/constructs/core/index.js';
 import {
 	GuSecurityGroup,
 	GuVpc,
 	SubnetType,
-} from '@guardian/cdk/lib/constructs/ec2';
+} from '@guardian/cdk/lib/constructs/ec2/index.js';
 import { GuardianPrivateNetworks } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
@@ -40,17 +40,17 @@ import {
 	ParameterTier,
 	StringParameter,
 } from 'aws-cdk-lib/aws-ssm';
-import { getCentralElkLink } from 'common/src/logs';
-import { CloudBuster } from './cloudbuster';
-import { addCloudqueryEcsCluster } from './cloudquery';
-import { addCloudqueryUsageLambda } from './cloudquery-usage';
-import { addDataAuditLambda } from './data-audit';
-import { addGithubActionsUsageLambda } from './github-actions-usage';
-import { InteractiveMonitor } from './interactive-monitor';
-import { Obligatron } from './obligatron';
-import { addPrismaMigrateTask } from './prisma-migrate-task';
-import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
-import { Repocop } from './repocop';
+import { getCentralElkLink } from 'common/src/logs.js';
+import { CloudBuster } from './cloudbuster.js';
+import { addCloudqueryEcsCluster } from './cloudquery/index.js';
+import { addCloudqueryUsageLambda } from './cloudquery-usage.js';
+import { addDataAuditLambda } from './data-audit.js';
+import { addGithubActionsUsageLambda } from './github-actions-usage.js';
+import { InteractiveMonitor } from './interactive-monitor.js';
+import { Obligatron } from './obligatron.js';
+import { addPrismaMigrateTask } from './prisma-migrate-task.js';
+import { addRefreshMaterializedViewLambda } from './refresh-materialized-view.js';
+import { Repocop } from './repocop.js';
 
 function createProdMonitoringConfiguration(
 	app: string,

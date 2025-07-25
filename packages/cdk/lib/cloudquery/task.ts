@@ -1,5 +1,5 @@
-import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -19,14 +19,14 @@ import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
-import type { CloudqueryConfig, CloudqueryWriteMode } from './config';
+import type { CloudqueryConfig, CloudqueryWriteMode } from './config.js';
 import {
 	postgresDestinationConfig,
 	serviceCatalogueConfigDirectory,
-} from './config';
-import { Images } from './images';
-import { singletonPolicy } from './policies';
-import { scheduleFrequencyMs } from './schedule';
+} from './config.js';
+import { Images } from './images.js';
+import { singletonPolicy } from './policies.js';
+import { scheduleFrequencyMs } from './schedule.js';
 
 export interface ScheduledCloudqueryTaskProps
 	extends AppIdentity,

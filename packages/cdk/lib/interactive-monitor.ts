@@ -1,5 +1,5 @@
-import { type GuStack } from '@guardian/cdk/lib/constructs/core';
-import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
+import { type GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda/index.js';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';

@@ -1,6 +1,6 @@
-import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
+import type { GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
+import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda/index.js';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';

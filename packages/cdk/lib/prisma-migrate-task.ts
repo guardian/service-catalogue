@@ -1,5 +1,5 @@
-import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import type { GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
 import type { ICluster, Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	FargateTaskDefinition,
@@ -17,7 +17,7 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import { Images } from './cloudquery/images';
+import { Images } from './cloudquery/images.js';
 
 interface PrismaMigrateTaskProps {
 	loggingStreamName: string;

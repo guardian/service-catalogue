@@ -2,9 +2,9 @@ import { GuScheduledLambda } from '@guardian/cdk';
 import type {
 	GuLambdaErrorPercentageMonitoringProps,
 	NoMonitoring,
-} from '@guardian/cdk/lib/constructs/cloudwatch';
-import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+} from '@guardian/cdk/lib/constructs/cloudwatch/index.js';
+import type { GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';

@@ -1,5 +1,5 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
-import { Versions } from './versions';
+import { Versions } from './versions.js';
 
 export type CloudqueryConfig = {
 	spec: {

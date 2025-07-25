@@ -1,13 +1,13 @@
-import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda';
+import type { GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
+import { GuLambdaFunction } from '@guardian/cdk/lib/constructs/lambda/index.js';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Rule, RuleTargetInput, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Architecture, LoggingFormat, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { Obligations } from '../../obligatron/src/obligations';
+import { Obligations } from '../../obligatron/src/obligations/index.js';
 
 type ObligatronProps = {
 	vpc: IVpc;

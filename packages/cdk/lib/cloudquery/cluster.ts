@@ -1,14 +1,14 @@
-import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
-import type { CloudqueryConfig } from './config';
-import { CloudqueryWriteMode } from './config';
-import { ScheduledCloudqueryTask } from './task';
+import type { CloudqueryConfig } from './config.js';
+import { CloudqueryWriteMode } from './config.js';
+import { ScheduledCloudqueryTask } from './task.js';
 
 export interface CloudquerySource {
 	/**

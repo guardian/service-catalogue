@@ -1,5 +1,5 @@
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
-import { Versions } from './versions';
+import { Versions } from './versions.js';
 
 export const Images = {
 	cloudquery: ContainerImage.fromRegistry(

@@ -1,13 +1,13 @@
 import { GuScheduledLambda } from '@guardian/cdk';
-import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import type { GuStack } from '@guardian/cdk/lib/constructs/core/index.js';
+import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2/index.js';
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/policies';
+import { cloudqueryAccess, listOrgsPolicy } from './cloudquery/policies.js';
 
 interface DataAuditProps {
 	vpc: IVpc;

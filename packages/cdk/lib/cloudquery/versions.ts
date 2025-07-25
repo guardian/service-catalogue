@@ -1,8 +1,10 @@
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 
-// Load the `.env` file at the root of the repository
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 config({ path: path.resolve(__dirname, '../../../../.env') });
+
 
 const envOrError = (name: string): string => {
 	const value = process.env[name];
