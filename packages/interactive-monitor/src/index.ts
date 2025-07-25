@@ -4,7 +4,7 @@ import type { Config } from './config.js';
 import { getConfig } from './config.js';
 import { isUkInteractive } from './uk-interactives.js';
 
-async function assessRepo(repo: string, config: Config) {
+export async function assessRepo(repo: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
 	const { stage, owner } = config;
 	const onProd = stage === 'PROD';
