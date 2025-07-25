@@ -5,10 +5,10 @@ import {
 } from '@aws-sdk/client-organizations';
 import { awsClientConfig } from 'common/aws.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
-import { auditAwsAccounts } from './audit/aws-accounts';
-import { auditLambdaFunctions } from './audit/aws-lambda';
-import { auditS3Buckets } from './audit/aws-s3-buckets';
-import { saveAudits } from './audit/database';
+import { auditAwsAccounts } from './audit/aws-accounts.js';
+import { auditLambdaFunctions } from './audit/aws-lambda.js';
+import { auditS3Buckets } from './audit/aws-s3-buckets.js';
+import { saveAudits } from './audit/database.js';
 import { getConfig } from './config.js';
 
 async function getAwsAccounts(stage: string) {
