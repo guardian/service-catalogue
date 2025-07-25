@@ -5,10 +5,10 @@ import { main } from './index.js';
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
 config({ path: `${homedir()}/.gu/service_catalogue/.env.local` });
 
-if (require.main === module) {
-	void main({
-		name: 'service-catalogue',
-		language: 'Scala',
-		admins: ['devx-security'],
-	});
+if (import.meta.url === `file://${process.argv[1]}`) {
+    void main({
+        name: 'service-catalogue',
+        language: 'Scala',
+        admins: ['devx-security'],
+    });
 }
