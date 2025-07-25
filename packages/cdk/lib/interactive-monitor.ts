@@ -29,7 +29,6 @@ export class InteractiveMonitor {
 			runtime: Runtime.NODEJS_20_X,
 			environment: {
 				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
-				APP: app,
 				GITHUB_APP_SECRET: githubCredentials.secretName,
 				GITHUB_ORG: gitHubOrg,
 			},
