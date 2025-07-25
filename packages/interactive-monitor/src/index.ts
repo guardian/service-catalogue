@@ -1,8 +1,26 @@
 import type { SNSHandler } from 'aws-lambda';
-import { parseEvent } from 'common/functions.js';
+import { applyTopics, parseEvent, stageAwareOctokit } from 'common/functions.js';
+import type { Config } from './config.js';
 import { getConfig } from './config.js';
-import { assessRepo } from './uk-interactives.js';
+import { isUkInteractive } from './uk-interactives.js';
 
+async function assessRepo(repo: string, config: Config) {
+	const octokit = await stageAwareOctokit(config.stage);
+	const { stage, owner } = config;
+	const onProd = stage === 'PROD';
+
+	const ukInteractive = await isUkInteractive(repo, owner, octokit);
+
+	if (ukInteractive && onProd) {
+		await applyTopics(repo, owner, octokit, 'interactive');
+	}
+	else if (!onProd) {
+		console.log(`Skipping topic application for ${repo} on ${stage}.`);
+	}
+	else {
+		console.log(`No action taken for ${repo}.`);
+	}
+}
 
 export const handler: SNSHandler = async (event) => {
 	const config = getConfig();
