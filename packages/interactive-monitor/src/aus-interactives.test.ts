@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
-import { isAusInteractive } from './aus-interactives';
+import { isAusInteractive } from './aus-interactives.js';
 
 void describe('isAusInteractive', () => {
     void it('should return false for a repo following the pattern oz-YYYY', () => {
