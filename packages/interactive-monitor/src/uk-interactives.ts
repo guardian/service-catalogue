@@ -92,7 +92,11 @@ export async function assessRepo(repo: string, config: Config) {
 
     if ((isFromTemplate || (await foundInS3())) && onProd) {
         await applyTopics(repo, owner, octokit, 'interactive');
-    } else {
+    }
+    else if (!onProd) {
+        console.log(`Skipping topic application for ${repo} on ${stage}.`);
+    }
+    else {
         console.log(`No action taken for ${repo}.`);
     }
 }
