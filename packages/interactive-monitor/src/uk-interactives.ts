@@ -1,6 +1,6 @@
 
 import type { Octokit } from 'octokit';
-import { tryToParseJsConfig } from './js-parser';
+import { tryToParseJsConfig } from './js-parser.js';
 import type { ConfigJsonFile, ContentResponse, FileMetadata } from './types.js';
 
 async function isFromInteractiveTemplate(

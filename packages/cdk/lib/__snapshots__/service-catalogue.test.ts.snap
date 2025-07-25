@@ -21695,6 +21695,9 @@ spec:
         },
         "Environment": {
           "Variables": {
+            "ANGHAMMARAD_SNS_ARN": {
+              "Ref": "AnghammaradSnsArn",
+            },
             "APP": "interactive-monitor",
             "GITHUB_APP_SECRET": {
               "Fn::Join": [
