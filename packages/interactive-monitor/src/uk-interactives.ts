@@ -1,7 +1,5 @@
 
-import { applyTopics, stageAwareOctokit } from 'common/functions.js';
 import type { Octokit } from 'octokit';
-import type { Config } from './config.js';
 import { tryToParseJsConfig } from './js-parser';
 import type { ConfigJsonFile, ContentResponse, FileMetadata } from './types.js';
 
@@ -62,10 +60,11 @@ async function s3PathIsInConfig(
     return foundConfig;
 }
 
-export async function assessRepo(repo: string, config: Config) {
-    const octokit = await stageAwareOctokit(config.stage);
-    const { stage, owner } = config;
-    const onProd = stage === 'PROD';
+export async function isUkInteractive(
+    repo: string,
+    owner: string,
+    octokit: Octokit,
+): Promise<boolean> {
 
     async function foundInJs(): Promise<boolean> {
         const path = await tryToParseJsConfig(octokit, repo, owner);
@@ -90,13 +89,6 @@ export async function assessRepo(repo: string, config: Config) {
         );
     }
 
-    if ((isFromTemplate || (await foundInS3())) && onProd) {
-        await applyTopics(repo, owner, octokit, 'interactive');
-    }
-    else if (!onProd) {
-        console.log(`Skipping topic application for ${repo} on ${stage}.`);
-    }
-    else {
-        console.log(`No action taken for ${repo}.`);
-    }
+    return isFromTemplate || (await foundInS3());
 }
+
