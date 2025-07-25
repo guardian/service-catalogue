@@ -315,13 +315,13 @@ export class ServiceCatalogue extends GuStack {
 		const anghammaradTopicParameter =
 			GuAnghammaradTopicParameter.getInstance(this);
 
-		const interactiveMonitor = new InteractiveMonitor(this, gitHubOrg);
-
 		const anghammaradTopic = Topic.fromTopicArn(
 			this,
 			'anghammarad-arn',
 			anghammaradTopicParameter.valueAsString,
 		);
+
+		const interactiveMonitor = new InteractiveMonitor(this, gitHubOrg, anghammaradTopic);
 
 		const repocopGithubCredentials = new Secret(
 			this,
