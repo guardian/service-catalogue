@@ -1,4 +1,4 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import { getPathFromConfigFile, parseFileToJS } from './js-parser.js';
 

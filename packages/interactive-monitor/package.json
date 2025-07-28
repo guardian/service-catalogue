@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
-		"start": "tsx src/run-locally.ts",
+		"start": "APP=interactive-monitor tsx src/run-locally.ts",
 		"typecheck": "tsc --noEmit"
 	},
 	"author": "guardian",
