@@ -1056,6 +1056,16 @@ model fastly_service_domains {
   @@ignore
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model riffraff_deploys {
+  cq_sync_time   DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name String?   @map("_cq_source_name")
+  id             String    @id(map: "riffraff_deploys_id") @db.Uuid
+  content        Json?
+
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
