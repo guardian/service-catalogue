@@ -1,6 +1,6 @@
 import  assert from 'assert';
 import { describe, it } from 'node:test';
-import { getPathFromConfigFile, parseFileToJS } from './js-parser';
+import { getPathFromConfigFile, parseFileToJS } from './js-parser.js';
 
 void describe('getPathFromConfigFile', () => {
 	void it('should return a valid path from a valid js file', () => {
