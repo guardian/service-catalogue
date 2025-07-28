@@ -35,25 +35,25 @@ describe('Config generation, and converting to YAML', () => {
 			tables: ['aws_s3_buckets'],
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-"kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v27.5.0
-  tables:
-    - aws_s3_buckets
-  skip_dependent_tables: false
-  destinations:
-    - postgresql
-  otel_endpoint: 0.0.0.0:4318
-  otel_endpoint_insecure: true
-  spec:
-    org:
-      member_role_name: cloudquery-access
-      organization_units:
-        - ou-123
-"
-`);
+		"kind: source
+		spec:
+		  name: aws
+		  path: cloudquery/aws
+		  version: v32.32.0
+		  tables:
+		    - aws_s3_buckets
+		  skip_dependent_tables: false
+		  destinations:
+		    - postgresql
+		  otel_endpoint: 0.0.0.0:4318
+		  otel_endpoint_insecure: true
+		  spec:
+		    org:
+		      member_role_name: cloudquery-access
+		      organization_units:
+		        - ou-123
+		"
+	`);
 	});
 
 	it('Should create an AWS source configuration with skipped tables for the organisation', () => {
@@ -62,27 +62,27 @@ spec:
 			skipTables: ['aws_s3_buckets'],
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-"kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v27.5.0
-  tables:
-    - '*'
-  skip_dependent_tables: false
-  skip_tables:
-    - aws_s3_buckets
-  destinations:
-    - postgresql
-  otel_endpoint: 0.0.0.0:4318
-  otel_endpoint_insecure: true
-  spec:
-    org:
-      member_role_name: cloudquery-access
-      organization_units:
-        - ou-123
-"
-`);
+		"kind: source
+		spec:
+		  name: aws
+		  path: cloudquery/aws
+		  version: v32.32.0
+		  tables:
+		    - '*'
+		  skip_dependent_tables: false
+		  skip_tables:
+		    - aws_s3_buckets
+		  destinations:
+		    - postgresql
+		  otel_endpoint: 0.0.0.0:4318
+		  otel_endpoint_insecure: true
+		  spec:
+		    org:
+		      member_role_name: cloudquery-access
+		      organization_units:
+		        - ou-123
+		"
+	`);
 	});
 
 	it('Should create an AWS source configuration for a single account', () => {
@@ -94,26 +94,26 @@ spec:
 			],
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
-"kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v27.5.0
-  tables:
-    - aws_accessanalyzer_analyzers
-    - aws_accessanalyzer_analyzer_archive_rules
-    - aws_accessanalyzer_analyzer_findings
-  skip_dependent_tables: false
-  destinations:
-    - postgresql
-  otel_endpoint: 0.0.0.0:4318
-  otel_endpoint_insecure: true
-  spec:
-    accounts:
-      - id: cq-for-000000000015
-        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
-"
-`);
+		"kind: source
+		spec:
+		  name: aws
+		  path: cloudquery/aws
+		  version: v32.32.0
+		  tables:
+		    - aws_accessanalyzer_analyzers
+		    - aws_accessanalyzer_analyzer_archive_rules
+		    - aws_accessanalyzer_analyzer_findings
+		  skip_dependent_tables: false
+		  destinations:
+		    - postgresql
+		  otel_endpoint: 0.0.0.0:4318
+		  otel_endpoint_insecure: true
+		  spec:
+		    accounts:
+		      - id: cq-for-000000000015
+		        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+		"
+	`);
 	});
 
 	it('Should create an AWS source configuration for a single account with table options', () => {
@@ -131,27 +131,27 @@ spec:
 			},
 		);
 		expect(dump(config)).toMatchInlineSnapshot(`
-"kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v27.5.0
-  tables:
-    - aws_securityhub_findings
-  skip_dependent_tables: false
-  destinations:
-    - postgresql
-  otel_endpoint: 0.0.0.0:4318
-  otel_endpoint_insecure: true
-  spec:
-    accounts:
-      - id: cq-for-000000000015
-        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
-    table_options:
-      securityhub_findings:
-        record_state: ACTIVE
-"
-`);
+		"kind: source
+		spec:
+		  name: aws
+		  path: cloudquery/aws
+		  version: v32.32.0
+		  tables:
+		    - aws_securityhub_findings
+		  skip_dependent_tables: false
+		  destinations:
+		    - postgresql
+		  otel_endpoint: 0.0.0.0:4318
+		  otel_endpoint_insecure: true
+		  spec:
+		    accounts:
+		      - id: cq-for-000000000015
+		        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+		    table_options:
+		      securityhub_findings:
+		        record_state: ACTIVE
+		"
+	`);
 	});
 
 	it('Should create a GitHub source configuration', () => {
