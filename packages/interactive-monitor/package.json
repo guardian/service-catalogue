@@ -1,6 +1,7 @@
 {
 	"name": "interactive-monitor",
 	"version": "1.0.0",
+	"type": "module",
 	"description": "A lambda which applies branch protection to repos that are passed to it via an SQS topic",
 	"exports": "./index.ts",
 	"scripts": {

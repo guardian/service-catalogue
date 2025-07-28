@@ -22201,7 +22201,7 @@ spec:
     "obligatronAWSVULNERABILITIES8E81FCF9": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'AWS_VULNERABILITIES' obligation",
-        "ScheduleExpression": "cron(0 11 * * ? *)",
+        "ScheduleExpression": "rate(30 days)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -22385,7 +22385,7 @@ spec:
     "obligatronPRODUCTIONDEPENDENCIESC26096F0": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'PRODUCTION_DEPENDENCIES' obligation",
-        "ScheduleExpression": "cron(0 10 * * ? *)",
+        "ScheduleExpression": "rate(30 days)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -22601,7 +22601,7 @@ spec:
     "obligatronTAGGING3F8E9BB2": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'TAGGING' obligation",
-        "ScheduleExpression": "cron(0 9 * * ? *)",
+        "ScheduleExpression": "rate(30 days)",
         "State": "ENABLED",
         "Targets": [
           {

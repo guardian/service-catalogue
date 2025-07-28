@@ -9,7 +9,6 @@ export async function assessRepo(repo: string, config: Config) {
 	const octokit = await stageAwareOctokit(config.stage);
 	const { stage, owner } = config;
 	const onProd = stage === 'PROD';
-
 	const isInteractive = isAusInteractive(repo) || (await isUkInteractive(repo, owner, octokit));
 
 	if (isInteractive && onProd) {
