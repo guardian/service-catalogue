@@ -70,7 +70,6 @@ function failuresToObligationResults(
 	);
 }
 
-//TODO filter out findings that are within the SLA window
 export function fsbpFindingsToObligatronResults(
 	findings: SecurityHubFinding[],
 ): ObligationResult[] {
@@ -84,18 +83,16 @@ export async function evaluateFsbpVulnerabilities(
 ): Promise<ObligationResult[]> {
 	const findings = (await getFsbpFindings(client, ['CRITICAL', 'HIGH'])).map(
 		(v) => v as unknown as SecurityHubFinding,
-	);
+	).filter((f) => f.workflow.Status !== 'SUPPRESSED');
 
-	console.log(`Found ${findings.length} FSBP findings`);
+	console.log(`Found ${findings.length} active FSBP findings`);
 
 	const outOfSlaFindings = findings.filter(
 		(f) =>
 			!isWithinSlaTime(f.first_observed_at, stringToSeverity(f.severity.Label)),
 	);
 
-	console.log(`Found ${findings.length} FSBP findings`);
-
-	console.log(`Found ${outOfSlaFindings.length} findings out of SLA`);
+	console.log(`Found ${outOfSlaFindings.length} active findings out of SLA`);
 
 	const results = fsbpFindingsToObligatronResults(outOfSlaFindings);
 

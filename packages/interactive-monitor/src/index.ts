@@ -41,6 +41,7 @@ export async function assessRepos(events: string[], config: Config) {
 	const onProd = stage === 'PROD';
 	const results: InteractiveRepoAssessment[] = await Promise.all(events.map(async (repo) => await isInteractive(repo, owner, octokit)));
 	const interactives = results.filter((result) => result.isInteractive);
+  
 	if (interactives.length > 0) {
 		await notify(onProd, interactives, config);
 		if (onProd) {
