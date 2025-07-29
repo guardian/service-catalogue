@@ -42,6 +42,7 @@ export class InteractiveMonitor {
 		});
 
 		lambda.addToRolePolicy(policyStatement);
+		anghammaradTopic.grantPublish(lambda);
 		githubCredentials.grantRead(lambda);
 		topic.addSubscription(new LambdaSubscription(lambda, {}));
 		this.topic = topic;
