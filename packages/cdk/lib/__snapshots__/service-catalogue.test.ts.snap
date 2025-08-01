@@ -17804,7 +17804,7 @@ spec:
           },
           {
             "Essential": false,
-            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.6",
+            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.7",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
