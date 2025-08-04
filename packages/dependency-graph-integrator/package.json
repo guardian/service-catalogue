@@ -12,7 +12,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@aws-sdk/client-sns": "^3.840.0",
+		"@aws-sdk/client-sns": "^3.859.0",
 		"ts-markdown": "^1.2.0",
 		"yaml": "^2.7.1"
 	}
