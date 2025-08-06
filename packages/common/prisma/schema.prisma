@@ -1076,8 +1076,6 @@ view view_repo_ownership {
   archived           Boolean
   galaxies_team      String?
   team_contact_email String?
-
-  @@unique([github_team_name, full_repo_name])
 }
 
 view aws_accounts {
@@ -1088,8 +1086,6 @@ view aws_accounts {
   joined_timestamp           DateTime @db.Timestamp(6)
   ancestors                  String[]
   is_product_and_engineering Boolean
-
-  @@unique([id, name])
 }
 
 view view_old_ec2_instances {
