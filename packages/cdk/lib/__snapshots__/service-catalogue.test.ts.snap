@@ -22412,6 +22412,45 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "obligatronREPOSITORYSTATUSAllowEventRuleServiceCatalogueobligatron5BD5033EE0DF9501": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "obligatronA58CFCF1",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "obligatronREPOSITORYSTATUSD313E655",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "obligatronREPOSITORYSTATUSD313E655": {
+      "Properties": {
+        "Description": "Daily execution of Obligatron lambda for 'REPOSITORY_STATUS' obligation",
+        "ScheduleExpression": "rate(30 days)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "obligatronA58CFCF1",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+            "Input": ""REPOSITORY_STATUS"",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
     "obligatronServiceRole1E85277A": {
       "Properties": {
         "AssumeRolePolicyDocument": {

@@ -4,6 +4,7 @@ export const Obligations = [
 	'TAGGING',
 	'PRODUCTION_DEPENDENCIES',
 	'AWS_VULNERABILITIES',
+	'REPOSITORY_STATUS',
 ] as const;
 export type Obligation = (typeof Obligations)[number];
 
