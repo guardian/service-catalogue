@@ -4,7 +4,6 @@ import type {
 	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	PrismaClient,
-	view_repo_ownership,
 } from '@prisma/client';
 import type {
 	NonEmptyArray,
@@ -20,27 +19,6 @@ import type {
 	DependabotVulnResponse,
 	Team,
 } from './types.js';
-
-export async function getRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<Repository[]> {
-	console.debug('Discovering repositories');
-	const repositories = await client.github_repositories.findMany({
-		where: {
-			NOT: [
-				{
-					OR: ignoredRepositoryPrefixes.map((prefix) => {
-						return { full_name: { startsWith: prefix } };
-					}),
-				},
-			],
-		},
-	});
-
-	console.debug(`Found ${repositories.length} repositories`);
-	return toNonEmptyArray(repositories.map((r) => r as Repository));
-}
 
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
 export async function getRepositoryBranches(
@@ -69,14 +47,6 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 	console.debug(`Found ${teams.length} teams.`);
 	return toNonEmptyArray(teams);
 };
-
-export async function getRepoOwnership(
-	client: PrismaClient,
-): Promise<NonEmptyArray<view_repo_ownership>> {
-	const data = await client.view_repo_ownership.findMany();
-	console.log(`Found ${data.length} repo ownership records.`);
-	return toNonEmptyArray(data);
-}
 
 export async function getStacks(
 	client: PrismaClient,

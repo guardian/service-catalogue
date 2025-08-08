@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 import { getConfig } from './config.js';
 import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities.js';
 import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities.js';
+import { evaluateRepoTopics } from './obligations/github-topics.js';
 import {
 	type Obligation,
 	type ObligationResult,
@@ -34,6 +35,9 @@ async function getResults(
 		}
 		case 'AWS_VULNERABILITIES': {
 			return await evaluateFsbpVulnerabilities(db);
+		}
+		case 'REPOSITORY_STATUS': {
+			return await evaluateRepoTopics(db);
 		}
 	}
 }
