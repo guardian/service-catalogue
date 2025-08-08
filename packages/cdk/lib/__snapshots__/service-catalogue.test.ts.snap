@@ -12753,7 +12753,7 @@ spec:
   name: endoflife
   path: cloudquery/endoflife
   registry: cloudquery
-  version: v1.2.7
+  version: v1.4.0
   tables:
     - endoflife_products
   destinations:
