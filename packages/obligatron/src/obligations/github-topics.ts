@@ -12,7 +12,7 @@ export function topicsIncludesProductionStatus(topics: string[], productionStatu
 export function repoToObligationResult(repo: Repository): ObligationResult {
     return {
         resource: repo.full_name,
-        reason: `Repository does not have topics indicating production status: ${repo.topics.join(', ')}`,
+        reason: `Repository does not have topics indicating production status. Topics: ${repo.topics.join(', ')}`,
         url: `https://github.com/${repo.full_name}`,
         contacts: undefined,
     };

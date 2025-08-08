@@ -55,13 +55,11 @@ void describe('repoToObligationResult', () => {
         updated_at: new Date('2020-01-01'),
     };
 
-
-
     void it('should convert a repository to an obligation result', () => {
         const result = repoToObligationResult(repo);
         const expectedResult = {
             resource: 'some/repo',
-            reason: 'Repository does not have topics indicating production status: ',
+            reason: 'Repository does not have topics indicating production status. Topics: ',
             url: 'https://github.com/some/repo',
             contacts: undefined,
         };
@@ -71,6 +69,6 @@ void describe('repoToObligationResult', () => {
     void it('should include topics in the reason', () => {
         const repoWithTopics = { ...repo, topics: ['topic1', 'topic2'] };
         const result = repoToObligationResult(repoWithTopics);
-        assert.strictEqual(result.reason, 'Repository does not have topics indicating production status: topic1, topic2');
+        assert.strictEqual(result.reason, 'Repository does not have topics indicating production status. Topics: topic1, topic2');
     });
 });
