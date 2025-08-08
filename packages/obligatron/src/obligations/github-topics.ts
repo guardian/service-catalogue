@@ -18,7 +18,7 @@ export function repoToObligationResult(repo: Repository): ObligationResult {
     };
 }
 
-async function evaluateRepoTopics(prisma: PrismaClient): Promise<ObligationResult[]> {
+export async function evaluateRepoTopics(prisma: PrismaClient): Promise<ObligationResult[]> {
 
     const productionStatuses: string[] = (await prisma.guardian_production_status.findMany({
         select: {
