@@ -4,7 +4,6 @@ import type {
 	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	PrismaClient,
-	view_repo_ownership,
 } from '@prisma/client';
 import type {
 	NonEmptyArray,
@@ -48,14 +47,6 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 	console.debug(`Found ${teams.length} teams.`);
 	return toNonEmptyArray(teams);
 };
-
-export async function getRepoOwnership(
-	client: PrismaClient,
-): Promise<NonEmptyArray<view_repo_ownership>> {
-	const data = await client.view_repo_ownership.findMany();
-	console.log(`Found ${data.length} repo ownership records.`);
-	return toNonEmptyArray(data);
-}
 
 export async function getStacks(
 	client: PrismaClient,

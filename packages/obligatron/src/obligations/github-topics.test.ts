@@ -1,5 +1,8 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
+import type {
+    view_repo_ownership,
+} from '@prisma/client';
 import type { Repository } from 'common/types.js';
 import { repoToObligationResult, topicsIncludesProductionStatus } from './github-topics.js';
 
@@ -56,19 +59,60 @@ void describe('repoToObligationResult', () => {
     };
 
     void it('should convert a repository to an obligation result', () => {
-        const result = repoToObligationResult(repo);
+        const result = repoToObligationResult(repo, []);
         const expectedResult = {
             resource: 'some/repo',
             reason: 'Repository does not have topics indicating production status. Topics: ',
             url: 'https://github.com/some/repo',
-            contacts: undefined,
+            contacts: { slugs: [] },
         };
         assert.deepStrictEqual(result, expectedResult);
     });
 
     void it('should include topics in the reason', () => {
         const repoWithTopics = { ...repo, topics: ['topic1', 'topic2'] };
-        const result = repoToObligationResult(repoWithTopics);
+        const result = repoToObligationResult(repoWithTopics, []);
         assert.strictEqual(result.reason, 'Repository does not have topics indicating production status. Topics: topic1, topic2');
     });
+
+    void it('should include contacts when owners are provided', () => {
+        const owners: view_repo_ownership[] = [
+            {
+                archived: false,
+                role_name: 'owner',
+                github_team_id: BigInt(1),
+                github_team_name: 'Team One',
+                github_team_slug: 'team1',
+                short_repo_name: 'repo',
+                full_repo_name: 'some/repo',
+                galaxies_team: null,
+                team_contact_email: null,
+            },
+            {
+                archived: false,
+                role_name: 'owner',
+                github_team_id: BigInt(2),
+                github_team_name: 'Team Two',
+                github_team_slug: 'team2',
+                short_repo_name: 'repo',
+                full_repo_name: 'some/repo',
+                galaxies_team: null,
+                team_contact_email: null,
+            },
+            {
+                archived: false,
+                role_name: 'owner',
+                github_team_id: BigInt(3),
+                github_team_name: 'Team Three',
+                github_team_slug: 'team3',
+                short_repo_name: 'other-repo',
+                full_repo_name: 'some/other-repo',
+                galaxies_team: null,
+                team_contact_email: null,
+            },
+        ];
+        const result = repoToObligationResult(repo, owners);
+
+        assert.deepStrictEqual(result.contacts!, { slugs: ['team1', 'team2'] });
+    })
 });
