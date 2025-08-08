@@ -1,6 +1,6 @@
-import type { aws_securityhub_findings, PrismaClient } from '@prisma/client';
+import type { aws_securityhub_findings, PrismaClient, view_repo_ownership } from '@prisma/client';
 import { toNonEmptyArray } from './functions.js';
-import type { Repository, SecurityHubFinding, SecurityHubSeverity } from './types.js';
+import type { NonEmptyArray, Repository, SecurityHubFinding, SecurityHubSeverity } from './types.js';
 /**
  * Queries the database for FSBP findings
  */
@@ -26,10 +26,18 @@ export async function getFsbpFindings(
 	return findings as unknown as SecurityHubFinding[];
 }
 
+export async function getRepoOwnership(
+	client: PrismaClient,
+): Promise<NonEmptyArray<view_repo_ownership>> {
+	const data = await client.view_repo_ownership.findMany();
+	console.log(`Found ${data.length} repo ownership records.`);
+	return toNonEmptyArray(data);
+}
+
 export async function getRepositories(
 	client: PrismaClient,
 	ignoredRepositoryPrefixes: string[],
-): Promise<Repository[]> {
+): Promise<NonEmptyArray<Repository>> {
 	console.debug('Discovering repositories');
 	const repositories = await client.github_repositories.findMany({
 		where: {
