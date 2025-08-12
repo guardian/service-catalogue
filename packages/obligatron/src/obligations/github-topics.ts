@@ -1,5 +1,5 @@
-import type { PrismaClient } from '@prisma/client';
-import { getRepositories } from 'common/src/database-queries.js';
+import type { PrismaClient, view_repo_ownership } from '@prisma/client';
+import { getRepoOwnership, getRepositories } from 'common/src/database-queries.js';
 import type {
     Repository,
 } from 'common/src/types.js';
@@ -9,12 +9,14 @@ export function topicsIncludesProductionStatus(topics: string[], productionStatu
     return productionStatuses.some(status => topics.includes(status));
 }
 
-export function repoToObligationResult(repo: Repository): ObligationResult {
+export function repoToObligationResult(repo: Repository, allOwners: view_repo_ownership[]): ObligationResult {
+    const teamSlugs = allOwners.filter((o) => o.full_repo_name === repo.full_name).map((x) => x.github_team_slug)
+
     return {
         resource: repo.full_name,
         reason: `Repository does not have topics indicating production status. Topics: ${repo.topics.join(', ')}`,
         url: `https://github.com/${repo.full_name}`,
-        contacts: undefined,
+        contacts: { slugs: teamSlugs },
     };
 }
 
@@ -30,6 +32,12 @@ export async function evaluateRepoTopics(prisma: PrismaClient): Promise<Obligati
     const repositories = (await getRepositories(prisma, []))
         .filter((repo) => !repo.archived && !topicsIncludesProductionStatus(repo.topics, productionStatuses));
 
-    return repositories.map((repo) => repoToObligationResult(repo));
+
+    //prefilter to only repos that don't have production topics. At a minimum, this will reduce the size of the list by 90%
+    const owners = (await getRepoOwnership(prisma)).filter((record) =>
+        repositories.some((repo) => repo.full_name === record.full_repo_name),
+    );
+
+    return repositories.map((repo) => repoToObligationResult(repo, owners));
 
 }
