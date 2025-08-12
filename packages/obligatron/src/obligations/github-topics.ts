@@ -10,13 +10,13 @@ export function topicsIncludesProductionStatus(topics: string[], productionStatu
 }
 
 export function repoToObligationResult(repo: Repository, allOwners: view_repo_ownership[]): ObligationResult {
-    const slugs = allOwners.filter((o) => o.full_repo_name === repo.full_name).map((x) => x.github_team_slug)
+    const teamSlugs = allOwners.filter((o) => o.full_repo_name === repo.full_name).map((x) => x.github_team_slug)
 
     return {
         resource: repo.full_name,
         reason: `Repository does not have topics indicating production status. Topics: ${repo.topics.join(', ')}`,
         url: `https://github.com/${repo.full_name}`,
-        contacts: { slugs },
+        contacts: { slugs: teamSlugs },
     };
 }
 
