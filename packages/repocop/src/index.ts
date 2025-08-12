@@ -7,6 +7,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { awsClientConfig } from 'common/aws.js';
+import { getRepositories } from 'common/database-queries.js';
 import { partition, stageAwareOctokit } from 'common/functions.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
@@ -21,7 +22,6 @@ import {
 	getDependabotVulnerabilities,
 	getProductionWorkflowUsages,
 	getRepoOwnership,
-	getRepositories,
 	getRepositoryBranches,
 	getRepositoryCustomProperties,
 	getRepositoryLanguages,

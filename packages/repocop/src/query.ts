@@ -21,27 +21,6 @@ import type {
 	Team,
 } from './types.js';
 
-export async function getRepositories(
-	client: PrismaClient,
-	ignoredRepositoryPrefixes: string[],
-): Promise<Repository[]> {
-	console.debug('Discovering repositories');
-	const repositories = await client.github_repositories.findMany({
-		where: {
-			NOT: [
-				{
-					OR: ignoredRepositoryPrefixes.map((prefix) => {
-						return { full_name: { startsWith: prefix } };
-					}),
-				},
-			],
-		},
-	});
-
-	console.debug(`Found ${repositories.length} repositories`);
-	return toNonEmptyArray(repositories.map((r) => r as Repository));
-}
-
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
 export async function getRepositoryBranches(
 	client: PrismaClient,
