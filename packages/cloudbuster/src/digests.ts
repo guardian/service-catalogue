@@ -14,6 +14,7 @@ import type { Digest } from './types.js';
 export function createDigestsFromFindings(
 	findings: cloudbuster_fsbp_vulnerabilities[],
 	severity: SecurityHubSeverity,
+	cutOffInDays: number
 ): Digest[] {
 	const filteredFindings = findings.filter((f) => f.severity === severity);
 
@@ -21,7 +22,7 @@ export function createDigestsFromFindings(
 
 	return Object.keys(groupedFindings)
 		.map((awsAccountId) =>
-			createDigestForAccount(groupedFindings[awsAccountId] ?? []),
+			createDigestForAccount(groupedFindings[awsAccountId] ?? [], cutOffInDays),
 		)
 		.filter((d): d is Digest => d !== undefined);
 }
@@ -41,11 +42,11 @@ function createCta(aws_account_name: string): Action[] {
 
 export function createDigestForAccount(
 	accountFindings: cloudbuster_fsbp_vulnerabilities[],
+	cutOffInDays: number
 ): Digest | undefined {
-	const vulnCutOffInDays = 60;
 
 	const cutOffDate = new Date();
-	cutOffDate.setDate(cutOffDate.getDate() - vulnCutOffInDays);
+	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
 	const recentFindings = accountFindings.filter(
 		(f) => f.first_observed_at && f.first_observed_at > cutOffDate,
 	);
@@ -66,7 +67,7 @@ export function createDigestForAccount(
 			subject: `Security Hub findings for AWS account ${aws_account_name}`,
 			message: createEmailBody(
 				recentFindings,
-				vulnCutOffInDays,
+				cutOffInDays,
 				aws_account_name,
 				stringToSeverity(finding.severity),
 			),

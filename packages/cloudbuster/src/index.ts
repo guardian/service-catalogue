@@ -58,11 +58,13 @@ export async function main() {
 	const activeFindings = uniqueTableContents.filter(
 		(row) => !row.suppressed,
 	);
-	const digests = createDigestsFromFindings(activeFindings, 'CRITICAL');
+
+	const digestCutOffInDays = 60;
+	const digests = createDigestsFromFindings(activeFindings, 'CRITICAL', digestCutOffInDays);
 
 	const isTuesday = new Date().getDay() === 2;
 	if (isTuesday) {
-		digests.push(...createDigestsFromFindings(activeFindings, 'HIGH'));
+		digests.push(...createDigestsFromFindings(activeFindings, 'HIGH', digestCutOffInDays));
 	}
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();
