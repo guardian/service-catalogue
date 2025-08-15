@@ -331,6 +331,8 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
+		const digestCutOffInDays = 60;
+
 		new Repocop(
 			this,
 			securityAlertSchedule,
@@ -342,6 +344,7 @@ export class ServiceCatalogue extends GuStack {
 			applicationToPostgresSecurityGroup,
 			repocopGithubCredentials,
 			gitHubOrg,
+			digestCutOffInDays
 		);
 
 		addDataAuditLambda(this, {
@@ -386,6 +389,7 @@ export class ServiceCatalogue extends GuStack {
 				'cloudbuster',
 			),
 			schedule: securityAlertSchedule,
+			digestCutOffInDays,
 		});
 	}
 }
