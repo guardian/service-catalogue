@@ -21502,6 +21502,7 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "cloudbuster",
+            "CUT_OFF_IN_DAYS": "60",
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
                 "PostgresInstance16DE4286E",
@@ -25361,6 +25362,7 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "repocop",
+            "CUT_OFF_IN_DAYS": "60",
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
                 "PostgresInstance16DE4286E",
