@@ -62,6 +62,11 @@ export interface Config extends PrismaConfig {
 	 * The name of the GitHub organisation that owns the repositories.
 	 */
 	gitHubOrg: string;
+
+	/**
+	 * The number of days we report on vulnerabilities for.
+	 */
+	cutOffInDays: number;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -93,5 +98,6 @@ export async function getConfig(): Promise<Config> {
 			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
 		),
 		gitHubOrg: process.env['GITHUB_ORG'] ?? 'guardian',
+		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS'))
 	};
 }
