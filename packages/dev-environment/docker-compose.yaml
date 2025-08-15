@@ -40,6 +40,9 @@ services:
         - aws_apigateway_domain_names
         - fastly_service_backends
         - fastly_service_domains
+        - aws_cloudwatch_alarms
+        - aws_autoscaling_groups
+        - aws_elbv2_target_groups
   postgres:
     image: postgres:14.6
     ports:
