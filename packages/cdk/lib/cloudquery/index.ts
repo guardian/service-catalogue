@@ -250,6 +250,16 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
+			name: 'AwsOrgWideSns',
+			description:
+				'Collecting SNS data across the organisation. Uses include monitoring alarm configuration.',
+			schedule: Schedule.cron({ minute: '0', hour: '3' }),
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_sns_topics'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		},
+		{
 			name: 'AwsOrgWideS3',
 			description:
 				'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
