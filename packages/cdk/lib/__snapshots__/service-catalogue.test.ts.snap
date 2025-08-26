@@ -16772,6 +16772,714 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
+    "CloudquerySourceGitHubReleasesScheduledEventRule0118D541": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 10 ? * MON *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "PropagateTags": "TASK_DEFINITION",
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceGitHubReleasesTaskDefinition3B879E45",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceGitHubReleasesTaskDefinitionEventsRoleB8F1DABE",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceGitHubReleasesTaskDefinition3B879E45": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
+spec:
+  name: github
+  path: cloudquery/github
+  version: v11.11.1
+  tables:
+    - github_releases
+  skip_dependent_tables: false
+  destinations:
+    - postgresql
+  spec:
+    repos:
+      - guardian/cdk
+    app_auth:
+      - org: guardian
+        private_key_path: /usr/share/cloudquery/github-private-key
+        app_id: \${file:/usr/share/cloudquery/github-app-id}
+        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+    include_archived_repos: false
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: github
+  path: cloudquery/postgresql
+  version: v7.2.0
+  write_mode: overwrite-delete-stale
+  migrate_mode: forced
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-GitHubReleasesAWSOTELCollector",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubReleases",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:stable",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubReleasesContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "GITHUB_PRIVATE_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":private-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_APP_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":app-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_INSTALLATION_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":installation-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "CLOUDQUERY_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "cloudqueryapikeyCCF82F53",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Command": [
+              "--config=/etc/ecs/ecs-xray.yaml",
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubReleasesAWSOTELCollector",
+            "PortMappings": [
+              {
+                "ContainerPort": 4318,
+                "Protocol": "tcp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_releases', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubReleases",
+              "Stack": "deploy",
+              "Stage": "TEST",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": {
+                  "Ref": "AWS::Region",
+                },
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubReleasesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "PGUSER",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGHOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGPASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "TEST",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubReleasesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceGitHubReleasesTaskDefinitionExecutionRole080EB49C",
+            "Arn",
+          ],
+        },
+        "Family": "ServiceCatalogueCloudquerySourceGitHubReleasesTaskDefinitionD74412B6",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubReleases",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "servicecatalogueTESTtaskGitHubReleases20CA3901",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubReleases",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceGitHubReleasesTaskDefinitionEventsRoleB8F1DABE": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubReleases",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubReleasesTaskDefinitionEventsRoleDefaultPolicyB359CF07": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceGitHubReleasesTaskDefinition3B879E45",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubReleasesTaskDefinitionExecutionRole080EB49C",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecatalogueTESTtaskGitHubReleases20CA3901",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubReleasesTaskDefinitionEventsRoleDefaultPolicyB359CF07",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionEventsRoleB8F1DABE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceGitHubReleasesTaskDefinitionExecutionRole080EB49C": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubReleases",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubReleasesTaskDefinitionExecutionRoleDefaultPolicy6AC5A3F3": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "githubcredentialsAF453741",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubReleasesTaskDefinitionExecutionRoleDefaultPolicy6AC5A3F3",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionExecutionRole080EB49C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "CloudquerySourceGitHubRepositoriesScheduledEventRuleC7F5836E": {
       "Properties": {
         "ScheduleExpression": "cron(0 0 * * ? *)",
@@ -29348,6 +30056,137 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "servicecatalogueTESTtaskGitHubReleases20CA3901": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-TEST-task-GitHubReleases",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecatalogueTESTtaskGitHubReleasesDefaultPolicy46241311": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "servicecatalogueTESTtaskGitHubReleasesDefaultPolicy46241311",
+        "Roles": [
+          {
+            "Ref": "servicecatalogueTESTtaskGitHubReleases20CA3901",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "servicecatalogueTESTtaskGitHubRepositories83F97F25": {
       "Properties": {

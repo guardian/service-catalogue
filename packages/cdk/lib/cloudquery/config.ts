@@ -19,6 +19,21 @@ interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 	org: string;
 }
 
+interface GitHubCloudqueryTableConfigForRepository
+	extends CloudqueryTableConfig {
+	/**
+	 * The organisation to authenticate GitHub requests against.
+	 * This organisation is tied to the GitHub App.
+	 */
+	org: string;
+
+	/**
+	 * The repositories to query.
+	 * These repositories should belong to the `org` and follow the format `<org>/<repo>`.
+	 */
+	repositories: string[];
+}
+
 /**
  * Specifies the update method to use when inserting rows to Postgres.
  *
@@ -190,6 +205,49 @@ export function githubSourceConfig(
 	};
 }
 
+export function githubSourceConfigForRepository(
+	tableConfig: GitHubCloudqueryTableConfigForRepository,
+): CloudqueryConfig {
+	const { tables, skipTables, org, repositories } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'github',
+			path: 'cloudquery/github',
+			version: `v${Versions.CloudqueryGithub}`,
+			tables,
+			skip_dependent_tables: false,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+			spec: {
+				repos: repositories,
+				app_auth: [
+					{
+						org,
+
+						// For simplicity, read all configuration from disk.
+						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
+						app_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-app-id` +
+							'}',
+						installation_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
+							'}',
+					},
+				],
+				include_archived_repos: false,
+			},
+		},
+	};
+}
+
 /**
  * Configuration for the Fastly source plugin.
  * @see https://www.cloudquery.io/docs/plugins/sources/fastly/overview#configuration
@@ -320,17 +378,15 @@ export function githubLanguagesConfig(
 			destinations: ['postgresql'],
 			tables: ['github_languages'],
 			registry: 'github',
-			spec: {				
-					org,
-					private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
-					app_id:
-						'${' +
-						`file:${serviceCatalogueConfigDirectory}/github-app-id` +
-						'}',
-					installation_id:
-						'${' +
-						`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
-						'}',
+			spec: {
+				org,
+				private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
+				app_id:
+					'${' + `file:${serviceCatalogueConfigDirectory}/github-app-id` + '}',
+				installation_id:
+					'${' +
+					`file:${serviceCatalogueConfigDirectory}/github-installation-id` +
+					'}',
 			},
 		},
 	};
