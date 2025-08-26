@@ -23,6 +23,7 @@ import {
 	galaxiesSourceConfig,
 	githubLanguagesConfig,
 	githubSourceConfig,
+	githubSourceConfigForRepository,
 	ns1SourceConfig,
 	riffraffSourcesConfig,
 	serviceCatalogueConfigDirectory,
@@ -35,7 +36,10 @@ import {
 	readBucketPolicy,
 	readDynamoDbTablePolicy,
 } from './policies';
-import { inspector2TableOptions, securityHubTableOptions } from './table-options';
+import {
+	inspector2TableOptions,
+	securityHubTableOptions,
+} from './table-options';
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
@@ -114,7 +118,12 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
-					tables: ['aws_accessanalyzer_*', 'aws_securityhub_*', 'aws_guardduty_*', 'aws_inspector2_findings'],
+					tables: [
+						'aws_accessanalyzer_*',
+						'aws_securityhub_*',
+						'aws_guardduty_*',
+						'aws_inspector2_findings',
+					],
 					concurrency: 2000,
 				},
 				{
@@ -439,6 +448,18 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 2048,
 		},
 		{
+			name: 'GitHubReleases',
+			description: '',
+			schedule: Schedule.cron({ weekDay: 'MON', hour: '10', minute: '0' }), // Every Monday, at 10AM UTC
+			config: githubSourceConfigForRepository({
+				org: gitHubOrgName,
+				repositories: ['guardian/cdk'],
+				tables: ['github_releases'],
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+		},
+		{
 			name: 'GitHubTeams',
 			description:
 				'Collect GitHub team data. Uses include identifying which repositories a team owns.',
@@ -582,10 +603,9 @@ export function addCloudqueryEcsCluster(
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
 		schedule: Schedule.rate(Duration.days(7)),
-		config: githubLanguagesConfig({org: gitHubOrgName}),
+		config: githubLanguagesConfig({ org: gitHubOrgName }),
 		secrets: githubSecrets,
-		additionalCommands: additionalGithubCommands
-
+		additionalCommands: additionalGithubCommands,
 	};
 
 	const ns1ApiKey = new SecretsManager(scope, 'ns1-credentials', {
