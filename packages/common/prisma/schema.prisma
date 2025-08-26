@@ -1066,6 +1066,130 @@ model riffraff_deploys {
   @@ignore
 }
 
+model aws_autoscaling_groups {
+  cq_sync_time                          DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                        String?   @map("_cq_source_name")
+  cq_id                                 String    @id(map: "aws_autoscaling_groups_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                          String?   @map("_cq_parent_id") @db.Uuid
+  account_id                            String?
+  region                                String?
+  load_balancers                        Json?
+  load_balancer_target_groups           Json?
+  arn                                   String?
+  tags                                  Json?
+  tags_raw                              Json?
+  auto_scaling_group_name               String?
+  availability_zones                    String[]
+  created_time                          DateTime? @db.Timestamp(6)
+  default_cooldown                      BigInt?
+  desired_capacity                      BigInt?
+  health_check_type                     String?
+  max_size                              BigInt?
+  min_size                              BigInt?
+  auto_scaling_group_arn                String?
+  capacity_rebalance                    Boolean?
+  context                               String?
+  default_instance_warmup               BigInt?
+  desired_capacity_type                 String?
+  enabled_metrics                       Json?
+  health_check_grace_period             BigInt?
+  instance_maintenance_policy           Json?
+  instances                             Json?
+  launch_configuration_name             String?
+  launch_template                       Json?
+  load_balancer_names                   String[]
+  max_instance_lifetime                 BigInt?
+  mixed_instances_policy                Json?
+  new_instances_protected_from_scale_in Boolean?
+  placement_group                       String?
+  predicted_capacity                    BigInt?
+  service_linked_role_arn               String?
+  status                                String?
+  suspended_processes                   Json?
+  target_group_arns                     String[]
+  termination_policies                  String[]
+  traffic_sources                       Json?
+  vpc_zone_identifier                   String?
+  warm_pool_configuration               Json?
+  warm_pool_size                        BigInt?
+  notification_configurations           Json?
+
+  @@ignore
+}
+
+model aws_cloudwatch_alarms {
+  cq_sync_time                          DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                        String?   @map("_cq_source_name")
+  cq_id                                 String    @id(map: "aws_cloudwatch_alarms_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                          String?   @map("_cq_parent_id") @db.Uuid
+  account_id                            String?
+  region                                String?
+  tags                                  Json?
+  arn                                   String?
+  dimensions                            Json?
+  actions_enabled                       Boolean?
+  alarm_actions                         String[]
+  alarm_arn                             String?
+  alarm_configuration_updated_timestamp DateTime? @db.Timestamp(6)
+  alarm_description                     String?
+  alarm_name                            String?
+  comparison_operator                   String?
+  datapoints_to_alarm                   BigInt?
+  evaluate_low_sample_count_percentile  String?
+  evaluation_periods                    BigInt?
+  evaluation_state                      String?
+  extended_statistic                    String?
+  insufficient_data_actions             String[]
+  metric_name                           String?
+  metrics                               Json?
+  namespace                             String?
+  ok_actions                            String[]
+  period                                BigInt?
+  state_reason                          String?
+  state_reason_data                     String?
+  state_transitioned_timestamp          DateTime? @db.Timestamp(6)
+  state_updated_timestamp               DateTime? @db.Timestamp(6)
+  state_value                           String?
+  statistic                             String?
+  threshold                             Float?
+  threshold_metric_id                   String?
+  treat_missing_data                    String?
+  unit                                  String?
+
+  @@ignore
+}
+
+model aws_elbv2_target_groups {
+  cq_sync_time                  DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                String?   @map("_cq_source_name")
+  cq_id                         String    @id(map: "aws_elbv2_target_groups_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                  String?   @map("_cq_parent_id") @db.Uuid
+  account_id                    String?
+  region                        String?
+  tags                          Json?
+  arn                           String?
+  health_check_enabled          Boolean?
+  health_check_interval_seconds BigInt?
+  health_check_path             String?
+  health_check_port             String?
+  health_check_protocol         String?
+  health_check_timeout_seconds  BigInt?
+  healthy_threshold_count       BigInt?
+  ip_address_type               String?
+  load_balancer_arns            String[]
+  matcher                       Json?
+  port                          BigInt?
+  protocol                      String?
+  protocol_version              String?
+  target_group_arn              String?
+  target_group_name             String?
+  target_type                   String?
+  unhealthy_threshold_count     BigInt?
+  vpc_id                        String?
+
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
@@ -1170,6 +1294,46 @@ view view_domain_tags {
   riffraff_project String?
   account_name     String?
   account_id       String?
+
+  @@ignore
+}
+
+view elk_index_to_space {
+  elk_index    String?
+  kibana_space String?
+
+  @@ignore
+}
+
+view grafana_cloudwatch_to_internal_infra {
+  grafana_cloudwatch_datasource String?
+  elk_index                     String?
+  aws_account_id                String?
+
+  @@ignore
+}
+
+view view_availability_dashboard {
+  account_id                    String?
+  account_name                  String?
+  region                        String?
+  service_name                  String?
+  load_balancer_type            String?
+  load_balancer_arn             String?
+  load_balancer_name            String?
+  stack                         String?
+  stage                         String?
+  app                           String?
+  repo                          String?
+  riffraff_project              String?
+  auto_scaling_group_arn        String?
+  auto_scaling_group_name       String?
+  elk_index                     String?
+  grafana_cloudwatch_datasource String?
+  kibana_space                  String?
+  slo                           String?
+  state_value                   String?
+  domain_names                  String[]
 
   @@ignore
 }
