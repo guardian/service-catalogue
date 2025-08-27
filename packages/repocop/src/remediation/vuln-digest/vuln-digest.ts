@@ -140,7 +140,7 @@ export async function createAndSendVulnDigestsForSeverity(
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
 	severity: 'critical' | 'high',
-	maxVulnAgeInDays: number = 60,
+	maxVulnAgeInDays: number,
 ) {
 	const digests = teams
 		.map((t) =>
@@ -166,6 +166,7 @@ export async function createAndSendVulnerabilityDigests(
 	teams: Team[],
 	repoOwners: view_repo_ownership[],
 	evaluationResults: EvaluationResult[],
+	cutOffInDays: number,
 ) {
 	await createAndSendVulnDigestsForSeverity(
 		config,
@@ -173,6 +174,7 @@ export async function createAndSendVulnerabilityDigests(
 		repoOwners,
 		evaluationResults,
 		'critical',
+		cutOffInDays
 	);
 
 	const isTuesday = new Date().getDay() === 2;
@@ -183,6 +185,7 @@ export async function createAndSendVulnerabilityDigests(
 			repoOwners,
 			evaluationResults,
 			'high',
+			cutOffInDays
 		);
 	}
 }
