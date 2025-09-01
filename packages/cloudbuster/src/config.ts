@@ -19,6 +19,10 @@ export interface Config extends PrismaConfig {
 	 * Anghammarad's topic ARN
 	 */
 	anghammaradSnsTopic: string;
+	/**
+	 * The number of days we report on vulnerabilities for.
+	 */
+	cutOffInDays: number;
 }
 
 export async function getConfig(): Promise<Config> {
@@ -36,5 +40,6 @@ export async function getConfig(): Promise<Config> {
 		withQueryLogging: isDev,
 		enableMessaging: !isDev,
 		anghammaradSnsTopic,
+		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS'))
 	};
 }

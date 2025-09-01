@@ -188,14 +188,11 @@ export async function main() {
 			octokit,
 		);
 
-		const vulnCutOffInDays = 60;
-
 		await createAndSendVulnerabilityDigests(
 			config,
 			teams,
 			repoOwners,
 			evaluationResults,
-			vulnCutOffInDays
 		);
 
 		await applyProductionTopicAndMessageTeams(

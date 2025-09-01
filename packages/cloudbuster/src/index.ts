@@ -59,12 +59,11 @@ export async function main() {
 		(row) => !row.suppressed,
 	);
 
-	const digestCutOffInDays = 60;
-	const digests = createDigestsFromFindings(activeFindings, 'CRITICAL', digestCutOffInDays);
+	const digests = createDigestsFromFindings(activeFindings, 'CRITICAL', config.cutOffInDays);
 
 	const isTuesday = new Date().getDay() === 2;
 	if (isTuesday) {
-		digests.push(...createDigestsFromFindings(activeFindings, 'HIGH', digestCutOffInDays));
+		digests.push(...createDigestsFromFindings(activeFindings, 'HIGH', config.cutOffInDays));
 	}
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();
