@@ -1,4 +1,4 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubSeverity } from 'common/types.js';
@@ -7,7 +7,7 @@ import { createDigestForAccount, createDigestsFromFindings } from './digests.js'
 
 void describe('createDigestForAccount', () => {
 	void it('should return nothing if no vulnerabilities are passed to it', () => {
-		const actual = createDigestForAccount([]);
+		const actual = createDigestForAccount([], 60);
 		assert.strictEqual(actual, undefined);
 	});
 
@@ -34,7 +34,7 @@ void describe('createDigestForAccount', () => {
 			testVuln,
 			testVuln,
 			{ ...testVuln, control_id: 'S.2' },
-		]);
+		], 60);
 		assert.ok(actual?.message.includes(
 			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
 		));
@@ -47,7 +47,7 @@ void describe('createDigestForAccount', () => {
 			{ ...testVuln, control_id: 'S.2' },
 			testVuln,
 			testVuln,
-		]);
+		], 60);
 
 		const msg = actual?.message;
 
@@ -64,7 +64,7 @@ void describe('createDigestForAccount', () => {
 			testVuln,
 			testVuln,
 			{ ...testVuln, app: 'my-other-app' },
-		]);
+		], 60);
 		assert.ok(actual?.message.includes(
 			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
 		));
@@ -73,10 +73,10 @@ void describe('createDigestForAccount', () => {
 		));
 	});
 	void it('should return the correct fields', () => {
-		const actual = createDigestForAccount([testVuln]);
+		const actual = createDigestForAccount([testVuln], 60);
 		assert.strictEqual(actual?.accountId, '123456789012');
 		assert.strictEqual(actual.accountName, 'test-account');
-		assert.strictEqual(actual.subject, 
+		assert.strictEqual(actual.subject,
 			'Security Hub findings for AWS account test-account',
 		);
 		assert.deepStrictEqual(actual.actions, [
@@ -88,26 +88,26 @@ void describe('createDigestForAccount', () => {
 	});
 	void it('should return nothing if the first observed date is older than the cut-off', () => {
 		const vuln = { ...testVuln, first_observed_at: new Date(0) };
-		const actual = createDigestForAccount([vuln]);
+		const actual = createDigestForAccount([vuln], 60);
 		assert.strictEqual(actual, undefined);
 	});
 	void it('should correctly encode the account name in the CTA URL', () => {
 		const vuln = { ...testVuln, aws_account_name: 'test account' };
-		const actual = createDigestForAccount([vuln]);
+		const actual = createDigestForAccount([vuln], 60);
 		assert.ok(actual?.actions[0]?.url.includes('test%20account'));
 	});
 	void it('should not return a digest if the account name is null', () => {
 		const vuln = { ...testVuln, aws_account_name: null };
-		const actual = createDigestForAccount([vuln]);
+		const actual = createDigestForAccount([vuln], 60);
 		assert.strictEqual(actual, undefined);
 	});
 	void it('should not include the app tag in the message if app is null', () => {
 		const vuln = { ...testVuln, app: null };
-		const actual = createDigestForAccount([vuln]);
+		const actual = createDigestForAccount([vuln], 60);
 		assert.ok(!actual?.message.includes('in app:'));
 	})
 	void it('should include the app tag in the message if app exists', () => {
-		const actual = createDigestForAccount([testVuln]);
+		const actual = createDigestForAccount([testVuln], 60);
 		assert.ok(actual?.message.includes(`in app: **${testVuln.app}**,`));
 	})
 });
@@ -142,10 +142,10 @@ void describe('createDigestsFromFindings', () => {
 			mockFinding('2', 'HIGH'),
 			mockFinding('3', 'CRITICAL'),
 		];
-		const criticalDigests = createDigestsFromFindings(findings, 'CRITICAL');
+		const criticalDigests = createDigestsFromFindings(findings, 'CRITICAL', 60);
 		assert.strictEqual(criticalDigests.length, 2);
 
-		const highDigests = createDigestsFromFindings(findings, 'HIGH');
+		const highDigests = createDigestsFromFindings(findings, 'HIGH', 60);
 		assert.strictEqual(highDigests.length, 1);
 	});
 	void it('should create one digest per account', () => {
@@ -157,6 +157,7 @@ void describe('createDigestsFromFindings', () => {
 		const result = createDigestsFromFindings(
 			findingsFromTwoAccounts,
 			'CRITICAL',
+			60,
 		);
 		assert.strictEqual(result.length, 3);
 	});
@@ -169,6 +170,7 @@ void describe('createDigestsFromFindings', () => {
 		const result = createDigestsFromFindings(
 			findingsFromOneAccount,
 			'CRITICAL',
+			60,
 		);
 		assert.strictEqual(result.length, 1);
 	});
@@ -179,7 +181,7 @@ void describe('createDigestsFromFindings', () => {
 			{ ...mockFinding('1', 'CRITICAL'), aws_region: 'eu-mock-2' },
 			{ ...mockFinding('1', 'CRITICAL'), aws_region: 'eu-mock-2' },
 		];
-		const result = createDigestsFromFindings(findings, 'CRITICAL').map(
+		const result = createDigestsFromFindings(findings, 'CRITICAL', 60).map(
 			(d) => d.message,
 		).join('\n');
 		const firstIdx1 = result.indexOf('eu-mock-1')

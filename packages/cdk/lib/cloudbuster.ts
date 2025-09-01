@@ -18,9 +18,10 @@ type CloudBusterProps = {
 	db: DatabaseInstance;
 	anghammaradTopic: ITopic;
 	monitoringConfiguration:
-		| NoMonitoring
-		| GuLambdaErrorPercentageMonitoringProps;
+	| NoMonitoring
+	| GuLambdaErrorPercentageMonitoringProps;
 	schedule: Schedule;
+	digestCutOffInDays: number;
 };
 
 export class CloudBuster {
@@ -32,6 +33,7 @@ export class CloudBuster {
 			anghammaradTopic,
 			monitoringConfiguration,
 			schedule,
+			digestCutOffInDays,
 		} = props;
 		const app = 'cloudbuster';
 
@@ -47,6 +49,8 @@ export class CloudBuster {
 				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false',
+				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),
+
 			},
 			timeout: Duration.minutes(2),
 			memorySize: 512,

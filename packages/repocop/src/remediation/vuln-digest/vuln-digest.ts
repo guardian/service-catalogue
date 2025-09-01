@@ -140,7 +140,6 @@ export async function createAndSendVulnDigestsForSeverity(
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
 	severity: 'critical' | 'high',
-	maxVulnAgeInDays: number = 60,
 ) {
 	const digests = teams
 		.map((t) =>
@@ -149,7 +148,7 @@ export async function createAndSendVulnDigestsForSeverity(
 				severity,
 				repoOwners,
 				results,
-				maxVulnAgeInDays,
+				config.cutOffInDays,
 			),
 		)
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
