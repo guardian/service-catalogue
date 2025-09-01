@@ -331,7 +331,7 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		const digestCutOffInDays = 60;
+		const digestCutOffInDays = 45
 
 		new Repocop(
 			this,
