@@ -16836,8 +16836,6 @@ spec:
   tables:
     - github_releases
   skip_dependent_tables: false
-  skip_tables:
-    - github_repositories
   destinations:
     - postgresql
   spec:
@@ -16855,7 +16853,7 @@ spec:
   registry: github
   path: cloudquery/postgresql
   version: v7.2.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   spec:
     connection_string: >-

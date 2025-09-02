@@ -1,18 +1,18 @@
-import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import { GuStringParameter } from '@guardian/cdk/lib/constructs/core';
-import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
-import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
-import { Aws, Duration } from 'aws-cdk-lib';
-import type { IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Secret } from 'aws-cdk-lib/aws-ecs';
-import { Schedule } from 'aws-cdk-lib/aws-events';
-import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
-import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
-import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import type { CloudquerySource } from './cluster';
-import { CloudqueryCluster } from './cluster';
+import type { GuStack } from "@guardian/cdk/lib/constructs/core";
+import { GuStringParameter } from "@guardian/cdk/lib/constructs/core";
+import { GuSecurityGroup } from "@guardian/cdk/lib/constructs/ec2";
+import { GuS3Bucket } from "@guardian/cdk/lib/constructs/s3";
+import { GuardianAwsAccounts } from "@guardian/private-infrastructure-config";
+import { Aws, Duration } from "aws-cdk-lib";
+import type { IVpc } from "aws-cdk-lib/aws-ec2";
+import { Secret } from "aws-cdk-lib/aws-ecs";
+import { Schedule } from "aws-cdk-lib/aws-events";
+import type { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import type { DatabaseInstance } from "aws-cdk-lib/aws-rds";
+import { Secret as SecretsManager } from "aws-cdk-lib/aws-secretsmanager";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import type { CloudquerySource } from "./cluster";
+import { CloudqueryCluster } from "./cluster";
 import {
 	amigoBakePackagesConfig,
 	awsSourceConfigForAccount,
@@ -27,19 +27,11 @@ import {
 	ns1SourceConfig,
 	riffraffSourcesConfig,
 	serviceCatalogueConfigDirectory,
-	skipTables,
-} from './config';
-import { Images } from './images';
-import {
-	cloudqueryAccess,
-	listOrgsPolicy,
-	readBucketPolicy,
-	readDynamoDbTablePolicy,
-} from './policies';
-import {
-	inspector2TableOptions,
-	securityHubTableOptions,
-} from './table-options';
+	skipTables
+} from "./config";
+import { Images } from "./images";
+import { cloudqueryAccess, listOrgsPolicy, readBucketPolicy, readDynamoDbTablePolicy } from "./policies";
+import { inspector2TableOptions, securityHubTableOptions } from "./table-options";
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
@@ -455,8 +447,8 @@ export function addCloudqueryEcsCluster(
 				org: gitHubOrgName,
 				repositories: ['guardian/cdk'],
 				tables: ['github_releases'],
-				skipTables: ['github_repositories'],
 			}),
+			writeMode: CloudqueryWriteMode.Overwrite,
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 		},
