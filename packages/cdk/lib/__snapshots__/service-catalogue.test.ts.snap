@@ -16836,6 +16836,8 @@ spec:
   tables:
     - github_releases
   skip_dependent_tables: false
+  skip_tables:
+    - github_repositories
   destinations:
     - postgresql
   spec:

@@ -455,6 +455,7 @@ export function addCloudqueryEcsCluster(
 				org: gitHubOrgName,
 				repositories: ['guardian/cdk'],
 				tables: ['github_releases'],
+				skipTables: ['github_repositories'],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
