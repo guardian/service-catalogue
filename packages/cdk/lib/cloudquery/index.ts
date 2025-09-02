@@ -456,6 +456,7 @@ export function addCloudqueryEcsCluster(
 				repositories: ['guardian/cdk'],
 				tables: ['github_releases'],
 			}),
+			writeMode: CloudqueryWriteMode.Overwrite,
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 		},
