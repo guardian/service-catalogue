@@ -96,14 +96,12 @@ export function addCloudqueryEcsCluster(
 				'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
 			schedule: Schedule.rate(Duration.days(1)),
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
-				tables: [
-					/*
-		  Collect all AWS Organisation tables, including account names, and which OU they belong to.
-		  A wildcard is used, as there are a lot of tables!
-		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
-		   */
-					'aws_organization*',
-				],
+				/*
+				Collect all AWS Organisation tables, including account names, and which OU they belong to.
+				A wildcard is used, as there are a lot of tables!
+				See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
+				*/
+				tables: ['aws_organization*'],
 			}),
 			policies: [
 				listOrgsPolicy,
