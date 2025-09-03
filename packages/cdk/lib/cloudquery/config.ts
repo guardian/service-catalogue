@@ -1,10 +1,11 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
-import {awsTables} from "./collected-tables/aws-table-list";
-import {fastlyTables} from "./collected-tables/fastly-table-list";
-import {galaxiesTables} from "./collected-tables/galaxies-table-list";
-import {githubTables} from "./collected-tables/github-table-list";
-import {ns1Tables} from "./collected-tables/ns1_table_list";
-import {riffraffTables} from "./collected-tables/riffraff-table-list";
+import {awsTables} from "./allow-list-tables/aws-table-list";
+import {fastlyTables} from "./allow-list-tables/fastly-table-list";
+import {filterAllowedTables} from "./allow-list-tables/filter";
+import {galaxiesTables} from "./allow-list-tables/galaxies-table-list";
+import {githubTables} from "./allow-list-tables/github-table-list";
+import {ns1Tables} from "./allow-list-tables/ns1_table_list";
+import {riffraffTables} from "./allow-list-tables/riffraff-table-list";
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {
@@ -96,18 +97,18 @@ export function awsSourceConfig(
 	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
 	const { tables, skipTables, concurrency } = tableConfig;
-
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
 	}
+	const filteredTables=filterAllowedTables(awsTables, tables);
 
-	return {
+		return {
 		kind: 'source',
 		spec: {
 			name: 'aws',
 			path: 'cloudquery/aws',
 			version: `v${Versions.CloudqueryAws}`,
-			tables: awsTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 			otel_endpoint: '0.0.0.0:4318',
 			otel_endpoint_insecure: true,
@@ -173,6 +174,7 @@ export function githubSourceConfig(
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
 	}
+	const filteredTables=filterAllowedTables(githubTables, tables);
 
 	return {
 		kind: 'source',
@@ -180,7 +182,7 @@ export function githubSourceConfig(
 			name: 'github',
 			path: 'cloudquery/github',
 			version: `v${Versions.CloudqueryGithub}`,
-			tables: githubTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
@@ -215,13 +217,15 @@ export function githubSourceConfigForRepository(
 		throw new Error('Must specify either tables or skipTables');
 	}
 
+	const filteredTables=filterAllowedTables(githubTables, tables);
+
 	return {
 		kind: 'source',
 		spec: {
 			name: 'github',
 			path: 'cloudquery/github',
 			version: `v${Versions.CloudqueryGithub}`,
-			tables: githubTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 			spec: {
 				repos: repositories,
@@ -259,13 +263,15 @@ export function fastlySourceConfig(
 		throw new Error('Must specify either tables or skipTables');
 	}
 
+	const filteredTables=filterAllowedTables(fastlyTables, tables);
+
 	return {
 		kind: 'source',
 		spec: {
 			name: 'fastly',
 			path: 'cloudquery/fastly',
 			version: `v${Versions.CloudqueryFastly}`,
-			tables: fastlyTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 
 			spec: {
