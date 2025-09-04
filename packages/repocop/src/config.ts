@@ -5,7 +5,10 @@ import {
 	getDatabaseConnectionString,
 	getDevDatabaseConfig,
 } from 'common/src/database-setup.js';
-import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup.js';
+import type {
+	DatabaseConfig,
+	PrismaConfig,
+} from 'common/src/database-setup.js';
 
 export interface Config extends PrismaConfig {
 	/**
@@ -98,6 +101,6 @@ export async function getConfig(): Promise<Config> {
 			'DEPENDENCY_GRAPH_INPUT_TOPIC_ARN',
 		),
 		gitHubOrg: process.env['GITHUB_ORG'] ?? 'guardian',
-		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS'))
+		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS')),
 	};
 }

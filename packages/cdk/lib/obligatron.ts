@@ -52,7 +52,10 @@ export class Obligatron {
 			const startTime = (9 + index).toString();
 			new Rule(stack, `obligatron-${obligation}`, {
 				description: `Daily execution of Obligatron lambda for '${obligation}' obligation`,
-				schedule: stack.stage == 'PROD' ? Schedule.cron({ minute: '0', hour: startTime }) : Schedule.rate(Duration.days(30)),
+				schedule:
+					stack.stage == 'PROD'
+						? Schedule.cron({ minute: '0', hour: startTime })
+						: Schedule.rate(Duration.days(30)),
 				targets: [
 					new LambdaFunction(lambda, {
 						event: RuleTargetInput.fromText(obligation),

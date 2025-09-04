@@ -10,9 +10,9 @@ config({ path: `../../.env` });
  * `import.meta.url` represents the URL of the current module file, e.g. run-locally.ts
  * `process.argv[1]` represents the path to the script that was executed - it's the second 
 argument in the process's argument vector (the first being the Node executable).
-*/ 
+*/
 const isMain = fileURLToPath(import.meta.url) === process.argv[1];
 
 if (isMain) {
-    void main();
+	void main();
 }

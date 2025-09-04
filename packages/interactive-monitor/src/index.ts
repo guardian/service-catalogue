@@ -1,6 +1,10 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { SNSHandler } from 'aws-lambda';
-import { applyTopics, parseEvent, stageAwareOctokit } from 'common/functions.js';
+import {
+	applyTopics,
+	parseEvent,
+	stageAwareOctokit,
+} from 'common/functions.js';
 import type { Octokit } from 'octokit';
 import { isAusInteractive } from './aus-interactives.js';
 import type { Config } from './config.js';
@@ -12,13 +16,25 @@ interface InteractiveRepoAssessment {
 	isInteractive: boolean;
 }
 
-async function isInteractive(repo: string, owner: string, octokit: Octokit): Promise<InteractiveRepoAssessment> {
-	const result = { repo: repo, isInteractive: isAusInteractive(repo) || (await isUkInteractive(repo, owner, octokit)) };
+async function isInteractive(
+	repo: string,
+	owner: string,
+	octokit: Octokit,
+): Promise<InteractiveRepoAssessment> {
+	const result = {
+		repo: repo,
+		isInteractive:
+			isAusInteractive(repo) || (await isUkInteractive(repo, owner, octokit)),
+	};
 	console.log(result);
 	return result;
 }
 
-async function notify(onProd: boolean, interactives: InteractiveRepoAssessment[], config: Config) {
+async function notify(
+	onProd: boolean,
+	interactives: InteractiveRepoAssessment[],
+	config: Config,
+) {
 	const client = new Anghammarad();
 	const today = new Date().toDateString();
 	const message = `The following repositories have been assessed as interactives:\n${interactives.map((r) => `[${r.repo}](https://github.com/${config.owner}/${r.repo})`).join('\n')}`;
@@ -26,7 +42,9 @@ async function notify(onProd: boolean, interactives: InteractiveRepoAssessment[]
 		subject: 'Interactive Monitor',
 		actions: [],
 		message,
-		target: onProd ? { GithubTeamSlug: 'devx-security' } : { Stack: 'testing-alerts' },
+		target: onProd
+			? { GithubTeamSlug: 'devx-security' }
+			: { Stack: 'testing-alerts' },
 		channel: RequestedChannel.PreferHangouts,
 		sourceSystem: `interactive-monitor ${config.stage}`,
 		topicArn: config.anghammaradSnsTopic,
@@ -35,17 +53,22 @@ async function notify(onProd: boolean, interactives: InteractiveRepoAssessment[]
 }
 
 export async function assessRepos(events: string[], config: Config) {
-
 	const octokit = await stageAwareOctokit(config.stage);
 	const { stage, owner } = config;
 	const onProd = stage === 'PROD';
-	const results: InteractiveRepoAssessment[] = await Promise.all(events.map(async (repo) => await isInteractive(repo, owner, octokit)));
+	const results: InteractiveRepoAssessment[] = await Promise.all(
+		events.map(async (repo) => await isInteractive(repo, owner, octokit)),
+	);
 	const interactives = results.filter((result) => result.isInteractive);
-  
+
 	if (interactives.length > 0) {
 		await notify(onProd, interactives, config);
 		if (onProd) {
-			await Promise.all(interactives.map((repo) => applyTopics(repo.repo, owner, octokit, 'interactive')));
+			await Promise.all(
+				interactives.map((repo) =>
+					applyTopics(repo.repo, owner, octokit, 'interactive'),
+				),
+			);
 		}
 	} else {
 		console.log('No interactives found');

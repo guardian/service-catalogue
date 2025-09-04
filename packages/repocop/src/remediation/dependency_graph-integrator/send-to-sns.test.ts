@@ -1,5 +1,5 @@
-import  assert from 'assert';
-import { describe, it, mock, test} from 'node:test';
+import assert from 'assert';
+import { describe, it, mock, test } from 'node:test';
 import type {
 	github_languages,
 	github_repository_custom_properties,
@@ -388,8 +388,9 @@ void describe('getPullRequest', () => {
 		assert.strictEqual(foundPull, dependabotBranch);
 		assert.ok(
 			warnMock.mock.calls.some(
-				call => call.arguments[0] === 'Found 2 PRs on repo - choosing the first.'
-			)
+				(call) =>
+					call.arguments[0] === 'Found 2 PRs on repo - choosing the first.',
+			),
 		);
 		warnMock.mock.restore();
 	});

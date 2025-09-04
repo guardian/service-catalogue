@@ -1,7 +1,6 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import { getCentralElkLink } from './logs.js';
-
 
 void describe('getCentralElkUrl', () => {
 	void it('should form a valid link', () => {

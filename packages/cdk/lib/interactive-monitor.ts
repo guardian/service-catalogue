@@ -10,7 +10,7 @@ import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 const service = 'interactive-monitor';
 export class InteractiveMonitor {
 	public readonly topic: Topic;
-	constructor(guStack: GuStack, gitHubOrg: string, anghammaradTopic: ITopic,) {
+	constructor(guStack: GuStack, gitHubOrg: string, anghammaradTopic: ITopic) {
 		const app = guStack.app ?? 'service-catalogue'; //shouldn't be undefined, but make linter happy
 		const { stage, stack } = guStack;
 		const topic = new Topic(guStack, 'Topic', {

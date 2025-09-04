@@ -1,5 +1,6 @@
-import  assert from 'assert';
-import { describe, it } from 'node:test';import type { Repository } from 'common/types.js';
+import assert from 'assert';
+import { describe, it } from 'node:test';
+import type { Repository } from 'common/types.js';
 import type { ObligatronRepocopVulnerability } from './dependency-vulnerabilities.js';
 import { evaluateObligationForOneRepo } from './dependency-vulnerabilities.js';
 

@@ -1,5 +1,6 @@
-import  assert from 'assert';
-import { describe, it } from 'node:test';import type { PrismaClient } from '@prisma/client';
+import assert from 'assert';
+import { describe, it } from 'node:test';
+import type { PrismaClient } from '@prisma/client';
 import { evaluateSecurityHubTaggingCoverage } from './tagging.js';
 
 const createPrismaClientWithMockedResponse = (response: unknown[]) => {
@@ -151,7 +152,7 @@ void describe('The tagging obligation', () => {
 			() => evaluateSecurityHubTaggingCoverage(client),
 			(err: Error) =>
 				err instanceof Error &&
-				err.message === 'Invalid resource in finding 123456789012'
+				err.message === 'Invalid resource in finding 123456789012',
 		);
 	});
 });

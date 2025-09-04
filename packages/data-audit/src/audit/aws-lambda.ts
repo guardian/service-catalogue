@@ -61,11 +61,7 @@ async function numberOfLambdaFunctionsFromAws(
 ): Promise<number> {
 	const promises = accounts.flatMap((account) => {
 		return regions.map((region) => {
-			return numberOfLambdaFunctionsForAwsAccount(
-				stage,
-				account.Id!,
-				region,
-			);
+			return numberOfLambdaFunctionsForAwsAccount(stage, account.Id!, region);
 		});
 	});
 	const results = await Promise.all(promises);

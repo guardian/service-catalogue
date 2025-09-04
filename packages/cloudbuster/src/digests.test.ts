@@ -2,8 +2,10 @@ import assert from 'assert';
 import { describe, it } from 'node:test';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubSeverity } from 'common/types.js';
-import { createDigestForAccount, createDigestsFromFindings } from './digests.js';
-
+import {
+	createDigestForAccount,
+	createDigestsFromFindings,
+} from './digests.js';
 
 void describe('createDigestForAccount', () => {
 	void it('should return nothing if no vulnerabilities are passed to it', () => {
@@ -30,24 +32,26 @@ void describe('createDigestForAccount', () => {
 	};
 
 	void it('should aggregate findings by control ID', () => {
-		const actual = createDigestForAccount([
-			testVuln,
-			testVuln,
-			{ ...testVuln, control_id: 'S.2' },
-		], 60);
-		assert.ok(actual?.message.includes(
-			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
-		));
-		assert.ok(actual?.message.includes(
-			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) in app: **my-app**, for control [S.2](https://example.com), in eu-west-1 (test-title)`,
-		));
+		const actual = createDigestForAccount(
+			[testVuln, testVuln, { ...testVuln, control_id: 'S.2' }],
+			60,
+		);
+		assert.ok(
+			actual?.message.includes(
+				`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
+			),
+		);
+		assert.ok(
+			actual?.message.includes(
+				`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.2) in app: **my-app**, for control [S.2](https://example.com), in eu-west-1 (test-title)`,
+			),
+		);
 	});
 	void it('should show the issues with the most findings first, regardless of input ordering', () => {
-		const actual = createDigestForAccount([
-			{ ...testVuln, control_id: 'S.2' },
-			testVuln,
-			testVuln,
-		], 60);
+		const actual = createDigestForAccount(
+			[{ ...testVuln, control_id: 'S.2' }, testVuln, testVuln],
+			60,
+		);
 
 		const msg = actual?.message;
 
@@ -60,23 +64,27 @@ void describe('createDigestForAccount', () => {
 		assert.ok(twoFindingStartPosition < oneFindingStartPosition);
 	});
 	void it('should aggregate findings by app', () => {
-		const actual = createDigestForAccount([
-			testVuln,
-			testVuln,
-			{ ...testVuln, app: 'my-other-app' },
-		], 60);
-		assert.ok(actual?.message.includes(
-			`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
-		));
-		assert.ok(actual?.message.includes(
-			`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-other-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
-		));
+		const actual = createDigestForAccount(
+			[testVuln, testVuln, { ...testVuln, app: 'my-other-app' }],
+			60,
+		);
+		assert.ok(
+			actual?.message.includes(
+				`[2 findings](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
+			),
+		);
+		assert.ok(
+			actual?.message.includes(
+				`[1 finding](https://metrics.gutools.co.uk/d/ddi3x35x70jy8d?var-account_name=test-account&var-control_id=S.1) in app: **my-other-app**, for control [S.1](https://example.com), in eu-west-1 (test-title)`,
+			),
+		);
 	});
 	void it('should return the correct fields', () => {
 		const actual = createDigestForAccount([testVuln], 60);
 		assert.strictEqual(actual?.accountId, '123456789012');
 		assert.strictEqual(actual.accountName, 'test-account');
-		assert.strictEqual(actual.subject,
+		assert.strictEqual(
+			actual.subject,
 			'Security Hub findings for AWS account test-account',
 		);
 		assert.deepStrictEqual(actual.actions, [
@@ -105,11 +113,11 @@ void describe('createDigestForAccount', () => {
 		const vuln = { ...testVuln, app: null };
 		const actual = createDigestForAccount([vuln], 60);
 		assert.ok(!actual?.message.includes('in app:'));
-	})
+	});
 	void it('should include the app tag in the message if app exists', () => {
 		const actual = createDigestForAccount([testVuln], 60);
 		assert.ok(actual?.message.includes(`in app: **${testVuln.app}**,`));
-	})
+	});
 });
 
 function mockFinding(
@@ -181,15 +189,15 @@ void describe('createDigestsFromFindings', () => {
 			{ ...mockFinding('1', 'CRITICAL'), aws_region: 'eu-mock-2' },
 			{ ...mockFinding('1', 'CRITICAL'), aws_region: 'eu-mock-2' },
 		];
-		const result = createDigestsFromFindings(findings, 'CRITICAL', 60).map(
-			(d) => d.message,
-		).join('\n');
-		const firstIdx1 = result.indexOf('eu-mock-1')
+		const result = createDigestsFromFindings(findings, 'CRITICAL', 60)
+			.map((d) => d.message)
+			.join('\n');
+		const firstIdx1 = result.indexOf('eu-mock-1');
 		const secondIdx1 = result.indexOf('eu-mock-1', firstIdx1 + 1);
-		assert.ok(firstIdx1 >= 0)
+		assert.ok(firstIdx1 >= 0);
 		assert.strictEqual(secondIdx1, -1); //indicates that the region only appears once
 
-		const firstIdx2 = result.indexOf('eu-mock-2')
+		const firstIdx2 = result.indexOf('eu-mock-2');
 		const secondIdx2 = result.indexOf('eu-mock-2', firstIdx2 + 1);
 		assert.ok(firstIdx2 >= 0);
 		assert.strictEqual(secondIdx2, -1);

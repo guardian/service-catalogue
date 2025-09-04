@@ -1,7 +1,6 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import { markdownChecklist, stripMargin } from './string.js';
-
 
 void describe('stripMargin', () => {
 	void it('should strip the margin from a string', () => {

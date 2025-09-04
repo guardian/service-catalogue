@@ -4,7 +4,11 @@ import { daysLeftToFix } from 'common/src/functions.js';
 import { SLAs } from 'common/src/types.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { Config } from '../../config.js';
-import type { EvaluationResult, Team, VulnerabilityDigest } from '../../types.js';
+import type {
+	EvaluationResult,
+	Team,
+	VulnerabilityDigest,
+} from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
 
 function getOwningRepos(

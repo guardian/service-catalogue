@@ -169,13 +169,13 @@ export function addPrismaMigrateTask(
 			source: ['aws.s3'],
 			detailType: ['Object Created'],
 			detail: {
-                bucket: {
-                    name: [artifactBucketName],
-                },
-                object: {
-                    key: [prismaArtifactKey],
-                },
-            },
+				bucket: {
+					name: [artifactBucketName],
+				},
+				object: {
+					key: [prismaArtifactKey],
+				},
+			},
 		},
 	});
 

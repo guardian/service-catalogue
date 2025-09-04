@@ -6,7 +6,7 @@ import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
-    beforeAll(() => {
+	beforeAll(() => {
 		/*
 		Each CloudQuery task generates a SQL statement to insert its cadence into the `cloudquery_table_frequency` database table.
 		This value can change depending on how many days there are in the current month.

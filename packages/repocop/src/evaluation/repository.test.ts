@@ -1,4 +1,4 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, test } from 'node:test';
 import type {
 	github_languages,
@@ -106,10 +106,10 @@ void describe('REPOSITORY_01 - default_branch_name should be false when the defa
 		const repos: Repository[] = [thePerfectRepo, badRepo];
 		const evaluation = repos.map((repo) => evaluateRepoTestHelper(repo));
 
-		assert.deepStrictEqual(evaluation.map((repo) => repo.default_branch_name), [
-			true,
-			false,
-		]);
+		assert.deepStrictEqual(
+			evaluation.map((repo) => repo.default_branch_name),
+			[true, false],
+		);
 	});
 });
 
@@ -589,20 +589,28 @@ const newHighDependabotVuln: RepocopVulnerability = {
 
 void describe('NO RULE - Dependabot alerts', () => {
 	void test('should be flagged if there are critical alerts older than two days', () => {
-		assert.strictEqual(hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo), 
+		assert.strictEqual(
+			hasOldAlerts([oldCriticalDependabotVuln], thePerfectRepo),
 			true,
 		);
 	});
 	void test('should not be flagged if a critical alert was raised today', () => {
-		assert.strictEqual(hasOldAlerts([newCriticalDependabotVuln], thePerfectRepo), 
+		assert.strictEqual(
+			hasOldAlerts([newCriticalDependabotVuln], thePerfectRepo),
 			false,
 		);
 	});
 	void test('should be flagged if there are high alerts older than 30 days', () => {
-		assert.strictEqual(hasOldAlerts([oldHighDependabotVuln], thePerfectRepo), true);
+		assert.strictEqual(
+			hasOldAlerts([oldHighDependabotVuln], thePerfectRepo),
+			true,
+		);
 	});
 	void test('should not be flagged if a high alert was raised today', () => {
-		assert.strictEqual(hasOldAlerts([newHighDependabotVuln], thePerfectRepo), false);
+		assert.strictEqual(
+			hasOldAlerts([newHighDependabotVuln], thePerfectRepo),
+			false,
+		);
 	});
 	void test('should not be flagged if a high alert was raised 29 days ago', () => {
 		const thirteenDaysAgo = new Date();
@@ -613,7 +621,10 @@ void describe('NO RULE - Dependabot alerts', () => {
 			alert_issue_date: thirteenDaysAgo,
 		};
 
-		assert.strictEqual(hasOldAlerts([thirteenDayOldHigh], thePerfectRepo), false);
+		assert.strictEqual(
+			hasOldAlerts([thirteenDayOldHigh], thePerfectRepo),
+			false,
+		);
 	});
 });
 
@@ -704,7 +715,10 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		assert.strictEqual(actual.length, 1);
 	});
 	void test('Should return the critical vulnerability, given a choice betwen critical and high', () => {
-		assert.deepStrictEqual(actual.map((x) => x.severity), ['critical']);
+		assert.deepStrictEqual(
+			actual.map((x) => x.severity),
+			['critical'],
+		);
 	});
 	void test('Should not happen if two vulnerabilities have different CVEs', () => {
 		const vuln3: RepocopVulnerability = {

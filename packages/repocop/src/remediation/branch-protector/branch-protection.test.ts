@@ -1,5 +1,6 @@
-import  assert from 'assert';
-import { describe, test } from 'node:test';import type {
+import assert from 'assert';
+import { describe, test } from 'node:test';
+import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from '@prisma/client';
@@ -47,7 +48,9 @@ void describe('Team slugs should be findable for every team associated with a re
 			5,
 		);
 
-		assert.deepStrictEqual(actual, [{ fullName: repo, teamNameSlugs: ['team-one'] }]);
+		assert.deepStrictEqual(actual, [
+			{ fullName: repo, teamNameSlugs: ['team-one'] },
+		]);
 	});
 
 	void test('A repository that has no owner should not be in the list of messages', () => {

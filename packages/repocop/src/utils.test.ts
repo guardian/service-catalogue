@@ -1,4 +1,4 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, test } from 'node:test';
 import type { RepocopVulnerability, Repository } from 'common/src/types.js';
 import { isProduction, vulnSortPredicate } from './utils.js';

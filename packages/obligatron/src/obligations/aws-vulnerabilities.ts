@@ -81,9 +81,9 @@ export function fsbpFindingsToObligatronResults(
 export async function evaluateFsbpVulnerabilities(
 	client: PrismaClient,
 ): Promise<ObligationResult[]> {
-	const findings = (await getFsbpFindings(client, ['CRITICAL', 'HIGH'])).map(
-		(v) => v as unknown as SecurityHubFinding,
-	).filter((f) => f.workflow.Status !== 'SUPPRESSED');
+	const findings = (await getFsbpFindings(client, ['CRITICAL', 'HIGH']))
+		.map((v) => v as unknown as SecurityHubFinding)
+		.filter((f) => f.workflow.Status !== 'SUPPRESSED');
 
 	console.log(`Found ${findings.length} active FSBP findings`);
 

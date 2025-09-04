@@ -1,5 +1,6 @@
-import  assert from 'assert';
-import { describe, it } from 'node:test';import type { Repository } from 'common/src/types.js';
+import assert from 'assert';
+import { describe, it } from 'node:test';
+import type { Repository } from 'common/src/types.js';
 import { nullRepo } from '../../evaluation/repository.test.js';
 import type { AwsCloudFormationStack } from '../../types.js';
 import {
@@ -66,7 +67,10 @@ void describe('getReposWithoutProductionTopic', () => {
 
 		const result: string[] =
 			getRepoNamesWithoutProductionTopic(unarchivedRepos);
-		assert.deepStrictEqual(result, ['guardian/repo-good-1', 'guardian/repo-good-2']);
+		assert.deepStrictEqual(result, [
+			'guardian/repo-good-1',
+			'guardian/repo-good-2',
+		]);
 	});
 });
 

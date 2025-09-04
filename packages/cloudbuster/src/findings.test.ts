@@ -1,10 +1,12 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import type { SecurityHubFinding } from 'common/types.js';
-import { findingsToGuardianFormat, groupFindingsByAccount } from './findings.js';
+import {
+	findingsToGuardianFormat,
+	groupFindingsByAccount,
+} from './findings.js';
 import type { GroupedFindings } from './types.js';
-
 
 void describe('findingsToGuardianFormat', () => {
 	const resource1 = {
@@ -58,10 +60,21 @@ void describe('findingsToGuardianFormat', () => {
 	});
 	void it('should detect whether a finding is suppressed or not', () => {
 		assert.deepStrictEqual(findingsToGuardianFormat(x)[0]?.suppressed, false);
-		assert.deepStrictEqual(findingsToGuardianFormat({ ...x, workflow: { Status: 'NOTIFIED' } })[0]?.suppressed, false);
-		assert.deepStrictEqual(findingsToGuardianFormat({ ...x, workflow: { Status: 'SUPPRESSED' } })[0]?.suppressed, true);
-		assert.deepStrictEqual(findingsToGuardianFormat({ ...x, workflow: { Status: 'RESOLVED' } })[0]?.suppressed, false);
-
+		assert.deepStrictEqual(
+			findingsToGuardianFormat({ ...x, workflow: { Status: 'NOTIFIED' } })[0]
+				?.suppressed,
+			false,
+		);
+		assert.deepStrictEqual(
+			findingsToGuardianFormat({ ...x, workflow: { Status: 'SUPPRESSED' } })[0]
+				?.suppressed,
+			true,
+		);
+		assert.deepStrictEqual(
+			findingsToGuardianFormat({ ...x, workflow: { Status: 'RESOLVED' } })[0]
+				?.suppressed,
+			false,
+		);
 	});
 });
 
@@ -96,7 +109,7 @@ void describe('Grouping logic', () => {
 		const findings: cloudbuster_fsbp_vulnerabilities[] = [];
 		const groupedFindings = groupFindingsByAccount(findings);
 
-		assert.deepStrictEqual(groupedFindings, <GroupedFindings>({}));
+		assert.deepStrictEqual(groupedFindings, <GroupedFindings>{});
 	});
 
 	void it('Should group findings by AWS account if there are findings to report', () => {
@@ -118,10 +131,10 @@ void describe('Grouping logic', () => {
 		const findings = [mockFinding1, mockFinding2, mockFinding3];
 		const groupedFindings = groupFindingsByAccount(findings);
 
-		assert.deepStrictEqual(groupedFindings, <GroupedFindings>({
+		assert.deepStrictEqual(groupedFindings, <GroupedFindings>{
 			[TEAM_A_ACCOUNT_ID]: [mockFinding1, mockFinding2],
 			[TEAM_B_ACCOUNT_ID]: [mockFinding3],
-		}));
+		});
 	});
 
 	void it('Should report the same finding in two different accounts, if both accounts are affected', () => {
@@ -138,9 +151,9 @@ void describe('Grouping logic', () => {
 		const findings = [mockFinding1, mockFinding2];
 		const groupedFindings = groupFindingsByAccount(findings);
 
-		assert.deepStrictEqual(groupedFindings, <GroupedFindings>({
+		assert.deepStrictEqual(groupedFindings, <GroupedFindings>{
 			[TEAM_A_ACCOUNT_ID]: [mockFinding1],
 			[TEAM_B_ACCOUNT_ID]: [mockFinding2],
-		}));
+		});
 	});
 });

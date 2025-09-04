@@ -1,4 +1,4 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import type {
 	repocop_github_repository_rules,
@@ -88,13 +88,16 @@ const highRecentVuln: RepocopVulnerability = {
 
 void describe('createDigest', () => {
 	void it('returns undefined when the total vuln count is zero', () => {
-		assert.strictEqual(createDigestForSeverity(
+		assert.strictEqual(
+			createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[result, anotherResult],
 				60,
-			), undefined);
+			),
+			undefined,
+		);
 	});
 
 	void it('returns a digest when a result contains a vulnerability', () => {
@@ -102,13 +105,15 @@ void describe('createDigest', () => {
 			...result,
 			vulnerabilities: [highRecentVuln],
 		};
-		assert.ok(createDigestForSeverity(
+		assert.ok(
+			createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message.includes('leftpad'));
+			)?.message.includes('leftpad'),
+		);
 	});
 
 	void it('recognises that a SBT dependency could come from Maven', () => {
@@ -122,13 +127,15 @@ void describe('createDigest', () => {
 			...result,
 			vulnerabilities: [vuln],
 		};
-		assert.ok(createDigestForSeverity(
+		assert.ok(
+			createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message.includes('sbt or maven'));
+			)?.message.includes('sbt or maven'),
+		);
 	});
 
 	void it('returns the correct digest for the correct team', () => {
@@ -204,7 +211,7 @@ void describe('createDigest', () => {
 			60,
 		)?.message;
 		console.log(msg);
-		
+
 		assert.ok(msg?.includes(included.package));
 		assert.ok(!msg?.includes(excluded.package));
 	});
@@ -221,13 +228,15 @@ void describe('createDigestForSeverity', () => {
 			vulnerabilities: [noCveVuln],
 		};
 
-		assert.ok(createDigestForSeverity(
-			team,
-			'high',
-			[ownershipRecord],
-			[resultWithVuln],
-			60,
-		)?.message.includes('no CVE provided'));
+		assert.ok(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			)?.message.includes('no CVE provided'),
+		);
 	});
 });
 
@@ -243,12 +252,14 @@ void describe('createDigestForSeverity', () => {
 		};
 		/**  node:test way of determining if the message doesn't include the noUrlVuln.package 
 			 - equivalent of `not.toContain` in Jest  */
-		assert.ok(!createDigestForSeverity(
-			team,
-			'high',
-			[ownershipRecord],
-			[resultWithVuln],
-			60,
-		)?.message.includes(`[${noUrlVuln.package}](`));
+		assert.ok(
+			!createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			)?.message.includes(`[${noUrlVuln.package}](`),
+		);
 	});
 });

@@ -40,6 +40,6 @@ export async function getConfig(): Promise<Config> {
 		withQueryLogging: isDev,
 		enableMessaging: !isDev,
 		anghammaradSnsTopic,
-		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS'))
+		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS')),
 	};
 }
