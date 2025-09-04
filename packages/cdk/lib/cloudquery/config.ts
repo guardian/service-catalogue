@@ -1,4 +1,11 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import {awsTables} from "./allow-list-tables/aws-table-list";
+import {fastlyTables} from "./allow-list-tables/fastly-table-list";
+import {filterAllowedTables} from "./allow-list-tables/filter";
+import {galaxiesTables} from "./allow-list-tables/galaxies-table-list";
+import {githubTables} from "./allow-list-tables/github-table-list";
+import {ns1Tables} from "./allow-list-tables/ns1_table_list";
+import {riffraffTables} from "./allow-list-tables/riffraff-table-list";
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {
@@ -90,20 +97,18 @@ export function awsSourceConfig(
 	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
 	const { tables, skipTables, concurrency } = tableConfig;
-
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
 	}
+	const filteredTables=filterAllowedTables(awsTables, tables);
 
-	return {
+		return {
 		kind: 'source',
 		spec: {
 			name: 'aws',
 			path: 'cloudquery/aws',
 			version: `v${Versions.CloudqueryAws}`,
-			tables,
-			skip_dependent_tables: false,
-			skip_tables: skipTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 			otel_endpoint: '0.0.0.0:4318',
 			otel_endpoint_insecure: true,
@@ -169,6 +174,7 @@ export function githubSourceConfig(
 	if (!tables && !skipTables) {
 		throw new Error('Must specify either tables or skipTables');
 	}
+	const filteredTables=filterAllowedTables(githubTables, tables);
 
 	return {
 		kind: 'source',
@@ -176,9 +182,7 @@ export function githubSourceConfig(
 			name: 'github',
 			path: 'cloudquery/github',
 			version: `v${Versions.CloudqueryGithub}`,
-			tables,
-			skip_dependent_tables: false,
-			skip_tables: skipTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
@@ -186,7 +190,6 @@ export function githubSourceConfig(
 				app_auth: [
 					{
 						org,
-
 						// For simplicity, read all configuration from disk.
 						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
 						app_id:
@@ -214,22 +217,21 @@ export function githubSourceConfigForRepository(
 		throw new Error('Must specify either tables or skipTables');
 	}
 
+	const filteredTables=filterAllowedTables(githubTables, tables);
+
 	return {
 		kind: 'source',
 		spec: {
 			name: 'github',
 			path: 'cloudquery/github',
 			version: `v${Versions.CloudqueryGithub}`,
-			tables,
-			skip_dependent_tables: false,
-			skip_tables: skipTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 			spec: {
 				repos: repositories,
 				app_auth: [
 					{
 						org,
-
 						// For simplicity, read all configuration from disk.
 						private_key_path: `${serviceCatalogueConfigDirectory}/github-private-key`,
 						app_id:
@@ -261,15 +263,15 @@ export function fastlySourceConfig(
 		throw new Error('Must specify either tables or skipTables');
 	}
 
+	const filteredTables=filterAllowedTables(fastlyTables, tables);
+
 	return {
 		kind: 'source',
 		spec: {
 			name: 'fastly',
 			path: 'cloudquery/fastly',
 			version: `v${Versions.CloudqueryFastly}`,
-			tables,
-			skip_dependent_tables: false,
-			skip_tables: skipTables,
+			tables: filteredTables,
 			destinations: ['postgresql'],
 
 			spec: {
@@ -306,12 +308,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 			registry: 'github',
 			version: `v${Versions.CloudqueryGalaxies}`,
 			destinations: ['postgresql'],
-			tables: [
-				'galaxies_people_table',
-				'galaxies_teams_table',
-				'galaxies_streams_table',
-				'galaxies_people_profile_info_table',
-			],
+			tables: galaxiesTables,
 			spec: {
 				bucket: bucketName,
 			},
@@ -331,7 +328,7 @@ export function ns1SourceConfig(): CloudqueryConfig {
 			// Use a fake value to satisfy the config parser.
 			// See https://docs.cloudquery.io/docs/reference/source-spec#version
 			version: 'v0.0.0',
-			tables: ['ns1_*'],
+			tables: ns1Tables,
 			destinations: ['postgresql'],
 			spec: {
 				apiKey: '${NS1_API_KEY}',
@@ -348,7 +345,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 			path: 'cloudquery/postgresql',
 			version: `v${Versions.CloudqueryPostgresSource}`,
 			destinations: ['postgresql'],
-			tables: ['riffraff_*'],
+			tables: riffraffTables,
 			skip_tables: ['riffraff_deploy_logs'],
 			spec: {
 				connection_string: [
