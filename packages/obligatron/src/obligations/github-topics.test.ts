@@ -4,7 +4,7 @@ import type {
     view_repo_ownership,
 } from '@prisma/client';
 import type { Repository } from 'common/types.js';
-import { repoToObligationResult, topicsIncludesProductionStatus } from './github-topics.js';
+import { removeExternallyOwnedRepos, repoToObligationResult, topicsIncludesProductionStatus } from './github-topics.js';
 
 void describe('topicsIncludesProductionStatus', () => {
     const productionStatuses = ['production', 'testing', 'documentation', 'prototype', 'hackday', 'learning', 'interactive'];
@@ -115,4 +115,94 @@ void describe('repoToObligationResult', () => {
 
         assert.deepStrictEqual(result.contacts!, { slugs: ['team1', 'team2'] });
     })
+});
+
+void describe('getReposWithNonExternalOwners', () => {
+    const repo: Repository = {
+        archived: false,
+        full_name: 'some/repo',
+        topics: [],
+        id: BigInt(1),
+        default_branch: 'main',
+        name: 'repo',
+        created_at: new Date('2020-01-01'),
+        pushed_at: new Date('2020-01-01'),
+        updated_at: new Date('2020-01-01'),
+    };
+
+    const internal1 = {
+        archived: false,
+        role_name: 'owner',
+        github_team_id: BigInt(1),
+        github_team_name: 'Internal Team',
+        github_team_slug: 'internal-team',
+        short_repo_name: 'repo',
+        full_repo_name: 'some/repo',
+        galaxies_team: null,
+        team_contact_email: null,
+    }
+
+    const internal2 = {
+        archived: false,
+        role_name: 'owner',
+        github_team_id: BigInt(2),
+        github_team_name: 'Another Internal Team',
+        github_team_slug: 'another-internal-team',
+        short_repo_name: 'repo',
+        full_repo_name: 'some/repo',
+        galaxies_team: null,
+        team_contact_email: null,
+    }
+
+    const external1 = {
+        archived: false,
+        role_name: 'owner',
+        github_team_id: BigInt(3),
+        github_team_name: 'External Team',
+        github_team_slug: 'external-team',
+        short_repo_name: 'repo',
+        full_repo_name: 'some/repo',
+        galaxies_team: null,
+        team_contact_email: null,
+    }
+
+    const externalTeams: string[] = [external1.github_team_slug];
+
+    void it('includes repos with no owners', () => {
+        const owners: view_repo_ownership[] = [];
+        const result = removeExternallyOwnedRepos([repo], owners, externalTeams);
+        assert.deepStrictEqual(result, [repo]);
+    });
+
+    void it('includes repos with one non-external owner', () => {
+        const owners: view_repo_ownership[] = [internal1];
+        const externalTeams: string[] = ['external-team'];
+
+        const result = removeExternallyOwnedRepos([repo], owners, externalTeams);
+        assert.deepStrictEqual(result, [repo]);
+    });
+
+    void it('includes repos with more than one non-external owner', () => {
+        const owners: view_repo_ownership[] = [internal1, internal2];
+        const externalTeams: string[] = ['external-team'];
+
+        const result = removeExternallyOwnedRepos([repo], owners, externalTeams);
+        assert.deepStrictEqual(result, [repo]);
+    });
+
+    void it('excludes repos with only external owners', () => {
+        const owners: view_repo_ownership[] = [external1];
+        const externalTeams: string[] = ['external-team'];
+
+        const result = removeExternallyOwnedRepos([repo], owners, externalTeams);
+        assert.deepStrictEqual(result, []);
+    });
+
+    void it('includes repos with both external and non-external owners', () => {
+        const owners: view_repo_ownership[] = [internal1, external1];
+        const externalTeams: string[] = ['external-team'];
+
+        const result = removeExternallyOwnedRepos([repo], owners, externalTeams);
+        assert.deepStrictEqual(result, [repo]);
+    });
 });
