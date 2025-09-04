@@ -34,20 +34,5 @@
     "tsx": "4.20.3",
     "typescript": "^5.8.3"
   },
-  "eslintConfig": {
-    "extends": "@guardian/eslint-config",
-    "plugins": [
-      "prettier",
-      "unicorn"
-    ],
-    "rules": {
-      "prettier/prettier": "error",
-      "@typescript-eslint/no-non-null-assertion": "error",
-      "unicorn/prefer-array-flat-map": "error"
-    }
-  },
-  "eslintIgnore": [
-    "packages/common/dist"
-  ],
   "prettier": "@guardian/prettier"
 }
