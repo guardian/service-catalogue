@@ -1,6 +1,15 @@
-import type { aws_securityhub_findings, PrismaClient, view_repo_ownership } from '@prisma/client';
+import type {
+	aws_securityhub_findings,
+	PrismaClient,
+	view_repo_ownership,
+} from '@prisma/client';
 import { toNonEmptyArray } from './functions.js';
-import type { NonEmptyArray, Repository, SecurityHubFinding, SecurityHubSeverity } from './types.js';
+import type {
+	NonEmptyArray,
+	Repository,
+	SecurityHubFinding,
+	SecurityHubSeverity,
+} from './types.js';
 /**
  * Queries the database for FSBP findings
  */

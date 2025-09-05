@@ -20,7 +20,7 @@ export async function main() {
 		message: `Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
 	});
 
-	const dbResults = (await getFsbpFindings(prisma, severities))
+	const dbResults = await getFsbpFindings(prisma, severities);
 
 	const tableContents: cloudbuster_fsbp_vulnerabilities[] = dbResults.flatMap(
 		findingsToGuardianFormat,
@@ -55,15 +55,19 @@ export async function main() {
 		data: uniqueTableContents,
 	});
 
-	const activeFindings = uniqueTableContents.filter(
-		(row) => !row.suppressed,
-	);
+	const activeFindings = uniqueTableContents.filter((row) => !row.suppressed);
 
-	const digests = createDigestsFromFindings(activeFindings, 'CRITICAL', config.cutOffInDays);
+	const digests = createDigestsFromFindings(
+		activeFindings,
+		'CRITICAL',
+		config.cutOffInDays,
+	);
 
 	const isTuesday = new Date().getDay() === 2;
 	if (isTuesday) {
-		digests.push(...createDigestsFromFindings(activeFindings, 'HIGH', config.cutOffInDays));
+		digests.push(
+			...createDigestsFromFindings(activeFindings, 'HIGH', config.cutOffInDays),
+		);
 	}
 	// *** NOTIFICATION SENDING ***
 	const anghammaradClient = new Anghammarad();

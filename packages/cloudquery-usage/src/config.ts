@@ -1,7 +1,10 @@
 import { SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
 import { awsClientConfig, getSecretManagerValueAsJson } from 'common/aws.js';
 import { getEnvOrThrow } from 'common/functions.js';
-import type { DatabaseConfig, PrismaConfig } from 'common/src/database-setup.js';
+import type {
+	DatabaseConfig,
+	PrismaConfig,
+} from 'common/src/database-setup.js';
 import {
 	getDatabaseConfig,
 	getDatabaseConnectionString,

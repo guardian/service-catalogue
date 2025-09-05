@@ -8,7 +8,10 @@ import {
 	depGraphPackageManager,
 	generatePrBody,
 } from './file-generator.js';
-import { createPrAndAddToProject, generateBranchName } from './pull-requests.js';
+import {
+	createPrAndAddToProject,
+	generateBranchName,
+} from './pull-requests.js';
 import { enableDependabotAlerts } from './repo-functions.js';
 import type { StatusCode } from './types.js';
 

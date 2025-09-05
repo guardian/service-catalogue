@@ -321,7 +321,11 @@ export class ServiceCatalogue extends GuStack {
 			anghammaradTopicParameter.valueAsString,
 		);
 
-		const interactiveMonitor = new InteractiveMonitor(this, gitHubOrg, anghammaradTopic);
+		const interactiveMonitor = new InteractiveMonitor(
+			this,
+			gitHubOrg,
+			anghammaradTopic,
+		);
 
 		const repocopGithubCredentials = new Secret(
 			this,
@@ -331,7 +335,7 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		const digestCutOffInDays = 45
+		const digestCutOffInDays = 45;
 
 		new Repocop(
 			this,
@@ -344,7 +348,7 @@ export class ServiceCatalogue extends GuStack {
 			applicationToPostgresSecurityGroup,
 			repocopGithubCredentials,
 			gitHubOrg,
-			digestCutOffInDays
+			digestCutOffInDays,
 		);
 
 		addDataAuditLambda(this, {

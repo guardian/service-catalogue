@@ -14,7 +14,7 @@ import type { Digest } from './types.js';
 export function createDigestsFromFindings(
 	findings: cloudbuster_fsbp_vulnerabilities[],
 	severity: SecurityHubSeverity,
-	cutOffInDays: number
+	cutOffInDays: number,
 ): Digest[] {
 	const filteredFindings = findings.filter((f) => f.severity === severity);
 
@@ -42,9 +42,8 @@ function createCta(aws_account_name: string): Action[] {
 
 export function createDigestForAccount(
 	accountFindings: cloudbuster_fsbp_vulnerabilities[],
-	cutOffInDays: number
+	cutOffInDays: number,
 ): Digest | undefined {
-
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
 	const recentFindings = accountFindings.filter(
@@ -154,9 +153,9 @@ export async function sendDigest(
 			stage === 'PROD'
 				? notifyParams
 				: {
-					...notifyParams,
-					target: { Stack: 'testing-alerts' },
-				};
+						...notifyParams,
+						target: { Stack: 'testing-alerts' },
+					};
 		logger.log({
 			message: `Sending ${digest.accountId} (${digest.accountName}) digest...`,
 			accountName: digest.accountName,

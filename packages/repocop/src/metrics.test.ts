@@ -1,5 +1,6 @@
-import  assert from 'assert';
-import { describe, test } from 'node:test';import { getPercentageTrue } from './metrics.js';
+import assert from 'assert';
+import { describe, test } from 'node:test';
+import { getPercentageTrue } from './metrics.js';
 
 void describe('When evaluating the percentage of trues, an empty array', () => {
 	void test('should return a value of zero', () => {

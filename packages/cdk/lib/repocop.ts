@@ -30,7 +30,7 @@ export class Repocop {
 		dbSecurityGroup: SecurityGroup,
 		repocopGithubSecret: Secret,
 		gitHubOrg: string,
-		digestCutOffInDays: number
+		digestCutOffInDays: number,
 	) {
 		const dependencyGraphIntegratorInputTopic = new Topic(
 			guStack,

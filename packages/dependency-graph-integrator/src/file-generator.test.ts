@@ -1,8 +1,8 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { describe, it } from 'node:test';
 import { createYaml } from './file-generator.js';
 
-void describe( 'createYaml for sbt', () => {
+void describe('createYaml for sbt', () => {
 	void it('should generate the following yaml file', () => {
 		const yaml = createYaml('branch', 'Scala', 'repo1');
 		const result =
@@ -44,7 +44,7 @@ jobs:
 	});
 });
 
-void describe( 'createYaml for Kotlin', () => {
+void describe('createYaml for Kotlin', () => {
 	void it('should generate the following yaml file', () => {
 		const yaml = createYaml('branch', 'Kotlin', 'repo2');
 		const result =

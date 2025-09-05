@@ -1,5 +1,6 @@
-import  assert from 'assert';
-import { describe, it } from 'node:test';import type { repocop_github_repository_rules } from '@prisma/client';
+import assert from 'assert';
+import { describe, it } from 'node:test';
+import type { repocop_github_repository_rules } from '@prisma/client';
 import { findPotentialInteractives } from './topic-monitor-interactive.js';
 
 void describe('findPotentialInteractives', () => {

@@ -18,8 +18,8 @@ type CloudBusterProps = {
 	db: DatabaseInstance;
 	anghammaradTopic: ITopic;
 	monitoringConfiguration:
-	| NoMonitoring
-	| GuLambdaErrorPercentageMonitoringProps;
+		| NoMonitoring
+		| GuLambdaErrorPercentageMonitoringProps;
 	schedule: Schedule;
 	digestCutOffInDays: number;
 };
@@ -50,7 +50,6 @@ export class CloudBuster {
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false',
 				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),
-
 			},
 			timeout: Duration.minutes(2),
 			memorySize: 512,

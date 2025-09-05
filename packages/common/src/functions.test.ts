@@ -1,4 +1,4 @@
-import  assert from 'assert';
+import assert from 'assert';
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 import type { SNSEvent } from 'aws-lambda';
 import {
@@ -32,18 +32,24 @@ void describe('branchProtectionCtas', () => {
 		const teamSlug = 'my-team';
 		const result = branchProtectionCtas(fullRepoName, teamSlug);
 		assert.strictEqual(result.length, 3);
-		assert.strictEqual(result.every((x) => isValidUrl(x.url)), true);
+		assert.strictEqual(
+			result.every((x) => isValidUrl(x.url)),
+			true,
+		);
 	});
 
 	void it('should return the correct urls in the correct order', () => {
 		const fullRepoName = 'my-org/my-repo';
 		const teamSlug = 'my-team';
 		const result = branchProtectionCtas(fullRepoName, teamSlug);
-		assert.deepStrictEqual(result.map((x) => x.url), [
-			'https://github.com/my-org/my-repo',
-			'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
-			'https://github.com/my-org/my-repo/settings/branches',
-		]);
+		assert.deepStrictEqual(
+			result.map((x) => x.url),
+			[
+				'https://github.com/my-org/my-repo',
+				'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
+				'https://github.com/my-org/my-repo/settings/branches',
+			],
+		);
 	});
 });
 
@@ -53,19 +59,25 @@ void describe('topicMonitoringProductionTagCtas', () => {
 		const teamSlug = 'my-team';
 		const result = topicMonitoringProductionTagCtas(fullRepoName, teamSlug);
 		assert.strictEqual(result.length, 4);
-		assert.strictEqual(result.every((x) => isValidUrl(x.url)), true)
+		assert.strictEqual(
+			result.every((x) => isValidUrl(x.url)),
+			true,
+		);
 	});
 
 	void it('should return the correct urls in the correct order', () => {
 		const fullRepoName = 'my-org/my-repo';
 		const teamSlug = 'my-team';
 		const result = topicMonitoringProductionTagCtas(fullRepoName, teamSlug);
-		assert.deepStrictEqual(result.map((x) => x.url), [
-			'https://github.com/my-org/my-repo',
-			'https://github.com/guardian/service-catalogue/blob/main/packages/best-practices/best-practices.md',
-			'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
-			'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository',
-		]);
+		assert.deepStrictEqual(
+			result.map((x) => x.url),
+			[
+				'https://github.com/my-org/my-repo',
+				'https://github.com/guardian/service-catalogue/blob/main/packages/best-practices/best-practices.md',
+				'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
+				'https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics#adding-topics-to-your-repository',
+			],
+		);
 	});
 });
 
@@ -73,7 +85,7 @@ void describe('anghammaradThreadKey', () => {
 	void it('should return a the expected string, with no slashes', () => {
 		const fullRepoName = 'my-org/my-repo';
 		const result = anghammaradThreadKey(fullRepoName);
-		assert.strictEqual(result, 'service-catalogue-my-org-my-repo')
+		assert.strictEqual(result, 'service-catalogue-my-org-my-repo');
 	});
 });
 
@@ -101,14 +113,18 @@ void describe('getEnvOrThrow', () => {
 	});
 
 	void it('should throw an error for a non-existing environment variable', () => {
-		const err = { message: 'Environment variable NON_EXISTING_VAR is not set.' };
+		const err = {
+			message: 'Environment variable NON_EXISTING_VAR is not set.',
+		};
 		assert.throws(() => getEnvOrThrow('NON_EXISTING_VAR'), err);
 	});
 });
 
 void describe('getGitHubAppSecret', () => {
 	void it('should throw if the GITHUB_APP_SECRET environment variable is not set', async () => {
-		const err = { message: 'Environment variable GITHUB_APP_SECRET is not set.' };
+		const err = {
+			message: 'Environment variable GITHUB_APP_SECRET is not set.',
+		};
 		const secret = process.env.GITHUB_APP_SECRET;
 		delete process.env.GITHUB_APP_SECRET;
 		await assert.rejects(getGithubAppSecret, err);
@@ -126,7 +142,10 @@ void describe('parseSecretJson', () => {
 		assert.strictEqual(actual.strategyOptions.appId, 'myAppId');
 		assert.strictEqual(actual.strategyOptions.clientId, 'myClientId');
 		assert.strictEqual(actual.strategyOptions.clientSecret, 'myClientSecret');
-		assert.strictEqual(actual.strategyOptions.installationId, 'myInstallationId');
+		assert.strictEqual(
+			actual.strategyOptions.installationId,
+			'myInstallationId',
+		);
 		assert.strictEqual(actual.strategyOptions.privateKey, 'hello');
 	});
 	void it('should throw an error if the input string is not valid JSON', () => {
@@ -197,7 +216,7 @@ void describe('Unwrapping an SNS message', () => {
 });
 
 void describe('stringToSeverity', () => {
-	void it ('should return unknown if it is passed an unexpected string', () => {
+	void it('should return unknown if it is passed an unexpected string', () => {
 		assert.strictEqual(stringToSeverity('foo'), 'unknown');
 	});
 
@@ -236,7 +255,7 @@ void describe('daysLeftToFix', () => {
 
 	const monday = new Date('2024-10-07'); // Oct 7th 2024 is a Monday
 	beforeEach(() => {
-		mock.timers.enable({ apis: ['Date'] , now: monday});
+		mock.timers.enable({ apis: ['Date'], now: monday });
 	});
 
 	afterEach(() => {
@@ -271,7 +290,7 @@ const MOCK_ONE_WEEK_AGO = new Date('2024-01-03');
 
 void describe('FBSP SLA window', () => {
 	beforeEach(() => {
-		mock.timers.enable({ apis: ['Date'] , now: MOCK_TODAY});
+		mock.timers.enable({ apis: ['Date'], now: MOCK_TODAY });
 	});
 
 	afterEach(() => {
