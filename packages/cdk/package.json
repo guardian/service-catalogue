@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "jest --detectOpenHandles --config ./jest.config.js --selectProjects cdk",
+    "test-update": "jest --detectOpenHandles --config ./jest.config.js --selectProjects cdk -u",
     "synth": "cdk synth --path-metadata false --version-reporting false",
     "build": "npm run synth",
     "diff:code": "cdk diff --path-metadata false --version-reporting false --profile deployTools ServiceCatalogue-CODE",
