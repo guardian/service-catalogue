@@ -1,4 +1,5 @@
 import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import { riffraffTables } from './allow-list-tables/riffraff-table-list';
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {
@@ -348,7 +349,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 			path: 'cloudquery/postgresql',
 			version: `v${Versions.CloudqueryPostgresSource}`,
 			destinations: ['postgresql'],
-			tables: ['riffraff_*'],
+			tables: riffraffTables,
 			skip_tables: ['riffraff_deploy_logs'],
 			spec: {
 				connection_string: [

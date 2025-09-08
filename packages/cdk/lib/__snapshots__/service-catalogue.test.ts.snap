@@ -19921,7 +19921,8 @@ spec:
   destinations:
     - postgresql
   tables:
-    - riffraff_*
+    - riffraff_authorized_users
+    - riffraff_deploys
   skip_tables:
     - riffraff_deploy_logs
   spec:
@@ -20139,7 +20140,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('riffraff_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('riffraff_authorized_users', 86400000),('riffraff_deploys', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
