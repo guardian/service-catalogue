@@ -1,3 +1,4 @@
+import { GuardianPrivateNetworks } from '@guardian/aws-account-setup';
 import type {
 	GuLambdaErrorPercentageMonitoringProps,
 	NoMonitoring,
@@ -13,7 +14,6 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-import { GuardianPrivateNetworks } from '@guardian/private-infrastructure-config';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import {
