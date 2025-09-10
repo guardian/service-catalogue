@@ -1,4 +1,6 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
+import { awsTables } from './allow-list-tables/aws-table-list';
+import { filterAllowedTables } from './allow-list-tables/filter';
 import { riffraffTables } from './allow-list-tables/riffraff-table-list';
 import { Versions } from './versions';
 
@@ -116,24 +118,67 @@ export function awsSourceConfig(
 	};
 }
 
+export function awsSourceConfigFiltered(
+	tableConfig: CloudqueryTableConfig,
+	extraConfig: Record<string, unknown> = {},
+): CloudqueryConfig {
+	const { tables, skipTables, concurrency } = tableConfig;
+
+	if (!tables && !skipTables) {
+		throw new Error('Must specify either tables or skipTables');
+	}
+	const filteredTables = filterAllowedTables(awsTables, tables);
+	return {
+		kind: 'source',
+		spec: {
+			name: 'aws',
+			path: 'cloudquery/aws',
+			version: `v${Versions.CloudqueryAws}`,
+			tables: filteredTables,
+			skip_dependent_tables: false,
+			skip_tables: skipTables,
+			destinations: ['postgresql'],
+			otel_endpoint: '0.0.0.0:4318',
+			otel_endpoint_insecure: true,
+			spec: {
+				concurrency,
+				...extraConfig,
+			},
+		},
+	};
+}
+
 /**
  * Create a ServiceCatalogue configuration for all AWS accounts in the organisation.
  * @param tableConfig Which tables to include or exclude.
  * @param extraConfig Extra spec fields.
+ * @param filtered
  * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#org
  */
 export function awsSourceConfigForOrganisation(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
+	filtered: boolean = false,
 ): CloudqueryConfig {
-	return awsSourceConfig(tableConfig, {
-		org: {
-			// See: https://github.com/guardian/aws-account-setup/pull/58
-			member_role_name: 'cloudquery-access',
-			organization_units: [GuardianOrganisationalUnits.Root],
-		},
-		...extraConfig,
-	});
+	if (filtered) {
+		return awsSourceConfigFiltered(tableConfig, {
+			org: {
+				// See: https://github.com/guardian/aws-account-setup/pull/58
+				member_role_name: 'cloudquery-access',
+				organization_units: [GuardianOrganisationalUnits.Root],
+			},
+			...extraConfig,
+		});
+	} else {
+		return awsSourceConfig(tableConfig, {
+			org: {
+				// See: https://github.com/guardian/aws-account-setup/pull/58
+				member_role_name: 'cloudquery-access',
+				organization_units: [GuardianOrganisationalUnits.Root],
+			},
+			...extraConfig,
+		});
+	}
 }
 
 /**

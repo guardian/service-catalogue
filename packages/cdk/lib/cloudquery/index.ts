@@ -205,9 +205,14 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.rate(Duration.minutes(30)),
-			config: awsSourceConfigForOrganisation({
-				tables: ['aws_elbv1_*', 'aws_elbv2_*'],
-			}),
+			// Use this to test filtering:
+			config: awsSourceConfigForOrganisation(
+				{
+					tables: ['aws_elbv1_*', 'aws_elbv2_*'],
+				},
+				{},
+				true,
+			),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
