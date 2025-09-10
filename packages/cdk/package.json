@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@guardian/aws-account-setup": "github:guardian/aws-account-setup#fb93c30f6edea369f35cfcf12721fe7a2cb58f2c",
+    "@guardian/aws-account-setup": "github:guardian/aws-account-setup#shared@0.0.1",
     "@guardian/cdk": "61.5.2",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
