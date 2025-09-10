@@ -1,4 +1,4 @@
-import { GuardianAwsAccounts } from '@guardian/private-infrastructure-config';
+import { GuardianAwsAccounts } from '@guardian/aws-account-setup';
 import { dump } from 'js-yaml';
 import {
 	awsSourceConfigForAccount,

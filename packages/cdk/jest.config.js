@@ -41,9 +41,7 @@ module.exports = {
 		{
 			displayName: 'cdk',
 			transform,
-			transformIgnorePatterns: [
-				'node_modules/(?!@guardian/private-infrastructure-config)',
-			],
+			transformIgnorePatterns: ['node_modules/(?!@guardian/aws-account-setup)'],
 			setupFilesAfterEnv: [`<rootDir>/jest.setup.js`],
 			testMatch: ['<rootDir>/**/*.test.ts'],
 		},
@@ -71,9 +69,7 @@ module.exports = {
 			displayName: 'repocop',
 			transform,
 			setupFilesAfterEnv,
-			transformIgnorePatterns: [
-				'node_modules/(?!@guardian/private-infrastructure-config)',
-			],
+			transformIgnorePatterns: ['node_modules/(?!@guardian/aws-account-setup)'],
 			testMatch: ['<rootDir>/packages/repocop/**/*.test.ts'],
 		},
 		{

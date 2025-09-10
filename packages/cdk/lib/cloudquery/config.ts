@@ -1,4 +1,4 @@
-import { GuardianOrganisationalUnits } from '@guardian/private-infrastructure-config';
+import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
 import { riffraffTables } from './allow-list-tables/riffraff-table-list';
 import { Versions } from './versions';
 
