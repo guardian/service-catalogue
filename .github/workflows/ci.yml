@@ -33,7 +33,7 @@ jobs:
       - uses: ./.github/actions/npm-run
         with:
           script: lint
-          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+          deployment_key: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
 
   test:
     timeout-minutes: 15
@@ -45,7 +45,7 @@ jobs:
       - uses: ./.github/actions/npm-run
         with:
           script: test
-          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+          deployment_key: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
 
   typecheck:
     timeout-minutes: 15
@@ -57,7 +57,7 @@ jobs:
       - uses: ./.github/actions/npm-run
         with:
           script: typecheck
-          deployment_key: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+          deployment_key: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
 
   db-migration:
     timeout-minutes: 15
@@ -100,7 +100,7 @@ jobs:
 
       - uses: guardian/actions-read-private-repos@48bc5aeef8584a03a3a89ec82f9a7d06c7736855 # v1.0.0
         with:
-          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+          private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
 
       - name: install dependencies
         run: npm ci
@@ -146,7 +146,7 @@ jobs:
 
       - uses: guardian/actions-read-private-repos@48bc5aeef8584a03a3a89ec82f9a7d06c7736855 # v1.0.0
         with:
-          private-ssh-keys: ${{ secrets.PRIVATE_INFRASTRUCTURE_CONFIG_DEPLOY_KEY }}
+          private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
 
       - name: Build zip files
         run: ./scripts/build.sh
