@@ -10,7 +10,7 @@ describe('filterCollectedTables', () => {
 			'aws_appstream',
 			'aws_ec2_instance',
 		];
-		const filterRegEx = ['aws_organization*'];
+		const filterRegEx = [/^aws_organization.*$/];
 		const result: string[] = filterAllowedTables(tables, filterRegEx);
 		expect(result).toEqual([
 			'aws_organization',
@@ -29,7 +29,7 @@ describe('filterCollectedTables from array', () => {
 			'aws_appstream',
 			'aws_ec2_instance',
 		];
-		const filterRegEx = ['aws_organization*', 'aws_ec2*'];
+		const filterRegEx = [/^aws_organization.*$/, /^aws_ec2*.*$/];
 		const result = filterAllowedTables(tables, filterRegEx);
 		expect(result).toEqual([
 			'aws_organization',
@@ -42,7 +42,7 @@ describe('filterCollectedTables from array', () => {
 
 describe('filter allow-list-tables', () => {
 	it('should filter aws_organization* from aws-table-list.ts', () => {
-		const filterRegEx = ['aws_organization*'];
+		const filterRegEx = [/^aws_organization.*$/];
 		const result = filterAllowedTables(awsTables, filterRegEx);
 		expect(result).toEqual([
 			'aws_organization_resource_policies',
@@ -59,7 +59,11 @@ describe('filter allow-list-tables', () => {
 	});
 
 	it('should filter aws_wafv2*, aws_redshift*, aws_scheduler* from aws-table-list.ts', () => {
-		const filterRegEx = ['aws_wafv2*', 'aws_redshift*', 'aws_scheduler*'];
+		const filterRegEx = [
+			/^aws_wafv2.*$/,
+			/^aws_redshift.*$/,
+			/^aws_scheduler.*$/,
+		];
 		const result = filterAllowedTables(awsTables, filterRegEx);
 		expect(result).toEqual(
 			expect.arrayContaining([
