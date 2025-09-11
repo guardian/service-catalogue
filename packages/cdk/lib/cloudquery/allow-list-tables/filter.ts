@@ -5,7 +5,7 @@ export function filterAllowedTables(
 	if (!Array.isArray(tablesWithWildcards)) {
 		return [];
 	}
-	return tables.filter((table) =>
-		tablesWithWildcards.some((regex) => regex.test(table)),
-	);
+	return tables
+		.filter((table) => tablesWithWildcards.some((regex) => regex.test(table)))
+		.sort();
 }

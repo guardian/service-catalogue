@@ -23,19 +23,19 @@ describe('filterCollectedTables', () => {
 describe('filterCollectedTables from array', () => {
 	it('should filter aws_organization* and aws_ec2*', () => {
 		const tables = [
+			'aws_ec2_instance',
 			'aws_organization',
 			'aws_organization_account',
 			'aws_organization_policy',
 			'aws_appstream',
-			'aws_ec2_instance',
 		];
 		const filterRegEx = [/^aws_organization.*$/, /^aws_ec2*.*$/];
 		const result = filterAllowedTables(tables, filterRegEx);
 		expect(result).toEqual([
+			'aws_ec2_instance',
 			'aws_organization',
 			'aws_organization_account',
 			'aws_organization_policy',
-			'aws_ec2_instance',
 		]);
 	});
 });
@@ -65,28 +65,26 @@ describe('filter allow-list-tables', () => {
 			/^aws_scheduler.*$/,
 		];
 		const result = filterAllowedTables(awsTables, filterRegEx);
-		expect(result).toEqual(
-			expect.arrayContaining([
-				'aws_wafv2_ipsets',
-				'aws_wafv2_managed_rule_groups',
-				'aws_wafv2_regex_pattern_sets',
-				'aws_wafv2_rule_groups',
-				'aws_wafv2_web_acls',
-				'aws_redshift_cluster_parameter_groups',
-				'aws_redshift_cluster_parameters',
-				'aws_redshift_clusters',
-				'aws_redshift_data_shares',
-				'aws_redshift_endpoint_access',
-				'aws_redshift_endpoint_accesses',
-				'aws_redshift_endpoint_authorization',
-				'aws_redshift_endpoint_authorizations',
-				'aws_redshift_event_subscriptions',
-				'aws_redshift_events',
-				'aws_redshift_reserved_nodes',
-				'aws_redshift_snapshots',
-				'aws_redshift_subnet_groups',
-				'aws_scheduler_schedule_groups',
-			]),
-		);
+		expect(result).toEqual([
+			'aws_redshift_cluster_parameter_groups',
+			'aws_redshift_cluster_parameters',
+			'aws_redshift_clusters',
+			'aws_redshift_data_shares',
+			'aws_redshift_endpoint_access',
+			'aws_redshift_endpoint_accesses',
+			'aws_redshift_endpoint_authorization',
+			'aws_redshift_endpoint_authorizations',
+			'aws_redshift_event_subscriptions',
+			'aws_redshift_events',
+			'aws_redshift_reserved_nodes',
+			'aws_redshift_snapshots',
+			'aws_redshift_subnet_groups',
+			'aws_scheduler_schedule_groups',
+			'aws_wafv2_ipsets',
+			'aws_wafv2_managed_rule_groups',
+			'aws_wafv2_regex_pattern_sets',
+			'aws_wafv2_rule_groups',
+			'aws_wafv2_web_acls',
+		]);
 	});
 });
