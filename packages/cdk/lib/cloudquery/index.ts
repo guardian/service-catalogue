@@ -11,6 +11,8 @@ import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { awsTables } from './allow-list-tables/aws-table-list';
+import { filterAllowedTables } from './allow-list-tables/filter';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
@@ -205,8 +207,12 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.rate(Duration.minutes(30)),
+			// Use this to test filtering:
 			config: awsSourceConfigForOrganisation({
-				tables: ['aws_elbv1_*', 'aws_elbv2_*'],
+				tables: filterAllowedTables(awsTables, [
+					/^aws_elbv1_.*$/,
+					/^aws_elbv2_.*$/,
+				]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},

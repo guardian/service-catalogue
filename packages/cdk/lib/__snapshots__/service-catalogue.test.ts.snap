@@ -9413,8 +9413,16 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables:
-    - aws_elbv1_*
-    - aws_elbv2_*
+    - aws_elbv1_load_balancer_policies
+    - aws_elbv1_load_balancers
+    - aws_elbv2_listener_certificates
+    - aws_elbv2_listener_rules
+    - aws_elbv2_listeners
+    - aws_elbv2_load_balancer_attributes
+    - aws_elbv2_load_balancer_web_acls
+    - aws_elbv2_load_balancers
+    - aws_elbv2_target_group_target_health_descriptions
+    - aws_elbv2_target_groups
   skip_dependent_tables: false
   destinations:
     - postgresql
@@ -9594,7 +9602,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_%', 1800000),('aws_elbv2_%', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_load_balancer_policies', 1800000),('aws_elbv1_load_balancers', 1800000),('aws_elbv2_listener_certificates', 1800000),('aws_elbv2_listener_rules', 1800000),('aws_elbv2_listeners', 1800000),('aws_elbv2_load_balancer_attributes', 1800000),('aws_elbv2_load_balancer_web_acls', 1800000),('aws_elbv2_load_balancers', 1800000),('aws_elbv2_target_group_target_health_descriptions', 1800000),('aws_elbv2_target_groups', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -12315,8 +12323,16 @@ spec:
     - aws_inspector2_findings
     - aws_cloudformation_*
     - aws_costexplorer_cost_custom
-    - aws_elbv1_*
-    - aws_elbv2_*
+    - aws_elbv1_load_balancer_policies
+    - aws_elbv1_load_balancers
+    - aws_elbv2_listener_certificates
+    - aws_elbv2_listener_rules
+    - aws_elbv2_listeners
+    - aws_elbv2_load_balancer_attributes
+    - aws_elbv2_load_balancer_web_acls
+    - aws_elbv2_load_balancers
+    - aws_elbv2_target_group_target_health_descriptions
+    - aws_elbv2_target_groups
     - aws_autoscaling_groups
     - aws_acm*
     - aws_lambda_*
