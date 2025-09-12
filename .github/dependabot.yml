@@ -23,7 +23,7 @@ updates:
       prisma:
         patterns:
           - 'prisma'
-          - '@prisma/client'
+          - '@prisma/*'
       code-quality:
         patterns:
           - '@guardian/eslint-config'
