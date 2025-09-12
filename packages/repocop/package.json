@@ -7,7 +7,7 @@
 		"@types/got": "^9.6.12"
 	},
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@prisma/client --external:prisma",
 		"start": "APP=repocop CUT_OFF_IN_DAYS=60 tsx src/run-locally.ts",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc --noEmit"
