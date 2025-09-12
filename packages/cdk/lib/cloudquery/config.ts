@@ -1,4 +1,6 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
+import { galaxiesTables } from './allow-list-tables/galaxies-table-list';
+import { ns1Tables } from './allow-list-tables/ns1_table_list';
 import { riffraffTables } from './allow-list-tables/riffraff-table-list';
 import { Versions } from './versions';
 
@@ -307,12 +309,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 			registry: 'github',
 			version: `v${Versions.CloudqueryGalaxies}`,
 			destinations: ['postgresql'],
-			tables: [
-				'galaxies_people_table',
-				'galaxies_teams_table',
-				'galaxies_streams_table',
-				'galaxies_people_profile_info_table',
-			],
+			tables: galaxiesTables,
 			spec: {
 				bucket: bucketName,
 			},
@@ -332,7 +329,7 @@ export function ns1SourceConfig(): CloudqueryConfig {
 			// Use a fake value to satisfy the config parser.
 			// See https://docs.cloudquery.io/docs/reference/source-spec#version
 			version: 'v0.0.0',
-			tables: ['ns1_*'],
+			tables: ns1Tables,
 			destinations: ['postgresql'],
 			spec: {
 				apiKey: '${NS1_API_KEY}',
