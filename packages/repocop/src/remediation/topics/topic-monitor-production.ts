@@ -1,5 +1,5 @@
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type { view_repo_ownership } from '@prisma/client';
+import type { view_repo_ownership } from 'common/generated/prisma/client.js';
 import {
 	anghammaradThreadKey,
 	applyTopics,

@@ -1,8 +1,8 @@
 import type { FunctionConfiguration } from '@aws-sdk/client-lambda';
 import { LambdaClient, paginateListFunctions } from '@aws-sdk/client-lambda';
 import type { Account } from '@aws-sdk/client-organizations';
-import type { PrismaClient } from '@prisma/client';
 import { AWS_REGIONS, awsClientConfig } from 'common/aws.js';
+import type { PrismaClient } from 'common/generated/prisma/client.js';
 import type { Audit } from './database.js';
 
 function sleep(ms: number): Promise<void> {
