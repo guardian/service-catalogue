@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from 'common/generated/prisma/client.js';
 import { getFsbpFindings } from 'common/src/database-queries.js';
 import {
 	isWithinSlaTime,

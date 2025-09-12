@@ -1,7 +1,7 @@
 import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 import { shuffle } from 'common/src/functions.js';
 import type { Repository, UpdateMessageEvent } from 'common/src/types.js';
 import type { Octokit } from 'octokit';

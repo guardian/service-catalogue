@@ -3,7 +3,7 @@ import { describe, test } from 'node:test';
 import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 import { createBranchProtectionEvents } from './branch-protection.js';
 
 const nullOwner: view_repo_ownership = {

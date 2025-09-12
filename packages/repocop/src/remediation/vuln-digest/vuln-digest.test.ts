@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { EvaluationResult, Team } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';

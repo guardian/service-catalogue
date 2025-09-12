@@ -3,7 +3,7 @@ import type {
 	aws_securityhub_findings,
 	Prisma,
 	PrismaClient,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 import { logger } from 'common/src/logs.js';
 import type { ObligationResult } from './index.js';
 

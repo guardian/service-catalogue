@@ -1,4 +1,4 @@
-import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities } from 'common/generated/prisma/client.js';
 import { isWithinSlaTime, stringToSeverity } from 'common/src/functions.js';
 import type { SecurityHubFinding } from 'common/src/types.js';
 import type { GroupedFindings } from './types.js';

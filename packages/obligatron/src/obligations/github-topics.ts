@@ -1,5 +1,8 @@
-import type { PrismaClient, view_repo_ownership } from '@prisma/client';
 import { toNonEmptyArray } from 'common/functions.js';
+import type {
+	PrismaClient,
+	view_repo_ownership,
+} from 'common/generated/prisma/client.js';
 import {
 	getRepoOwnership,
 	getRepositories,

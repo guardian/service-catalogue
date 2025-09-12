@@ -1,6 +1,6 @@
 import { RequestedChannel } from '@guardian/anghammarad';
 import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
-import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities } from 'common/generated/prisma/client.js';
 import { stringToSeverity } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
 import type { SecurityHubSeverity, Severity } from 'common/src/types.js';

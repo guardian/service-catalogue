@@ -14,6 +14,6 @@ export default [
 			'prettier/prettier': 'error',
 			'unicorn/prefer-array-flat-map': 'error',
 		},
-		ignores: ['**/*/dist/**'],
+		ignores: ['**/*/dist/**', '**/generated/prisma/'],
 	},
 ];

@@ -4,7 +4,7 @@ import type {
 	aws_cloudformation_stacks,
 	github_teams,
 	repocop_github_repository_rules,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 
 export interface RepoAndStack {
