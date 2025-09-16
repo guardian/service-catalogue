@@ -15,6 +15,17 @@ export const ignoredLanguages = [
 	'MDX',
 	'Procfile',
 	'Mermaid',
+	'jq', // command-line JSON processor
+	'XSLT', // transformations for XSL (styling language for XML)
+	'TSQL', // Transact-SQL
+	'PLSQL', // Procedural Language extensions to SQL
+	'Rich Text Format',
+	'ASL', // currently due to misattributed .dsl document files. TODO: revisit this in future
+	'Cypher', // query language for neo4j
+	'Awk', // interpreter, no dependencies
+	'Apex', // only runs inside Salesforce which manages its dependencies
+	'SaltStack', // OS-level dependencies
+	'Renderscript', // Rust files are mistaken for this due to .rs extension
 ];
 
 const commonSupportedLanguages = [
@@ -36,6 +47,7 @@ const commonSupportedLanguages = [
 	'TypeScript',
 	'CoffeeScript', // Uses JS/TS dependencies
 	'Svelte', // Uses JS/TS dependencies
+	'PHP', // Composer package manager supported
 ];
 
 export const depGraphIntegratorSupportedLanguages = ['Scala', 'Kotlin'];
