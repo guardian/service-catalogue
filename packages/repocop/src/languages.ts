@@ -15,6 +15,8 @@ export const ignoredLanguages = [
 	'MDX',
 	'Procfile',
 	'Mermaid',
+	'jq', // command-line JSON processor
+	'jq',
 ];
 
 const commonSupportedLanguages = [
