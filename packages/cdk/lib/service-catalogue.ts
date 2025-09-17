@@ -44,7 +44,6 @@ import { getCentralElkLink } from 'common/src/logs';
 import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { addCloudqueryUsageLambda } from './cloudquery-usage';
-import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Obligatron } from './obligatron';
@@ -350,12 +349,6 @@ export class ServiceCatalogue extends GuStack {
 			gitHubOrg,
 			digestCutOffInDays,
 		);
-
-		addDataAuditLambda(this, {
-			vpc,
-			db,
-			dbAccess: applicationToPostgresSecurityGroup,
-		});
 
 		addGithubActionsUsageLambda(this, {
 			vpc,
