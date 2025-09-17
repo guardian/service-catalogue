@@ -4,6 +4,21 @@ set -e
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 ROOT_DIR=$(realpath "${DIR}/..")
 
+checkLambdaArtifactSize() {
+  aws_lambda_max_size_in_bytes=262144000
+  file_path=$1
+  actual_size_in_bytes=$(unzip -Zt $file_path | awk '{print $3}')
+
+  echo "Checking uncompressed size of AWS Lambda artifact $file_path"
+
+  if [ "$actual_size_in_bytes" -le "$aws_lambda_max_size_in_bytes" ]; then
+    echo "  PASSED: Uncompressed, $file_path is $actual_size_in_bytes bytes (max allowed: $aws_lambda_max_size_in_bytes bytes)"
+  else
+    echo "  ❌ FAILED: Uncompressed, $file_path is $actual_size_in_bytes bytes (max allowed: $aws_lambda_max_size_in_bytes bytes)"
+    exit 1
+  fi
+}
+
 createLambdaWithPrisma() {
   name=$1
 
@@ -21,7 +36,8 @@ createLambdaWithPrisma() {
   # Create a zip file of the dist directory
   (
     cd "$ROOT_DIR/packages/$name/dist"
-    zip -qr "$name".zip .
+    zip -qr "$name.zip" .
+    checkLambdaArtifactSize "$name.zip"
   )
 }
 
@@ -30,7 +46,8 @@ createZip() {
 
   (
     cd "$ROOT_DIR/packages/$1/dist"
-    zip -qr "$1".zip .
+    zip -qr "$1.zip" .
+    checkLambdaArtifactSize "$1.zip"
   )
 }
 

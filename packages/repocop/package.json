@@ -16,6 +16,6 @@
 		"@aws-sdk/client-cloudwatch": "^3.887.0",
 		"@aws-sdk/client-sns": "^3.887.0",
 		"ts-markdown": "^1.2.0",
-		"yaml": "^2.7.1"
+		"yaml": "^2.8.1"
 	}
 }
