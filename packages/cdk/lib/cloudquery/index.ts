@@ -12,6 +12,7 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { awsTables } from './allow-list-tables/aws-table-list';
+import { fastlyTables } from './allow-list-tables/fastly-table-list';
 import { filterAllowedTables } from './allow-list-tables/filter';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
@@ -530,14 +531,7 @@ export function addCloudqueryEcsCluster(
 			description: 'Fastly services data',
 			schedule: Schedule.rate(Duration.days(1)),
 			config: fastlySourceConfig({
-				tables: [
-					'fastly_services',
-					'fastly_service_versions',
-					'fastly_service_backends',
-					'fastly_service_domains',
-					'fastly_service_health_checks',
-					'fastly_account_users',
-				],
+				tables: fastlyTables,
 			}),
 			secrets: {
 				FASTLY_API_KEY: Secret.fromSecretsManager(fastlyCredentials, 'api-key'),

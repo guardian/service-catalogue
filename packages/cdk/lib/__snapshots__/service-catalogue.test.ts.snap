@@ -14102,12 +14102,12 @@ spec:
   path: cloudquery/fastly
   version: v3.0.7
   tables:
-    - fastly_services
-    - fastly_service_versions
+    - fastly_account_users
     - fastly_service_backends
     - fastly_service_domains
     - fastly_service_health_checks
-    - fastly_account_users
+    - fastly_service_versions
+    - fastly_services
   skip_dependent_tables: false
   destinations:
     - postgresql
@@ -14297,7 +14297,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('fastly_services', 86400000),('fastly_service_versions', 86400000),('fastly_service_backends', 86400000),('fastly_service_domains', 86400000),('fastly_service_health_checks', 86400000),('fastly_account_users', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('fastly_account_users', 86400000),('fastly_service_backends', 86400000),('fastly_service_domains', 86400000),('fastly_service_health_checks', 86400000),('fastly_service_versions', 86400000),('fastly_services', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -18993,7 +18993,8 @@ spec:
   path: localhost:7777
   version: v0.0.0
   tables:
-    - ns1_*
+    - ns1_records
+    - ns1_zones
   destinations:
     - postgresql
   spec:
@@ -19204,7 +19205,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('ns1_%', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('ns1_records', 86400000),('ns1_zones', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
