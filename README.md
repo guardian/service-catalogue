@@ -56,7 +56,7 @@ For more details, see [CloudQuery implementation](docs/cloudquery-implementation
 The data in Service Catalogue is analysed in two ways:
 
 1. Grafana, at https://metrics.gutools.co.uk
-2. AWS Lambda functions, for example [RepoCop](packages/repocop) or [data-audit](packages/data-audit)
+2. AWS Lambda functions, for example [RepoCop](packages/repocop)
 
 ## Support with production issues
 
