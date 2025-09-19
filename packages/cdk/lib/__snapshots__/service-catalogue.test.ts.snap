@@ -15977,7 +15977,7 @@ spec:
   name: endoflife
   path: cloudquery/endoflife
   registry: cloudquery
-  version: v1.4.2
+  version: v1.4.0
   tables:
     - endoflife_products
   destinations:
@@ -16659,7 +16659,7 @@ spec:
 spec:
   name: fastly
   path: cloudquery/fastly
-  version: v4.10.2
+  version: v3.0.7
   tables:
     - fastly_account_users
     - fastly_service_backends
@@ -18243,7 +18243,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v14.1.2
+  version: v11.11.1
   tables:
     - github_issues
   skip_dependent_tables: false
@@ -19431,7 +19431,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v14.1.2
+  version: v11.11.1
   tables:
     - github_releases
   skip_dependent_tables: false
@@ -20145,7 +20145,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v14.1.2
+  version: v11.11.1
   tables:
     - github_repositories
     - github_repository_branches
@@ -20869,7 +20869,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v14.1.2
+  version: v11.11.1
   tables:
     - github_organization_members
     - github_organizations
