@@ -618,14 +618,6 @@ model aws_s3_buckets {
   tags           Json?
 }
 
-model audit_results {
-  evaluated_on     DateTime
-  name             String   @id
-  success          Boolean
-  cloudquery_total Int
-  vendor_total     Int
-}
-
 model cloudquery_table_frequency {
   table_name String @id
   frequency  BigInt

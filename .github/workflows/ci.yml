@@ -167,8 +167,6 @@ jobs:
               - packages/repocop/dist/repocop.zip
             interactive-monitor:
               - packages/interactive-monitor/dist/interactive-monitor.zip
-            data-audit:
-              - packages/data-audit/dist/data-audit.zip
             dependency-graph-integrator:
                 - packages/dependency-graph-integrator/dist/dependency-graph-integrator.zip
             github-actions-usage:

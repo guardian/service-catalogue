@@ -80,7 +80,6 @@ createZip "interactive-monitor"
 createZip "dependency-graph-integrator"
 createPrismaZip
 createLambdaWithPrisma "repocop"
-createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
 createLambdaWithPrisma "obligatron"
 createLambdaWithPrisma "refresh-materialized-view"
