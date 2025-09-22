@@ -19,6 +19,7 @@ export const ignoredLanguages = [
 	'XSLT', // transformations for XSL (styling language for XML)
 	'TSQL', // Transact-SQL)
 	'PLSQL', // Procedural Language extensions to SQL
+	'Perl',
 	'jq',
 ];
 
