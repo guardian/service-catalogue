@@ -170,11 +170,18 @@ export async function createAndSendVulnerabilityDigests(
 	repoOwners: view_repo_ownership[],
 	evaluationResults: EvaluationResult[],
 ) {
+	const runtimeEvaluationResults = evaluationResults.map((result) => {
+		const runtimeVulns = result.vulnerabilities.filter(
+			(vuln) => vuln.scope === 'runtime',
+		);
+		return { ...result, vulnerabilities: runtimeVulns };
+	});
+
 	await createAndSendVulnDigestsForSeverity(
 		config,
 		teams,
 		repoOwners,
-		evaluationResults,
+		runtimeEvaluationResults,
 		'critical',
 	);
 
@@ -184,7 +191,7 @@ export async function createAndSendVulnerabilityDigests(
 			config,
 			teams,
 			repoOwners,
-			evaluationResults,
+			runtimeEvaluationResults,
 			'high',
 		);
 	}
