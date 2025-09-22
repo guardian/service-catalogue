@@ -21,6 +21,7 @@ export const ignoredLanguages = [
 	'PLSQL', // Procedural Language extensions to SQL
 	'Perl',
 	'Rich Text Format',
+	'ASL', // .dsl files
 ];
 
 const commonSupportedLanguages = [
