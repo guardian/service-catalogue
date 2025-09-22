@@ -676,6 +676,7 @@ model repocop_vulnerabilities {
   repo_owner       String
   id               String   @id @default(uuid())
   within_sla       Boolean
+  scope            String   @default("runtime")
 }
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.

@@ -437,6 +437,7 @@ export function dependabotAlertToRepocopVulnerability(
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
 		within_sla: isWithinSlaTime(alertIssueDate, severity),
+		scope: alert.dependency.scope ?? 'runtime', //assume runtime if unknown
 	};
 }
 

@@ -40,6 +40,7 @@ void describe('vulnSortingPredicate', () => {
 			alert_issue_date: new Date(),
 			cves: [],
 			within_sla: true,
+			scope: 'runtime',
 		};
 		const criticalNotPatchable: RepocopVulnerability = {
 			...criticalPatchable,
