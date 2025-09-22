@@ -411,17 +411,6 @@ const urlSortPredicate = (maybeUrl: string) => {
 	}
 };
 
-function chooseScope(
-	scope: string | null | undefined,
-): 'runtime' | 'development' {
-	if (scope === 'runtime' || scope === 'development') {
-		return scope;
-	} else {
-		console.log(`Unknown scope: ${scope}`);
-		return 'runtime'; // default to runtime if unknown
-	}
-}
-
 export function dependabotAlertToRepocopVulnerability(
 	fullName: string,
 	alert: Alert,
