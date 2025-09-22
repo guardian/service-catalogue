@@ -411,6 +411,17 @@ const urlSortPredicate = (maybeUrl: string) => {
 	}
 };
 
+function chooseScope(
+	scope: string | null | undefined,
+): 'runtime' | 'development' {
+	if (scope === 'runtime' || scope === 'development') {
+		return scope;
+	} else {
+		console.log(`Unknown scope: ${scope}`);
+		return 'runtime'; // default to runtime if unknown
+	}
+}
+
 export function dependabotAlertToRepocopVulnerability(
 	fullName: string,
 	alert: Alert,
@@ -437,7 +448,7 @@ export function dependabotAlertToRepocopVulnerability(
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
 		within_sla: isWithinSlaTime(alertIssueDate, severity),
-		scope: alert.dependency.scope ?? 'runtime', //assume runtime if unknown
+		scope: chooseScope(alert.dependency.scope),
 	};
 }
 

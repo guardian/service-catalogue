@@ -67,9 +67,10 @@ export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
-	'id' | 'repo_owner' | 'severity'
+	'id' | 'repo_owner' | 'severity' | 'scope'
 > & {
 	severity: Severity;
+	scope: 'runtime' | 'development';
 };
 
 type RepositoryFields = Pick<
