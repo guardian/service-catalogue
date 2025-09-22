@@ -65,6 +65,17 @@ export interface ProjectId {
 
 export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
+export function chooseScope(
+	scope: string | null | undefined,
+): 'runtime' | 'development' {
+	if (scope === 'runtime' || scope === 'development') {
+		return scope;
+	} else {
+		console.log(`Unknown scope: ${scope}`);
+		return 'runtime'; // default to runtime if unknown
+	}
+}
+
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
 	'id' | 'repo_owner' | 'severity' | 'scope'

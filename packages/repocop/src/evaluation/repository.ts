@@ -6,7 +6,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { isWithinSlaTime, partition } from 'common/src/functions.js';
-import { SLAs } from 'common/src/types.js';
+import { chooseScope, SLAs } from 'common/src/types.js';
 import type {
 	DepGraphLanguage,
 	RepocopVulnerability,

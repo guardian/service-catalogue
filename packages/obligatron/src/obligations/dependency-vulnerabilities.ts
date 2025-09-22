@@ -19,7 +19,7 @@ function prismaToCustomType(
 	return {
 		...vuln,
 		severity: stringToSeverity(vuln.severity),
-		scope: chooseScope(vuln.scope as string | null | undefined), // This is safe as the type is string.
+		scope: chooseScope(vuln.scope as string | null | undefined), // This is safe as the type of vuln.scope is string.
 	};
 }
 
