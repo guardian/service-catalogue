@@ -20,7 +20,7 @@ export const ignoredLanguages = [
 	'TSQL', // Transact-SQL)
 	'PLSQL', // Procedural Language extensions to SQL
 	'Perl',
-	'jq',
+	'Rich Text Format',
 ];
 
 const commonSupportedLanguages = [
