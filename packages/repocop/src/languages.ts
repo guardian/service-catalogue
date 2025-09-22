@@ -16,6 +16,9 @@ export const ignoredLanguages = [
 	'Procfile',
 	'Mermaid',
 	'jq', // command-line JSON processor
+	'XSLT', // transformations for XSL (styling language for XML)
+	'TSQL', // Transact-SQL)
+	'PLSQL', // Procedural Language extensions to SQL
 	'jq',
 ];
 
