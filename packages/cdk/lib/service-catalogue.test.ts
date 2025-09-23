@@ -41,6 +41,7 @@ describe('The ServiceCatalogue stack', () => {
 				InstanceSize.SMALL,
 			),
 			databaseEbsByteBalanceAlarm: true,
+			env: { region: 'eu-west-1' },
 		});
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
