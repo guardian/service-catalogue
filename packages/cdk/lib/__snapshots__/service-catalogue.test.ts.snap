@@ -26058,42 +26058,9 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":000000000018:table/amigo-TEST-base-images",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":000000000018:table/amigo-TEST-recipes",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":000000000018:table/amigo-TEST-bakes",
-                    ],
-                  ],
-                },
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-base-images",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-recipes",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-bakes",
               ],
             },
             {
