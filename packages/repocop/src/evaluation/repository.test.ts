@@ -570,6 +570,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	is_patchable: true,
 	cves: ['CVE-2021-1234'],
 	within_sla: false,
+	scope: 'runtime',
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -652,6 +653,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			is_patchable: true,
 			cves: ['CVE-2018-6188'],
 			within_sla: false,
+			scope: 'runtime',
 		};
 
 		const expected2: RepocopVulnerability = {
@@ -670,6 +672,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			is_patchable: true,
 			cves: ['CVE-2021-20191'],
 			within_sla: false,
+			scope: 'runtime',
 		};
 
 		assert.deepStrictEqual(result, [expected1, expected2]);
@@ -695,6 +698,7 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		is_patchable: true,
 		cves: ['CVE-2018-6188'],
 		within_sla: false,
+		scope: 'runtime',
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
@@ -708,6 +712,7 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		is_patchable: true,
 		cves: ['CVE-2018-6188'],
 		within_sla: false,
+		scope: 'runtime',
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	void test('Should happen if two vulnerabilities share the same CVEs', () => {

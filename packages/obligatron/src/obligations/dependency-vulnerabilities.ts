@@ -1,10 +1,11 @@
 import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
 import { stringToSeverity, toNonEmptyArray } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
-import type {
-	NonEmptyArray,
-	RepocopVulnerability,
-	Repository,
+import {
+	chooseScope,
+	type NonEmptyArray,
+	type RepocopVulnerability,
+	type Repository,
 } from 'common/src/types.js';
 import type { ObligationResult } from './index.js';
 
@@ -18,6 +19,7 @@ function prismaToCustomType(
 	return {
 		...vuln,
 		severity: stringToSeverity(vuln.severity),
+		scope: chooseScope(vuln.scope as string | null | undefined), // This is safe as the type of vuln.scope is string.
 	};
 }
 
