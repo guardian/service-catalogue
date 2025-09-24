@@ -44,6 +44,7 @@ const commonSupportedLanguages = [
 	'TypeScript',
 	'CoffeeScript', // Uses JS/TS dependencies
 	'Svelte', // Uses JS/TS dependencies
+	'PHP', // Composer package manager supported
 ];
 
 export const depGraphIntegratorSupportedLanguages = ['Scala', 'Kotlin'];
