@@ -46,6 +46,7 @@ const commonSupportedLanguages = [
 	'Svelte', // Uses JS/TS dependencies
 	'PHP', // Composer package manager supported
 	'Awk', // interpreter, no dependencies
+	'Apex', // only runs inside Salesforce which manages its dependencies
 ];
 
 export const depGraphIntegratorSupportedLanguages = ['Scala', 'Kotlin'];
