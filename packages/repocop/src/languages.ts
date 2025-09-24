@@ -22,6 +22,7 @@ export const ignoredLanguages = [
 	'Perl',
 	'Rich Text Format',
 	'ASL', // .dsl files
+	'Cypher', // query language for neo4j
 ];
 
 const commonSupportedLanguages = [
