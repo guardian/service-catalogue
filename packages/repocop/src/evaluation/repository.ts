@@ -6,7 +6,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { isWithinSlaTime, partition } from 'common/src/functions.js';
-import { SLAs } from 'common/src/types.js';
+import { chooseScope, SLAs } from 'common/src/types.js';
 import type {
 	DepGraphLanguage,
 	RepocopVulnerability,
@@ -437,6 +437,7 @@ export function dependabotAlertToRepocopVulnerability(
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
 		within_sla: isWithinSlaTime(alertIssueDate, severity),
+		scope: chooseScope(alert.dependency.scope),
 	};
 }
 

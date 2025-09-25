@@ -3,7 +3,7 @@ import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import { Aws, Duration } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
@@ -66,7 +66,7 @@ export function addCloudqueryEcsCluster(
 	scope: GuStack,
 	props: CloudqueryEcsClusterProps,
 ) {
-	const { stage, stack, app = 'service-catalogue' } = scope;
+	const { stage, stack, app = 'service-catalogue', region } = scope;
 	const {
 		vpc,
 		db,
@@ -664,7 +664,7 @@ export function addCloudqueryEcsCluster(
 		policies: [
 			readDynamoDbTablePolicy(
 				GuardianAwsAccounts.DeployTools,
-				Aws.REGION,
+				region, // This assumes the tables are in the same region as Service Catalogue.
 				baseImagesTableName,
 				recipesTableName,
 				bakesTableName,

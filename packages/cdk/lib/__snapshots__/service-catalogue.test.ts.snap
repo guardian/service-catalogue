@@ -220,11 +220,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -427,9 +423,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -533,9 +527,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -572,9 +564,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -658,9 +648,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAmigoBakePackagesTaskDefinitionCloudquerySourceAmigoBakePackagesFirelensLogGroupA4EF0BA2",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -865,9 +853,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -971,9 +957,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -1010,9 +994,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -1096,9 +1078,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerFirelensLogGroup0D0D76FF",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -1272,11 +1252,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -1564,9 +1540,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -1670,9 +1644,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -1709,9 +1681,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -1795,9 +1765,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionCloudquerySourceAwsDelegatedToSecurityAccountFirelensLogGroupE468B6F3",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -1971,11 +1939,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -2258,9 +2222,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -2364,9 +2326,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -2403,9 +2363,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -2489,9 +2447,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsLambdaTaskDefinitionCloudquerySourceAwsLambdaFirelensLogGroupBB74129A",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -2635,11 +2591,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -2890,9 +2842,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -2996,9 +2946,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -3035,9 +2983,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -3121,9 +3067,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsListOrgsTaskDefinitionCloudquerySourceAwsListOrgsFirelensLogGroup55343A0C",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -3297,11 +3241,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -3544,9 +3484,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -3650,9 +3588,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -3689,9 +3625,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -3775,9 +3709,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceAwsOrgWideAutoScalingGroupsFirelensLogGroup7749AA41",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -3912,11 +3844,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -4200,9 +4128,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -4306,9 +4232,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -4345,9 +4269,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -4431,9 +4353,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideBackupTaskDefinitionCloudquerySourceAwsOrgWideBackupFirelensLogGroup336D3581",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -4607,11 +4527,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -4883,9 +4799,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -4989,9 +4903,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -5028,9 +4940,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -5114,9 +5024,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideCertificatesTaskDefinitionCloudquerySourceAwsOrgWideCertificatesFirelensLogGroup91D2F11E",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -5260,11 +5168,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -5543,11 +5447,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -5740,9 +5640,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -5846,9 +5744,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -5885,9 +5781,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -5971,9 +5865,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideCloudFormationTaskDefinitionCloudquerySourceAwsOrgWideCloudFormationFirelensLogGroup275B0945",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -6160,9 +6052,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -6266,9 +6156,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -6305,9 +6193,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -6391,9 +6277,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceAwsOrgWideCloudwatchAlarmsFirelensLogGroup953FDC49",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -6567,11 +6451,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -6822,9 +6702,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -6928,9 +6806,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -6967,9 +6843,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -7053,9 +6927,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideDynamoDBTaskDefinitionCloudquerySourceAwsOrgWideDynamoDBFirelensLogGroup7F40CCBC",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -7229,11 +7101,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -7480,9 +7348,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -7586,9 +7452,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -7619,9 +7483,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -7652,9 +7514,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -7738,9 +7598,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -7914,11 +7772,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -8166,9 +8020,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -8272,9 +8124,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -8305,9 +8155,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -8338,9 +8186,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -8424,9 +8270,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideEc2TaskDefinitionCloudquerySourceAwsOrgWideEc2FirelensLogGroupE01DEFEE",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -8600,11 +8444,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -8847,9 +8687,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -8953,9 +8791,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -8992,9 +8828,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -9078,9 +8912,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinitionCloudquerySourceAwsOrgWideIamCredentialReportsFirelensLogGroupB7D88F87",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -9254,11 +9086,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -9510,9 +9338,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -9616,9 +9442,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -9655,9 +9479,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -9741,9 +9563,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionCloudquerySourceAwsOrgWideLoadBalancersFirelensLogGroup52712979",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -9917,11 +9737,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -10167,9 +9983,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -10273,9 +10087,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -10312,9 +10124,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -10398,9 +10208,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideRDSTaskDefinitionCloudquerySourceAwsOrgWideRDSFirelensLogGroupA77166BD",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -10574,11 +10382,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -10842,9 +10646,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -10948,9 +10750,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -10987,9 +10787,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -11073,9 +10871,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideS3TaskDefinitionCloudquerySourceAwsOrgWideS3FirelensLogGroup4CE08508",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -11249,11 +11045,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -11526,9 +11318,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -11632,9 +11422,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -11671,9 +11459,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -11757,9 +11543,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsOrgWideSnsTaskDefinitionCloudquerySourceAwsOrgWideSnsFirelensLogGroupA37ABD31",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -11864,11 +11648,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -12186,11 +11966,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -13273,9 +13049,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -13379,9 +13153,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -13418,9 +13190,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -13504,9 +13274,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsRemainingDataTaskDefinitionCloudquerySourceAwsRemainingDataFirelensLogGroupAEF7D0F2",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -13723,9 +13491,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -13829,9 +13595,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -13868,9 +13632,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -13954,9 +13716,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceAwsSSMParametersTaskDefinitionCloudquerySourceAwsSSMParametersFirelensLogGroup0210F31D",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -14100,11 +13860,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -14340,9 +14096,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -14446,9 +14200,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -14485,9 +14237,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -14571,9 +14321,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceEndOfLifeTaskDefinitionCloudquerySourceEndOfLifeFirelensLogGroup772C5E06",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -14747,11 +14495,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -15025,9 +14769,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -15145,9 +14887,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -15184,9 +14924,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -15270,9 +15008,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesFirelensLogGroupF5954401",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -15377,11 +15113,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -15702,9 +15434,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -15808,9 +15538,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -15847,9 +15575,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -15933,9 +15659,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesFirelensLogGroupB5272E0D",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -16109,11 +15833,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -16392,11 +16112,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -16606,9 +16322,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -16754,9 +16468,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -16793,9 +16505,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -16879,9 +16589,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesFirelensLogGroupE9112ED9",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -17096,9 +16804,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -17244,9 +16950,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -17283,9 +16987,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -17369,9 +17071,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceGitHubLanguagesTaskDefinitionCloudquerySourceGitHubLanguagesFirelensLogGroup38EAAC3E",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -17515,11 +17215,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -17774,9 +17470,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -17922,9 +17616,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -17961,9 +17653,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -18047,9 +17737,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -18223,11 +17911,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -18492,9 +18176,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -18640,9 +18322,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -18679,9 +18359,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -18765,9 +18443,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -18941,11 +18617,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -19208,9 +18880,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -19356,9 +19026,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -19395,9 +19063,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -19481,9 +19147,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsFirelensLogGroup8B1FFADC",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -19657,11 +19321,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -19914,9 +19574,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -20034,9 +19692,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -20059,9 +19715,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -20092,9 +19746,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -20178,9 +19830,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -20354,11 +20004,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -20650,11 +20296,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -20857,9 +20499,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -21005,9 +20645,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -21044,9 +20682,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -21130,9 +20766,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataFirelensLogGroup55CB2F37",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
               },
             },
@@ -21473,11 +21107,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -21496,11 +21126,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -21530,11 +21156,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -21840,11 +21462,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -21863,11 +21481,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -21887,11 +21501,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -22226,11 +21836,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -22249,11 +21855,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -22273,11 +21875,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -22947,11 +22545,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -22970,11 +22564,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -22994,11 +22584,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -23213,11 +22799,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -23236,11 +22818,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -23267,11 +22845,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -23676,11 +23250,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -23699,11 +23269,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -24238,11 +23804,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -24261,11 +23823,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -24507,11 +24065,7 @@ spec:
             "Fn::Join": [
               "",
               [
-                "arn:aws:sns:",
-                {
-                  "Ref": "AWS::Region",
-                },
-                ":",
+                "arn:aws:sns:eu-west-1:",
                 {
                   "Ref": "AWS::AccountId",
                 },
@@ -24820,11 +24374,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -24843,11 +24393,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -24867,11 +24413,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -24992,11 +24534,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -25019,11 +24557,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -25129,9 +24663,7 @@ spec:
                 "awslogs-group": {
                   "Ref": "prismamigratetaskTaskDefinitionprismamigratetaskFirelensLogGroupCD392728",
                 },
-                "awslogs-region": {
-                  "Ref": "AWS::Region",
-                },
+                "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/TEST/prisma-migrate-task",
               },
             },
@@ -25169,9 +24701,7 @@ spec:
               "LogDriver": "awsfirelens",
               "Options": {
                 "Name": "kinesis_streams",
-                "region": {
-                  "Ref": "AWS::Region",
-                },
+                "region": "eu-west-1",
                 "retry_limit": "2",
                 "stream": {
                   "Ref": "LoggingStreamName",
@@ -25348,11 +24878,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":ecs:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":*:task/",
+                    ":ecs:eu-west-1:*:task/",
                     {
                       "Ref": "servicecatalogueCluster5FC34DC5",
                     },
@@ -27149,11 +26675,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27172,11 +26694,7 @@ spec:
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:ssm:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    "arn:aws:ssm:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27196,11 +26714,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27393,11 +26907,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27418,42 +26928,9 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":000000000018:table/amigo-TEST-base-images",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":000000000018:table/amigo-TEST-recipes",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":000000000018:table/amigo-TEST-bakes",
-                    ],
-                  ],
-                },
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-base-images",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-recipes",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-bakes",
               ],
             },
             {
@@ -27487,11 +26964,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27641,11 +27114,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27678,11 +27147,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27732,11 +27197,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27764,11 +27225,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27918,11 +27375,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -27955,11 +27408,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28059,11 +27508,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28096,11 +27541,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28200,11 +27641,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28237,11 +27674,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28341,11 +27774,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28378,11 +27807,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28482,11 +27907,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28519,11 +27940,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28573,11 +27990,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28610,11 +28023,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28764,11 +28173,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28801,11 +28206,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28905,11 +28306,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -28942,11 +28339,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29061,11 +28454,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29098,11 +28487,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29217,11 +28602,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29254,11 +28635,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29358,11 +28735,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29395,11 +28768,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29499,11 +28868,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29536,11 +28901,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29640,11 +29001,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29677,11 +29034,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29781,11 +29134,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29818,11 +29167,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29872,11 +29217,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -29909,11 +29250,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30063,11 +29400,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30100,11 +29433,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30204,11 +29533,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30241,11 +29566,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30345,11 +29666,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30372,11 +29689,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30476,11 +29789,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30503,11 +29812,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30607,11 +29912,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30649,11 +29950,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30753,11 +30050,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30780,11 +30073,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30834,11 +30123,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -30861,11 +30146,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31015,11 +30296,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31042,11 +30319,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31146,11 +30419,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31173,11 +30442,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31277,11 +30542,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31304,11 +30565,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31408,11 +30665,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31435,11 +30688,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31539,11 +30788,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":kinesis:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":kinesis:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
@@ -31566,11 +30811,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":rds-db:",
-                    {
-                      "Ref": "AWS::Region",
-                    },
-                    ":",
+                    ":rds-db:eu-west-1:",
                     {
                       "Ref": "AWS::AccountId",
                     },
