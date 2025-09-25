@@ -1,6 +1,6 @@
 # Allow List for CloudQuery Collected Tables
 We only collect data with CloudQuery for the tables that we explicitly list in source control.
-We still need skippedTables because ServiceCatalogue collects child tables automatically.
+We still need skippedTables because Cloudquery collects child tables automatically.
 
 ## Collected Tables
 This directory contains the collected tables for CloudQuery.
@@ -11,4 +11,4 @@ releases. This meant our usage could dramatically increase just by changing a ve
 an allow list approach, where we explicitly list the tables we want to collect.
 
 ### Tables we have chosen not to collect early on
-The skipTables array includes tables we are skipping because they are slow and or uninteresting to us.
+The skipTables array includes tables we are skipping because they are slow and/or of little value to us.
