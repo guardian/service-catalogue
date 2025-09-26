@@ -259,7 +259,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsOrgWideCloudwatchAlarms',
 			description:
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
-			schedule: Schedule.cron({ minute: '0', hour: '2' }),
+			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_cloudwatch_alarms'],
 			}),

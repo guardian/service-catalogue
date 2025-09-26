@@ -5912,7 +5912,7 @@ spec:
     },
     "CloudquerySourceAwsOrgWideCloudwatchAlarmsScheduledEventRule443F1BD5": {
       "Properties": {
-        "ScheduleExpression": "cron(0 2 * * ? *)",
+        "ScheduleExpression": "rate(30 minutes)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -6148,7 +6148,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_cloudwatch_alarms', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_cloudwatch_alarms', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
