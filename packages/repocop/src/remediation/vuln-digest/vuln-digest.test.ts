@@ -7,7 +7,10 @@ import type {
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { EvaluationResult, Team } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
-import { createDigestForSeverity } from './vuln-digest.js';
+import {
+	createDigestForSeverity,
+	removeNonRuntimeVulns,
+} from './vuln-digest.js';
 
 const fullName = 'guardian/repo';
 const anotherFullName = 'guardian/another-repo';
@@ -263,5 +266,36 @@ void describe('createDigestForSeverity', () => {
 				60,
 			)?.message.includes(`[${noUrlVuln.package}](`),
 		);
+	});
+});
+
+void describe('removeNonRuntimeVulns', () => {
+	void it('should remove non-runtime vulnerabilities', () => {
+		const runtimeAndDevVulns: RepocopVulnerability[] = [
+			highRecentVuln,
+			{ ...highRecentVuln, scope: 'development' },
+		];
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: runtimeAndDevVulns,
+		};
+
+		const filtered = removeNonRuntimeVulns([resultWithVulns]);
+		assert.strictEqual(filtered.length, 1);
+		assert.strictEqual(filtered[0]!.vulnerabilities.length, 1);
+		assert.strictEqual(filtered[0]!.vulnerabilities[0]!.scope, 'runtime');
+	});
+	void it('should remove results with no runtime vulnerabilities', () => {
+		const devVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			scope: 'development',
+		};
+		const resultWithDevVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [devVuln],
+		};
+
+		const filtered = removeNonRuntimeVulns([resultWithDevVuln]);
+		assert.strictEqual(filtered.length, 0);
 	});
 });
