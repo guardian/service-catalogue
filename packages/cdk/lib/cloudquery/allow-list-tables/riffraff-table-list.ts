@@ -1,1 +1,1 @@
-export const riffraffTables = ['riffraff_authorized_users', 'riffraff_deploys'];
+export const riffraffTables = ['riffraff_deploys'];
