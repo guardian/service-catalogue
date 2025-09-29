@@ -92,15 +92,6 @@ export async function main() {
 			octokit,
 		);
 
-	const [runtimeVulns, devVulns] = partition(
-		productionDependabotVulnerabilities,
-		(vuln) => vuln.scope === 'runtime',
-	);
-
-	console.log(
-		`Found ${runtimeVulns.length} runtime vulnerabilities and ${devVulns.length} dev dependencies vulnerabilities in production repositories.`,
-	);
-
 	const productionWorkflowUsages: guardian_github_actions_usage[] =
 		await getProductionWorkflowUsages(prisma, productionRepos);
 
@@ -109,7 +100,7 @@ export async function main() {
 		branches,
 		repoOwners,
 		repoLanguages,
-		runtimeVulns,
+		productionDependabotVulnerabilities,
 		productionWorkflowUsages,
 	);
 

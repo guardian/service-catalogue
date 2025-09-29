@@ -164,17 +164,34 @@ export async function createAndSendVulnDigestsForSeverity(
 	}
 }
 
+// Remove non-runtime vulnerabilities from the results
+// If there are no runtime vulnerabilities for a repo, remove it from the results
+export function removeNonRuntimeVulns(
+	results: EvaluationResult[],
+): EvaluationResult[] {
+	return results
+		.map((result) => {
+			const runtimeVulns = result.vulnerabilities.filter(
+				(vuln) => vuln.scope === 'runtime',
+			);
+			return { ...result, vulnerabilities: runtimeVulns };
+		})
+		.filter((result) => result.vulnerabilities.length > 0);
+}
+
 export async function createAndSendVulnerabilityDigests(
 	config: Config,
 	teams: Team[],
 	repoOwners: view_repo_ownership[],
 	evaluationResults: EvaluationResult[],
 ) {
+	const runtimeEvaluationResults = removeNonRuntimeVulns(evaluationResults);
+
 	await createAndSendVulnDigestsForSeverity(
 		config,
 		teams,
 		repoOwners,
-		evaluationResults,
+		runtimeEvaluationResults,
 		'critical',
 	);
 
@@ -184,7 +201,7 @@ export async function createAndSendVulnerabilityDigests(
 			config,
 			teams,
 			repoOwners,
-			evaluationResults,
+			runtimeEvaluationResults,
 			'high',
 		);
 	}
