@@ -1,8 +1,5 @@
 # Database Migrations
 
-> **Note**
-> The migration process is currently manual.
-
 ## What are they?
 
 Service Catalogue uses the [Prisma](https://www.prisma.io) ORM for database migrations,
