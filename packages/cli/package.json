@@ -12,7 +12,7 @@
     "@aws-sdk/client-ssm": "^3.887.0",
     "@types/yargs": "^17.0.32",
     "execa": "^9.6.0",
-    "terminal-link": "^4.0.0",
+    "terminal-link": "^5.0.0",
     "yargs": "^18.0.0"
   }
 }
