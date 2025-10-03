@@ -10,5 +10,6 @@
     "skipLibCheck": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "isolatedModules": true
   }
 }

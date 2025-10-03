@@ -45,7 +45,7 @@ import {
 	securityHubTableOptions,
 } from './table-options';
 
-interface CloudqueryEcsClusterProps {
+export interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
 	db: DatabaseInstance;
 	dbAccess: GuSecurityGroup;
@@ -372,16 +372,54 @@ export function addCloudqueryEcsCluster(
 	/*
 	This is a catch-all task, collecting all other AWS data.
 	Although we're not using the data for any particular reason, it is still useful to have.
-		
+
+	After switching to the allow list the table list was too long (with 757 the TaskDefinition was 74049 bytes long.
+	This exceeded the ECS limit of 65536 bytes and meant the stack failed to deploy.
+    We therefore had to split the AwsRemainingData task.
+
 	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
 	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
 	*/
-	const remainingAwsSources: CloudquerySource = {
-		name: 'AwsRemainingData',
-		description: 'Data fetched across all accounts in the organisation.',
+
+	const remainingAwsTables = filterAllowedTables(awsTables, [/^aws_.*$/]);
+	const halfOfRemainingAwsTablesNumber = Math.floor(
+		remainingAwsTables.length / 2,
+	);
+
+	const remainingAwsSourcesPart1: CloudquerySource = {
+		name: 'AwsRemainingDataPart1',
+		description: 'Data fetched across all accounts in the organisation part 1.',
 		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 		config: awsSourceConfigForOrganisation({
-			tables: filterAllowedTables(awsTables, [/^aws_.*$/]),
+			tables: remainingAwsTables.slice(0, halfOfRemainingAwsTablesNumber),
+			//ServiceCatalogue collects child tables automatically.
+			skipTables: [
+				...skipTables,
+
+				// casting because `config.spec.tables` could be empty, though in reality it never is
+				...(individualAwsSources.flatMap(
+					(_) => _.config.spec.tables,
+				) as string[]),
+			],
+
+			// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
+			// The amount of memory used is a function of this value.
+			// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
+			concurrency: 2000,
+		}),
+		policies: [listOrgsPolicy, cloudqueryAccess('*')],
+
+		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
+		memoryLimitMiB: 3072,
+		cpu: 1024,
+	};
+
+	const remainingAwsSourcesPart2: CloudquerySource = {
+		name: 'AwsRemainingDataPart2',
+		description: 'Data fetched across all accounts in the organisation part 2.',
+		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+		config: awsSourceConfigForOrganisation({
+			tables: remainingAwsTables.slice(halfOfRemainingAwsTablesNumber),
 			//ServiceCatalogue collects child tables automatically.
 			skipTables: [
 				...skipTables,
@@ -691,7 +729,8 @@ export function addCloudqueryEcsCluster(
 		logShippingPolicy,
 		sources: [
 			...individualAwsSources,
-			remainingAwsSources,
+			remainingAwsSourcesPart1,
+			remainingAwsSourcesPart2,
 			...githubSources,
 			...fastlySources,
 			...galaxiesSources,

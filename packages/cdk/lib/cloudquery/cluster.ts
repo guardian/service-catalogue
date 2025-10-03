@@ -1,7 +1,12 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
+import {
+	Cluster,
+	ContainerInsights,
+	type RepositoryImage,
+	Secret,
+} from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
@@ -144,11 +149,14 @@ interface CloudqueryClusterProps extends AppIdentity {
 export class CloudqueryCluster extends Cluster {
 	tasks: ScheduledCloudqueryTask[];
 	sources: CloudquerySource[];
+	//TODO: aws-cdk-lib.aws_ecs.ClusterProps#containerInsights is deprecated.
+	//       See {@link containerInsightsV2 }
+	//       This API will be removed in the next major release.
 	constructor(scope: GuStack, id: string, props: CloudqueryClusterProps) {
 		super(scope, id, {
 			vpc: props.vpc,
 			enableFargateCapacityProviders: true,
-			containerInsights: true,
+			containerInsightsV2: ContainerInsights.DISABLED,
 		});
 
 		const {
@@ -170,8 +178,8 @@ export class CloudqueryCluster extends Cluster {
 			loggingStreamName,
 		};
 
+		// These are used in tests
 		this.sources = sources;
-
 		this.tasks = sources.map(
 			({
 				name,
