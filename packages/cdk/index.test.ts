@@ -118,15 +118,28 @@ it('all expected cloudquery tasks are defined', () => {
 	expect(cloudquerySourceNames).toEqual(expectedNames);
 });
 
-// We had a problem 9/2025with the Cloudquery task definition exceeding the ECS limit of 65536 bytes
+// 9/2025: We had a problem with the Cloudquery task definition exceeding the ECS limit of 65536 bytes
 // "Invalid request provided: Create TaskDefinition: Actual length: '74049'. Max allowed length is '65536' bytes. (Service: AmazonECS
 // Getting the length of the entire taskDefinition is difficult
+
 // The values for AwsRemainingData task were
 // TaskDefinition Size: 74049, Tables array size: 23881 bytes, Number of tables: 757
 // Source AwsRemainingDataPart1 has 378 tables, tables array bytes: 12256
 // Source AwsRemainingDataPart2 has 379 tables, tables array bytes: 11626
+// 700 tables, tables array bytes: 22276, TaskDefinition Size: 69867
+// 757 tables, tables array bytes: 23881, TaskDefinition Size: 74049
+// Difference 57 tables, table array bytes 23881 - 22276 = 1605 bytes, TaskDefinition 74049 - 69867 = 4182 bytes
+// Roughly every table adds about 28 bytes to the tables array, and about 74 bytes to the task definition
+// Too many bytes when 700 tables: 69867 - 65536 = 4331 bytes too many
 
-const TABLE_LIMIT = 400;
+// Try 645 tables Create TaskDefinition: Actual length: '65543'. Max allowed length is '65536' bytes
+// so 644 would be ok, use 600 to be on the safe side
+
+// This deployed just fine
+// Tried 600 tables, also deployed fine
+// Tried 700 tables, Actual length: '69867'. Max allowed length is '65536' bytes
+
+const TABLE_LIMIT = 600; // Should be under the 65536 byte limit, 644 might be still ok
 it(`no cloudquery tasks should exceeding the ${TABLE_LIMIT} tables limit`, () => {
 	const exceedingSources: Array<{
 		name: string;
