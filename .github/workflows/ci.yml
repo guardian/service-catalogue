@@ -93,7 +93,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -139,7 +139,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -152,7 +152,7 @@ jobs:
         run: ./scripts/build.sh
 
       - name: Upload to riff-raff
-        uses: guardian/actions-riff-raff@e4d8461f57af32bf27d9a422854a800d459b8cf6 # v4.2.2
+        uses: guardian/actions-riff-raff@d27cdac36b1f3932442f25f18775208f774a8405 # v4.2.3
         with:
           app: service-catalogue
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
