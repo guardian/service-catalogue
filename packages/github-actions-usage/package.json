@@ -10,6 +10,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@actions/workflow-parser": "0.3.17"
+    "@actions/workflow-parser": "0.3.19"
   }
 }
