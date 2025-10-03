@@ -26,6 +26,7 @@ export const ignoredLanguages = [
 	'Apex', // only runs inside Salesforce which manages its dependencies
 	'SaltStack', // OS-level dependencies
 	'RenderScript', // Rust files are being misattributed to this due to .rs extension
+	'ObjectScript', // Apex files are being misattributed to this due to the .cls extension
 ];
 
 const commonSupportedLanguages = [
