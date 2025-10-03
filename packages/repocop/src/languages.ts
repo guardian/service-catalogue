@@ -25,7 +25,7 @@ export const ignoredLanguages = [
 	'Awk', // interpreter, no dependencies
 	'Apex', // only runs inside Salesforce which manages its dependencies
 	'SaltStack', // OS-level dependencies
-	'Renderscript', // Rust files are mistaken for this due to .rs extension
+	'RenderScript', // Rust files are being misattributed to this due to .rs extension
 ];
 
 const commonSupportedLanguages = [
