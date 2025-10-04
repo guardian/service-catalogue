@@ -14900,7 +14900,7 @@ spec:
   name: galaxies
   path: guardian/galaxies
   registry: github
-  version: v1.1.10
+  version: v1.1.11
   destinations:
     - postgresql
   tables:
@@ -19362,7 +19362,7 @@ spec:
           },
           {
             "Essential": false,
-            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.7",
+            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.8",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
