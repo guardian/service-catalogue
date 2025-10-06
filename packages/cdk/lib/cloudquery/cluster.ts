@@ -1,7 +1,12 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
-import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
+import {
+	Cluster,
+	ContainerInsights,
+	type RepositoryImage,
+	Secret,
+} from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
@@ -146,7 +151,7 @@ export class CloudqueryCluster extends Cluster {
 		super(scope, id, {
 			vpc: props.vpc,
 			enableFargateCapacityProviders: true,
-			containerInsights: true,
+			containerInsightsV2: ContainerInsights.ENABLED,
 		});
 
 		const {
