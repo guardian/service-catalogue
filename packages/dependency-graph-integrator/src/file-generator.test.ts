@@ -19,16 +19,16 @@ jobs:
     steps:
       - name: Checkout branch
         id: checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Install Java
         id: java
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.2.0
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
           distribution: corretto
           java-version: 21
       - name: Install sbt
         id: sbt
-        uses: sbt/setup-sbt@8a071aa780c993c7a204c785d04d3e8eb64ef272 # v1.1.0
+        uses: sbt/setup-sbt@7106bdca9eae3f592a8baeccf57b5a3e06c0de5f # v1.1.14
       - name: Submit dependencies
         id: submit
         uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
@@ -61,16 +61,16 @@ jobs:
     steps:
       - name: Checkout branch
         id: checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Set up Java
         id: setup
-        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
           distribution: temurin
           java-version: 21
       - name: Submit dependencies
         id: submit
-        uses: gradle/actions/dependency-submission@d156388eb19639ec20ade50009f3d199ce1e2808 # v4.1.0
+        uses: gradle/actions/dependency-submission@f236b35da9d031e13b1005234ebe4392ed54c580 # v5.0.0
       - name: Log snapshot for user validation
         id: validate
         run: cat ` + // Need to split this line to avoid errors due to new line produced in yaml
