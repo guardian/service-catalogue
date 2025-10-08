@@ -21,6 +21,10 @@ const stack = new ServiceCatalogue(app, 'ServiceCatalogue', {
 	env: { region: 'eu-west-1' },
 });
 
+/*
+Whilst incomplete, this type definition of an AWS::ECS::TaskDefinition resource is enough for this test.
+See https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-taskdefinition.html
+ */
 type TaskDefinitionResource = {
 	Type: 'AWS::ECS::TaskDefinition';
 	Properties: {
@@ -31,20 +35,22 @@ type TaskDefinitionResource = {
 const template = Template.fromStack(stack);
 
 // We had a problem with the Cloudquery task definition exceeding the ECS limit of 65536 bytes
-const limitForTaskDefinition = 62200;
+const limitForTaskDefinition = 65536 * 0.95; // Leave a bit of headroom for safety
+//const limitForTaskDefinition = 40000; // Leave a bit of headroom for safety
 it(`task definition is under the limit ${limitForTaskDefinition}`, () => {
-	Object.values(template.findResources('AWS::ECS::TaskDefinition')).map(
-		(taskDefinition) => {
-			const typedTaskDefinition = taskDefinition as TaskDefinitionResource;
-			const taskDefLength = JSON.stringify(taskDefinition).length;
-			if (taskDefLength > limitForTaskDefinition) {
-				console.log(
-					typedTaskDefinition.Properties.Tags.find((tag) => tag.Key === 'Name')
-						?.Value,
-					JSON.stringify(taskDefinition, null, 2).length,
+	Object.values(template.findResources('AWS::ECS::TaskDefinition')).forEach(
+		(resource) => {
+			const taskDefinition = resource as TaskDefinitionResource;
+			const taskDefinitionLength = JSON.stringify(resource).length;
+			const taskName = taskDefinition.Properties.Tags.find(
+				({ Key }) => Key === 'Name',
+			)?.Value;
+			if (taskDefinitionLength > limitForTaskDefinition) {
+				throw new Error(
+					`AWS::ECS::TaskDefinition named ${taskName} exceeds the allowed length (actual: ${taskDefinitionLength}, max: ${limitForTaskDefinition}).`,
 				);
 			}
-			expect(taskDefLength).toBeLessThan(limitForTaskDefinition);
+			expect(taskDefinitionLength).toBeLessThan(limitForTaskDefinition);
 		},
 	);
 });

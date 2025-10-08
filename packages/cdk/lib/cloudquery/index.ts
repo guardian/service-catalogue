@@ -45,7 +45,7 @@ import {
 	securityHubTableOptions,
 } from './table-options';
 
-export interface CloudqueryEcsClusterProps {
+interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
 	db: DatabaseInstance;
 	dbAccess: GuSecurityGroup;
@@ -386,61 +386,57 @@ export function addCloudqueryEcsCluster(
 		remainingAwsTables.length / 2,
 	);
 
-	const remainingAwsSourcesPart1: CloudquerySource = {
-		name: 'AwsRemainingDataPart1',
-		description: 'Data fetched across all accounts in the organisation part 1.',
-		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
-		config: awsSourceConfigForOrganisation({
-			tables: remainingAwsTables.slice(0, halfOfRemainingAwsTablesNumber),
-			//ServiceCatalogue collects child tables automatically.
-			skipTables: [
-				...skipTables,
+	function createRemainingAwsSource(
+		name: string,
+		description: string,
+		tables: string[],
+		tablesToSkip: string[],
+	): CloudquerySource {
+		return {
+			name,
+			description,
+			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+			config: awsSourceConfigForOrganisation({
+				tables,
+				skipTables: [
+					...skipTables,
+					// casting because `config.spec.tables` could be empty, though in reality it never is
+					...(individualAwsSources.flatMap(
+						(_) => _.config.spec.tables,
+					) as string[]),
+					...tablesToSkip,
+				],
+				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
+				// The amount of memory used is a function of this value.
+				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
+				concurrency: 2000,
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
+			memoryLimitMiB: 3072,
+			cpu: 1024,
+		};
+	}
 
-				// casting because `config.spec.tables` could be empty, though in reality it never is
-				...(individualAwsSources.flatMap(
-					(_) => _.config.spec.tables,
-				) as string[]),
-			],
+	const part1Tables = remainingAwsTables.slice(
+		0,
+		halfOfRemainingAwsTablesNumber,
+	);
+	const part2Tables = remainingAwsTables.slice(halfOfRemainingAwsTablesNumber);
 
-			// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
-			// The amount of memory used is a function of this value.
-			// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
-			concurrency: 2000,
-		}),
-		policies: [listOrgsPolicy, cloudqueryAccess('*')],
+	const remainingAwsSourcesPart1 = createRemainingAwsSource(
+		'AwsRemainingDataPart1',
+		'Data fetched across all accounts in the organisation part 1.',
+		part1Tables,
+		part2Tables,
+	);
 
-		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
-		memoryLimitMiB: 3072,
-		cpu: 1024,
-	};
-
-	const remainingAwsSourcesPart2: CloudquerySource = {
-		name: 'AwsRemainingDataPart2',
-		description: 'Data fetched across all accounts in the organisation part 2.',
-		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
-		config: awsSourceConfigForOrganisation({
-			tables: remainingAwsTables.slice(halfOfRemainingAwsTablesNumber),
-			//ServiceCatalogue collects child tables automatically.
-			skipTables: [
-				...skipTables,
-
-				// casting because `config.spec.tables` could be empty, though in reality it never is
-				...(individualAwsSources.flatMap(
-					(_) => _.config.spec.tables,
-				) as string[]),
-			],
-
-			// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
-			// The amount of memory used is a function of this value.
-			// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
-			concurrency: 2000,
-		}),
-		policies: [listOrgsPolicy, cloudqueryAccess('*')],
-
-		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
-		memoryLimitMiB: 3072,
-		cpu: 1024,
-	};
+	const remainingAwsSourcesPart2 = createRemainingAwsSource(
+		'AwsRemainingDataPart2',
+		'Data fetched across all accounts in the organisation part 2.',
+		part2Tables,
+		part1Tables,
+	);
 
 	const cloudqueryGithubCredentials = new SecretsManager(
 		scope,

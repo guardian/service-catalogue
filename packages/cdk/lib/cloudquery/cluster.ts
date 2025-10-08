@@ -147,8 +147,6 @@ interface CloudqueryClusterProps extends AppIdentity {
  * created in the private subnets of the VPC provided.
  */
 export class CloudqueryCluster extends Cluster {
-	tasks: ScheduledCloudqueryTask[];
-	sources: CloudquerySource[];
 	//aws-cdk-lib.aws_ecs.ClusterProps#containerInsights is deprecated.
 	//moved to containerInsightsV2
 	constructor(scope: GuStack, id: string, props: CloudqueryClusterProps) {
@@ -177,9 +175,7 @@ export class CloudqueryCluster extends Cluster {
 			loggingStreamName,
 		};
 
-		// These are used in tests
-		this.sources = sources;
-		this.tasks = sources.map(
+		sources.forEach(
 			({
 				name,
 				schedule,
