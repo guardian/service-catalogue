@@ -147,6 +147,8 @@ interface CloudqueryClusterProps extends AppIdentity {
  * created in the private subnets of the VPC provided.
  */
 export class CloudqueryCluster extends Cluster {
+	//aws-cdk-lib.aws_ecs.ClusterProps#containerInsights is deprecated.
+	//moved to containerInsightsV2
 	constructor(scope: GuStack, id: string, props: CloudqueryClusterProps) {
 		super(scope, id, {
 			vpc: props.vpc,
@@ -189,7 +191,7 @@ export class CloudqueryCluster extends Cluster {
 				dockerDistributedPluginImage,
 				writeMode = CloudqueryWriteMode.OverwriteDeleteStale,
 			}) => {
-				new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
+				return new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
 					enabled: enableCloudquerySchedules,
 					name,

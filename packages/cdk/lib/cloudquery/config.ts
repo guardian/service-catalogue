@@ -415,7 +415,10 @@ export function amigoBakePackagesConfig(
 	};
 }
 
-// Tables we are skipping because they are slow and or uninteresting to us.
+/**
+ * Tables we are skipping because they are slow and or uninteresting to us,
+ * and to prevent form CloudQuery collection child tables automatically.
+ */
 export const skipTables = [
 	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
 	'aws_cloudtrail_events',
