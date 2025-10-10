@@ -19,7 +19,7 @@ describe('Config generation, and converting to YAML', () => {
 		  name: postgresql
 		  registry: github
 		  path: cloudquery/postgresql
-		  version: v8.12.1
+		  version: v8.12.2
 		  write_mode: overwrite-delete-stale
 		  migrate_mode: forced
 		  spec:
@@ -39,7 +39,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v32.42.0
+		  version: v32.46.1
 		  tables:
 		    - aws_s3_buckets
 		  skip_dependent_tables: false
@@ -66,7 +66,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v32.42.0
+		  version: v32.46.1
 		  tables:
 		    - '*'
 		  skip_dependent_tables: false
@@ -98,7 +98,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v32.42.0
+		  version: v32.46.1
 		  tables:
 		    - aws_accessanalyzer_analyzers
 		    - aws_accessanalyzer_analyzer_archive_rules
@@ -135,7 +135,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: aws
 		  path: cloudquery/aws
-		  version: v32.42.0
+		  version: v32.46.1
 		  tables:
 		    - aws_securityhub_findings
 		  skip_dependent_tables: false
