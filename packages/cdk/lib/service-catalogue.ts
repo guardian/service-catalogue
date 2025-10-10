@@ -81,7 +81,7 @@ function createLambdaMonitoringConfiguration(
 		return { noMonitoring: true };
 	}
 }
-interface ServiceCatalogueProps extends GuStackProps {
+export interface ServiceCatalogueProps extends GuStackProps {
 	/**
 	 * When to run the RepoCop and CloudBuster apps.
 	 */
