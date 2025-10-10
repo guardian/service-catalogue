@@ -3,6 +3,7 @@ import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
 import { App, Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
+import type { ServiceCatalogueProps } from '../lib/service-catalogue';
 import { ServiceCatalogue } from '../lib/service-catalogue';
 
 const app = new App();
@@ -10,7 +11,7 @@ const app = new App();
 const stack = 'deploy';
 const region = 'eu-west-1';
 
-new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
+export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 	stack,
 	stage: 'PROD',
 	env: { region },
@@ -25,7 +26,13 @@ new ServiceCatalogue(app, 'ServiceCatalogue-PROD', {
 	databaseMultiAz: true,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
 	databaseEbsByteBalanceAlarm: true,
-});
+};
+
+new ServiceCatalogue(
+	app,
+	'ServiceCatalogue-PROD',
+	serviceCataloguePRODProperties,
+);
 
 new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stack,

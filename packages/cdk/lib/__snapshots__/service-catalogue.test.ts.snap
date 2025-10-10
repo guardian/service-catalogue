@@ -16,6 +16,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuAnghammaradTopicParameter",
       "GuLambdaFunction",
       "GuScheduledLambda",
+      "GuLambdaErrorPercentageAlarm",
       "GuLambdaFunction",
       "GuScheduledLambda",
       "GuLambdaFunction",
@@ -23,6 +24,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuLambdaFunction",
       "GuLambdaErrorPercentageAlarm",
       "GuScheduledLambda",
+      "GuLambdaErrorPercentageAlarm",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -51,8 +53,8 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Description": "A list of private subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "SsmParameterValueTESTdeployriffraffexternaldatabaseaccesssecuritygroupC96584B6F00A464EAD1953AFF4B05118Parameter": {
-      "Default": "/TEST/deploy/riff-raff/external-database-access-security-group",
+    "SsmParameterValuePRODdeployriffraffexternaldatabaseaccesssecuritygroupC96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Default": "/PROD/deploy/riff-raff/external-database-access-security-group",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "SsmParameterValueaccountservicesartifactbucketC96584B6F00A464EAD1953AFF4B05118Parameter": {
@@ -65,7 +67,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
     "packagesBucketNameParam": {
-      "Default": "/TEST/deploy/amigo/amigo.data.bucket",
+      "Default": "/PROD/deploy/amigo/amigo.data.bucket",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
@@ -89,7 +91,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -160,7 +162,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -200,7 +202,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -262,7 +264,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAmigoBakePackagesE3F44845",
+                  "servicecataloguePRODtaskAmigoBakePackagesE2817516",
                   "Arn",
                 ],
               },
@@ -312,7 +314,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -389,9 +391,9 @@ spec:
   tables:
     - amigo_bake_packages
   spec:
-    base_images_table: amigo-TEST-base-images
-    recipes_table: amigo-TEST-recipes
-    bakes_table: amigo-TEST-bakes
+    base_images_table: amigo-PROD-base-images
+    recipes_table: amigo-PROD-recipes
+    bakes_table: amigo-PROD-bakes
     bucket: ",
                     {
                       "Ref": "packagesBucketNameParam",
@@ -424,7 +426,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AmigoBakePackages",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -571,7 +573,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AmigoBakePackages",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -644,7 +646,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -667,7 +669,7 @@ spec:
                   "Ref": "CloudquerySourceAmigoBakePackagesTaskDefinitionCloudquerySourceAmigoBakePackagesFirelensLogGroupA4EF0BA2",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -713,12 +715,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAmigoBakePackagesE3F44845",
+            "servicecataloguePRODtaskAmigoBakePackagesE2817516",
             "Arn",
           ],
         },
@@ -758,7 +760,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -872,7 +874,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsCostExplorer",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -1019,7 +1021,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsCostExplorer",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -1092,7 +1094,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -1115,7 +1117,7 @@ spec:
                   "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerFirelensLogGroup0D0D76FF",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -1161,12 +1163,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsCostExplorer78777A06",
+            "servicecataloguePRODtaskAwsCostExplorer96B6E676",
             "Arn",
           ],
         },
@@ -1210,7 +1212,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -1250,7 +1252,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -1312,7 +1314,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsCostExplorer78777A06",
+                  "servicecataloguePRODtaskAwsCostExplorer96B6E676",
                   "Arn",
                 ],
               },
@@ -1362,7 +1364,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -1436,7 +1438,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -1577,7 +1579,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsDelegatedToSecurityAccount",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -1724,7 +1726,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsDelegatedToSecurityAccount",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -1797,7 +1799,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -1820,7 +1822,7 @@ spec:
                   "Ref": "CloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionCloudquerySourceAwsDelegatedToSecurityAccountFirelensLogGroupE468B6F3",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -1866,12 +1868,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsDelegatedToSecurityAccountEDD7C370",
+            "servicecataloguePRODtaskAwsDelegatedToSecurityAccountD81B6FBC",
             "Arn",
           ],
         },
@@ -1915,7 +1917,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -1955,7 +1957,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -2017,7 +2019,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsDelegatedToSecurityAccountEDD7C370",
+                  "servicecataloguePRODtaskAwsDelegatedToSecurityAccountD81B6FBC",
                   "Arn",
                 ],
               },
@@ -2067,7 +2069,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -2141,7 +2143,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -2212,7 +2214,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -2277,7 +2279,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsLambda",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -2424,7 +2426,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsLambda",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -2497,7 +2499,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -2520,7 +2522,7 @@ spec:
                   "Ref": "CloudquerySourceAwsLambdaTaskDefinitionCloudquerySourceAwsLambdaFirelensLogGroupBB74129A",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -2566,12 +2568,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsLambda20C12A7D",
+            "servicecataloguePRODtaskAwsLambda2F5ACE1C",
             "Arn",
           ],
         },
@@ -2625,7 +2627,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -2687,7 +2689,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsLambda20C12A7D",
+                  "servicecataloguePRODtaskAwsLambda2F5ACE1C",
                   "Arn",
                 ],
               },
@@ -2737,7 +2739,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -2811,7 +2813,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -2915,7 +2917,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsListOrgs",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -3062,7 +3064,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsListOrgs",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -3135,7 +3137,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -3158,7 +3160,7 @@ spec:
                   "Ref": "CloudquerySourceAwsListOrgsTaskDefinitionCloudquerySourceAwsListOrgsFirelensLogGroup55343A0C",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -3204,12 +3206,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsListOrgsA233C9DF",
+            "servicecataloguePRODtaskAwsListOrgs456430DC",
             "Arn",
           ],
         },
@@ -3253,7 +3255,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -3293,7 +3295,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -3355,7 +3357,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsListOrgsA233C9DF",
+                  "servicecataloguePRODtaskAwsListOrgs456430DC",
                   "Arn",
                 ],
               },
@@ -3405,7 +3407,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -3479,7 +3481,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -3575,7 +3577,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideAutoScalingGroups",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -3722,7 +3724,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideAutoScalingGroups",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -3795,7 +3797,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -3818,7 +3820,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinitionCloudquerySourceAwsOrgWideAutoScalingGroupsFirelensLogGroup7749AA41",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -3864,12 +3866,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideAutoScalingGroups721C2374",
+            "servicecataloguePRODtaskAwsOrgWideAutoScalingGroups86ECCF9A",
             "Arn",
           ],
         },
@@ -3913,7 +3915,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -3976,7 +3978,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideAutoScalingGroups721C2374",
+                  "servicecataloguePRODtaskAwsOrgWideAutoScalingGroups86ECCF9A",
                   "Arn",
                 ],
               },
@@ -4026,7 +4028,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -4065,7 +4067,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -4139,7 +4141,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -4237,7 +4239,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideBackup",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -4384,7 +4386,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideBackup",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -4457,7 +4459,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -4480,7 +4482,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideBackupTaskDefinitionCloudquerySourceAwsOrgWideBackupFirelensLogGroup336D3581",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -4526,12 +4528,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideBackupB0D1DA08",
+            "servicecataloguePRODtaskAwsOrgWideBackup38D22D6C",
             "Arn",
           ],
         },
@@ -4575,7 +4577,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -4615,7 +4617,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -4677,7 +4679,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideBackupB0D1DA08",
+                  "servicecataloguePRODtaskAwsOrgWideBackup38D22D6C",
                   "Arn",
                 ],
               },
@@ -4727,7 +4729,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -4801,7 +4803,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -4872,7 +4874,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -4926,7 +4928,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideCertificates",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -5073,7 +5075,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideCertificates",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -5146,7 +5148,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -5169,7 +5171,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideCertificatesTaskDefinitionCloudquerySourceAwsOrgWideCertificatesFirelensLogGroup91D2F11E",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -5215,12 +5217,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideCertificates496AB720",
+            "servicecataloguePRODtaskAwsOrgWideCertificatesC9D1B629",
             "Arn",
           ],
         },
@@ -5274,7 +5276,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -5336,7 +5338,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideCertificates496AB720",
+                  "servicecataloguePRODtaskAwsOrgWideCertificatesC9D1B629",
                   "Arn",
                 ],
               },
@@ -5386,7 +5388,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -5460,7 +5462,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -5531,7 +5533,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -5571,7 +5573,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -5633,7 +5635,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideCloudFormationEFD12D82",
+                  "servicecataloguePRODtaskAwsOrgWideCloudFormation8B822CFC",
                   "Arn",
                 ],
               },
@@ -5683,7 +5685,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -5785,7 +5787,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideCloudFormation",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -5932,7 +5934,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideCloudFormation",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -6005,7 +6007,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -6028,7 +6030,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideCloudFormationTaskDefinitionCloudquerySourceAwsOrgWideCloudFormationFirelensLogGroup275B0945",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -6074,12 +6076,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideCloudFormationEFD12D82",
+            "servicecataloguePRODtaskAwsOrgWideCloudFormation8B822CFC",
             "Arn",
           ],
         },
@@ -6119,7 +6121,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -6215,7 +6217,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideCloudwatchAlarms",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -6362,7 +6364,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideCloudwatchAlarms",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -6435,7 +6437,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -6458,7 +6460,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceAwsOrgWideCloudwatchAlarmsFirelensLogGroup953FDC49",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -6504,12 +6506,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideCloudwatchAlarms5ED2B988",
+            "servicecataloguePRODtaskAwsOrgWideCloudwatchAlarms8934DD5C",
             "Arn",
           ],
         },
@@ -6553,7 +6555,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -6593,7 +6595,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -6655,7 +6657,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideCloudwatchAlarms5ED2B988",
+                  "servicecataloguePRODtaskAwsOrgWideCloudwatchAlarms8934DD5C",
                   "Arn",
                 ],
               },
@@ -6705,7 +6707,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -6779,7 +6781,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -6883,7 +6885,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideDynamoDB",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -7030,7 +7032,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideDynamoDB",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -7103,7 +7105,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -7126,7 +7128,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideDynamoDBTaskDefinitionCloudquerySourceAwsOrgWideDynamoDBFirelensLogGroup7F40CCBC",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -7172,12 +7174,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideDynamoDBB67BC817",
+            "servicecataloguePRODtaskAwsOrgWideDynamoDB9287D5A3",
             "Arn",
           ],
         },
@@ -7221,7 +7223,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -7261,7 +7263,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -7323,7 +7325,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideDynamoDBB67BC817",
+                  "servicecataloguePRODtaskAwsOrgWideDynamoDB9287D5A3",
                   "Arn",
                 ],
               },
@@ -7422,7 +7424,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -7447,7 +7449,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -7547,7 +7549,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideEc2Images",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -7719,7 +7721,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideEc2Images",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -7792,7 +7794,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -7815,7 +7817,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -7861,12 +7863,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC",
+            "servicecataloguePRODtaskAwsOrgWideEc2ImagesAAAFAE8F",
             "Arn",
           ],
         },
@@ -7910,7 +7912,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -7950,7 +7952,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -8012,7 +8014,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC",
+                  "servicecataloguePRODtaskAwsOrgWideEc2ImagesAAAFAE8F",
                   "Arn",
                 ],
               },
@@ -8062,7 +8064,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -8136,7 +8138,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -8237,7 +8239,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideEc2",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -8409,7 +8411,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideEc2",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -8482,7 +8484,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -8505,7 +8507,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideEc2TaskDefinitionCloudquerySourceAwsOrgWideEc2FirelensLogGroupE01DEFEE",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -8551,12 +8553,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideEc2D13594C5",
+            "servicecataloguePRODtaskAwsOrgWideEc221CF25F8",
             "Arn",
           ],
         },
@@ -8600,7 +8602,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -8640,7 +8642,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -8702,7 +8704,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideEc2D13594C5",
+                  "servicecataloguePRODtaskAwsOrgWideEc221CF25F8",
                   "Arn",
                 ],
               },
@@ -8752,7 +8754,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -8826,7 +8828,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -8922,7 +8924,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideIamCredentialReports",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -9069,7 +9071,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideIamCredentialReports",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -9142,7 +9144,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -9165,7 +9167,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinitionCloudquerySourceAwsOrgWideIamCredentialReportsFirelensLogGroupB7D88F87",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -9211,12 +9213,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideIamCredentialReportsD1A28FD6",
+            "servicecataloguePRODtaskAwsOrgWideIamCredentialReportsA4EE552D",
             "Arn",
           ],
         },
@@ -9260,7 +9262,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -9300,7 +9302,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -9362,7 +9364,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideIamCredentialReportsD1A28FD6",
+                  "servicecataloguePRODtaskAwsOrgWideIamCredentialReportsA4EE552D",
                   "Arn",
                 ],
               },
@@ -9412,7 +9414,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -9486,7 +9488,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -9591,7 +9593,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideLoadBalancers",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -9738,7 +9740,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideLoadBalancers",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -9811,7 +9813,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -9834,7 +9836,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionCloudquerySourceAwsOrgWideLoadBalancersFirelensLogGroup52712979",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -9880,12 +9882,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideLoadBalancersB565C247",
+            "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B",
             "Arn",
           ],
         },
@@ -9929,7 +9931,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -9969,7 +9971,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -10031,7 +10033,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideLoadBalancersB565C247",
+                  "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B",
                   "Arn",
                 ],
               },
@@ -10081,7 +10083,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -10155,7 +10157,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -10254,7 +10256,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideRDS",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -10401,7 +10403,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideRDS",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -10474,7 +10476,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -10497,7 +10499,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideRDSTaskDefinitionCloudquerySourceAwsOrgWideRDSFirelensLogGroupA77166BD",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -10543,12 +10545,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideRDS1CE08EDD",
+            "servicecataloguePRODtaskAwsOrgWideRDS2AD886D1",
             "Arn",
           ],
         },
@@ -10592,7 +10594,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -10632,7 +10634,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -10694,7 +10696,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideRDS1CE08EDD",
+                  "servicecataloguePRODtaskAwsOrgWideRDS2AD886D1",
                   "Arn",
                 ],
               },
@@ -10744,7 +10746,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -10818,7 +10820,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -10935,7 +10937,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideS3",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -11082,7 +11084,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideS3",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -11155,7 +11157,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -11178,7 +11180,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideS3TaskDefinitionCloudquerySourceAwsOrgWideS3FirelensLogGroup4CE08508",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -11224,12 +11226,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideS38AEB5180",
+            "servicecataloguePRODtaskAwsOrgWideS30E844CCC",
             "Arn",
           ],
         },
@@ -11273,7 +11275,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -11313,7 +11315,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -11375,7 +11377,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideS38AEB5180",
+                  "servicecataloguePRODtaskAwsOrgWideS30E844CCC",
                   "Arn",
                 ],
               },
@@ -11474,7 +11476,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -11499,7 +11501,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -11570,7 +11572,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -11625,7 +11627,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideSns",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -11772,7 +11774,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsOrgWideSns",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -11845,7 +11847,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -11868,7 +11870,7 @@ spec:
                   "Ref": "CloudquerySourceAwsOrgWideSnsTaskDefinitionCloudquerySourceAwsOrgWideSnsFirelensLogGroupA37ABD31",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -11914,12 +11916,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsOrgWideSnsFCD23F07",
+            "servicecataloguePRODtaskAwsOrgWideSns74594884",
             "Arn",
           ],
         },
@@ -11996,7 +11998,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsOrgWideSnsFCD23F07",
+                  "servicecataloguePRODtaskAwsOrgWideSns74594884",
                   "Arn",
                 ],
               },
@@ -12046,7 +12048,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -12085,7 +12087,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -12159,7 +12161,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -12230,7 +12232,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -13174,7 +13176,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsRemainingDataPart1",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -13321,7 +13323,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsRemainingDataPart1",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -13394,7 +13396,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -13417,7 +13419,7 @@ spec:
                   "Ref": "CloudquerySourceAwsRemainingDataPart1TaskDefinitionCloudquerySourceAwsRemainingDataPart1FirelensLogGroupAF49A6D6",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -13463,12 +13465,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsRemainingDataPart17F48A2EC",
+            "servicecataloguePRODtaskAwsRemainingDataPart172D03347",
             "Arn",
           ],
         },
@@ -13545,7 +13547,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsRemainingDataPart17F48A2EC",
+                  "servicecataloguePRODtaskAwsRemainingDataPart172D03347",
                   "Arn",
                 ],
               },
@@ -13595,7 +13597,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -13634,7 +13636,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -13708,7 +13710,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -13779,7 +13781,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -13819,7 +13821,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -13881,7 +13883,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsRemainingDataPart279F421CD",
+                  "servicecataloguePRODtaskAwsRemainingDataPart290F19102",
                   "Arn",
                 ],
               },
@@ -13931,7 +13933,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -14923,7 +14925,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsRemainingDataPart2",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -15070,7 +15072,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsRemainingDataPart2",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -15143,7 +15145,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -15166,7 +15168,7 @@ spec:
                   "Ref": "CloudquerySourceAwsRemainingDataPart2TaskDefinitionCloudquerySourceAwsRemainingDataPart2FirelensLogGroup66AFB9D9",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -15212,12 +15214,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsRemainingDataPart279F421CD",
+            "servicecataloguePRODtaskAwsRemainingDataPart290F19102",
             "Arn",
           ],
         },
@@ -15257,7 +15259,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -15328,7 +15330,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -15383,7 +15385,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsSSMParameters",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -15530,7 +15532,7 @@ spec:
               "App": "service-catalogue",
               "Name": "AwsSSMParameters",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -15603,7 +15605,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -15626,7 +15628,7 @@ spec:
                   "Ref": "CloudquerySourceAwsSSMParametersTaskDefinitionCloudquerySourceAwsSSMParametersFirelensLogGroup0210F31D",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -15672,12 +15674,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskAwsSSMParameters3BFA609D",
+            "servicecataloguePRODtaskAwsSSMParametersD3C61E16",
             "Arn",
           ],
         },
@@ -15731,7 +15733,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -15793,7 +15795,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskAwsSSMParameters3BFA609D",
+                  "servicecataloguePRODtaskAwsSSMParametersD3C61E16",
                   "Arn",
                 ],
               },
@@ -15843,7 +15845,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -15917,7 +15919,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -16006,7 +16008,7 @@ spec:
               "App": "service-catalogue",
               "Name": "EndOfLife",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -16153,7 +16155,7 @@ spec:
               "App": "service-catalogue",
               "Name": "EndOfLife",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -16226,7 +16228,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -16249,7 +16251,7 @@ spec:
                   "Ref": "CloudquerySourceEndOfLifeTaskDefinitionCloudquerySourceEndOfLifeFirelensLogGroup772C5E06",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -16295,12 +16297,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskEndOfLifeD8A11AC8",
+            "servicecataloguePRODtaskEndOfLifeC67315CC",
             "Arn",
           ],
         },
@@ -16344,7 +16346,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -16384,7 +16386,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -16446,7 +16448,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskEndOfLifeD8A11AC8",
+                  "servicecataloguePRODtaskEndOfLifeC67315CC",
                   "Arn",
                 ],
               },
@@ -16496,7 +16498,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -16570,7 +16572,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -16641,7 +16643,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -16697,7 +16699,7 @@ spec:
               "App": "service-catalogue",
               "Name": "FastlyServices",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -16858,7 +16860,7 @@ spec:
               "App": "service-catalogue",
               "Name": "FastlyServices",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -16931,7 +16933,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -16954,7 +16956,7 @@ spec:
                   "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesFirelensLogGroupF5954401",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -17000,12 +17002,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskFastlyServices33D5467F",
+            "servicecataloguePRODtaskFastlyServices0806BEC5",
             "Arn",
           ],
         },
@@ -17082,7 +17084,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskFastlyServices33D5467F",
+                  "servicecataloguePRODtaskFastlyServices0806BEC5",
                   "Arn",
                 ],
               },
@@ -17132,7 +17134,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -17230,7 +17232,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -17255,7 +17257,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -17380,7 +17382,7 @@ spec:
               "App": "service-catalogue",
               "Name": "Galaxies",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -17527,7 +17529,7 @@ spec:
               "App": "service-catalogue",
               "Name": "Galaxies",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -17600,7 +17602,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -17623,7 +17625,7 @@ spec:
                   "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesFirelensLogGroupB5272E0D",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -17669,12 +17671,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskGalaxiesDBF8C9E4",
+            "servicecataloguePRODtaskGalaxiesC4200C94",
             "Arn",
           ],
         },
@@ -17718,7 +17720,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -17758,7 +17760,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -17820,7 +17822,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskGalaxiesDBF8C9E4",
+                  "servicecataloguePRODtaskGalaxiesC4200C94",
                   "Arn",
                 ],
               },
@@ -17870,7 +17872,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -17944,7 +17946,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -18015,7 +18017,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -18055,7 +18057,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -18117,7 +18119,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskGitHubIssues1EFFA3D3",
+                  "servicecataloguePRODtaskGitHubIssues3E254C0F",
                   "Arn",
                 ],
               },
@@ -18167,7 +18169,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -18286,7 +18288,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubIssues",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -18475,7 +18477,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubIssues",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -18548,7 +18550,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -18571,7 +18573,7 @@ spec:
                   "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesFirelensLogGroupE9112ED9",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -18617,12 +18619,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskGitHubIssues1EFFA3D3",
+            "servicecataloguePRODtaskGitHubIssues3E254C0F",
             "Arn",
           ],
         },
@@ -18662,7 +18664,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -18733,7 +18735,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -18786,7 +18788,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubLanguages",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -18975,7 +18977,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubLanguages",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -19048,7 +19050,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -19071,7 +19073,7 @@ spec:
                   "Ref": "CloudquerySourceGitHubLanguagesTaskDefinitionCloudquerySourceGitHubLanguagesFirelensLogGroup38EAAC3E",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -19117,12 +19119,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskGitHubLanguagesED141D27",
+            "servicecataloguePRODtaskGitHubLanguages39076331",
             "Arn",
           ],
         },
@@ -19176,7 +19178,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -19238,7 +19240,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskGitHubLanguagesED141D27",
+                  "servicecataloguePRODtaskGitHubLanguages39076331",
                   "Arn",
                 ],
               },
@@ -19288,7 +19290,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -19372,7 +19374,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -19470,7 +19472,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubReleases",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -19659,7 +19661,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubReleases",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -19732,7 +19734,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -19755,7 +19757,7 @@ spec:
                   "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -19801,12 +19803,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskGitHubReleases20CA3901",
+            "servicecataloguePRODtaskGitHubReleases98866D2A",
             "Arn",
           ],
         },
@@ -19850,7 +19852,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -19890,7 +19892,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -19952,7 +19954,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskGitHubReleases20CA3901",
+                  "servicecataloguePRODtaskGitHubReleases98866D2A",
                   "Arn",
                 ],
               },
@@ -20002,7 +20004,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -20086,7 +20088,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -20194,7 +20196,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubRepositories",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -20383,7 +20385,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubRepositories",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -20456,7 +20458,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -20479,7 +20481,7 @@ spec:
                   "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -20525,12 +20527,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskGitHubRepositories83F97F25",
+            "servicecataloguePRODtaskGitHubRepositoriesA1D893AF",
             "Arn",
           ],
         },
@@ -20574,7 +20576,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -20614,7 +20616,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -20676,7 +20678,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskGitHubRepositories83F97F25",
+                  "servicecataloguePRODtaskGitHubRepositoriesA1D893AF",
                   "Arn",
                 ],
               },
@@ -20726,7 +20728,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -20810,7 +20812,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -20916,7 +20918,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubTeams",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -21105,7 +21107,7 @@ spec:
               "App": "service-catalogue",
               "Name": "GitHubTeams",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -21178,7 +21180,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -21201,7 +21203,7 @@ spec:
                   "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsFirelensLogGroup8B1FFADC",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -21247,12 +21249,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskGitHubTeams5756A4ED",
+            "servicecataloguePRODtaskGitHubTeams57E3A035",
             "Arn",
           ],
         },
@@ -21296,7 +21298,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -21336,7 +21338,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -21398,7 +21400,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskGitHubTeams5756A4ED",
+                  "servicecataloguePRODtaskGitHubTeams57E3A035",
                   "Arn",
                 ],
               },
@@ -21448,7 +21450,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -21532,7 +21534,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -21628,7 +21630,7 @@ spec:
               "App": "service-catalogue",
               "Name": "NS1",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -21806,7 +21808,7 @@ spec:
               "App": "service-catalogue",
               "Name": "NS1",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -21879,7 +21881,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -21902,7 +21904,7 @@ spec:
                   "Ref": "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -21948,12 +21950,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskNS1B2D0D4B7",
+            "servicecataloguePRODtaskNS1A6E237CE",
             "Arn",
           ],
         },
@@ -21997,7 +21999,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -22037,7 +22039,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -22099,7 +22101,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskNS1B2D0D4B7",
+                  "servicecataloguePRODtaskNS1A6E237CE",
                   "Arn",
                 ],
               },
@@ -22208,7 +22210,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -22233,7 +22235,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -22257,7 +22259,7 @@ spec:
                       ],
                     },
                     {
-                      "Ref": "SsmParameterValueTESTdeployriffraffexternaldatabaseaccesssecuritygroupC96584B6F00A464EAD1953AFF4B05118Parameter",
+                      "Ref": "SsmParameterValuePRODdeployriffraffexternaldatabaseaccesssecuritygroupC96584B6F00A464EAD1953AFF4B05118Parameter",
                     },
                   ],
                   "Subnets": {
@@ -22307,7 +22309,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -22347,7 +22349,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -22409,7 +22411,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "servicecatalogueTESTtaskRiffRaffDataC9A39FC8",
+                  "servicecataloguePRODtaskRiffRaffDataCC491393",
                   "Arn",
                 ],
               },
@@ -22459,7 +22461,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -22570,7 +22572,7 @@ spec:
               "App": "service-catalogue",
               "Name": "RiffRaffData",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -22759,7 +22761,7 @@ spec:
               "App": "service-catalogue",
               "Name": "RiffRaffData",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "EntryPoint": [
               "",
@@ -22832,7 +22834,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -22855,7 +22857,7 @@ spec:
                   "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataFirelensLogGroup55CB2F37",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/service-catalogue",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
               },
             },
             "MountPoints": [
@@ -22901,12 +22903,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecatalogueTESTtaskRiffRaffDataC9A39FC8",
+            "servicecataloguePRODtaskRiffRaffDataCC491393",
             "Arn",
           ],
         },
@@ -22940,7 +22942,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/cloudquery-usage/cloudquery-usage.zip",
+          "S3Key": "deploy/PROD/cloudquery-usage/cloudquery-usage.zip",
         },
         "Environment": {
           "Variables": {
@@ -23052,7 +23054,7 @@ spec:
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -23086,7 +23088,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 30,
@@ -23148,7 +23150,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -23204,7 +23206,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/cloudquery-usage/cloudquery-usage.zip",
+                      "/deploy/PROD/cloudquery-usage/cloudquery-usage.zip",
                     ],
                   ],
                 },
@@ -23221,7 +23223,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cloudquery-usage",
+                    ":parameter/PROD/deploy/cloudquery-usage",
                   ],
                 ],
               },
@@ -23240,7 +23242,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cloudquery-usage/*",
+                    ":parameter/PROD/deploy/cloudquery-usage/*",
                   ],
                 ],
               },
@@ -23353,7 +23355,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -23372,7 +23374,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/data-audit/data-audit.zip",
+          "S3Key": "deploy/PROD/data-audit/data-audit.zip",
         },
         "Environment": {
           "Variables": {
@@ -23385,7 +23387,7 @@ spec:
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -23419,7 +23421,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 600,
@@ -23462,7 +23464,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -23516,7 +23518,7 @@ spec:
           "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
           "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
         ],
-        "RoleName": "service-catalogue-data-audit-TEST",
+        "RoleName": "service-catalogue-data-audit-PROD",
         "Tags": [
           {
             "Key": "App",
@@ -23536,7 +23538,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -23581,7 +23583,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/data-audit/data-audit.zip",
+                      "/deploy/PROD/data-audit/data-audit.zip",
                     ],
                   ],
                 },
@@ -23598,7 +23600,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/data-audit",
+                    ":parameter/PROD/deploy/data-audit",
                   ],
                 ],
               },
@@ -23617,7 +23619,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/data-audit/*",
+                    ":parameter/PROD/deploy/data-audit/*",
                   ],
                 ],
               },
@@ -23747,7 +23749,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "ThresholdMetricId": "ad1",
@@ -23784,7 +23786,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/github-actions-usage/github-actions-usage.zip",
+          "S3Key": "deploy/PROD/github-actions-usage/github-actions-usage.zip",
         },
         "Environment": {
           "Variables": {
@@ -23797,7 +23799,7 @@ spec:
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -23831,7 +23833,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 600,
@@ -23910,7 +23912,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -23955,7 +23957,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/github-actions-usage/github-actions-usage.zip",
+                      "/deploy/PROD/github-actions-usage/github-actions-usage.zip",
                     ],
                   ],
                 },
@@ -23972,7 +23974,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/github-actions-usage",
+                    ":parameter/PROD/deploy/github-actions-usage",
                   ],
                 ],
               },
@@ -23991,7 +23993,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/github-actions-usage/*",
+                    ":parameter/PROD/deploy/github-actions-usage/*",
                   ],
                 ],
               },
@@ -24038,10 +24040,10 @@ spec:
     "PostgresAccessSecurityGroupParam38DFE001": {
       "Properties": {
         "DataType": "text",
-        "Name": "/TEST/deploy/service-catalogue/postgres-access-security-group",
+        "Name": "/PROD/deploy/service-catalogue/postgres-access-security-group",
         "Tags": {
           "Stack": "deploy",
-          "Stage": "TEST",
+          "Stage": "PROD",
           "gu:cdk:version": "TEST",
           "gu:repo": "guardian/service-catalogue",
         },
@@ -24085,7 +24087,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "VpcId": {
@@ -24100,7 +24102,7 @@ spec:
         "AllocatedStorage": "100",
         "CACertificateIdentifier": "rds-ca-rsa2048-g1",
         "CopyTagsToSnapshot": true,
-        "DBInstanceClass": "db.t4g.small",
+        "DBInstanceClass": "db.t4g.large",
         "DBSubnetGroupName": {
           "Ref": "PostgresInstance1SubnetGroupCAC045A5",
         },
@@ -24139,7 +24141,7 @@ spec:
             "Arn",
           ],
         },
-        "MultiAZ": false,
+        "MultiAZ": true,
         "PerformanceInsightsRetentionPeriod": 7,
         "Port": "5432",
         "PubliclyAccessible": false,
@@ -24164,7 +24166,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "VPCSecurityGroups": [
@@ -24226,7 +24228,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -24271,7 +24273,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -24315,7 +24317,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -24324,10 +24326,10 @@ spec:
     "PostgresInstanceEndpointAddress6E14162C": {
       "Properties": {
         "DataType": "text",
-        "Name": "/TEST/deploy/service-catalogue/postgres-instance-endpoint-address",
+        "Name": "/PROD/deploy/service-catalogue/postgres-instance-endpoint-address",
         "Tags": {
           "Stack": "deploy",
-          "Stage": "TEST",
+          "Stage": "PROD",
           "gu:cdk:version": "TEST",
           "gu:repo": "guardian/service-catalogue",
         },
@@ -24380,7 +24382,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "VpcId": {
@@ -24423,7 +24425,7 @@ spec:
             },
             "object": {
               "key": [
-                "deploy/TEST/service-catalogue-prisma-migrations/prisma.zip",
+                "deploy/PROD/service-catalogue-prisma-migrations/prisma.zip",
               ],
             },
           },
@@ -24450,7 +24452,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -24511,7 +24513,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/refresh-materialized-view/refresh-materialized-view.zip",
+          "S3Key": "deploy/PROD/refresh-materialized-view/refresh-materialized-view.zip",
         },
         "Environment": {
           "Variables": {
@@ -24524,7 +24526,7 @@ spec:
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -24558,7 +24560,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 600,
@@ -24637,7 +24639,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -24682,7 +24684,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/refresh-materialized-view/refresh-materialized-view.zip",
+                      "/deploy/PROD/refresh-materialized-view/refresh-materialized-view.zip",
                     ],
                   ],
                 },
@@ -24699,7 +24701,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/refresh-materialized-view",
+                    ":parameter/PROD/deploy/refresh-materialized-view",
                   ],
                 ],
               },
@@ -24718,7 +24720,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/refresh-materialized-view/*",
+                    ":parameter/PROD/deploy/refresh-materialized-view/*",
                   ],
                 ],
               },
@@ -24766,7 +24768,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/riffraff-database-credentials",
+        "Name": "/PROD/deploy/service-catalogue/riffraff-database-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -24782,7 +24784,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -24806,10 +24808,10 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
-        "TopicName": "interactive-monitor-TEST",
+        "TopicName": "interactive-monitor-PROD",
       },
       "Type": "AWS::SNS::Topic",
     },
@@ -24826,7 +24828,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/cloudbuster/cloudbuster.zip",
+          "S3Key": "deploy/PROD/cloudbuster/cloudbuster.zip",
         },
         "Environment": {
           "Variables": {
@@ -24843,7 +24845,7 @@ spec:
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -24877,7 +24879,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 120,
@@ -24896,6 +24898,119 @@ spec:
         },
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "cloudbusterErrorPercentageAlarmForLambda3A9AF5A0": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:sns:eu-west-1:",
+                {
+                  "Ref": "AWS::AccountId",
+                },
+                ":devx-alerts",
+              ],
+            ],
+          },
+        ],
+        "AlarmDescription": "cloudbuster error percentage is too high. Find the logs here https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stage:'PROD'))),(query:(match_phrase:(app:'cloudbuster')))))",
+        "AlarmName": {
+          "Fn::Join": [
+            "",
+            [
+              "High error percentage from ",
+              {
+                "Ref": "cloudbuster8C461939",
+              },
+              " lambda in PROD",
+            ],
+          ],
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Expression": "100*m1/m2",
+            "Id": "expr_1",
+            "Label": {
+              "Fn::Join": [
+                "",
+                [
+                  "Error % of ",
+                  {
+                    "Ref": "cloudbuster8C461939",
+                  },
+                ],
+              ],
+            },
+            "ReturnData": true,
+          },
+          {
+            "Id": "m1",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "cloudbuster8C461939",
+                    },
+                  },
+                ],
+                "MetricName": "Errors",
+                "Namespace": "AWS/Lambda",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          {
+            "Id": "m2",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "cloudbuster8C461939",
+                    },
+                  },
+                ],
+                "MetricName": "Invocations",
+                "Namespace": "AWS/Lambda",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Threshold": 50,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
     },
     "cloudbusterServiceRoleDefaultPolicy173FB27F": {
       "Properties": {
@@ -24936,7 +25051,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/cloudbuster/cloudbuster.zip",
+                      "/deploy/PROD/cloudbuster/cloudbuster.zip",
                     ],
                   ],
                 },
@@ -24953,7 +25068,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cloudbuster",
+                    ":parameter/PROD/deploy/cloudbuster",
                   ],
                 ],
               },
@@ -24972,7 +25087,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/cloudbuster/*",
+                    ":parameter/PROD/deploy/cloudbuster/*",
                   ],
                 ],
               },
@@ -25082,7 +25197,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25111,7 +25226,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -25151,7 +25266,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/cloudquery-api-key",
+        "Name": "/PROD/deploy/service-catalogue/cloudquery-api-key",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -25167,7 +25282,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25187,7 +25302,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/dependency-graph-integrator/dependency-graph-integrator.zip",
+          "S3Key": "deploy/PROD/dependency-graph-integrator/dependency-graph-integrator.zip",
         },
         "Environment": {
           "Variables": {
@@ -25197,7 +25312,7 @@ spec:
             },
             "GITHUB_ORG": "guardian",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.handler",
@@ -25231,7 +25346,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 300,
@@ -25251,7 +25366,7 @@ spec:
       },
       "Type": "AWS::Lambda::Function",
     },
-    "dependencygraphintegratorAllowInvokeServiceCataloguedependencygraphintegratorinputtopicTESTC360D94D8B8A768E": {
+    "dependencygraphintegratorAllowInvokeServiceCataloguedependencygraphintegratorinputtopicPROD0407D4DAF48A28EF": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -25262,7 +25377,7 @@ spec:
         },
         "Principal": "sns.amazonaws.com",
         "SourceArn": {
-          "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+          "Ref": "dependencygraphintegratorinputtopicPRODE85FE8EB",
         },
       },
       "Type": "AWS::Lambda::Permission",
@@ -25296,7 +25411,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "VpcId": {
@@ -25364,7 +25479,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25409,7 +25524,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/dependency-graph-integrator/dependency-graph-integrator.zip",
+                      "/deploy/PROD/dependency-graph-integrator/dependency-graph-integrator.zip",
                     ],
                   ],
                 },
@@ -25426,7 +25541,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/dependency-graph-integrator",
+                    ":parameter/PROD/deploy/dependency-graph-integrator",
                   ],
                 ],
               },
@@ -25445,7 +25560,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/dependency-graph-integrator/*",
+                    ":parameter/PROD/deploy/dependency-graph-integrator/*",
                   ],
                 ],
               },
@@ -25472,7 +25587,7 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "dependencygraphintegratordependencygraphintegratorinputtopicTEST621C9371": {
+    "dependencygraphintegratordependencygraphintegratorinputtopicPRODFA58714C": {
       "Properties": {
         "Endpoint": {
           "Fn::GetAtt": [
@@ -25482,7 +25597,7 @@ spec:
         },
         "Protocol": "lambda",
         "TopicArn": {
-          "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+          "Ref": "dependencygraphintegratorinputtopicPRODE85FE8EB",
         },
       },
       "Type": "AWS::SNS::Subscription",
@@ -25491,7 +25606,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/dependency-graph-integrator-github-app-secret",
+        "Name": "/PROD/deploy/service-catalogue/dependency-graph-integrator-github-app-secret",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -25507,14 +25622,14 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
     },
-    "dependencygraphintegratorinputtopicTESTDAA73A88": {
+    "dependencygraphintegratorinputtopicPRODE85FE8EB": {
       "Properties": {
         "DisplayName": "Dependency Graph Integrator Input Topic",
         "Tags": [
@@ -25532,7 +25647,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25542,7 +25657,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/fastly-credentials",
+        "Name": "/PROD/deploy/service-catalogue/fastly-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -25558,7 +25673,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25642,7 +25757,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -25663,7 +25778,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/github-credentials",
+        "Name": "/PROD/deploy/service-catalogue/github-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -25679,7 +25794,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25699,7 +25814,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/interactive-monitor/interactive-monitor.zip",
+          "S3Key": "deploy/PROD/interactive-monitor/interactive-monitor.zip",
         },
         "Environment": {
           "Variables": {
@@ -25831,7 +25946,7 @@ spec:
             },
             "GITHUB_ORG": "guardian",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.handler",
@@ -25866,7 +25981,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 30,
@@ -25936,7 +26051,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -25981,7 +26096,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/interactive-monitor/interactive-monitor.zip",
+                      "/deploy/PROD/interactive-monitor/interactive-monitor.zip",
                     ],
                   ],
                 },
@@ -25998,7 +26113,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/interactive-monitor",
+                    ":parameter/PROD/deploy/interactive-monitor",
                   ],
                 ],
               },
@@ -26017,7 +26132,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/interactive-monitor/*",
+                    ":parameter/PROD/deploy/interactive-monitor/*",
                   ],
                 ],
               },
@@ -26078,7 +26193,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/interactive-monitor-github-app",
+        "Name": "/PROD/deploy/service-catalogue/interactive-monitor-github-app",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -26094,7 +26209,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -26105,7 +26220,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/ns1-credentials",
+        "Name": "/PROD/deploy/service-catalogue/ns1-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -26121,7 +26236,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -26141,7 +26256,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/obligatron/obligatron.zip",
+          "S3Key": "deploy/PROD/obligatron/obligatron.zip",
         },
         "Environment": {
           "Variables": {
@@ -26154,7 +26269,7 @@ spec:
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -26188,7 +26303,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 300,
@@ -26211,7 +26326,7 @@ spec:
     "obligatronAWSVULNERABILITIES8E81FCF9": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'AWS_VULNERABILITIES' obligation",
-        "ScheduleExpression": "rate(30 days)",
+        "ScheduleExpression": "cron(0 11 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -26228,7 +26343,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -26301,7 +26416,7 @@ spec:
               {
                 "Ref": "obligatronA58CFCF1",
               },
-              " lambda in TEST",
+              " lambda in PROD",
             ],
           ],
         },
@@ -26380,7 +26495,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Threshold": 0,
@@ -26410,7 +26525,7 @@ spec:
     "obligatronPRODUCTIONDEPENDENCIESC26096F0": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'PRODUCTION_DEPENDENCIES' obligation",
-        "ScheduleExpression": "rate(30 days)",
+        "ScheduleExpression": "cron(0 10 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -26427,7 +26542,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -26467,7 +26582,7 @@ spec:
     "obligatronREPOSITORYSTATUSD313E655": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'REPOSITORY_STATUS' obligation",
-        "ScheduleExpression": "rate(30 days)",
+        "ScheduleExpression": "cron(0 12 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -26484,7 +26599,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -26561,7 +26676,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -26606,7 +26721,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/obligatron/obligatron.zip",
+                      "/deploy/PROD/obligatron/obligatron.zip",
                     ],
                   ],
                 },
@@ -26623,7 +26738,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/obligatron",
+                    ":parameter/PROD/deploy/obligatron",
                   ],
                 ],
               },
@@ -26642,7 +26757,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/obligatron/*",
+                    ":parameter/PROD/deploy/obligatron/*",
                   ],
                 ],
               },
@@ -26689,7 +26804,7 @@ spec:
     "obligatronTAGGING3F8E9BB2": {
       "Properties": {
         "Description": "Daily execution of Obligatron lambda for 'TAGGING' obligation",
-        "ScheduleExpression": "rate(30 days)",
+        "ScheduleExpression": "cron(0 9 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -26706,7 +26821,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -26743,7 +26858,7 @@ spec:
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "prismamigratetaskTEST59D4C0E8": {
+    "prismamigratetaskPROD4962BC83": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -26757,7 +26872,7 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "RoleName": "prisma-migrate-task-TEST",
+        "RoleName": "prisma-migrate-task-PROD",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -26773,13 +26888,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "prismamigratetaskTESTDefaultPolicy89E93F3F": {
+    "prismamigratetaskPRODDefaultPolicyC3FAA53F": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -26875,7 +26990,7 @@ spec:
                       {
                         "Ref": "SsmParameterValueaccountservicesartifactbucketC96584B6F00A464EAD1953AFF4B05118Parameter",
                       },
-                      "/deploy/TEST/service-catalogue-prisma-migrations/prisma.zip",
+                      "/deploy/PROD/service-catalogue-prisma-migrations/prisma.zip",
                     ],
                   ],
                 },
@@ -26884,10 +26999,10 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "prismamigratetaskTESTDefaultPolicy89E93F3F",
+        "PolicyName": "prismamigratetaskPRODDefaultPolicyC3FAA53F",
         "Roles": [
           {
-            "Ref": "prismamigratetaskTEST59D4C0E8",
+            "Ref": "prismamigratetaskPROD4962BC83",
           },
         ],
       },
@@ -26904,7 +27019,7 @@ spec:
               },
               {
                 "Name": "STAGE",
-                "Value": "TEST",
+                "Value": "PROD",
               },
               {
                 "Name": "APP",
@@ -26927,7 +27042,7 @@ spec:
                   "Ref": "prismamigratetaskTaskDefinitionprismamigratetaskFirelensLogGroupCD392728",
                 },
                 "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/TEST/prisma-migrate-task",
+                "awslogs-stream-prefix": "deploy/PROD/prisma-migrate-task",
               },
             },
             "MountPoints": [
@@ -26944,7 +27059,7 @@ spec:
             "DockerLabels": {
               "App": "prisma-migrate-task",
               "Stack": "deploy",
-              "Stage": "TEST",
+              "Stage": "PROD",
             },
             "Environment": [
               {
@@ -26955,7 +27070,7 @@ spec:
               },
               {
                 "Name": "PRISMA_ARTIFACT_KEY",
-                "Value": "deploy/TEST/service-catalogue-prisma-migrations/prisma.zip",
+                "Value": "deploy/PROD/service-catalogue-prisma-migrations/prisma.zip",
               },
             ],
             "Essential": true,
@@ -27054,12 +27169,12 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "prismamigratetaskTEST59D4C0E8",
+            "prismamigratetaskPROD4962BC83",
             "Arn",
           ],
         },
@@ -27103,7 +27218,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -27165,7 +27280,7 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "prismamigratetaskTEST59D4C0E8",
+                  "prismamigratetaskPROD4962BC83",
                   "Arn",
                 ],
               },
@@ -27211,7 +27326,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -27275,7 +27390,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -27340,7 +27455,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27453,7 +27568,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27547,7 +27662,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27622,7 +27737,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27716,7 +27831,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27829,7 +27944,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27923,7 +28038,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -27998,7 +28113,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28092,7 +28207,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28186,7 +28301,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28280,7 +28395,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28374,7 +28489,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28468,7 +28583,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28581,7 +28696,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28675,7 +28790,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28750,7 +28865,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28844,7 +28959,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -28938,7 +29053,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -29032,7 +29147,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -29126,7 +29241,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -29175,7 +29290,7 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/TEST/repocop/repocop.zip",
+          "S3Key": "deploy/PROD/repocop/repocop.zip",
         },
         "Environment": {
           "Variables": {
@@ -29191,19 +29306,19 @@ spec:
               ],
             },
             "DEPENDENCY_GRAPH_INPUT_TOPIC_ARN": {
-              "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+              "Ref": "dependencygraphintegratorinputtopicPRODE85FE8EB",
             },
             "GITHUB_APP_SECRET": {
               "Ref": "repocopgithubappauthFDE18F33",
             },
             "GITHUB_ORG": "guardian",
-            "INTERACTIVES_COUNT": "3",
+            "INTERACTIVES_COUNT": "40",
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
-            "STAGE": "TEST",
+            "STAGE": "PROD",
           },
         },
         "Handler": "index.main",
@@ -29237,7 +29352,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Timeout": 300,
@@ -29256,6 +29371,119 @@ spec:
         },
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "repocopErrorPercentageAlarmForLambda1E62E9A7": {
+      "Properties": {
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:sns:eu-west-1:",
+                {
+                  "Ref": "AWS::AccountId",
+                },
+                ":devx-alerts",
+              ],
+            ],
+          },
+        ],
+        "AlarmDescription": "repocop error percentage is too high. Find the logs here https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stage:'PROD'))),(query:(match_phrase:(app:'repocop')))))",
+        "AlarmName": {
+          "Fn::Join": [
+            "",
+            [
+              "High error percentage from ",
+              {
+                "Ref": "repocop20553EB8",
+              },
+              " lambda in PROD",
+            ],
+          ],
+        },
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Expression": "100*m1/m2",
+            "Id": "expr_1",
+            "Label": {
+              "Fn::Join": [
+                "",
+                [
+                  "Error % of ",
+                  {
+                    "Ref": "repocop20553EB8",
+                  },
+                ],
+              ],
+            },
+            "ReturnData": true,
+          },
+          {
+            "Id": "m1",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "repocop20553EB8",
+                    },
+                  },
+                ],
+                "MetricName": "Errors",
+                "Namespace": "AWS/Lambda",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+          {
+            "Id": "m2",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "FunctionName",
+                    "Value": {
+                      "Ref": "repocop20553EB8",
+                    },
+                  },
+                ],
+                "MetricName": "Invocations",
+                "Namespace": "AWS/Lambda",
+              },
+              "Period": 60,
+              "Stat": "Sum",
+            },
+            "ReturnData": false,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Threshold": 50,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
     },
     "repocopServiceRole757D74E8": {
       "Properties": {
@@ -29316,7 +29544,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -29361,7 +29589,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/TEST/repocop/repocop.zip",
+                      "/deploy/PROD/repocop/repocop.zip",
                     ],
                   ],
                 },
@@ -29378,7 +29606,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/repocop",
+                    ":parameter/PROD/deploy/repocop",
                   ],
                 ],
               },
@@ -29397,7 +29625,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":parameter/TEST/deploy/repocop/*",
+                    ":parameter/PROD/deploy/repocop/*",
                   ],
                 ],
               },
@@ -29457,7 +29685,7 @@ spec:
               "Action": "sns:Publish",
               "Effect": "Allow",
               "Resource": {
-                "Ref": "dependencygraphintegratorinputtopicTESTDAA73A88",
+                "Ref": "dependencygraphintegratorinputtopicPRODE85FE8EB",
               },
             },
             {
@@ -29486,7 +29714,7 @@ spec:
       "DeletionPolicy": "Delete",
       "Properties": {
         "GenerateSecretString": {},
-        "Name": "/TEST/deploy/service-catalogue/repocop-github-app-secret",
+        "Name": "/PROD/deploy/service-catalogue/repocop-github-app-secret",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -29502,7 +29730,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -29551,7 +29779,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
         "Targets": [
@@ -29591,7 +29819,7 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
@@ -29610,7 +29838,7 @@ spec:
       },
       "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
     },
-    "servicecatalogueTESTtaskAmigoBakePackagesDefaultPolicy1351FB30": {
+    "servicecataloguePRODtaskAmigoBakePackagesDefaultPolicy89383B52": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -29649,9 +29877,9 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": [
-                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-base-images",
-                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-recipes",
-                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-TEST-bakes",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-PROD-base-images",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-PROD-recipes",
+                "arn:aws:dynamodb:eu-west-1:000000000018:table/amigo-PROD-bakes",
               ],
             },
             {
@@ -29708,16 +29936,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAmigoBakePackagesDefaultPolicy1351FB30",
+        "PolicyName": "servicecataloguePRODtaskAmigoBakePackagesDefaultPolicy89383B52",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAmigoBakePackagesE3F44845",
+            "Ref": "servicecataloguePRODtaskAmigoBakePackagesE2817516",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAmigoBakePackagesE3F44845": {
+    "servicecataloguePRODtaskAmigoBakePackagesE2817516": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -29745,7 +29973,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AmigoBakePackages",
+        "RoleName": "service-catalogue-PROD-task-AmigoBakePackages",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -29761,13 +29989,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsCostExplorer78777A06": {
+    "servicecataloguePRODtaskAwsCostExplorer96B6E676": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -29795,7 +30023,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsCostExplorer",
+        "RoleName": "service-catalogue-PROD-task-AwsCostExplorer",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -29811,13 +30039,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsCostExplorerDefaultPolicy66D41050": {
+    "servicecataloguePRODtaskAwsCostExplorerDefaultPolicy9494165D": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -29891,16 +30119,66 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsCostExplorerDefaultPolicy66D41050",
+        "PolicyName": "servicecataloguePRODtaskAwsCostExplorerDefaultPolicy9494165D",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsCostExplorer78777A06",
+            "Ref": "servicecataloguePRODtaskAwsCostExplorer96B6E676",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsDelegatedToSecurityAccountDefaultPolicyA9D90C4A": {
+    "servicecataloguePRODtaskAwsDelegatedToSecurityAccountD81B6FBC": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-AwsDelegatedToSecurityAccount",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskAwsDelegatedToSecurityAccountDefaultPolicy17BEDFC7": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -29969,16 +30247,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsDelegatedToSecurityAccountDefaultPolicyA9D90C4A",
+        "PolicyName": "servicecataloguePRODtaskAwsDelegatedToSecurityAccountDefaultPolicy17BEDFC7",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsDelegatedToSecurityAccountEDD7C370",
+            "Ref": "servicecataloguePRODtaskAwsDelegatedToSecurityAccountD81B6FBC",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsDelegatedToSecurityAccountEDD7C370": {
+    "servicecataloguePRODtaskAwsLambda2F5ACE1C": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30006,7 +30284,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsDelegatedToSecurityAccount",
+        "RoleName": "service-catalogue-PROD-task-AwsLambda",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -30022,63 +30300,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsLambda20C12A7D": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
-        "RoleName": "service-catalogue-TEST-task-AwsLambda",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "servicecatalogueTESTtaskAwsLambdaDefaultPolicy26B73122": {
+    "servicecataloguePRODtaskAwsLambdaDefaultPolicy409E4790": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30152,16 +30380,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsLambdaDefaultPolicy26B73122",
+        "PolicyName": "servicecataloguePRODtaskAwsLambdaDefaultPolicy409E4790",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsLambda20C12A7D",
+            "Ref": "servicecataloguePRODtaskAwsLambda2F5ACE1C",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsListOrgsA233C9DF": {
+    "servicecataloguePRODtaskAwsListOrgs456430DC": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30189,7 +30417,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsListOrgs",
+        "RoleName": "service-catalogue-PROD-task-AwsListOrgs",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -30205,13 +30433,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsListOrgsDefaultPolicy98DE286C": {
+    "servicecataloguePRODtaskAwsListOrgsDefaultPolicy079B6149": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30285,16 +30513,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsListOrgsDefaultPolicy98DE286C",
+        "PolicyName": "servicecataloguePRODtaskAwsListOrgsDefaultPolicy079B6149",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsListOrgsA233C9DF",
+            "Ref": "servicecataloguePRODtaskAwsListOrgs456430DC",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideAutoScalingGroups721C2374": {
+    "servicecataloguePRODtaskAwsOrgWideAutoScalingGroups86ECCF9A": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30322,7 +30550,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideAutoScalingGroups",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideAutoScalingGroups",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -30338,13 +30566,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideAutoScalingGroupsDefaultPolicy66CC3A66": {
+    "servicecataloguePRODtaskAwsOrgWideAutoScalingGroupsDefaultPolicy2D914B11": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30418,16 +30646,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideAutoScalingGroupsDefaultPolicy66CC3A66",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideAutoScalingGroupsDefaultPolicy2D914B11",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideAutoScalingGroups721C2374",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideAutoScalingGroups86ECCF9A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideBackupB0D1DA08": {
+    "servicecataloguePRODtaskAwsOrgWideBackup38D22D6C": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30455,7 +30683,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideBackup",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideBackup",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -30471,13 +30699,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideBackupDefaultPolicyE4971509": {
+    "servicecataloguePRODtaskAwsOrgWideBackupDefaultPolicyE3B452CC": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30551,16 +30779,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideBackupDefaultPolicyE4971509",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideBackupDefaultPolicyE3B452CC",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideBackupB0D1DA08",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideBackup38D22D6C",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideCertificates496AB720": {
+    "servicecataloguePRODtaskAwsOrgWideCertificatesC9D1B629": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30588,7 +30816,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideCertificates",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideCertificates",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -30604,13 +30832,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideCertificatesDefaultPolicyA76AB85E": {
+    "servicecataloguePRODtaskAwsOrgWideCertificatesDefaultPolicy83372AFA": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30684,16 +30912,66 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideCertificatesDefaultPolicyA76AB85E",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideCertificatesDefaultPolicy83372AFA",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideCertificates496AB720",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideCertificatesC9D1B629",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideCloudFormationDefaultPolicyC6DDC1EE": {
+    "servicecataloguePRODtaskAwsOrgWideCloudFormation8B822CFC": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideCloudFormation",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskAwsOrgWideCloudFormationDefaultPolicy60B9061C": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30767,16 +31045,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideCloudFormationDefaultPolicyC6DDC1EE",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideCloudFormationDefaultPolicy60B9061C",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideCloudFormationEFD12D82",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideCloudFormation8B822CFC",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideCloudFormationEFD12D82": {
+    "servicecataloguePRODtaskAwsOrgWideCloudwatchAlarms8934DD5C": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30804,7 +31082,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideCloudFormation",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideCloudwatchAlarms",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -30820,63 +31098,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideCloudwatchAlarms5ED2B988": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideCloudwatchAlarms",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "servicecatalogueTESTtaskAwsOrgWideCloudwatchAlarmsDefaultPolicyE63ADC62": {
+    "servicecataloguePRODtaskAwsOrgWideCloudwatchAlarmsDefaultPolicy5C6FEB2E": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -30950,16 +31178,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideCloudwatchAlarmsDefaultPolicyE63ADC62",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideCloudwatchAlarmsDefaultPolicy5C6FEB2E",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideCloudwatchAlarms5ED2B988",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideCloudwatchAlarms8934DD5C",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideDynamoDBB67BC817": {
+    "servicecataloguePRODtaskAwsOrgWideDynamoDB9287D5A3": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -30987,7 +31215,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideDynamoDB",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideDynamoDB",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31003,13 +31231,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideDynamoDBDefaultPolicyBA1BA2FD": {
+    "servicecataloguePRODtaskAwsOrgWideDynamoDBDefaultPolicy523A38FD": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31083,16 +31311,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideDynamoDBDefaultPolicyBA1BA2FD",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideDynamoDBDefaultPolicy523A38FD",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideDynamoDBB67BC817",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideDynamoDB9287D5A3",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideEc2D13594C5": {
+    "servicecataloguePRODtaskAwsOrgWideEc221CF25F8": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31120,7 +31348,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideEc2",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideEc2",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31136,13 +31364,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideEc2DefaultPolicy1C5BAC75": {
+    "servicecataloguePRODtaskAwsOrgWideEc2DefaultPolicy41D6B863": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31231,16 +31459,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideEc2DefaultPolicy1C5BAC75",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideEc2DefaultPolicy41D6B863",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideEc2D13594C5",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideEc221CF25F8",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC": {
+    "servicecataloguePRODtaskAwsOrgWideEc2ImagesAAAFAE8F": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31268,7 +31496,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideEc2Images",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideEc2Images",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31284,13 +31512,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideEc2ImagesDefaultPolicy04D66786": {
+    "servicecataloguePRODtaskAwsOrgWideEc2ImagesDefaultPolicy2BE11FB5": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31379,16 +31607,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideEc2ImagesDefaultPolicy04D66786",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideEc2ImagesDefaultPolicy2BE11FB5",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideEc2ImagesACFD7DAC",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideEc2ImagesAAAFAE8F",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideIamCredentialReportsD1A28FD6": {
+    "servicecataloguePRODtaskAwsOrgWideIamCredentialReportsA4EE552D": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31416,7 +31644,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideIamCredentialReports",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideIamCredentialReports",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31432,13 +31660,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideIamCredentialReportsDefaultPolicyE758C2C8": {
+    "servicecataloguePRODtaskAwsOrgWideIamCredentialReportsDefaultPolicy5FBF2B61": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31512,16 +31740,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideIamCredentialReportsDefaultPolicyE758C2C8",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideIamCredentialReportsDefaultPolicy5FBF2B61",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideIamCredentialReportsD1A28FD6",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideIamCredentialReportsA4EE552D",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideLoadBalancersB565C247": {
+    "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31549,7 +31777,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideLoadBalancers",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideLoadBalancers",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31565,13 +31793,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideLoadBalancersDefaultPolicy163328CB": {
+    "servicecataloguePRODtaskAwsOrgWideLoadBalancersDefaultPolicy5F4E9AE5": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31645,16 +31873,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideLoadBalancersDefaultPolicy163328CB",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideLoadBalancersDefaultPolicy5F4E9AE5",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideLoadBalancersB565C247",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideRDS1CE08EDD": {
+    "servicecataloguePRODtaskAwsOrgWideRDS2AD886D1": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31682,7 +31910,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideRDS",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideRDS",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31698,13 +31926,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideRDSDefaultPolicyB5394D47": {
+    "servicecataloguePRODtaskAwsOrgWideRDSDefaultPolicy3DB12181": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31778,16 +32006,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideRDSDefaultPolicyB5394D47",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideRDSDefaultPolicy3DB12181",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideRDS1CE08EDD",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideRDS2AD886D1",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideS38AEB5180": {
+    "servicecataloguePRODtaskAwsOrgWideS30E844CCC": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31815,7 +32043,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideS3",
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideS3",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31831,13 +32059,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsOrgWideS3DefaultPolicyB9F15CA7": {
+    "servicecataloguePRODtaskAwsOrgWideS3DefaultPolicy058CD5DC": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31911,16 +32139,66 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideS3DefaultPolicyB9F15CA7",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideS3DefaultPolicy058CD5DC",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideS38AEB5180",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideS30E844CCC",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideSnsDefaultPolicyB7626C17": {
+    "servicecataloguePRODtaskAwsOrgWideSns74594884": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-AwsOrgWideSns",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskAwsOrgWideSnsDefaultPolicy8D337EE5": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31994,16 +32272,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsOrgWideSnsDefaultPolicyB7626C17",
+        "PolicyName": "servicecataloguePRODtaskAwsOrgWideSnsDefaultPolicy8D337EE5",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsOrgWideSnsFCD23F07",
+            "Ref": "servicecataloguePRODtaskAwsOrgWideSns74594884",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsOrgWideSnsFCD23F07": {
+    "servicecataloguePRODtaskAwsRemainingDataPart172D03347": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32031,7 +32309,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsOrgWideSns",
+        "RoleName": "service-catalogue-PROD-task-AwsRemainingDataPart1",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32047,63 +32325,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsRemainingDataPart17F48A2EC": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
-        "RoleName": "service-catalogue-TEST-task-AwsRemainingDataPart1",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "servicecatalogueTESTtaskAwsRemainingDataPart1DefaultPolicy67FD3941": {
+    "servicecataloguePRODtaskAwsRemainingDataPart1DefaultPolicy40BAC7BC": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32177,16 +32405,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsRemainingDataPart1DefaultPolicy67FD3941",
+        "PolicyName": "servicecataloguePRODtaskAwsRemainingDataPart1DefaultPolicy40BAC7BC",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsRemainingDataPart17F48A2EC",
+            "Ref": "servicecataloguePRODtaskAwsRemainingDataPart172D03347",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsRemainingDataPart279F421CD": {
+    "servicecataloguePRODtaskAwsRemainingDataPart290F19102": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32214,7 +32442,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsRemainingDataPart2",
+        "RoleName": "service-catalogue-PROD-task-AwsRemainingDataPart2",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32230,13 +32458,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsRemainingDataPart2DefaultPolicyB5550FE1": {
+    "servicecataloguePRODtaskAwsRemainingDataPart2DefaultPolicy16AE1308": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32310,16 +32538,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsRemainingDataPart2DefaultPolicyB5550FE1",
+        "PolicyName": "servicecataloguePRODtaskAwsRemainingDataPart2DefaultPolicy16AE1308",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsRemainingDataPart279F421CD",
+            "Ref": "servicecataloguePRODtaskAwsRemainingDataPart290F19102",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskAwsSSMParameters3BFA609D": {
+    "servicecataloguePRODtaskAwsSSMParametersD3C61E16": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32347,7 +32575,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-AwsSSMParameters",
+        "RoleName": "service-catalogue-PROD-task-AwsSSMParameters",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32363,13 +32591,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskAwsSSMParametersDefaultPolicy71BDCAC2": {
+    "servicecataloguePRODtaskAwsSSMParametersDefaultPolicyBA587B3A": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32443,16 +32671,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskAwsSSMParametersDefaultPolicy71BDCAC2",
+        "PolicyName": "servicecataloguePRODtaskAwsSSMParametersDefaultPolicyBA587B3A",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskAwsSSMParameters3BFA609D",
+            "Ref": "servicecataloguePRODtaskAwsSSMParametersD3C61E16",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskEndOfLifeD8A11AC8": {
+    "servicecataloguePRODtaskEndOfLifeC67315CC": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32480,7 +32708,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-EndOfLife",
+        "RoleName": "service-catalogue-PROD-task-EndOfLife",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32496,13 +32724,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskEndOfLifeDefaultPolicyC7574D14": {
+    "servicecataloguePRODtaskEndOfLifeDefaultPolicy9140E85F": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32566,16 +32794,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskEndOfLifeDefaultPolicyC7574D14",
+        "PolicyName": "servicecataloguePRODtaskEndOfLifeDefaultPolicy9140E85F",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskEndOfLifeD8A11AC8",
+            "Ref": "servicecataloguePRODtaskEndOfLifeC67315CC",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskFastlyServices33D5467F": {
+    "servicecataloguePRODtaskFastlyServices0806BEC5": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32603,7 +32831,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-FastlyServices",
+        "RoleName": "service-catalogue-PROD-task-FastlyServices",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32619,13 +32847,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskFastlyServicesDefaultPolicy67F26FAB": {
+    "servicecataloguePRODtaskFastlyServicesDefaultPolicy7B1AD4D3": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32689,16 +32917,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskFastlyServicesDefaultPolicy67F26FAB",
+        "PolicyName": "servicecataloguePRODtaskFastlyServicesDefaultPolicy7B1AD4D3",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskFastlyServices33D5467F",
+            "Ref": "servicecataloguePRODtaskFastlyServices0806BEC5",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskGalaxiesDBF8C9E4": {
+    "servicecataloguePRODtaskGalaxiesC4200C94": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32726,7 +32954,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-Galaxies",
+        "RoleName": "service-catalogue-PROD-task-Galaxies",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32742,13 +32970,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskGalaxiesDefaultPolicyA9F27B2E": {
+    "servicecataloguePRODtaskGalaxiesDefaultPolicyEB4317FD": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32827,16 +33055,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskGalaxiesDefaultPolicyA9F27B2E",
+        "PolicyName": "servicecataloguePRODtaskGalaxiesDefaultPolicyEB4317FD",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskGalaxiesDBF8C9E4",
+            "Ref": "servicecataloguePRODtaskGalaxiesC4200C94",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskGitHubIssues1EFFA3D3": {
+    "servicecataloguePRODtaskGitHubIssues3E254C0F": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -32864,7 +33092,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-GitHubIssues",
+        "RoleName": "service-catalogue-PROD-task-GitHubIssues",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -32880,13 +33108,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskGitHubIssuesDefaultPolicy217DF3BE": {
+    "servicecataloguePRODtaskGitHubIssuesDefaultPolicy0C10765D": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -32950,16 +33178,66 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskGitHubIssuesDefaultPolicy217DF3BE",
+        "PolicyName": "servicecataloguePRODtaskGitHubIssuesDefaultPolicy0C10765D",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskGitHubIssues1EFFA3D3",
+            "Ref": "servicecataloguePRODtaskGitHubIssues3E254C0F",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskGitHubLanguagesDefaultPolicy2DFED7A8": {
+    "servicecataloguePRODtaskGitHubLanguages39076331": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-GitHubLanguages",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskGitHubLanguagesDefaultPolicyACF3DB9D": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -33023,16 +33301,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskGitHubLanguagesDefaultPolicy2DFED7A8",
+        "PolicyName": "servicecataloguePRODtaskGitHubLanguagesDefaultPolicyACF3DB9D",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskGitHubLanguagesED141D27",
+            "Ref": "servicecataloguePRODtaskGitHubLanguages39076331",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskGitHubLanguagesED141D27": {
+    "servicecataloguePRODtaskGitHubReleases98866D2A": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -33060,7 +33338,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-GitHubLanguages",
+        "RoleName": "service-catalogue-PROD-task-GitHubReleases",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -33076,63 +33354,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskGitHubReleases20CA3901": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
-        "RoleName": "service-catalogue-TEST-task-GitHubReleases",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "TEST",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "servicecatalogueTESTtaskGitHubReleasesDefaultPolicy46241311": {
+    "servicecataloguePRODtaskGitHubReleasesDefaultPolicy545F91B3": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -33196,16 +33424,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskGitHubReleasesDefaultPolicy46241311",
+        "PolicyName": "servicecataloguePRODtaskGitHubReleasesDefaultPolicy545F91B3",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskGitHubReleases20CA3901",
+            "Ref": "servicecataloguePRODtaskGitHubReleases98866D2A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskGitHubRepositories83F97F25": {
+    "servicecataloguePRODtaskGitHubRepositoriesA1D893AF": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -33233,7 +33461,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-GitHubRepositories",
+        "RoleName": "service-catalogue-PROD-task-GitHubRepositories",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -33249,13 +33477,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskGitHubRepositoriesDefaultPolicy13E9E433": {
+    "servicecataloguePRODtaskGitHubRepositoriesDefaultPolicyDCD5D11A": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -33319,16 +33547,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskGitHubRepositoriesDefaultPolicy13E9E433",
+        "PolicyName": "servicecataloguePRODtaskGitHubRepositoriesDefaultPolicyDCD5D11A",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskGitHubRepositories83F97F25",
+            "Ref": "servicecataloguePRODtaskGitHubRepositoriesA1D893AF",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskGitHubTeams5756A4ED": {
+    "servicecataloguePRODtaskGitHubTeams57E3A035": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -33356,7 +33584,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-GitHubTeams",
+        "RoleName": "service-catalogue-PROD-task-GitHubTeams",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -33372,13 +33600,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskGitHubTeamsDefaultPolicy66F9D1C0": {
+    "servicecataloguePRODtaskGitHubTeamsDefaultPolicy660061B0": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -33442,16 +33670,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskGitHubTeamsDefaultPolicy66F9D1C0",
+        "PolicyName": "servicecataloguePRODtaskGitHubTeamsDefaultPolicy660061B0",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskGitHubTeams5756A4ED",
+            "Ref": "servicecataloguePRODtaskGitHubTeams57E3A035",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskNS1B2D0D4B7": {
+    "servicecataloguePRODtaskNS1A6E237CE": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -33479,7 +33707,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-NS1",
+        "RoleName": "service-catalogue-PROD-task-NS1",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -33495,13 +33723,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskNS1DefaultPolicy0726C0D1": {
+    "servicecataloguePRODtaskNS1DefaultPolicyCF409114": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -33565,16 +33793,16 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskNS1DefaultPolicy0726C0D1",
+        "PolicyName": "servicecataloguePRODtaskNS1DefaultPolicyCF409114",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskNS1B2D0D4B7",
+            "Ref": "servicecataloguePRODtaskNS1A6E237CE",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecatalogueTESTtaskRiffRaffDataC9A39FC8": {
+    "servicecataloguePRODtaskRiffRaffDataCC491393": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -33602,7 +33830,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-TEST-task-RiffRaffData",
+        "RoleName": "service-catalogue-PROD-task-RiffRaffData",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -33618,13 +33846,13 @@ spec:
           },
           {
             "Key": "Stage",
-            "Value": "TEST",
+            "Value": "PROD",
           },
         ],
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecatalogueTESTtaskRiffRaffDataDefaultPolicyC2B59227": {
+    "servicecataloguePRODtaskRiffRaffDataDefaultPolicy3AF25E15": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -33688,10 +33916,10 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecatalogueTESTtaskRiffRaffDataDefaultPolicyC2B59227",
+        "PolicyName": "servicecataloguePRODtaskRiffRaffDataDefaultPolicy3AF25E15",
         "Roles": [
           {
-            "Ref": "servicecatalogueTESTtaskRiffRaffDataC9A39FC8",
+            "Ref": "servicecataloguePRODtaskRiffRaffDataCC491393",
           },
         ],
       },
