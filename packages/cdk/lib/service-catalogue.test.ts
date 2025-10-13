@@ -2,9 +2,9 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { ServiceCatalogue } from './service-catalogue';
-import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { awsTables } from './cloudquery/allow-list-tables/aws-table-list';
+import { ScheduledCloudqueryTask } from './cloudquery/task';
+import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
 	beforeAll(() => {
@@ -106,5 +106,22 @@ describe('The ServiceCatalogue stack', () => {
 		}
 
 		expect(missingAwsTables.length).toEqual(0);
+	});
+
+	it('collects tables exactly once', () => {
+		const tasks = stack.node
+			.findAll()
+			.filter(
+				(child): child is ScheduledCloudqueryTask =>
+					child instanceof ScheduledCloudqueryTask,
+			);
+
+		const collectedTables: string[] = tasks.flatMap(
+			(_) => _.sourceConfig.spec.tables ?? [],
+		);
+
+		const uniqueCollectedTables = new Set(collectedTables); // Use `Set` to remove duplicates
+
+		expect(collectedTables.length).toEqual(uniqueCollectedTables.size);
 	});
 });
