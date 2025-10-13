@@ -95,7 +95,7 @@ export function addCloudqueryEcsCluster(
 			riffRaffDatabaseAccessSecurityGroupParam,
 		);
 
-	const individualAwsSources: CloudquerySource[] = [
+	const awsSources: CloudquerySource[] = [
 		{
 			name: 'AwsListOrgs',
 			description:
@@ -371,43 +371,25 @@ export function addCloudqueryEcsCluster(
 		},
 	];
 
-	/*
-	This is a catch-all task, collecting all other AWS data.
-	Although we're not using the data for any particular reason, it is still useful to have.
+	const collectedAwsTables = (): string[] =>
+		awsSources.flatMap((_) => _.config.spec.tables ?? []);
 
-	After switching to the allow list the table list was too long (with 757 the TaskDefinition was 74049 bytes long.
-	This exceeded the ECS limit of 65536 bytes and meant the stack failed to deploy.
-    We therefore had to split the AwsRemainingData task.
+	const remainingAwsTables = (): string[] =>
+		awsTables.filter((_) => !collectedAwsTables().includes(_));
 
-	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
-	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
-	*/
+	let partNumber = 0;
+	while (remainingAwsTables().length > 0) {
+		partNumber += 1;
+		const tablesToCollect = remainingAwsTables().slice(0, 300);
 
-	const remainingAwsTables = filterAllowedTables(awsTables, [/^aws_.*$/]);
-	const halfOfRemainingAwsTablesNumber = Math.floor(
-		remainingAwsTables.length / 2,
-	);
-
-	function createRemainingAwsSource(
-		name: string,
-		description: string,
-		tables: string[],
-		tablesToSkip: string[],
-	): CloudquerySource {
-		return {
-			name,
-			description,
+		awsSources.push({
+			name: `RemainingAwsDataPart${partNumber}`,
+			description: `Data fetched across all accounts in the organisation part ${partNumber}.`,
 			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 			config: awsSourceConfigForOrganisation({
-				tables,
-				skipTables: [
-					...skippedAwsTables,
-					// casting because `config.spec.tables` could be empty, though in reality it never is
-					...(individualAwsSources.flatMap(
-						(_) => _.config.spec.tables,
-					) as string[]),
-					...tablesToSkip,
-				],
+				tables: tablesToCollect,
+				skipTables: [...skippedAwsTables, ...collectedAwsTables()],
+
 				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
 				// The amount of memory used is a function of this value.
 				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
@@ -417,28 +399,8 @@ export function addCloudqueryEcsCluster(
 			// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
 			memoryLimitMiB: 3072,
 			cpu: 1024,
-		};
+		});
 	}
-
-	const part1Tables = remainingAwsTables.slice(
-		0,
-		halfOfRemainingAwsTablesNumber,
-	);
-	const part2Tables = remainingAwsTables.slice(halfOfRemainingAwsTablesNumber);
-
-	const remainingAwsSourcesPart1 = createRemainingAwsSource(
-		'AwsRemainingDataPart1',
-		'Data fetched across all accounts in the organisation part 1.',
-		part1Tables,
-		part2Tables,
-	);
-
-	const remainingAwsSourcesPart2 = createRemainingAwsSource(
-		'AwsRemainingDataPart2',
-		'Data fetched across all accounts in the organisation part 2.',
-		part2Tables,
-		part1Tables,
-	);
 
 	const cloudqueryGithubCredentials = new SecretsManager(
 		scope,
@@ -726,9 +688,7 @@ export function addCloudqueryEcsCluster(
 		loggingStreamName,
 		logShippingPolicy,
 		sources: [
-			...individualAwsSources,
-			remainingAwsSourcesPart1,
-			remainingAwsSourcesPart2,
+			...awsSources,
 			...githubSources,
 			...fastlySources,
 			...galaxiesSources,
