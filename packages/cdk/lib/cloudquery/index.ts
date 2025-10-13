@@ -388,7 +388,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 			config: awsSourceConfigForOrganisation({
 				tables: tablesToCollect,
-				skipTables: [...skippedAwsTables, ...collectedAwsTables()],
+				skipTables: skippedAwsTables,
 
 				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
 				// The amount of memory used is a function of this value.

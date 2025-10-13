@@ -105,7 +105,7 @@ export function awsSourceConfig(
 			path: 'cloudquery/aws',
 			version: `v${Versions.CloudqueryAws}`,
 			tables,
-			skip_dependent_tables: false,
+			skip_dependent_tables: true,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			otel_endpoint: '0.0.0.0:4318',
@@ -180,7 +180,7 @@ export function githubSourceConfig(
 			path: 'cloudquery/github',
 			version: `v${Versions.CloudqueryGithub}`,
 			tables,
-			skip_dependent_tables: false,
+			skip_dependent_tables: true,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			spec: {
@@ -224,7 +224,7 @@ export function githubSourceConfigForRepository(
 			path: 'cloudquery/github',
 			version: `v${Versions.CloudqueryGithub}`,
 			tables,
-			skip_dependent_tables: false,
+			skip_dependent_tables: true,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			spec: {
@@ -271,7 +271,7 @@ export function fastlySourceConfig(
 			path: 'cloudquery/fastly',
 			version: `v${Versions.CloudqueryFastly}`,
 			tables,
-			skip_dependent_tables: false,
+			skip_dependent_tables: true,
 			skip_tables: skipTables,
 			destinations: ['postgresql'],
 
