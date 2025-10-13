@@ -3,6 +3,8 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
 import { ServiceCatalogue } from './service-catalogue';
+import { ScheduledCloudqueryTask } from './cloudquery/task';
+import { awsTables } from './cloudquery/allow-list-tables/aws-table-list';
 
 describe('The ServiceCatalogue stack', () => {
 	beforeAll(() => {
@@ -80,5 +82,29 @@ describe('The ServiceCatalogue stack', () => {
 				expect(taskDefinitionLength).toBeLessThan(limitForTaskDefinition);
 			},
 		);
+	});
+
+	it('collects all AWS tables', () => {
+		const tasks = stack.node
+			.findAll()
+			.filter(
+				(child): child is ScheduledCloudqueryTask =>
+					child instanceof ScheduledCloudqueryTask,
+			);
+
+		const collectedTables: string[] = tasks.flatMap(
+			(_) => _.sourceConfig.spec.tables ?? [],
+		);
+
+		const missingAwsTables = awsTables.filter(
+			(_) => !collectedTables.includes(_),
+		);
+
+		if (missingAwsTables.length > 0) {
+			console.log('The following AWS tables are not being collected:');
+			missingAwsTables.forEach((_) => console.log(`  - ${_}`));
+		}
+
+		expect(missingAwsTables.length).toEqual(0);
 	});
 });
