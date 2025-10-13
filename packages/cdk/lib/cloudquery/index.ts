@@ -11,7 +11,10 @@ import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import { awsTables } from './allow-list-tables/aws-table-list';
+import {
+	awsTables,
+	skippedAwsTables,
+} from './allow-list-tables/aws-table-list';
 import { fastlyTables } from './allow-list-tables/fastly-table-list';
 import { filterAllowedTables } from './allow-list-tables/filter';
 import { githubTables } from './allow-list-tables/github-table-list';
@@ -31,7 +34,6 @@ import {
 	ns1SourceConfig,
 	riffraffSourcesConfig,
 	serviceCatalogueConfigDirectory,
-	skipTables,
 } from './config';
 import { Images } from './images';
 import {
@@ -399,7 +401,7 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForOrganisation({
 				tables,
 				skipTables: [
-					...skipTables,
+					...skippedAwsTables,
 					// casting because `config.spec.tables` could be empty, though in reality it never is
 					...(individualAwsSources.flatMap(
 						(_) => _.config.spec.tables,
