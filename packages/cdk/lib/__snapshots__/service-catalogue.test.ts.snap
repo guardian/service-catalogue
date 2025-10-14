@@ -822,7 +822,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_costexplorer_cost_custom
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -1514,7 +1514,7 @@ spec:
     - aws_securityhub_enabled_standards
     - aws_securityhub_findings
     - aws_securityhub_hubs
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -2245,7 +2245,7 @@ spec:
     - aws_lambda_layer_versions
     - aws_lambda_layers
     - aws_lambda_runtimes
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -2884,7 +2884,7 @@ spec:
     - aws_organizations_organizational_units
     - aws_organizations_policies
     - aws_organizations_roots
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -3543,7 +3543,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_autoscaling_groups
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -4205,7 +4205,7 @@ spec:
     - aws_backup_protected_resources
     - aws_backup_vault_recovery_points
     - aws_backup_vaults
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -4894,7 +4894,7 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables: []
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -5753,7 +5753,7 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables: []
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -6183,7 +6183,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_cloudwatch_alarms
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -6851,7 +6851,7 @@ spec:
     - aws_dynamodb_table_stream_resource_policies
     - aws_dynamodb_tables
     - aws_dynamodbstreams_streams
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -7511,7 +7511,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_ec2_images
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -8201,7 +8201,7 @@ spec:
   tables:
     - aws_ec2_instances
     - aws_ec2_security_groups
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -8890,7 +8890,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_iam_credential_reports
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -9559,7 +9559,7 @@ spec:
     - aws_elbv2_load_balancers
     - aws_elbv2_target_group_target_health_descriptions
     - aws_elbv2_target_groups
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -10222,7 +10222,7 @@ spec:
     - aws_rds_clusters
     - aws_rds_db_snapshots
     - aws_rds_instances
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -10903,7 +10903,7 @@ spec:
     - aws_s3_bucket_websites
     - aws_s3_buckets
     - aws_s3_multi_region_access_points
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -11593,7 +11593,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_sns_topics
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -12628,7 +12628,7 @@ spec:
     - aws_eventbridge_replays
     - aws_firehose_delivery_streams
     - aws_frauddetector_batch_imports
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events
@@ -14372,7 +14372,7 @@ spec:
     - aws_workspaces_directories
     - aws_workspaces_workspaces
     - aws_xray_encryption_configs
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   skip_tables:
     - aws_ec2_vpc_endpoint_services
     - aws_cloudtrail_events
@@ -15341,7 +15341,7 @@ spec:
   version: v27.5.0
   tables:
     - aws_ssm_parameters
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -16659,7 +16659,7 @@ spec:
     - fastly_service_health_checks
     - fastly_service_versions
     - fastly_services
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   spec:
@@ -18238,7 +18238,7 @@ spec:
   version: v11.11.1
   tables:
     - github_issues
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   skip_tables:
     - github_issue_timeline_events
     - github_issue_pullrequest_reviews
@@ -19426,7 +19426,7 @@ spec:
   version: v11.11.1
   tables:
     - github_releases
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   destinations:
     - postgresql
   spec:
@@ -20144,7 +20144,7 @@ spec:
     - github_repository_collaborators
     - github_repository_custom_properties
     - github_workflows
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   skip_tables:
     - github_releases
     - github_release_assets
@@ -20868,7 +20868,7 @@ spec:
     - github_team_members
     - github_team_repositories
     - github_teams
-  skip_dependent_tables: false
+  skip_dependent_tables: true
   skip_tables:
     - github_organization_dependabot_alerts
     - github_organization_dependabot_secrets
