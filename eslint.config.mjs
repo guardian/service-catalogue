@@ -6,6 +6,9 @@ export default [
 	...guardian.configs.recommended,
 	...guardian.configs.jest,
 	{
+		ignores: ['**/*/dist/**', '**/generated/prisma/'],
+	},
+	{
 		plugins: {
 			prettier,
 			unicorn: eslintPluginUnicorn,
@@ -14,6 +17,5 @@ export default [
 			'prettier/prettier': 'error',
 			'unicorn/prefer-array-flat-map': 'error',
 		},
-		ignores: ['**/*/dist/**', '**/generated/prisma/'],
 	},
 ];
