@@ -2,5 +2,8 @@
   "extends": "../../tsconfig.json",
   "include": ["lib/**/*", "bin/**/*"],
   "exclude": ["node_modules", "cdk.out", "dist"],
-  "references": [{ "path": "../common" }]
+  "references": [
+    { "path": "../common" },
+    { "path": "../cloudquery-tables" }
+  ]
 }
