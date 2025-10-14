@@ -390,7 +390,6 @@ export function addCloudqueryEcsCluster(
 		name: string,
 		description: string,
 		tables: string[],
-		tablesToSkip: string[],
 	): CloudquerySource {
 		return {
 			name,
@@ -398,14 +397,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 			config: awsSourceConfigForOrganisation({
 				tables,
-				skipTables: [
-					...skipTables,
-					// casting because `config.spec.tables` could be empty, though in reality it never is
-					...(individualAwsSources.flatMap(
-						(_) => _.config.spec.tables,
-					) as string[]),
-					...tablesToSkip,
-				],
+				skipTables: skipTables,
 				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
 				// The amount of memory used is a function of this value.
 				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
@@ -428,14 +420,12 @@ export function addCloudqueryEcsCluster(
 		'AwsRemainingDataPart1',
 		'Data fetched across all accounts in the organisation part 1.',
 		part1Tables,
-		part2Tables,
 	);
 
 	const remainingAwsSourcesPart2 = createRemainingAwsSource(
 		'AwsRemainingDataPart2',
 		'Data fetched across all accounts in the organisation part 2.',
 		part2Tables,
-		part1Tables,
 	);
 
 	const cloudqueryGithubCredentials = new SecretsManager(
