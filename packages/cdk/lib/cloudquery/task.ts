@@ -2,6 +2,7 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import type { Cluster, RepositoryImage, Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerDependencyCondition,
 	FargateTaskDefinition,
@@ -11,11 +12,16 @@ import {
 	PropagatedTagSource,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
-import type { Cluster, RepositoryImage, Volume } from 'aws-cdk-lib/aws-ecs';
 import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
-import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
+import {
+	Effect,
+	ManagedPolicy,
+	PolicyStatement,
+	Role,
+	ServicePrincipal,
+} from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
@@ -411,6 +417,35 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
 		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
 		task.taskRole.addManagedPolicy(xrayPolicy);
+
+		/*
+		GuardDuty is enabled at the organisation level and runs as a sidecar.
+		We need to add specific permissions to allow pulling the GuardDuty image.
+		See https://docs.aws.amazon.com/guardduty/latest/ug/prereq-runtime-monitoring-ecs-support.html.
+		 */
+		const guardDutyPolicies = [
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ['ecr:GetAuthorizationToken'],
+				resources: ['*'],
+			}),
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: [
+					'ecr:BatchCheckLayerAvailability',
+					'ecr:GetDownloadUrlForLayer',
+					'ecr:BatchGetImage',
+				],
+				resources: [
+					// See https://docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring-ecr-repository-gdu-agent.html
+					'arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate',
+				],
+			}),
+		];
+
+		guardDutyPolicies.forEach((policy) =>
+			task.addToExecutionRolePolicy(policy),
+		);
 
 		db.grantConnect(task.taskRole);
 
