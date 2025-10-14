@@ -404,7 +404,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -819,7 +819,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_costexplorer_cost_custom
   skip_dependent_tables: false
@@ -855,7 +855,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite
   migrate_mode: forced
   spec:
@@ -1497,7 +1497,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_accessanalyzer_analyzer_archive_rules
     - aws_accessanalyzer_analyzer_findings
@@ -1560,7 +1560,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -2232,7 +2232,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_lambda_function_aliases
     - aws_lambda_function_concurrency_configs
@@ -2260,7 +2260,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -2872,7 +2872,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_organization_resource_policies
     - aws_organizations
@@ -2898,7 +2898,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -3540,7 +3540,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_autoscaling_groups
   skip_dependent_tables: false
@@ -3558,7 +3558,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -4200,7 +4200,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_backup_protected_resources
     - aws_backup_vault_recovery_points
@@ -4220,7 +4220,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -4892,7 +4892,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables: []
   skip_dependent_tables: false
   destinations:
@@ -4909,7 +4909,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -5751,7 +5751,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables: []
   skip_dependent_tables: false
   destinations:
@@ -5768,7 +5768,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -6180,7 +6180,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_cloudwatch_alarms
   skip_dependent_tables: false
@@ -6198,7 +6198,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -6840,7 +6840,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_dynamodb_backups
     - aws_dynamodb_exports
@@ -6866,7 +6866,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -7508,7 +7508,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_ec2_images
   skip_dependent_tables: false
@@ -7526,7 +7526,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -8197,7 +8197,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_ec2_instances
     - aws_ec2_security_groups
@@ -8216,7 +8216,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -8887,7 +8887,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_iam_credential_reports
   skip_dependent_tables: false
@@ -8905,7 +8905,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -9547,7 +9547,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_elbv1_load_balancer_policies
     - aws_elbv1_load_balancers
@@ -9574,7 +9574,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -10216,7 +10216,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_rds_cluster_snapshots
     - aws_rds_clusters
@@ -10237,7 +10237,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -10879,7 +10879,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_s3_access_grant_instances
     - aws_s3_access_grants
@@ -10918,7 +10918,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -11590,7 +11590,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_sns_topics
   skip_dependent_tables: false
@@ -11608,7 +11608,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -12250,7 +12250,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_accessanalyzer_analyzer_archive_rules
     - aws_accessanalyzer_analyzer_findings
@@ -13152,7 +13152,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -13994,7 +13994,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_frauddetector_batch_predictions
     - aws_frauddetector_detectors
@@ -14896,7 +14896,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -15338,7 +15338,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_ssm_parameters
   skip_dependent_tables: false
@@ -15356,7 +15356,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -15979,7 +15979,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -16670,7 +16670,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -17350,7 +17350,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -18259,7 +18259,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -18759,7 +18759,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -19443,7 +19443,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite
   migrate_mode: forced
   spec:
@@ -20167,7 +20167,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -20889,7 +20889,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -21597,7 +21597,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
@@ -22543,7 +22543,7 @@ spec:
   name: postgresql
   registry: github
   path: cloudquery/postgresql
-  version: v7.2.0
+  version: v8.12.2
   write_mode: overwrite-delete-stale
   migrate_mode: forced
   spec:
