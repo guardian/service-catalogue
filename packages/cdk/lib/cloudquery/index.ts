@@ -31,7 +31,6 @@ import {
 	ns1SourceConfig,
 	riffraffSourcesConfig,
 	serviceCatalogueConfigDirectory,
-	skipTables,
 } from './config';
 import { Images } from './images';
 import {
@@ -377,9 +376,7 @@ export function addCloudqueryEcsCluster(
 					!individualAwsSources
 						.flatMap((_) => _.config.spec.tables ?? [])
 						.includes(_),
-			)
-			// Remove tables we explicitly don't want to collect
-			.filter((_) => !skipTables.includes(_)),
+			),
 		[/^aws_.*$/],
 	);
 

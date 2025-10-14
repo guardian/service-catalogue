@@ -2,12 +2,7 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { awsTables } from './cloudquery/allow-list-tables/aws-table-list';
-import { fastlyTables } from './cloudquery/allow-list-tables/fastly-table-list';
-import { galaxiesTables } from './cloudquery/allow-list-tables/galaxies-table-list';
-import { githubTables } from './cloudquery/allow-list-tables/github-table-list';
-import { ns1Tables } from './cloudquery/allow-list-tables/ns1_table_list';
-import { riffraffTables } from './cloudquery/allow-list-tables/riffraff-table-list';
+import { availableCloudQueryTables } from './cloudquery/allow-list-tables';
 import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
@@ -90,15 +85,6 @@ describe('The ServiceCatalogue stack', () => {
 	});
 
 	it('collects all listed CloudQuery tables', () => {
-		const tables = [
-			...awsTables,
-			...fastlyTables,
-			...galaxiesTables,
-			...githubTables,
-			...ns1Tables,
-			...riffraffTables,
-		];
-
 		const tasks = stack.node
 			.findAll()
 			.filter(
@@ -106,19 +92,21 @@ describe('The ServiceCatalogue stack', () => {
 					child instanceof ScheduledCloudqueryTask,
 			);
 
-		const collectedTables: string[] = tasks.flatMap(
+		const collected: string[] = tasks.flatMap(
 			(_) => _.sourceConfig.spec.tables ?? [],
 		);
 
-		const missingAwsTables = tables.filter((_) => !collectedTables.includes(_));
+		const notCollected = availableCloudQueryTables.filter(
+			(_) => !collected.includes(_),
+		);
 
-		if (missingAwsTables.length > 0) {
+		if (notCollected.length > 0) {
 			console.log(
 				'The following tables are not being collected by any CloudQuery task:',
 			);
-			console.log(missingAwsTables.join('\n'));
+			console.log(notCollected.join('\n'));
 		}
 
-		expect(missingAwsTables.length).toEqual(0);
+		expect(notCollected.length).toEqual(0);
 	});
 });
