@@ -2,7 +2,7 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { availableCloudQueryTables } from './cloudquery/allow-list-tables';
+import { availableCloudQueryTables } from './cloudquery/tables';
 import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
