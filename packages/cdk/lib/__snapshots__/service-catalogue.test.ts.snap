@@ -18371,6 +18371,7 @@ spec:
     - github_repository_branches
     - github_repository_collaborators
     - github_repository_custom_properties
+    - github_repository_sboms
     - github_workflows
   skip_dependent_tables: true
   destinations:
@@ -18592,7 +18593,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_repositories', 86400000),('github_repository_branches', 86400000),('github_repository_collaborators', 86400000),('github_repository_custom_properties', 86400000),('github_workflows', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_repositories', 86400000),('github_repository_branches', 86400000),('github_repository_collaborators', 86400000),('github_repository_custom_properties', 86400000),('github_repository_sboms', 86400000),('github_workflows', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",

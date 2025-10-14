@@ -450,6 +450,7 @@ export function addCloudqueryEcsCluster(
 					/^github_repository_branches$/,
 					/^github_repository_collaborators$/,
 					/^github_repository_custom_properties$/,
+					/^github_repository_sboms$/,
 					/^github_workflows$/,
 				]),
 			}),
