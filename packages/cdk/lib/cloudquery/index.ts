@@ -618,7 +618,10 @@ export function addCloudqueryEcsCluster(
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
 		schedule: Schedule.rate(Duration.days(7)),
-		config: githubLanguagesConfig({ org: gitHubOrgName }),
+		config: githubLanguagesConfig({
+			tables: filterAllowedTables(githubTables, [/^github_languages$/]),
+			org: gitHubOrgName,
+		}),
 		secrets: githubSecrets,
 		additionalCommands: additionalGithubCommands,
 	};

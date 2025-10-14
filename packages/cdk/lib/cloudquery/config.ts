@@ -13,7 +13,10 @@ export type CloudqueryConfig = {
 };
 
 interface CloudqueryTableConfig {
-	tables?: string[];
+	/**
+	 * The tables for CloudQuery to collect.
+	 */
+	tables: string[];
 	concurrency?: number;
 }
 
@@ -93,10 +96,6 @@ export function awsSourceConfig(
 ): CloudqueryConfig {
 	const { tables, concurrency } = tableConfig;
 
-	if (!tables) {
-		throw new Error('Must specify tables');
-	}
-
 	return {
 		kind: 'source',
 		spec: {
@@ -167,10 +166,6 @@ export function githubSourceConfig(
 ): CloudqueryConfig {
 	const { tables, org } = tableConfig;
 
-	if (!tables) {
-		throw new Error('Must specify tables');
-	}
-
 	return {
 		kind: 'source',
 		spec: {
@@ -209,10 +204,6 @@ export function githubSourceConfigForRepository(
 	tableConfig: GitHubCloudqueryTableConfigForRepository,
 ): CloudqueryConfig {
 	const { tables, org, repositories } = tableConfig;
-
-	if (!tables) {
-		throw new Error('Must specify tables');
-	}
 
 	return {
 		kind: 'source',
@@ -255,10 +246,6 @@ export function fastlySourceConfig(
 	tableConfig: CloudqueryTableConfig,
 ): CloudqueryConfig {
 	const { tables } = tableConfig;
-
-	if (!tables) {
-		throw new Error('Must specify tables');
-	}
 
 	return {
 		kind: 'source',
@@ -359,7 +346,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 export function githubLanguagesConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
 ): CloudqueryConfig {
-	const { org } = tableConfig;
+	const { tables, org } = tableConfig;
 
 	return {
 		kind: 'source',
@@ -368,7 +355,7 @@ export function githubLanguagesConfig(
 			path: 'guardian/github-languages',
 			version: `v${Versions.CloudqueryGithubLanguages}`,
 			destinations: ['postgresql'],
-			tables: ['github_languages'],
+			tables,
 			registry: 'github',
 			spec: {
 				org,
