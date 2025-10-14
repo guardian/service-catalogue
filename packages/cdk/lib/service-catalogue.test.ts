@@ -84,7 +84,7 @@ describe('The ServiceCatalogue stack', () => {
 		);
 	});
 
-	it('collects all listed CloudQuery tables', () => {
+	it('collects listed CloudQuery tables', () => {
 		const tasks = stack.node
 			.findAll()
 			.filter(
@@ -100,13 +100,25 @@ describe('The ServiceCatalogue stack', () => {
 			(_) => !collected.includes(_),
 		);
 
+		const collectedUnlisted = collected.filter(
+			(_) => !availableCloudQueryTables.includes(_),
+		);
+
 		if (notCollected.length > 0) {
 			console.log(
-				'The following tables are not being collected by any CloudQuery task:',
+				'The following tables are allow-listed but not collected by any CloudQuery task:',
 			);
 			console.log(notCollected.join('\n'));
 		}
 
+		if (collectedUnlisted.length > 0) {
+			console.log(
+				'The following tables are being collected but are not listed in the allow-list:',
+			);
+			console.log(collectedUnlisted.join('\n'));
+		}
+
 		expect(notCollected.length).toEqual(0);
+		expect(collectedUnlisted.length).toEqual(0);
 	});
 });

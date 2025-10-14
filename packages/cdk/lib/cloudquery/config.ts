@@ -1,4 +1,6 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
+import { amigoTables } from './allow-list-tables/amigo-table-list';
+import { endoflifeTables } from './allow-list-tables/endoflife-table-list';
 import { galaxiesTables } from './allow-list-tables/galaxies-table-list';
 import { ns1Tables } from './allow-list-tables/ns1_table_list';
 import { riffraffTables } from './allow-list-tables/riffraff-table-list';
@@ -276,7 +278,7 @@ export function endOfLifeSourceConfig(): CloudqueryConfig {
 			path: 'cloudquery/endoflife',
 			registry: 'cloudquery',
 			version: `v${Versions.CloudqueryEndOfLife}`,
-			tables: ['endoflife_products'],
+			tables: endoflifeTables,
 			destinations: ['postgresql'],
 		},
 	};
@@ -385,7 +387,7 @@ export function amigoBakePackagesConfig(
 			path: 'guardian/image-packages',
 			version: `v${Versions.CloudqueryImagePackages}`,
 			destinations: ['postgresql'],
-			tables: ['amigo_bake_packages'],
+			tables: amigoTables,
 			spec: {
 				base_images_table: baseImagesTableName,
 				recipes_table: recipesTableName,
