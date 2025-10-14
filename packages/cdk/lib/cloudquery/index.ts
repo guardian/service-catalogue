@@ -369,18 +369,6 @@ export function addCloudqueryEcsCluster(
 		},
 	];
 
-	/*
-	This is a catch-all task, collecting all other AWS data.
-	Although we're not using the data for any particular reason, it is still useful to have.
-
-	After switching to the allow list the table list was too long (with 757 the TaskDefinition was 74049 bytes long.
-	This exceeded the ECS limit of 65536 bytes and meant the stack failed to deploy.
-    We therefore had to split the AwsRemainingData task.
-
-	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
-	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
-	*/
-
 	const remainingAwsTables = filterAllowedTables(
 		awsTables
 			// Remove tables already collected by other tasks
@@ -394,50 +382,31 @@ export function addCloudqueryEcsCluster(
 			.filter((_) => !skipTables.includes(_)),
 		[/^aws_.*$/],
 	);
-	const halfOfRemainingAwsTablesNumber = Math.floor(
-		remainingAwsTables.length / 2,
-	);
 
-	function createRemainingAwsSource(
-		name: string,
-		description: string,
-		tables: string[],
-	): CloudquerySource {
-		return {
-			name,
-			description,
-			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
-			config: awsSourceConfigForOrganisation({
-				tables,
-				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
-				// The amount of memory used is a function of this value.
-				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
-				concurrency: 2000,
-			}),
-			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-			// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
-			memoryLimitMiB: 3072,
-			cpu: 1024,
-		};
-	}
+	/*
+	This is a catch-all task, collecting all other AWS data.
+	Although we're not using the data for any particular reason, it is still useful to have.
+	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
+	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
+	 */
+	const remainingAwsSources: CloudquerySource = {
+		name: 'AwsRemainingData',
+		description: 'Data fetched across all accounts in the organisation.',
+		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+		config: awsSourceConfigForOrganisation({
+			tables: remainingAwsTables,
 
-	const part1Tables = remainingAwsTables.slice(
-		0,
-		halfOfRemainingAwsTablesNumber,
-	);
-	const part2Tables = remainingAwsTables.slice(halfOfRemainingAwsTablesNumber);
+			// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
+			// The amount of memory used is a function of this value.
+			// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
+			concurrency: 2000,
+		}),
+		policies: [listOrgsPolicy, cloudqueryAccess('*')],
 
-	const remainingAwsSourcesPart1 = createRemainingAwsSource(
-		'AwsRemainingDataPart1',
-		'Data fetched across all accounts in the organisation part 1.',
-		part1Tables,
-	);
-
-	const remainingAwsSourcesPart2 = createRemainingAwsSource(
-		'AwsRemainingDataPart2',
-		'Data fetched across all accounts in the organisation part 2.',
-		part2Tables,
-	);
+		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
+		memoryLimitMiB: 3072,
+		cpu: 1024,
+	};
 
 	const cloudqueryGithubCredentials = new SecretsManager(
 		scope,
@@ -700,8 +669,7 @@ export function addCloudqueryEcsCluster(
 		logShippingPolicy,
 		sources: [
 			...individualAwsSources,
-			remainingAwsSourcesPart1,
-			remainingAwsSourcesPart2,
+			remainingAwsSources,
 			...githubSources,
 			...fastlySources,
 			...galaxiesSources,
