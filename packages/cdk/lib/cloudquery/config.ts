@@ -1,9 +1,9 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
-import { amigoTables } from './tables/amigo';
-import { endoflifeTables } from './tables/endoflife';
-import { galaxiesTables } from './tables/galaxies';
-import { ns1Tables } from './tables/ns1';
-import { riffraffTables } from './tables/riffraff';
+import { amigoTables } from 'cloudquery-tables/amigo';
+import { endoflifeTables } from 'cloudquery-tables/endoflife';
+import { galaxiesTables } from 'cloudquery-tables/galaxies';
+import { ns1Tables } from 'cloudquery-tables/ns1';
+import { riffraffTables } from 'cloudquery-tables/riffraff';
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {

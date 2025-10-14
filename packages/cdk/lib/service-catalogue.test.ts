@@ -1,8 +1,8 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
+import { cloudQueryTablesToSync } from 'cloudquery-tables';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { cloudQueryTablesToSync } from './cloudquery/tables';
 import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 

@@ -11,6 +11,10 @@ import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { awsTables } from 'cloudquery-tables/aws';
+import { fastlyTables } from 'cloudquery-tables/fastly';
+import { filterAllowedTables } from 'cloudquery-tables/filter';
+import { githubTables } from 'cloudquery-tables/github';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
@@ -39,10 +43,6 @@ import {
 	inspector2TableOptions,
 	securityHubTableOptions,
 } from './table-options';
-import { awsTables } from './tables/aws';
-import { fastlyTables } from './tables/fastly';
-import { filterAllowedTables } from './tables/filter';
-import { githubTables } from './tables/github';
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;

@@ -1,0 +1,8 @@
+{
+  "name": "cloudquery-tables",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "node --import tsx --test \"**/*.test.ts\"",
+    "typecheck": "tsc"
+  }
+}
