@@ -1,14 +1,23 @@
-# Allow List for CloudQuery Collected Tables
-We only collect data with CloudQuery for the tables that we explicitly list in source control.
-We still need skippedTables because Cloudquery collects child tables automatically.
+# CloudQuery tables
+This directory lists all tables collected with CloudQuery.
+We do not collect tables by [wildcard matching](https://docs.cloudquery.io/docs/advanced/performance-tuning#use-wildcard-matching) 
+to avoid automatically collecting any new tables introduced in a plugin update as this could dramatically increase our usage[^1].
 
-## Collected Tables
-This directory contains the collected tables for CloudQuery.
+## Adding a new table
+To start collecting a new table:
+1. Ensure the table is available in the version (see [`.env`](../../../../../.env)) of the CloudQuery plugin used
+2. Add the table to [`index.ts`](./index.ts)
+3. Update or create a task to collect the table
 
-### History
-We started with cloudquery by collecting most data that CloudQuery offers. CloudQuery often add new tables in new
-releases. This meant our usage could dramatically increase just by changing a version number. So we decided to switch to
-an allow list approach, where we explicitly list the tables we want to collect.
+> [!NOTE]
+> There are unit tests checking only the tables listed in [`index.ts`](./index.ts) are collected.
 
-### Tables we have chosen not to collect early on
-The skipTables array includes tables we are skipping because they are slow and/or of little value to us.
+## Removing a table
+Before removing a table, ensure it is not used by any dashboards or other processes.
+
+To stop collecting a table:
+1. Remove the table from [`index.ts`](./index.ts)
+2. Remove the table from the task that collected it
+3. Add a database migration to drop the table from the database
+
+[^1]: Per our contract, we have a finite number of rows that can be synced each month.
