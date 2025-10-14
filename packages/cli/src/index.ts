@@ -1,3 +1,7 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 import yargs from 'yargs';
 import {
 	getEcsClient,
@@ -8,6 +12,23 @@ import {
 	runOneTask,
 } from './aws.js';
 import { migrateDevDatabase, migrateRdsDatabase } from './database.js';
+
+// Load .env file from repo root
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envPath = path.resolve(__dirname, '../../../.env');
+const envLoadResult = dotenv.config({ path: envPath });
+if (envLoadResult.error) {
+	console.warn(
+		`Warning: Could not load .env file from ${envPath}: ${envLoadResult.error.message}`,
+	);
+} else {
+	const expanded = dotenvExpand.expand(envLoadResult);
+	if (expanded.error) {
+		console.warn(
+			`Warning: Could not expand environment variables: ${expanded.error.message}`,
+		);
+	}
+}
 
 const Commands = {
 	list: 'list-tasks',
