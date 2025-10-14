@@ -1,0 +1,16 @@
+BEGIN TRANSACTION;
+    DROP TABLE IF EXISTS github_billing_action;
+    DROP TABLE IF EXISTS github_billing_package;
+    DROP TABLE IF EXISTS github_billing_storage;
+    DROP TABLE IF EXISTS github_external_groups;
+    DROP TABLE IF EXISTS github_hook_deliveries;
+    DROP TABLE IF EXISTS github_hooks;
+    DROP TABLE IF EXISTS github_installations;
+    DROP TABLE IF EXISTS github_issue_timeline_events;
+    DROP TABLE IF EXISTS github_release_assets;
+    DROP TABLE IF EXISTS github_repository_keys;
+    DROP TABLE IF EXISTS github_traffic_clones;
+    DROP TABLE IF EXISTS github_traffic_paths;
+    DROP TABLE IF EXISTS github_traffic_referrers;
+    DROP TABLE IF EXISTS github_traffic_views;
+COMMIT;

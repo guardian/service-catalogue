@@ -369,74 +369,44 @@ export function addCloudqueryEcsCluster(
 		},
 	];
 
+	const remainingAwsTables = filterAllowedTables(
+		awsTables
+			// Remove tables already collected by other tasks
+			.filter(
+				(_) =>
+					!individualAwsSources
+						.flatMap((_) => _.config.spec.tables ?? [])
+						.includes(_),
+			)
+			// Remove tables we explicitly don't want to collect
+			.filter((_) => !skipTables.includes(_)),
+		[/^aws_.*$/],
+	);
+
 	/*
 	This is a catch-all task, collecting all other AWS data.
 	Although we're not using the data for any particular reason, it is still useful to have.
-
-	After switching to the allow list the table list was too long (with 757 the TaskDefinition was 74049 bytes long.
-	This exceeded the ECS limit of 65536 bytes and meant the stack failed to deploy.
-    We therefore had to split the AwsRemainingData task.
-
 	It runs once a week because there is a lot of data, and we need to avoid overlapping invocations.
 	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
-	*/
+	 */
+	const remainingAwsSources: CloudquerySource = {
+		name: 'AwsRemainingData',
+		description: 'Data fetched across all accounts in the organisation.',
+		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+		config: awsSourceConfigForOrganisation({
+			tables: remainingAwsTables,
 
-	const remainingAwsTables = filterAllowedTables(awsTables, [/^aws_.*$/]);
-	const halfOfRemainingAwsTablesNumber = Math.floor(
-		remainingAwsTables.length / 2,
-	);
+			// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
+			// The amount of memory used is a function of this value.
+			// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
+			concurrency: 2000,
+		}),
+		policies: [listOrgsPolicy, cloudqueryAccess('*')],
 
-	function createRemainingAwsSource(
-		name: string,
-		description: string,
-		tables: string[],
-		tablesToSkip: string[],
-	): CloudquerySource {
-		return {
-			name,
-			description,
-			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
-			config: awsSourceConfigForOrganisation({
-				tables,
-				skipTables: [
-					...skipTables,
-					// casting because `config.spec.tables` could be empty, though in reality it never is
-					...(individualAwsSources.flatMap(
-						(_) => _.config.spec.tables,
-					) as string[]),
-					...tablesToSkip,
-				],
-				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
-				// The amount of memory used is a function of this value.
-				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
-				concurrency: 2000,
-			}),
-			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-			// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
-			memoryLimitMiB: 3072,
-			cpu: 1024,
-		};
-	}
-
-	const part1Tables = remainingAwsTables.slice(
-		0,
-		halfOfRemainingAwsTablesNumber,
-	);
-	const part2Tables = remainingAwsTables.slice(halfOfRemainingAwsTablesNumber);
-
-	const remainingAwsSourcesPart1 = createRemainingAwsSource(
-		'AwsRemainingDataPart1',
-		'Data fetched across all accounts in the organisation part 1.',
-		part1Tables,
-		part2Tables,
-	);
-
-	const remainingAwsSourcesPart2 = createRemainingAwsSource(
-		'AwsRemainingDataPart2',
-		'Data fetched across all accounts in the organisation part 2.',
-		part2Tables,
-		part1Tables,
-	);
+		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
+		memoryLimitMiB: 3072,
+		cpu: 1024,
+	};
 
 	const cloudqueryGithubCredentials = new SecretsManager(
 		scope,
@@ -480,17 +450,9 @@ export function addCloudqueryEcsCluster(
 					/^github_repository_branches$/,
 					/^github_repository_collaborators$/,
 					/^github_repository_custom_properties$/,
+					/^github_repository_sboms$/,
 					/^github_workflows$/,
 				]),
-
-				// We're not (yet) interested in the following tables, so do not collect them to reduce API quota usage.
-				// See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-				skipTables: [
-					'github_releases',
-					'github_release_assets',
-					'github_repository_dependabot_alerts',
-					'github_repository_dependabot_secrets',
-				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -523,16 +485,6 @@ export function addCloudqueryEcsCluster(
 					/^github_team_members$/,
 					/^github_team_repositories$/,
 				]),
-				skipTables: [
-					/*
-		  These tables are children of github_organizations.
-		  ServiceCatalogue collects child tables automatically.
-		  We don't use them as they take a long time to collect, so skip them.
-		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-		   */
-					'github_organization_dependabot_alerts',
-					'github_organization_dependabot_secrets',
-				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -546,16 +498,6 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: filterAllowedTables(githubTables, [/^github_issues$/]),
-				skipTables: [
-					/*
-		  These tables are children of github_issues.
-		  ServiceCatalogue collects child tables automatically.
-		  We don't use them as they take a long time to collect, so skip them.
-		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-		   */
-					'github_issue_timeline_events',
-					'github_issue_pullrequest_reviews',
-				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -646,7 +588,10 @@ export function addCloudqueryEcsCluster(
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
 		schedule: Schedule.rate(Duration.days(7)),
-		config: githubLanguagesConfig({ org: gitHubOrgName }),
+		config: githubLanguagesConfig({
+			tables: filterAllowedTables(githubTables, [/^github_languages$/]),
+			org: gitHubOrgName,
+		}),
 		secrets: githubSecrets,
 		additionalCommands: additionalGithubCommands,
 	};
@@ -725,8 +670,7 @@ export function addCloudqueryEcsCluster(
 		logShippingPolicy,
 		sources: [
 			...individualAwsSources,
-			remainingAwsSourcesPart1,
-			remainingAwsSourcesPart2,
+			remainingAwsSources,
 			...githubSources,
 			...fastlySources,
 			...galaxiesSources,

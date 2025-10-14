@@ -2,6 +2,13 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
+import { awsTables } from './cloudquery/allow-list-tables/aws-table-list';
+import { fastlyTables } from './cloudquery/allow-list-tables/fastly-table-list';
+import { galaxiesTables } from './cloudquery/allow-list-tables/galaxies-table-list';
+import { githubTables } from './cloudquery/allow-list-tables/github-table-list';
+import { ns1Tables } from './cloudquery/allow-list-tables/ns1_table_list';
+import { riffraffTables } from './cloudquery/allow-list-tables/riffraff-table-list';
+import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
@@ -80,5 +87,38 @@ describe('The ServiceCatalogue stack', () => {
 				expect(taskDefinitionLength).toBeLessThan(limitForTaskDefinition);
 			},
 		);
+	});
+
+	it('collects all listed CloudQuery tables', () => {
+		const tables = [
+			...awsTables,
+			...fastlyTables,
+			...galaxiesTables,
+			...githubTables,
+			...ns1Tables,
+			...riffraffTables,
+		];
+
+		const tasks = stack.node
+			.findAll()
+			.filter(
+				(child): child is ScheduledCloudqueryTask =>
+					child instanceof ScheduledCloudqueryTask,
+			);
+
+		const collectedTables: string[] = tasks.flatMap(
+			(_) => _.sourceConfig.spec.tables ?? [],
+		);
+
+		const missingAwsTables = tables.filter((_) => !collectedTables.includes(_));
+
+		if (missingAwsTables.length > 0) {
+			console.log(
+				'The following tables are not being collected by any CloudQuery task:',
+			);
+			console.log(missingAwsTables.join('\n'));
+		}
+
+		expect(missingAwsTables.length).toEqual(0);
 	});
 });
