@@ -56,35 +56,6 @@ describe('Config generation, and converting to YAML', () => {
 	`);
 	});
 
-	it('Should create an AWS source configuration with skipped tables for the organisation', () => {
-		const config = awsSourceConfigForOrganisation({
-			tables: ['*'],
-			skipTables: ['aws_s3_buckets'],
-		});
-		expect(dump(config)).toMatchInlineSnapshot(`
-		"kind: source
-		spec:
-		  name: aws
-		  path: cloudquery/aws
-		  version: v27.5.0
-		  tables:
-		    - '*'
-		  skip_dependent_tables: true
-		  skip_tables:
-		    - aws_s3_buckets
-		  destinations:
-		    - postgresql
-		  otel_endpoint: 0.0.0.0:4318
-		  otel_endpoint_insecure: true
-		  spec:
-		    org:
-		      member_role_name: cloudquery-access
-		      organization_units:
-		        - ou-123
-		"
-	`);
-	});
-
 	it('Should create an AWS source configuration for a single account', () => {
 		const config = awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
 			tables: [

@@ -381,7 +381,19 @@ export function addCloudqueryEcsCluster(
 	If we identify a table that needs to be updated more often, we should create a dedicated task for it.
 	*/
 
-	const remainingAwsTables = filterAllowedTables(awsTables, [/^aws_.*$/]);
+	const remainingAwsTables = filterAllowedTables(
+		awsTables
+			// Remove tables already collected by other tasks
+			.filter(
+				(_) =>
+					!individualAwsSources
+						.flatMap((_) => _.config.spec.tables ?? [])
+						.includes(_),
+			)
+			// Remove tables we explicitly don't want to collect
+			.filter((_) => !skipTables.includes(_)),
+		[/^aws_.*$/],
+	);
 	const halfOfRemainingAwsTablesNumber = Math.floor(
 		remainingAwsTables.length / 2,
 	);
@@ -397,7 +409,6 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
 			config: awsSourceConfigForOrganisation({
 				tables,
-				skipTables: skipTables,
 				// Defaulted to 500000 by ServiceCatalogue, concurrency controls the maximum number of Go routines to use.
 				// The amount of memory used is a function of this value.
 				// See https://www.cloudquery.io/docs/reference/source-spec#concurrency.
@@ -472,15 +483,6 @@ export function addCloudqueryEcsCluster(
 					/^github_repository_custom_properties$/,
 					/^github_workflows$/,
 				]),
-
-				// We're not (yet) interested in the following tables, so do not collect them to reduce API quota usage.
-				// See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-				skipTables: [
-					'github_releases',
-					'github_release_assets',
-					'github_repository_dependabot_alerts',
-					'github_repository_dependabot_secrets',
-				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -513,16 +515,6 @@ export function addCloudqueryEcsCluster(
 					/^github_team_members$/,
 					/^github_team_repositories$/,
 				]),
-				skipTables: [
-					/*
-		  These tables are children of github_organizations.
-		  ServiceCatalogue collects child tables automatically.
-		  We don't use them as they take a long time to collect, so skip them.
-		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-		   */
-					'github_organization_dependabot_alerts',
-					'github_organization_dependabot_secrets',
-				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -536,16 +528,6 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: filterAllowedTables(githubTables, [/^github_issues$/]),
-				skipTables: [
-					/*
-		  These tables are children of github_issues.
-		  ServiceCatalogue collects child tables automatically.
-		  We don't use them as they take a long time to collect, so skip them.
-		  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#improve-performance-by-skipping-relations
-		   */
-					'github_issue_timeline_events',
-					'github_issue_pullrequest_reviews',
-				],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,

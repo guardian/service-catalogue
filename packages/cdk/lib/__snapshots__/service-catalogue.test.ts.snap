@@ -12252,10 +12252,6 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables:
-    - aws_accessanalyzer_analyzer_archive_rules
-    - aws_accessanalyzer_analyzer_findings
-    - aws_accessanalyzer_analyzer_findings_v2
-    - aws_accessanalyzer_analyzers
     - aws_account_alternate_contacts
     - aws_account_contacts
     - aws_acm_certificates
@@ -12338,7 +12334,6 @@ spec:
     - aws_auditmanager_assessments
     - aws_autoscaling_group_lifecycle_hooks
     - aws_autoscaling_group_scaling_policies
-    - aws_autoscaling_groups
     - aws_autoscaling_launch_configurations
     - aws_autoscaling_plan_resources
     - aws_autoscaling_plans
@@ -12349,11 +12344,8 @@ spec:
     - aws_backup_jobs
     - aws_backup_plan_selections
     - aws_backup_plans
-    - aws_backup_protected_resources
     - aws_backup_region_settings
     - aws_backup_report_plans
-    - aws_backup_vault_recovery_points
-    - aws_backup_vaults
     - aws_backupgateway_gateways
     - aws_batch_compute_environments
     - aws_batch_job_definitions
@@ -12383,7 +12375,6 @@ spec:
     - aws_cloudtrail_imports
     - aws_cloudtrail_trail_event_selectors
     - aws_cloudtrail_trails
-    - aws_cloudwatch_alarms
     - aws_cloudwatch_metric_statistics
     - aws_cloudwatch_metric_streams
     - aws_cloudwatch_metrics
@@ -12425,7 +12416,6 @@ spec:
     - aws_config_remediation_configurations
     - aws_config_retention_configurations
     - aws_costexplorer_cost_30d
-    - aws_costexplorer_cost_custom
     - aws_costexplorer_cost_forecast_30d
     - aws_datapipeline_pipelines
     - aws_datasync_agents
@@ -12468,15 +12458,6 @@ spec:
     - aws_docdb_instances
     - aws_docdb_pending_maintenance_actions
     - aws_docdb_subnet_groups
-    - aws_dynamodb_backups
-    - aws_dynamodb_exports
-    - aws_dynamodb_global_tables
-    - aws_dynamodb_table_continuous_backups
-    - aws_dynamodb_table_replica_auto_scalings
-    - aws_dynamodb_table_resource_policies
-    - aws_dynamodb_table_stream_resource_policies
-    - aws_dynamodb_tables
-    - aws_dynamodbstreams_streams
     - aws_ebs_default_kms_key_ids
     - aws_ebs_encryption_by_defaults
     - aws_ec2_account_attributes
@@ -12495,11 +12476,9 @@ spec:
     - aws_ec2_image_block_public_access_states
     - aws_ec2_image_last_launched_times
     - aws_ec2_image_launch_permissions
-    - aws_ec2_images
     - aws_ec2_instance_connect_endpoints
     - aws_ec2_instance_credit_specifications
     - aws_ec2_instance_statuses
-    - aws_ec2_instances
     - aws_ec2_internet_gateways
     - aws_ec2_ipam_address_history
     - aws_ec2_ipam_byoasns
@@ -12525,7 +12504,6 @@ spec:
     - aws_ec2_replace_root_volume_tasks
     - aws_ec2_reserved_instances
     - aws_ec2_route_tables
-    - aws_ec2_security_groups
     - aws_ec2_serial_console_access_statuses
     - aws_ec2_snapshot_block_public_access_states
     - aws_ec2_spot_fleet_instances
@@ -12596,16 +12574,6 @@ spec:
     - aws_elastictranscoder_pipeline_jobs
     - aws_elastictranscoder_pipelines
     - aws_elastictranscoder_presets
-    - aws_elbv1_load_balancer_policies
-    - aws_elbv1_load_balancers
-    - aws_elbv2_listener_certificates
-    - aws_elbv2_listener_rules
-    - aws_elbv2_listeners
-    - aws_elbv2_load_balancer_attributes
-    - aws_elbv2_load_balancer_web_acls
-    - aws_elbv2_load_balancers
-    - aws_elbv2_target_group_target_health_descriptions
-    - aws_elbv2_target_groups
     - aws_emr_block_public_access_configs
     - aws_emr_cluster_instance_fleets
     - aws_emr_cluster_instance_groups
@@ -12613,61 +12581,7 @@ spec:
     - aws_emr_clusters
     - aws_emr_notebook_executions
     - aws_emr_release_labels
-    - aws_emr_security_configurations
-    - aws_emr_steps
-    - aws_emr_studio_session_mappings
-    - aws_emr_studios
-    - aws_eventbridge_api_destinations
-    - aws_eventbridge_archives
-    - aws_eventbridge_connections
-    - aws_eventbridge_endpoints
-    - aws_eventbridge_event_bus_rules
-    - aws_eventbridge_event_bus_targets
-    - aws_eventbridge_event_buses
-    - aws_eventbridge_event_sources
-    - aws_eventbridge_replays
-    - aws_firehose_delivery_streams
-    - aws_frauddetector_batch_imports
   skip_dependent_tables: true
-  skip_tables:
-    - aws_ec2_vpc_endpoint_services
-    - aws_cloudtrail_events
-    - aws_docdb_cluster_parameter_groups
-    - aws_docdb_engine_versions
-    - aws_ec2_instance_types
-    - aws_elasticache_engine_versions
-    - aws_elasticache_parameter_groups
-    - aws_elasticache_reserved_cache_nodes_offerings
-    - aws_elasticache_service_updates
-    - aws_emr_supported_instance_types
-    - aws_neptune_cluster_parameter_groups
-    - aws_neptune_db_parameter_groups
-    - aws_rds_cluster_parameter_groups
-    - aws_rds_db_parameter_groups
-    - aws_rds_engine_versions
-    - aws_servicequotas_services
-    - aws_identitystore_users
-    - aws_identitystore_groups
-    - aws_quicksight_data_sets
-    - aws_quicksight_dashboards
-    - aws_quicksight_analyses
-    - aws_quicksight_users
-    - aws_quicksight_templates
-    - aws_quicksight_groups
-    - aws_quicksight_folders
-    - aws_quicksight_data_sources
-    - aws_amp_workspaces
-    - aws_ssoadmin_instances
-    - aws_glue_connections
-    - aws_computeoptimizer_ecs_service_recommendations
-    - aws_xray_sampling_rules
-    - aws_xray_resource_policies
-    - aws_xray_groups
-    - aws_wellarchitected_*
-    - aws_stepfunctions_map_runs
-    - aws_stepfunctions_map_run_executions
-    - aws_stepfunctions_executions
-    - aws_scheduler_schedules
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -12843,7 +12757,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_analyzer_archive_rules', 604800000),('aws_accessanalyzer_analyzer_findings', 604800000),('aws_accessanalyzer_analyzer_findings_v2', 604800000),('aws_accessanalyzer_analyzers', 604800000),('aws_account_alternate_contacts', 604800000),('aws_account_contacts', 604800000),('aws_acm_certificates', 604800000),('aws_acmpca_certificate_authorities', 604800000),('aws_amplify_apps', 604800000),('aws_apigateway_api_keys', 604800000),('aws_apigateway_client_certificates', 604800000),('aws_apigateway_domain_name_base_path_mappings', 604800000),('aws_apigateway_domain_names', 604800000),('aws_apigateway_rest_api_authorizers', 604800000),('aws_apigateway_rest_api_deployments', 604800000),('aws_apigateway_rest_api_documentation_parts', 604800000),('aws_apigateway_rest_api_documentation_versions', 604800000),('aws_apigateway_rest_api_gateway_responses', 604800000),('aws_apigateway_rest_api_models', 604800000),('aws_apigateway_rest_api_request_validators', 604800000),('aws_apigateway_rest_api_resource_method_integrations', 604800000),('aws_apigateway_rest_api_resource_methods', 604800000),('aws_apigateway_rest_api_resources', 604800000),('aws_apigateway_rest_api_stages', 604800000),('aws_apigateway_rest_apis', 604800000),('aws_apigateway_usage_plan_keys', 604800000),('aws_apigateway_usage_plans', 604800000),('aws_apigateway_vpc_links', 604800000),('aws_apigatewayv2_api_authorizers', 604800000),('aws_apigatewayv2_api_deployments', 604800000),('aws_apigatewayv2_api_integration_responses', 604800000),('aws_apigatewayv2_api_integrations', 604800000),('aws_apigatewayv2_api_models', 604800000),('aws_apigatewayv2_api_route_responses', 604800000),('aws_apigatewayv2_api_routes', 604800000),('aws_apigatewayv2_api_stages', 604800000),('aws_apigatewayv2_apis', 604800000),('aws_apigatewayv2_domain_name_rest_api_mappings', 604800000),('aws_apigatewayv2_domain_names', 604800000),('aws_apigatewayv2_vpc_links', 604800000),('aws_appconfig_applications', 604800000),('aws_appconfig_configuration_profiles', 604800000),('aws_appconfig_deployment_strategies', 604800000),('aws_appconfig_environments', 604800000),('aws_appconfig_hosted_configuration_versions', 604800000),('aws_appflow_flows', 604800000),('aws_applicationautoscaling_policies', 604800000),('aws_applicationautoscaling_scalable_targets', 604800000),('aws_applicationautoscaling_scaling_activities', 604800000),('aws_applicationautoscaling_scheduled_actions', 604800000),('aws_appmesh_meshes', 604800000),('aws_appmesh_virtual_gateways', 604800000),('aws_appmesh_virtual_nodes', 604800000),('aws_appmesh_virtual_routers', 604800000),('aws_appmesh_virtual_services', 604800000),('aws_apprunner_auto_scaling_configurations', 604800000),('aws_apprunner_connections', 604800000),('aws_apprunner_custom_domains', 604800000),('aws_apprunner_observability_configurations', 604800000),('aws_apprunner_operations', 604800000),('aws_apprunner_services', 604800000),('aws_apprunner_vpc_connectors', 604800000),('aws_apprunner_vpc_ingress_connections', 604800000),('aws_appstream_app_blocks', 604800000),('aws_appstream_application_fleet_associations', 604800000),('aws_appstream_applications', 604800000),('aws_appstream_directory_configs', 604800000),('aws_appstream_fleets', 604800000),('aws_appstream_image_builders', 604800000),('aws_appstream_images', 604800000),('aws_appstream_stack_entitlements', 604800000),('aws_appstream_stack_user_associations', 604800000),('aws_appstream_stacks', 604800000),('aws_appstream_usage_report_subscriptions', 604800000),('aws_appstream_users', 604800000),('aws_appsync_graphql_apis', 604800000),('aws_athena_data_catalog_database_tables', 604800000),('aws_athena_data_catalog_databases', 604800000),('aws_athena_data_catalogs', 604800000),('aws_athena_work_group_named_queries', 604800000),('aws_athena_work_group_prepared_statements', 604800000),('aws_athena_work_group_query_executions', 604800000),('aws_athena_work_groups', 604800000),('aws_auditmanager_assessments', 604800000),('aws_autoscaling_group_lifecycle_hooks', 604800000),('aws_autoscaling_group_scaling_policies', 604800000),('aws_autoscaling_groups', 604800000),('aws_autoscaling_launch_configurations', 604800000),('aws_autoscaling_plan_resources', 604800000),('aws_autoscaling_plans', 604800000),('aws_autoscaling_scheduled_actions', 604800000),('aws_autoscaling_warm_pools', 604800000),('aws_availability_zones', 604800000),('aws_backup_global_settings', 604800000),('aws_backup_jobs', 604800000),('aws_backup_plan_selections', 604800000),('aws_backup_plans', 604800000),('aws_backup_protected_resources', 604800000),('aws_backup_region_settings', 604800000),('aws_backup_report_plans', 604800000),('aws_backup_vault_recovery_points', 604800000),('aws_backup_vaults', 604800000),('aws_backupgateway_gateways', 604800000),('aws_batch_compute_environments', 604800000),('aws_batch_job_definitions', 604800000),('aws_batch_job_queues', 604800000),('aws_batch_jobs', 604800000),('aws_budgets_actions', 604800000),('aws_budgets_budgets', 604800000),('aws_cloudformation_stack_instance_resource_drifts', 604800000),('aws_cloudformation_stack_instance_summaries', 604800000),('aws_cloudformation_stack_resources', 604800000),('aws_cloudformation_stack_set_operation_results', 604800000),('aws_cloudformation_stack_set_operations', 604800000),('aws_cloudformation_stack_sets', 604800000),('aws_cloudformation_stack_templates', 604800000),('aws_cloudformation_stacks', 604800000),('aws_cloudformation_template_summaries', 604800000),('aws_cloudfront_cache_policies', 604800000),('aws_cloudfront_distributions', 604800000),('aws_cloudfront_functions', 604800000),('aws_cloudfront_key_value_stores', 604800000),('aws_cloudfront_origin_access_identities', 604800000),('aws_cloudfront_origin_request_policies', 604800000),('aws_cloudfront_response_headers_policies', 604800000),('aws_cloudhsmv2_backups', 604800000),('aws_cloudhsmv2_clusters', 604800000),('aws_cloudtrail_channels', 604800000),('aws_cloudtrail_imports', 604800000),('aws_cloudtrail_trail_event_selectors', 604800000),('aws_cloudtrail_trails', 604800000),('aws_cloudwatch_alarms', 604800000),('aws_cloudwatch_metric_statistics', 604800000),('aws_cloudwatch_metric_streams', 604800000),('aws_cloudwatch_metrics', 604800000),('aws_cloudwatchlogs_log_group_data_protection_policies', 604800000),('aws_cloudwatchlogs_log_group_subscription_filters', 604800000),('aws_cloudwatchlogs_log_groups', 604800000),('aws_cloudwatchlogs_metric_filters', 604800000),('aws_cloudwatchlogs_resource_policies', 604800000),('aws_codeartifact_domains', 604800000),('aws_codeartifact_repositories', 604800000),('aws_codebuild_builds', 604800000),('aws_codebuild_projects', 604800000),('aws_codebuild_source_credentials', 604800000),('aws_codecommit_repositories', 604800000),('aws_codedeploy_applications', 604800000),('aws_codedeploy_deployment_configs', 604800000),('aws_codedeploy_deployment_groups', 604800000),('aws_codedeploy_deployments', 604800000),('aws_codegurureviewer_repository_associations', 604800000),('aws_codepipeline_pipelines', 604800000),('aws_codepipeline_webhooks', 604800000),('aws_cognito_identity_pools', 604800000),('aws_cognito_user_pool_identity_providers', 604800000),('aws_cognito_user_pools', 604800000),('aws_computeoptimizer_autoscaling_group_recommendations', 604800000),('aws_computeoptimizer_ebs_volume_recommendations', 604800000),('aws_computeoptimizer_ec2_instance_recommendations', 604800000),('aws_computeoptimizer_enrollment_statuses', 604800000),('aws_computeoptimizer_lambda_function_recommendations', 604800000),('aws_config_config_rule_compliance_details', 604800000),('aws_config_config_rule_compliances', 604800000),('aws_config_config_rules', 604800000),('aws_config_configuration_aggregators', 604800000),('aws_config_configuration_recorders', 604800000),('aws_config_conformance_pack_rule_compliances', 604800000),('aws_config_conformance_packs', 604800000),('aws_config_delivery_channel_statuses', 604800000),('aws_config_delivery_channels', 604800000),('aws_config_remediation_configurations', 604800000),('aws_config_retention_configurations', 604800000),('aws_costexplorer_cost_30d', 604800000),('aws_costexplorer_cost_custom', 604800000),('aws_costexplorer_cost_forecast_30d', 604800000),('aws_datapipeline_pipelines', 604800000),('aws_datasync_agents', 604800000),('aws_datasync_azureblob_locations', 604800000),('aws_datasync_efs_locations', 604800000),('aws_datasync_fsxlustre_locations', 604800000),('aws_datasync_fsxontap_locations', 604800000),('aws_datasync_fsxopenzfs_locations', 604800000),('aws_datasync_fsxwindows_locations', 604800000),('aws_datasync_hdfs_locations', 604800000),('aws_datasync_locations', 604800000),('aws_datasync_nfs_locations', 604800000),('aws_datasync_objectstorage_locations', 604800000),('aws_datasync_s3_locations', 604800000),('aws_datasync_smb_locations', 604800000),('aws_dax_clusters', 604800000),('aws_detective_graph_members', 604800000),('aws_detective_graphs', 604800000),('aws_directconnect_connections', 604800000),('aws_directconnect_gateway_associations', 604800000),('aws_directconnect_gateway_attachments', 604800000),('aws_directconnect_gateways', 604800000),('aws_directconnect_lags', 604800000),('aws_directconnect_locations', 604800000),('aws_directconnect_virtual_gateways', 604800000),('aws_directconnect_virtual_interfaces', 604800000),('aws_directoryservice_directories', 604800000),('aws_dms_certificates', 604800000),('aws_dms_event_subscriptions', 604800000),('aws_dms_replication_instances', 604800000),('aws_dms_replication_subnet_groups', 604800000),('aws_dms_replication_tasks', 604800000),('aws_docdb_certificates', 604800000),('aws_docdb_cluster_snapshots', 604800000),('aws_docdb_clusters', 604800000),('aws_docdb_event_categories', 604800000),('aws_docdb_event_subscriptions', 604800000),('aws_docdb_events', 604800000),('aws_docdb_global_clusters', 604800000),('aws_docdb_instances', 604800000),('aws_docdb_pending_maintenance_actions', 604800000),('aws_docdb_subnet_groups', 604800000),('aws_dynamodb_backups', 604800000),('aws_dynamodb_exports', 604800000),('aws_dynamodb_global_tables', 604800000),('aws_dynamodb_table_continuous_backups', 604800000),('aws_dynamodb_table_replica_auto_scalings', 604800000),('aws_dynamodb_table_resource_policies', 604800000),('aws_dynamodb_table_stream_resource_policies', 604800000),('aws_dynamodb_tables', 604800000),('aws_dynamodbstreams_streams', 604800000),('aws_ebs_default_kms_key_ids', 604800000),('aws_ebs_encryption_by_defaults', 604800000),('aws_ec2_account_attributes', 604800000),('aws_ec2_byoip_cidrs', 604800000),('aws_ec2_capacity_reservations', 604800000),('aws_ec2_customer_gateways', 604800000),('aws_ec2_dhcp_options', 604800000),('aws_ec2_ebs_snapshot_attributes', 604800000),('aws_ec2_ebs_snapshots', 604800000),('aws_ec2_ebs_volume_statuses', 604800000),('aws_ec2_ebs_volumes', 604800000),('aws_ec2_egress_only_internet_gateways', 604800000),('aws_ec2_eips', 604800000),('aws_ec2_flow_logs', 604800000),('aws_ec2_hosts', 604800000),('aws_ec2_image_block_public_access_states', 604800000),('aws_ec2_image_last_launched_times', 604800000),('aws_ec2_image_launch_permissions', 604800000),('aws_ec2_images', 604800000),('aws_ec2_instance_connect_endpoints', 604800000),('aws_ec2_instance_credit_specifications', 604800000),('aws_ec2_instance_statuses', 604800000),('aws_ec2_instances', 604800000),('aws_ec2_internet_gateways', 604800000),('aws_ec2_ipam_address_history', 604800000),('aws_ec2_ipam_byoasns', 604800000),('aws_ec2_ipam_discovered_accounts', 604800000),('aws_ec2_ipam_discovered_public_addresses', 604800000),('aws_ec2_ipam_discovered_resource_cidrs', 604800000),('aws_ec2_ipam_pool_allocations', 604800000),('aws_ec2_ipam_pool_cidrs', 604800000),('aws_ec2_ipam_pools', 604800000),('aws_ec2_ipam_resource_cidrs', 604800000),('aws_ec2_ipam_resource_discoveries', 604800000),('aws_ec2_ipam_resource_discovery_associations', 604800000),('aws_ec2_ipam_scopes', 604800000),('aws_ec2_ipams', 604800000),('aws_ec2_key_pairs', 604800000),('aws_ec2_launch_template_versions', 604800000),('aws_ec2_launch_templates', 604800000),('aws_ec2_managed_prefix_lists', 604800000),('aws_ec2_nat_gateways', 604800000),('aws_ec2_network_acls', 604800000),('aws_ec2_network_interfaces', 604800000),('aws_ec2_regional_configs', 604800000),('aws_ec2_replace_root_volume_tasks', 604800000),('aws_ec2_reserved_instances', 604800000),('aws_ec2_route_tables', 604800000),('aws_ec2_security_groups', 604800000),('aws_ec2_serial_console_access_statuses', 604800000),('aws_ec2_snapshot_block_public_access_states', 604800000),('aws_ec2_spot_fleet_instances', 604800000),('aws_ec2_spot_fleet_requests', 604800000),('aws_ec2_spot_instance_requests', 604800000),('aws_ec2_subnets', 604800000),('aws_ec2_traffic_mirror_filters', 604800000),('aws_ec2_traffic_mirror_sessions', 604800000),('aws_ec2_traffic_mirror_targets', 604800000),('aws_ec2_transit_gateway_attachments', 604800000),('aws_ec2_transit_gateway_multicast_domains', 604800000),('aws_ec2_transit_gateway_peering_attachments', 604800000),('aws_ec2_transit_gateway_route_tables', 604800000),('aws_ec2_transit_gateway_vpc_attachments', 604800000),('aws_ec2_transit_gateways', 604800000),('aws_ec2_vpc_endpoint_connections', 604800000),('aws_ec2_vpc_endpoint_service_configurations', 604800000),('aws_ec2_vpc_endpoints', 604800000),('aws_ec2_vpc_peering_connections', 604800000),('aws_ec2_vpcs', 604800000),('aws_ec2_vpn_connections', 604800000),('aws_ec2_vpn_gateways', 604800000),('aws_ecr_pull_through_cache_rules', 604800000),('aws_ecr_registries', 604800000),('aws_ecr_registry_policies', 604800000),('aws_ecr_repositories', 604800000),('aws_ecr_repository_image_scan_findings', 604800000),('aws_ecr_repository_images', 604800000),('aws_ecr_repository_lifecycle_policies', 604800000),('aws_ecr_repository_policies', 604800000),('aws_ecrpublic_repositories', 604800000),('aws_ecrpublic_repository_images', 604800000),('aws_ecs_cluster_container_instances', 604800000),('aws_ecs_cluster_services', 604800000),('aws_ecs_cluster_task_sets', 604800000),('aws_ecs_cluster_tasks', 604800000),('aws_ecs_clusters', 604800000),('aws_ecs_task_definitions', 604800000),('aws_efs_access_points', 604800000),('aws_efs_filesystems', 604800000),('aws_eks_cluster_addons', 604800000),('aws_eks_cluster_node_groups', 604800000),('aws_eks_cluster_oidc_identity_provider_configs', 604800000),('aws_eks_clusters', 604800000),('aws_eks_fargate_profiles', 604800000),('aws_elasticache_clusters', 604800000),('aws_elasticache_events', 604800000),('aws_elasticache_global_replication_groups', 604800000),('aws_elasticache_replication_groups', 604800000),('aws_elasticache_reserved_cache_nodes', 604800000),('aws_elasticache_serverless_cache_snapshots', 604800000),('aws_elasticache_serverless_caches', 604800000),('aws_elasticache_snapshots', 604800000),('aws_elasticache_subnet_groups', 604800000),('aws_elasticache_update_actions', 604800000),('aws_elasticache_user_groups', 604800000),('aws_elasticache_users', 604800000),('aws_elasticbeanstalk_application_versions', 604800000),('aws_elasticbeanstalk_applications', 604800000),('aws_elasticbeanstalk_configuration_options', 604800000),('aws_elasticbeanstalk_configuration_settings', 604800000),('aws_elasticbeanstalk_environments', 604800000),('aws_elasticsearch_domains', 604800000),('aws_elasticsearch_packages', 604800000),('aws_elasticsearch_reserved_instances', 604800000),('aws_elasticsearch_versions', 604800000),('aws_elasticsearch_vpc_endpoints', 604800000),('aws_elastictranscoder_pipeline_jobs', 604800000),('aws_elastictranscoder_pipelines', 604800000),('aws_elastictranscoder_presets', 604800000),('aws_elbv1_load_balancer_policies', 604800000),('aws_elbv1_load_balancers', 604800000),('aws_elbv2_listener_certificates', 604800000),('aws_elbv2_listener_rules', 604800000),('aws_elbv2_listeners', 604800000),('aws_elbv2_load_balancer_attributes', 604800000),('aws_elbv2_load_balancer_web_acls', 604800000),('aws_elbv2_load_balancers', 604800000),('aws_elbv2_target_group_target_health_descriptions', 604800000),('aws_elbv2_target_groups', 604800000),('aws_emr_block_public_access_configs', 604800000),('aws_emr_cluster_instance_fleets', 604800000),('aws_emr_cluster_instance_groups', 604800000),('aws_emr_cluster_instances', 604800000),('aws_emr_clusters', 604800000),('aws_emr_notebook_executions', 604800000),('aws_emr_release_labels', 604800000),('aws_emr_security_configurations', 604800000),('aws_emr_steps', 604800000),('aws_emr_studio_session_mappings', 604800000),('aws_emr_studios', 604800000),('aws_eventbridge_api_destinations', 604800000),('aws_eventbridge_archives', 604800000),('aws_eventbridge_connections', 604800000),('aws_eventbridge_endpoints', 604800000),('aws_eventbridge_event_bus_rules', 604800000),('aws_eventbridge_event_bus_targets', 604800000),('aws_eventbridge_event_buses', 604800000),('aws_eventbridge_event_sources', 604800000),('aws_eventbridge_replays', 604800000),('aws_firehose_delivery_streams', 604800000),('aws_frauddetector_batch_imports', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_account_alternate_contacts', 604800000),('aws_account_contacts', 604800000),('aws_acm_certificates', 604800000),('aws_acmpca_certificate_authorities', 604800000),('aws_amplify_apps', 604800000),('aws_apigateway_api_keys', 604800000),('aws_apigateway_client_certificates', 604800000),('aws_apigateway_domain_name_base_path_mappings', 604800000),('aws_apigateway_domain_names', 604800000),('aws_apigateway_rest_api_authorizers', 604800000),('aws_apigateway_rest_api_deployments', 604800000),('aws_apigateway_rest_api_documentation_parts', 604800000),('aws_apigateway_rest_api_documentation_versions', 604800000),('aws_apigateway_rest_api_gateway_responses', 604800000),('aws_apigateway_rest_api_models', 604800000),('aws_apigateway_rest_api_request_validators', 604800000),('aws_apigateway_rest_api_resource_method_integrations', 604800000),('aws_apigateway_rest_api_resource_methods', 604800000),('aws_apigateway_rest_api_resources', 604800000),('aws_apigateway_rest_api_stages', 604800000),('aws_apigateway_rest_apis', 604800000),('aws_apigateway_usage_plan_keys', 604800000),('aws_apigateway_usage_plans', 604800000),('aws_apigateway_vpc_links', 604800000),('aws_apigatewayv2_api_authorizers', 604800000),('aws_apigatewayv2_api_deployments', 604800000),('aws_apigatewayv2_api_integration_responses', 604800000),('aws_apigatewayv2_api_integrations', 604800000),('aws_apigatewayv2_api_models', 604800000),('aws_apigatewayv2_api_route_responses', 604800000),('aws_apigatewayv2_api_routes', 604800000),('aws_apigatewayv2_api_stages', 604800000),('aws_apigatewayv2_apis', 604800000),('aws_apigatewayv2_domain_name_rest_api_mappings', 604800000),('aws_apigatewayv2_domain_names', 604800000),('aws_apigatewayv2_vpc_links', 604800000),('aws_appconfig_applications', 604800000),('aws_appconfig_configuration_profiles', 604800000),('aws_appconfig_deployment_strategies', 604800000),('aws_appconfig_environments', 604800000),('aws_appconfig_hosted_configuration_versions', 604800000),('aws_appflow_flows', 604800000),('aws_applicationautoscaling_policies', 604800000),('aws_applicationautoscaling_scalable_targets', 604800000),('aws_applicationautoscaling_scaling_activities', 604800000),('aws_applicationautoscaling_scheduled_actions', 604800000),('aws_appmesh_meshes', 604800000),('aws_appmesh_virtual_gateways', 604800000),('aws_appmesh_virtual_nodes', 604800000),('aws_appmesh_virtual_routers', 604800000),('aws_appmesh_virtual_services', 604800000),('aws_apprunner_auto_scaling_configurations', 604800000),('aws_apprunner_connections', 604800000),('aws_apprunner_custom_domains', 604800000),('aws_apprunner_observability_configurations', 604800000),('aws_apprunner_operations', 604800000),('aws_apprunner_services', 604800000),('aws_apprunner_vpc_connectors', 604800000),('aws_apprunner_vpc_ingress_connections', 604800000),('aws_appstream_app_blocks', 604800000),('aws_appstream_application_fleet_associations', 604800000),('aws_appstream_applications', 604800000),('aws_appstream_directory_configs', 604800000),('aws_appstream_fleets', 604800000),('aws_appstream_image_builders', 604800000),('aws_appstream_images', 604800000),('aws_appstream_stack_entitlements', 604800000),('aws_appstream_stack_user_associations', 604800000),('aws_appstream_stacks', 604800000),('aws_appstream_usage_report_subscriptions', 604800000),('aws_appstream_users', 604800000),('aws_appsync_graphql_apis', 604800000),('aws_athena_data_catalog_database_tables', 604800000),('aws_athena_data_catalog_databases', 604800000),('aws_athena_data_catalogs', 604800000),('aws_athena_work_group_named_queries', 604800000),('aws_athena_work_group_prepared_statements', 604800000),('aws_athena_work_group_query_executions', 604800000),('aws_athena_work_groups', 604800000),('aws_auditmanager_assessments', 604800000),('aws_autoscaling_group_lifecycle_hooks', 604800000),('aws_autoscaling_group_scaling_policies', 604800000),('aws_autoscaling_launch_configurations', 604800000),('aws_autoscaling_plan_resources', 604800000),('aws_autoscaling_plans', 604800000),('aws_autoscaling_scheduled_actions', 604800000),('aws_autoscaling_warm_pools', 604800000),('aws_availability_zones', 604800000),('aws_backup_global_settings', 604800000),('aws_backup_jobs', 604800000),('aws_backup_plan_selections', 604800000),('aws_backup_plans', 604800000),('aws_backup_region_settings', 604800000),('aws_backup_report_plans', 604800000),('aws_backupgateway_gateways', 604800000),('aws_batch_compute_environments', 604800000),('aws_batch_job_definitions', 604800000),('aws_batch_job_queues', 604800000),('aws_batch_jobs', 604800000),('aws_budgets_actions', 604800000),('aws_budgets_budgets', 604800000),('aws_cloudformation_stack_instance_resource_drifts', 604800000),('aws_cloudformation_stack_instance_summaries', 604800000),('aws_cloudformation_stack_resources', 604800000),('aws_cloudformation_stack_set_operation_results', 604800000),('aws_cloudformation_stack_set_operations', 604800000),('aws_cloudformation_stack_sets', 604800000),('aws_cloudformation_stack_templates', 604800000),('aws_cloudformation_stacks', 604800000),('aws_cloudformation_template_summaries', 604800000),('aws_cloudfront_cache_policies', 604800000),('aws_cloudfront_distributions', 604800000),('aws_cloudfront_functions', 604800000),('aws_cloudfront_key_value_stores', 604800000),('aws_cloudfront_origin_access_identities', 604800000),('aws_cloudfront_origin_request_policies', 604800000),('aws_cloudfront_response_headers_policies', 604800000),('aws_cloudhsmv2_backups', 604800000),('aws_cloudhsmv2_clusters', 604800000),('aws_cloudtrail_channels', 604800000),('aws_cloudtrail_imports', 604800000),('aws_cloudtrail_trail_event_selectors', 604800000),('aws_cloudtrail_trails', 604800000),('aws_cloudwatch_metric_statistics', 604800000),('aws_cloudwatch_metric_streams', 604800000),('aws_cloudwatch_metrics', 604800000),('aws_cloudwatchlogs_log_group_data_protection_policies', 604800000),('aws_cloudwatchlogs_log_group_subscription_filters', 604800000),('aws_cloudwatchlogs_log_groups', 604800000),('aws_cloudwatchlogs_metric_filters', 604800000),('aws_cloudwatchlogs_resource_policies', 604800000),('aws_codeartifact_domains', 604800000),('aws_codeartifact_repositories', 604800000),('aws_codebuild_builds', 604800000),('aws_codebuild_projects', 604800000),('aws_codebuild_source_credentials', 604800000),('aws_codecommit_repositories', 604800000),('aws_codedeploy_applications', 604800000),('aws_codedeploy_deployment_configs', 604800000),('aws_codedeploy_deployment_groups', 604800000),('aws_codedeploy_deployments', 604800000),('aws_codegurureviewer_repository_associations', 604800000),('aws_codepipeline_pipelines', 604800000),('aws_codepipeline_webhooks', 604800000),('aws_cognito_identity_pools', 604800000),('aws_cognito_user_pool_identity_providers', 604800000),('aws_cognito_user_pools', 604800000),('aws_computeoptimizer_autoscaling_group_recommendations', 604800000),('aws_computeoptimizer_ebs_volume_recommendations', 604800000),('aws_computeoptimizer_ec2_instance_recommendations', 604800000),('aws_computeoptimizer_enrollment_statuses', 604800000),('aws_computeoptimizer_lambda_function_recommendations', 604800000),('aws_config_config_rule_compliance_details', 604800000),('aws_config_config_rule_compliances', 604800000),('aws_config_config_rules', 604800000),('aws_config_configuration_aggregators', 604800000),('aws_config_configuration_recorders', 604800000),('aws_config_conformance_pack_rule_compliances', 604800000),('aws_config_conformance_packs', 604800000),('aws_config_delivery_channel_statuses', 604800000),('aws_config_delivery_channels', 604800000),('aws_config_remediation_configurations', 604800000),('aws_config_retention_configurations', 604800000),('aws_costexplorer_cost_30d', 604800000),('aws_costexplorer_cost_forecast_30d', 604800000),('aws_datapipeline_pipelines', 604800000),('aws_datasync_agents', 604800000),('aws_datasync_azureblob_locations', 604800000),('aws_datasync_efs_locations', 604800000),('aws_datasync_fsxlustre_locations', 604800000),('aws_datasync_fsxontap_locations', 604800000),('aws_datasync_fsxopenzfs_locations', 604800000),('aws_datasync_fsxwindows_locations', 604800000),('aws_datasync_hdfs_locations', 604800000),('aws_datasync_locations', 604800000),('aws_datasync_nfs_locations', 604800000),('aws_datasync_objectstorage_locations', 604800000),('aws_datasync_s3_locations', 604800000),('aws_datasync_smb_locations', 604800000),('aws_dax_clusters', 604800000),('aws_detective_graph_members', 604800000),('aws_detective_graphs', 604800000),('aws_directconnect_connections', 604800000),('aws_directconnect_gateway_associations', 604800000),('aws_directconnect_gateway_attachments', 604800000),('aws_directconnect_gateways', 604800000),('aws_directconnect_lags', 604800000),('aws_directconnect_locations', 604800000),('aws_directconnect_virtual_gateways', 604800000),('aws_directconnect_virtual_interfaces', 604800000),('aws_directoryservice_directories', 604800000),('aws_dms_certificates', 604800000),('aws_dms_event_subscriptions', 604800000),('aws_dms_replication_instances', 604800000),('aws_dms_replication_subnet_groups', 604800000),('aws_dms_replication_tasks', 604800000),('aws_docdb_certificates', 604800000),('aws_docdb_cluster_snapshots', 604800000),('aws_docdb_clusters', 604800000),('aws_docdb_event_categories', 604800000),('aws_docdb_event_subscriptions', 604800000),('aws_docdb_events', 604800000),('aws_docdb_global_clusters', 604800000),('aws_docdb_instances', 604800000),('aws_docdb_pending_maintenance_actions', 604800000),('aws_docdb_subnet_groups', 604800000),('aws_ebs_default_kms_key_ids', 604800000),('aws_ebs_encryption_by_defaults', 604800000),('aws_ec2_account_attributes', 604800000),('aws_ec2_byoip_cidrs', 604800000),('aws_ec2_capacity_reservations', 604800000),('aws_ec2_customer_gateways', 604800000),('aws_ec2_dhcp_options', 604800000),('aws_ec2_ebs_snapshot_attributes', 604800000),('aws_ec2_ebs_snapshots', 604800000),('aws_ec2_ebs_volume_statuses', 604800000),('aws_ec2_ebs_volumes', 604800000),('aws_ec2_egress_only_internet_gateways', 604800000),('aws_ec2_eips', 604800000),('aws_ec2_flow_logs', 604800000),('aws_ec2_hosts', 604800000),('aws_ec2_image_block_public_access_states', 604800000),('aws_ec2_image_last_launched_times', 604800000),('aws_ec2_image_launch_permissions', 604800000),('aws_ec2_instance_connect_endpoints', 604800000),('aws_ec2_instance_credit_specifications', 604800000),('aws_ec2_instance_statuses', 604800000),('aws_ec2_internet_gateways', 604800000),('aws_ec2_ipam_address_history', 604800000),('aws_ec2_ipam_byoasns', 604800000),('aws_ec2_ipam_discovered_accounts', 604800000),('aws_ec2_ipam_discovered_public_addresses', 604800000),('aws_ec2_ipam_discovered_resource_cidrs', 604800000),('aws_ec2_ipam_pool_allocations', 604800000),('aws_ec2_ipam_pool_cidrs', 604800000),('aws_ec2_ipam_pools', 604800000),('aws_ec2_ipam_resource_cidrs', 604800000),('aws_ec2_ipam_resource_discoveries', 604800000),('aws_ec2_ipam_resource_discovery_associations', 604800000),('aws_ec2_ipam_scopes', 604800000),('aws_ec2_ipams', 604800000),('aws_ec2_key_pairs', 604800000),('aws_ec2_launch_template_versions', 604800000),('aws_ec2_launch_templates', 604800000),('aws_ec2_managed_prefix_lists', 604800000),('aws_ec2_nat_gateways', 604800000),('aws_ec2_network_acls', 604800000),('aws_ec2_network_interfaces', 604800000),('aws_ec2_regional_configs', 604800000),('aws_ec2_replace_root_volume_tasks', 604800000),('aws_ec2_reserved_instances', 604800000),('aws_ec2_route_tables', 604800000),('aws_ec2_serial_console_access_statuses', 604800000),('aws_ec2_snapshot_block_public_access_states', 604800000),('aws_ec2_spot_fleet_instances', 604800000),('aws_ec2_spot_fleet_requests', 604800000),('aws_ec2_spot_instance_requests', 604800000),('aws_ec2_subnets', 604800000),('aws_ec2_traffic_mirror_filters', 604800000),('aws_ec2_traffic_mirror_sessions', 604800000),('aws_ec2_traffic_mirror_targets', 604800000),('aws_ec2_transit_gateway_attachments', 604800000),('aws_ec2_transit_gateway_multicast_domains', 604800000),('aws_ec2_transit_gateway_peering_attachments', 604800000),('aws_ec2_transit_gateway_route_tables', 604800000),('aws_ec2_transit_gateway_vpc_attachments', 604800000),('aws_ec2_transit_gateways', 604800000),('aws_ec2_vpc_endpoint_connections', 604800000),('aws_ec2_vpc_endpoint_service_configurations', 604800000),('aws_ec2_vpc_endpoints', 604800000),('aws_ec2_vpc_peering_connections', 604800000),('aws_ec2_vpcs', 604800000),('aws_ec2_vpn_connections', 604800000),('aws_ec2_vpn_gateways', 604800000),('aws_ecr_pull_through_cache_rules', 604800000),('aws_ecr_registries', 604800000),('aws_ecr_registry_policies', 604800000),('aws_ecr_repositories', 604800000),('aws_ecr_repository_image_scan_findings', 604800000),('aws_ecr_repository_images', 604800000),('aws_ecr_repository_lifecycle_policies', 604800000),('aws_ecr_repository_policies', 604800000),('aws_ecrpublic_repositories', 604800000),('aws_ecrpublic_repository_images', 604800000),('aws_ecs_cluster_container_instances', 604800000),('aws_ecs_cluster_services', 604800000),('aws_ecs_cluster_task_sets', 604800000),('aws_ecs_cluster_tasks', 604800000),('aws_ecs_clusters', 604800000),('aws_ecs_task_definitions', 604800000),('aws_efs_access_points', 604800000),('aws_efs_filesystems', 604800000),('aws_eks_cluster_addons', 604800000),('aws_eks_cluster_node_groups', 604800000),('aws_eks_cluster_oidc_identity_provider_configs', 604800000),('aws_eks_clusters', 604800000),('aws_eks_fargate_profiles', 604800000),('aws_elasticache_clusters', 604800000),('aws_elasticache_events', 604800000),('aws_elasticache_global_replication_groups', 604800000),('aws_elasticache_replication_groups', 604800000),('aws_elasticache_reserved_cache_nodes', 604800000),('aws_elasticache_serverless_cache_snapshots', 604800000),('aws_elasticache_serverless_caches', 604800000),('aws_elasticache_snapshots', 604800000),('aws_elasticache_subnet_groups', 604800000),('aws_elasticache_update_actions', 604800000),('aws_elasticache_user_groups', 604800000),('aws_elasticache_users', 604800000),('aws_elasticbeanstalk_application_versions', 604800000),('aws_elasticbeanstalk_applications', 604800000),('aws_elasticbeanstalk_configuration_options', 604800000),('aws_elasticbeanstalk_configuration_settings', 604800000),('aws_elasticbeanstalk_environments', 604800000),('aws_elasticsearch_domains', 604800000),('aws_elasticsearch_packages', 604800000),('aws_elasticsearch_reserved_instances', 604800000),('aws_elasticsearch_versions', 604800000),('aws_elasticsearch_vpc_endpoints', 604800000),('aws_elastictranscoder_pipeline_jobs', 604800000),('aws_elastictranscoder_pipelines', 604800000),('aws_elastictranscoder_presets', 604800000),('aws_emr_block_public_access_configs', 604800000),('aws_emr_cluster_instance_fleets', 604800000),('aws_emr_cluster_instance_groups', 604800000),('aws_emr_cluster_instances', 604800000),('aws_emr_clusters', 604800000),('aws_emr_notebook_executions', 604800000),('aws_emr_release_labels', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13527,6 +13441,21 @@ spec:
   path: cloudquery/aws
   version: v27.5.0
   tables:
+    - aws_emr_security_configurations
+    - aws_emr_steps
+    - aws_emr_studio_session_mappings
+    - aws_emr_studios
+    - aws_eventbridge_api_destinations
+    - aws_eventbridge_archives
+    - aws_eventbridge_connections
+    - aws_eventbridge_endpoints
+    - aws_eventbridge_event_bus_rules
+    - aws_eventbridge_event_bus_targets
+    - aws_eventbridge_event_buses
+    - aws_eventbridge_event_sources
+    - aws_eventbridge_replays
+    - aws_firehose_delivery_streams
+    - aws_frauddetector_batch_imports
     - aws_frauddetector_batch_predictions
     - aws_frauddetector_detectors
     - aws_frauddetector_entity_types
@@ -13570,13 +13499,6 @@ spec:
     - aws_glue_security_configurations
     - aws_glue_triggers
     - aws_glue_workflows
-    - aws_guardduty_detector_filters
-    - aws_guardduty_detector_findings
-    - aws_guardduty_detector_intel_sets
-    - aws_guardduty_detector_ip_sets
-    - aws_guardduty_detector_members
-    - aws_guardduty_detector_publishing_destinations
-    - aws_guardduty_detectors
     - aws_health_affected_entities
     - aws_health_event_details
     - aws_health_events
@@ -13586,7 +13508,6 @@ spec:
     - aws_healthlake_fhir_datastores
     - aws_iam_account_authorization_details
     - aws_iam_accounts
-    - aws_iam_credential_reports
     - aws_iam_group_attached_policies
     - aws_iam_group_last_accessed_details
     - aws_iam_group_policies
@@ -13615,7 +13536,6 @@ spec:
     - aws_iam_users
     - aws_iam_virtual_mfa_devices
     - aws_inspector2_covered_resources
-    - aws_inspector2_findings
     - aws_inspector_findings
     - aws_iot_billing_groups
     - aws_iot_ca_certificates
@@ -13642,17 +13562,6 @@ spec:
     - aws_kms_key_rotation_statuses
     - aws_kms_key_rotations
     - aws_kms_keys
-    - aws_lambda_function_aliases
-    - aws_lambda_function_concurrency_configs
-    - aws_lambda_function_event_invoke_configs
-    - aws_lambda_function_event_source_mappings
-    - aws_lambda_function_url_configs
-    - aws_lambda_function_versions
-    - aws_lambda_functions
-    - aws_lambda_layer_version_policies
-    - aws_lambda_layer_versions
-    - aws_lambda_layers
-    - aws_lambda_runtimes
     - aws_lexv2_bot_aliases
     - aws_lexv2_bots
     - aws_lightsail_alarms
@@ -13697,16 +13606,6 @@ spec:
     - aws_networkmanager_sites
     - aws_networkmanager_transit_gateway_registrations
     - aws_opensearch_reserved_instances
-    - aws_organization_resource_policies
-    - aws_organizations
-    - aws_organizations_account_parents
-    - aws_organizations_accounts
-    - aws_organizations_delegated_administrators
-    - aws_organizations_delegated_services
-    - aws_organizations_organizational_unit_parents
-    - aws_organizations_organizational_units
-    - aws_organizations_policies
-    - aws_organizations_roots
     - aws_pinpoint_apps
     - aws_qldb_ledger_journal_kinesis_streams
     - aws_qldb_ledger_journal_s3_exports
@@ -13720,19 +13619,15 @@ spec:
     - aws_ram_resources
     - aws_rds_certificates
     - aws_rds_cluster_backtracks
-    - aws_rds_cluster_snapshots
-    - aws_rds_clusters
     - aws_rds_db_proxies
     - aws_rds_db_proxy_endpoints
     - aws_rds_db_proxy_target_groups
     - aws_rds_db_proxy_targets
     - aws_rds_db_security_groups
-    - aws_rds_db_snapshots
     - aws_rds_event_subscriptions
     - aws_rds_events
     - aws_rds_global_clusters
     - aws_rds_instance_resource_metrics
-    - aws_rds_instances
     - aws_rds_option_groups
     - aws_rds_pending_maintenance_actions
     - aws_rds_reserved_instances
@@ -13790,28 +13685,6 @@ spec:
     - aws_route53resolver_resolver_query_log_configs
     - aws_route53resolver_resolver_rule_associations
     - aws_route53resolver_resolver_rules
-    - aws_s3_access_grant_instances
-    - aws_s3_access_grants
-    - aws_s3_access_points
-    - aws_s3_accounts
-    - aws_s3_bucket_cors_rules
-    - aws_s3_bucket_encryption_rules
-    - aws_s3_bucket_grants
-    - aws_s3_bucket_lifecycles
-    - aws_s3_bucket_loggings
-    - aws_s3_bucket_notification_configurations
-    - aws_s3_bucket_object_grants
-    - aws_s3_bucket_object_heads
-    - aws_s3_bucket_object_lock_configurations
-    - aws_s3_bucket_objects
-    - aws_s3_bucket_ownership_controls
-    - aws_s3_bucket_policies
-    - aws_s3_bucket_public_access_blocks
-    - aws_s3_bucket_replications
-    - aws_s3_bucket_versionings
-    - aws_s3_bucket_websites
-    - aws_s3_buckets
-    - aws_s3_multi_region_access_points
     - aws_sagemaker_apps
     - aws_sagemaker_endpoint_configurations
     - aws_sagemaker_endpoints
@@ -13822,9 +13695,6 @@ spec:
     - aws_scheduler_schedule_groups
     - aws_secretsmanager_secret_versions
     - aws_secretsmanager_secrets
-    - aws_securityhub_enabled_standards
-    - aws_securityhub_findings
-    - aws_securityhub_hubs
     - aws_servicecatalog_launch_paths
     - aws_servicecatalog_portfolios
     - aws_servicecatalog_products
@@ -13847,7 +13717,6 @@ spec:
     - aws_shield_subscriptions
     - aws_signer_signing_profiles
     - aws_sns_subscriptions
-    - aws_sns_topics
     - aws_sqs_queues
     - aws_ssm_associations
     - aws_ssm_command_invocations
@@ -13859,7 +13728,6 @@ spec:
     - aws_ssm_instances
     - aws_ssm_inventories
     - aws_ssm_inventory_schemas
-    - aws_ssm_parameters
     - aws_ssm_patch_baselines
     - aws_ssm_sessions
     - aws_ssmincidents_incident_findings
@@ -13904,45 +13772,6 @@ spec:
     - aws_workspaces_workspaces
     - aws_xray_encryption_configs
   skip_dependent_tables: true
-  skip_tables:
-    - aws_ec2_vpc_endpoint_services
-    - aws_cloudtrail_events
-    - aws_docdb_cluster_parameter_groups
-    - aws_docdb_engine_versions
-    - aws_ec2_instance_types
-    - aws_elasticache_engine_versions
-    - aws_elasticache_parameter_groups
-    - aws_elasticache_reserved_cache_nodes_offerings
-    - aws_elasticache_service_updates
-    - aws_emr_supported_instance_types
-    - aws_neptune_cluster_parameter_groups
-    - aws_neptune_db_parameter_groups
-    - aws_rds_cluster_parameter_groups
-    - aws_rds_db_parameter_groups
-    - aws_rds_engine_versions
-    - aws_servicequotas_services
-    - aws_identitystore_users
-    - aws_identitystore_groups
-    - aws_quicksight_data_sets
-    - aws_quicksight_dashboards
-    - aws_quicksight_analyses
-    - aws_quicksight_users
-    - aws_quicksight_templates
-    - aws_quicksight_groups
-    - aws_quicksight_folders
-    - aws_quicksight_data_sources
-    - aws_amp_workspaces
-    - aws_ssoadmin_instances
-    - aws_glue_connections
-    - aws_computeoptimizer_ecs_service_recommendations
-    - aws_xray_sampling_rules
-    - aws_xray_resource_policies
-    - aws_xray_groups
-    - aws_wellarchitected_*
-    - aws_stepfunctions_map_runs
-    - aws_stepfunctions_map_run_executions
-    - aws_stepfunctions_executions
-    - aws_scheduler_schedules
   destinations:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
@@ -14118,7 +13947,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_frauddetector_batch_predictions', 604800000),('aws_frauddetector_detectors', 604800000),('aws_frauddetector_entity_types', 604800000),('aws_frauddetector_event_types', 604800000),('aws_frauddetector_external_models', 604800000),('aws_frauddetector_labels', 604800000),('aws_frauddetector_model_versions', 604800000),('aws_frauddetector_models', 604800000),('aws_frauddetector_outcomes', 604800000),('aws_frauddetector_rules', 604800000),('aws_frauddetector_variables', 604800000),('aws_fsx_backups', 604800000),('aws_fsx_data_repository_associations', 604800000),('aws_fsx_data_repository_tasks', 604800000),('aws_fsx_file_caches', 604800000),('aws_fsx_file_systems', 604800000),('aws_fsx_snapshots', 604800000),('aws_fsx_storage_virtual_machines', 604800000),('aws_fsx_volumes', 604800000),('aws_glacier_data_retrieval_policies', 604800000),('aws_glacier_vault_access_policies', 604800000),('aws_glacier_vault_lock_policies', 604800000),('aws_glacier_vault_notifications', 604800000),('aws_glacier_vaults', 604800000),('aws_globalaccelerator_accelerators', 604800000),('aws_globalaccelerator_custom_routing_accelerators', 604800000),('aws_glue_classifiers', 604800000),('aws_glue_crawlers', 604800000),('aws_glue_database_table_indexes', 604800000),('aws_glue_database_tables', 604800000),('aws_glue_databases', 604800000),('aws_glue_datacatalog_encryption_settings', 604800000),('aws_glue_dev_endpoints', 604800000),('aws_glue_job_runs', 604800000),('aws_glue_jobs', 604800000),('aws_glue_ml_transform_task_runs', 604800000),('aws_glue_ml_transforms', 604800000),('aws_glue_registries', 604800000),('aws_glue_registry_schema_versions', 604800000),('aws_glue_registry_schemas', 604800000),('aws_glue_security_configurations', 604800000),('aws_glue_triggers', 604800000),('aws_glue_workflows', 604800000),('aws_guardduty_detector_filters', 604800000),('aws_guardduty_detector_findings', 604800000),('aws_guardduty_detector_intel_sets', 604800000),('aws_guardduty_detector_ip_sets', 604800000),('aws_guardduty_detector_members', 604800000),('aws_guardduty_detector_publishing_destinations', 604800000),('aws_guardduty_detectors', 604800000),('aws_health_affected_entities', 604800000),('aws_health_event_details', 604800000),('aws_health_events', 604800000),('aws_health_org_event_details', 604800000),('aws_health_organization_affected_entities', 604800000),('aws_health_organization_events', 604800000),('aws_healthlake_fhir_datastores', 604800000),('aws_iam_account_authorization_details', 604800000),('aws_iam_accounts', 604800000),('aws_iam_credential_reports', 604800000),('aws_iam_group_attached_policies', 604800000),('aws_iam_group_last_accessed_details', 604800000),('aws_iam_group_policies', 604800000),('aws_iam_groups', 604800000),('aws_iam_instance_profiles', 604800000),('aws_iam_mfa_devices', 604800000),('aws_iam_openid_connect_identity_providers', 604800000),('aws_iam_password_policies', 604800000),('aws_iam_policies', 604800000),('aws_iam_policy_default_versions', 604800000),('aws_iam_policy_last_accessed_details', 604800000),('aws_iam_policy_versions', 604800000),('aws_iam_role_attached_policies', 604800000),('aws_iam_role_last_accessed_details', 604800000),('aws_iam_role_policies', 604800000),('aws_iam_roles', 604800000),('aws_iam_saml_identity_providers', 604800000),('aws_iam_server_certificates', 604800000),('aws_iam_signing_certificates', 604800000),('aws_iam_ssh_public_keys', 604800000),('aws_iam_user_access_keys', 604800000),('aws_iam_user_attached_policies', 604800000),('aws_iam_user_groups', 604800000),('aws_iam_user_last_accessed_details', 604800000),('aws_iam_user_policies', 604800000),('aws_iam_users', 604800000),('aws_iam_virtual_mfa_devices', 604800000),('aws_inspector2_covered_resources', 604800000),('aws_inspector2_findings', 604800000),('aws_inspector_findings', 604800000),('aws_iot_billing_groups', 604800000),('aws_iot_ca_certificates', 604800000),('aws_iot_certificates', 604800000),('aws_iot_jobs', 604800000),('aws_iot_policies', 604800000),('aws_iot_security_profiles', 604800000),('aws_iot_streams', 604800000),('aws_iot_thing_groups', 604800000),('aws_iot_thing_types', 604800000),('aws_iot_things', 604800000),('aws_iot_topic_rules', 604800000),('aws_kafka_cluster_operations', 604800000),('aws_kafka_cluster_policies', 604800000),('aws_kafka_clusters', 604800000),('aws_kafka_configurations', 604800000),('aws_kafka_nodes', 604800000),('aws_keyspaces_keyspaces', 604800000),('aws_keyspaces_tables', 604800000),('aws_kinesis_streams', 604800000),('aws_kms_aliases', 604800000),('aws_kms_key_grants', 604800000),('aws_kms_key_policies', 604800000),('aws_kms_key_rotation_statuses', 604800000),('aws_kms_key_rotations', 604800000),('aws_kms_keys', 604800000),('aws_lambda_function_aliases', 604800000),('aws_lambda_function_concurrency_configs', 604800000),('aws_lambda_function_event_invoke_configs', 604800000),('aws_lambda_function_event_source_mappings', 604800000),('aws_lambda_function_url_configs', 604800000),('aws_lambda_function_versions', 604800000),('aws_lambda_functions', 604800000),('aws_lambda_layer_version_policies', 604800000),('aws_lambda_layer_versions', 604800000),('aws_lambda_layers', 604800000),('aws_lambda_runtimes', 604800000),('aws_lexv2_bot_aliases', 604800000),('aws_lexv2_bots', 604800000),('aws_lightsail_alarms', 604800000),('aws_lightsail_bucket_access_keys', 604800000),('aws_lightsail_buckets', 604800000),('aws_lightsail_certificates', 604800000),('aws_lightsail_container_service_deployments', 604800000),('aws_lightsail_container_service_images', 604800000),('aws_lightsail_container_services', 604800000),('aws_lightsail_database_events', 604800000),('aws_lightsail_database_log_events', 604800000),('aws_lightsail_database_parameters', 604800000),('aws_lightsail_database_snapshots', 604800000),('aws_lightsail_databases', 604800000),('aws_lightsail_disk_snapshots', 604800000),('aws_lightsail_disks', 604800000),('aws_lightsail_distributions', 604800000),('aws_lightsail_instance_port_states', 604800000),('aws_lightsail_instance_snapshots', 604800000),('aws_lightsail_instances', 604800000),('aws_lightsail_load_balancer_tls_certificates', 604800000),('aws_lightsail_load_balancers', 604800000),('aws_lightsail_static_ips', 604800000),('aws_memorydb_reserved_nodes', 604800000),('aws_mq_broker_configuration_revisions', 604800000),('aws_mq_broker_configurations', 604800000),('aws_mq_broker_users', 604800000),('aws_mq_brokers', 604800000),('aws_mwaa_environments', 604800000),('aws_neptune_cluster_snapshots', 604800000),('aws_neptune_clusters', 604800000),('aws_neptune_event_subscriptions', 604800000),('aws_neptune_global_clusters', 604800000),('aws_neptune_instances', 604800000),('aws_neptune_subnet_groups', 604800000),('aws_networkfirewall_firewall_policies', 604800000),('aws_networkfirewall_firewalls', 604800000),('aws_networkfirewall_rule_groups', 604800000),('aws_networkfirewall_tls_inspection_configurations', 604800000),('aws_networkmanager_global_networks', 604800000),('aws_networkmanager_links', 604800000),('aws_networkmanager_sites', 604800000),('aws_networkmanager_transit_gateway_registrations', 604800000),('aws_opensearch_reserved_instances', 604800000),('aws_organization_resource_policies', 604800000),('aws_organizations', 604800000),('aws_organizations_account_parents', 604800000),('aws_organizations_accounts', 604800000),('aws_organizations_delegated_administrators', 604800000),('aws_organizations_delegated_services', 604800000),('aws_organizations_organizational_unit_parents', 604800000),('aws_organizations_organizational_units', 604800000),('aws_organizations_policies', 604800000),('aws_organizations_roots', 604800000),('aws_pinpoint_apps', 604800000),('aws_qldb_ledger_journal_kinesis_streams', 604800000),('aws_qldb_ledger_journal_s3_exports', 604800000),('aws_qldb_ledgers', 604800000),('aws_ram_principals', 604800000),('aws_ram_resource_share_associations', 604800000),('aws_ram_resource_share_invitations', 604800000),('aws_ram_resource_share_permissions', 604800000),('aws_ram_resource_shares', 604800000),('aws_ram_resource_types', 604800000),('aws_ram_resources', 604800000),('aws_rds_certificates', 604800000),('aws_rds_cluster_backtracks', 604800000),('aws_rds_cluster_snapshots', 604800000),('aws_rds_clusters', 604800000),('aws_rds_db_proxies', 604800000),('aws_rds_db_proxy_endpoints', 604800000),('aws_rds_db_proxy_target_groups', 604800000),('aws_rds_db_proxy_targets', 604800000),('aws_rds_db_security_groups', 604800000),('aws_rds_db_snapshots', 604800000),('aws_rds_event_subscriptions', 604800000),('aws_rds_events', 604800000),('aws_rds_global_clusters', 604800000),('aws_rds_instance_resource_metrics', 604800000),('aws_rds_instances', 604800000),('aws_rds_option_groups', 604800000),('aws_rds_pending_maintenance_actions', 604800000),('aws_rds_reserved_instances', 604800000),('aws_rds_subnet_groups', 604800000),('aws_redshift_cluster_parameter_groups', 604800000),('aws_redshift_cluster_parameters', 604800000),('aws_redshift_clusters', 604800000),('aws_redshift_data_shares', 604800000),('aws_redshift_endpoint_accesses', 604800000),('aws_redshift_endpoint_authorizations', 604800000),('aws_redshift_event_subscriptions', 604800000),('aws_redshift_events', 604800000),('aws_redshift_reserved_nodes', 604800000),('aws_redshift_snapshots', 604800000),('aws_redshift_subnet_groups', 604800000),('aws_regions', 604800000),('aws_resiliencehub_alarm_recommendations', 604800000),('aws_resiliencehub_app_assessments', 604800000),('aws_resiliencehub_app_component_compliances', 604800000),('aws_resiliencehub_app_version_resource_mappings', 604800000),('aws_resiliencehub_app_version_resources', 604800000),('aws_resiliencehub_app_versions', 604800000),('aws_resiliencehub_apps', 604800000),('aws_resiliencehub_component_recommendations', 604800000),('aws_resiliencehub_recommendation_templates', 604800000),('aws_resiliencehub_resiliency_policies', 604800000),('aws_resiliencehub_sop_recommendations', 604800000),('aws_resiliencehub_suggested_resiliency_policies', 604800000),('aws_resiliencehub_test_recommendations', 604800000),('aws_resourcegroups_resource_groups', 604800000),('aws_route53_delegation_sets', 604800000),('aws_route53_domains', 604800000),('aws_route53_health_checks', 604800000),('aws_route53_hosted_zone_query_logging_configs', 604800000),('aws_route53_hosted_zone_resource_record_sets', 604800000),('aws_route53_hosted_zone_traffic_policy_instances', 604800000),('aws_route53_hosted_zones', 604800000),('aws_route53_operations', 604800000),('aws_route53_traffic_policies', 604800000),('aws_route53_traffic_policy_versions', 604800000),('aws_route53recoverycontrolconfig_clusters', 604800000),('aws_route53recoverycontrolconfig_control_panels', 604800000),('aws_route53recoverycontrolconfig_routing_controls', 604800000),('aws_route53recoverycontrolconfig_safety_rules', 604800000),('aws_route53recoveryreadiness_cells', 604800000),('aws_route53recoveryreadiness_readiness_checks', 604800000),('aws_route53recoveryreadiness_recovery_groups', 604800000),('aws_route53recoveryreadiness_resource_sets', 604800000),('aws_route53resolver_firewall_configs', 604800000),('aws_route53resolver_firewall_domain_lists', 604800000),('aws_route53resolver_firewall_rule_group_associations', 604800000),('aws_route53resolver_firewall_rule_groups', 604800000),('aws_route53resolver_resolver_endpoints', 604800000),('aws_route53resolver_resolver_query_log_config_associations', 604800000),('aws_route53resolver_resolver_query_log_configs', 604800000),('aws_route53resolver_resolver_rule_associations', 604800000),('aws_route53resolver_resolver_rules', 604800000),('aws_s3_access_grant_instances', 604800000),('aws_s3_access_grants', 604800000),('aws_s3_access_points', 604800000),('aws_s3_accounts', 604800000),('aws_s3_bucket_cors_rules', 604800000),('aws_s3_bucket_encryption_rules', 604800000),('aws_s3_bucket_grants', 604800000),('aws_s3_bucket_lifecycles', 604800000),('aws_s3_bucket_loggings', 604800000),('aws_s3_bucket_notification_configurations', 604800000),('aws_s3_bucket_object_grants', 604800000),('aws_s3_bucket_object_heads', 604800000),('aws_s3_bucket_object_lock_configurations', 604800000),('aws_s3_bucket_objects', 604800000),('aws_s3_bucket_ownership_controls', 604800000),('aws_s3_bucket_policies', 604800000),('aws_s3_bucket_public_access_blocks', 604800000),('aws_s3_bucket_replications', 604800000),('aws_s3_bucket_versionings', 604800000),('aws_s3_bucket_websites', 604800000),('aws_s3_buckets', 604800000),('aws_s3_multi_region_access_points', 604800000),('aws_sagemaker_apps', 604800000),('aws_sagemaker_endpoint_configurations', 604800000),('aws_sagemaker_endpoints', 604800000),('aws_sagemaker_models', 604800000),('aws_sagemaker_notebook_instances', 604800000),('aws_sagemaker_training_jobs', 604800000),('aws_savingsplans_plans', 604800000),('aws_scheduler_schedule_groups', 604800000),('aws_secretsmanager_secret_versions', 604800000),('aws_secretsmanager_secrets', 604800000),('aws_securityhub_enabled_standards', 604800000),('aws_securityhub_findings', 604800000),('aws_securityhub_hubs', 604800000),('aws_servicecatalog_launch_paths', 604800000),('aws_servicecatalog_portfolios', 604800000),('aws_servicecatalog_products', 604800000),('aws_servicecatalog_provisioned_products', 604800000),('aws_servicecatalog_provisioning_artifacts', 604800000),('aws_servicecatalog_provisioning_parameters', 604800000),('aws_servicediscovery_instances', 604800000),('aws_servicediscovery_namespaces', 604800000),('aws_servicediscovery_services', 604800000),('aws_ses_active_receipt_rule_sets', 604800000),('aws_ses_configuration_set_event_destinations', 604800000),('aws_ses_configuration_sets', 604800000),('aws_ses_contact_lists', 604800000),('aws_ses_custom_verification_email_templates', 604800000),('aws_ses_identities', 604800000),('aws_ses_templates', 604800000),('aws_shield_attacks', 604800000),('aws_shield_protection_groups', 604800000),('aws_shield_protections', 604800000),('aws_shield_subscriptions', 604800000),('aws_signer_signing_profiles', 604800000),('aws_sns_subscriptions', 604800000),('aws_sns_topics', 604800000),('aws_sqs_queues', 604800000),('aws_ssm_associations', 604800000),('aws_ssm_command_invocations', 604800000),('aws_ssm_compliance_summary_items', 604800000),('aws_ssm_document_versions', 604800000),('aws_ssm_documents', 604800000),('aws_ssm_instance_compliance_items', 604800000),('aws_ssm_instance_patches', 604800000),('aws_ssm_instances', 604800000),('aws_ssm_inventories', 604800000),('aws_ssm_inventory_schemas', 604800000),('aws_ssm_parameters', 604800000),('aws_ssm_patch_baselines', 604800000),('aws_ssm_sessions', 604800000),('aws_ssmincidents_incident_findings', 604800000),('aws_ssmincidents_incident_related_items', 604800000),('aws_ssmincidents_incident_timeline_events', 604800000),('aws_ssmincidents_incidents', 604800000),('aws_ssmincidents_response_plans', 604800000),('aws_stepfunctions_activities', 604800000),('aws_stepfunctions_state_machines', 604800000),('aws_support_case_communications', 604800000),('aws_support_cases', 604800000),('aws_support_services', 604800000),('aws_support_severity_levels', 604800000),('aws_support_trusted_advisor_check_results', 604800000),('aws_support_trusted_advisor_check_summaries', 604800000),('aws_support_trusted_advisor_checks', 604800000),('aws_timestream_databases', 604800000),('aws_timestream_tables', 604800000),('aws_transfer_agreements', 604800000),('aws_transfer_certificates', 604800000),('aws_transfer_connectors', 604800000),('aws_transfer_profiles', 604800000),('aws_transfer_servers', 604800000),('aws_transfer_users', 604800000),('aws_transfer_workflows', 604800000),('aws_waf_rule_groups', 604800000),('aws_waf_rules', 604800000),('aws_waf_subscribed_rule_groups', 604800000),('aws_waf_web_acls', 604800000),('aws_wafregional_rate_based_rules', 604800000),('aws_wafregional_rule_groups', 604800000),('aws_wafregional_rules', 604800000),('aws_wafregional_web_acls', 604800000),('aws_wafv2_ipsets', 604800000),('aws_wafv2_managed_rule_groups', 604800000),('aws_wafv2_regex_pattern_sets', 604800000),('aws_wafv2_rule_groups', 604800000),('aws_wafv2_web_acls', 604800000),('aws_workspaces_connection_alias_permissions', 604800000),('aws_workspaces_connection_aliases', 604800000),('aws_workspaces_directories', 604800000),('aws_workspaces_workspaces', 604800000),('aws_xray_encryption_configs', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_emr_security_configurations', 604800000),('aws_emr_steps', 604800000),('aws_emr_studio_session_mappings', 604800000),('aws_emr_studios', 604800000),('aws_eventbridge_api_destinations', 604800000),('aws_eventbridge_archives', 604800000),('aws_eventbridge_connections', 604800000),('aws_eventbridge_endpoints', 604800000),('aws_eventbridge_event_bus_rules', 604800000),('aws_eventbridge_event_bus_targets', 604800000),('aws_eventbridge_event_buses', 604800000),('aws_eventbridge_event_sources', 604800000),('aws_eventbridge_replays', 604800000),('aws_firehose_delivery_streams', 604800000),('aws_frauddetector_batch_imports', 604800000),('aws_frauddetector_batch_predictions', 604800000),('aws_frauddetector_detectors', 604800000),('aws_frauddetector_entity_types', 604800000),('aws_frauddetector_event_types', 604800000),('aws_frauddetector_external_models', 604800000),('aws_frauddetector_labels', 604800000),('aws_frauddetector_model_versions', 604800000),('aws_frauddetector_models', 604800000),('aws_frauddetector_outcomes', 604800000),('aws_frauddetector_rules', 604800000),('aws_frauddetector_variables', 604800000),('aws_fsx_backups', 604800000),('aws_fsx_data_repository_associations', 604800000),('aws_fsx_data_repository_tasks', 604800000),('aws_fsx_file_caches', 604800000),('aws_fsx_file_systems', 604800000),('aws_fsx_snapshots', 604800000),('aws_fsx_storage_virtual_machines', 604800000),('aws_fsx_volumes', 604800000),('aws_glacier_data_retrieval_policies', 604800000),('aws_glacier_vault_access_policies', 604800000),('aws_glacier_vault_lock_policies', 604800000),('aws_glacier_vault_notifications', 604800000),('aws_glacier_vaults', 604800000),('aws_globalaccelerator_accelerators', 604800000),('aws_globalaccelerator_custom_routing_accelerators', 604800000),('aws_glue_classifiers', 604800000),('aws_glue_crawlers', 604800000),('aws_glue_database_table_indexes', 604800000),('aws_glue_database_tables', 604800000),('aws_glue_databases', 604800000),('aws_glue_datacatalog_encryption_settings', 604800000),('aws_glue_dev_endpoints', 604800000),('aws_glue_job_runs', 604800000),('aws_glue_jobs', 604800000),('aws_glue_ml_transform_task_runs', 604800000),('aws_glue_ml_transforms', 604800000),('aws_glue_registries', 604800000),('aws_glue_registry_schema_versions', 604800000),('aws_glue_registry_schemas', 604800000),('aws_glue_security_configurations', 604800000),('aws_glue_triggers', 604800000),('aws_glue_workflows', 604800000),('aws_health_affected_entities', 604800000),('aws_health_event_details', 604800000),('aws_health_events', 604800000),('aws_health_org_event_details', 604800000),('aws_health_organization_affected_entities', 604800000),('aws_health_organization_events', 604800000),('aws_healthlake_fhir_datastores', 604800000),('aws_iam_account_authorization_details', 604800000),('aws_iam_accounts', 604800000),('aws_iam_group_attached_policies', 604800000),('aws_iam_group_last_accessed_details', 604800000),('aws_iam_group_policies', 604800000),('aws_iam_groups', 604800000),('aws_iam_instance_profiles', 604800000),('aws_iam_mfa_devices', 604800000),('aws_iam_openid_connect_identity_providers', 604800000),('aws_iam_password_policies', 604800000),('aws_iam_policies', 604800000),('aws_iam_policy_default_versions', 604800000),('aws_iam_policy_last_accessed_details', 604800000),('aws_iam_policy_versions', 604800000),('aws_iam_role_attached_policies', 604800000),('aws_iam_role_last_accessed_details', 604800000),('aws_iam_role_policies', 604800000),('aws_iam_roles', 604800000),('aws_iam_saml_identity_providers', 604800000),('aws_iam_server_certificates', 604800000),('aws_iam_signing_certificates', 604800000),('aws_iam_ssh_public_keys', 604800000),('aws_iam_user_access_keys', 604800000),('aws_iam_user_attached_policies', 604800000),('aws_iam_user_groups', 604800000),('aws_iam_user_last_accessed_details', 604800000),('aws_iam_user_policies', 604800000),('aws_iam_users', 604800000),('aws_iam_virtual_mfa_devices', 604800000),('aws_inspector2_covered_resources', 604800000),('aws_inspector_findings', 604800000),('aws_iot_billing_groups', 604800000),('aws_iot_ca_certificates', 604800000),('aws_iot_certificates', 604800000),('aws_iot_jobs', 604800000),('aws_iot_policies', 604800000),('aws_iot_security_profiles', 604800000),('aws_iot_streams', 604800000),('aws_iot_thing_groups', 604800000),('aws_iot_thing_types', 604800000),('aws_iot_things', 604800000),('aws_iot_topic_rules', 604800000),('aws_kafka_cluster_operations', 604800000),('aws_kafka_cluster_policies', 604800000),('aws_kafka_clusters', 604800000),('aws_kafka_configurations', 604800000),('aws_kafka_nodes', 604800000),('aws_keyspaces_keyspaces', 604800000),('aws_keyspaces_tables', 604800000),('aws_kinesis_streams', 604800000),('aws_kms_aliases', 604800000),('aws_kms_key_grants', 604800000),('aws_kms_key_policies', 604800000),('aws_kms_key_rotation_statuses', 604800000),('aws_kms_key_rotations', 604800000),('aws_kms_keys', 604800000),('aws_lexv2_bot_aliases', 604800000),('aws_lexv2_bots', 604800000),('aws_lightsail_alarms', 604800000),('aws_lightsail_bucket_access_keys', 604800000),('aws_lightsail_buckets', 604800000),('aws_lightsail_certificates', 604800000),('aws_lightsail_container_service_deployments', 604800000),('aws_lightsail_container_service_images', 604800000),('aws_lightsail_container_services', 604800000),('aws_lightsail_database_events', 604800000),('aws_lightsail_database_log_events', 604800000),('aws_lightsail_database_parameters', 604800000),('aws_lightsail_database_snapshots', 604800000),('aws_lightsail_databases', 604800000),('aws_lightsail_disk_snapshots', 604800000),('aws_lightsail_disks', 604800000),('aws_lightsail_distributions', 604800000),('aws_lightsail_instance_port_states', 604800000),('aws_lightsail_instance_snapshots', 604800000),('aws_lightsail_instances', 604800000),('aws_lightsail_load_balancer_tls_certificates', 604800000),('aws_lightsail_load_balancers', 604800000),('aws_lightsail_static_ips', 604800000),('aws_memorydb_reserved_nodes', 604800000),('aws_mq_broker_configuration_revisions', 604800000),('aws_mq_broker_configurations', 604800000),('aws_mq_broker_users', 604800000),('aws_mq_brokers', 604800000),('aws_mwaa_environments', 604800000),('aws_neptune_cluster_snapshots', 604800000),('aws_neptune_clusters', 604800000),('aws_neptune_event_subscriptions', 604800000),('aws_neptune_global_clusters', 604800000),('aws_neptune_instances', 604800000),('aws_neptune_subnet_groups', 604800000),('aws_networkfirewall_firewall_policies', 604800000),('aws_networkfirewall_firewalls', 604800000),('aws_networkfirewall_rule_groups', 604800000),('aws_networkfirewall_tls_inspection_configurations', 604800000),('aws_networkmanager_global_networks', 604800000),('aws_networkmanager_links', 604800000),('aws_networkmanager_sites', 604800000),('aws_networkmanager_transit_gateway_registrations', 604800000),('aws_opensearch_reserved_instances', 604800000),('aws_pinpoint_apps', 604800000),('aws_qldb_ledger_journal_kinesis_streams', 604800000),('aws_qldb_ledger_journal_s3_exports', 604800000),('aws_qldb_ledgers', 604800000),('aws_ram_principals', 604800000),('aws_ram_resource_share_associations', 604800000),('aws_ram_resource_share_invitations', 604800000),('aws_ram_resource_share_permissions', 604800000),('aws_ram_resource_shares', 604800000),('aws_ram_resource_types', 604800000),('aws_ram_resources', 604800000),('aws_rds_certificates', 604800000),('aws_rds_cluster_backtracks', 604800000),('aws_rds_db_proxies', 604800000),('aws_rds_db_proxy_endpoints', 604800000),('aws_rds_db_proxy_target_groups', 604800000),('aws_rds_db_proxy_targets', 604800000),('aws_rds_db_security_groups', 604800000),('aws_rds_event_subscriptions', 604800000),('aws_rds_events', 604800000),('aws_rds_global_clusters', 604800000),('aws_rds_instance_resource_metrics', 604800000),('aws_rds_option_groups', 604800000),('aws_rds_pending_maintenance_actions', 604800000),('aws_rds_reserved_instances', 604800000),('aws_rds_subnet_groups', 604800000),('aws_redshift_cluster_parameter_groups', 604800000),('aws_redshift_cluster_parameters', 604800000),('aws_redshift_clusters', 604800000),('aws_redshift_data_shares', 604800000),('aws_redshift_endpoint_accesses', 604800000),('aws_redshift_endpoint_authorizations', 604800000),('aws_redshift_event_subscriptions', 604800000),('aws_redshift_events', 604800000),('aws_redshift_reserved_nodes', 604800000),('aws_redshift_snapshots', 604800000),('aws_redshift_subnet_groups', 604800000),('aws_regions', 604800000),('aws_resiliencehub_alarm_recommendations', 604800000),('aws_resiliencehub_app_assessments', 604800000),('aws_resiliencehub_app_component_compliances', 604800000),('aws_resiliencehub_app_version_resource_mappings', 604800000),('aws_resiliencehub_app_version_resources', 604800000),('aws_resiliencehub_app_versions', 604800000),('aws_resiliencehub_apps', 604800000),('aws_resiliencehub_component_recommendations', 604800000),('aws_resiliencehub_recommendation_templates', 604800000),('aws_resiliencehub_resiliency_policies', 604800000),('aws_resiliencehub_sop_recommendations', 604800000),('aws_resiliencehub_suggested_resiliency_policies', 604800000),('aws_resiliencehub_test_recommendations', 604800000),('aws_resourcegroups_resource_groups', 604800000),('aws_route53_delegation_sets', 604800000),('aws_route53_domains', 604800000),('aws_route53_health_checks', 604800000),('aws_route53_hosted_zone_query_logging_configs', 604800000),('aws_route53_hosted_zone_resource_record_sets', 604800000),('aws_route53_hosted_zone_traffic_policy_instances', 604800000),('aws_route53_hosted_zones', 604800000),('aws_route53_operations', 604800000),('aws_route53_traffic_policies', 604800000),('aws_route53_traffic_policy_versions', 604800000),('aws_route53recoverycontrolconfig_clusters', 604800000),('aws_route53recoverycontrolconfig_control_panels', 604800000),('aws_route53recoverycontrolconfig_routing_controls', 604800000),('aws_route53recoverycontrolconfig_safety_rules', 604800000),('aws_route53recoveryreadiness_cells', 604800000),('aws_route53recoveryreadiness_readiness_checks', 604800000),('aws_route53recoveryreadiness_recovery_groups', 604800000),('aws_route53recoveryreadiness_resource_sets', 604800000),('aws_route53resolver_firewall_configs', 604800000),('aws_route53resolver_firewall_domain_lists', 604800000),('aws_route53resolver_firewall_rule_group_associations', 604800000),('aws_route53resolver_firewall_rule_groups', 604800000),('aws_route53resolver_resolver_endpoints', 604800000),('aws_route53resolver_resolver_query_log_config_associations', 604800000),('aws_route53resolver_resolver_query_log_configs', 604800000),('aws_route53resolver_resolver_rule_associations', 604800000),('aws_route53resolver_resolver_rules', 604800000),('aws_sagemaker_apps', 604800000),('aws_sagemaker_endpoint_configurations', 604800000),('aws_sagemaker_endpoints', 604800000),('aws_sagemaker_models', 604800000),('aws_sagemaker_notebook_instances', 604800000),('aws_sagemaker_training_jobs', 604800000),('aws_savingsplans_plans', 604800000),('aws_scheduler_schedule_groups', 604800000),('aws_secretsmanager_secret_versions', 604800000),('aws_secretsmanager_secrets', 604800000),('aws_servicecatalog_launch_paths', 604800000),('aws_servicecatalog_portfolios', 604800000),('aws_servicecatalog_products', 604800000),('aws_servicecatalog_provisioned_products', 604800000),('aws_servicecatalog_provisioning_artifacts', 604800000),('aws_servicecatalog_provisioning_parameters', 604800000),('aws_servicediscovery_instances', 604800000),('aws_servicediscovery_namespaces', 604800000),('aws_servicediscovery_services', 604800000),('aws_ses_active_receipt_rule_sets', 604800000),('aws_ses_configuration_set_event_destinations', 604800000),('aws_ses_configuration_sets', 604800000),('aws_ses_contact_lists', 604800000),('aws_ses_custom_verification_email_templates', 604800000),('aws_ses_identities', 604800000),('aws_ses_templates', 604800000),('aws_shield_attacks', 604800000),('aws_shield_protection_groups', 604800000),('aws_shield_protections', 604800000),('aws_shield_subscriptions', 604800000),('aws_signer_signing_profiles', 604800000),('aws_sns_subscriptions', 604800000),('aws_sqs_queues', 604800000),('aws_ssm_associations', 604800000),('aws_ssm_command_invocations', 604800000),('aws_ssm_compliance_summary_items', 604800000),('aws_ssm_document_versions', 604800000),('aws_ssm_documents', 604800000),('aws_ssm_instance_compliance_items', 604800000),('aws_ssm_instance_patches', 604800000),('aws_ssm_instances', 604800000),('aws_ssm_inventories', 604800000),('aws_ssm_inventory_schemas', 604800000),('aws_ssm_patch_baselines', 604800000),('aws_ssm_sessions', 604800000),('aws_ssmincidents_incident_findings', 604800000),('aws_ssmincidents_incident_related_items', 604800000),('aws_ssmincidents_incident_timeline_events', 604800000),('aws_ssmincidents_incidents', 604800000),('aws_ssmincidents_response_plans', 604800000),('aws_stepfunctions_activities', 604800000),('aws_stepfunctions_state_machines', 604800000),('aws_support_case_communications', 604800000),('aws_support_cases', 604800000),('aws_support_services', 604800000),('aws_support_severity_levels', 604800000),('aws_support_trusted_advisor_check_results', 604800000),('aws_support_trusted_advisor_check_summaries', 604800000),('aws_support_trusted_advisor_checks', 604800000),('aws_timestream_databases', 604800000),('aws_timestream_tables', 604800000),('aws_transfer_agreements', 604800000),('aws_transfer_certificates', 604800000),('aws_transfer_connectors', 604800000),('aws_transfer_profiles', 604800000),('aws_transfer_servers', 604800000),('aws_transfer_users', 604800000),('aws_transfer_workflows', 604800000),('aws_waf_rule_groups', 604800000),('aws_waf_rules', 604800000),('aws_waf_subscribed_rule_groups', 604800000),('aws_waf_web_acls', 604800000),('aws_wafregional_rate_based_rules', 604800000),('aws_wafregional_rule_groups', 604800000),('aws_wafregional_rules', 604800000),('aws_wafregional_web_acls', 604800000),('aws_wafv2_ipsets', 604800000),('aws_wafv2_managed_rule_groups', 604800000),('aws_wafv2_regex_pattern_sets', 604800000),('aws_wafv2_rule_groups', 604800000),('aws_wafv2_web_acls', 604800000),('aws_workspaces_connection_alias_permissions', 604800000),('aws_workspaces_connection_aliases', 604800000),('aws_workspaces_directories', 604800000),('aws_workspaces_workspaces', 604800000),('aws_xray_encryption_configs', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -17301,9 +17130,6 @@ spec:
   tables:
     - github_issues
   skip_dependent_tables: true
-  skip_tables:
-    - github_issue_timeline_events
-    - github_issue_pullrequest_reviews
   destinations:
     - postgresql
   spec:
@@ -19207,11 +19033,6 @@ spec:
     - github_repository_custom_properties
     - github_workflows
   skip_dependent_tables: true
-  skip_tables:
-    - github_releases
-    - github_release_assets
-    - github_repository_dependabot_alerts
-    - github_repository_dependabot_secrets
   destinations:
     - postgresql
   spec:
@@ -19931,9 +19752,6 @@ spec:
     - github_team_repositories
     - github_teams
   skip_dependent_tables: true
-  skip_tables:
-    - github_organization_dependabot_alerts
-    - github_organization_dependabot_secrets
   destinations:
     - postgresql
   spec:
@@ -21594,8 +21412,6 @@ spec:
     - postgresql
   tables:
     - riffraff_deploys
-  skip_tables:
-    - riffraff_deploy_logs
   spec:
     connection_string: >-
       user=\${RIFFRAFF_DB_USERNAME} password=\${RIFFRAFF_DB_PASSWORD}

@@ -14,7 +14,6 @@ export type CloudqueryConfig = {
 
 interface CloudqueryTableConfig {
 	tables?: string[];
-	skipTables?: string[];
 	concurrency?: number;
 }
 
@@ -92,10 +91,10 @@ export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
 ): CloudqueryConfig {
-	const { tables, skipTables, concurrency } = tableConfig;
+	const { tables, concurrency } = tableConfig;
 
-	if (!tables && !skipTables) {
-		throw new Error('Must specify either tables or skipTables');
+	if (!tables) {
+		throw new Error('Must specify tables');
 	}
 
 	return {
@@ -106,7 +105,6 @@ export function awsSourceConfig(
 			version: `v${Versions.CloudqueryAws}`,
 			tables,
 			skip_dependent_tables: true,
-			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			otel_endpoint: '0.0.0.0:4318',
 			otel_endpoint_insecure: true,
@@ -167,10 +165,10 @@ export function awsSourceConfigForAccount(
 export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
 ): CloudqueryConfig {
-	const { tables, skipTables, org } = tableConfig;
+	const { tables, org } = tableConfig;
 
-	if (!tables && !skipTables) {
-		throw new Error('Must specify either tables or skipTables');
+	if (!tables) {
+		throw new Error('Must specify tables');
 	}
 
 	return {
@@ -181,7 +179,6 @@ export function githubSourceConfig(
 			version: `v${Versions.CloudqueryGithub}`,
 			tables,
 			skip_dependent_tables: true,
-			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
@@ -211,10 +208,10 @@ export function githubSourceConfig(
 export function githubSourceConfigForRepository(
 	tableConfig: GitHubCloudqueryTableConfigForRepository,
 ): CloudqueryConfig {
-	const { tables, skipTables, org, repositories } = tableConfig;
+	const { tables, org, repositories } = tableConfig;
 
-	if (!tables && !skipTables) {
-		throw new Error('Must specify either tables or skipTables');
+	if (!tables) {
+		throw new Error('Must specify tables');
 	}
 
 	return {
@@ -225,7 +222,6 @@ export function githubSourceConfigForRepository(
 			version: `v${Versions.CloudqueryGithub}`,
 			tables,
 			skip_dependent_tables: true,
-			skip_tables: skipTables,
 			destinations: ['postgresql'],
 			spec: {
 				repos: repositories,
@@ -258,10 +254,10 @@ export function githubSourceConfigForRepository(
 export function fastlySourceConfig(
 	tableConfig: CloudqueryTableConfig,
 ): CloudqueryConfig {
-	const { tables, skipTables } = tableConfig;
+	const { tables } = tableConfig;
 
-	if (!tables && !skipTables) {
-		throw new Error('Must specify either tables or skipTables');
+	if (!tables) {
+		throw new Error('Must specify tables');
 	}
 
 	return {
@@ -272,7 +268,6 @@ export function fastlySourceConfig(
 			version: `v${Versions.CloudqueryFastly}`,
 			tables,
 			skip_dependent_tables: true,
-			skip_tables: skipTables,
 			destinations: ['postgresql'],
 
 			spec: {
@@ -347,7 +342,6 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 			version: `v${Versions.CloudqueryPostgresSource}`,
 			destinations: ['postgresql'],
 			tables: riffraffTables,
-			skip_tables: ['riffraff_deploy_logs'],
 			spec: {
 				connection_string: [
 					'user=${RIFFRAFF_DB_USERNAME}',
