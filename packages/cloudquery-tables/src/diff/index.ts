@@ -1,79 +1,9 @@
+import * as fs from 'node:fs';
 import path from 'node:path';
-import { awsTables } from 'cloudquery-tables/aws';
-import { getTableNames } from 'cloudquery-tables/diff/parse';
-import { endoflifeTables } from 'cloudquery-tables/endoflife';
-import { fastlyTables } from 'cloudquery-tables/fastly';
-import { githubTables } from 'cloudquery-tables/github';
-import { CloudQueryPluginVersions } from 'cloudquery-tables/versions';
-
-interface PluginToCheck {
-	/**
-	 * The name of the CloudQuery plugin.
-	 */
-	name: string;
-
-	/**
-	 * The version of the CloudQuery plugin, as defined in `.env` at the root of the repository.
-	 */
-	version: string;
-
-	/**
-	 * The tables currently being collected.
-	 */
-	currentTables: string[];
-
-	/**
-	 * The path to the JSON file created by the CloudQuery CLI (`cloudquery tables`).
-	 */
-	cliResponseFilepath: string;
-}
-
-interface Result
-	extends Omit<PluginToCheck, 'currentTables' | 'cliResponseFilepath'> {
-	/**
-	 * Tables that will continue to be collected.
-	 */
-	validTables: string[];
-
-	/**
-	 * Tables that were being collected but no longer exist in the CloudQuery plugin.
-	 */
-	removedTables: string[];
-
-	/**
-	 * Tables that can be collected.
-	 */
-	availableTables: string[];
-}
-
-const pluginsToCheck: PluginToCheck[] = [
-	{
-		name: 'aws',
-		version: CloudQueryPluginVersions.CloudqueryAws,
-		currentTables: awsTables,
-	},
-	{
-		name: 'github',
-		version: CloudQueryPluginVersions.CloudqueryGithub,
-		currentTables: githubTables,
-	},
-	{
-		name: 'fastly',
-		version: CloudQueryPluginVersions.CloudqueryFastly,
-		currentTables: fastlyTables,
-	},
-	{
-		name: 'endoflife',
-		version: CloudQueryPluginVersions.CloudqueryEndOfLife,
-		currentTables: endoflifeTables,
-	},
-].map((item) => ({
-	...item,
-	cliResponseFilepath: path.join(
-		__dirname,
-		`../../cq-docs/${item.name}/__tables.json`,
-	),
-}));
+import { pluginsToCheck } from './config';
+import { getTableNames } from './parse';
+import { createReport } from './report';
+import type { Result } from './types';
 
 if (require.main === module) {
 	const result: Result[] = pluginsToCheck.map((item) => {
@@ -84,11 +14,25 @@ if (require.main === module) {
 		return {
 			name,
 			version,
-			validTables: currentTables.filter((_) => tableNames.includes(_)),
-			removedTables: currentTables.filter((_) => !tableNames.includes(_)),
-			availableTables: tableNames.filter((_) => !currentTables.includes(_)),
+			tablesCollected: currentTables.filter((_) => tableNames.includes(_)),
+			tablesRemoved: currentTables.filter((_) => !tableNames.includes(_)),
+			tablesAvailable: tableNames.filter((_) => !currentTables.includes(_)),
 		};
 	});
 
-	console.log(result);
+	const report = createReport(result);
+
+	const reportFilepath = path.join(__dirname, '../../cq-docs/REPORT.md');
+	fs.writeFileSync(reportFilepath, report, {
+		encoding: 'utf-8',
+	});
+
+	console.log('Report written to', reportFilepath);
+
+	const removed = result.flatMap((_) => _.tablesRemoved);
+
+	if (removed.length > 0) {
+		console.log(`${removed.length} tables were removed.`);
+		process.exit(1);
+	}
 }
