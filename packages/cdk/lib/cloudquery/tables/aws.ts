@@ -803,10 +803,17 @@ const ignoredTables = [
 	'aws_stepfunctions_executions',
 
 	'aws_scheduler_schedules',
-];
-
-export const awsTables = availableTables
-	.filter((table) => !ignoredTables.includes(table))
 
 	// We don't really use Wellarchictected and it confuses our Tagging obligation due to it having many resources managed by AWS without tags
-	.filter((table) => !table.startsWith('aws_wellarchitected_'));
+	'aws_wellarchitected_lenses',
+	'aws_wellarchitected_share_invitations',
+	'aws_wellarchitected_workloads',
+	'aws_wellarchitected_workload_milestones',
+	'aws_wellarchitected_lens_reviews',
+	'aws_wellarchitected_lens_review_improvements',
+	'aws_wellarchitected_workload_shares',
+];
+
+export const awsTables = availableTables.filter(
+	(table) => !ignoredTables.includes(table),
+);
