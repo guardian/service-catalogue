@@ -7,7 +7,7 @@ import { githubTables } from './github';
 import { ns1Tables } from './ns1';
 import { riffraffTables } from './riffraff';
 
-export const availableCloudQueryTables = [
+export const cloudQueryTablesToSync = [
 	...amigoTables,
 	...awsTables,
 	...endoflifeTables,

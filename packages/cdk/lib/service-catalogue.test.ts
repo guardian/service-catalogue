@@ -2,7 +2,7 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { availableCloudQueryTables } from './cloudquery/tables';
+import { cloudQueryTablesToSync } from './cloudquery/tables';
 import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
@@ -96,12 +96,12 @@ describe('The ServiceCatalogue stack', () => {
 			(_) => _.sourceConfig.spec.tables ?? [],
 		);
 
-		const notCollected = availableCloudQueryTables.filter(
+		const notCollected = cloudQueryTablesToSync.filter(
 			(_) => !collected.includes(_),
 		);
 
 		const collectedUnlisted = collected.filter(
-			(_) => !availableCloudQueryTables.includes(_),
+			(_) => !cloudQueryTablesToSync.includes(_),
 		);
 
 		if (notCollected.length > 0) {
