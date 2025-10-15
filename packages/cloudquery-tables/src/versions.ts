@@ -2,7 +2,7 @@ import * as path from 'path';
 import { config } from 'dotenv';
 
 // Load the `.env` file at the root of the repository
-config({ path: path.resolve(__dirname, '../../../../.env') });
+config({ path: path.resolve(__dirname, '../../../.env') });
 
 const envOrError = (name: string): string => {
 	const value = process.env[name];
@@ -16,7 +16,7 @@ const envOrError = (name: string): string => {
  * The versions of various ServiceCatalogue plugins.
  * See the `.env` file at the root of the repository.
  */
-export const Versions = {
+export const CloudQueryPluginVersions = {
 	CloudqueryCli: envOrError('CQ_CLI'),
 	CloudqueryPostgresDestination: envOrError('CQ_POSTGRES_DESTINATION'),
 	CloudqueryPostgresSource: envOrError('CQ_POSTGRES_SOURCE'),
