@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -e
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+ROOT_DIR="${DIR}/../../.."
+
+# For CloudQuery versions
+MAIN_ENV_FILE="${ROOT_DIR}/.env"
+
+# For CloudQuery API key
+LOCAL_ENV_FILE="${HOME}/.gu/service_catalogue/.env.local"
+
+rm -rf "${DIR}/../cq-docs"
+
+docker compose -f "${DIR}/../docker-compose.yaml" \
+  --env-file "${MAIN_ENV_FILE}" \
+  --env-file "${LOCAL_ENV_FILE}" \
+  up --build
