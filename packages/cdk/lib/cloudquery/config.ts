@@ -1,7 +1,9 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
-import { galaxiesTables } from './allow-list-tables/galaxies-table-list';
-import { ns1Tables } from './allow-list-tables/ns1_table_list';
-import { riffraffTables } from './allow-list-tables/riffraff-table-list';
+import { amigoTables } from './tables/amigo';
+import { endoflifeTables } from './tables/endoflife';
+import { galaxiesTables } from './tables/galaxies';
+import { ns1Tables } from './tables/ns1';
+import { riffraffTables } from './tables/riffraff';
 import { Versions } from './versions';
 
 export type CloudqueryConfig = {
@@ -276,7 +278,7 @@ export function endOfLifeSourceConfig(): CloudqueryConfig {
 			path: 'cloudquery/endoflife',
 			registry: 'cloudquery',
 			version: `v${Versions.CloudqueryEndOfLife}`,
-			tables: ['endoflife_products'],
+			tables: endoflifeTables,
 			destinations: ['postgresql'],
 		},
 	};
@@ -385,7 +387,7 @@ export function amigoBakePackagesConfig(
 			path: 'guardian/image-packages',
 			version: `v${Versions.CloudqueryImagePackages}`,
 			destinations: ['postgresql'],
-			tables: ['amigo_bake_packages'],
+			tables: amigoTables,
 			spec: {
 				base_images_table: baseImagesTableName,
 				recipes_table: recipesTableName,
@@ -395,56 +397,5 @@ export function amigoBakePackagesConfig(
 		},
 	};
 }
-
-/**
- * Tables we are skipping because they are slow and or uninteresting to us,
- * and to prevent form CloudQuery collection child tables automatically.
- */
-export const skipTables = [
-	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
-	'aws_cloudtrail_events',
-	'aws_docdb_cluster_parameter_groups',
-	'aws_docdb_engine_versions',
-	'aws_ec2_instance_types',
-	'aws_elasticache_engine_versions',
-	'aws_elasticache_parameter_groups',
-	'aws_elasticache_reserved_cache_nodes_offerings',
-	'aws_elasticache_service_updates',
-	'aws_emr_supported_instance_types',
-	'aws_neptune_cluster_parameter_groups',
-	'aws_neptune_db_parameter_groups',
-	'aws_rds_cluster_parameter_groups',
-	'aws_rds_db_parameter_groups',
-	'aws_rds_engine_versions',
-	'aws_servicequotas_services',
-	'aws_identitystore_users',
-	'aws_identitystore_groups',
-	'aws_quicksight_data_sets',
-	'aws_quicksight_dashboards',
-	'aws_quicksight_analyses',
-	'aws_quicksight_users',
-	'aws_quicksight_templates',
-	'aws_quicksight_groups',
-	'aws_quicksight_folders',
-	'aws_quicksight_data_sources',
-	'aws_amp_workspaces',
-	'aws_ssoadmin_instances',
-	'aws_glue_connections',
-	'aws_computeoptimizer_ecs_service_recommendations',
-	'aws_xray_sampling_rules',
-	'aws_xray_resource_policies',
-	'aws_xray_groups',
-	// We don't really use Wellarchictected and it confuses our Tagging obligation
-	// due to it having many resources managed by AWS without tags
-	'aws_wellarchitected_*',
-
-	// These appear to be heavily rate limited, and not too interesting (yet).
-	// Don't collect them to reduce execution time.
-	'aws_stepfunctions_map_runs',
-	'aws_stepfunctions_map_run_executions',
-	'aws_stepfunctions_executions',
-
-	'aws_scheduler_schedules',
-];
 
 export const serviceCatalogueConfigDirectory = '/usr/share/cloudquery';

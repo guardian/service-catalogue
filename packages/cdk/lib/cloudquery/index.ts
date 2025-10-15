@@ -11,10 +11,6 @@ import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import { awsTables } from './allow-list-tables/aws-table-list';
-import { fastlyTables } from './allow-list-tables/fastly-table-list';
-import { filterAllowedTables } from './allow-list-tables/filter';
-import { githubTables } from './allow-list-tables/github-table-list';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
@@ -31,7 +27,6 @@ import {
 	ns1SourceConfig,
 	riffraffSourcesConfig,
 	serviceCatalogueConfigDirectory,
-	skipTables,
 } from './config';
 import { Images } from './images';
 import {
@@ -44,6 +39,10 @@ import {
 	inspector2TableOptions,
 	securityHubTableOptions,
 } from './table-options';
+import { awsTables } from './tables/aws';
+import { fastlyTables } from './tables/fastly';
+import { filterAllowedTables } from './tables/filter';
+import { githubTables } from './tables/github';
 
 interface CloudqueryEcsClusterProps {
 	vpc: IVpc;
@@ -377,9 +376,7 @@ export function addCloudqueryEcsCluster(
 					!individualAwsSources
 						.flatMap((_) => _.config.spec.tables ?? [])
 						.includes(_),
-			)
-			// Remove tables we explicitly don't want to collect
-			.filter((_) => !skipTables.includes(_)),
+			),
 		[/^aws_.*$/],
 	);
 

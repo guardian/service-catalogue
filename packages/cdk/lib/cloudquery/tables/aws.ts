@@ -1,4 +1,7 @@
-export const awsTables = [
+/**
+ * A list of tables available from CloudQuery.
+ */
+const availableTables = [
 	'aws_accessanalyzer_analyzer_archive_rules',
 	'aws_accessanalyzer_analyzer_findings',
 	'aws_accessanalyzer_analyzer_findings_v2',
@@ -752,3 +755,65 @@ export const awsTables = [
 	'aws_workspaces_workspaces',
 	'aws_xray_encryption_configs',
 ];
+
+/**
+ * Tables to avoid because they are slow and or uninteresting to us.
+ *
+ * This list should contain concrete table names, not patterns/wildcards.
+ */
+const ignoredTables = [
+	'aws_ec2_vpc_endpoint_services', // this resource includes services that are available from AWS as well as other AWS Accounts
+	'aws_cloudtrail_events',
+	'aws_docdb_cluster_parameter_groups',
+	'aws_docdb_engine_versions',
+	'aws_ec2_instance_types',
+	'aws_elasticache_engine_versions',
+	'aws_elasticache_parameter_groups',
+	'aws_elasticache_reserved_cache_nodes_offerings',
+	'aws_elasticache_service_updates',
+	'aws_emr_supported_instance_types',
+	'aws_neptune_cluster_parameter_groups',
+	'aws_neptune_db_parameter_groups',
+	'aws_rds_cluster_parameter_groups',
+	'aws_rds_db_parameter_groups',
+	'aws_rds_engine_versions',
+	'aws_servicequotas_services',
+	'aws_identitystore_users',
+	'aws_identitystore_groups',
+	'aws_quicksight_data_sets',
+	'aws_quicksight_dashboards',
+	'aws_quicksight_analyses',
+	'aws_quicksight_users',
+	'aws_quicksight_templates',
+	'aws_quicksight_groups',
+	'aws_quicksight_folders',
+	'aws_quicksight_data_sources',
+	'aws_amp_workspaces',
+	'aws_ssoadmin_instances',
+	'aws_glue_connections',
+	'aws_computeoptimizer_ecs_service_recommendations',
+	'aws_xray_sampling_rules',
+	'aws_xray_resource_policies',
+	'aws_xray_groups',
+
+	// These appear to be heavily rate limited, and not too interesting (yet).
+	// Don't collect them to reduce execution time.
+	'aws_stepfunctions_map_runs',
+	'aws_stepfunctions_map_run_executions',
+	'aws_stepfunctions_executions',
+
+	'aws_scheduler_schedules',
+
+	// We don't really use Wellarchictected and it confuses our Tagging obligation due to it having many resources managed by AWS without tags
+	'aws_wellarchitected_lenses',
+	'aws_wellarchitected_share_invitations',
+	'aws_wellarchitected_workloads',
+	'aws_wellarchitected_workload_milestones',
+	'aws_wellarchitected_lens_reviews',
+	'aws_wellarchitected_lens_review_improvements',
+	'aws_wellarchitected_workload_shares',
+];
+
+export const awsTables = availableTables.filter(
+	(table) => !ignoredTables.includes(table),
+);

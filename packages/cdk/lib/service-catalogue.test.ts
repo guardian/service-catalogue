@@ -2,12 +2,7 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { awsTables } from './cloudquery/allow-list-tables/aws-table-list';
-import { fastlyTables } from './cloudquery/allow-list-tables/fastly-table-list';
-import { galaxiesTables } from './cloudquery/allow-list-tables/galaxies-table-list';
-import { githubTables } from './cloudquery/allow-list-tables/github-table-list';
-import { ns1Tables } from './cloudquery/allow-list-tables/ns1_table_list';
-import { riffraffTables } from './cloudquery/allow-list-tables/riffraff-table-list';
+import { cloudQueryTablesToSync } from './cloudquery/tables';
 import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
@@ -89,16 +84,7 @@ describe('The ServiceCatalogue stack', () => {
 		);
 	});
 
-	it('collects all listed CloudQuery tables', () => {
-		const tables = [
-			...awsTables,
-			...fastlyTables,
-			...galaxiesTables,
-			...githubTables,
-			...ns1Tables,
-			...riffraffTables,
-		];
-
+	it('collects listed CloudQuery tables', () => {
 		const tasks = stack.node
 			.findAll()
 			.filter(
@@ -106,19 +92,33 @@ describe('The ServiceCatalogue stack', () => {
 					child instanceof ScheduledCloudqueryTask,
 			);
 
-		const collectedTables: string[] = tasks.flatMap(
+		const collected: string[] = tasks.flatMap(
 			(_) => _.sourceConfig.spec.tables ?? [],
 		);
 
-		const missingAwsTables = tables.filter((_) => !collectedTables.includes(_));
+		const notCollected = cloudQueryTablesToSync.filter(
+			(_) => !collected.includes(_),
+		);
 
-		if (missingAwsTables.length > 0) {
+		const collectedUnlisted = collected.filter(
+			(_) => !cloudQueryTablesToSync.includes(_),
+		);
+
+		if (notCollected.length > 0) {
 			console.log(
-				'The following tables are not being collected by any CloudQuery task:',
+				'The following tables are allow-listed but not collected by any CloudQuery task:',
 			);
-			console.log(missingAwsTables.join('\n'));
+			console.log(notCollected.join('\n'));
 		}
 
-		expect(missingAwsTables.length).toEqual(0);
+		if (collectedUnlisted.length > 0) {
+			console.log(
+				'The following tables are being collected but are not listed in the allow-list:',
+			);
+			console.log(collectedUnlisted.join('\n'));
+		}
+
+		expect(notCollected.length).toEqual(0);
+		expect(collectedUnlisted.length).toEqual(0);
 	});
 });
