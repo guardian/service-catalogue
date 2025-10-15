@@ -1,0 +1,17 @@
+services:
+  cloudquery:
+    build:
+      context: ../../containers/cloudquery
+      args:
+        CQ_CLI: ${CQ_CLI}
+    platform: linux/amd64
+    volumes:
+      - ./cloudquery.yaml:/cloudquery.yaml
+      - ./cq-docs:/cq-docs
+    environment:
+      CQ_AWS: ${CQ_AWS}
+      CQ_GITHUB: ${CQ_GITHUB}
+      CQ_FASTLY: ${CQ_FASTLY}
+      CQ_ENDOFLIFE: ${CQ_ENDOFLIFE}
+      CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
+    command: tables /cloudquery.yaml --log-console --log-level info --output-dir /cq-docs

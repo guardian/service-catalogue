@@ -2,6 +2,8 @@
   "name": "cloudquery-tables",
   "version": "0.0.0",
   "scripts": {
+    "prediff": "./script/start-docker",
+    "diff": "tsx src/diff.ts",
     "test": "node --import tsx --test \"**/*.test.ts\"",
     "typecheck": "tsc"
   }
