@@ -21,3 +21,11 @@ To stop collecting a table:
 3. Add a database migration to drop the table from the database
 
 [^1]: Per our contract, we have a finite number of rows that can be synced each month.
+
+## Updating a plugin
+When updating a CloudQuery plugin we need to check that the tables being collected are still available.
+This can be done by running the `diff` script:
+
+```bash
+npm -w cloudquery-tables run diff
+```
