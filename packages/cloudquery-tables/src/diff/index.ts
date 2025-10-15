@@ -1,4 +1,6 @@
+import * as fs from 'node:fs';
 import path from 'node:path';
+import { h1, h2, h3, italic, tsMarkdown } from 'ts-markdown';
 import { awsTables } from 'cloudquery-tables/aws';
 import { getTableNames } from 'cloudquery-tables/diff/parse';
 import { endoflifeTables } from 'cloudquery-tables/endoflife';
@@ -75,6 +77,44 @@ const pluginsToCheck: PluginToCheck[] = [
 	),
 }));
 
+function createReport(result: Result[]) {
+	const markdownList = (list: string[]) => {
+		return list.length === 0
+			? '- None 🎉'
+			: list.map((t) => `- ${t}`).join('\n');
+	};
+
+	const head = [
+		italic(`This file was generated via \`npm -w cloudquery-tables run diff\``),
+		h1('CloudQuery Table Report'),
+	];
+
+	const body = result.flatMap((item) => {
+		const { name, version, validTables, removedTables, availableTables } = item;
+		return [
+			h2(`${name} v${version}`),
+
+			h3('Removed tables'),
+			italic(
+				'Tables that were being collected but no longer exist in the CloudQuery plugin.',
+			),
+			markdownList(removedTables),
+			'\n',
+
+			h3('Collected tables'),
+			italic('Tables that will continue to be collected.'),
+			markdownList(validTables),
+			'\n',
+
+			h3('Available tables'),
+			italic('Tables that can be collected.'),
+			markdownList(availableTables),
+			'\n',
+		];
+	});
+	return tsMarkdown([head, body].flat());
+}
+
 if (require.main === module) {
 	const result: Result[] = pluginsToCheck.map((item) => {
 		const { name, version, cliResponseFilepath, currentTables } = item;
@@ -90,5 +130,15 @@ if (require.main === module) {
 		};
 	});
 
-	console.log(result);
+	const report = createReport(result);
+
+	fs.writeFileSync(path.join(__dirname, '../../cq-docs/REPORT.md'), report, {
+		encoding: 'utf-8',
+	});
+
+	const removed = result.flatMap((_) => _.removedTables);
+
+	if (removed.length > 0) {
+		throw new Error(`${removed.length} tables were removed.`);
+	}
 }
