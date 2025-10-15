@@ -5,7 +5,7 @@ import type {
 	github_repository_branches,
 	guardian_github_actions_usage,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 import type { RepocopVulnerability, Repository } from 'common/src/types.js';
 import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts.js';
 import type { AwsCloudFormationStack } from '../types.js';

@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, test } from 'node:test';
-import type { cloudquery_plugin_usage } from '@prisma/client';
+import type { cloudquery_plugin_usage } from 'common/generated/prisma/client.js';
 import { usageSummaryToDatabaseRows } from './transform.js';
 import type { UsageSummaryResponseForPaidRows } from './types.js';
 
