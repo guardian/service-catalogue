@@ -14,7 +14,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { awsTables } from 'cloudquery-tables/aws';
 import { fastlyTables } from 'cloudquery-tables/fastly';
 import { filterAllowedTables } from 'cloudquery-tables/filter';
-import { githubTables } from 'cloudquery-tables/github';
+import { githubLanguagesTables, githubTables } from 'cloudquery-tables/github';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
@@ -586,7 +586,7 @@ export function addCloudqueryEcsCluster(
 		description: 'Collect GitHub languages data',
 		schedule: Schedule.rate(Duration.days(7)),
 		config: githubLanguagesConfig({
-			tables: filterAllowedTables(githubTables, [/^github_languages$/]),
+			tables: githubLanguagesTables,
 			org: gitHubOrgName,
 		}),
 		secrets: githubSecrets,

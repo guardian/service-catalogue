@@ -1,6 +1,8 @@
+/**
+ * Tables collected with https://hub.cloudquery.io/plugins/source/cloudquery/github
+ */
 export const githubTables = [
 	'github_issues',
-	'github_languages',
 	'github_organization_members',
 	'github_organizations',
 	'github_releases',
@@ -14,3 +16,8 @@ export const githubTables = [
 	'github_teams',
 	'github_workflows',
 ];
+
+/**
+ * Tables collected with https://github.com/guardian/cq-source-github-languages
+ */
+export const githubLanguagesTables = ['github_languages'];
