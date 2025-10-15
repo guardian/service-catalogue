@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "prediff": "./script/start-docker",
-    "diff": "tsx src/diff.ts",
+    "diff": "tsx src/diff/index.ts",
     "test": "node --import tsx --test \"**/*.test.ts\"",
     "typecheck": "tsc"
   }
