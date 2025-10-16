@@ -392,7 +392,7 @@ model github_repository_custom_properties {
   org            String
   property_name  String
   repository_id  BigInt
-  value          String?
+  value          String[]
 }
 
 model github_team_repositories {
