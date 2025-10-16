@@ -27,7 +27,7 @@ if (require.main === module) {
 		encoding: 'utf-8',
 	});
 
-	console.log('Report written to', reportFilepath);
+	console.log(`Report written to ${reportFilepath}`);
 
 	const removed = result.flatMap((_) => _.tablesRemoved);
 
