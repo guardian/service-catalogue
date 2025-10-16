@@ -201,7 +201,7 @@ void describe('When getting suitable repos to send to SNS', () => {
 			org: 'guardian',
 			property_name: 'gu_dependency_graph_integrator_ignore',
 			repository_id: BigInt(1),
-			value: scala,
+			value: [scala],
 		};
 	}
 
@@ -214,7 +214,7 @@ void describe('When getting suitable repos to send to SNS', () => {
 			org: 'guardian',
 			property_name: 'gu_dependency_graph_integrator_ignore',
 			repository_id: BigInt(12345),
-			value: null,
+			value: [],
 		};
 	}
 	void test('return the repo when a Scala repo is found without an existing workflow and repo is not exempt', () => {
@@ -253,7 +253,7 @@ void describe('When getting suitable repos to send to SNS', () => {
 			[repoWithTargetLanguage(fullName, kotlin)],
 			[repository(fullName)],
 			[repoWithoutWorkflow(fullName)],
-			[{ ...exemptedCustomProperty(), value: kotlin }],
+			[{ ...exemptedCustomProperty(), value: [kotlin] }],
 		);
 		assert.deepStrictEqual(result, []);
 	});

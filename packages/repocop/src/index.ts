@@ -158,7 +158,7 @@ export async function main() {
 		customProperties.filter((property) => {
 			return (
 				property.property_name === 'gu_dependency_graph_integrator_ignore' &&
-				property.value
+				property.value.length > 0
 			);
 		});
 	const dependencyGraphIntegratorRepoCount = 5;

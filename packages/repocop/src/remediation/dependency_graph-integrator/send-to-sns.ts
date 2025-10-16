@@ -129,7 +129,7 @@ export function repoIsExempted(
 	const exemptedRepo: github_repository_custom_properties | undefined =
 		exemptedCustomProperties.find(
 			(property) =>
-				repo.id === property.repository_id && language === property.value,
+				repo.id === property.repository_id && property.value.includes(language),
 		);
 	if (exemptedRepo) {
 		logger.log({
