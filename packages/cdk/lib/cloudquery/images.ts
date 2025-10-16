@@ -1,5 +1,5 @@
 import { ContainerImage } from 'aws-cdk-lib/aws-ecs';
-import { Versions } from './versions';
+import { CloudQueryPluginVersions } from 'cloudquery-tables/versions';
 
 export const Images = {
 	cloudquery: ContainerImage.fromRegistry(
@@ -11,7 +11,7 @@ export const Images = {
 	),
 	// https://github.com/guardian/cq-source-ns1
 	ns1Source: ContainerImage.fromRegistry(
-		`ghcr.io/guardian/cq-source-ns1:${Versions.CloudqueryNs1}`,
+		`ghcr.io/guardian/cq-source-ns1:${CloudQueryPluginVersions.CloudqueryNs1}`,
 	),
 	postgres: ContainerImage.fromRegistry(
 		'public.ecr.aws/docker/library/postgres:16-alpine',

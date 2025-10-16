@@ -5,7 +5,9 @@
     "baseUrl": ".",
     "paths": {
       "common": ["packages/common/src"],
-      "common/*": ["packages/common/src/*"]
+      "common/*": ["packages/common/src/*"],
+      "cloudquery-tables": ["packages/cloudquery-tables/src"],
+      "cloudquery-tables/*": ["packages/cloudquery-tables/src/*"]
     },
     "skipLibCheck": true,
     "module": "NodeNext",

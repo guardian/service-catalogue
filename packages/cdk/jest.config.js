@@ -44,6 +44,10 @@ module.exports = {
 			transformIgnorePatterns: ['node_modules/(?!@guardian/aws-account-setup)'],
 			setupFilesAfterEnv: [`<rootDir>/jest.setup.js`],
 			testMatch: ['<rootDir>/**/*.test.ts'],
+			moduleNameMapper: {
+				'^cloudquery-tables$': '<rootDir>/../cloudquery-tables/src',
+				'^cloudquery-tables/(.*)$': '<rootDir>/../cloudquery-tables/src/$1',
+			},
 		},
 		{
 			displayName: 'cloudbuster',

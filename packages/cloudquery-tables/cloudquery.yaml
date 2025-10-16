@@ -1,0 +1,50 @@
+# This file is not used to run a CloudQuery sync. The file destination is not used, however, a destination is required.
+kind: destination
+spec:
+  name: file
+  path: cloudquery/file
+  registry: cloudquery
+  version: "v5.4.26"
+  write_mode: "append"
+  send_sync_summary: true
+  spec:
+    path: "/cq-output/{{TABLE}}/{{UUID}}.{{FORMAT}}"
+    format: "json"
+---
+kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  registry: cloudquery
+  version: v${CQ_AWS}
+  tables: ["*"]
+  spec:
+    regions: ["*"]
+  destinations: ["file"]
+---
+kind: source
+spec:
+  name: github
+  path: cloudquery/github
+  registry: cloudquery
+  version: v${CQ_GITHUB}
+  tables: ["*"]
+  destinations: ["file"]
+---
+kind: source
+spec:
+  name: fastly
+  path: cloudquery/fastly
+  registry: cloudquery
+  version: v${CQ_FASTLY}
+  tables: ["*"]
+  destinations: ["file"]
+---
+kind: source
+spec:
+  name: endoflife
+  path: cloudquery/endoflife
+  registry: cloudquery
+  version: v${CQ_ENDOFLIFE}
+  tables: ["*"]
+  destinations: ["file"]

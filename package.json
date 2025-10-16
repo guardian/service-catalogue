@@ -5,7 +5,7 @@
   "scripts": {
     "test": "npm run test --workspaces --if-present",
     "synth": "npm run synth --workspace=cdk",
-    "pretypecheck": "npm -w common run typecheck",
+    "pretypecheck": "npm --workspace=common --workspace=cloudquery-tables run typecheck",
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces --if-present",
     "lint": "eslint packages/** --ext .ts,.tsx --no-error-on-unmatched-pattern",

@@ -1,10 +1,10 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
-import { amigoTables } from './tables/amigo';
-import { endoflifeTables } from './tables/endoflife';
-import { galaxiesTables } from './tables/galaxies';
-import { ns1Tables } from './tables/ns1';
-import { riffraffTables } from './tables/riffraff';
-import { Versions } from './versions';
+import { amigoTables } from 'cloudquery-tables/amigo';
+import { endoflifeTables } from 'cloudquery-tables/endoflife';
+import { galaxiesTables } from 'cloudquery-tables/galaxies';
+import { ns1Tables } from 'cloudquery-tables/ns1';
+import { riffraffTables } from 'cloudquery-tables/riffraff';
+import { CloudQueryPluginVersions } from 'cloudquery-tables/versions';
 
 export type CloudqueryConfig = {
 	spec: {
@@ -75,7 +75,7 @@ export function postgresDestinationConfig(
 			name: 'postgresql',
 			registry: 'github',
 			path: 'cloudquery/postgresql',
-			version: `v${Versions.CloudqueryPostgresDestination}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryPostgresDestination}`,
 			write_mode: writeMode,
 			migrate_mode: 'forced',
 			spec: {
@@ -103,7 +103,7 @@ export function awsSourceConfig(
 		spec: {
 			name: 'aws',
 			path: 'cloudquery/aws',
-			version: `v${Versions.CloudqueryAws}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryAws}`,
 			tables,
 			skip_dependent_tables: true,
 			destinations: ['postgresql'],
@@ -173,7 +173,7 @@ export function githubSourceConfig(
 		spec: {
 			name: 'github',
 			path: 'cloudquery/github',
-			version: `v${Versions.CloudqueryGithub}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryGithub}`,
 			tables,
 			skip_dependent_tables: true,
 			destinations: ['postgresql'],
@@ -212,7 +212,7 @@ export function githubSourceConfigForRepository(
 		spec: {
 			name: 'github',
 			path: 'cloudquery/github',
-			version: `v${Versions.CloudqueryGithub}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryGithub}`,
 			tables,
 			skip_dependent_tables: true,
 			destinations: ['postgresql'],
@@ -254,7 +254,7 @@ export function fastlySourceConfig(
 		spec: {
 			name: 'fastly',
 			path: 'cloudquery/fastly',
-			version: `v${Versions.CloudqueryFastly}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryFastly}`,
 			tables,
 			skip_dependent_tables: true,
 			destinations: ['postgresql'],
@@ -277,7 +277,7 @@ export function endOfLifeSourceConfig(): CloudqueryConfig {
 			name: 'endoflife',
 			path: 'cloudquery/endoflife',
 			registry: 'cloudquery',
-			version: `v${Versions.CloudqueryEndOfLife}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryEndOfLife}`,
 			tables: endoflifeTables,
 			destinations: ['postgresql'],
 		},
@@ -291,7 +291,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 			name: 'galaxies',
 			path: 'guardian/galaxies',
 			registry: 'github',
-			version: `v${Versions.CloudqueryGalaxies}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryGalaxies}`,
 			destinations: ['postgresql'],
 			tables: galaxiesTables,
 			spec: {
@@ -328,7 +328,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 		spec: {
 			name: 'postgresql',
 			path: 'cloudquery/postgresql',
-			version: `v${Versions.CloudqueryPostgresSource}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryPostgresSource}`,
 			destinations: ['postgresql'],
 			tables: riffraffTables,
 			spec: {
@@ -355,7 +355,7 @@ export function githubLanguagesConfig(
 		spec: {
 			name: 'github-languages',
 			path: 'guardian/github-languages',
-			version: `v${Versions.CloudqueryGithubLanguages}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryGithubLanguages}`,
 			destinations: ['postgresql'],
 			tables,
 			registry: 'github',
@@ -385,7 +385,7 @@ export function amigoBakePackagesConfig(
 			name: 'image-packages',
 			registry: 'github',
 			path: 'guardian/image-packages',
-			version: `v${Versions.CloudqueryImagePackages}`,
+			version: `v${CloudQueryPluginVersions.CloudqueryImagePackages}`,
 			destinations: ['postgresql'],
 			tables: amigoTables,
 			spec: {
