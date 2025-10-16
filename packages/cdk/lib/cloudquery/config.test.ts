@@ -135,7 +135,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v11.11.1
+		  version: v14.2.0
 		  tables:
 		    - github_repositories
 		  skip_dependent_tables: true
