@@ -145,7 +145,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
 			schedule: Schedule.rate(Duration.hours(3)),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_cloudformation_*$/]),
+				tables: filterAllowedTables(awsTables, [/^aws_cloudformation_.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
@@ -234,7 +234,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.cron({ minute: '0', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_acm*$/]),
+				tables: filterAllowedTables(awsTables, [/^aws_acm_.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
