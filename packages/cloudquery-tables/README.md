@@ -18,7 +18,12 @@ Before removing a table, ensure it is not used by any dashboards or other proces
 To stop collecting a table:
 1. Remove the table from [`index.ts`](./src/index.ts)
 2. Remove the table from the task that collected it
-3. Add a database migration to drop the table from the database
+3. Add a [database migration](../common/prisma/migrations) to drop the table from the database and the row from `cloudquery_table_frequency`:
+
+   ```sql
+   DELETE FROM cloudquery_table_frequency WHERE table_name = '<table>';
+   DROP TABLE IF EXISTS <table>;
+   ```
 
 [^1]: Per our contract, we have a finite number of rows that can be synced each month.
 

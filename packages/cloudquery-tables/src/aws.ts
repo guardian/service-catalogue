@@ -701,7 +701,6 @@ const availableTables = [
 	'aws_sns_topics',
 	'aws_sqs_queues',
 	'aws_ssm_associations',
-	'aws_ssm_command_invocations',
 	'aws_ssm_compliance_summary_items',
 	'aws_ssm_document_versions',
 	'aws_ssm_documents',
