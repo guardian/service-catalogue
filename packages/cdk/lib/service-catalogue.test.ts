@@ -121,4 +121,29 @@ describe('The ServiceCatalogue stack', () => {
 		expect(notCollected.length).toEqual(0);
 		expect(collectedUnlisted.length).toEqual(0);
 	});
+
+	test('A task collects at least one table', () => {
+		const tasks = stack.node
+			.findAll()
+			.filter(
+				(child): child is ScheduledCloudqueryTask =>
+					child instanceof ScheduledCloudqueryTask,
+			);
+
+		const invalidTasks = tasks
+			.map((task) => ({
+				name: task.name,
+				numberOfTablesCollected: (task.sourceConfig.spec.tables ?? []).length,
+			}))
+			.filter((_) => _.numberOfTablesCollected === 0);
+
+		const numberOfInvalidTasks = Object.keys(invalidTasks).length;
+
+		if (numberOfInvalidTasks > 0) {
+			console.log(`The following tasks are invalid as they collect no tables:`);
+			console.log(invalidTasks.map((_) => `- ${_.name}`).join('\n'));
+		}
+
+		expect(numberOfInvalidTasks).toEqual(0);
+	});
 });

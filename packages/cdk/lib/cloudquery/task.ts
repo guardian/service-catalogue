@@ -135,6 +135,7 @@ export interface ScheduledCloudqueryTaskProps
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 	public readonly sourceConfig: CloudqueryConfig;
+	public readonly name: string;
 	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
 		const {
 			name,
@@ -463,5 +464,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		});
 
 		this.sourceConfig = sourceConfig;
+		this.name = name;
 	}
 }
