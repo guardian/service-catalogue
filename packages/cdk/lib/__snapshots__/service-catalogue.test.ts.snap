@@ -14480,7 +14480,7 @@ spec:
   name: endoflife
   path: cloudquery/endoflife
   registry: cloudquery
-  version: v1.4.0
+  version: v1.4.3
   tables:
     - endoflife_products
   destinations:
