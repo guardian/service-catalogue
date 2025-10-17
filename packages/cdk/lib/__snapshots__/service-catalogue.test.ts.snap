@@ -15176,7 +15176,7 @@ spec:
 spec:
   name: fastly
   path: cloudquery/fastly
-  version: v3.0.7
+  version: v4.10.3
   tables:
     - fastly_account_users
     - fastly_service_backends

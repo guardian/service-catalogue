@@ -1027,7 +1027,6 @@ model fastly_service_backends {
   ssl_ciphers           String?
   ssl_client_cert       String?
   ssl_client_key        String?
-  ssl_hostname          String?
   sslsni_hostname       String?
   shield                String?
   updated_at            DateTime? @db.Timestamp(6)
