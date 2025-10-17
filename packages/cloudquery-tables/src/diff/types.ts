@@ -22,19 +22,24 @@ export interface PluginToCheck extends Plugin {
 	cliResponseFilepath: string;
 }
 
+export interface CloudQueryTable {
+	name: string;
+	isIncremental: boolean;
+}
+
 export interface Result extends Plugin {
 	/**
 	 * Tables that will continue to be collected.
 	 */
-	tablesCollected: string[];
+	tablesCollected: CloudQueryTable[];
 
 	/**
 	 * Tables that were being collected but no longer exist in the CloudQuery plugin.
 	 */
-	tablesRemoved: string[];
+	tablesRemoved: CloudQueryTable[];
 
 	/**
 	 * Tables that can be collected.
 	 */
-	tablesAvailable: string[];
+	tablesAvailable: CloudQueryTable[];
 }

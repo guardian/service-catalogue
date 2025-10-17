@@ -1,5 +1,5 @@
 import { h1, h2, h3, italic, table, tsMarkdown } from 'ts-markdown';
-import type { Result } from './types';
+import type { CloudQueryTable, Result } from './types';
 
 function getHeader() {
 	return [
@@ -26,13 +26,21 @@ function getSummary(result: Result[]) {
 }
 
 function getBody(result: Result[]) {
-	const markdownList = (list: string[]) => {
+	const markdownList = (list: CloudQueryTable[]) => {
 		return list.length === 0
 			? '- None 🎉'
-			: list.map((t) => `- ${t}`).join('\n');
+			: list
+					.map(({ name, isIncremental }) => {
+						return isIncremental ? `- ${name} (incremental)` : `- ${name}`;
+					})
+					.join('\n');
 	};
 
-	const tableList = (list: string[], title: string, description: string) => {
+	const tableList = (
+		list: CloudQueryTable[],
+		title: string,
+		description: string,
+	) => {
 		return [
 			h3(`Tables ${title} (${list.length})`),
 			italic(description),
