@@ -1,3 +1,8 @@
+/**
+ * Tables collected with https://github.com/guardian/cq-source-galaxies
+ *
+ * @see file://./../README.md
+ */
 export const galaxiesTables = [
 	'galaxies_people_table',
 	'galaxies_teams_table',
