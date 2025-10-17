@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
 import { pluginsToCheck } from './config';
-import { getTableNames } from './parse';
+import { getTables } from './parse';
 import { createReport } from './report';
 import type { Result } from './types';
 
@@ -9,14 +9,20 @@ if (require.main === module) {
 	const result: Result[] = pluginsToCheck.map((item) => {
 		const { name, version, cliResponseFilepath, currentTables } = item;
 
-		const tableNames = getTableNames(cliResponseFilepath);
+		const tables = getTables(cliResponseFilepath);
+		const tableNames = tables.map((_) => _.name);
 
 		return {
 			name,
 			version,
-			tablesCollected: currentTables.filter((_) => tableNames.includes(_)),
-			tablesRemoved: currentTables.filter((_) => !tableNames.includes(_)),
-			tablesAvailable: tableNames.filter((_) => !currentTables.includes(_)),
+			tablesCollected: tables.filter((_) => currentTables.includes(_.name)),
+			tablesRemoved: currentTables
+				.filter((_) => !tableNames.includes(_))
+				.map((name) => ({
+					name,
+					isIncremental: false,
+				})),
+			tablesAvailable: tables.filter((_) => !currentTables.includes(_.name)),
 		};
 	});
 
