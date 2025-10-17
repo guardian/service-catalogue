@@ -54,3 +54,4 @@ jobs:
       BUILD_ARGS: CQ_CLI=${{ needs.CQ_CLI.outputs.CQ_CLI }}
     permissions:
       packages: write
+      contents: read
