@@ -368,16 +368,12 @@ export function addCloudqueryEcsCluster(
 		},
 	];
 
-	const remainingAwsTables = filterAllowedTables(
-		awsTables
-			// Remove tables already collected by other tasks
-			.filter(
-				(_) =>
-					!individualAwsSources
-						.flatMap((_) => _.config.spec.tables ?? [])
-						.includes(_),
-			),
-		[/^aws_.*$/],
+	const collectedAwsTables = individualAwsSources.flatMap(
+		(_) => _.config.spec.tables ?? [],
+	);
+
+	const remainingAwsTables = awsTables.filter(
+		(_) => !collectedAwsTables.includes(_),
 	);
 
 	/*
