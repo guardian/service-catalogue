@@ -48,7 +48,7 @@ There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchab
 function createTeamDashboardLinkAction(team: Team, vulnCount: number) {
 	return {
 		cta: `View all ${vulnCount} vulnerabilities on Grafana`,
-		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-repo_owner=${team.slug}`,
+		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-REPO_OWNER=${team.slug}&var-SCOPE=runtime`,
 	};
 }
 
