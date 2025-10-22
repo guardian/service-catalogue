@@ -496,6 +496,20 @@ export function addCloudqueryEcsCluster(
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
 		},
+		{
+			name: 'GitHubSecretScanningAlerts',
+			description: 'Collect GitHub secret scanning alerts',
+			schedule: Schedule.cron({ hour: '1', minute: '0' }),
+			config: githubSourceConfig({
+				org: gitHubOrgName,
+				tables: filterAllowedTables(githubTables, [
+					/^github_secret_scanning_alerts$/,
+				]),
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
 	];
 
 	const fastlyCredentials = new SecretsManager(scope, 'fastly-credentials', {
