@@ -19463,7 +19463,8 @@ spec:
   name: github
   path: cloudquery/github
   version: v14.2.0
-  tables: []
+  tables:
+    - github_secret_scanning_alerts
   skip_dependent_tables: true
   destinations:
     - postgresql
@@ -19684,7 +19685,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES  ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_secret_scanning_alerts', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
