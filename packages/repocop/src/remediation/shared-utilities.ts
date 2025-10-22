@@ -1,4 +1,4 @@
-import type { view_repo_ownership } from '@prisma/client';
+import type { view_repo_ownership } from 'common/generated/prisma/client.js';
 
 export function findContactableOwners(
 	repo: string,

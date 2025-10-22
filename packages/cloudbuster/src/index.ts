@@ -1,5 +1,5 @@
 import { Anghammarad } from '@guardian/anghammarad';
-import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities } from 'common/generated/prisma/client.js';
 import { logger } from 'common/logs.js';
 import { getFsbpFindings } from 'common/src/database-queries.js';
 import { getPrismaClient } from 'common/src/database-setup.js';

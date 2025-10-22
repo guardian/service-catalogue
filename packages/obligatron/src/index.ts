@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from 'common/generated/prisma/client.js';
 import { logger } from 'common/logs.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
 import { config } from 'dotenv';
