@@ -11,10 +11,10 @@ import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { filterCloudQueryTables } from 'cloudquery-tables';
 import { awsTables } from 'cloudquery-tables/aws';
 import { fastlyTables } from 'cloudquery-tables/fastly';
-import { filterAllowedTables } from 'cloudquery-tables/filter';
-import { githubLanguagesTables, githubTables } from 'cloudquery-tables/github';
+import { githubLanguagesTables } from 'cloudquery-tables/github';
 import type { CloudquerySource } from './cluster';
 import { CloudqueryCluster } from './cluster';
 import {
@@ -105,7 +105,7 @@ export function addCloudqueryEcsCluster(
       A wildcard is used, as there are a lot of tables!
       See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
        */
-					filterAllowedTables(awsTables, [/^aws_organization.*$/]),
+					filterCloudQueryTables([/^aws_organization.*$/]),
 			}),
 			policies: [
 				listOrgsPolicy,
@@ -120,7 +120,7 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
-					tables: filterAllowedTables(awsTables, [
+					tables: filterCloudQueryTables([
 						/^aws_accessanalyzer_.*$/,
 						/^aws_securityhub_.*$/,
 						/^aws_guardduty_.*$/,
@@ -145,7 +145,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
 			schedule: Schedule.rate(Duration.hours(3)),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_cloudformation_.*$/]),
+				tables: filterCloudQueryTables([/^aws_cloudformation_.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
@@ -171,9 +171,7 @@ export function addCloudqueryEcsCluster(
 			writeMode: CloudqueryWriteMode.Overwrite,
 			config: awsSourceConfigForOrganisation(
 				{
-					tables: filterAllowedTables(awsTables, [
-						/^aws_costexplorer_cost_custom$/,
-					]),
+					tables: filterCollectedTables([/^aws_costexplorer_cost_custom$/]),
 				},
 				{
 					use_paid_apis: true,
@@ -211,10 +209,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.rate(Duration.minutes(30)),
 			// Use this to test filtering:
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [
-					/^aws_elbv1_.*$/,
-					/^aws_elbv2_.*$/,
-				]),
+				tables: filterCloudQueryTables([/^aws_elbv1_.*$/, /^aws_elbv2_.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -224,7 +219,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.cron({ minute: '0', hour: '0' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_autoscaling_groups$/]),
+				tables: filterCollectedTables([/^aws_autoscaling_groups$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -234,7 +229,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.cron({ minute: '0', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_acm_.*$/]),
+				tables: filterCloudQueryTables([/^aws_acm_.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -243,7 +238,7 @@ export function addCloudqueryEcsCluster(
 			description: 'Collecting lambda data across the organisation.',
 			schedule: Schedule.cron({ minute: '10', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_lambda_.*$/]),
+				tables: filterCloudQueryTables([/^aws_lambda_.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -252,7 +247,7 @@ export function addCloudqueryEcsCluster(
 			description: 'Collecting ssm parameters across the organisation.',
 			schedule: Schedule.cron({ minute: '20', hour: '1' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_ssm_parameters$/]),
+				tables: filterCollectedTables([/^aws_ssm_parameters$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -262,7 +257,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_cloudwatch_alarms$/]),
+				tables: filterCollectedTables([/^aws_cloudwatch_alarms$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -272,7 +267,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting SNS data across the organisation. Uses include monitoring alarm configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '3' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_sns_topics$/]),
+				tables: filterCollectedTables([/^aws_sns_topics$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -282,7 +277,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
 			schedule: Schedule.cron({ minute: '0', hour: '4' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_s3.*$/]),
+				tables: filterCloudQueryTables([/^aws_s3.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -292,7 +287,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting DynamoDB data across the organisation. Uses include auditing backup configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '5' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_dynamodb.*$/]),
+				tables: filterCloudQueryTables([/^aws_dynamodb.*$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
@@ -302,7 +297,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '6' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [
+				tables: filterCollectedTables([
 					/^aws_rds_instances$/,
 					/^aws_rds_clusters$/,
 					/^aws_rds_db_snapshots$/,
@@ -317,7 +312,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '7' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [
+				tables: filterCollectedTables([
 					/^aws_backup_protected_resources$/,
 					/^aws_backup_vaults$/,
 					/^aws_backup_vault_recovery_points$/,
@@ -332,7 +327,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
 			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [
+				tables: filterCollectedTables([
 					/^aws_ec2_instances$/,
 					/^aws_ec2_security_groups$/,
 				]),
@@ -347,7 +342,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting EC2 image information. Uses include getting information for base images used in AMIgo.',
 			schedule: Schedule.cron({ minute: '0', hour: '0' }),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [/^aws_ec2_images$/]),
+				tables: filterCollectedTables([/^aws_ec2_images$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			runAsSingleton: true,
@@ -359,9 +354,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting IAM credential reports to surface information about outdated or inactive users and access keys',
 			schedule: Schedule.rate(Duration.hours(4)),
 			config: awsSourceConfigForOrganisation({
-				tables: filterAllowedTables(awsTables, [
-					/^aws_iam_credential_reports$/,
-				]),
+				tables: filterCollectedTables([/^aws_iam_credential_reports$/]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
@@ -438,7 +431,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ minute: '0', hour: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
-				tables: filterAllowedTables(githubTables, [
+				tables: filterCollectedTables([
 					/^github_repositories$/,
 					/^github_repository_branches$/,
 					/^github_repository_collaborators$/,
@@ -458,7 +451,7 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfigForRepository({
 				org: gitHubOrgName,
 				repositories: ['guardian/cdk'],
-				tables: filterAllowedTables(githubTables, [/^github_releases$/]),
+				tables: filterCollectedTables([/^github_releases$/]),
 			}),
 			writeMode: CloudqueryWriteMode.Overwrite,
 			secrets: githubSecrets,
@@ -471,7 +464,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
-				tables: filterAllowedTables(githubTables, [
+				tables: filterCollectedTables([
 					/^github_organizations$/,
 					/^github_organization_members$/,
 					/^github_teams$/,
@@ -490,7 +483,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ minute: '0', hour: '2' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
-				tables: filterAllowedTables(githubTables, [/^github_issues$/]),
+				tables: filterCollectedTables([/^github_issues$/]),
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -502,9 +495,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.cron({ hour: '23', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
-				tables: filterAllowedTables(githubTables, [
-					/^github_secret_scanning_alerts$/,
-				]),
+				tables: filterCollectedTables([/^github_secret_scanning_alerts$/]),
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,

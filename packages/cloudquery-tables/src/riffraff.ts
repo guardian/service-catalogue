@@ -3,4 +3,4 @@
  *
  * @see file://./../README.md
  */
-export const riffraffTables = ['riffraff_deploys'];
+export const riffraffTables = ['riffraff_deploys'] as const;

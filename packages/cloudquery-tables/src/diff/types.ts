@@ -1,3 +1,5 @@
+import type { CloudQueryTableToSync } from '../index';
+
 interface Plugin {
 	/**
 	 * The name of the CloudQuery plugin.
@@ -14,7 +16,7 @@ export interface PluginToCheck extends Plugin {
 	/**
 	 * The tables currently being collected.
 	 */
-	currentTables: string[];
+	currentTables: readonly CloudQueryTableToSync[];
 
 	/**
 	 * The path to the JSON file created by the CloudQuery CLI (`cloudquery tables`).
