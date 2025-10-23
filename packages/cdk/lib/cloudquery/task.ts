@@ -25,7 +25,8 @@ import {
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { dump } from 'js-yaml';
-import type { CloudqueryConfig, CloudqueryWriteMode } from './config';
+import type { CloudQuerySourceConfig, CloudqueryWriteMode } from './config';
+import { renderCloudquerySourceConfig } from './config';
 import {
 	postgresDestinationConfig,
 	serviceCatalogueConfigDirectory,
@@ -78,7 +79,7 @@ export interface ScheduledCloudqueryTaskProps
 	 *
 	 * @see https://docs.cloudquery.io/docs/reference/source-spec
 	 */
-	sourceConfig: CloudqueryConfig;
+	sourceConfig: CloudQuerySourceConfig;
 
 	/**
 	 * Any secrets to pass to the CloudQuery container.
@@ -134,7 +135,7 @@ export interface ScheduledCloudqueryTaskProps
 }
 
 export class ScheduledCloudqueryTask extends ScheduledFargateTask {
-	public readonly sourceConfig: CloudqueryConfig;
+	public readonly sourceConfig: CloudQuerySourceConfig;
 	public readonly name: string;
 	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
 		const {
@@ -232,7 +233,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					...additionalCommands,
-					`printf '${dump(sourceConfig)}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
+					`printf '${renderCloudquerySourceConfig(sourceConfig)}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
 					`printf '${dump(destinationConfig)}' > ${serviceCatalogueConfigDirectory}/destination.yaml`,
 					`/app/cloudquery sync ${serviceCatalogueConfigDirectory}/source.yaml ${serviceCatalogueConfigDirectory}/destination.yaml --log-format json --log-console --no-log-file`,
 				].join(';'),
@@ -356,7 +357,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		}
 
 		const tableValues = sourceConfig.spec.tables
-			?.map((table) => table.replaceAll('*', '%'))
+			.sort()
 			.map((table) => `('${table}', ${frequency})`)
 			.join(',');
 

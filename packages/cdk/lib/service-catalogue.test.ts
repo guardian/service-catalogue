@@ -93,7 +93,7 @@ describe('The ServiceCatalogue stack', () => {
 			);
 
 		const collected: string[] = tasks.flatMap(
-			(_) => _.sourceConfig.spec.tables ?? [],
+			(_) => _.sourceConfig.spec.tables,
 		);
 
 		const notCollected = cloudQueryTablesToSync.filter(
@@ -133,7 +133,7 @@ describe('The ServiceCatalogue stack', () => {
 		const invalidTasks = tasks
 			.map((task) => ({
 				name: task.name,
-				numberOfTablesCollected: (task.sourceConfig.spec.tables ?? []).length,
+				numberOfTablesCollected: task.sourceConfig.spec.tables.length,
 			}))
 			.filter((_) => _.numberOfTablesCollected === 0);
 
