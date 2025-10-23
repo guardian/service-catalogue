@@ -5,7 +5,9 @@ export const Images = {
 	cloudquery: ContainerImage.fromRegistry(
 		`ghcr.io/guardian/service-catalogue/cloudquery:stable`,
 	),
-	devxLogs: ContainerImage.fromRegistry('ghcr.io/guardian/devx-logs:2'),
+	devxLogs: ContainerImage.fromRegistry(
+		'ghcr.io/guardian/devx-logs:aa-ecs-task',
+	),
 	singletonImage: ContainerImage.fromRegistry(
 		'ghcr.io/guardian/service-catalogue/singleton:stable',
 	),

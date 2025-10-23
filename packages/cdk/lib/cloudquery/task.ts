@@ -398,6 +398,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				STAGE: stage,
 				APP: app,
 				GU_REPO: thisRepo,
+				TASK_NAME: name,
 			},
 			firelensConfig: {
 				type: FirelensLogRouterType.FLUENTBIT,

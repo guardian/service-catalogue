@@ -670,12 +670,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AmigoBakePackages",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1118,12 +1122,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsCostExplorer",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1837,12 +1845,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsDelegatedToSecurityAccount",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -2551,12 +2563,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsLambda",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3203,12 +3219,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsListOrgs",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3877,12 +3897,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideAutoScalingGroups",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4553,12 +4577,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideBackup",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5257,12 +5285,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideCertificates",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6153,12 +6185,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideCloudFormation",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6583,12 +6619,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideCloudwatchAlarms",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7265,12 +7305,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideDynamoDB",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7968,12 +8012,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideEc2Images",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8672,12 +8720,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideEc2",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9346,12 +9398,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideIamCredentialReports",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10029,12 +10085,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideLoadBalancers",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10706,12 +10766,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideRDS",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -11401,12 +11465,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideS3",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -12105,12 +12173,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideSns",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -13641,12 +13713,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsRemainingData",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -14101,12 +14177,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsSSMParameters",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -14738,12 +14818,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "EndOfLife",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -15457,12 +15541,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "FastlyServices",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -16140,12 +16228,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "Galaxies",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -17113,12 +17205,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubIssues",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -17613,12 +17709,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubLanguages",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -18311,12 +18411,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubReleases",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -19045,12 +19149,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubRepositories",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -19774,12 +19882,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubSecretScanningAlerts",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -20507,12 +20619,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubTeams",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -21222,12 +21338,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "NS1",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -22201,12 +22321,16 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "RiffRaffData",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -26391,7 +26515,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:2",
+            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
