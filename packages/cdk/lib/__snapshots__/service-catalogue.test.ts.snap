@@ -679,7 +679,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1131,7 +1131,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -1854,7 +1854,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -2572,7 +2572,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3228,7 +3228,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -3906,7 +3906,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -4586,7 +4586,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -5294,7 +5294,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6194,7 +6194,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -6628,7 +6628,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -7314,7 +7314,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8021,7 +8021,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -8729,7 +8729,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -9407,7 +9407,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10094,7 +10094,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -10775,7 +10775,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -11474,7 +11474,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -12182,7 +12182,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -13722,7 +13722,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -14186,7 +14186,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -14827,7 +14827,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -15550,7 +15550,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -16237,7 +16237,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -17214,7 +17214,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -17718,7 +17718,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -18420,7 +18420,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -19158,7 +19158,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -19891,7 +19891,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -20628,7 +20628,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -21347,7 +21347,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -22330,7 +22330,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -26515,7 +26515,7 @@ spec:
             "FirelensConfiguration": {
               "Type": "fluentbit",
             },
-            "Image": "ghcr.io/guardian/devx-logs:aa-ecs-task",
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
