@@ -11,7 +11,7 @@ import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
-import type { CloudqueryConfig } from './config';
+import type { CloudQuerySourceConfig } from './config';
 import { CloudqueryWriteMode } from './config';
 import { ScheduledCloudqueryTask } from './task';
 
@@ -39,7 +39,7 @@ export interface CloudquerySource {
 	 *
 	 * This should be the JS version of whatever YAML config you want to use for this source.
 	 */
-	config: CloudqueryConfig;
+	config: CloudQuerySourceConfig;
 
 	/**
 	 * Policies required by this source.

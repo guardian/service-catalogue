@@ -5,14 +5,34 @@ import { galaxiesTables } from 'cloudquery-tables/galaxies';
 import { ns1Tables } from 'cloudquery-tables/ns1';
 import { riffraffTables } from 'cloudquery-tables/riffraff';
 import { CloudQueryPluginVersions } from 'cloudquery-tables/versions';
+import { dump } from 'js-yaml';
 
-export type CloudqueryConfig = {
+export type CloudQuerySourceConfig = {
+	kind: 'source';
 	spec: {
-		tables?: string[];
+		tables: string[];
 		[k: string]: unknown;
 	};
 	[k: string]: unknown;
 };
+
+export type CloudQueryDestinationConfig = {
+	kind: 'destination';
+	[k: string]: unknown;
+};
+
+/**
+ * Returns a YAML string representing the given CloudQuery source configuration with tables sorted alphabetically.
+ */
+export function renderCloudquerySourceConfig(config: CloudQuerySourceConfig) {
+	return dump({
+		...config,
+		spec: {
+			...config.spec,
+			tables: config.spec.tables.sort(),
+		},
+	});
+}
 
 interface CloudqueryTableConfig {
 	/**
@@ -68,7 +88,7 @@ export enum CloudqueryWriteMode {
  */
 export function postgresDestinationConfig(
 	writeMode: CloudqueryWriteMode,
-): CloudqueryConfig {
+): CloudQueryDestinationConfig {
 	return {
 		kind: 'destination',
 		spec: {
@@ -95,7 +115,7 @@ export function postgresDestinationConfig(
 export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	const { tables, concurrency } = tableConfig;
 
 	return {
@@ -126,7 +146,7 @@ export function awsSourceConfig(
 export function awsSourceConfigForOrganisation(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	return awsSourceConfig(tableConfig, {
 		org: {
 			// See: https://github.com/guardian/aws-account-setup/pull/58
@@ -151,7 +171,7 @@ export function awsSourceConfigForAccount(
 	accountNumber: string,
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	return awsSourceConfig(tableConfig, {
 		accounts: [
 			{
@@ -165,7 +185,7 @@ export function awsSourceConfigForAccount(
 
 export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	const { tables, org } = tableConfig;
 
 	return {
@@ -204,7 +224,7 @@ export function githubSourceConfig(
 
 export function githubSourceConfigForRepository(
 	tableConfig: GitHubCloudqueryTableConfigForRepository,
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	const { tables, org, repositories } = tableConfig;
 
 	return {
@@ -246,7 +266,7 @@ export function githubSourceConfigForRepository(
  */
 export function fastlySourceConfig(
 	tableConfig: CloudqueryTableConfig,
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	const { tables } = tableConfig;
 
 	return {
@@ -270,7 +290,7 @@ export function fastlySourceConfig(
 	};
 }
 
-export function endOfLifeSourceConfig(): CloudqueryConfig {
+export function endOfLifeSourceConfig(): CloudQuerySourceConfig {
 	return {
 		kind: 'source',
 		spec: {
@@ -284,7 +304,9 @@ export function endOfLifeSourceConfig(): CloudqueryConfig {
 	};
 }
 
-export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
+export function galaxiesSourceConfig(
+	bucketName: string,
+): CloudQuerySourceConfig {
 	return {
 		kind: 'source',
 		spec: {
@@ -301,7 +323,7 @@ export function galaxiesSourceConfig(bucketName: string): CloudqueryConfig {
 	};
 }
 
-export function ns1SourceConfig(): CloudqueryConfig {
+export function ns1SourceConfig(): CloudQuerySourceConfig {
 	return {
 		kind: 'source',
 		spec: {
@@ -322,7 +344,7 @@ export function ns1SourceConfig(): CloudqueryConfig {
 	};
 }
 
-export function riffraffSourcesConfig(): CloudqueryConfig {
+export function riffraffSourcesConfig(): CloudQuerySourceConfig {
 	return {
 		kind: 'source',
 		spec: {
@@ -347,7 +369,7 @@ export function riffraffSourcesConfig(): CloudqueryConfig {
 
 export function githubLanguagesConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	const { tables, org } = tableConfig;
 
 	return {
@@ -378,7 +400,7 @@ export function amigoBakePackagesConfig(
 	recipesTableName: string,
 	bakesTableName: string,
 	packagesBucketName: string,
-): CloudqueryConfig {
+): CloudQuerySourceConfig {
 	return {
 		kind: 'source',
 		spec: {

@@ -369,7 +369,7 @@ export function addCloudqueryEcsCluster(
 	];
 
 	const collectedAwsTables = individualAwsSources.flatMap(
-		(_) => _.config.spec.tables ?? [],
+		(_) => _.config.spec.tables,
 	);
 
 	const remainingAwsTables = awsTables.filter(
