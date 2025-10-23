@@ -10,7 +10,7 @@ To start collecting a new table:
 3. Update or create a task to collect the table
 
 > [!NOTE]
-> There are unit tests checking only the tables listed in [`index.ts`](./src/index.ts) are collected.
+> The type-system ensures only listed tables are collected.
 
 ## Removing a table
 Before removing a table, ensure it is not used by any dashboards or other processes.

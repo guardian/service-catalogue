@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
+import { isCloudQueryTable } from 'cloudquery-tables';
 import { pluginsToCheck } from './config';
 import { getTableNames } from './parse';
 import { createReport } from './report';
@@ -16,7 +17,7 @@ if (require.main === module) {
 			version,
 			tablesCollected: currentTables.filter((_) => tableNames.includes(_)),
 			tablesRemoved: currentTables.filter((_) => !tableNames.includes(_)),
-			tablesAvailable: tableNames.filter((_) => !currentTables.includes(_)),
+			tablesAvailable: tableNames.filter((_) => !isCloudQueryTable(_)),
 		};
 	});
 

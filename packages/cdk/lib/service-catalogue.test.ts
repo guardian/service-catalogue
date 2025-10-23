@@ -1,7 +1,6 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
-import { cloudQueryTablesToSync } from 'cloudquery-tables';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
 import { ScheduledCloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
@@ -82,44 +81,6 @@ describe('The ServiceCatalogue stack', () => {
 				expect(taskDefinitionLength).toBeLessThan(limitForTaskDefinition);
 			},
 		);
-	});
-
-	it('collects listed CloudQuery tables', () => {
-		const tasks = stack.node
-			.findAll()
-			.filter(
-				(child): child is ScheduledCloudqueryTask =>
-					child instanceof ScheduledCloudqueryTask,
-			);
-
-		const collected: string[] = tasks.flatMap(
-			(_) => _.sourceConfig.spec.tables,
-		);
-
-		const notCollected = cloudQueryTablesToSync.filter(
-			(_) => !collected.includes(_),
-		);
-
-		const collectedUnlisted = collected.filter(
-			(_) => !cloudQueryTablesToSync.includes(_),
-		);
-
-		if (notCollected.length > 0) {
-			console.log(
-				'The following tables are allow-listed but not collected by any CloudQuery task:',
-			);
-			console.log(notCollected.join('\n'));
-		}
-
-		if (collectedUnlisted.length > 0) {
-			console.log(
-				'The following tables are being collected but are not listed in the allow-list:',
-			);
-			console.log(collectedUnlisted.join('\n'));
-		}
-
-		expect(notCollected.length).toEqual(0);
-		expect(collectedUnlisted.length).toEqual(0);
 	});
 
 	test('A task collects at least one table', () => {

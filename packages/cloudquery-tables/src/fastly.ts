@@ -10,4 +10,4 @@ export const fastlyTables = [
 	'fastly_service_health_checks',
 	'fastly_service_versions',
 	'fastly_services',
-];
+] as const;

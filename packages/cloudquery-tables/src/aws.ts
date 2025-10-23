@@ -755,4 +755,4 @@ export const awsTables = [
 	'aws_workspaces_directories',
 	'aws_workspaces_workspaces',
 	'aws_xray_encryption_configs',
-];
+] as const;

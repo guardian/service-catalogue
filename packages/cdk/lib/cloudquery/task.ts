@@ -359,7 +359,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			task.addToTaskRolePolicy(singletonPolicy(cluster));
 		}
 
-		const tableValues = sourceConfig.spec.tables
+		const tableValues = [...sourceConfig.spec.tables]
 			.sort()
 			.map((table) => `('${table}', ${frequency})`)
 			.join(',');

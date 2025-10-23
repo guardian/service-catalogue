@@ -3,4 +3,4 @@
  *
  * @see file://./../README.md
  */
-export const endoflifeTables = ['endoflife_products'];
+export const endoflifeTables = ['endoflife_products'] as const;
