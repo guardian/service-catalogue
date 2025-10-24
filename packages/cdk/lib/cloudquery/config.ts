@@ -1,4 +1,5 @@
 import { GuardianOrganisationalUnits } from '@guardian/aws-account-setup';
+import type { CloudQueryTableToSync } from 'cloudquery-tables';
 import { amigoTables } from 'cloudquery-tables/amigo';
 import { endoflifeTables } from 'cloudquery-tables/endoflife';
 import { galaxiesTables } from 'cloudquery-tables/galaxies';
@@ -10,7 +11,7 @@ import { dump } from 'js-yaml';
 export type CloudQuerySourceConfig = {
 	kind: 'source';
 	spec: {
-		tables: string[];
+		tables: readonly CloudQueryTableToSync[];
 		[k: string]: unknown;
 	};
 	[k: string]: unknown;
@@ -29,7 +30,7 @@ export function renderCloudquerySourceConfig(config: CloudQuerySourceConfig) {
 		...config,
 		spec: {
 			...config.spec,
-			tables: config.spec.tables.sort(),
+			tables: [...config.spec.tables].sort(),
 		},
 	});
 }
@@ -38,7 +39,7 @@ interface CloudqueryTableConfig {
 	/**
 	 * The tables for CloudQuery to collect.
 	 */
-	tables: string[];
+	tables: readonly CloudQueryTableToSync[];
 	concurrency?: number;
 }
 
