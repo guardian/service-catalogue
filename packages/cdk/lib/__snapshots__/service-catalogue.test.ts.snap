@@ -29219,7 +29219,7 @@ spec:
         "ClusterSettings": [
           {
             "Name": "containerInsights",
-            "Value": "enabled",
+            "Value": "enhanced",
           },
         ],
         "Tags": [
