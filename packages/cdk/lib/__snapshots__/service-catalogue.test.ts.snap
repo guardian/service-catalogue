@@ -838,7 +838,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_costexplorer_cost_custom
   skip_dependent_tables: true
@@ -1535,7 +1535,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_accessanalyzer_analyzer_archive_rules
     - aws_accessanalyzer_analyzer_findings
@@ -2289,7 +2289,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_lambda_function_aliases
     - aws_lambda_function_concurrency_configs
@@ -2948,7 +2948,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_organization_resource_policies
     - aws_organizations
@@ -3635,7 +3635,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_autoscaling_groups
   skip_dependent_tables: true
@@ -4314,7 +4314,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_backup_protected_resources
     - aws_backup_vault_recovery_points
@@ -5025,7 +5025,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_acm_certificates
   skip_dependent_tables: true
@@ -5918,7 +5918,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_cloudformation_stack_instance_resource_drifts
     - aws_cloudformation_stack_instance_summaries
@@ -6361,7 +6361,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_cloudwatch_alarms
   skip_dependent_tables: true
@@ -7040,7 +7040,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_dynamodb_backups
     - aws_dynamodb_exports
@@ -7727,7 +7727,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_ec2_images
   skip_dependent_tables: true
@@ -8435,7 +8435,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_ec2_instances
     - aws_ec2_security_groups
@@ -9144,7 +9144,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_iam_credential_reports
   skip_dependent_tables: true
@@ -9823,7 +9823,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_elbv1_load_balancer_policies
     - aws_elbv1_load_balancers
@@ -10511,7 +10511,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_rds_cluster_snapshots
     - aws_rds_clusters
@@ -11193,7 +11193,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_s3_access_grant_instances
     - aws_s3_access_grants
@@ -11923,7 +11923,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_sns_topics
   skip_dependent_tables: true
@@ -12816,7 +12816,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_account_alternate_contacts
     - aws_account_contacts
@@ -13929,7 +13929,7 @@ spec:
 spec:
   name: aws
   path: cloudquery/aws
-  version: v27.5.0
+  version: v32.46.1
   tables:
     - aws_ssm_parameters
   skip_dependent_tables: true
