@@ -709,7 +709,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAmigoBakePackagesTaskDefinition07388B36",
+        "Family": "AmigoBakePackages",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1162,7 +1162,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA5",
+        "Family": "AwsCostExplorer",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -1886,7 +1886,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358",
+        "Family": "AwsDelegatedToSecurityAccount",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -2605,7 +2605,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsLambdaTaskDefinitionDAA42514",
+        "Family": "AwsLambda",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -3262,7 +3262,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A60",
+        "Family": "AwsListOrgs",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -3941,7 +3941,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9A",
+        "Family": "AwsOrgWideAutoScalingGroups",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -4622,7 +4622,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04",
+        "Family": "AwsOrgWideBackup",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -5331,7 +5331,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41E",
+        "Family": "AwsOrgWideCertificates",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -6232,7 +6232,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3AC",
+        "Family": "AwsOrgWideCloudFormation",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -6667,7 +6667,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AE",
+        "Family": "AwsOrgWideCloudwatchAlarms",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -7354,7 +7354,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12",
+        "Family": "AwsOrgWideDynamoDB",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -8062,7 +8062,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578A",
+        "Family": "AwsOrgWideEc2Images",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -8771,7 +8771,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7E",
+        "Family": "AwsOrgWideEc2",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -9450,7 +9450,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FA",
+        "Family": "AwsOrgWideIamCredentialReports",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -10138,7 +10138,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3",
+        "Family": "AwsOrgWideLoadBalancers",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -10820,7 +10820,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6A",
+        "Family": "AwsOrgWideRDS",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -11520,7 +11520,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443A",
+        "Family": "AwsOrgWideS3",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -12229,7 +12229,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsOrgWideSnsTaskDefinitionEEAC71DE",
+        "Family": "AwsOrgWideSns",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -13770,7 +13770,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33A",
+        "Family": "AwsRemainingData",
         "Memory": "3072",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -14235,7 +14235,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceAwsSSMParametersTaskDefinitionA4223CD9",
+        "Family": "AwsSSMParameters",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -14877,7 +14877,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceEndOfLifeTaskDefinition893ABC22",
+        "Family": "EndOfLife",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -15601,7 +15601,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceFastlyServicesTaskDefinition92125649",
+        "Family": "FastlyServices",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -16289,7 +16289,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGalaxiesTaskDefinition6724C33F",
+        "Family": "Galaxies",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -17267,7 +17267,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGitHubIssuesTaskDefinition750BB414",
+        "Family": "GitHubIssues",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -17772,7 +17772,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGitHubLanguagesTaskDefinitionB1DA60BF",
+        "Family": "GitHubLanguages",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -18475,7 +18475,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGitHubReleasesTaskDefinitionD74412B6",
+        "Family": "GitHubReleases",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -19214,7 +19214,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGitHubRepositoriesTaskDefinition13A7DF48",
+        "Family": "GitHubRepositories",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -19948,7 +19948,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGitHubSecretScanningAlertsTaskDefinitionF2E0A01F",
+        "Family": "GitHubSecretScanningAlerts",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -20686,7 +20686,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceGitHubTeamsTaskDefinition5CFD9707",
+        "Family": "GitHubTeams",
         "Memory": "4096",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -21406,7 +21406,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceNS1TaskDefinitionE32F0EBB",
+        "Family": "NS1",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -22390,7 +22390,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueCloudquerySourceRiffRaffDataTaskDefinitionD52C3076",
+        "Family": "RiffRaffData",
         "Memory": "512",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -26909,7 +26909,7 @@ spec:
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA589285154": {
+    "refreshmaterializedviewlambdatriggerAwsCostExplorer90816841": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -26984,7 +26984,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA5AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944871E048DF": {
+    "refreshmaterializedviewlambdatriggerAwsCostExplorerAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448DF571615": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -26996,14 +26996,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsCostExplorerTaskDefinitionD8C37FA589285154",
+            "refreshmaterializedviewlambdatriggerAwsCostExplorer90816841",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944804BCC0B4": {
+    "refreshmaterializedviewlambdatriggerAwsDelegatedToSecurityAccountAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488A543449": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -27015,14 +27015,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358DCB18522",
+            "refreshmaterializedviewlambdatriggerAwsDelegatedToSecurityAccountBF02072E",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionD9E19358DCB18522": {
+    "refreshmaterializedviewlambdatriggerAwsDelegatedToSecurityAccountBF02072E": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27097,26 +27097,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsLambdaTaskDefinitionDAA42514AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448B3852359": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsLambdaTaskDefinitionDAA42514F1EF47FA",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsLambdaTaskDefinitionDAA42514F1EF47FA": {
+    "refreshmaterializedviewlambdatriggerAwsLambda026DCBB2": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27191,7 +27172,45 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A600599C2A0": {
+    "refreshmaterializedviewlambdatriggerAwsLambdaAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944887E7B8B5": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsLambda026DCBB2",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsListOrgsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94483D8FEF5F": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsListOrgsC4943291",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsListOrgsC4943291": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27266,7 +27285,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A60AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448B643483B": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideAutoScalingGroupsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94487981405E": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -27278,14 +27297,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsListOrgsTaskDefinition2D3A9A600599C2A0",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideAutoScalingGroupsEC4D6F06",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9AA73E4306": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideAutoScalingGroupsEC4D6F06": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27360,45 +27379,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E326D7BD": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideAutoScalingGroupsTaskDefinition59C11D9AA73E4306",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E7D4F97D": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04F73DB427",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideBackupTaskDefinitionC269FE04F73DB427": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideBackup1ED589F7": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27473,7 +27454,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41EAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448EB48E93E": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideBackupAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94485DF939E2": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -27485,14 +27466,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41EBCFEBF4C",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideBackup1ED589F7",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCertificatesTaskDefinition24CEF41EBCFEBF4C": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideCertificates621CD7CC": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27567,7 +27548,45 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3AC429D4FA0": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideCertificatesAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944887DDBBC7": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsOrgWideCertificates621CD7CC",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsOrgWideCloudFormationAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944841AE608C": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsOrgWideCloudFormationB8956237",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsOrgWideCloudFormationB8956237": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27642,26 +27661,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3ACAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488A3427AC": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudFormationTaskDefinition3044E3AC429D4FA0",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AE2E169362": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideCloudwatchAlarms174E1EFB": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27736,7 +27736,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AEAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488838469A": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideCloudwatchAlarmsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94484260483A": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -27748,14 +27748,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionEDC746AE2E169362",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideCloudwatchAlarms174E1EFB",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12945D102A": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideDynamoDB30247D68": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -27830,7 +27830,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488FBAC13A": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideDynamoDBAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94482460516E": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -27842,108 +27842,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideDynamoDBTaskDefinition5F181D12945D102A",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideDynamoDB30247D68",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578A41CCA798": {
-      "Properties": {
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers.exitCode": [
-              {
-                "numeric": [
-                  "=",
-                  0,
-                ],
-              },
-            ],
-            "containers.name": [
-              "CloudquerySource-AwsOrgWideEc2ImagesContainer",
-            ],
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stopCode": [
-              "EssentialContainerExited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinition10C34618",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "RefreshMaterializedViewF0E38938",
-                "Arn",
-              ],
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E5F187E2": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionBFD8578A41CCA798",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7E56A0E5BB": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideEc26842312B": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28018,7 +27924,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7EAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944889C189EC": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideEc2AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94485642F263": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -28030,14 +27936,127 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideEc2TaskDefinitionBBF19A7E56A0E5BB",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideEc26842312B",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FAA1A9FC8A": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideEc2ImagesAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448CCC354B9": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsOrgWideEc2ImagesF6217EC7",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsOrgWideEc2ImagesF6217EC7": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsOrgWideEc2ImagesContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinition10C34618",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "refreshmaterializedviewlambdatriggerAwsOrgWideIamCredentialReportsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448459AC520": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsOrgWideIamCredentialReportsD3A611A5",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsOrgWideIamCredentialReportsD3A611A5": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28112,45 +28131,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FAAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448A4775AD0": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinition3443A1FAA1A9FC8A",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944890D99406": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3F3FB92EC",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionA0D1BDA3F3FB92EC": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideLoadBalancers4A6D50CD": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28225,7 +28206,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944861B51720": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideLoadBalancersAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94485EC1BA09": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -28237,14 +28218,33 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6AEFE0A57D",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideLoadBalancers4A6D50CD",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideRDSTaskDefinition222E5C6AEFE0A57D": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideRDSAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448026B60B5": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsOrgWideRDSD9D7874A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsOrgWideRDSD9D7874A": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28319,7 +28319,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443A7D858435": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideS3A3712FA4": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28394,7 +28394,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94483DC47EE3": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideS3AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488C5E3545": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -28406,14 +28406,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideS3TaskDefinition6734443A7D858435",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideS3A3712FA4",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideSnsTaskDefinitionEEAC71DE1E2919A6": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideSns8C904DC2": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28488,7 +28488,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideSnsTaskDefinitionEEAC71DEAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94488F332BCF": {
+    "refreshmaterializedviewlambdatriggerAwsOrgWideSnsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944872A3FF15": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -28500,14 +28500,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsOrgWideSnsTaskDefinitionEEAC71DE1E2919A6",
+            "refreshmaterializedviewlambdatriggerAwsOrgWideSns8C904DC2",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33A8780E691": {
+    "refreshmaterializedviewlambdatriggerAwsRemainingData7852A71A": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28582,7 +28582,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33AAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944883F8E339": {
+    "refreshmaterializedviewlambdatriggerAwsRemainingDataAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944815B7F5CC": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -28594,14 +28594,14 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsRemainingDataTaskDefinition14D0B33A8780E691",
+            "refreshmaterializedviewlambdatriggerAwsRemainingData7852A71A",
             "Arn",
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsSSMParametersTaskDefinitionA4223CD9A3C673AA": {
+    "refreshmaterializedviewlambdatriggerAwsSSMParameters30000672": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28676,7 +28676,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsSSMParametersTaskDefinitionA4223CD9AllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944825482298": {
+    "refreshmaterializedviewlambdatriggerAwsSSMParametersAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448811CEBF2": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -28688,7 +28688,7 @@ spec:
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerServiceCatalogueCloudquerySourceAwsSSMParametersTaskDefinitionA4223CD9A3C673AA",
+            "refreshmaterializedviewlambdatriggerAwsSSMParameters30000672",
             "Arn",
           ],
         },
