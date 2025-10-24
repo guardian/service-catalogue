@@ -26541,6 +26541,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "prisma-migrate-task",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
@@ -26660,7 +26664,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueprismamigratetaskTaskDefinition92709D5F",
+        "Family": "prisma-migrate-task",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -26674,6 +26678,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
           },
           {
             "Key": "Stack",
@@ -26723,6 +26731,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
           },
           {
             "Key": "Stack",
@@ -26833,6 +26845,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -26895,6 +26911,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
           },
           {
             "Key": "Stack",

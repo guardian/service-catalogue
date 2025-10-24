@@ -182,6 +182,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		});
 
 		/*
+		The `Name` tag is used by our `cli` project.
+		See `/repo/root/packages/cli`.
 		A scheduled task (i.e. `this`) cannot be tagged, so we tag the task definition instead.
 		 */
 		Tags.of(task).add('Name', name);
