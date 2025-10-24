@@ -26664,7 +26664,7 @@ spec:
             "Arn",
           ],
         },
-        "Family": "ServiceCatalogueprismamigratetaskTaskDefinition92709D5F",
+        "Family": "prisma-migrate-task",
         "Memory": "1024",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [

@@ -63,6 +63,7 @@ export function addPrismaMigrateTask(
 			cpu: 512,
 			memoryLimitMiB: 1024,
 			taskRole,
+			family: app,
 		},
 	);
 
