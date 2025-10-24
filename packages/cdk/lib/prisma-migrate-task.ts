@@ -1,5 +1,6 @@
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
+import { Tags } from 'aws-cdk-lib';
 import type { ICluster, Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	FargateTaskDefinition,
@@ -64,6 +65,12 @@ export function addPrismaMigrateTask(
 			taskRole,
 		},
 	);
+
+	/*
+	The `Name` tag is used by our `cli` project.
+	See `/repo/root/packages/cli`.
+	 */
+	Tags.of(taskDefinition).add('Name', app);
 
 	const firelensLogRouter = taskDefinition.addFirelensLogRouter(
 		`${app}Firelens`,

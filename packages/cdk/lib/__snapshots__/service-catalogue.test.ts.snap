@@ -26680,6 +26680,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -26727,6 +26731,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
           },
           {
             "Key": "Stack",
@@ -26837,6 +26845,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -26899,6 +26911,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "prisma-migrate-task",
           },
           {
             "Key": "Stack",
