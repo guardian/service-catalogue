@@ -2,6 +2,7 @@ import 'source-map-support/register';
 import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
 import { App, Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
+import { ContainerInsights } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { ServiceCatalogueProps } from '../lib/service-catalogue';
 import { ServiceCatalogue } from '../lib/service-catalogue';
@@ -26,6 +27,7 @@ export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 	databaseMultiAz: true,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
 	databaseEbsByteBalanceAlarm: true,
+	containerInsights: ContainerInsights.ENHANCED,
 };
 
 new ServiceCatalogue(
@@ -48,6 +50,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	databaseMultiAz: false,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 	databaseEbsByteBalanceAlarm: false,
+	containerInsights: ContainerInsights.DISABLED,
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml
