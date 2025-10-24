@@ -78,6 +78,7 @@ export function addPrismaMigrateTask(
 				STAGE: stage,
 				APP: app,
 				GU_REPO: 'guardian/service-catalogue',
+				TASK_NAME: app,
 			},
 			firelensConfig: {
 				type: FirelensLogRouterType.FLUENTBIT,

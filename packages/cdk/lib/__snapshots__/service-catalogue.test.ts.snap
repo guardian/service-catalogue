@@ -26541,6 +26541,10 @@ spec:
                 "Name": "GU_REPO",
                 "Value": "guardian/service-catalogue",
               },
+              {
+                "Name": "TASK_NAME",
+                "Value": "prisma-migrate-task",
+              },
             ],
             "Essential": true,
             "FirelensConfiguration": {
