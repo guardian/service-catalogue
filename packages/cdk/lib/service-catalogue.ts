@@ -24,6 +24,7 @@ import {
 } from 'aws-cdk-lib/aws-cloudwatch';
 import type { InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Peer, Port } from 'aws-cdk-lib/aws-ec2';
+import type { ContainerInsights } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstanceProps } from 'aws-cdk-lib/aws-rds';
@@ -118,6 +119,8 @@ export interface ServiceCatalogueProps extends GuStackProps {
 	 * Should the EBS byte balance metric of the database be monitored?
 	 */
 	databaseEbsByteBalanceAlarm: boolean;
+
+	containerInsights: ContainerInsights;
 }
 
 export class ServiceCatalogue extends GuStack {
@@ -135,6 +138,7 @@ export class ServiceCatalogue extends GuStack {
 			databaseMultiAz,
 			databaseInstanceType,
 			databaseEbsByteBalanceAlarm,
+			containerInsights,
 		} = props;
 
 		const alertTopicName = 'devx-sec-ops-reliability-alerts';
@@ -303,6 +307,7 @@ export class ServiceCatalogue extends GuStack {
 			logShippingPolicy,
 			gitHubOrg,
 			cloudqueryApiKey,
+			containerInsights,
 		});
 
 		addCloudqueryUsageLambda(this, {
