@@ -22,6 +22,7 @@ describe('Config generation, and converting to YAML', () => {
 		  version: v7.2.0
 		  write_mode: overwrite-delete-stale
 		  migrate_mode: forced
+		  send_sync_summary: true
 		  spec:
 		    connection_string: >-
 		      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
