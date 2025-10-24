@@ -48,5 +48,7 @@ spec:
   # See: https://www.cloudquery.io/docs/advanced-topics/managing-versions#managing-plugin-versions
   migrate_mode: 'forced'
 
+  # When `true`, each sync will add a row to the `cloudquery_sync_summaries` table.
+  send_sync_summary: true
   spec:
     connection_string: ${DATABASE_URL}

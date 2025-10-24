@@ -98,6 +98,7 @@ export function postgresDestinationConfig(
 			version: `v${CloudQueryPluginVersions.CloudqueryPostgresDestination}`,
 			write_mode: writeMode,
 			migrate_mode: 'forced',
+			send_sync_summary: true, // When `true`, each sync will add a row to the `cloudquery_sync_summaries` table.
 			spec: {
 				connection_string: [
 					'user=${DB_USERNAME}',
