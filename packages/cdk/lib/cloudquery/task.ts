@@ -178,6 +178,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			memoryLimitMiB,
 			cpu,
 			taskRole,
+			family: name,
 		});
 
 		/*
