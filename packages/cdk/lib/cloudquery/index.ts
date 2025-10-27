@@ -444,6 +444,7 @@ export function addCloudqueryEcsCluster(
 					/^github_repository_collaborators$/,
 					/^github_repository_custom_properties$/,
 					/^github_repository_sboms$/,
+					/^github_secret_scanning_alerts$/,
 					/^github_workflows$/,
 				]),
 			}),
@@ -491,20 +492,6 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: filterAllowedTables(githubTables, [/^github_issues$/]),
-			}),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 2048,
-		},
-		{
-			name: 'GitHubSecretScanningAlerts',
-			description: 'Collect GitHub secret scanning alerts',
-			schedule: Schedule.cron({ hour: '1', minute: '0' }),
-			config: githubSourceConfig({
-				org: gitHubOrgName,
-				tables: filterAllowedTables(githubTables, [
-					/^github_secret_scanning_alerts$/,
-				]),
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
