@@ -19,7 +19,7 @@ describe('Config generation, and converting to YAML', () => {
 		  name: postgresql
 		  registry: github
 		  path: cloudquery/postgresql
-		  version: v7.2.0
+		  version: v8.13.0
 		  write_mode: overwrite-delete-stale
 		  migrate_mode: forced
 		  send_sync_summary: true
