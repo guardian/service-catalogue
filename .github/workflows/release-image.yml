@@ -1,9 +1,6 @@
 # Find full documentation here https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
 name: Release image
 
-permissions:
-  contents: read
-
 on:
   workflow_call:
     inputs:
@@ -55,15 +52,11 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
-        with:
-          context: ./containers/${IMAGE_NAME}
-          file: containers/${IMAGE_NAME}/Dockerfile
+        with: # zizmor: ignore[template-injection] Value is not used to generate a shell script, but is passed as an argument to the action, so it is not vulnerable to the injection. See https://securitylab.github.com/resources/github-actions-untrusted-input/.
+          context: ./containers/${{ inputs.IMAGE_NAME }}
+          file: containers/${{ inputs.IMAGE_NAME }}/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: ${BUILD_ARGS}
-
-        env:
-          IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
-          BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
+          build-args: ${{ inputs.BUILD_ARGS }}
