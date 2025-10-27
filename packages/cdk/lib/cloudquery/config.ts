@@ -93,7 +93,7 @@ export function postgresDestinationConfig(
 		kind: 'destination',
 		spec: {
 			name: 'postgresql',
-			registry: 'github',
+			registry: 'cloudquery',
 			path: 'cloudquery/postgresql',
 			version: `v${CloudQueryPluginVersions.CloudqueryPostgresDestination}`,
 			write_mode: writeMode,

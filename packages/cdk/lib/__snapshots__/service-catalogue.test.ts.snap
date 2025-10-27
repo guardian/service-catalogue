@@ -416,7 +416,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -872,7 +872,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite
@@ -1596,7 +1596,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -2315,7 +2315,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -2972,7 +2972,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -3651,7 +3651,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -4332,7 +4332,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -5041,7 +5041,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -5942,7 +5942,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -6377,7 +6377,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -7064,7 +7064,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -7743,7 +7743,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -8452,7 +8452,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -9160,7 +9160,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -9848,7 +9848,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -10530,7 +10530,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -11230,7 +11230,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -11939,7 +11939,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -13480,7 +13480,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -13945,7 +13945,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -14587,7 +14587,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -15297,7 +15297,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -15996,7 +15996,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -16935,7 +16935,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -17440,7 +17440,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -18143,7 +18143,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite
@@ -18882,7 +18882,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -19616,7 +19616,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -20354,7 +20354,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -21081,7 +21081,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
@@ -22058,7 +22058,7 @@ spec:
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
-  registry: github
+  registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
   write_mode: overwrite-delete-stale
