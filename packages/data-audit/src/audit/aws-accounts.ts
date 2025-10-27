@@ -1,5 +1,5 @@
 import type { Account } from '@aws-sdk/client-organizations';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from 'common/generated/prisma/client.js';
 import type { Audit } from './database.js';
 
 function numberOfAwsAccountsFromDatabase(

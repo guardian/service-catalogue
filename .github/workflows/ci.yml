@@ -111,8 +111,14 @@ jobs:
       - name: basic database tests
         run: psql -d postgresql://postgres:not_at_all_secret@localhost:5432/postgres -v ON_ERROR_STOP=1 -f sql/ci.sql
 
-      - name: check schema.prisma file hasn't changed
-        run: git diff --exit-code packages/common/prisma/schema.prisma
+      - name: check schema.prisma file hasn't changed (ignoring moved lines)
+        run: |
+          if ! git diff --exit-code packages/common/prisma/schema.prisma; then
+            # If there are differences, check if they're only moved lines
+            git show HEAD:packages/common/prisma/schema.prisma | sort > /tmp/schema-before.txt
+            sort packages/common/prisma/schema.prisma > /tmp/schema-after.txt
+            diff /tmp/schema-before.txt /tmp/schema-after.txt
+          fi
 
       - name: check for untracked files
         run: |

@@ -3,7 +3,7 @@ import type {
 	aws_securityhub_findings,
 	github_repositories,
 	repocop_vulnerabilities,
-} from '@prisma/client';
+} from 'common/generated/prisma/client.js';
 
 export type SecurityHubSeverity =
 	| 'CRITICAL'

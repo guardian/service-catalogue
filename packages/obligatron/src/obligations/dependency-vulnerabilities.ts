@@ -1,4 +1,7 @@
-import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
+import type {
+	PrismaClient,
+	repocop_vulnerabilities,
+} from 'common/generated/prisma/client.js';
 import { stringToSeverity, toNonEmptyArray } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
 import {
