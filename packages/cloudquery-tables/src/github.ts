@@ -16,9 +16,9 @@ export const githubTables = [
 	'github_team_repositories',
 	'github_teams',
 	'github_workflows',
-];
+] as const;
 
 /**
  * Tables collected with https://github.com/guardian/cq-source-github-languages
  */
-export const githubLanguagesTables = ['github_languages'];
+export const githubLanguagesTables = ['github_languages'] as const;

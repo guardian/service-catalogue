@@ -8,4 +8,4 @@ export const galaxiesTables = [
 	'galaxies_teams_table',
 	'galaxies_streams_table',
 	'galaxies_people_profile_info_table',
-];
+] as const;

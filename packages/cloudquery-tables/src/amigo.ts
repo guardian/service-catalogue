@@ -3,4 +3,4 @@
  *
  * @see file://./../README.md
  */
-export const amigoTables = ['amigo_bake_packages'];
+export const amigoTables = ['amigo_bake_packages'] as const;

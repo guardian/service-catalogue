@@ -3,4 +3,4 @@
  *
  * @see file://./../README.md
  */
-export const ns1Tables = ['ns1_records', 'ns1_zones'];
+export const ns1Tables = ['ns1_records', 'ns1_zones'] as const;
