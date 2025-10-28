@@ -30,7 +30,7 @@ export function renderCloudquerySourceConfig(config: CloudQuerySourceConfig) {
 		...config,
 		spec: {
 			...config.spec,
-			tables: [...config.spec.tables].sort(),
+			tables: config.spec.tables.toSorted(),
 		},
 	});
 }
