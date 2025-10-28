@@ -19521,7 +19521,7 @@ spec:
     },
     "CloudquerySourceGitHubSecretScanningAlertsScheduledEventRule60C28F86": {
       "Properties": {
-        "ScheduleExpression": "cron(0 1 * * ? *)",
+        "ScheduleExpression": "cron(0 23 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {

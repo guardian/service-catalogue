@@ -499,7 +499,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'GitHubSecretScanningAlerts',
 			description: 'Collect GitHub secret scanning alerts',
-			schedule: Schedule.cron({ hour: '1', minute: '0' }),
+			schedule: Schedule.cron({ hour: '23', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: filterAllowedTables(githubTables, [
