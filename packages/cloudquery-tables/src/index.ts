@@ -51,10 +51,9 @@ export function isCloudQueryTable(
 export function filterCloudQueryTables(
 	queries: RegExp[],
 ): CloudQueryTableToSync[] {
-	const filtered = _cloudQueryTablesToSync
+	const matches = _cloudQueryTablesToSync
 		.filter((table) => queries.some((regex) => regex.test(table)))
 		.sort();
 
-	// TODO remove this cast
-	return filtered as CloudQueryTableToSync[];
+	return matches.filter((_) => isCloudQueryTable(_));
 }
