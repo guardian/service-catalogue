@@ -20157,6 +20157,7 @@ spec:
   tables:
     - github_organization_members
     - github_organizations
+    - github_saml_identities
     - github_team_members
     - github_team_repositories
     - github_teams
@@ -20385,7 +20386,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_organization_members', 604800000),('github_organizations', 604800000),('github_team_members', 604800000),('github_team_repositories', 604800000),('github_teams', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_organization_members', 604800000),('github_organizations', 604800000),('github_saml_identities', 604800000),('github_team_members', 604800000),('github_team_repositories', 604800000),('github_teams', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
