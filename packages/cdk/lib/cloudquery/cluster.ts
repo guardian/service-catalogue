@@ -1,12 +1,8 @@
 import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import type { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
-import {
-	Cluster,
-	ContainerInsights,
-	type RepositoryImage,
-	Secret,
-} from 'aws-cdk-lib/aws-ecs';
+import type { ContainerInsights } from 'aws-cdk-lib/aws-ecs';
+import { Cluster, type RepositoryImage, Secret } from 'aws-cdk-lib/aws-ecs';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
@@ -140,6 +136,8 @@ interface CloudqueryClusterProps extends AppIdentity {
 	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
 	 */
 	enableCloudquerySchedules: boolean;
+
+	containerInsights: ContainerInsights;
 }
 
 /**
@@ -147,13 +145,11 @@ interface CloudqueryClusterProps extends AppIdentity {
  * created in the private subnets of the VPC provided.
  */
 export class CloudqueryCluster extends Cluster {
-	//aws-cdk-lib.aws_ecs.ClusterProps#containerInsights is deprecated.
-	//moved to containerInsightsV2
 	constructor(scope: GuStack, id: string, props: CloudqueryClusterProps) {
 		super(scope, id, {
 			vpc: props.vpc,
 			enableFargateCapacityProviders: true,
-			containerInsightsV2: ContainerInsights.ENABLED,
+			containerInsightsV2: props.containerInsights,
 		});
 
 		const {
