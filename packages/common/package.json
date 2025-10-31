@@ -24,6 +24,6 @@
 	"devDependencies": {
 		"prisma": "^6.15.0",
 		"@octokit/types": "^15.0.0",
-		"@types/aws-lambda": "^8.10.152"
+		"@types/aws-lambda": "^8.10.157"
 	}
 }

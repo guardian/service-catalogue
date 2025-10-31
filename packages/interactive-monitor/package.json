@@ -12,6 +12,6 @@
 	},
 	"author": "guardian",
 	"dependencies": {
-		"@types/aws-lambda": "^8.10.152"
+		"@types/aws-lambda": "^8.10.157"
 	}
 }
