@@ -61,7 +61,6 @@ describe('Config generation, and converting to YAML', () => {
 		const config = awsSourceConfigForAccount(GuardianAwsAccounts.Security, {
 			tables: [
 				'aws_accessanalyzer_analyzers',
-				'aws_accessanalyzer_analyzer_archive_rules',
 				'aws_accessanalyzer_analyzer_findings',
 			],
 		});
@@ -73,7 +72,6 @@ describe('Config generation, and converting to YAML', () => {
 		  version: v32.47.1
 		  tables:
 		    - aws_accessanalyzer_analyzers
-		    - aws_accessanalyzer_analyzer_archive_rules
 		    - aws_accessanalyzer_analyzer_findings
 		  skip_dependent_tables: true
 		  destinations:
