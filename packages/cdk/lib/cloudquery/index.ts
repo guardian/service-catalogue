@@ -464,6 +464,7 @@ export function addCloudqueryEcsCluster(
 				tables: [
 					'github_organizations',
 					'github_organization_members',
+					'github_saml_identities',
 					'github_teams',
 					'github_team_members',
 					'github_team_repositories',
