@@ -70,7 +70,7 @@ export async function main() {
 		);
 	}
 	// *** NOTIFICATION SENDING ***
-	const anghammaradClient = new Anghammarad();
+	const anghammaradClient = await Anghammarad.getInstance();
 
 	await Promise.all(
 		digests.map(

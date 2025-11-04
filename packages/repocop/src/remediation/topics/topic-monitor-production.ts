@@ -40,16 +40,14 @@ async function notifyOneTeam(
 	teamSlug: string,
 	messageTextFields: AnghammaradTextFields,
 ) {
-	const { app, stage, anghammaradSnsTopic } = config;
-	const client = new Anghammarad();
-	await client.notify({
-		subject: messageTextFields.subject,
+	const { app, stage } = config;
+	const client = await Anghammarad.getInstance();
+	await client.notify(messageTextFields.subject, {
 		message: messageTextFields.message,
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: `${app} ${stage}`,
-		topicArn: anghammaradSnsTopic,
+		sender: `${app} ${stage}`,
 		threadKey: anghammaradThreadKey(fullRepoName),
 	});
 }
