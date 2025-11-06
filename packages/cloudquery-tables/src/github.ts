@@ -11,6 +11,7 @@ export const githubTables = [
 	'github_repository_collaborators',
 	'github_repository_custom_properties',
 	'github_repository_sboms',
+	'github_saml_identities',
 	'github_secret_scanning_alerts',
 	'github_team_members',
 	'github_team_repositories',

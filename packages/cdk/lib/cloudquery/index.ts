@@ -467,6 +467,7 @@ export function addCloudqueryEcsCluster(
 					'github_teams',
 					'github_team_members',
 					'github_team_repositories',
+					'github_saml_identities'
 				],
 			}),
 			secrets: githubSecrets,
