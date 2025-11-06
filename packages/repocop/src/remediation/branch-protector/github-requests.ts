@@ -56,3 +56,30 @@ export async function isBranchProtected(
 	});
 	return branchData.data.protected;
 }
+
+// temp function
+export async function setRepoCustomProperty(
+	octokit: Octokit,
+	gitHubOrg: string,
+	repoName: string,
+	propertyName: string,
+	propertyValue: string,
+) {
+	await octokit.request('PATCH /repos/{owner}/{repo}/properties/values', {
+		owner: gitHubOrg,
+		repo: repoName,
+		properties: [
+			{
+				property_name: propertyName,
+				value: propertyValue,
+			},
+		],
+		headers: {
+			'X-GitHub-Api-Version': '2022-11-28',
+		},
+	});
+	console.log(
+		`Have set ${gitHubOrg}/${repoName}'s custom property ${propertyName} to ${propertyValue}`,
+	);
+}
+// end temp
