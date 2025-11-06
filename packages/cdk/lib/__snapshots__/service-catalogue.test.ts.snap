@@ -14460,7 +14460,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('endoflife_products', 2592000000) ON CONFLICT (table_name) DO UPDATE SET frequency = 2592000000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('endoflife_products', 2678400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 2678400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
