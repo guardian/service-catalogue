@@ -3,7 +3,11 @@ import { awsTables } from './aws';
 import { endoflifeTables } from './endoflife';
 import { fastlyTables } from './fastly';
 import { galaxiesTables } from './galaxies';
-import { githubLanguagesTables, githubTables } from './github';
+import {
+	githubEnterpriseTables,
+	githubLanguagesTables,
+	githubTables,
+} from './github';
 import { ns1Tables } from './ns1';
 import { riffraffTables } from './riffraff';
 
@@ -17,6 +21,7 @@ export type CloudQueryTableToSync =
 	| (typeof fastlyTables)[number]
 	| (typeof galaxiesTables)[number]
 	| (typeof githubTables)[number]
+	| (typeof githubEnterpriseTables)[number]
 	| (typeof githubLanguagesTables)[number]
 	| (typeof ns1Tables)[number]
 	| (typeof riffraffTables)[number];
@@ -34,6 +39,7 @@ export const _cloudQueryTablesToSync: string[] = [
 	...fastlyTables,
 	...galaxiesTables,
 	...githubTables,
+	...githubEnterpriseTables,
 	...githubLanguagesTables,
 	...ns1Tables,
 	...riffraffTables,

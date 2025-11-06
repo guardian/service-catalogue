@@ -25,6 +25,7 @@ import {
 	endOfLifeSourceConfig,
 	fastlySourceConfig,
 	galaxiesSourceConfig,
+	githubEnterpriseSourceConfig,
 	githubLanguagesConfig,
 	githubSourceConfig,
 	githubSourceConfigForRepository,
@@ -420,6 +421,37 @@ export function addCloudqueryEcsCluster(
 		`echo -n $GITHUB_INSTALLATION_ID >  ${serviceCatalogueConfigDirectory}/github-installation-id`,
 	];
 
+	// Separate GitHub app for managing enterprise-level API calls
+	// See: https://docs.github.com/en/enterprise-cloud@latest/apps/using-github-apps/installing-a-github-app-on-your-enterprise#about-installing-github-apps-on-your-enterprise
+	const cloudqueryGithubEnterpriseCredentials = new SecretsManager(
+		scope,
+		'github-enterprise-credentials',
+		{
+			secretName: `/${stage}/${stack}/${app}/github-enterprise-credentials`,
+		},
+	);
+
+	const githubEnterpriseSecrets: Record<string, Secret> = {
+		GITHUB_ENTERPRISE_PRIVATE_KEY: Secret.fromSecretsManager(
+			cloudqueryGithubEnterpriseCredentials,
+			'private-key',
+		),
+		GITHUB_ENTERPRISE_APP_ID: Secret.fromSecretsManager(
+			cloudqueryGithubEnterpriseCredentials,
+			'app-id',
+		),
+		GITHUB_ENTERPRISE_INSTALLATION_ID: Secret.fromSecretsManager(
+			cloudqueryGithubEnterpriseCredentials,
+			'installation-id',
+		),
+	};
+
+	const additionalGithubEnterpriseCommands = [
+		`echo -n $GITHUB_ENTERPRISE_PRIVATE_KEY | base64 -d > ${serviceCatalogueConfigDirectory}/github-enterprise-private-key`,
+		`echo -n $GITHUB_ENTERPRISE_APP_ID >  ${serviceCatalogueConfigDirectory}/github-enterprise-app-id`,
+		`echo -n $GITHUB_ENTERPRISE_INSTALLATION_ID >  ${serviceCatalogueConfigDirectory}/github-enterprise-installation-id`,
+	];
+
 	const githubSources: CloudquerySource[] = [
 		{
 			name: 'GitHubRepositories',
@@ -464,7 +496,6 @@ export function addCloudqueryEcsCluster(
 				tables: [
 					'github_organizations',
 					'github_organization_members',
-					'github_saml_identities',
 					'github_teams',
 					'github_team_members',
 					'github_team_repositories',
@@ -497,6 +528,22 @@ export function addCloudqueryEcsCluster(
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+	];
+
+	const githubEnterpriseSources: CloudquerySource[] = [
+		{
+			name: 'GitHubEnterprise',
+			description:
+				'Collect GitHub Enterprise data. Uses include SAML identity mapping. Requires enterprise-level GitHub app authentication.',
+			schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '30' }), // Every Monday at 10:30AM UTC
+			config: githubEnterpriseSourceConfig({
+				org: gitHubOrgName,
+				tables: ['github_saml_identities'],
+			}),
+			secrets: githubEnterpriseSecrets,
+			additionalCommands: additionalGithubEnterpriseCommands,
 			memoryLimitMiB: 2048,
 		},
 	];
@@ -668,6 +715,7 @@ export function addCloudqueryEcsCluster(
 			...individualAwsSources,
 			remainingAwsSources,
 			...githubSources,
+			...githubEnterpriseSources,
 			...fastlySources,
 			...galaxiesSources,
 			riffRaffSources,
