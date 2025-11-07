@@ -16493,7 +16493,7 @@ spec:
     connection_string: >-
       user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
       dbname=postgres sslmode=verify-full
-' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file",
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}",
             ],
             "DependsOn": [
               {
@@ -16514,6 +16514,10 @@ spec:
               {
                 "Name": "GOMEMLIMIT",
                 "Value": "1638MiB",
+              },
+              {
+                "Name": "CLOUDQUERY_LOG_LEVEL",
+                "Value": "info",
               },
             ],
             "Essential": true,
