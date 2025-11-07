@@ -79,6 +79,12 @@ const parseCommandLineArguments = () => {
 							'An environment variable to pass to the task. Syntax: KEY=VALUE',
 						type: 'array',
 						demandOption: false,
+					})
+					.option('debug', {
+						description:
+							'Run CloudQuery with debug logging (sets CLOUDQUERY_LOG_LEVEL=debug)',
+						type: 'boolean',
+						default: false,
 					});
 			})
 			.command(Commands.runAll, 'Run all tasks', (yargs) => {
@@ -146,30 +152,24 @@ parseCommandLineArguments()
 					: tasks.then((tasks) => tasks.map((task) => task['Name']));
 			}
 			case Commands.run: {
-				const { stack, stage, app, name, env } = argv;
+				const { stack, stage, app, name, env, debug } = argv;
 
 				const ecsClient = getEcsClient();
 				const ssmClient = getSsmClient();
 
-				if (Array.isArray(env)) {
-					const envVars: Record<string, string> = (env as string[])
-						.map((str) => str.split('='))
-						.reduce((acc, [envKey, envValue]) => {
-							return {
-								...acc,
-								[envKey as string]: envValue,
-							};
-						}, {});
+				const envVars: Record<string, string> = Array.isArray(env)
+					? (env as string[])
+							.map((str) => str.split('='))
+							.reduce((acc, [envKey, envValue]) => {
+								return {
+									...acc,
+									[envKey as string]: envValue,
+								};
+							}, {})
+					: {};
 
-					return runOneTask(
-						ecsClient,
-						ssmClient,
-						stack as string,
-						stage as string,
-						app as string,
-						name as string,
-						envVars,
-					);
+				if (debug) {
+					envVars.CLOUDQUERY_LOG_LEVEL = 'debug';
 				}
 
 				return runOneTask(
@@ -179,6 +179,7 @@ parseCommandLineArguments()
 					stage as string,
 					app as string,
 					name as string,
+					Object.keys(envVars).length > 0 ? envVars : undefined,
 				);
 			}
 			case Commands.runAll: {
