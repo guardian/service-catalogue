@@ -216,6 +216,9 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			entryPoint: [''],
 			environment: {
 				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
+				// We use Cloudquery's default log level of 'info' unless this is overriden
+				// see: https://docs.cloudquery.io/docs/cli-reference/cloudquery_sync
+				CLOUDQUERY_LOG_LEVEL: 'info',
 			},
 			secrets: {
 				...secrets,
@@ -238,7 +241,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 					...additionalCommands,
 					`printf '${renderCloudquerySourceConfig(sourceConfig)}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
 					`printf '${dump(destinationConfig)}' > ${serviceCatalogueConfigDirectory}/destination.yaml`,
-					`/app/cloudquery sync ${serviceCatalogueConfigDirectory}/source.yaml ${serviceCatalogueConfigDirectory}/destination.yaml --log-format json --log-console --no-log-file`,
+					`/app/cloudquery sync ${serviceCatalogueConfigDirectory}/source.yaml ${serviceCatalogueConfigDirectory}/destination.yaml --log-format json --log-console --no-log-file --log-level $CLOUDQUERY_LOG_LEVEL`,
 				].join(';'),
 			],
 			logging: fireLensLogDriver,
