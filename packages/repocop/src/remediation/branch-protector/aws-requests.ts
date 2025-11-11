@@ -10,8 +10,8 @@ export async function notify(
 	config: Config,
 	teamSlug: string,
 ) {
-	const { app, stage, anghammaradSnsTopic } = config;
-	const client = new Anghammarad();
+	const { app, stage } = config;
+	const client = await Anghammarad.getInstance();
 	await client.notify({
 		subject: `RepoCop branch protections (for GitHub team ${teamSlug})`,
 		message:
@@ -20,8 +20,7 @@ export async function notify(
 		actions: branchProtectionCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: `${app} ${stage}`,
-		topicArn: anghammaradSnsTopic,
+		sender: `${app} ${stage}`,
 		threadKey: anghammaradThreadKey(fullRepoName),
 	});
 }

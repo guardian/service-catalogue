@@ -50,7 +50,6 @@ export class Repocop {
 			rules: [{ schedule }],
 			runtime: Runtime.NODEJS_20_X,
 			environment: {
-				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				DATABASE_HOSTNAME: cloudqueryDB.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
 				INTERACTIVE_MONITOR_TOPIC_ARN: interactiveMonitorTopic.topicArn,

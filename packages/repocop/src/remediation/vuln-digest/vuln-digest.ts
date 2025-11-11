@@ -114,7 +114,7 @@ async function sendVulnerabilityDigests(
 	digests: VulnerabilityDigest[],
 	config: Config,
 ) {
-	const anghammarad = new Anghammarad();
+	const anghammarad = await Anghammarad.getInstance();
 	console.log(
 		`Sending ${digests.length} vulnerability digests: ${digests
 			.map((d) => d.teamSlug)
@@ -130,8 +130,7 @@ async function sendVulnerabilityDigests(
 					actions: digest.actions,
 					target: { GithubTeamSlug: digest.teamSlug },
 					channel: RequestedChannel.PreferHangouts,
-					sourceSystem: `${config.app} ${config.stage}`,
-					topicArn: config.anghammaradSnsTopic,
+					sender: `${config.app} ${config.stage}`,
 					threadKey: `vulnerability-digest-${digest.teamSlug}`,
 				}),
 		),

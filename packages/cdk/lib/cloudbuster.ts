@@ -46,7 +46,6 @@ export class CloudBuster {
 			fileName: `${app}.zip`,
 			handler: 'index.main',
 			environment: {
-				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false',
 				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),

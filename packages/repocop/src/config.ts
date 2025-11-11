@@ -27,11 +27,6 @@ export interface Config extends PrismaConfig {
 	stack: string;
 
 	/**
-	 * The ARN of the Anghammarad SNS topic.
-	 */
-	anghammaradSnsTopic: string;
-
-	/**
 	 * The ARN of the interactive-monitor topic.
 	 */
 	interactiveMonitorSnsTopic: string;
@@ -86,7 +81,6 @@ export async function getConfig(): Promise<Config> {
 		app: getEnvOrThrow('APP'),
 		stage,
 		stack: getEnvOrThrow('STACK'),
-		anghammaradSnsTopic: getEnvOrThrow('ANGHAMMARAD_SNS_ARN'),
 		interactiveMonitorSnsTopic: getEnvOrThrow('INTERACTIVE_MONITOR_TOPIC_ARN'),
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: queryLogging,
