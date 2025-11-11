@@ -28,7 +28,6 @@ export class InteractiveMonitor {
 			handler: 'index.handler',
 			runtime: Runtime.NODEJS_20_X,
 			environment: {
-				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				GITHUB_APP_SECRET: githubCredentials.secretName,
 				GITHUB_ORG: gitHubOrg,
 			},

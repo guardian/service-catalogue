@@ -35,7 +35,7 @@ async function notify(
 	interactives: InteractiveRepoAssessment[],
 	config: Config,
 ) {
-	const client = new Anghammarad();
+	const client = await Anghammarad.getInstance();
 	const today = new Date().toDateString();
 	const message = `The following repositories have been assessed as interactives:\n${interactives.map((r) => `[${r.repo}](https://github.com/${config.owner}/${r.repo})`).join('\n')}`;
 	await client.notify({
@@ -46,8 +46,7 @@ async function notify(
 			? { GithubTeamSlug: 'devx-security' }
 			: { Stack: 'testing-alerts' },
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: `interactive-monitor ${config.stage}`,
-		topicArn: config.anghammaradSnsTopic,
+		sender: `interactive-monitor ${config.stage}`,
 		threadKey: `${config.app}-${today}`,
 	});
 }

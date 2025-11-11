@@ -1,5 +1,6 @@
 import { RequestedChannel } from '@guardian/anghammarad';
-import type { Action, Anghammarad, NotifyParams } from '@guardian/anghammarad';
+import type { Action, Anghammarad } from '@guardian/anghammarad';
+import type { AnghammaradNotification } from '@guardian/anghammarad';
 import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
 import { stringToSeverity } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
@@ -135,15 +136,14 @@ export async function sendDigest(
 	config: Config,
 	digest: Digest,
 ): Promise<void> {
-	const notifyParams: NotifyParams = {
+	const notifyParams: AnghammaradNotification = {
 		subject: digest.subject,
 		message: digest.message,
 		actions: digest.actions,
 		target: { AwsAccount: digest.accountId },
 		threadKey: digest.accountId,
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: `cloudbuster ${config.stage}`,
-		topicArn: config.anghammaradSnsTopic,
+		sender: `cloudbuster ${config.stage}`,
 	};
 
 	const { enableMessaging, stage } = config;

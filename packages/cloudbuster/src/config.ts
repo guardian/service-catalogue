@@ -16,10 +16,6 @@ export interface Config extends PrismaConfig {
 	 */
 	enableMessaging: boolean;
 	/**
-	 * Anghammarad's topic ARN
-	 */
-	anghammaradSnsTopic: string;
-	/**
 	 * The number of days we report on vulnerabilities for.
 	 */
 	cutOffInDays: number;
@@ -27,7 +23,6 @@ export interface Config extends PrismaConfig {
 
 export async function getConfig(): Promise<Config> {
 	const stage = getEnvOrThrow('STAGE');
-	const anghammaradSnsTopic: string = getEnvOrThrow('ANGHAMMARAD_SNS_ARN');
 
 	const isDev = stage === 'DEV';
 
@@ -39,7 +34,6 @@ export async function getConfig(): Promise<Config> {
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: isDev,
 		enableMessaging: !isDev,
-		anghammaradSnsTopic,
 		cutOffInDays: Number(getEnvOrThrow('CUT_OFF_IN_DAYS')),
 	};
 }
