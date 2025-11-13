@@ -18,8 +18,8 @@ export async function notify(
 	await client.notify({
 		subject: `RepoCop branch protections (for GitHub team ${teamSlug})`,
 		message:
-			`Branch protections have been applied to ${fullRepoName}. ` +
-			`CI checks and at least one approval will now be required before merging to the default branch.`,
+			`Branch protection via Ruleset has been applied to ${fullRepoName}. ` +
+			`see Organization rulesets > Branch protection for details. `,
 		actions: branchProtectionCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,

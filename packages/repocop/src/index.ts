@@ -27,7 +27,7 @@ import {
 	getStacks,
 	getTeams,
 } from './query.js';
-import { protectBranches } from './remediation/branch-protector/branch-protection.js';
+import { applyBranchProtectionAndMessageTeams } from './remediation/branch-protector/branch-protection.js';
 import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns.js';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive.js';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production.js';
@@ -178,7 +178,7 @@ export async function main() {
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
 
-		await protectBranches(
+		await applyBranchProtectionAndMessageTeams(
 			repocopRules,
 			repoOwners,
 			config,
