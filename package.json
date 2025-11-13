@@ -21,7 +21,7 @@
     "@guardian/prettier": "8.0.2",
     "@guardian/tsconfig": "^1.0.1",
     "@swc/core": "1.14.0",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "dotenv": "^17.2.3",
     "esbuild": "^0.25.11",
