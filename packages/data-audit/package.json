@@ -11,9 +11,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-lambda": "^3.928.0",
-    "@aws-sdk/client-organizations": "^3.928.0",
-    "@aws-sdk/client-s3": "^3.928.0",
-    "@aws-sdk/client-sts": "^3.928.0"
+    "@aws-sdk/client-lambda": "^3.930.0",
+    "@aws-sdk/client-organizations": "^3.930.0",
+    "@aws-sdk/client-s3": "^3.930.0",
+    "@aws-sdk/client-sts": "^3.930.0"
   }
 }
