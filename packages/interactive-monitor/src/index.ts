@@ -1,5 +1,7 @@
+import { SNSClient } from '@aws-sdk/client-sns';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { SNSHandler } from 'aws-lambda';
+import { awsClientConfig } from 'common/aws.js';
 import {
 	applyTopics,
 	parseEvent,
@@ -35,7 +37,8 @@ async function notify(
 	interactives: InteractiveRepoAssessment[],
 	config: Config,
 ) {
-	const client = new Anghammarad();
+	const snsClient = new SNSClient(awsClientConfig(config.stage));
+	const client = new Anghammarad(snsClient, config.anghammaradSnsTopic);
 	const today = new Date().toDateString();
 	const message = `The following repositories have been assessed as interactives:\n${interactives.map((r) => `[${r.repo}](https://github.com/${config.owner}/${r.repo})`).join('\n')}`;
 	await client.notify({
@@ -46,8 +49,7 @@ async function notify(
 			? { GithubTeamSlug: 'devx-security' }
 			: { Stack: 'testing-alerts' },
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: `interactive-monitor ${config.stage}`,
-		topicArn: config.anghammaradSnsTopic,
+		sender: `interactive-monitor ${config.stage}`,
 		threadKey: `${config.app}-${today}`,
 	});
 }

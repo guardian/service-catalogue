@@ -1,5 +1,7 @@
+import { SNSClient } from '@aws-sdk/client-sns';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
+import { awsClientConfig } from 'common/aws.js';
 import { daysLeftToFix } from 'common/src/functions.js';
 import { SLAs } from 'common/src/types.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
@@ -114,7 +116,8 @@ async function sendVulnerabilityDigests(
 	digests: VulnerabilityDigest[],
 	config: Config,
 ) {
-	const anghammarad = new Anghammarad();
+	const snsClient = new SNSClient(awsClientConfig(config.stage));
+	const anghammarad = new Anghammarad(snsClient, config.anghammaradSnsTopic);
 	console.log(
 		`Sending ${digests.length} vulnerability digests: ${digests
 			.map((d) => d.teamSlug)
@@ -130,8 +133,7 @@ async function sendVulnerabilityDigests(
 					actions: digest.actions,
 					target: { GithubTeamSlug: digest.teamSlug },
 					channel: RequestedChannel.PreferHangouts,
-					sourceSystem: `${config.app} ${config.stage}`,
-					topicArn: config.anghammaradSnsTopic,
+					sender: `${config.app} ${config.stage}`,
 					threadKey: `vulnerability-digest-${digest.teamSlug}`,
 				}),
 		),
