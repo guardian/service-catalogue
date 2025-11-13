@@ -1,5 +1,7 @@
+import { SNSClient } from '@aws-sdk/client-sns';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
 import type { view_repo_ownership } from '@prisma/client';
+import { awsClientConfig } from 'common/aws.js';
 import {
 	anghammaradThreadKey,
 	applyTopics,
@@ -41,15 +43,15 @@ async function notifyOneTeam(
 	messageTextFields: AnghammaradTextFields,
 ) {
 	const { app, stage, anghammaradSnsTopic } = config;
-	const client = new Anghammarad();
+	const snsClient = new SNSClient(awsClientConfig(stage));
+	const client = new Anghammarad(snsClient, anghammaradSnsTopic);
 	await client.notify({
 		subject: messageTextFields.subject,
 		message: messageTextFields.message,
 		actions: topicMonitoringProductionTagCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
-		sourceSystem: `${app} ${stage}`,
-		topicArn: anghammaradSnsTopic,
+		sender: `${app} ${stage}`,
 		threadKey: anghammaradThreadKey(fullRepoName),
 	});
 }
