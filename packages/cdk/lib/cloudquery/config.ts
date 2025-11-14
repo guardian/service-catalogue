@@ -262,6 +262,46 @@ export function githubSourceConfigForRepository(
 	};
 }
 
+export function githubEnterpriseSourceConfig(
+	tableConfig: GitHubCloudqueryTableConfig,
+): CloudQuerySourceConfig {
+	const { tables, org } = tableConfig;
+
+	return {
+		kind: 'source',
+		spec: {
+			name: 'github',
+			path: 'cloudquery/github',
+			version: `v${CloudQueryPluginVersions.CloudqueryGithub}`,
+			tables,
+			skip_dependent_tables: true,
+			destinations: ['postgresql'],
+			spec: {
+				concurrency: 1000,
+				orgs: [org],
+				app_auth: [
+					{
+						org,
+
+						// For simplicity, read all configuration from disk.
+						// These use separate files for the enterprise GitHub app.
+						private_key_path: `${serviceCatalogueConfigDirectory}/github-enterprise-private-key`,
+						app_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-enterprise-app-id` +
+							'}',
+						installation_id:
+							'${' +
+							`file:${serviceCatalogueConfigDirectory}/github-enterprise-installation-id` +
+							'}',
+					},
+				],
+				include_archived_repos: false,
+			},
+		},
+	};
+}
+
 /**
  * Configuration for the Fastly source plugin.
  * @see https://www.cloudquery.io/docs/plugins/sources/fastly/overview#configuration
