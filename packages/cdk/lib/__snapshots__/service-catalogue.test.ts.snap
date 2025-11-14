@@ -15757,7 +15757,7 @@ spec:
   name: galaxies
   path: guardian/galaxies
   registry: github
-  version: v2.0.2
+  version: v2.1.0
   destinations:
     - postgresql
   tables:
