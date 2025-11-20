@@ -9,7 +9,7 @@ import { findContactableOwners } from '../shared-utilities.js';
 import { notify } from './aws-requests.js';
 import { setRepoCustomProperty } from './github-requests.js';
 
-const PROPERTY_NAME = 'production_status';
+const PRODUCTION_STATUS_PROP = 'production_status';
 const PRODUCTION_VALUE = 'production';
 const DOCUMENTATION_VALUE = 'documentation';
 const PROD_STAGE = 'PROD';
@@ -17,10 +17,10 @@ const PROD_STAGE = 'PROD';
 function getRepoPropertyValue(repo: Repository): string {
 	const topics = repo.topics;
 	// prefer 'production' for custom property value if repo has both topics
-	if (topics.includes('production')) {
+	if (topics.includes(PRODUCTION_VALUE)) {
 		return PRODUCTION_VALUE;
 	}
-	if (topics.includes('documentation')) {
+	if (topics.includes(DOCUMENTATION_VALUE)) {
 		return DOCUMENTATION_VALUE;
 	}
 	return 'unclassified';
@@ -78,7 +78,7 @@ export async function applyBranchProtectionAndMessageTeams(
 					octokit,
 					config.gitHubOrg,
 					repo.name,
-					PROPERTY_NAME,
+					PRODUCTION_STATUS_PROP,
 					propertyValue,
 				);
 				return repo.full_name;
