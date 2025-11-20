@@ -19,7 +19,7 @@ export async function notify(
 		subject: `RepoCop branch protections (for GitHub team ${teamSlug})`,
 		message:
 			`Branch protection via Ruleset has been applied to ${fullRepoName}. ` +
-			`see Organization rulesets > Branch protection for details. `,
+			`See Organization rulesets > Branch protection for details. `,
 		actions: branchProtectionCtas(fullRepoName, teamSlug),
 		target: { GithubTeamSlug: teamSlug },
 		channel: RequestedChannel.PreferHangouts,
