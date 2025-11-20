@@ -134,7 +134,7 @@ export async function applyBranchProtectionAndMessageTeams(
 			}
 		} else {
 			console.log(
-				'No notifications to send (no successfully updated repos with owners',
+				'No notifications to send (no successfully updated repos with owners)',
 			);
 		}
 	} else {
