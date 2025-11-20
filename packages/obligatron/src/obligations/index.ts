@@ -1,7 +1,6 @@
 // Slightly hacky file to allow CDK project to import the list of obligations without having to compile the whole Obligatron project
 
 export const Obligations = [
-	'TAGGING',
 	'PRODUCTION_DEPENDENCIES',
 	'AWS_VULNERABILITIES',
 	'REPOSITORY_STATUS',
