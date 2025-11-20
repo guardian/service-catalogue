@@ -74,29 +74,29 @@ export async function applyBranchProtectionAndMessageTeams(
 		const propertyResults = await Promise.allSettled(
 			unprotectedRepos.map(async (repo) => {
 				const propertyValue = getRepoPropertyValue(repo);
-				await setRepoCustomProperty(
+				const customPropertyUpdated = await setRepoCustomProperty(
 					octokit,
 					config.gitHubOrg,
 					repo.name,
 					PRODUCTION_STATUS_PROP,
 					propertyValue,
 				);
-				return repo.full_name;
+				return customPropertyUpdated ? repo.full_name : null;
 			}),
 		);
-		const successfulRepoNames = propertyResults
+		const updatedRepoNames = propertyResults
 			.filter(
-				(result): result is PromiseFulfilledResult<string> =>
-					result.status === 'fulfilled',
+				(result): result is PromiseFulfilledResult<string | null> =>
+					result.status === 'fulfilled' && result.value !== null,
 			)
-			.map((result) => result.value);
+			.map((result) => result.value as string);
 
 		const failedCount = propertyResults.filter(
 			(result) => result.status === 'rejected',
 		).length;
 
 		console.log(
-			`Successfully set custom properties for ${successfulRepoNames.length}/${unprotectedRepoNames.length} repos`,
+			`Successfully set custom properties for ${updatedRepoNames.length}/${unprotectedRepoNames.length} repos`,
 		);
 
 		if (failedCount > 0) {
@@ -104,7 +104,7 @@ export async function applyBranchProtectionAndMessageTeams(
 		}
 
 		const branchProtectionEvents = createBranchProtectionEvents(
-			successfulRepoNames,
+			updatedRepoNames,
 			repoOwners,
 		);
 
