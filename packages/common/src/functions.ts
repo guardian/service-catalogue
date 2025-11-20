@@ -86,7 +86,7 @@ export function branchProtectionCtas(
 ): Action[] {
 	const githubUrl = `https://github.com/${fullRepoName}`;
 	const grafanaUrl = `https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=${teamSlug}&var-rule=All&orgId=1`;
-	const protectionUrl = `https://github.com/${fullRepoName}/settings/branches`;
+	const protectionUrl = `https://github.com/${fullRepoName}/settings/rules`;
 
 	return [
 		{ cta: `View ${fullRepoName} on GitHub`, url: githubUrl },

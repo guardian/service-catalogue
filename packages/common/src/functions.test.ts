@@ -47,7 +47,7 @@ void describe('branchProtectionCtas', () => {
 			[
 				'https://github.com/my-org/my-repo',
 				'https://metrics.gutools.co.uk/d/EOPnljWIz/repocop-compliance?var-team=my-team&var-rule=All&orgId=1',
-				'https://github.com/my-org/my-repo/settings/branches',
+				'https://github.com/my-org/my-repo/settings/rules',
 			],
 		);
 	});
