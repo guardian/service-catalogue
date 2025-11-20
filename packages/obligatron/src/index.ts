@@ -12,10 +12,6 @@ import {
 	Obligations,
 	stringIsObligation,
 } from './obligations/index.js';
-import {
-	evaluateAmiTaggingCoverage,
-	evaluateSecurityHubTaggingCoverage,
-} from './obligations/tagging.js';
 
 config({ path: `../../.env` }); // Load `.env` file at the root of the repository
 
@@ -24,12 +20,6 @@ async function getResults(
 	db: PrismaClient,
 ): Promise<ObligationResult[]> {
 	switch (obligation) {
-		case 'TAGGING': {
-			return [
-				...(await evaluateSecurityHubTaggingCoverage(db)),
-				...(await evaluateAmiTaggingCoverage(db)),
-			];
-		}
 		case 'PRODUCTION_DEPENDENCIES': {
 			return await evaluateDependencyVulnerabilityObligation(db);
 		}
