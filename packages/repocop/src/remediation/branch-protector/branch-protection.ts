@@ -120,6 +120,7 @@ export async function applyBranchProtectionAndMessageTeams(
 			const notifySucceeded = notificationResults.filter(
 				(result) => result.status === 'fulfilled',
 			).length;
+
 			const notifyFailed = notificationResults.filter(
 				(result) => result.status === 'rejected',
 			).length;
