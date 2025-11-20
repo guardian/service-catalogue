@@ -26,7 +26,15 @@ export async function setRepoCustomProperty(
 			return false;
 		}
 	} catch (error) {
-		console.log(`Could not check existing property for ${repoName}`);
+		const sanitisedError =
+			error instanceof Error
+				? { message: error.message, name: error.name }
+				: 'Unknown error';
+		console.log(
+			`Could not check existing property for ${repoName}`,
+			sanitisedError,
+		);
+		return false;
 	}
 
 	try {
