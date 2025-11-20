@@ -1,9 +1,6 @@
 import assert from 'assert';
 import { describe, test } from 'node:test';
-import type {
-	repocop_github_repository_rules,
-	view_repo_ownership,
-} from '@prisma/client';
+import type { view_repo_ownership } from '@prisma/client';
 import { createBranchProtectionEvents } from './branch-protection.js';
 
 const nullOwner: view_repo_ownership = {
@@ -21,18 +18,6 @@ const nullOwner: view_repo_ownership = {
 void describe('Team slugs should be findable for every team associated with a repo', () => {
 	void test('A repository that is owned by a team should be included in the list of messages', () => {
 		const repo = 'guardian/repo1';
-		const evaluatedRepo: repocop_github_repository_rules = {
-			full_name: repo,
-			default_branch_name: true,
-			branch_protection: false,
-			team_based_access: true,
-			admin_access: true,
-			archiving: true,
-			topics: true,
-			contents: true,
-			vulnerability_tracking: false,
-			evaluated_on: new Date(),
-		};
 
 		const teamOneOwner: view_repo_ownership = {
 			...nullOwner,
@@ -42,11 +27,7 @@ void describe('Team slugs should be findable for every team associated with a re
 			github_team_slug: 'team-one',
 		};
 
-		const actual = createBranchProtectionEvents(
-			[evaluatedRepo],
-			[teamOneOwner],
-			5,
-		);
+		const actual = createBranchProtectionEvents([repo], [teamOneOwner]);
 
 		assert.deepStrictEqual(actual, [
 			{ fullName: repo, teamNameSlugs: ['team-one'] },
@@ -55,20 +36,7 @@ void describe('Team slugs should be findable for every team associated with a re
 
 	void test('A repository that has no owner should not be in the list of messages', () => {
 		const repo = 'guardian/repo1';
-		const evaluatedRepo: repocop_github_repository_rules = {
-			full_name: repo,
-			default_branch_name: true,
-			branch_protection: false,
-			team_based_access: true,
-			admin_access: true,
-			archiving: true,
-			topics: true,
-			contents: true,
-			vulnerability_tracking: false,
-			evaluated_on: new Date(),
-		};
-
-		const actual = createBranchProtectionEvents([evaluatedRepo], [], 5);
+		const actual = createBranchProtectionEvents([repo], []);
 
 		assert.strictEqual(actual.length, 0);
 	});
