@@ -1,7 +1,7 @@
 # Tagging Obligation
 
 ## Status
-Accepted.
+Removed.
 
 ## Context
 There is an obligation to correctly tag AWS resources. 
