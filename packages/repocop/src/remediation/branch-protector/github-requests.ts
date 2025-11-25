@@ -26,14 +26,11 @@ export async function setRepoCustomProperty(
 			return false;
 		}
 	} catch (error) {
-		const sanitisedError =
+		const safeError =
 			error instanceof Error
 				? { message: error.message, name: error.name }
 				: 'Unknown error';
-		console.log(
-			`Could not check existing property for ${repoName}`,
-			sanitisedError,
-		);
+		console.log(`Could not check existing property for ${repoName}`, safeError);
 		return false;
 	}
 
@@ -58,14 +55,14 @@ export async function setRepoCustomProperty(
 		);
 		return true;
 	} catch (error) {
-		const sanitisedError =
+		const safeError =
 			error instanceof Error
 				? { message: error.message, name: error.name }
 				: 'Unknown error';
 
 		console.error(
 			`Failed to set custom property ${propertyName} to ${propertyValue} for ${repoName}`,
-			sanitisedError,
+			safeError,
 		);
 		throw error;
 	}
