@@ -6,7 +6,7 @@ import type { Repository, UpdateMessageEvent } from 'common/src/types.js';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config.js';
 import { findContactableOwners } from '../shared-utilities.js';
-import { notify } from './aws-requests.js';
+import { notify as defaultNotify } from './aws-requests.js';
 import { setRepoCustomProperty } from './github-requests.js';
 
 const PRODUCTION_STATUS_PROP = 'production_status';
@@ -40,10 +40,14 @@ export function createBranchProtectionEvents(
 		.filter((repo) => repo.teamNameSlugs.length > 0);
 }
 
-async function notifyTeams(event: UpdateMessageEvent, config: Config) {
+async function notifyTeams(
+	event: UpdateMessageEvent,
+	config: Config,
+	notifyFn: typeof defaultNotify,
+) {
 	for (const slug of event.teamNameSlugs) {
 		try {
-			await notify(event.fullName, config, slug);
+			await notifyFn(event.fullName, config, slug);
 			console.log(`Notified team ${slug} about branch protection`);
 		} catch (error) {
 			console.error(`Unable to notify ${slug} about branch protection`, error);
@@ -57,6 +61,7 @@ export async function applyBranchProtectionAndMessageTeams(
 	config: Config,
 	unarchivedRepositories: Repository[],
 	octokit: Octokit,
+	notifyFn = defaultNotify,
 ) {
 	const unprotectedRepoNames = evaluatedRepos
 		.filter((repo) => !repo.branch_protection)
@@ -114,7 +119,9 @@ export async function applyBranchProtectionAndMessageTeams(
 
 		if (branchProtectionEvents.length > 0) {
 			const notificationResults = await Promise.allSettled(
-				branchProtectionEvents.map((event) => notifyTeams(event, config)),
+				branchProtectionEvents.map((event) =>
+					notifyTeams(event, config, notifyFn),
+				),
 			);
 
 			const notifySucceeded = notificationResults.filter(
