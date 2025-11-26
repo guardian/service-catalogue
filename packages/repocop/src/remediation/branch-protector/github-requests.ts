@@ -1,58 +1,69 @@
 import type { Octokit } from 'octokit';
-import type { UpdateBranchProtectionParams } from './model.js';
+import type { UpdateCustomPropertyParams } from './model.js';
 
-export async function updateBranchProtection(
+export async function setRepoCustomProperty(
 	octokit: Octokit,
-	owner: string,
-	repo: string,
-	branch: string,
+	gitHubOrg: string,
+	repoName: string,
+	propertyName: string,
+	propertyValue: string,
 ) {
-	console.log(`Applying branch protection to ${repo}`);
-	//https://github.com/guardian/recommendations/blob/main/github.md#branch-protection
-	const branchProtectionParams: UpdateBranchProtectionParams = {
-		owner: owner,
-		repo: repo,
-		branch: branch,
-		required_status_checks: {
-			strict: true,
-			contexts: [],
-		},
-		restrictions: null,
-		enforce_admins: true,
-		required_pull_request_reviews: {
-			require_code_owner_reviews: true,
-			required_approving_review_count: 1,
-		},
-		allow_force_pushes: false,
-		allow_deletions: false,
-	};
 	try {
-		await octokit.rest.repos.updateBranchProtection(branchProtectionParams);
+		const currentPropertiesForRepo =
+			await octokit.rest.repos.customPropertiesForReposGetRepositoryValues({
+				owner: gitHubOrg,
+				repo: repoName,
+			});
+
+		const existingProperty = currentPropertiesForRepo.data.find(
+			(property) => property.property_name === propertyName,
+		);
+
+		if (existingProperty?.value === propertyValue) {
+			console.log(
+				`Custom property ${propertyName} is already set to ${propertyValue} for ${repoName} - skipping`,
+			);
+			return false;
+		}
 	} catch (error) {
-		console.error(`Error: branch protection failed for ${repo}`);
-		console.error(error);
+		const safeError =
+			error instanceof Error
+				? { message: error.message, name: error.name }
+				: 'Unknown error';
+		console.log(`Could not check existing property for ${repoName}`, safeError);
+		return false;
 	}
-}
 
-export async function getDefaultBranchName(
-	owner: string,
-	repo: string,
-	octokit: Octokit,
-) {
-	const data = await octokit.rest.repos.get({ owner: owner, repo: repo });
-	return data.data.default_branch;
-}
+	try {
+		const customPropertyParams: UpdateCustomPropertyParams = {
+			owner: gitHubOrg,
+			repo: repoName,
+			properties: [
+				{
+					property_name: propertyName,
+					value: propertyValue,
+				},
+			],
+		};
 
-export async function isBranchProtected(
-	octokit: Octokit,
-	owner: string,
-	repo: string,
-	branch: string,
-): Promise<boolean> {
-	const branchData = await octokit.rest.repos.getBranch({
-		owner,
-		repo,
-		branch,
-	});
-	return branchData.data.protected;
+		await octokit.rest.repos.customPropertiesForReposCreateOrUpdateRepositoryValues(
+			customPropertyParams,
+		);
+
+		console.log(
+			`Have set custom property ${propertyName} to ${propertyValue} for ${repoName}`,
+		);
+		return true;
+	} catch (error) {
+		const safeError =
+			error instanceof Error
+				? { message: error.message, name: error.name }
+				: 'Unknown error';
+
+		console.error(
+			`Failed to set custom property ${propertyName} to ${propertyValue} for ${repoName}`,
+			safeError,
+		);
+		throw error;
+	}
 }
