@@ -52,7 +52,7 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
-        with: # zizmor: ignore[template-injection] Value is not used to generate a shell script, but is passed as an argument to the action, so it is not vulnerable to the injection. See https://securitylab.github.com/resources/github-actions-untrusted-input/.
+        with:
           context: ./containers/${{ inputs.IMAGE_NAME }}
           file: containers/${{ inputs.IMAGE_NAME }}/Dockerfile
           platforms: linux/amd64,linux/arm64
