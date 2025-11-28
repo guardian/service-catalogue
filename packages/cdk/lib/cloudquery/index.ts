@@ -5,6 +5,7 @@ import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
+import type { ContainerInsights } from 'aws-cdk-lib/aws-ecs';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
@@ -59,6 +60,8 @@ interface CloudqueryEcsClusterProps {
 	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
 	 */
 	enableCloudquerySchedules: boolean;
+
+	containerInsights: ContainerInsights;
 }
 
 export function addCloudqueryEcsCluster(
@@ -75,6 +78,7 @@ export function addCloudqueryEcsCluster(
 		gitHubOrg: gitHubOrgName,
 		cloudqueryApiKey,
 		enableCloudquerySchedules,
+		containerInsights,
 	} = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
@@ -677,5 +681,6 @@ export function addCloudqueryEcsCluster(
 			endOfLifeSource,
 		],
 		cloudqueryApiKey,
+		containerInsights,
 	});
 }
