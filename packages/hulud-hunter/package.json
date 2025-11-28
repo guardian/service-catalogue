@@ -1,0 +1,17 @@
+{
+	"name": "hulud-hunter",
+	"version": "1.0.0",
+	"type": "module",
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.158"
+	},
+	"scripts": {
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+		"start": "APP=hulud-hunter tsx src/run-locally.ts",
+		"test": "node --import tsx --test \"**/*.test.ts\"",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@aws-sdk/client-sns": "^3.930.0"
+	}
+}
