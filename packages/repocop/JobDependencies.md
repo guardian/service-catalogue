@@ -47,9 +47,9 @@ flowchart LR
     repocop[RepoCop<br>lambda<br>scheduled MON-FRI 03:00]
     depGraphIntegrator[Dependency Graph Integrator<br>lambda<br>SNS trigger]
     cloudbuster[CloudBuster<br>lambda<br>scheduled MON-FRI 03:00]
-    obligatronTagging[Obligatron<br>Tagging obligation<br>lambda<br>scheduled daily 09:00]
-    obligatronDeps[Obligatron<br>Dependencies obligation<br>lambda<br>scheduled daily 10:00]
-    obligatronVulns[Obligatron<br>AWS Vulnerabilities obligation<br>lambda<br>scheduled daily 11:00]
+    obligatronDeps[Obligatron<br>Dependencies obligation<br>lambda<br>scheduled daily 09:00]
+    obligatronVulns[Obligatron<br>AWS Vulnerabilities obligation<br>lambda<br>scheduled daily 10:00]
+    obligatronRepoStatus[Obligatron<br>Repository status obligation<br>lambda<br>scheduled daily 11:00]
 
     %% Dependencies
 
@@ -94,9 +94,8 @@ flowchart LR
     cloudbuster --> fsbpNotice
 
     %% Obligatron
-    awsFsbpFindingData --> obligatronTagging
-    awsAccountView --> obligatronTagging
-    obligatronTagging --> obligatronResultData
+    ghRepoData --> obligatronRepoStatus
+    obligatronRepoStatus --> obligatronResultData
     ghRepoData --> obligatronDeps
     repoCopVulnData --> obligatronDeps
     obligatronDeps --> obligatronResultData

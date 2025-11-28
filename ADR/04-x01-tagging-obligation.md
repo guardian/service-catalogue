@@ -1,7 +1,7 @@
 # Tagging Obligation - Extension 01
 
 ## Status
-Accepted.
+Removed.
 
 ## Positions
 ### AWS Resource Tagging Standard
