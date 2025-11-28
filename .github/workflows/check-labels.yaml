@@ -7,4 +7,4 @@ on:
     types: [opened, labeled, unlabeled, synchronize, reopened, edited]
 jobs:
   require-label:
-    uses: guardian/.github/.github/workflows/require-label.yaml@d247295ee213cce9cf4cfdf6f608d2bcaca28219
+    uses: guardian/.github/.github/workflows/require-label.yaml@ca52d0cb6bc832fbdfda6f5e9fb80e91bbc1783c
