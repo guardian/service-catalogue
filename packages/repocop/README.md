@@ -11,6 +11,34 @@ It is deployed as an AWS Lambda, and powers:
 
 See the [job dependencies diagram](JobDependencies.md).
 
+```mermaid
+flowchart LR
+ subgraph Experimental["experimental features"]
+        repos("find unmaintained repos")
+        stacks("find archived repos <br>with live stacks")
+  end
+ subgraph GitHub["github updates"]
+        branch("apply branch protection")
+        topics("apply production topics")
+  end
+ subgraph Repocop["repocop lambda"]
+        eval("evaluate repository security compliance")
+        dependabot("send dependabot vulnerability digests")
+        GitHub
+        Experimental
+  end
+ subgraph GitHub2["more github updates"]
+        ITM("interactive topic monitor lambda")
+        DGI("dependency graph integrator lambda")
+  end
+
+ subgraph Lambdas2["other lambdas"]
+    GitHub2
+  end
+    DB[("Service catalogue - Postgres DB")] --> Repocop
+    Repocop --> ITM & DGI
+```
+
 ## Running RepoCop locally
 
 From the root of the repo:
