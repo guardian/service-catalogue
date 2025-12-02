@@ -8,4 +8,3 @@ on:
 jobs:
   require-label:
     uses: guardian/.github/.github/workflows/require-label.yaml@4cb5024736632ffcc564b7f4b772c38b8e5ce739 #  v1.1.0
-
