@@ -36,8 +36,7 @@ import { singletonPolicy } from './policies';
 import { scheduleFrequencyMs } from './schedule';
 
 export interface ScheduledCloudqueryTaskProps
-	extends AppIdentity,
-		Omit<ScheduledFargateTaskProps, 'cluster'> {
+	extends AppIdentity, Omit<ScheduledFargateTaskProps, 'cluster'> {
 	/**
 	 * The name of the task.
 	 * This will get added to the `Name` tag of the task definition.

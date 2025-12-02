@@ -47,8 +47,7 @@ interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 	org: string;
 }
 
-interface GitHubCloudqueryTableConfigForRepository
-	extends CloudqueryTableConfig {
+interface GitHubCloudqueryTableConfigForRepository extends CloudqueryTableConfig {
 	/**
 	 * The organisation to authenticate GitHub requests against.
 	 * This organisation is tied to the GitHub App.

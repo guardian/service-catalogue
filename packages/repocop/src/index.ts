@@ -95,7 +95,7 @@ export async function main() {
 	const productionWorkflowUsages: guardian_github_actions_usage[] =
 		await getProductionWorkflowUsages(prisma, productionRepos);
 
-	const evaluationResults: EvaluationResult[] = await evaluateRepositories(
+	const evaluationResults: EvaluationResult[] = evaluateRepositories(
 		unarchivedRepos,
 		branches,
 		repoOwners,

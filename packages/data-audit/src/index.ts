@@ -16,7 +16,6 @@ async function getAwsAccounts(stage: string) {
 
 	const accounts: Account[] = [];
 
-	// eslint-disable-next-line @typescript-eslint/await-thenable -- paginateListAccounts returns an async iterable
 	for await (const page of paginateListAccounts(
 		{
 			client,

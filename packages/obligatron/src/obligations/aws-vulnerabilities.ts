@@ -30,9 +30,7 @@ function groupFailuresByResource(
 	const grouped: Record<string, Failure[]> = {};
 
 	for (const failure of failures) {
-		if (!grouped[failure.resource]) {
-			grouped[failure.resource] = [];
-		}
+		grouped[failure.resource] ??= [];
 
 		grouped[failure.resource]?.push(failure);
 	}
