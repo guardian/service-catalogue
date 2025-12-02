@@ -1,4 +1,5 @@
-enum AwsComparison { //https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
+enum AwsComparison {
+	//https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
 	Equals = 'EQUALS',
 	Prefix = 'PREFIX',
 	NotEquals = 'NOT_EQUALS',

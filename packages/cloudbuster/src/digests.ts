@@ -86,9 +86,7 @@ function groupByControlIdAndApp(
 	return findings.reduce<Record<string, cloudbuster_fsbp_vulnerabilities[]>>(
 		(acc, f) => {
 			const key = `${f.control_id} ${f.app ?? 'unknown-app'}`;
-			if (!acc[key]) {
-				acc[key] = [];
-			}
+			acc[key] ??= [];
 			acc[key].push(f);
 			return acc;
 		},
@@ -103,7 +101,7 @@ function formatFindings(
 ) {
 	const findingsCount = findings.length;
 	const control_id = findings[0]?.control_id;
-	const app = findings[0]?.app ? ` in app: **${findings[0]?.app}**,` : '';
+	const app = findings[0]?.app ? ` in app: **${findings[0].app}**,` : '';
 	const remediation = findings[0]?.remediation;
 	const title = findings[0]?.title;
 	const findingsString = findingsCount === 1 ? 'finding' : 'findings';

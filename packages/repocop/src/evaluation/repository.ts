@@ -359,9 +359,7 @@ export function deduplicateVulnerabilitiesByCve(
 		.sort(vulnSortPredicate)
 		.reduce<Record<string, RepocopVulnerability>>((acc, vuln) => {
 			const key = vuln.cves.join(',');
-			if (!acc[key]) {
-				acc[key] = vuln;
-			}
+			acc[key] ??= vuln;
 			return acc;
 		}, {});
 
@@ -459,7 +457,7 @@ export function evaluateRepositories(
 	repoLanguages: github_languages[],
 	dependabotVulnerabilities: RepocopVulnerability[],
 	productionWorkflowUsages: guardian_github_actions_usage[],
-): Promise<EvaluationResult[]> {
+): EvaluationResult[] {
 	const evaluatedRepos = repositories.map((r) => {
 		const vulnsForRepo = dependabotVulnerabilities.filter(
 			(v) => v.full_name === r.full_name,
@@ -480,5 +478,5 @@ export function evaluateRepositories(
 			workflowsForRepo,
 		);
 	});
-	return Promise.all(evaluatedRepos);
+	return evaluatedRepos;
 }
