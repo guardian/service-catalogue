@@ -19,10 +19,10 @@
 		"@octokit/graphql": "^9.0.3",
 		"octokit": "^5.0.5",
 		"octokit-plugin-create-pull-request": "^6.0.1",
-		"@prisma/client": "^6.19.0"
+		"@prisma/client": "^7.1.0"
 	},
 	"devDependencies": {
-		"prisma": "^6.19.0",
+		"prisma": "^7.1.0",
 		"@octokit/types": "^16.0.0",
 		"@types/aws-lambda": "^8.10.158"
 	}
