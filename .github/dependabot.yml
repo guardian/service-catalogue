@@ -10,9 +10,7 @@ updates:
     schedule:
       interval: 'monthly'
     cooldown:
-      semver-major-days: 30
-      semver-minor-days: 14
-      semver-patch-days: 7
+      default-days: 7
     ignore:
       # The version of AWS CDK libraries must match those from @guardian/cdk.
       # We'd never be able to update them here independently, so just ignore them.
