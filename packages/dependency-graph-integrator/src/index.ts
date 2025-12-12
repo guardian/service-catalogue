@@ -32,7 +32,7 @@ export async function main(event: DependencyGraphIntegratorEvent) {
 	const title = `Submit ${depGraphPackageManager[language]} dependencies to GitHub for vulnerability monitoring`;
 	const fileName = `.github/workflows/${depGraphPackageManager[language].toLowerCase()}-dependency-graph.yaml`;
 	const commitMessage = `Add ${depGraphPackageManager[language].toLowerCase()}-dependency-graph.yaml`;
-	const yamlContents = createYaml(branch, language, name);
+	const yamlContents = await createYaml(branch, language);
 	const repo = name;
 	const prContents = generatePrBody(branch, repo, language);
 
