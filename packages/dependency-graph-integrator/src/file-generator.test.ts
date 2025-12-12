@@ -1,86 +1,201 @@
 import assert from 'assert';
+import fs from 'fs/promises';
 import { describe, it } from 'node:test';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import * as yaml from 'yaml';
 import { createYaml } from './file-generator.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const shouldUpdateSnapshots =
+	process.env.UPDATE_SNAPSHOTS === '1' ||
+	process.argv.includes('-u') ||
+	process.argv.includes('--update-snapshots');
+
+async function expectToMatchSnapshot(testName: string, actual: string) {
+	const snapshotsDir = path.join(__dirname, '__snapshots__');
+	const snapshotFile = path.join(snapshotsDir, `${testName}.snap`);
+
+	await fs.mkdir(snapshotsDir, { recursive: true });
+
+	try {
+		const expected = await fs.readFile(snapshotFile, 'utf-8');
+		assert.strictEqual(actual, expected);
+	} catch (err: unknown) {
+		if (
+			(typeof err === 'object' &&
+				err !== null &&
+				'code' in err &&
+				(err as { code?: string }).code === 'ENOENT') ||
+			shouldUpdateSnapshots
+		) {
+			await fs.writeFile(snapshotFile, actual, 'utf-8');
+			if (
+				typeof err === 'object' &&
+				err !== null &&
+				'code' in err &&
+				(err as { code?: string }).code === 'ENOENT' &&
+				!shouldUpdateSnapshots
+			) {
+				throw new Error(
+					`Snapshot created for "${testName}". Re‑run tests with -u to accept changes.`,
+				);
+			}
+			return;
+		}
+		throw err;
+	}
+}
+
 void describe('createYaml for sbt', () => {
-	void it('should generate the following yaml file', { skip: true }, () => {
-		// Temporarily skipped; will be replaced with snapshot tests in a follow-up branch.
-		const yaml = createYaml('branch', 'Scala');
-		const result =
-			String.raw`name: Update Dependency Graph for sbt
-on:
-  push:
-    branches:
-      - main
-      - branch
-  workflow_dispatch: 
-jobs:
-  dependency-graph:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        id: checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Install Java
-        id: java
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
-        with:
-          distribution: corretto
-          java-version: 21
-      - name: Install sbt
-        id: sbt
-        uses: sbt/setup-sbt@7106bdca9eae3f592a8baeccf57b5a3e06c0de5f # v1.1.14
-      - name: Submit dependencies
-        id: submit
-        uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
-      - name: Log snapshot for user validation
-        id: validate
-        run: cat` +
-			' ${{ steps.submit.outputs.snapshot-json-path }} | jq' + // Need to split this line to avoid syntax errors due to the template string
-			String.raw`
-    permissions:
-      contents: write
-`;
-		assert.strictEqual(yaml, result);
+	void it('should generate the following yaml file', async () => {
+		const actual = await createYaml('branch', 'Scala');
+		await expectToMatchSnapshot('createYaml-scala', actual);
+	});
+
+	void it('has the expected structure (Scala)', async () => {
+		const actual = await createYaml('branch', 'Scala');
+		const parsed = yaml.parse(actual) as {
+			name: string;
+			on: { push: { branches: string[] }; workflow_dispatch?: unknown };
+			jobs: Record<
+				string,
+				{
+					'runs-on': string;
+					permissions: { contents: string };
+					steps: Array<{
+						id?: string;
+						uses?: string;
+						run?: string;
+						with?: Record<string, unknown>;
+					}>;
+				}
+			>;
+		};
+
+		// top-level
+		assert.strictEqual(parsed.name, 'Update Dependency Graph for sbt');
+		assert.deepStrictEqual(parsed.on.push.branches, ['main', 'branch']);
+		assert.ok(parsed.on.workflow_dispatch !== undefined);
+
+		// job
+		const job = parsed.jobs['dependency-graph'];
+		assert.ok(job, 'dependency-graph job should exist');
+		assert.strictEqual(job['runs-on'], 'ubuntu-latest');
+		assert.deepStrictEqual(job.permissions, { contents: 'write' });
+
+		// steps
+		assert.ok(Array.isArray(job.steps), 'steps should be an array');
+		assert.ok(job.steps.length >= 5, 'should have at least 5 steps');
+
+		const checkout = job.steps.find(
+			(s: unknown): s is { id?: string; uses?: string } =>
+				typeof s === 'object' &&
+				s !== null &&
+				'id' in s &&
+				typeof (s as { id?: unknown }).id === 'string' &&
+				'uses' in s,
+		) as { id?: string; uses?: string } | undefined;
+		assert.ok(checkout, 'checkout step missing');
+		assert.match(checkout.uses!, /^actions\/checkout@/);
+
+		const java = job.steps.find(
+			(
+				s: unknown,
+			): s is { id?: string; uses?: string; with?: Record<string, unknown> } =>
+				typeof s === 'object' &&
+				s !== null &&
+				'id' in s &&
+				typeof (s as { id?: unknown }).id === 'string' &&
+				'uses' in s &&
+				'with' in s,
+		) as
+			| { id?: string; uses?: string; with?: Record<string, unknown> }
+			| undefined;
+		assert.ok(java, 'java step missing');
+		assert.match(java.uses!, /^actions\/setup-java@/);
+		assert.ok(java.with, 'java.with should be defined');
+		assert.strictEqual(java.with['java-version'], 21);
+		assert.strictEqual(java.with.distribution, 'corretto');
+
+		const sbtStep = job.steps.find(
+			(s): s is { id?: string; uses?: string } =>
+				typeof s === 'object' && (s as { id?: string }).id === 'sbt',
+		);
+		assert.ok(sbtStep, 'sbt step missing');
+		assert.match(sbtStep.uses!, /^sbt\/setup-sbt@/);
+
+		const submit = job.steps.find(
+			(s): s is { id?: string; uses?: string } =>
+				typeof s === 'object' && (s as { id?: string }).id === 'submit',
+		);
+		assert.ok(submit, 'submit step missing');
+		assert.match(submit.uses!, /^scalacenter\/sbt-dependency-submission@/);
+
+		const validate = job.steps.find(
+			(s: unknown): s is { id?: string; run?: string } =>
+				typeof s === 'object' &&
+				s !== null &&
+				'id' in s &&
+				typeof (s as { id?: unknown }).id === 'string' &&
+				'run' in s,
+		) as { id?: string; run?: string } | undefined;
+		assert.ok(validate, 'validate step missing');
+		assert.match(
+			validate.run!,
+			/^cat \$\{\{ steps\.submit\.outputs\.snapshot-json-path \}\} \| jq$/,
+		);
 	});
 });
 
 void describe('createYaml for Kotlin', () => {
-	void it('should generate the following yaml file', { skip: true }, () => {
-		// Temporarily skipped; will be replaced with snapshot tests in a follow-up branch.
-		const yaml = createYaml('branch', 'Kotlin');
-		const result =
-			String.raw`name: Update Dependency Graph for Gradle
-on:
-  push:
-    branches:
-      - main
-      - branch
-  workflow_dispatch: 
-jobs:
-  dependency-graph:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        id: checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Set up Java
-        id: setup
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
-        with:
-          distribution: temurin
-          java-version: 21
-      - name: Submit dependencies
-        id: submit
-        uses: gradle/actions/dependency-submission@f236b35da9d031e13b1005234ebe4392ed54c580 # v5.0.0
-      - name: Log snapshot for user validation
-        id: validate
-        run: cat ` + // Need to split this line to avoid errors due to new line produced in yaml
-			'/home/runner/work/repo2/repo2/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json\n          | jq' +
-			String.raw`
-    permissions:
-      contents: write
-`;
-		assert.strictEqual(yaml, result);
+	void it('matches snapshot', async () => {
+		const actual = await createYaml('branch', 'Kotlin');
+		await expectToMatchSnapshot('createYaml-kotlin', actual);
+	});
+
+	void it('has the expected structure (Kotlin)', async () => {
+		const actual = await createYaml('branch', 'Kotlin');
+		const parsed = yaml.parse(actual) as {
+			name: string;
+			on: { push: { branches: string[] }; workflow_dispatch?: unknown };
+			jobs: Record<
+				string,
+				{
+					'runs-on': string;
+					permissions: { contents: string };
+					steps: Array<{ id?: string; uses?: string; run?: string }>;
+				}
+			>;
+		};
+
+		assert.strictEqual(parsed.name, 'Update Dependency Graph for Gradle');
+		assert.deepStrictEqual(parsed.on.push.branches, ['main', 'branch']);
+		assert.ok(parsed.on.workflow_dispatch !== undefined);
+
+		const job = parsed.jobs['dependency-graph'];
+		assert.ok(job, 'dependency-graph job should exist');
+		assert.strictEqual(job['runs-on'], 'ubuntu-latest');
+		assert.deepStrictEqual(job.permissions, { contents: 'write' });
+
+		assert.ok(Array.isArray(job.steps), 'steps should be an array');
+		assert.ok(job.steps.length >= 3, 'should have at least 3 steps');
+
+		const setupStep = job.steps.find((s) => s.id === 'setup');
+		assert.ok(setupStep, 'setup step missing');
+		assert.match(setupStep.uses!, /^actions\/setup-java@/);
+
+		const submitStep = job.steps.find((s) => s.id === 'submit');
+		assert.ok(submitStep, 'submit step missing');
+		assert.match(submitStep.uses!, /^gradle\/actions\/dependency-submission@/);
+
+		const validateStep = job.steps.find((s) => s.id === 'validate');
+		assert.ok(validateStep, 'validate step missing');
+		assert.match(
+			validateStep.run!,
+			/\/home\/runner\/work\/\$\{\{ github\.event\.repository\.name \}\}\/\$\{\{ github\.event\.repository\.name \}\}\/dependency-graph-reports\/update_dependency_graph_for_gradle-dependency-graph\.json/,
+		);
 	});
 });
