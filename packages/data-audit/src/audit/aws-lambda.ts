@@ -29,7 +29,6 @@ async function numberOfLambdaFunctionsForAwsAccount(
 
 	const functions: FunctionConfiguration[] = [];
 
-	// eslint-disable-next-line @typescript-eslint/await-thenable -- paginateListFunctions returns an async iterable
 	for await (const page of paginateListFunctions(
 		{ client, pageSize: 50 },
 		{},
