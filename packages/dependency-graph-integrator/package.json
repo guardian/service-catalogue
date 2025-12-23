@@ -8,7 +8,8 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
 		"start": "tsx src/run-locally.ts",
-		"test": "node --import tsx --test \"**/*.test.ts\"",
+		"test": "node ./scripts/test-runner.mjs",
+		"test:update": "UPDATE_SNAPSHOTS=1 node ./scripts/test-runner.mjs",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
