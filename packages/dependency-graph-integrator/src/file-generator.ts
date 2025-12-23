@@ -155,8 +155,7 @@ export function generatePrBody(
 		),
 		h2('Why?'),
 		p(
-			'If a repository is in production, we need to track its third party dependencies for vulnerabilities. ' +
-				'Historically, we have done this using Snyk, but we have migrated to GitHub’s native Dependabot. ' +
+			'If a repository is in production, we need to track its third party dependencies for vulnerabilities using Dependabot. ' +
 				`${language} is not a language that Dependabot supports out of the box, this workflow is required to make it happen. ` +
 				'As a result, we have raised this PR on your behalf to add it to the Dependency Graph.',
 		),
