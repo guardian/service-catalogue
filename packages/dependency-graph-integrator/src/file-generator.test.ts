@@ -9,10 +9,8 @@ import { createYaml } from './file-generator.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const shouldUpdateSnapshots =
-	process.env.UPDATE_SNAPSHOTS === '1' ||
-	process.argv.includes('-u') ||
-	process.argv.includes('--update-snapshots');
+const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === '1';
+
 
 async function expectToMatchSnapshot(testName: string, actual: string) {
 	const snapshotsDir = path.join(__dirname, '__snapshots__');
@@ -22,6 +20,13 @@ async function expectToMatchSnapshot(testName: string, actual: string) {
 
 	try {
 		const expected = await fs.readFile(snapshotFile, 'utf-8');
+
+		// Update existing snapshot when -u/--update-snapshots is passed
+		if (shouldUpdateSnapshots && expected !== actual) {
+			await fs.writeFile(snapshotFile, actual, 'utf-8');
+			return;
+		}
+
 		assert.strictEqual(actual, expected);
 	} catch (err: unknown) {
 		if (
@@ -118,7 +123,7 @@ void describe('createYaml for sbt', () => {
 		assert.match(java.uses!, /^actions\/setup-java@/);
 		assert.ok(java.with, 'java.with should be defined');
 		assert.strictEqual(java.with['java-version'], 21);
-		assert.strictEqual(java.with.distribution, 'corretto');
+		assert.strictEqual(java.with.distribution, 'temurin');
 
 		const sbtStep = job.steps.find(
 			(s): s is { id?: string; uses?: string } =>
@@ -195,7 +200,7 @@ void describe('createYaml for Kotlin', () => {
 		assert.ok(validateStep, 'validate step missing');
 		assert.match(
 			validateStep.run!,
-			/\/home\/runner\/work\/\$\{\{ github\.event\.repository\.name \}\}\/\$\{\{ github\.event\.repository\.name \}\}\/dependency-graph-reports\/update_dependency_graph_for_gradle-dependency-graph\.json/,
+			/^cat "\$GITHUB_WORKSPACE\/dependency-graph-reports\/update_dependency_graph_for_gradle-dependency-graph\.json" \| jq$/,
 		);
 	});
 });
