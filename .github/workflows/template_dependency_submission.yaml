@@ -40,4 +40,4 @@ jobs:
         uses: gradle/actions/dependency-submission@f236b35da9d031e13b1005234ebe4392ed54c580 # v5.0.0
       - name: Log snapshot for user validation
         id: validate
-        run: cat /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json | jq
+        run: cat "$GITHUB_WORKSPACE/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json" | jq
