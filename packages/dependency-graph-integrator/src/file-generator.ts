@@ -1,4 +1,6 @@
 import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { markdownChecklist } from 'common/src/string.js';
 import type { DepGraphLanguage } from 'common/types.js';
 import { h2, p, tsMarkdown } from 'ts-markdown';
@@ -40,11 +42,23 @@ function keyOrder(a: Pair, b: Pair) {
 }
 
 export async function createYaml(prBranch: string, language: DepGraphLanguage) {
-	const template = await fs.readFile(
-		'../../.github/workflows/template_dependency_submission.yaml',
-		'utf-8',
+	const here = path.dirname(fileURLToPath(import.meta.url));
+	// Try repo template (dev/test). If missing (e.g., in Lambda), use bundled copy.
+	const repoTemplatePath = path.resolve(
+		here,
+		'../../../.github/workflows/template_dependency_submission.yaml',
+	);
+	const bundledTemplatePath = path.resolve(
+		here,
+		'template_dependency_submission.yaml',
 	);
 
+	let template: string;
+	try {
+		template = await fs.readFile(repoTemplatePath, 'utf-8');
+	} catch {
+		template = await fs.readFile(bundledTemplatePath, 'utf-8');
+	}
 	const usesCommentMap = new Map<string, string>();
 	const usesRegex = /^(\s*uses:\s*[^\s]+@[^\s]+)(\s*#\s*v[^\s]+)?/gm;
 	let match;

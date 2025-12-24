@@ -6,7 +6,7 @@
 		"@types/aws-lambda": "^8.10.159"
 	},
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk && cp ../../.github/workflows/template_dependency_submission.yaml dist/template_dependency_submission.yaml",
 		"start": "tsx src/run-locally.ts",
 		"test": "node ./scripts/test-runner.mjs",
 		"test:update": "UPDATE_SNAPSHOTS=1 node ./scripts/test-runner.mjs",
