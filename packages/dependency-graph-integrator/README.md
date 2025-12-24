@@ -130,6 +130,10 @@ Workflow:
 
 - If tests fail due to snapshot differences, review the diff, then re-run with `test -- -u` flag (or `test:update`) to accept the changes.
 
+#### Why a custom test runner in this package?
+
+This package uses a small wrapper script (`scripts/test-runner.mjs`) around Node’s built‑in test runner to essentially set `UPDATE_SNAPSHOTS=1` when `-u` is passed, standardising snapshot updates locally and in CI.
+
 ### How does dependency submission work once the action is in use?
 
 ```mermaid
