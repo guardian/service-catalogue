@@ -24,7 +24,7 @@ The dependency graph integrator takes a repo name as JSON, like so:
 }
 ```
 
-It uses this input to generate a workflow file that allows us to submit Scala or Kotlin dependencies to GitHub for vulnerability monitoring via a GitHub Action.
+It uses this input to generate a workflow file that allows us to submit sbt or Gradle dependencies to GitHub for vulnerability monitoring via a GitHub Action.
 
 For a Scala repo, the file will look something like this:
 
@@ -112,10 +112,10 @@ if (isMain) {
 The package uses snapshot tests to verify the generated workflow YAML and PR body formatting.
 
 - Run tests:
-  - `npm -w dependency-graph-integrator test`
+  - `npm test -w dependency-graph-integrator`
 - Update snapshots (accept intentional changes):
-  - `npm -w dependency-graph-integrator test -- -u`
-  - or `npm -w dependency-graph-integrator run test:update`
+  - `npm test -w dependency-graph-integrator -- -u`
+  - or `npm run -w dependency-graph-integrator test:update`
 
 Snapshots are stored in:
 
@@ -128,7 +128,7 @@ When to update:
 
 Workflow:
 
-- If tests fail due to snapshot differences, review the diff, then re-run with `-u` (or `test:update`) to accept the changes.
+- If tests fail due to snapshot differences, review the diff, then re-run with `test -- -u` flag (or `test:update`) to accept the changes.
 
 ### How does dependency submission work once the action is in use?
 
