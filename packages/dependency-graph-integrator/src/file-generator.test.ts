@@ -1,16 +1,23 @@
-import assert from 'assert';
 import fs from 'fs/promises';
+import assert from 'node:assert/strict';
+import path from 'node:path';
 import { describe, it } from 'node:test';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import * as yaml from 'yaml';
 import { createYaml } from './file-generator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === '1'; // this is set by scripts/test-runner.mjs
 
-const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === '1';
-
+function isENOENT(err: unknown): err is NodeJS.ErrnoException {
+	return (
+		typeof err === 'object' &&
+		err !== null &&
+		'code' in err &&
+		(err as { code?: unknown }).code === 'ENOENT'
+	);
+}
 
 async function expectToMatchSnapshot(testName: string, actual: string) {
 	const snapshotsDir = path.join(__dirname, '__snapshots__');
@@ -21,29 +28,14 @@ async function expectToMatchSnapshot(testName: string, actual: string) {
 	try {
 		const expected = await fs.readFile(snapshotFile, 'utf-8');
 
-		// Update existing snapshot when -u/--update-snapshots is passed
-		if (shouldUpdateSnapshots && expected !== actual) {
-			await fs.writeFile(snapshotFile, actual, 'utf-8');
+		if (!shouldUpdateSnapshots) {
+			assert.strictEqual(actual, expected);
 			return;
 		}
-
-		assert.strictEqual(actual, expected);
 	} catch (err: unknown) {
-		if (
-			(typeof err === 'object' &&
-				err !== null &&
-				'code' in err &&
-				(err as { code?: string }).code === 'ENOENT') ||
-			shouldUpdateSnapshots
-		) {
+		if (isENOENT(err)) {
 			await fs.writeFile(snapshotFile, actual, 'utf-8');
-			if (
-				typeof err === 'object' &&
-				err !== null &&
-				'code' in err &&
-				(err as { code?: string }).code === 'ENOENT' &&
-				!shouldUpdateSnapshots
-			) {
+			if (!shouldUpdateSnapshots) {
 				throw new Error(
 					`Snapshot created for "${testName}". Re‑run tests with -u to accept changes.`,
 				);
@@ -52,6 +44,7 @@ async function expectToMatchSnapshot(testName: string, actual: string) {
 		}
 		throw err;
 	}
+	await fs.writeFile(snapshotFile, actual, 'utf-8');
 }
 
 void describe('createYaml for sbt', () => {
