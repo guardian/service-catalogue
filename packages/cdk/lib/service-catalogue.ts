@@ -31,6 +31,7 @@ import {
 	CaCertificate,
 	DatabaseInstance,
 	DatabaseInstanceEngine,
+	PostgresEngineVersion,
 	StorageType,
 } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -169,7 +170,9 @@ export class ServiceCatalogue extends GuStack {
 		});
 
 		const dbProps: DatabaseInstanceProps = {
-			engine: DatabaseInstanceEngine.POSTGRES,
+			engine: DatabaseInstanceEngine.postgres({
+				version: PostgresEngineVersion.VER_15,
+			}),
 			port,
 			vpc,
 			instanceType: databaseInstanceType,
