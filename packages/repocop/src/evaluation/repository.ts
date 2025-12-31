@@ -307,7 +307,7 @@ async function findMostRecentCommitters(
 	org: string,
 	short_repo_name: string,
 	octokit: Octokit,
-) {
+): Promise<string[][]> {
 	const commitsResponse = await octokit.rest.repos.listCommits({
 		owner: org,
 		repo: short_repo_name,
@@ -315,9 +315,10 @@ async function findMostRecentCommitters(
 		page: 0,
 	});
 
-	const committers = commitsResponse.data
-		.map((commit) => commit.commit.author?.name)
-		.filter((name): name is string => !!name);
+	const committers = commitsResponse.data.map((commit) => [
+		commit.commit.author?.name ?? 'unknown',
+		commit.commit.author?.email ?? 'unknown',
+	]);
 
 	return Array.from(new Set(committers));
 }
@@ -341,11 +342,18 @@ export async function testExperimentalRepocopFeatures(
 
 	const someUnmaintainedRepos = unmaintinedRepos.slice(0, 10);
 	for (const repo of someUnmaintainedRepos) {
-		const committers = await findMostRecentCommitters(
-			config.gitHubOrg,
-			repo.full_name.split('/')[1] ?? '',
-			octokit,
-		);
+		const committers = await (async () => {
+			try {
+				return await findMostRecentCommitters(
+					config.gitHubOrg,
+					repo.full_name.split('/')[1] ?? '',
+					octokit,
+				);
+			} catch (error) {
+				console.log(`Failed to fetch committers for ${repo.full_name}:`, error);
+				return [];
+			}
+		})();
 		console.log(
 			`Unmaintained repo: ${repo.full_name}, recent committers: ${committers.join(', ')}`,
 		);
