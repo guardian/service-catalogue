@@ -2,7 +2,7 @@ import type { PrismaClient, repocop_vulnerabilities } from '@prisma/client';
 import { stringToSeverity, toNonEmptyArray } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
 import {
-	chooseScope,
+	chooseDependencyScope,
 	type NonEmptyArray,
 	type RepocopVulnerability,
 	type Repository,
@@ -19,7 +19,11 @@ function prismaToCustomType(
 	return {
 		...vuln,
 		severity: stringToSeverity(vuln.severity),
-		scope: chooseScope(vuln.scope as string | null | undefined), // This is safe as the type of vuln.scope is string.
+		scope: chooseDependencyScope(
+			vuln.scope as string | null | undefined, // This is safe as the type of vuln.scope is string.
+			vuln.package,
+			vuln.full_name,
+		),
 	};
 }
 
