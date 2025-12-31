@@ -65,13 +65,17 @@ export interface ProjectId {
 
 export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
-export function chooseScope(
+export function chooseDependencyScope(
 	scope: string | null | undefined,
+	dependency: string,
+	repository: string,
 ): 'runtime' | 'development' {
 	if (scope === 'runtime' || scope === 'development') {
 		return scope;
 	} else {
-		console.log(`Unknown scope: ${scope}`);
+		console.debug(
+			`Unknown scope for dependency "${dependency}" in repository "${repository}": "${scope}". Defaulting to "runtime".`,
+		);
 		return 'runtime'; // default to runtime if unknown
 	}
 }
