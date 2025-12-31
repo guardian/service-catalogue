@@ -303,6 +303,25 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
+async function findMostRecentCommitters(
+	org: string,
+	short_repo_name: string,
+	octokit: Octokit,
+) {
+	const commitsResponse = await octokit.rest.repos.listCommits({
+		owner: org,
+		repo: short_repo_name,
+		per_page: 15,
+		page: 0,
+	});
+
+	const committers = commitsResponse.data
+		.map((commit) => commit.commit.author?.name)
+		.filter((name): name is string => !!name);
+
+	return Array.from(new Set(committers));
+}
+
 export async function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
@@ -312,13 +331,25 @@ export async function testExperimentalRepocopFeatures(
 	config: Config,
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
-	const unmaintinedReposCount = evaluatedRepos.filter(
+	const unmaintinedRepos = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
-	).length;
+	);
 
 	console.log(
-		`Found ${unmaintinedReposCount} unmaintained repositories of ${unarchivedRepos.length}.`,
+		`Found ${unmaintinedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
+
+	const someUnmaintainedRepos = unmaintinedRepos.slice(0, 10);
+	for (const repo of someUnmaintainedRepos) {
+		const committers = await findMostRecentCommitters(
+			config.gitHubOrg,
+			repo.full_name.split('/')[1] ?? '',
+			octokit,
+		);
+		console.log(
+			`Unmaintained repo: ${repo.full_name}, recent committers: ${committers.join(', ')}`,
+		);
+	}
 
 	const archivedWithStacks = findArchivedReposWithStacks(
 		archivedRepos,
