@@ -303,11 +303,16 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
+type Committer = {
+	name: string;
+	email: string;
+};
+
 async function findMostRecentCommitters(
 	org: string,
 	short_repo_name: string,
 	octokit: Octokit,
-): Promise<string[][]> {
+): Promise<Committer[]> {
 	const commitsResponse = await octokit.rest.repos.listCommits({
 		owner: org,
 		repo: short_repo_name,
@@ -315,12 +320,21 @@ async function findMostRecentCommitters(
 		page: 0,
 	});
 
-	const committers = commitsResponse.data.map((commit) => [
-		commit.commit.author?.name ?? 'unknown',
-		commit.commit.author?.email ?? 'unknown',
-	]);
+	const committers = commitsResponse.data.map((commit) => ({
+		name: commit.commit.author?.name ?? 'unknown',
+		email: commit.commit.author?.email ?? 'unknown',
+	}));
 
-	return Array.from(new Set(committers));
+	// Deduplicate committers by email
+	const uniqueCommitters = committers.reduce<Record<string, Committer>>(
+		(acc, committer) => {
+			acc[committer.email] = committer;
+			return acc;
+		},
+		{},
+	);
+
+	return Object.values(uniqueCommitters);
 }
 
 export async function testExperimentalRepocopFeatures(
@@ -355,7 +369,8 @@ export async function testExperimentalRepocopFeatures(
 			}
 		})();
 		console.log(
-			`Unmaintained repo: ${repo.full_name}, recent committers: ${committers.join(', ')}`,
+			`Unmaintained repo: ${repo.full_name}, recent committers: `,
+			committers,
 		);
 	}
 
