@@ -10,10 +10,10 @@ describe('The ServiceCatalogue stack', () => {
 	beforeAll(() => {
 		/*
 		Each CloudQuery task generates a SQL statement to insert its cadence into the `cloudquery_table_frequency` database table.
-		This value can change depending on how many days there are in the current month.
+		This value can change depending on how many days there are in the next month.
     For example, for a task that runs on the first of every month (` Schedule.cron({ day: '1', hour: '0', minute: '0' })`):
-		- In May the value will be 2678400000 (31 days)
-		- In June the value will be 2592000000 (30 days)
+		- In April the value will be 2678400000 (31 days in May, the next month)
+		- In May the value will be 2592000000 (30 days in June, the next month)
 		Mock the current date to ensure the Jest snapshot is stable.
 		 */
 		const date = new Date('2025-05-01');
@@ -24,6 +24,7 @@ describe('The ServiceCatalogue stack', () => {
 		jest.useRealTimers();
 	});
 
+	// Most of these tests can safely share an instance of the app/stack
 	const app = new App();
 	const stack = new ServiceCatalogue(
 		app,
@@ -32,6 +33,13 @@ describe('The ServiceCatalogue stack', () => {
 	);
 
 	it('matches the snapshot', () => {
+		// For this test we need to instantiate an app/stack separately so that it picks up the fake date set by jest
+		const app = new App();
+		const stack = new ServiceCatalogue(
+			app,
+			'ServiceCatalogue',
+			serviceCataloguePRODProperties,
+		);
 		const template = Template.fromStack(stack);
 		expect(template.toJSON()).toMatchSnapshot();
 	});
