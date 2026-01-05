@@ -6,16 +6,13 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import { isWithinSlaTime, partition } from 'common/src/functions.js';
-import { chooseScope, SLAs } from 'common/src/types.js';
+import { chooseDependencyScope, SLAs } from 'common/src/types.js';
 import type {
 	DepGraphLanguage,
 	RepocopVulnerability,
 	Repository,
 	Severity,
 } from 'common/src/types.js';
-import type { Octokit } from 'octokit';
-import type { Config } from '../config.js';
-import { searchHuludCommits } from '../hulud-hunt.js';
 import {
 	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
@@ -303,13 +300,11 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
-export async function testExperimentalRepocopFeatures(
+export function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
-	octokit: Octokit,
-	config: Config,
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
 	const unmaintinedReposCount = evaluatedRepos.filter(
@@ -332,11 +327,6 @@ export async function testExperimentalRepocopFeatures(
 		'Archived repos with live stacks, first 3 results:',
 		archivedWithStacks.slice(0, 3),
 	);
-
-	const res = await searchHuludCommits(octokit, config);
-
-	console.log(`Found ${res.length} Hulud commits in the last day`);
-	console.log(res);
 	console.log('Done');
 }
 
@@ -446,7 +436,11 @@ export function dependabotAlertToRepocopVulnerability(
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
 		within_sla: isWithinSlaTime(alertIssueDate, severity),
-		scope: chooseScope(alert.dependency.scope),
+		scope: chooseDependencyScope(
+			alert.dependency.scope,
+			alert.security_vulnerability.package.name,
+			fullName,
+		),
 	};
 }
 
