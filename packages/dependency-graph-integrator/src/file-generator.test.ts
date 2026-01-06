@@ -1,86 +1,113 @@
-import assert from 'assert';
+import fs from 'fs/promises';
+import assert from 'node:assert/strict';
+import path from 'node:path';
 import { describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
+import yaml from 'yaml';
 import { createYaml } from './file-generator.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === 'true'; // this is set by scripts/test-runner.mjs
+
+function isFileNotFoundError(err: unknown): err is NodeJS.ErrnoException {
+	return (
+		typeof err === 'object' &&
+		err !== null &&
+		'code' in err &&
+		(err as { code?: unknown }).code === 'ENOENT'
+	);
+}
+
+async function expectToMatchSnapshot(testName: string, actual: string) {
+	const snapshotsDir = path.join(__dirname, '__snapshots__');
+	const snapshotFile = path.join(snapshotsDir, `${testName}.snap`);
+
+	await fs.mkdir(snapshotsDir, { recursive: true });
+
+	try {
+		const expected = await fs.readFile(snapshotFile, 'utf-8');
+
+		if (!shouldUpdateSnapshots) {
+			assert.strictEqual(actual, expected);
+			return;
+		}
+	} catch (err: unknown) {
+		if (isFileNotFoundError(err)) {
+			await fs.writeFile(snapshotFile, actual, 'utf-8');
+			if (!shouldUpdateSnapshots) {
+				throw new Error(
+					`Snapshot created for "${testName}".  Re-run tests to use the new snapshot`,
+				);
+			}
+			return;
+		}
+		throw err;
+	}
+	await fs.writeFile(snapshotFile, actual, 'utf-8');
+}
+
+// Load the same template file used by createYaml, to derive shared vs language steps.
+async function loadTemplateWorkflow() {
+	const repoTemplatePath = path.resolve(
+		__dirname,
+		'../../../.github/workflows/template_dependency_submission.yaml',
+	);
+	const content = await fs.readFile(repoTemplatePath, 'utf-8');
+	return yaml.parse(content) as {
+		jobs: Record<string, { steps: unknown[] }>;
+	};
+}
+
+async function expectSharedStepsPrepended(language: 'Scala' | 'Kotlin') {
+	const template = await loadTemplateWorkflow();
+	const sharedSteps = template.jobs['shared-steps']?.steps ?? [];
+	const jobKey = `${language.toLowerCase()}-job`;
+	const languageSteps = template.jobs[jobKey]?.steps ?? [];
+
+	const out = await createYaml('branch', language);
+	const parsed = yaml.parse(out) as {
+		jobs: { 'dependency-graph': { steps: unknown[] } };
+	};
+	const actualSteps = parsed.jobs['dependency-graph'].steps;
+
+	// 1) Shared steps are at the beginning and unchanged (comments are ignored by the parser).
+	assert.deepStrictEqual(
+		actualSteps.slice(0, sharedSteps.length),
+		sharedSteps,
+		`Shared steps must be prepended for ${language}`,
+	);
+
+	// 2) The language-specific steps follow immediately and in the same order as template.
+	assert.deepStrictEqual(
+		actualSteps.slice(sharedSteps.length),
+		languageSteps,
+		`Language steps must follow shared steps for ${language}`,
+	);
+}
+
 void describe('createYaml for sbt', () => {
-	void it('should generate the following yaml file', { skip: true }, () => {
-		// Temporarily skipped; will be replaced with snapshot tests in a follow-up branch.
-		const yaml = createYaml('branch', 'Scala');
-		const result =
-			String.raw`name: Update Dependency Graph for sbt
-on:
-  push:
-    branches:
-      - main
-      - branch
-  workflow_dispatch: 
-jobs:
-  dependency-graph:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        id: checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Install Java
-        id: java
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
-        with:
-          distribution: corretto
-          java-version: 21
-      - name: Install sbt
-        id: sbt
-        uses: sbt/setup-sbt@7106bdca9eae3f592a8baeccf57b5a3e06c0de5f # v1.1.14
-      - name: Submit dependencies
-        id: submit
-        uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
-      - name: Log snapshot for user validation
-        id: validate
-        run: cat` +
-			' ${{ steps.submit.outputs.snapshot-json-path }} | jq' + // Need to split this line to avoid syntax errors due to the template string
-			String.raw`
-    permissions:
-      contents: write
-`;
-		assert.strictEqual(yaml, result);
+	// Snapshot: full, exact YAML contract (ordering, comments, formatting).
+	void it('matches snapshot (Scala)', async () => {
+		const actual = await createYaml('branch', 'Scala');
+		await expectToMatchSnapshot('create-yaml-scala', actual);
+	});
+
+	// Minimal semantic assertion: shared steps are prepended.
+	void it('prepends shared steps ahead of language steps (Scala)', async () => {
+		await expectSharedStepsPrepended('Scala');
 	});
 });
 
 void describe('createYaml for Kotlin', () => {
-	void it('should generate the following yaml file', { skip: true }, () => {
-		// Temporarily skipped; will be replaced with snapshot tests in a follow-up branch.
-		const yaml = createYaml('branch', 'Kotlin');
-		const result =
-			String.raw`name: Update Dependency Graph for Gradle
-on:
-  push:
-    branches:
-      - main
-      - branch
-  workflow_dispatch: 
-jobs:
-  dependency-graph:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        id: checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Set up Java
-        id: setup
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
-        with:
-          distribution: temurin
-          java-version: 21
-      - name: Submit dependencies
-        id: submit
-        uses: gradle/actions/dependency-submission@f236b35da9d031e13b1005234ebe4392ed54c580 # v5.0.0
-      - name: Log snapshot for user validation
-        id: validate
-        run: cat ` + // Need to split this line to avoid errors due to new line produced in yaml
-			'/home/runner/work/repo2/repo2/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json\n          | jq' +
-			String.raw`
-    permissions:
-      contents: write
-`;
-		assert.strictEqual(yaml, result);
+	// Snapshot: full, exact YAML contract.
+	void it('matches snapshot (Kotlin)', async () => {
+		const actual = await createYaml('branch', 'Kotlin');
+		await expectToMatchSnapshot('create-yaml-kotlin', actual);
+	});
+
+	// Minimal semantic assertion: shared steps are prepended.
+	void it('prepends shared steps ahead of language steps (Kotlin)', async () => {
+		await expectSharedStepsPrepended('Kotlin');
 	});
 });
