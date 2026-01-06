@@ -13,7 +13,7 @@
 		"start": "tsx src/run-locally.ts",
 		"pretest": "npm run copy-templates",
 		"test": "node ./scripts/test-runner.mjs",
-		"test:update": "UPDATE_SNAPSHOTS=1 node ./scripts/test-runner.mjs",
+		"test:update": "UPDATE_SNAPSHOTS=true node ./scripts/test-runner.mjs",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {

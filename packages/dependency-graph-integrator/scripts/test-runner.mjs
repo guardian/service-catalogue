@@ -26,7 +26,7 @@ const child = spawn(
 			TZ: 'UTC',
 			LANG: 'C',
 			LC_ALL: 'C',
-			UPDATE_SNAPSHOTS: update ? '1' : process.env.UPDATE_SNAPSHOTS,
+			UPDATE_SNAPSHOTS: update ? 'true' : process.env.UPDATE_SNAPSHOTS,
 		},
 	},
 );

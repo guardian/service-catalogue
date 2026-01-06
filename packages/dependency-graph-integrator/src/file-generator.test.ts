@@ -8,7 +8,7 @@ import { createYaml } from './file-generator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === '1'; // this is set by scripts/test-runner.mjs
+const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === 'true'; // this is set by scripts/test-runner.mjs
 
 function isFileNotFoundError(err: unknown): err is NodeJS.ErrnoException {
 	return (
