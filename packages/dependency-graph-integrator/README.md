@@ -132,7 +132,7 @@ Workflow:
 
 #### Why a custom test runner in this package?
 
-This package uses a small wrapper script (`scripts/test-runner.mjs`) around Node’s built‑in test runner to essentially set `UPDATE_SNAPSHOTS=1` when `-u` is passed, standardising snapshot updates locally and in CI. This enables developers and CI to use the same simple commands without manually managing environment variables or flags, reducing configuration drift and mistakes.
+This package uses a small wrapper script (`scripts/test-runner.mjs`) around Node’s built‑in test runner to essentially set `UPDATE_SNAPSHOTS=true` when `-u` is passed, standardising snapshot updates locally and in CI. This enables developers and CI to use the same simple commands without manually managing environment variables or flags, reducing configuration drift and mistakes.
 
 ### How does dependency submission work once the action is in use?
 
