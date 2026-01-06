@@ -65,13 +65,19 @@ export interface ProjectId {
 
 export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
-export function chooseScope(
+export type DependencyScope = 'runtime' | 'development';
+
+export function chooseDependencyScope(
 	scope: string | null | undefined,
-): 'runtime' | 'development' {
+	dependency: string,
+	repository: string,
+): DependencyScope {
 	if (scope === 'runtime' || scope === 'development') {
 		return scope;
 	} else {
-		console.log(`Unknown scope: ${scope}`);
+		console.debug(
+			`Unknown scope for dependency "${dependency}" in repository "${repository}": "${scope}". Defaulting to "runtime".`,
+		);
 		return 'runtime'; // default to runtime if unknown
 	}
 }
@@ -81,7 +87,7 @@ export type RepocopVulnerability = Omit<
 	'id' | 'repo_owner' | 'severity' | 'scope'
 > & {
 	severity: Severity;
-	scope: 'runtime' | 'development';
+	scope: DependencyScope;
 };
 
 type RepositoryFields = Pick<
