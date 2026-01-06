@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === '1'; // this is set by scripts/test-runner.mjs
 
-function isENOENT(err: unknown): err is NodeJS.ErrnoException {
+function isFileNotFoundError(err: unknown): err is NodeJS.ErrnoException {
 	return (
 		typeof err === 'object' &&
 		err !== null &&
@@ -33,11 +33,11 @@ async function expectToMatchSnapshot(testName: string, actual: string) {
 			return;
 		}
 	} catch (err: unknown) {
-		if (isENOENT(err)) {
+		if (isFileNotFoundError(err)) {
 			await fs.writeFile(snapshotFile, actual, 'utf-8');
 			if (!shouldUpdateSnapshots) {
 				throw new Error(
-					`Snapshot created for "${testName}". Re‑run tests with -u to accept changes.`,
+					`Snapshot created for "${testName}". Re‑run tests with test:update to accept changes.`,
 				);
 			}
 			return;
