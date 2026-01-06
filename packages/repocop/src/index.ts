@@ -146,11 +146,13 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(repocopRules, cloudwatch, config);
 
-	testExperimentalRepocopFeatures(
+	await testExperimentalRepocopFeatures(
 		evaluationResults,
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
+		octokit,
+		config,
 	);
 
 	const customProperties = await getRepositoryCustomProperties(prisma);

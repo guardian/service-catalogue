@@ -13,6 +13,8 @@ import type {
 	Repository,
 	Severity,
 } from 'common/src/types.js';
+import type { Octokit } from 'octokit';
+import type { Config } from '../config.js';
 import {
 	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
@@ -339,6 +341,8 @@ export async function testExperimentalRepocopFeatures(
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
+	octokit: Octokit,
+	config: Config,
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
 	const unmaintinedRepos = evaluatedRepos.filter(
