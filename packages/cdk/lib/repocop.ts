@@ -133,6 +133,7 @@ function stageAwareIntegratorLambda(
 			environment: {
 				...nonProdLambdaProps.environment,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
+				BRANCH_PROTECTION_ENABLED: 'true',
 			},
 		});
 
