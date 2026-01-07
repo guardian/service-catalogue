@@ -24655,6 +24655,7 @@ spec:
         "Environment": {
           "Variables": {
             "APP": "dependency-graph-integrator",
+            "BRANCH_PROTECTION_ENABLED": "true",
             "GITHUB_APP_SECRET": {
               "Ref": "dependencygraphintegratorgithubappauthB8B9DE78",
             },
