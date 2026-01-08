@@ -1,5 +1,7 @@
 ## What does this change?
 
-## Why?
+## Why has this change been made?
+
+## Why was this approach chosen?
 
 ## How has it been verified?
