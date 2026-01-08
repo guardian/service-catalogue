@@ -5,6 +5,14 @@ import {
 } from '@guardian/cdk/lib/constructs/iam';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
+function ssmArn(stack: GuStack, parameterName: string): string {
+	return stack.formatArn({
+		service: 'ssm',
+		resource: 'parameter',
+		resourceName: parameterName,
+	});
+}
+
 export class JanusAssumableRoles {
 	constructor(thisStack: GuStack, cloudqueryTasksArn: string) {
 		const { stack, stage, app } = thisStack;
@@ -14,37 +22,31 @@ export class JanusAssumableRoles {
 			janusDescription: `Role for running CloudQuery tasks in the ${stage} environment.`,
 		};
 
-		const role = new GuJanusAssumableRole(thisStack, janusRoleProps);
+		const cqClusterCliRole = new GuJanusAssumableRole(
+			thisStack,
+			janusRoleProps,
+		);
 
 		const SSMPolicy = new PolicyStatement({
 			effect: Effect.ALLOW,
 			actions: ['ssm:GetParameter'],
 			resources: [
-				thisStack.formatArn({
-					service: 'ssm',
-					resource: 'parameter',
-					resourceName: `/${stage}/${stack}/${app}/*`,
-				}),
-				thisStack.formatArn({
-					service: 'ssm',
-					resource: 'parameter',
-					resourceName: `/${stage}/deploy/riff-raff/external-database-access-security-group`,
-				}),
-				thisStack.formatArn({
-					service: 'ssm',
-					resource: 'parameter',
-					resourceName: '/account/vpc/primary/subnets/private',
-				}),
+				ssmArn(thisStack, `/${stage}/${stack}/${app}/*`),
+				ssmArn(
+					thisStack,
+					`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+				),
+				ssmArn(thisStack, '/account/vpc/primary/subnets/private'),
 			],
 		});
 
-		role.addToPolicy(
-			new PolicyStatement({
-				effect: Effect.ALLOW,
-				actions: ['ecs:RunTask', 'ecs:List*', 'ecs:Describe*'],
-				resources: [cloudqueryTasksArn],
-			}),
-		);
-		role.addToPolicy(SSMPolicy);
+		const ecsPolicy = new PolicyStatement({
+			effect: Effect.ALLOW,
+			actions: ['ecs:RunTask', 'ecs:List*', 'ecs:Describe*'],
+			resources: [cloudqueryTasksArn],
+		});
+
+		cqClusterCliRole.addToPolicy(ecsPolicy);
+		cqClusterCliRole.addToPolicy(SSMPolicy);
 	}
 }
