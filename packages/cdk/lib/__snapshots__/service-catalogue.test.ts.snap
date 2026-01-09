@@ -23457,6 +23457,7 @@ spec:
         "EnableIAMDatabaseAuthentication": true,
         "EnablePerformanceInsights": true,
         "Engine": "postgres",
+        "EngineVersion": "15",
         "MasterUserPassword": {
           "Fn::Join": [
             "",
@@ -28514,6 +28515,7 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "repocop",
+            "BRANCH_PROTECTION_ENABLED": "true",
             "CUT_OFF_IN_DAYS": "45",
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
