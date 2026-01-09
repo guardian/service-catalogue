@@ -357,15 +357,15 @@ export async function testExperimentalRepocopFeatures(
 	config: Config,
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
-	const unmaintinedRepos = evaluatedRepos.filter(
+	const unmaintainedRepos = evaluatedRepos.filter(
 		(repo) => repo.archiving === false,
 	);
 
 	console.log(
-		`Found ${unmaintinedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
+		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
 
-	const someUnmaintainedRepos = unmaintinedRepos.slice(0, 10);
+	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 10);
 	for (const repo of someUnmaintainedRepos) {
 		const committers = await (async () => {
 			try {
