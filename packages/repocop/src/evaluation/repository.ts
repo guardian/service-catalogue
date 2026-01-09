@@ -379,10 +379,12 @@ export async function testExperimentalRepocopFeatures(
 				return [];
 			}
 		})();
-		console.log(
-			`Unmaintained repo: ${repo.full_name}, recent committers: `,
-			committers,
-		);
+		if (committers.length > 0) {
+			console.log(
+				`Unmaintained repo: ${repo.full_name}, recent guardian-addressed committers: `,
+				committers,
+			);
+		}
 	}
 
 	const archivedWithStacks = findArchivedReposWithStacks(
