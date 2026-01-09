@@ -92,10 +92,10 @@ export function createDigestForSeverity(
 		}
 
 		// Is it older?  Move it up.
-		if (a.alert_issue_date > b.alert_issue_date) {
+		if (a.alert_issue_date < b.alert_issue_date) {
 			return -1;
 		}
-		if (a.alert_issue_date < b.alert_issue_date) {
+		if (a.alert_issue_date > b.alert_issue_date) {
 			return 1;
 		}
 

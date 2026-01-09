@@ -111,11 +111,35 @@ void describe('createDigest', () => {
 			within_sla: true,
 			package: 'patchableInSLA',
 		};
-		const unpatchableInSLA = {
+
+		const today = new Date();
+
+		const yesterday = new Date(today);
+		yesterday.setDate(today.getDate() - 1);
+
+		const dayBeforeYesterday = new Date(today);
+		dayBeforeYesterday.setDate(today.getDate() - 2);
+
+		const unpatchableInSLAToday = {
 			...highRecentVuln,
 			is_patchable: false,
 			within_sla: true,
-			package: 'unpatchableInSLA',
+			package: 'unpatchableInSLAToday',
+			alert_issue_date: today,
+		};
+		const unpatchableInSLAYesterday = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: true,
+			package: 'unpatchableInSLAYesterday',
+			alert_issue_date: yesterday,
+		};
+		const unpatchableInSLADayBeforeYesterday = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: true,
+			package: 'unpatchableInSLADayBeforeYesterday',
+			alert_issue_date: dayBeforeYesterday,
 		};
 		const patchableOutsideSLA = {
 			...highRecentVuln,
@@ -132,7 +156,9 @@ void describe('createDigest', () => {
 		const resultWithVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [
-				unpatchableInSLA,
+				unpatchableInSLAToday,
+				unpatchableInSLAYesterday,
+				unpatchableInSLADayBeforeYesterday,
 				unpatchableOutsideSLA,
 				patchableInSLA,
 				patchableOutsideSLA,
@@ -151,7 +177,11 @@ void describe('createDigest', () => {
 		assert.ok(messagesAsArray[0]!.includes('patchableOutsideSLA'));
 		assert.ok(messagesAsArray[1]!.includes('patchableInSLA'));
 		assert.ok(messagesAsArray[2]!.includes('unpatchableOutsideSLA'));
-		assert.ok(messagesAsArray[3]!.includes('unpatchableInSLA'));
+		assert.ok(
+			messagesAsArray[3]!.includes('unpatchableInSLADayBeforeYesterday'),
+		);
+		assert.ok(messagesAsArray[4]!.includes('unpatchableInSLAYesterday'));
+		assert.ok(messagesAsArray[5]!.includes('unpatchableInSLAToday'));
 	});
 
 	void it('returns a digest when a result contains a vulnerability', () => {
