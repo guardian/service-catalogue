@@ -71,13 +71,34 @@ export function createDigestForSeverity(
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
 
-	const patchableFirst = (a: RepocopVulnerability, b: RepocopVulnerability) => {
+	const patchableFirstThenWithinSLAThenDate = (
+		a: RepocopVulnerability,
+		b: RepocopVulnerability,
+	) => {
+		// Can we patch?  Move it up.
 		if (a.is_patchable && !b.is_patchable) {
 			return -1;
 		}
 		if (!a.is_patchable && b.is_patchable) {
 			return 1;
 		}
+
+		// Is it outside SLA?  Move it up.
+		if (!a.within_sla && b.within_sla) {
+			return -1;
+		}
+		if (a.within_sla && !b.within_sla) {
+			return 1;
+		}
+
+		// Is it older?  Move it up.
+		if (a.alert_issue_date > b.alert_issue_date) {
+			return -1;
+		}
+		if (a.alert_issue_date < b.alert_issue_date) {
+			return 1;
+		}
+
 		return 0;
 	};
 
@@ -86,7 +107,7 @@ export function createDigestForSeverity(
 			(v) =>
 				v.severity == severity && new Date(v.alert_issue_date) > cutOffDate,
 		)
-		.sort(patchableFirst);
+		.sort(patchableFirstThenWithinSLAThenDate);
 
 	const totalNewVulnsCount = vulnsSinceImplementationDate.length;
 

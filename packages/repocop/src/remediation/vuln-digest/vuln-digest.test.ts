@@ -104,6 +104,56 @@ void describe('createDigest', () => {
 		);
 	});
 
+	void it('returns a correctly ordered list of vulns in the message', () => {
+		const patchableInSLA = {
+			...highRecentVuln,
+			is_patchable: true,
+			within_sla: true,
+			package: 'patchableInSLA',
+		};
+		const unpatchableInSLA = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: true,
+			package: 'unpatchableInSLA',
+		};
+		const patchableOutsideSLA = {
+			...highRecentVuln,
+			is_patchable: true,
+			within_sla: false,
+			package: 'patchableOutsideSLA',
+		};
+		const unpatchableOutsideSLA = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: false,
+			package: 'unpatchableOutsideSLA',
+		};
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [
+				unpatchableInSLA,
+				unpatchableOutsideSLA,
+				patchableInSLA,
+				patchableOutsideSLA,
+			],
+		};
+		const messages: string = createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+			60,
+		)!.message;
+		const messagesAsArray = messages
+			.split('\n')
+			.filter((ss) => ss.includes('contains a high severity vulnerability'));
+		assert.ok(messagesAsArray[0]!.includes('patchableOutsideSLA'));
+		assert.ok(messagesAsArray[1]!.includes('patchableInSLA'));
+		assert.ok(messagesAsArray[2]!.includes('unpatchableOutsideSLA'));
+		assert.ok(messagesAsArray[3]!.includes('unpatchableInSLA'));
+	});
+
 	void it('returns a digest when a result contains a vulnerability', () => {
 		const resultWithVuln: EvaluationResult = {
 			...result,
