@@ -324,8 +324,14 @@ async function findMostRecentCommitters(
 		email: commit.commit.author?.email ?? 'unknown',
 	}));
 
+	const guardianCommitters = committers.filter(
+		(committer) =>
+			committer.email.endsWith('@guardian.co.uk') ||
+			committer.email.endsWith('@theguardian.com'),
+	);
+
 	// Deduplicate committers by email
-	const uniqueCommitters = committers.reduce<Record<string, Committer>>(
+	const uniqueCommitters = guardianCommitters.reduce<Record<string, Committer>>(
 		(acc, committer) => {
 			acc[committer.email] = committer;
 			return acc;
