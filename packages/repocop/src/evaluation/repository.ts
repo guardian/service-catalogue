@@ -303,7 +303,8 @@ export function hasOldAlerts(
 }
 
 type Committer = {
-	name: string;
+	name?: string;
+	username: string;
 	email: string;
 };
 
@@ -319,10 +320,15 @@ async function findMostRecentCommitters(
 		page: 0,
 	});
 
-	const committers = commitsResponse.data.map((commit) => ({
-		name: commit.commit.author?.name ?? 'unknown',
-		email: commit.commit.author?.email ?? 'unknown',
-	}));
+	const committers: Committer[] = commitsResponse.data
+		.map((commit) => ({
+			name: commit.commit.author?.name,
+			username: commit.author?.login,
+			email: commit.commit.author?.email,
+		}))
+		.filter(
+			(committer) => !!committer.email && !!committer.username,
+		) as Committer[];
 
 	const guardianCommitters = committers.filter(
 		(committer) =>
