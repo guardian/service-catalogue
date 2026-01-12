@@ -104,6 +104,86 @@ void describe('createDigest', () => {
 		);
 	});
 
+	void it('returns a correctly ordered list of vulns in the message', () => {
+		const patchableInSLA = {
+			...highRecentVuln,
+			is_patchable: true,
+			within_sla: true,
+			package: 'patchableInSLA',
+		};
+
+		const today = new Date();
+
+		const yesterday = new Date(today);
+		yesterday.setDate(today.getDate() - 1);
+
+		const dayBeforeYesterday = new Date(today);
+		dayBeforeYesterday.setDate(today.getDate() - 2);
+
+		const unpatchableInSLAToday = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: true,
+			package: 'unpatchableInSLAToday',
+			alert_issue_date: today,
+		};
+		const unpatchableInSLAYesterday = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: true,
+			package: 'unpatchableInSLAYesterday',
+			alert_issue_date: yesterday,
+		};
+		const unpatchableInSLADayBeforeYesterday = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: true,
+			package: 'unpatchableInSLADayBeforeYesterday',
+			alert_issue_date: dayBeforeYesterday,
+		};
+		const patchableOutsideSLA = {
+			...highRecentVuln,
+			is_patchable: true,
+			within_sla: false,
+			package: 'patchableOutsideSLA',
+		};
+		const unpatchableOutsideSLA = {
+			...highRecentVuln,
+			is_patchable: false,
+			within_sla: false,
+			package: 'unpatchableOutsideSLA',
+		};
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [
+				unpatchableInSLAToday,
+				unpatchableInSLAYesterday,
+				unpatchableInSLADayBeforeYesterday,
+				unpatchableOutsideSLA,
+				patchableInSLA,
+				patchableOutsideSLA,
+			],
+		};
+		const messages: string = createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+			60,
+		)!.message;
+		const messagesAsArray = messages
+			.split('\n')
+			.filter((ss) => ss.includes('contains a high severity vulnerability'));
+		assert.ok(messagesAsArray[0]!.includes('patchableOutsideSLA'));
+		assert.ok(messagesAsArray[1]!.includes('patchableInSLA'));
+		assert.ok(messagesAsArray[2]!.includes('unpatchableOutsideSLA'));
+		assert.ok(
+			messagesAsArray[3]!.includes('unpatchableInSLADayBeforeYesterday'),
+		);
+		assert.ok(messagesAsArray[4]!.includes('unpatchableInSLAYesterday'));
+		assert.ok(messagesAsArray[5]!.includes('unpatchableInSLAToday'));
+	});
+
 	void it('returns a digest when a result contains a vulnerability', () => {
 		const resultWithVuln: EvaluationResult = {
 			...result,
