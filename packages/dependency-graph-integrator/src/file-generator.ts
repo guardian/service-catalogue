@@ -14,32 +14,16 @@ export const depGraphPackageManager: Record<DepGraphLanguage, string> = {
 export async function createYaml(prBranch: string, language: DepGraphLanguage) {
 	const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
-	// choose the appropriate template filename per language
 	const repoTemplateName =
 		language === 'Scala'
 			? 'template_dep_submission_sbt.yaml'
 			: 'template_dep_submission_gradle.yaml';
 
-	// Try repo template (dev/test). If missing (e.g., in Lambda), use bundled copy.
-	const repoTemplatePath = path.resolve(
-		currentDirectory,
-		'../../../.github/workflows',
-		repoTemplateName,
-	);
-	const bundledTemplatePath = path.resolve(
-		currentDirectory,
-		'template_dependency_submission.yaml',
-	);
+	const bundledTemplatePath = path.resolve(currentDirectory, repoTemplateName);
 
-	// Read template file (await repo copy, fallback to bundled)
-	let template: string;
-	try {
-		template = await fs.readFile(repoTemplatePath, 'utf-8');
-	} catch {
-		template = await fs.readFile(bundledTemplatePath, 'utf-8');
-	}
+	const template = await fs.readFile(bundledTemplatePath, 'utf-8');
 
-	// Parse into a YAML Document (preserves the version tag comments)
+	// Parse into a yaml document (preserves the version tag comments)
 	const doc = yaml.parseDocument(template);
 
 	doc.set('on', {

@@ -6,8 +6,12 @@
 		"@types/aws-lambda": "^8.10.159"
 	},
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk && cp ../../.github/workflows/template_dependency_submission.yaml dist/template_dependency_submission.yaml",
+		"copy-templates": "cp ../../.github/workflows/template_dep_submission_gradle.yaml src/template_dep_submission_gradle.yaml && cp ../../.github/workflows/template_dep_submission_sbt.yaml src/template_dep_submission_sbt.yaml",
+		"copy-templates:dist": "cp ../../.github/workflows/template_dep_submission_gradle.yaml dist/template_dep_submission_gradle.yaml && cp ../../.github/workflows/template_dep_submission_sbt.yaml dist/template_dep_submission_sbt.yaml",
+		"build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --outdir=dist --external:@aws-sdk &&  npm run copy-templates:dist",
+		"prestart": "npm run copy-templates",
 		"start": "tsx src/run-locally.ts",
+		"pretest": "npm run copy-templates",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc --noEmit"
 	},
