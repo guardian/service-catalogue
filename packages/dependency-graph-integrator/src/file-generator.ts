@@ -5,108 +5,55 @@ import { markdownChecklist } from 'common/src/string.js';
 import type { DepGraphLanguage } from 'common/types.js';
 import { h2, p, tsMarkdown } from 'ts-markdown';
 import yaml from 'yaml';
-import type { Pair } from 'yaml';
-
-interface WorkflowJob {
-	'runs-on': string;
-	steps: object[];
-	permissions?: { contents: string };
-}
-
-interface Workflow {
-	name: string;
-	on: object;
-	jobs: Record<string, WorkflowJob>;
-	'shared-steps'?: object[];
-}
 
 export const depGraphPackageManager: Record<DepGraphLanguage, string> = {
 	Scala: 'sbt',
 	Kotlin: 'Gradle',
 };
 
-function keyOrder(a: Pair, b: Pair) {
-	const order = ['name', 'on', 'jobs', 'permissions'];
-	const ai = order.indexOf(String(a.key));
-	const bi = order.indexOf(String(b.key));
-	if (ai === -1 && bi === -1) {
-		return String(a.key).localeCompare(String(b.key));
-	}
-	if (ai === -1) {
-		return 1;
-	}
-	if (bi === -1) {
-		return -1;
-	}
-	return ai - bi;
-}
-
 export async function createYaml(prBranch: string, language: DepGraphLanguage) {
-	const here = path.dirname(fileURLToPath(import.meta.url));
+	const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+
+	// choose the appropriate template filename per language
+	const repoTemplateName =
+		language === 'Scala'
+			? 'template_dep_submission_sbt.yaml'
+			: 'template_dep_submission_gradle.yaml';
+
 	// Try repo template (dev/test). If missing (e.g., in Lambda), use bundled copy.
 	const repoTemplatePath = path.resolve(
-		here,
-		'../../../.github/workflows/template_dependency_submission.yaml',
+		currentDirectory,
+		'../../../.github/workflows',
+		repoTemplateName,
 	);
 	const bundledTemplatePath = path.resolve(
-		here,
+		currentDirectory,
 		'template_dependency_submission.yaml',
 	);
 
+	// Read template file (await repo copy, fallback to bundled)
 	let template: string;
 	try {
 		template = await fs.readFile(repoTemplatePath, 'utf-8');
 	} catch {
 		template = await fs.readFile(bundledTemplatePath, 'utf-8');
 	}
-	const usesCommentMap = new Map<string, string>();
-	const usesRegex = /^(\s*uses:\s*[^\s]+@[^\s]+)(\s*#\s*v[^\s]+)?/gm;
-	let match;
-	while ((match = usesRegex.exec(template)) !== null) {
-		if (typeof match[1] === 'string') {
-			const usesLine = match[1].trim();
-			const comment = match[2] ?? '';
-			usesCommentMap.set(usesLine, comment);
-		}
-	}
 
-	const workflow = yaml.parse(template) as Workflow;
-	const sharedSteps = workflow.jobs['shared-steps']?.steps ?? [];
-	const jobKey = `${language.toLowerCase()}-job`;
-	const selectedJob = workflow.jobs[jobKey];
+	// Parse into a YAML Document (preserves the version tag comments)
+	const doc = yaml.parseDocument(template);
 
-	if (!selectedJob) {
-		throw new Error(`Job key "${jobKey}" not found in workflow template.`);
-	}
+	doc.set('on', {
+		push: { branches: ['main', prBranch] },
+		workflow_dispatch: {},
+	});
 
-	selectedJob.steps = [...sharedSteps, ...selectedJob.steps];
+	// Ensure top-level permissions are set to read
+	doc.set('permissions', { contents: 'read' });
 
-	workflow.name = `Update Dependency Graph for ${depGraphPackageManager[language]}`;
+	// Ensure job permissions are contents: write
+	doc.setIn(['jobs', 'dependency-graph', 'permissions', 'contents'], 'write');
 
-	workflow.on = {
-		push: {
-			branches: ['main', prBranch],
-		},
-		workflow_dispatch: {}, //There isn't an elegant way to do this in TypeScript, so we'll remove the {} at the end
-	};
-
-	workflow.jobs = { 'dependency-graph': selectedJob };
-
-	selectedJob.permissions = { contents: 'write' };
-
-	delete workflow.jobs['shared-steps'];
-
-	let outputYaml = yaml
-		.stringify(workflow, { sortMapEntries: keyOrder })
-		.replaceAll('{}', '');
-
-	outputYaml = outputYaml.replace(
-		/^(\s*uses:\s*[^\s]+@[^\s]+)(?!\s*#\s*v[^\s]+)$/gm,
-		(_line: string, usesLine: string) => {
-			const comment = usesCommentMap.get(usesLine.trim()) ?? '';
-			return usesLine + comment;
-		},
-	);
+	const outputYaml = String(doc).replaceAll('{}', '');
 
 	return outputYaml;
 }
