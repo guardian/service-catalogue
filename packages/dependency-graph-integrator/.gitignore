@@ -2,3 +2,6 @@ index.js
 
 # Generated files
 dist
+
+# ignore generated/bundled workflow templates copied into package src
+src/template_dep_submission_*.yaml
