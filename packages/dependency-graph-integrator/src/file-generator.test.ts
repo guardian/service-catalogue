@@ -3,11 +3,10 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+import type { DepGraphLanguage } from 'common/types.js';
 import yaml from 'yaml';
 import { createYaml } from './file-generator.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const shouldUpdateSnapshots = process.env.UPDATE_SNAPSHOTS === 'true'; // this is set by scripts/test-runner.mjs
 
 function isFileNotFoundError(err: unknown): err is NodeJS.ErrnoException {
@@ -20,7 +19,10 @@ function isFileNotFoundError(err: unknown): err is NodeJS.ErrnoException {
 }
 
 async function expectToMatchSnapshot(testName: string, actual: string) {
-	const snapshotsDir = path.join(__dirname, '__snapshots__');
+	const moduleDirPath = path.dirname(fileURLToPath(import.meta.url));
+
+	const snapshotsDir = path.join(moduleDirPath, '__snapshots__');
+
 	const snapshotFile = path.join(snapshotsDir, `${testName}.snap`);
 
 	await fs.mkdir(snapshotsDir, { recursive: true });
@@ -47,23 +49,27 @@ async function expectToMatchSnapshot(testName: string, actual: string) {
 	await fs.writeFile(snapshotFile, actual, 'utf-8');
 }
 
-// Load the same template file used by createYaml, to derive shared vs language steps.
-async function loadTemplateWorkflow() {
-	const repoTemplatePath = path.resolve(
-		__dirname,
-		'../../../.github/workflows/template_dependency_submission.yaml',
-	);
-	const content = await fs.readFile(repoTemplatePath, 'utf-8');
-	return yaml.parse(content) as {
+async function loadYamlTemplateObject(language: DepGraphLanguage) {
+	const moduleDirPath = path.dirname(fileURLToPath(import.meta.url));
+
+	const templateName =
+		language === 'Scala'
+			? 'template_dep_submission_sbt.yaml'
+			: 'template_dep_submission_gradle.yaml';
+
+	const bundledTemplatePath = path.resolve(moduleDirPath, templateName);
+
+	const template = await fs.readFile(bundledTemplatePath, 'utf-8');
+
+	// parse into a plain JS object for semantic comparison
+	return yaml.parse(template) as {
 		jobs: Record<string, { steps: unknown[] }>;
 	};
 }
 
-async function expectSharedStepsPrepended(language: 'Scala' | 'Kotlin') {
-	const template = await loadTemplateWorkflow();
-	const sharedSteps = template.jobs['shared-steps']?.steps ?? [];
-	const jobKey = `${language.toLowerCase()}-job`;
-	const languageSteps = template.jobs[jobKey]?.steps ?? [];
+async function expectStepsMatchTemplate(language: DepGraphLanguage) {
+	const template = await loadYamlTemplateObject(language);
+	const templateSteps = template.jobs['dependency-graph']?.steps ?? [];
 
 	const out = await createYaml('branch', language);
 	const parsed = yaml.parse(out) as {
@@ -71,18 +77,11 @@ async function expectSharedStepsPrepended(language: 'Scala' | 'Kotlin') {
 	};
 	const actualSteps = parsed.jobs['dependency-graph'].steps;
 
-	// 1) Shared steps are at the beginning and unchanged (comments are ignored by the parser).
+	// The generated dependency-graph steps must match the language-specific template exactly.
 	assert.deepStrictEqual(
-		actualSteps.slice(0, sharedSteps.length),
-		sharedSteps,
-		`Shared steps must be prepended for ${language}`,
-	);
-
-	// 2) The language-specific steps follow immediately and in the same order as template.
-	assert.deepStrictEqual(
-		actualSteps.slice(sharedSteps.length),
-		languageSteps,
-		`Language steps must follow shared steps for ${language}`,
+		actualSteps,
+		templateSteps,
+		`dependency-graph steps must match the ${language} template`,
 	);
 }
 
@@ -93,9 +92,9 @@ void describe('createYaml for sbt', () => {
 		await expectToMatchSnapshot('create-yaml-scala', actual);
 	});
 
-	// Minimal semantic assertion: shared steps are prepended.
-	void it('prepends shared steps ahead of language steps (Scala)', async () => {
-		await expectSharedStepsPrepended('Scala');
+	// Minimal semantic assertion: generated steps match the sbt template.
+	void it('generates steps that match the sbt template (Scala)', async () => {
+		await expectStepsMatchTemplate('Scala');
 	});
 });
 
@@ -106,8 +105,8 @@ void describe('createYaml for Kotlin', () => {
 		await expectToMatchSnapshot('create-yaml-kotlin', actual);
 	});
 
-	// Minimal semantic assertion: shared steps are prepended.
-	void it('prepends shared steps ahead of language steps (Kotlin)', async () => {
-		await expectSharedStepsPrepended('Kotlin');
+	// Minimal semantic assertion: generated steps match the gradle template.
+	void it('generates steps that match the gradle template (Kotlin)', async () => {
+		await expectStepsMatchTemplate('Kotlin');
 	});
 });
