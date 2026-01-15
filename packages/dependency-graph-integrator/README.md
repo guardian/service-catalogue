@@ -36,6 +36,8 @@ on:
       - main
       - branch # temporary branch created for initial validation
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   dependency-graph:
     runs-on: ubuntu-latest
@@ -44,7 +46,8 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@<commit> # vX.Y.Z
-      - name: Set up Java
+      - name: Install Java
+        id: java
         uses: actions/setup-java@<commit> # vX.Y.Z
         with:
           distribution: temurin
@@ -58,6 +61,8 @@ jobs:
       - name: Log snapshot for user validation
         id: validate
         run: cat ${{ steps.submit.outputs.snapshot-json-path }} | jq
+    permissions:
+      contents: write
 ```
 
 After creating the YAML file, it raises a pull request on the named repository for teams to review. If admins are provided, the PR will automatically request team review from those GitHub team slugs.
