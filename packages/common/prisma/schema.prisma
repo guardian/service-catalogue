@@ -534,7 +534,7 @@ model github_teams {
   repositories_url String?
   parent           Json?
   ldap_dn          String?
-  notification_setting String?
+  notification_setting String? // Added in v14.2.0
 
   @@id([org, id], map: "github_teams_cqpk")
 }
