@@ -29035,6 +29035,7 @@ spec:
           ],
           "Version": "2012-10-17",
         },
+        "Path": "/gu/janus/discoverable/",
         "Tags": [
           {
             "Key": "gu:cdk:version",
