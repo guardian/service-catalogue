@@ -512,28 +512,29 @@ model github_team_repositories {
 }
 
 model github_teams {
-  cq_sync_time     DateTime? @map("_cq_sync_time") @db.Timestamp(6)
-  cq_source_name   String?   @map("_cq_source_name")
-  cq_id            String    @unique @map("_cq_id") @db.Uuid
-  cq_parent_id     String?   @map("_cq_parent_id") @db.Uuid
-  org              String
-  id               BigInt
-  node_id          String?
-  name             String?
-  description      String?
-  url              String?
-  slug             String?
-  permission       String?
-  permissions      Json?
-  privacy          String?
-  members_count    BigInt?
-  repos_count      BigInt?
-  organization     Json?
-  html_url         String?
-  members_url      String?
-  repositories_url String?
-  parent           Json?
-  ldap_dn          String?
+  cq_sync_time         DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name       String?   @map("_cq_source_name")
+  cq_id                String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id         String?   @map("_cq_parent_id") @db.Uuid
+  org                  String
+  id                   BigInt
+  node_id              String?
+  name                 String?
+  description          String?
+  url                  String?
+  slug                 String?
+  permission           String?
+  permissions          Json?
+  privacy              String?
+  members_count        BigInt?
+  repos_count          BigInt?
+  organization         Json?
+  html_url             String?
+  members_url          String?
+  repositories_url     String?
+  parent               Json?
+  ldap_dn              String?
+  notification_setting String?
 
   @@id([org, id], map: "github_teams_cqpk")
 }

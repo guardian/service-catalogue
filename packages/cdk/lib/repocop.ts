@@ -60,6 +60,7 @@ export class Repocop {
 					dependencyGraphIntegratorInputTopic.topicArn,
 				GITHUB_ORG: gitHubOrg,
 				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),
+				BRANCH_PROTECTION_ENABLED: 'true',
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],
@@ -133,7 +134,6 @@ function stageAwareIntegratorLambda(
 			environment: {
 				...nonProdLambdaProps.environment,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
-				BRANCH_PROTECTION_ENABLED: 'true',
 			},
 		});
 

@@ -15762,7 +15762,7 @@ spec:
   name: galaxies
   path: guardian/galaxies
   registry: github
-  version: v2.1.1
+  version: v2.1.2
   destinations:
     - postgresql
   tables:
@@ -21096,7 +21096,7 @@ spec:
           },
           {
             "Essential": false,
-            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.10",
+            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.11",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -24660,7 +24660,6 @@ spec:
         "Environment": {
           "Variables": {
             "APP": "dependency-graph-integrator",
-            "BRANCH_PROTECTION_ENABLED": "true",
             "GITHUB_APP_SECRET": {
               "Ref": "dependencygraphintegratorgithubappauthB8B9DE78",
             },
@@ -28521,6 +28520,7 @@ spec:
               "Ref": "AnghammaradSnsArn",
             },
             "APP": "repocop",
+            "BRANCH_PROTECTION_ENABLED": "true",
             "CUT_OFF_IN_DAYS": "45",
             "DATABASE_HOSTNAME": {
               "Fn::GetAtt": [
