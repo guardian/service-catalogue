@@ -119,8 +119,7 @@ The package uses snapshot tests to verify the generated workflow YAML and PR bod
 - Run tests:
   - `npm test -w dependency-graph-integrator`
 - Update snapshots (accept intentional changes):
-  - `npm test -w dependency-graph-integrator -- -u`
-  - or `npm run -w dependency-graph-integrator test:update`
+  - `npm run test:update -w dependency-graph-integrator`
 
 Snapshots are stored in:
 
@@ -133,11 +132,7 @@ When to update:
 
 Workflow:
 
-- If tests fail due to snapshot differences, review the diff, then re-run with `test -- -u` flag (or `test:update`) to accept the changes.
-
-#### Why a custom test runner in this package?
-
-This package uses a small wrapper script (`scripts/test-runner.mjs`) around Node’s built‑in test runner to essentially set `UPDATE_SNAPSHOTS=true` when `-u` is passed, standardising snapshot updates locally and in CI. This enables developers and CI to use the same simple commands without manually managing environment variables or flags, reducing configuration drift and mistakes.
+- If tests fail due to snapshot differences, review the diff, then run `npm run test:update -w dependency-graph-integrator` to accept the changes.
 
 ### How does dependency submission work once the action is in use?
 
