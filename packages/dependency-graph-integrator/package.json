@@ -12,7 +12,8 @@
 		"prestart": "npm run copy-templates",
 		"start": "tsx src/run-locally.ts",
 		"pretest": "npm run copy-templates",
-		"test": "node --import tsx --test \"**/*.test.ts\"",
+		"test": "node --import tsx --test **/*.test.ts",
+		"test:update": "UPDATE_SNAPSHOTS=true node --import tsx --test **/*.test.ts",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {

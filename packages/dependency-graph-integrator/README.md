@@ -24,30 +24,50 @@ The dependency graph integrator takes a repo name as JSON, like so:
 }
 ```
 
-It uses this input to generates a workflow file that allows us to submit sbt dependencies to GitHub for vulnerability monitoring, via GitHub Action.
+It uses this input to generate a workflow file that allows us to submit sbt or Gradle dependencies to GitHub for vulnerability monitoring via a GitHub Action.
 
-For a Scala repo, the file will look something like this
+For a Scala repo, the file will look something like this:
 
 ```yaml
-name: Update Dependency Graph
+name: Update Dependency Graph for sbt
 on:
   push:
     branches:
-      - main # default branch of the project
+      - main
+      - branch # temporary branch created for initial validation
+  workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   dependency-graph:
-    name: Update Dependency Graph
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@long-sha-here # va.b.c
-      - uses: scalacenter/sbt-dependency-submission@another-long-sha # vx.y.z
     permissions:
       contents: write # this permission is needed to submit the dependency graph
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@<commit> # vX.Y.Z
+      - name: Install Java
+        id: java
+        uses: actions/setup-java@<commit> # vX.Y.Z
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Install sbt
+        id: sbt
+        uses: sbt/setup-sbt@<commit> # vX.Y.Z
+      - name: Submit dependencies
+        id: submit
+        uses: scalacenter/sbt-dependency-submission@<commit> # vX.Y.Z
+      - name: Log snapshot for user validation
+        id: validate
+        run: cat ${{ steps.submit.outputs.snapshot-json-path }} | jq
+    permissions:
+      contents: write
 ```
 
-After creating the YAML file, it raises a pull request on the named repository for teams to review.
+After creating the YAML file, it raises a pull request on the named repository for teams to review. If admins are provided, the PR will automatically request team review from those GitHub team slugs.
 
-On PROD, the process looks like this (Dependency Graph Integrator has been abbreviated to DGI):
+On PROD, the lambda first enables Dependabot vulnerability alerts on the repository, and then raises the PR. If enabling alerts fails, the PR is not created. The process looks like this (Dependency Graph Integrator has been abbreviated to DGI):
 
 ```mermaid
 flowchart LR
@@ -58,12 +78,12 @@ flowchart LR
 
     repocop --> |RepoCop sends an event to DGI|dgi
     dgi --> |DGI raises a PR against the named repo|github
-    github --> |Developer recieves a notification to review the PR|dev
+    github --> |Developer receives a notification to review the PR|dev
 ```
 
 ### Running on non-production environments
 
-In non-production environments, such as CODE, or when running locally, the dependency graph integrator will not create a PR. Instead, it will print the contents of the YAML file to the console. This allows developers to test the the core logic (creating the yaml file), without unintended side effects.
+In non-production environments, such as CODE, or when running locally, the dependency graph integrator will not create a PR. Instead, it will print the contents of the YAML file to the console. This allows developers to test the core logic (creating the yaml file), without unintended side effects.
 
 #### CODE
 
@@ -73,7 +93,46 @@ The format of input to the lambda on the CODE environment is that of an SNS mess
 
 #### DEV
 
-The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the dependency-graph-integrator package. The input can be configured by modifying [this file](./src/run-locally.ts)
+### Testing and snapshot updates
+
+The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the dependency-graph-integrator package.
+
+You can preview the generated YAML and PR body locally by setting the language in [`run-locally.ts`](./src/run-locally.ts). This controls which workflow template is used:
+
+- Scala → sbt workflow
+- Kotlin → Gradle workflow
+
+Example:
+
+```ts
+if (isMain) {
+	void main({
+		name: 'service-catalogue', // repo name
+		language: 'Scala', // 'Scala' or 'Kotlin'
+		admins: ['my-team-slug'], // optional, use [] if none
+	});
+}
+```
+
+The package uses snapshot tests to verify the generated workflow YAML and PR body formatting.
+
+- Run tests:
+  - `npm test -w dependency-graph-integrator`
+- Update snapshots (accept intentional changes):
+  - `npm run test:update -w dependency-graph-integrator`
+
+Snapshots are stored in:
+
+- `packages/dependency-graph-integrator/src/__snapshots__/*.snap`
+
+When to update:
+
+- After Dependabot bumps Action commit hashes or version comments in the template.
+- When you intentionally change the generator output (structure, comments, ordering).
+
+Workflow:
+
+- If tests fail due to snapshot differences, review the diff, then run `npm run test:update -w dependency-graph-integrator` to accept the changes.
 
 ### How does dependency submission work once the action is in use?
 
