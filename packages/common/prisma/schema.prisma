@@ -1192,6 +1192,73 @@ model aws_elbv2_target_groups {
   @@ignore
 }
 
+model github_organizations {
+  cq_sync_time                                                 DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                                               String?   @map("_cq_source_name")
+  cq_id                                                        String    @unique @map("_cq_id") @db.Uuid
+  cq_parent_id                                                 String?   @map("_cq_parent_id") @db.Uuid
+  org                                                          String
+  login                                                        String?
+  id                                                           BigInt
+  node_id                                                      String?
+  avatar_url                                                   String?
+  html_url                                                     String?
+  name                                                         String?
+  company                                                      String?
+  blog                                                         String?
+  location                                                     String?
+  email                                                        String?
+  twitter_username                                             String?
+  description                                                  String?
+  public_repos                                                 BigInt?
+  public_gists                                                 BigInt?
+  followers                                                    BigInt?
+  following                                                    BigInt?
+  created_at                                                   DateTime? @db.Timestamp(6)
+  updated_at                                                   DateTime? @db.Timestamp(6)
+  total_private_repos                                          BigInt?
+  owned_private_repos                                          BigInt?
+  private_gists                                                BigInt?
+  disk_usage                                                   BigInt?
+  collaborators                                                BigInt?
+  billing_email                                                String?
+  type                                                         String?
+  plan                                                         Json?
+  two_factor_requirement_enabled                               Boolean?
+  is_verified                                                  Boolean?
+  has_organization_projects                                    Boolean?
+  has_repository_projects                                      Boolean?
+  default_repository_permission                                String?
+  default_repository_settings                                  String?
+  members_can_create_repositories                              Boolean?
+  members_can_create_public_repositories                       Boolean?
+  members_can_create_private_repositories                      Boolean?
+  members_can_create_internal_repositories                     Boolean?
+  members_can_fork_private_repositories                        Boolean?
+  members_allowed_repository_creation_type                     String?
+  members_can_create_pages                                     Boolean?
+  members_can_create_public_pages                              Boolean?
+  members_can_create_private_pages                             Boolean?
+  web_commit_signoff_required                                  Boolean?
+  advanced_security_enabled_for_new_repositories               Boolean?
+  dependabot_alerts_enabled_for_new_repositories               Boolean?
+  dependabot_security_updates_enabled_for_new_repositories     Boolean?
+  dependency_graph_enabled_for_new_repositories                Boolean?
+  secret_scanning_enabled_for_new_repositories                 Boolean?
+  secret_scanning_push_protection_enabled_for_new_repositories Boolean?
+  url                                                          String?
+  events_url                                                   String?
+  hooks_url                                                    String?
+  issues_url                                                   String?
+  members_url                                                  String?
+  public_members_url                                           String?
+  repos_url                                                    String?
+  secret_scanning_validity_checks_enabled                      Boolean?
+
+  @@id([org, id], map: "github_organizations_cqpk")
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
