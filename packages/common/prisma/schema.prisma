@@ -1406,3 +1406,24 @@ view view_availability_dashboard {
 
   @@ignore
 }
+
+view github_organization_tree {
+  id                         String?
+  type                       String?
+  name                       String?
+  ancestors                  String[]
+  is_product_and_engineering Boolean?
+
+  @@ignore
+}
+
+view github_teams_tree {
+  id                         String?
+  org                        String?
+  slug                       String?
+  name                       String?
+  ancestors                  String[]
+  is_product_and_engineering Boolean?
+
+  @@ignore
+}
