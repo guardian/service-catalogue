@@ -31,8 +31,16 @@ export function repoToObligationResult(
 }
 
 const getExternalTeams = async (prisma: PrismaClient): Promise<string[]> => {
-	const teams = await prisma.guardian_non_p_and_e_github_teams.findMany();
-	return toNonEmptyArray(teams.map((t) => t.team_name));
+	const teams = await prisma.github_teams_tree.findMany({
+		select: {
+			slug: true,
+		},
+		where: {
+			is_product_and_engineering: false,
+		},
+	});
+
+	return toNonEmptyArray(teams.map((t) => t.slug));
 };
 
 // This function filters out repos that are owned exclusively by teams outsude of P&E.
