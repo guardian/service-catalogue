@@ -44,10 +44,12 @@ import {
 import { getCentralElkLink } from 'common/src/logs';
 import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
+import type { CloudqueryCluster } from './cloudquery/cluster';
 import { addCloudqueryUsageLambda } from './cloudquery-usage';
 import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
+import { JanusAssumableRoles } from './janus-assumable-role';
 import { Obligatron } from './obligatron';
 import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
@@ -297,7 +299,7 @@ export class ServiceCatalogue extends GuStack {
 			secretName: `/${stage}/${stack}/${app}/cloudquery-api-key`,
 		});
 
-		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
+		const cloudqueryCluster: CloudqueryCluster = addCloudqueryEcsCluster(this, {
 			enableCloudquerySchedules,
 			db,
 			vpc,
@@ -398,5 +400,9 @@ export class ServiceCatalogue extends GuStack {
 			schedule: securityAlertSchedule,
 			digestCutOffInDays,
 		});
+
+		const cloudqueryClusterArnForTasks = cloudqueryCluster.arnForTasks('*');
+
+		new JanusAssumableRoles(this, cloudqueryClusterArnForTasks);
 	}
 }
