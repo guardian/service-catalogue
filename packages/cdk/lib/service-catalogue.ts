@@ -44,6 +44,7 @@ import {
 import { getCentralElkLink } from 'common/src/logs';
 import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
+import { cloudqueryApiKeySecret } from './cloudquery/api-key';
 import { addCloudqueryUsageLambda } from './cloudquery-usage';
 import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
@@ -293,9 +294,7 @@ export class ServiceCatalogue extends GuStack {
 			resources: [loggingStreamArn],
 		});
 
-		const cloudqueryApiKey = new Secret(this, 'cloudquery-api-key', {
-			secretName: `/${stage}/${stack}/${app}/cloudquery-api-key`,
-		});
+		const cloudqueryApiKey = cloudqueryApiKeySecret(this);
 
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
 			enableCloudquerySchedules,
