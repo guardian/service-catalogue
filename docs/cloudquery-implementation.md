@@ -68,3 +68,25 @@ SET ROLE cloudquery;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO grafanareadercode;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO grafanareaderprod;
 ```
+
+## API Key
+We use a separate API key per each environment, storing them in [AWS Secrets Manager](../packages/cdk/lib/cloudquery/api-key.ts).
+
+### Rotating
+To use paid plugins, such as the [AWS plugin](https://hub.cloudquery.io/plugins/source/cloudquery/aws/latest/docs), an API key must be used. 
+We typically set the API key to expire every year[^1].
+
+To rotate it:
+1. [Generate a new API key](https://docs.cloudquery.io/docs/managing-cloudquery/deployments/generate-api-key) for CODE (naming scheme is typically `service-catalogue-<STAGE>-exp-<MONTH>-<YEAR>`)
+2. Update the value in [AWS Secrets Manager](https://eu-west-1.console.aws.amazon.com/secretsmanager/secret?name=%2FCODE%2Fdeploy%2Fservice-catalogue%2Fcloudquery-api-key&region=eu-west-1)
+3. [Run an ECS task](../packages/cli/README.md) to verify CODE still works:
+
+    ```bash
+    npm -w cli start -- run-task --stage CODE --name AwsOrgWideS3
+    ```
+
+4. [Generate a new API key](https://docs.cloudquery.io/docs/managing-cloudquery/deployments/generate-api-key) for PROD
+5. Update the value in [AWS Secrets Manager](https://eu-west-1.console.aws.amazon.com/secretsmanager/secret?name=%2FPROD%2Fdeploy%2Fservice-catalogue%2Fcloudquery-api-key&region=eu-west-1)
+6. The following day, provided CloudQuery successfully synced data, remove the old API keys from CloudQuery.
+
+[^1]: You should receive an email from CloudQuery reminding you to rotate the key. We've also created a repeated event in calendar.
