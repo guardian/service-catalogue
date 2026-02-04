@@ -18,7 +18,6 @@ import type {
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	Team,
-	VulnerabilityAlertPRResponse,
 } from './types.js';
 
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
@@ -74,19 +73,21 @@ export async function getRepositoryLanguages(
 
 //Octokit Queries
 
-export async function getPRFromAlert(
+export async function getAllAlertPRsForRepo(
 	octokit: Octokit,
 	orgName: string,
 	repoName: string,
-	alertNumber: number,
-): Promise<string | null> {
+) {
 	const query = `
-    query($owner: String!, $repo: String!, $alertNumber: Int!) {
+    query($owner: String!, $repo: String!, $first: Int!) {
       repository(owner: $owner, name: $repo) {
-        vulnerabilityAlert(number: $alertNumber) {
-          dependabotUpdate {
-            pullRequest {
-              url
+        vulnerabilityAlerts(first: $first) {
+          nodes {
+            number
+            dependabotUpdate {
+              pullRequest {
+                url
+              }
             }
           }
         }
@@ -97,19 +98,12 @@ export async function getPRFromAlert(
 	const result = await octokit.graphql(query, {
 		owner: orgName,
 		repo: repoName,
-		alertNumber,
+		first: 100, // Adjust as needed
 	});
 
-	const url = (result as VulnerabilityAlertPRResponse).repository
-		.vulnerabilityAlert.dependabotUpdate?.pullRequest?.url;
-
-	if (url) {
-		console.log(
-			`Dependabot update PR for repo ${repoName}, alert ${alertNumber}: ${url}`,
-		);
-	}
-	return url ?? null;
+	console.log(JSON.stringify(result, null, 2));
 }
+
 async function getAlertsForRepo(
 	octokit: Octokit,
 	orgName: string,
@@ -155,21 +149,13 @@ export async function getDependabotVulnerabilities(
 			repos.map(async (repo) => {
 				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
 				if (alerts) {
-					for (const alert of alerts) {
-						await getPRFromAlert(octokit, orgName, repo.name, alert.number);
-					}
 					return Promise.all(
 						alerts.map(async (a) => {
-							const pr = await getPRFromAlert(
-								octokit,
-								orgName,
-								repo.name,
-								a.number,
-							);
+							await getAllAlertPRsForRepo(octokit, orgName, repo.name);
 							return dependabotAlertToRepocopVulnerability(
 								repo.full_name,
 								a,
-								pr,
+								null,
 							);
 						}),
 					);

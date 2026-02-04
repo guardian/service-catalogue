@@ -45,18 +45,6 @@ export type DependabotVulnResponse =
 
 export type Alert = DependabotVulnResponse['data'][number];
 
-export type VulnerabilityAlertPRResponse = {
-	repository: {
-		vulnerabilityAlert: {
-			dependabotUpdate: {
-				pullRequest: {
-					url: string | null;
-				} | null;
-			} | null;
-		};
-	};
-};
-
 export interface RepoAndAlerts {
 	shortName: string;
 	/*
