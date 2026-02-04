@@ -28573,7 +28573,7 @@ spec:
             "Value": "PROD",
           },
         ],
-        "Timeout": 300,
+        "Timeout": 900,
         "VpcConfig": {
           "SecurityGroupIds": [
             {
