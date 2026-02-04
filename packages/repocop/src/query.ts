@@ -148,17 +148,15 @@ export async function getDependabotVulnerabilities(
 		await Promise.all(
 			repos.map(async (repo) => {
 				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
+				await getAllAlertPRsForRepo(octokit, orgName, repo.name);
 				if (alerts) {
-					return Promise.all(
-						alerts.map(async (a) => {
-							await getAllAlertPRsForRepo(octokit, orgName, repo.name);
-							return dependabotAlertToRepocopVulnerability(
-								repo.full_name,
-								a,
-								null,
-							);
-						}),
-					);
+					return alerts.map((a) => {
+						return dependabotAlertToRepocopVulnerability(
+							repo.full_name,
+							a,
+							null,
+						);
+					});
 				}
 				return [];
 			}),

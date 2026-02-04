@@ -84,7 +84,9 @@ export async function main() {
 	const teams = await getTeams(prisma);
 	const repoOwners = await getRepoOwnership(prisma);
 
-	const productionRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+	const productionRepos = unarchivedRepos
+		.filter((repo) => isProduction(repo))
+		.slice(0, 60);
 	const productionDependabotVulnerabilities: RepocopVulnerability[] =
 		await getDependabotVulnerabilities(
 			productionRepos,
