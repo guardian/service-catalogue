@@ -74,7 +74,7 @@ export async function getRepositoryLanguages(
 
 //Octokit Queries
 
-export async function getPRFromAlertTimeline(
+export async function getPRFromAlert(
 	octokit: Octokit,
 	orgName: string,
 	repoName: string,
@@ -156,16 +156,11 @@ export async function getDependabotVulnerabilities(
 				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
 				if (alerts) {
 					for (const alert of alerts) {
-						await getPRFromAlertTimeline(
-							octokit,
-							orgName,
-							repo.name,
-							alert.number,
-						);
+						await getPRFromAlert(octokit, orgName, repo.name, alert.number);
 					}
 					return Promise.all(
 						alerts.map(async (a) => {
-							const pr = await getPRFromAlertTimeline(
+							const pr = await getPRFromAlert(
 								octokit,
 								orgName,
 								repo.name,
