@@ -485,6 +485,7 @@ const urlSortPredicate = (maybeUrl: string) => {
 export function dependabotAlertToRepocopVulnerability(
 	fullName: string,
 	alert: Alert,
+	prUrl: string | null,
 ): RepocopVulnerability {
 	const CVEs = alert.security_advisory.identifiers
 		.filter((i) => i.type === 'CVE')
@@ -513,6 +514,7 @@ export function dependabotAlertToRepocopVulnerability(
 			alert.security_vulnerability.package.name,
 			fullName,
 		),
+		fix_url: prUrl ?? null,
 	};
 }
 

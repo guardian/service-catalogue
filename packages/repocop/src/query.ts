@@ -79,7 +79,7 @@ export async function getPRFromAlertTimeline(
 	orgName: string,
 	repoName: string,
 	alertNumber: number,
-) {
+): Promise<string | null> {
 	const query = `
     query($owner: String!, $repo: String!, $alertNumber: Int!) {
       repository(owner: $owner, name: $repo) {
@@ -108,6 +108,7 @@ export async function getPRFromAlertTimeline(
 			`Dependabot update PR for repo ${repoName}, alert ${alertNumber}: ${url}`,
 		);
 	}
+	return url ?? null;
 }
 async function getAlertsForRepo(
 	octokit: Octokit,
@@ -162,8 +163,20 @@ export async function getDependabotVulnerabilities(
 							alert.number,
 						);
 					}
-					return alerts.map((a) =>
-						dependabotAlertToRepocopVulnerability(repo.full_name, a),
+					return Promise.all(
+						alerts.map(async (a) => {
+							const pr = await getPRFromAlertTimeline(
+								octokit,
+								orgName,
+								repo.name,
+								a.number,
+							);
+							return dependabotAlertToRepocopVulnerability(
+								repo.full_name,
+								a,
+								pr,
+							);
+						}),
 					);
 				}
 				return [];
