@@ -81,9 +81,13 @@ export async function getAllAlertPRsForRepo(
 	const query = `
     query($owner: String!, $repo: String!, $first: Int!) {
       repository(owner: $owner, name: $repo) {
-        vulnerabilityAlerts(first: $first) {
+        vulnerabilityAlerts(first: $first, states: OPEN, dependencyScopes: RUNTIME) {
           nodes {
             number
+            state
+            securityVulnerability {
+              severity
+            }
             dependabotUpdate {
               pullRequest {
                 url
