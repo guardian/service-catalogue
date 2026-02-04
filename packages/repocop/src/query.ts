@@ -18,6 +18,7 @@ import type {
 	AwsCloudFormationStack,
 	DependabotVulnResponse,
 	Team,
+	VulnerabilityAlertPRResponse,
 } from './types.js';
 
 // We only care about branches from repos we've selected, so lets only pull those to save us some time/memory
@@ -73,6 +74,41 @@ export async function getRepositoryLanguages(
 
 //Octokit Queries
 
+export async function getPRFromAlertTimeline(
+	octokit: Octokit,
+	orgName: string,
+	repoName: string,
+	alertNumber: number,
+) {
+	const query = `
+    query($owner: String!, $repo: String!, $alertNumber: Int!) {
+      repository(owner: $owner, name: $repo) {
+        vulnerabilityAlert(number: $alertNumber) {
+          dependabotUpdate {
+            pullRequest {
+              url
+            }
+          }
+        }
+      }
+    }
+  `;
+
+	const result = await octokit.graphql(query, {
+		owner: orgName,
+		repo: repoName,
+		alertNumber,
+	});
+
+	const url = (result as VulnerabilityAlertPRResponse).repository
+		.vulnerabilityAlert.dependabotUpdate?.pullRequest?.url;
+
+	if (url) {
+		console.log(
+			`Dependabot update PR for repo ${repoName}, alert ${alertNumber}: ${url}`,
+		);
+	}
+}
 async function getAlertsForRepo(
 	octokit: Octokit,
 	orgName: string,
@@ -84,7 +120,7 @@ async function getAlertsForRepo(
 	}
 
 	try {
-		const alert: DependabotVulnResponse =
+		const result: DependabotVulnResponse =
 			await octokit.rest.dependabot.listAlertsForRepo({
 				owner: orgName,
 				repo: repoName,
@@ -95,7 +131,8 @@ async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data;
+		const alerts = result.data;
+		return alerts;
 	} catch (error) {
 		console.debug(
 			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
@@ -117,6 +154,14 @@ export async function getDependabotVulnerabilities(
 			repos.map(async (repo) => {
 				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
 				if (alerts) {
+					for (const alert of alerts) {
+						await getPRFromAlertTimeline(
+							octokit,
+							orgName,
+							repo.name,
+							alert.number,
+						);
+					}
 					return alerts.map((a) =>
 						dependabotAlertToRepocopVulnerability(repo.full_name, a),
 					);
