@@ -1,5 +1,5 @@
-import type { PrismaClient } from '@prisma/client';
 import { logger } from 'common/logs.js';
+import type { PrismaClient } from 'common/prisma-client/client.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
 import { getConfig } from './config.js';
 import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities.js';

@@ -3,7 +3,7 @@ import {
 	type MetricDatum,
 	PutMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
-import type { repocop_github_repository_rules } from '@prisma/client';
+import type { repocop_github_repository_rules } from 'common/prisma-client/client.js';
 import type { Config } from './config.js';
 
 export function getPercentageTrue(booleanishArray: Array<boolean | null>) {

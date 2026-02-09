@@ -1,5 +1,5 @@
 import type { Action } from '@guardian/anghammarad';
-import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities } from 'common/prisma-client/client.js';
 
 export interface Digest {
 	accountId: string;
