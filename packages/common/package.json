@@ -17,6 +17,7 @@
 		"@aws-sdk/rds-signer": "^3.975.0",
 		"@octokit/auth-app": "^8.1.2",
 		"@octokit/graphql": "^9.0.3",
+		"@prisma/adapter-pg": "^7.3.0",
 		"octokit": "^5.0.5",
 		"octokit-plugin-create-pull-request": "^6.0.1",
 		"@prisma/client": "^7.3.0"

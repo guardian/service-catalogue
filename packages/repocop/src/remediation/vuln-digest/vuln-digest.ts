@@ -1,7 +1,7 @@
 import { SNSClient } from '@aws-sdk/client-sns';
 import { Anghammarad, RequestedChannel } from '@guardian/anghammarad';
-import type { view_repo_ownership } from '@prisma/client';
 import { awsClientConfig } from 'common/aws.js';
+import type { view_repo_ownership } from 'common/prisma-client/client.js';
 import { daysLeftToFix } from 'common/src/functions.js';
 import { SLAs } from 'common/src/types.js';
 import type { RepocopVulnerability } from 'common/src/types.js';

@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { beforeEach, describe, mock, test } from 'node:test';
 import type { Mock } from 'node:test';
-import type { view_repo_ownership } from '@prisma/client';
+import type { view_repo_ownership } from 'common/prisma-client/client.js';
 import type { Repository } from 'common/types.js';
 import type { Octokit } from 'octokit';
 import type { Config } from '../../config.js';
