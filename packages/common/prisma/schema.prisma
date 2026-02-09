@@ -1,12 +1,12 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client"
   previewFeatures = ["views"]
   binaryTargets   = ["native", "linux-arm64-openssl-3.0.x"]
+  output = "../src/prisma-client"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model aws_cloudformation_stacks {
