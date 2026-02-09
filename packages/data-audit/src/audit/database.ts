@@ -1,4 +1,7 @@
-import type { audit_results, PrismaClient } from '@prisma/client';
+import type {
+	audit_results,
+	PrismaClient,
+} from 'common/prisma-client/client.js';
 
 export type Audit = Omit<audit_results, 'evaluated_on' | 'success'>;
 
