@@ -1,5 +1,5 @@
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
-import type { repocop_github_repository_rules } from '@prisma/client';
+import type { repocop_github_repository_rules } from 'common/prisma-client/client.js';
 import { awsClientConfig } from 'common/src/aws.js';
 import { shuffle } from 'common/src/functions.js';
 import type { Config } from '../../config.js';

@@ -1,7 +1,8 @@
 import { Signer } from '@aws-sdk/rds-signer';
-import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { awsClientConfig } from 'common/aws.js';
 import { getEnvOrThrow } from 'common/functions.js';
+import { PrismaClient } from 'common/prisma-client/client.js';
 
 export interface DatabaseConfig {
 	/**
@@ -80,12 +81,12 @@ export function getDatabaseConnectionString(config: DatabaseConfig) {
 }
 
 export function getPrismaClient(config: PrismaConfig): PrismaClient {
+	const adapter = new PrismaPg({
+		connectionString: config.databaseConnectionString,
+	});
+
 	return new PrismaClient({
-		datasources: {
-			db: {
-				url: config.databaseConnectionString,
-			},
-		},
+		adapter,
 		...(config.withQueryLogging && {
 			log: [
 				{

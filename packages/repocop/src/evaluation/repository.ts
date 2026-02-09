@@ -4,7 +4,7 @@ import type {
 	guardian_github_actions_usage,
 	repocop_github_repository_rules,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/prisma-client/client.js';
 import { isWithinSlaTime, partition } from 'common/src/functions.js';
 import { chooseDependencyScope, SLAs } from 'common/src/types.js';
 import type {
