@@ -1,5 +1,6 @@
 import { Signer } from '@aws-sdk/rds-signer';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { config } from 'dotenv';
 import { awsClientConfig } from 'common/aws.js';
 import { getEnvOrThrow } from 'common/functions.js';
 import { PrismaClient } from 'common/prisma-client/client.js';
@@ -51,6 +52,8 @@ async function getRdsToken(stage: string, hostname: string, username: string) {
 }
 
 export function getDevDatabaseConfig(): Promise<DatabaseConfig> {
+	config({ path: `../../.env` });
+
 	return Promise.resolve({
 		hostname: getEnvOrThrow('DATABASE_HOSTNAME'),
 		user: getEnvOrThrow('DATABASE_USER'),
