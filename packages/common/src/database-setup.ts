@@ -1,9 +1,9 @@
 import { Signer } from '@aws-sdk/rds-signer';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { config } from 'dotenv';
 import { awsClientConfig } from 'common/aws.js';
 import { getEnvOrThrow } from 'common/functions.js';
 import { PrismaClient } from 'common/prisma-client/client.js';
-import { config } from 'dotenv';
 
 export interface DatabaseConfig {
 	/**
