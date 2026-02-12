@@ -2,7 +2,7 @@ import type {
 	aws_securityhub_findings,
 	PrismaClient,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/prisma-client/client.js';
 import { toNonEmptyArray } from './functions.js';
 import type {
 	NonEmptyArray,
