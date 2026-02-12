@@ -191,6 +191,7 @@ export class ServiceCatalogue extends GuStack {
 			storageType: StorageType.GP3,
 			enablePerformanceInsights: true,
 			monitoringInterval: Duration.seconds(10),
+			allowMajorVersionUpgrade: true,
 		};
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);

@@ -23447,6 +23447,7 @@ spec:
       "DeletionPolicy": "Snapshot",
       "Properties": {
         "AllocatedStorage": "100",
+        "AllowMajorVersionUpgrade": true,
         "CACertificateIdentifier": "rds-ca-rsa2048-g1",
         "CopyTagsToSnapshot": true,
         "DBInstanceClass": "db.t4g.large",
