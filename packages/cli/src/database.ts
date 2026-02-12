@@ -29,7 +29,7 @@ export async function migrateDevDatabase(): Promise<number> {
 
 	console.log(`Running prisma migrate reset --force`);
 	const { stdout } =
-		await $`npx -w common prisma migrate reset --force --config '../../common/prisma.config.ts' --schema '../../common/prisma/schema.prisma'`;
+		await $`npx -w common prisma migrate reset --force --config prisma.config.ts --schema prisma/schema.prisma`;
 	console.log(stdout);
 
 	console.log('Running prisma db pull to update schema.prisma');
