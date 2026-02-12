@@ -21,7 +21,7 @@ services:
 
   postgres:
     container_name: postgres-prisma-migrate-test
-    image: postgres:14.6
+    image: postgres:16.11
     ports:
       - '5433:5433'
     environment:

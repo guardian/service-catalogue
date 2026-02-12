@@ -23447,6 +23447,7 @@ spec:
       "DeletionPolicy": "Snapshot",
       "Properties": {
         "AllocatedStorage": "100",
+        "AllowMajorVersionUpgrade": true,
         "CACertificateIdentifier": "rds-ca-rsa2048-g1",
         "CopyTagsToSnapshot": true,
         "DBInstanceClass": "db.t4g.large",
@@ -23457,7 +23458,7 @@ spec:
         "EnableIAMDatabaseAuthentication": true,
         "EnablePerformanceInsights": true,
         "Engine": "postgres",
-        "EngineVersion": "15",
+        "EngineVersion": "16",
         "MasterUserPassword": {
           "Fn::Join": [
             "",
