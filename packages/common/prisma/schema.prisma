@@ -535,6 +535,7 @@ model github_teams {
   parent               Json?
   ldap_dn              String?
   notification_setting String?
+  assignment           String?
 
   @@id([org, id], map: "github_teams_cqpk")
 }
