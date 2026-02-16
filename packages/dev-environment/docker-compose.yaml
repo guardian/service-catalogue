@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   # This service will copy data from the CODE database, writing .sql files to the sql directory.
   # The files will then be loaded into the postgres service on launch.
@@ -6,7 +5,7 @@ services:
     build:
       context: ../../containers/db-copy
       args:
-        alpine_version: 3.19.1
+        alpine_version: 3.23.3
     volumes:
       - ~/.aws/credentials:/.aws/credentials
       - ./sql:/sql
@@ -44,7 +43,7 @@ services:
         - aws_autoscaling_groups
         - aws_elbv2_target_groups
   postgres:
-    image: postgres:14.6
+    image: postgres:16.11
     ports:
       - '${DATABASE_PORT}:${DATABASE_PORT}'
     environment:
