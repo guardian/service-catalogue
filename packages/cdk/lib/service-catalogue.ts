@@ -196,6 +196,9 @@ export class ServiceCatalogue extends GuStack {
 
 		const db = new DatabaseInstance(this, 'PostgresInstance1', dbProps);
 
+		//temporary tag
+		Tags.of(db).add('engine', 'postgres');
+
 		Tags.of(db).add('devx-backup-enabled', 'true');
 
 		if (databaseEbsByteBalanceAlarm) {

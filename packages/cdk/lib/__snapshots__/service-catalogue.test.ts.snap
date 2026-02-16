@@ -23502,6 +23502,10 @@ spec:
             "Value": "true",
           },
           {
+            "Key": "engine",
+            "Value": "postgres",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -23564,6 +23568,10 @@ spec:
             "Value": "true",
           },
           {
+            "Key": "engine",
+            "Value": "postgres",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -23609,6 +23617,10 @@ spec:
             "Value": "true",
           },
           {
+            "Key": "engine",
+            "Value": "postgres",
+          },
+          {
             "Key": "gu:cdk:version",
             "Value": "TEST",
           },
@@ -23651,6 +23663,10 @@ spec:
           {
             "Key": "devx-backup-enabled",
             "Value": "true",
+          },
+          {
+            "Key": "engine",
+            "Value": "postgres",
           },
           {
             "Key": "gu:cdk:version",
