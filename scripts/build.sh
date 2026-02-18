@@ -9,12 +9,14 @@ checkLambdaArtifactSize() {
   file_path=$1
   actual_size_in_bytes=$(unzip -Zt $file_path | awk '{print $3}')
 
+  percent_used=$(echo "scale=2; ($actual_size_in_bytes / $aws_lambda_max_size_in_bytes) * 100" | bc)
+  percent_used_int=$(printf "%.0f" "$percent_used")
   echo "Checking uncompressed size of AWS Lambda artifact $file_path"
 
   if [ "$actual_size_in_bytes" -le "$aws_lambda_max_size_in_bytes" ]; then
-    echo "  PASSED: Uncompressed, $file_path is $actual_size_in_bytes bytes (max allowed: $aws_lambda_max_size_in_bytes bytes)"
+    echo "  PASSED: Uncompressed, $file_path is $actual_size_in_bytes bytes (max allowed: $aws_lambda_max_size_in_bytes bytes), ${percent_used_int}% of the maximum allowed size for AWS Lambda."
   else
-    echo "  ❌ FAILED: Uncompressed, $file_path is $actual_size_in_bytes bytes (max allowed: $aws_lambda_max_size_in_bytes bytes)"
+    echo "  ❌ FAILED: Uncompressed, $file_path is $actual_size_in_bytes bytes (max allowed: $aws_lambda_max_size_in_bytes bytes), ${percent_used_int}% of the maximum allowed size for AWS Lambda."
     exit 1
   fi
 }
