@@ -26,6 +26,7 @@ services:
         - github_repository_custom_properties
         - github_workflows
         - github_languages
+        - github_organizations
         - aws_ec2_instances
         - aws_ec2_route_tables
         - aws_ec2_subnets
