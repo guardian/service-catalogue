@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
-import type { view_repo_ownership } from '@prisma/client';
+import type { view_repo_ownership } from 'common/prisma-client/client.js';
 import type { Repository } from 'common/types.js';
 import {
 	removeExternallyOwnedRepos,

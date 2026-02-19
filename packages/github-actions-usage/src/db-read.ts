@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from 'common/prisma-client/client.js';
 
 /**
  * A record read from the database.

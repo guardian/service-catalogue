@@ -1,14 +1,14 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
+import { awsClientConfig } from 'common/aws.js';
+import { getRepoOwnership, getRepositories } from 'common/database-queries.js';
+import { partition, stageAwareOctokit } from 'common/functions.js';
 import type {
 	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	PrismaClient,
 	repocop_github_repository_rules,
 	view_repo_ownership,
-} from '@prisma/client';
-import { awsClientConfig } from 'common/aws.js';
-import { getRepoOwnership, getRepositories } from 'common/database-queries.js';
-import { partition, stageAwareOctokit } from 'common/functions.js';
+} from 'common/prisma-client/client.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { Config } from './config.js';

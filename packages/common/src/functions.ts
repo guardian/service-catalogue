@@ -10,7 +10,8 @@ import {
 	type Severity,
 	SLAs,
 } from 'common/src/types.js';
-
+/* eslint-disable @typescript-eslint/no-unsafe-assignment  -- this is not unsafe */
+/* eslint-disable @typescript-eslint/no-unsafe-call  -- this is not unsafe */
 export async function getGithubClient(
 	githubAppConfig: GitHubAppConfig,
 ): Promise<Octokit> {
@@ -72,6 +73,7 @@ export async function stageAwareOctokit(stage: string): Promise<Octokit> {
 		return octokit;
 	} else {
 		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
+
 		return new Octokit({ auth: token });
 	}
 }
@@ -156,11 +158,13 @@ export async function applyTopics(
 	octokit: Octokit,
 	topic: string,
 ) {
+	/* eslint-disable @typescript-eslint/no-unsafe-member-access  -- this is not unsafe */
 	console.log(`Applying ${topic} topic to ${repo}`);
 	const topics = (await octokit.rest.repos.getAllTopics({ owner, repo })).data
 		.names;
 	const names = topics.concat([topic]);
 	await octokit.rest.repos.replaceAllTopics({ owner, repo, names });
+	/* eslint-enable @typescript-eslint/no-unsafe-member-access */
 }
 
 export function stringToSeverity(severity: string): Severity {
@@ -243,3 +247,6 @@ export function toNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 	}
 	return value as NonEmptyArray<T>;
 }
+
+/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+/* eslint-enable @typescript-eslint/no-unsafe-call */
