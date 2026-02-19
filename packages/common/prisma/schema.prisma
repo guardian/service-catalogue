@@ -633,10 +633,6 @@ model cloudquery_table_frequency {
   frequency  BigInt
 }
 
-model guardian_non_p_and_e_github_teams {
-  team_name String @id
-}
-
 model guardian_production_status {
   status   String @id
   priority Int
@@ -1418,12 +1414,10 @@ view github_organization_tree {
 }
 
 view github_teams_tree {
-  id                         String?
-  org                        String?
-  slug                       String?
-  name                       String?
+  id                         String
+  org                        String
+  slug                       String
+  name                       String
   ancestors                  String[]
-  is_product_and_engineering Boolean?
-
-  @@ignore
+  is_product_and_engineering Boolean
 }
