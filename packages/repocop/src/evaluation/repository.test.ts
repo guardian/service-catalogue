@@ -7,7 +7,7 @@ import type {
 	view_repo_ownership,
 } from '@prisma/client';
 import type { RepocopVulnerability, Repository } from 'common/src/types.js';
-import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts.js';
+import { exampleDependabotAlerts } from '../test-data/example-dependabot-alerts.js';
 import type { AwsCloudFormationStack } from '../types.js';
 import {
 	deduplicateVulnerabilitiesByCve,
@@ -571,6 +571,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	cves: ['CVE-2021-1234'],
 	within_sla: false,
 	scope: 'runtime',
+	fix_url: null,
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -631,8 +632,8 @@ void describe('NO RULE - Dependabot alerts', () => {
 
 void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 	const fullName = 'guardian/myrepo';
-	const result: RepocopVulnerability[] = exampleDependabotAlert.map((alert) =>
-		dependabotAlertToRepocopVulnerability(fullName, alert),
+	const result: RepocopVulnerability[] = exampleDependabotAlerts.map((alert) =>
+		dependabotAlertToRepocopVulnerability(fullName, alert, null),
 	);
 
 	void test('Should be parseable into a common format', () => {
@@ -654,6 +655,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			cves: ['CVE-2018-6188'],
 			within_sla: false,
 			scope: 'runtime',
+			fix_url: null,
 		};
 
 		const expected2: RepocopVulnerability = {
@@ -673,14 +675,26 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			cves: ['CVE-2021-20191'],
 			within_sla: false,
 			scope: 'runtime',
+			fix_url: null,
 		};
 
 		assert.deepStrictEqual(result, [expected1, expected2]);
 	});
-	void test('Should display only the most useful URL', () => {
+	void test('Should display only the most useful advisory URL', () => {
 		const actual = result.map((r) => r.urls)[0];
 		const expected = ['https://github.com/advisories/GHSA-rf4j-j272-fj86'];
 		assert.deepStrictEqual(actual?.slice(0, 1), expected);
+	});
+	void test('Should be combined with a PR URL if provided', () => {
+		const prUrl = 'https://github.com/guardian/myrepo/pull/123';
+		const resultWithPrUrl: RepocopVulnerability =
+			dependabotAlertToRepocopVulnerability(
+				fullName,
+				exampleDependabotAlerts[0]!,
+				prUrl,
+			);
+
+		assert.strictEqual(resultWithPrUrl.fix_url === prUrl, true);
 	});
 });
 
@@ -699,6 +713,7 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		cves: ['CVE-2018-6188'],
 		within_sla: false,
 		scope: 'runtime',
+		fix_url: null,
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
@@ -713,6 +728,7 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		cves: ['CVE-2018-6188'],
 		within_sla: false,
 		scope: 'runtime',
+		fix_url: null,
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	void test('Should happen if two vulnerabilities share the same CVEs', () => {
