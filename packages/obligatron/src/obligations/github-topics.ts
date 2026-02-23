@@ -1,5 +1,5 @@
 import type { PrismaClient, view_repo_ownership } from '@prisma/client';
-import { toNonEmptyArray } from 'common/functions.js';
+import { getExternalTeams } from 'common/src/database-queries.js';
 import {
 	getRepoOwnership,
 	getRepositories,
@@ -29,11 +29,6 @@ export function repoToObligationResult(
 		contacts: { slugs: teamSlugs },
 	};
 }
-
-const getExternalTeams = async (prisma: PrismaClient): Promise<string[]> => {
-	const teams = await prisma.guardian_non_p_and_e_github_teams.findMany();
-	return toNonEmptyArray(teams.map((t) => t.team_name));
-};
 
 // This function filters out repos that are owned exclusively by teams outsude of P&E.
 // It will keep repos that have no owners, or have at least one owning team inside the department

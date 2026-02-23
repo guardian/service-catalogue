@@ -63,3 +63,10 @@ export async function getRepositories(
 	console.debug(`Found ${repositories.length} repositories`);
 	return toNonEmptyArray(repositories.map((r) => r as Repository));
 }
+
+export async function getExternalTeams(
+	client: PrismaClient,
+): Promise<string[]> {
+	const teams = await client.guardian_non_p_and_e_github_teams.findMany();
+	return toNonEmptyArray(teams.map((t) => t.team_name));
+}
