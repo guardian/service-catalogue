@@ -3,6 +3,9 @@ import prettier from 'eslint-plugin-prettier';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
 export default [
+	{
+		ignores: ['**/*/dist/**', 'packages/common/src/prisma-client/**'],
+	},
 	...guardian.configs.recommended,
 	...guardian.configs.jest,
 	{
@@ -14,6 +17,5 @@ export default [
 			'prettier/prettier': 'error',
 			'unicorn/prefer-array-flat-map': 'error',
 		},
-		ignores: ['**/*/dist/**'],
 	},
 ];

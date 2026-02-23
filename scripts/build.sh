@@ -33,7 +33,6 @@ createLambdaWithPrisma() {
   mkdir -p "$ROOT_DIR/packages/$name/dist/node_modules"
   cp -r "$ROOT_DIR/node_modules/@prisma" "$ROOT_DIR/packages/$name/dist/node_modules/@prisma"
   cp -r "$ROOT_DIR/node_modules/prisma" "$ROOT_DIR/packages/$name/dist/node_modules/prisma"
-  cp -r "$ROOT_DIR/node_modules/.prisma" "$ROOT_DIR/packages/$name/dist/node_modules/.prisma"
 
   # Create a zip file of the dist directory
   (

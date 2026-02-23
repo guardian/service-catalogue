@@ -1,4 +1,7 @@
-import type { cloudquery_plugin_usage, PrismaClient } from '@prisma/client';
+import type {
+	cloudquery_plugin_usage,
+	PrismaClient,
+} from 'common/prisma-client/client.js';
 
 export function saveResults(
 	client: PrismaClient,

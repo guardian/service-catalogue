@@ -1,7 +1,7 @@
 import type {
 	guardian_github_actions_usage,
 	PrismaClient,
-} from '@prisma/client';
+} from 'common/prisma-client/client.js';
 
 export type UnsavedGithubActionUsage = Omit<
 	guardian_github_actions_usage,

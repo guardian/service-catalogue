@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
-import type { cloudbuster_fsbp_vulnerabilities } from '@prisma/client';
+import type { cloudbuster_fsbp_vulnerabilities } from 'common/prisma-client/client.js';
 import type { SecurityHubFinding } from 'common/types.js';
 import {
 	findingsToGuardianFormat,

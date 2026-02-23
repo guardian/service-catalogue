@@ -107,6 +107,8 @@ jobs:
 
       - name: perform a DEV database migration
         run: npm -w cli start migrate -- --stage DEV
+        env:
+          DATABASE_URL: postgresql://postgres:not_at_all_secret@localhost:5432/postgres
 
       - name: basic database tests
         run: psql -d postgresql://postgres:not_at_all_secret@localhost:5432/postgres -v ON_ERROR_STOP=1 -f sql/ci.sql
