@@ -23458,7 +23458,7 @@ spec:
         "EnableIAMDatabaseAuthentication": true,
         "EnablePerformanceInsights": true,
         "Engine": "postgres",
-        "EngineVersion": "16",
+        "EngineVersion": "18",
         "MasterUserPassword": {
           "Fn::Join": [
             "",

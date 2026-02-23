@@ -172,7 +172,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const dbProps: DatabaseInstanceProps = {
 			engine: DatabaseInstanceEngine.postgres({
-				version: PostgresEngineVersion.VER_16,
+				version: PostgresEngineVersion.VER_18,
 			}),
 			port,
 			vpc,
