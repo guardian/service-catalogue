@@ -28535,6 +28535,7 @@ spec:
             "INTERACTIVE_MONITOR_TOPIC_ARN": {
               "Ref": "TopicBFC7AF6E",
             },
+            "NODE_EXTRA_CA_CERTS": "/var/runtime/ca-cert.pem",
             "QUERY_LOGGING": "false",
             "STACK": "deploy",
             "STAGE": "PROD",
