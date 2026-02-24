@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\"",
     "start": "APP=data-audit tsx src/run-locally.ts",
     "prebuild": "rm -rf dist",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma  --format=esm --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\"",
+		"postbuild": "cp package.json dist/package.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
