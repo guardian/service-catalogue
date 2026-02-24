@@ -6,8 +6,7 @@
 		"@types/aws-lambda": "^8.10.159"
 	},
 	"scripts": {
-		"build": "tsup src/index.ts --format esm --out-dir dist",
-		"postbuild": "cp package.json dist/package.json",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma",
 		"start": "APP=repocop STAGE=DEV CUT_OFF_IN_DAYS=60 tsx src/run-locally.ts",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc --noEmit"
