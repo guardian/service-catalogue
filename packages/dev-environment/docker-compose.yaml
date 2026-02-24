@@ -44,7 +44,7 @@ services:
         - aws_autoscaling_groups
         - aws_elbv2_target_groups
   postgres:
-    image: postgres:16.11
+    image: postgres:17.8
     ports:
       - '${DATABASE_PORT}:${DATABASE_PORT}'
     environment:
