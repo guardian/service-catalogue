@@ -61,6 +61,7 @@ export class Repocop {
 				GITHUB_ORG: gitHubOrg,
 				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),
 				BRANCH_PROTECTION_ENABLED: 'true',
+				NODE_EXTRA_CA_CERTS: '/var/runtime/ca-cert.pem',
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],
