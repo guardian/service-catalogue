@@ -64,7 +64,7 @@ export class Repocop {
 			},
 			vpc,
 			securityGroups: [dbSecurityGroup],
-			timeout: Duration.minutes(5),
+			timeout: Duration.minutes(15),
 		};
 
 		const repocopLambda = new GuScheduledLambda(

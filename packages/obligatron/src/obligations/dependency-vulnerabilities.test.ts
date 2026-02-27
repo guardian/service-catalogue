@@ -33,6 +33,7 @@ void describe('The dependency vulnerabilities obligation', () => {
 		source: 'Dependabot',
 		within_sla: false,
 		scope: 'runtime',
+		fix_url: null,
 	};
 
 	void it('should return something if it finds a vulnerability on a repo', () => {
