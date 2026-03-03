@@ -73,6 +73,41 @@ export async function getRepositoryLanguages(
 
 //Octokit Queries
 
+export async function getAllAlertPRsForRepo(
+	octokit: Octokit,
+	orgName: string,
+	repoName: string,
+) {
+	const query = `
+    query($owner: String!, $repo: String!, $first: Int!) {
+      repository(owner: $owner, name: $repo) {
+        vulnerabilityAlerts(first: $first, states: OPEN, dependencyScopes: RUNTIME) {
+          nodes {
+            number
+            state
+            securityVulnerability {
+              severity
+            }
+            dependabotUpdate {
+              pullRequest {
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+	const result = await octokit.graphql(query, {
+		owner: orgName,
+		repo: repoName,
+		first: 100, // Adjust as needed
+	});
+
+	console.log(JSON.stringify(result, null, 2));
+}
+
 async function getAlertsForRepo(
 	octokit: Octokit,
 	orgName: string,
@@ -84,7 +119,7 @@ async function getAlertsForRepo(
 	}
 
 	try {
-		const alert: DependabotVulnResponse =
+		const result: DependabotVulnResponse =
 			await octokit.rest.dependabot.listAlertsForRepo({
 				owner: orgName,
 				repo: repoName,
@@ -95,7 +130,8 @@ async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data;
+		const alerts = result.data;
+		return alerts;
 	} catch (error) {
 		console.debug(
 			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
@@ -116,10 +152,15 @@ export async function getDependabotVulnerabilities(
 		await Promise.all(
 			repos.map(async (repo) => {
 				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
+				await getAllAlertPRsForRepo(octokit, orgName, repo.name);
 				if (alerts) {
-					return alerts.map((a) =>
-						dependabotAlertToRepocopVulnerability(repo.full_name, a),
-					);
+					return alerts.map((a) => {
+						return dependabotAlertToRepocopVulnerability(
+							repo.full_name,
+							a,
+							null,
+						);
+					});
 				}
 				return [];
 			}),
