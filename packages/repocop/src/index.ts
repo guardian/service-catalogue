@@ -1,13 +1,10 @@
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 import { awsClientConfig } from 'common/aws.js';
-import { awsClientConfig } from 'common/aws.js';
-import { getRepoOwnership, getRepositories } from 'common/database-queries.js';
 import {
 	getExternalTeams,
 	getRepoOwnership,
 	getRepositories,
 } from 'common/database-queries.js';
-import { partition, stageAwareOctokit } from 'common/functions.js';
 import { partition, stageAwareOctokit } from 'common/functions.js';
 import type {
 	github_repository_custom_properties,
