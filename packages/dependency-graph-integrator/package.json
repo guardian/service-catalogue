@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.160"
+		"@types/aws-lambda": "^8.10.161"
 	},
 	"scripts": {
 		"copy-templates": "cp ../../.github/workflows/template_dep_submission_gradle.yaml src/template_dep_submission_gradle.yaml && cp ../../.github/workflows/template_dep_submission_sbt.yaml src/template_dep_submission_sbt.yaml",
