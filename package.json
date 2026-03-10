@@ -18,7 +18,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@guardian/eslint-config": "13.0.5",
+    "@guardian/eslint-config": "13.0.6",
     "@guardian/prettier": "10.0.0",
     "@guardian/tsconfig": "^1.0.1",
     "@swc/core": "1.15.18",
