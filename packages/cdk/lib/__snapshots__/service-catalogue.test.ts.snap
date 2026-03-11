@@ -11,6 +11,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuLoggingStreamNameParameter",
       "GuStringParameter",
       "GuStringParameter",
+      "GuDeveloperPolicyExperimental",
       "GuDistributionBucketParameter",
       "GuScheduledLambda",
       "GuAnghammaradTopicParameter",
@@ -24139,6 +24140,110 @@ spec:
       },
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
+    },
+    "ServiceCatalogueCliPolicy7789F330": {
+      "Properties": {
+        "Description": "Service Catalogue CLI",
+        "Path": "/developer-policy/service-catalogue-cli/",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecs:RunTask",
+                "ecs:List*",
+                "ecs:Describe*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ssm:GetParameter",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":ssm:eu-west-1:",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":parameter//PROD/deploy/service-catalogue/*",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":ssm:eu-west-1:",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":parameter//PROD/deploy/riff-raff/external-database-access-security-group",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":ssm:eu-west-1:",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":parameter//account/vpc/primary/subnets/private",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:ListSecrets",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::ManagedPolicy",
     },
     "TopicBFC7AF6E": {
       "Properties": {
