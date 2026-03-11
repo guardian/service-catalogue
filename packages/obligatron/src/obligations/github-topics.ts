@@ -1,4 +1,7 @@
-import type { PrismaClient, view_repo_ownership } from '@prisma/client';
+import type {
+	PrismaClient,
+	view_repo_ownership,
+} from 'common/prisma-client/client.js';
 import { getExternalTeams } from 'common/src/database-queries.js';
 import {
 	getRepoOwnership,

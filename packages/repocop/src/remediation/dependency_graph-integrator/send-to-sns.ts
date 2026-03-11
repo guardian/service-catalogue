@@ -5,7 +5,7 @@ import type {
 	github_repository_custom_properties,
 	guardian_github_actions_usage,
 	view_repo_ownership,
-} from '@prisma/client';
+} from 'common/prisma-client/client.js';
 import { awsClientConfig } from 'common/src/aws.js';
 import { shuffle } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
