@@ -1,4 +1,3 @@
-import { loadEnvFile } from 'node:process';
 import type { PrismaClient } from '@prisma/client';
 import { logger } from 'common/logs.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
@@ -12,8 +11,6 @@ import {
 	Obligations,
 	stringIsObligation,
 } from './obligations/index.js';
-
-loadEnvFile('../../.env'); // Load `.env` file at the root of the repository
 
 async function getResults(
 	obligation: Obligation,
