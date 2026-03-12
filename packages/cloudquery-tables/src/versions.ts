@@ -1,8 +1,8 @@
-import * as path from 'path';
-import { config } from 'dotenv';
+import { resolve } from 'node:path';
+import { loadEnvFile } from 'node:process';
 
 // Load the `.env` file at the root of the repository
-config({ path: path.resolve(__dirname, '../../../.env') });
+loadEnvFile(resolve(__dirname, '../../../.env'));
 
 const envOrError = (name: string): string => {
 	const value = process.env[name];

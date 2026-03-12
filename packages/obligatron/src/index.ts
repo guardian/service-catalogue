@@ -1,7 +1,7 @@
+import { loadEnvFile } from 'node:process';
 import type { PrismaClient } from '@prisma/client';
 import { logger } from 'common/logs.js';
 import { getPrismaClient } from 'common/src/database-setup.js';
-import { config } from 'dotenv';
 import { getConfig } from './config.js';
 import { evaluateFsbpVulnerabilities } from './obligations/aws-vulnerabilities.js';
 import { evaluateDependencyVulnerabilityObligation } from './obligations/dependency-vulnerabilities.js';
@@ -13,7 +13,7 @@ import {
 	stringIsObligation,
 } from './obligations/index.js';
 
-config({ path: `../../.env` }); // Load `.env` file at the root of the repository
+loadEnvFile('../../.env'); // Load `.env` file at the root of the repository
 
 async function getResults(
 	obligation: Obligation,
