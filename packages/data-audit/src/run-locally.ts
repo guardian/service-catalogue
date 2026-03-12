@@ -1,9 +1,9 @@
+import { loadEnvFile } from 'node:process';
 import { fileURLToPath } from 'url';
-import { config } from 'dotenv';
 import { main } from './index.js';
 
 // Read the .env file from the repository root
-config({ path: `../../.env` });
+loadEnvFile(`../../.env`);
 
 /**
  * checks if the current module is the entry point script - replaces the CommonJs `require.main === module` check

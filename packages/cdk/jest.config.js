@@ -1,7 +1,8 @@
-const dotenv = require('dotenv');
+const path = require('node:path');
+const { loadEnvFile } = require('node:process');
 
 // Load environment variables from .env file at the root of the repository
-dotenv.config({ path: `${__dirname}/.env` });
+loadEnvFile(path.resolve(__dirname, '../../.env'));
 
 const transform = {
 	'^.+\\.tsx?$': [
