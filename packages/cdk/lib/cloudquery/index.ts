@@ -1,13 +1,16 @@
 import { GuardianAwsAccounts } from '@guardian/aws-account-setup';
+import { NAMED_SSM_PARAMETER_PATHS } from '@guardian/cdk/lib/constants';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
+import type { GuWorkloadPolicyProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
-import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
@@ -59,6 +62,14 @@ interface CloudqueryEcsClusterProps {
 	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
 	 */
 	enableCloudquerySchedules: boolean;
+}
+
+function ssmArn(stack: GuStack, parameterName: string): string {
+	return stack.formatArn({
+		service: 'ssm',
+		resource: 'parameter',
+		resourceName: parameterName,
+	});
 }
 
 export function addCloudqueryEcsCluster(
@@ -656,7 +667,7 @@ export function addCloudqueryEcsCluster(
 		config: endOfLifeSourceConfig(),
 	};
 
-	return new CloudqueryCluster(scope, `${app}Cluster`, {
+	const cluster = new CloudqueryCluster(scope, `${app}Cluster`, {
 		enableCloudquerySchedules,
 		app,
 		vpc,
@@ -678,4 +689,45 @@ export function addCloudqueryEcsCluster(
 		],
 		cloudqueryApiKey,
 	});
+
+	const SSMPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ssm:GetParameter'],
+		resources: [
+			ssmArn(scope, `/${stage}/${stack}/${app}/*`),
+			ssmArn(
+				scope,
+				`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+			),
+			ssmArn(scope, NAMED_SSM_PARAMETER_PATHS.PrimaryVpcPrivateSubnets.path),
+		],
+	});
+
+	const cloudqueryClusterArnForTasks = cluster.arnForTasks('*');
+
+	const ecsPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:RunTask', 'ecs:List*', 'ecs:Describe*'],
+		resources: [cloudqueryClusterArnForTasks],
+	});
+
+	const dbSecretPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['secretsmanager:GetSecretValue', 'secretsmanager:ListSecrets'],
+		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
+	});
+
+	const cliPolicyProps: GuWorkloadPolicyProps = {
+		permission: 'service-catalogue-cli',
+		description: 'Service Catalogue CLI',
+		statements: [ecsPolicy, SSMPolicy, dbSecretPolicy],
+	};
+
+	new GuDeveloperPolicyExperimental(
+		scope,
+		'ServiceCatalogueCliPolicy',
+		cliPolicyProps,
+	);
+
+	return cluster;
 }
