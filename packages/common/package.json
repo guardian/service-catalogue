@@ -6,7 +6,7 @@
 		"node": ">=18"
 	},
 	"scripts": {
-		"postinstall": "prisma generate",
+		"postinstall": "npx prisma generate",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc"
 	},
