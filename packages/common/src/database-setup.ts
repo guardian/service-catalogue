@@ -1,6 +1,6 @@
+import { loadEnvFile } from 'node:process';
 import { Signer } from '@aws-sdk/rds-signer';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { config } from 'dotenv';
 import { awsClientConfig } from 'common/src/aws.js';
 import { getEnvOrThrow } from 'common/src/functions.js';
 import { PrismaClient } from 'common/src/prisma-client/client.js';
@@ -52,7 +52,7 @@ async function getRdsToken(stage: string, hostname: string, username: string) {
 }
 
 export function getDevDatabaseConfig(): Promise<DatabaseConfig> {
-	config({ path: `../../.env` });
+	loadEnvFile(`../../.env`);
 
 	return Promise.resolve({
 		hostname: getEnvOrThrow('DATABASE_HOSTNAME'),

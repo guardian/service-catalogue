@@ -1,10 +1,10 @@
 import path from 'node:path';
-import { config } from 'dotenv';
+import { loadEnvFile } from 'node:process';
 import { defineConfig } from 'prisma/config';
 import { getDatabaseConnectionString } from 'common/src/database-setup.js';
 
 if (process.env.STAGE !== 'PROD' && process.env.STAGE !== 'CODE') {
-	config({ path: `../../.env` });
+	loadEnvFile(path.resolve('../../.env'));
 }
 
 export default defineConfig({
