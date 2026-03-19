@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { config } from 'dotenv';
-import { defineConfig, env } from 'prisma/config';
+import { defineConfig } from 'prisma/config';
+import { getDatabaseConnectionString } from 'common/src/database-setup.js';
 
 if (process.env.STAGE !== 'PROD' && process.env.STAGE !== 'CODE') {
 	config({ path: `../../.env` });
@@ -9,7 +10,11 @@ if (process.env.STAGE !== 'PROD' && process.env.STAGE !== 'CODE') {
 export default defineConfig({
 	schema: path.join('prisma', 'schema.prisma'),
 	datasource: {
-		url: env('DATABASE_URL'),
+		url: getDatabaseConnectionString({
+			hostname: process.env.DATABASE_HOSTNAME as string,
+			user: process.env.DATABASE_USER as string,
+			password: process.env.DATABASE_PASSWORD as string,
+		}),
 	},
 	migrations: {
 		path: path.join('prisma', 'migrations'),
