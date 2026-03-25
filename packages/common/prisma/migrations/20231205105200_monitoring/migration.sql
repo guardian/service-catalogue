@@ -1,10 +1,11 @@
 -- List of all tables to monitor for out of sync issues
 -- Ideally we could generate this list automatically, but for now its hardcoded
-DROP TABLE IF EXISTS  cloudquery_table_frequency;
-CREATE TABLE cloudquery_table_frequency (
-     table_name TEXT PRIMARY KEY ,
+CREATE TABLE IF NOT EXISTS cloudquery_table_frequency (
+     table_name TEXT PRIMARY KEY,
      frequency TEXT
 );
+
+-- Upsert the baseline monitoring frequencies so re-running the migration is safe
 INSERT INTO cloudquery_table_frequency(table_name, frequency) VALUES
     -- AWS
     ('aws_s3_%', 'DAILY'),
@@ -52,7 +53,9 @@ INSERT INTO cloudquery_table_frequency(table_name, frequency) VALUES
     ('snyk_reporting_latest_issues', 'DAILY'),
     ('snyk_projects', 'DAILY'),
     -- RiffRaff
-    ('riffraff_%', 'DAILY');
+    ('riffraff_%', 'DAILY')
+ON CONFLICT (table_name) DO UPDATE
+SET frequency = EXCLUDED.frequency;
 
 -- Check the last sync time of all tables defined by cloudquery_table_frequency
 -- and verify that their last sync time matches their frequency
