@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "aws_cloudformation_stacks" (
+CREATE TABLE IF NOT EXISTS "aws_cloudformation_stacks" (
                                              "_cq_sync_time" TIMESTAMP(6),
                                              "_cq_source_name" TEXT,
                                              "_cq_id" UUID NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE "aws_cloudformation_stacks" (
 );
 
 -- CreateTable
-CREATE TABLE "github_repositories" (
+CREATE TABLE IF NOT EXISTS "github_repositories" (
                                        "_cq_sync_time" TIMESTAMP(6),
                                        "_cq_source_name" TEXT,
                                        "_cq_id" UUID NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE "github_repositories" (
 );
 
 -- CreateTable
-CREATE TABLE "github_repository_branches" (
+CREATE TABLE IF NOT EXISTS "github_repository_branches" (
                                               "_cq_sync_time" TIMESTAMP(6),
                                               "_cq_source_name" TEXT,
                                               "_cq_id" UUID NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE "github_repository_branches" (
 );
 
 -- CreateTable
-CREATE TABLE "github_team_repositories" (
+CREATE TABLE IF NOT EXISTS "github_team_repositories" (
                                             "_cq_sync_time" TIMESTAMP(6),
                                             "_cq_source_name" TEXT,
                                             "_cq_id" UUID NOT NULL,
@@ -282,7 +282,7 @@ CREATE TABLE "github_team_repositories" (
 );
 
 -- CreateTable
-CREATE TABLE "github_teams" (
+CREATE TABLE IF NOT EXISTS "github_teams" (
                                 "_cq_sync_time" TIMESTAMP(6),
                                 "_cq_source_name" TEXT,
                                 "_cq_id" UUID NOT NULL,
@@ -310,7 +310,7 @@ CREATE TABLE "github_teams" (
 );
 
 -- CreateTable
-CREATE TABLE "github_workflows" (
+CREATE TABLE IF NOT EXISTS "github_workflows" (
                                     "_cq_sync_time" TIMESTAMP(6),
                                     "_cq_source_name" TEXT,
                                     "_cq_id" UUID NOT NULL,
@@ -333,7 +333,7 @@ CREATE TABLE "github_workflows" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_projects" (
+CREATE TABLE IF NOT EXISTS "snyk_projects" (
                                  "_cq_source_name" TEXT,
                                  "_cq_sync_time" TIMESTAMP(6),
                                  "_cq_id" UUID NOT NULL,
@@ -349,7 +349,7 @@ CREATE TABLE "snyk_projects" (
 );
 
 -- CreateTable
-CREATE TABLE "galaxies_teams_table" (
+CREATE TABLE IF NOT EXISTS "galaxies_teams_table" (
                                         "_cq_source_name" TEXT,
                                         "_cq_sync_time" TIMESTAMP(6),
                                         "_cq_id" UUID NOT NULL,
@@ -365,7 +365,7 @@ CREATE TABLE "galaxies_teams_table" (
 );
 
 -- CreateTable
-CREATE TABLE "github_languages" (
+CREATE TABLE IF NOT EXISTS "github_languages" (
                                     "_cq_sync_time" TIMESTAMP(6),
                                     "_cq_source_name" TEXT,
                                     "_cq_id" UUID NOT NULL,
@@ -378,7 +378,7 @@ CREATE TABLE "github_languages" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_lambda_functions" (
+CREATE TABLE IF NOT EXISTS "aws_lambda_functions" (
                                         "_cq_sync_time" TIMESTAMP(6),
                                         "_cq_source_name" TEXT,
                                         "_cq_id" UUID NOT NULL,
@@ -401,7 +401,7 @@ CREATE TABLE "aws_lambda_functions" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_s3_buckets" (
+CREATE TABLE IF NOT EXISTS "aws_s3_buckets" (
                                   "_cq_sync_time" TIMESTAMP(6),
                                   "_cq_source_name" TEXT,
                                   "_cq_id" UUID NOT NULL,
@@ -418,7 +418,7 @@ CREATE TABLE "aws_s3_buckets" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_ec2_images" (
+CREATE TABLE IF NOT EXISTS "aws_ec2_images" (
                                   "_cq_sync_time" TIMESTAMP(6),
                                   "_cq_source_name" TEXT,
                                   "_cq_id" UUID NOT NULL,
@@ -462,7 +462,7 @@ CREATE TABLE "aws_ec2_images" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_ec2_instances" (
+CREATE TABLE IF NOT EXISTS "aws_ec2_instances" (
                                      "_cq_sync_time" TIMESTAMP(6),
                                      "_cq_source_name" TEXT,
                                      "_cq_id" UUID NOT NULL,
@@ -533,7 +533,7 @@ CREATE TABLE "aws_ec2_instances" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_organizations_account_parents" (
+CREATE TABLE IF NOT EXISTS "aws_organizations_account_parents" (
                                                      "_cq_sync_time" TIMESTAMP(6),
                                                      "_cq_source_name" TEXT,
                                                      "_cq_id" UUID NOT NULL,
@@ -547,7 +547,7 @@ CREATE TABLE "aws_organizations_account_parents" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_organizations_accounts" (
+CREATE TABLE IF NOT EXISTS "aws_organizations_accounts" (
                                               "_cq_sync_time" TIMESTAMP(6),
                                               "_cq_source_name" TEXT,
                                               "_cq_id" UUID NOT NULL,
@@ -566,7 +566,7 @@ CREATE TABLE "aws_organizations_accounts" (
 );
 
 -- CreateTable
-CREATE TABLE "aws_organizations_organizational_units" (
+CREATE TABLE IF NOT EXISTS "aws_organizations_organizational_units" (
                                                           "_cq_sync_time" TIMESTAMP(6),
                                                           "_cq_source_name" TEXT,
                                                           "_cq_id" UUID NOT NULL,
@@ -580,7 +580,7 @@ CREATE TABLE "aws_organizations_organizational_units" (
 );
 
 -- CreateTable
-CREATE TABLE "snyk_reporting_latest_issues" (
+CREATE TABLE IF NOT EXISTS "snyk_reporting_latest_issues" (
                                                 "_cq_sync_time" TIMESTAMP(6),
                                                 "_cq_source_name" TEXT,
                                                 "_cq_id" UUID NOT NULL,
@@ -599,47 +599,47 @@ CREATE TABLE "snyk_reporting_latest_issues" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_cloudformation_stacks__cq_id_key" ON "aws_cloudformation_stacks"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_cloudformation_stacks__cq_id_key" ON "aws_cloudformation_stacks"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "github_repositories__cq_id_key" ON "github_repositories"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "github_repositories__cq_id_key" ON "github_repositories"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "github_repository_branches__cq_id_key" ON "github_repository_branches"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "github_repository_branches__cq_id_key" ON "github_repository_branches"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "github_team_repositories__cq_id_key" ON "github_team_repositories"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "github_team_repositories__cq_id_key" ON "github_team_repositories"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "github_teams__cq_id_key" ON "github_teams"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "github_teams__cq_id_key" ON "github_teams"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "github_workflows__cq_id_key" ON "github_workflows"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "github_workflows__cq_id_key" ON "github_workflows"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_projects__cq_id_key" ON "snyk_projects"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_projects__cq_id_key" ON "snyk_projects"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_lambda_functions__cq_id_key" ON "aws_lambda_functions"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_lambda_functions__cq_id_key" ON "aws_lambda_functions"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_s3_buckets__cq_id_key" ON "aws_s3_buckets"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_s3_buckets__cq_id_key" ON "aws_s3_buckets"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_ec2_images__cq_id_key" ON "aws_ec2_images"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_ec2_images__cq_id_key" ON "aws_ec2_images"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_ec2_instances__cq_id_key" ON "aws_ec2_instances"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_ec2_instances__cq_id_key" ON "aws_ec2_instances"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_organizations_account_parents__cq_id_key" ON "aws_organizations_account_parents"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_organizations_account_parents__cq_id_key" ON "aws_organizations_account_parents"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_organizations_accounts__cq_id_key" ON "aws_organizations_accounts"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_organizations_accounts__cq_id_key" ON "aws_organizations_accounts"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aws_organizations_organizational_units__cq_id_key" ON "aws_organizations_organizational_units"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "aws_organizations_organizational_units__cq_id_key" ON "aws_organizations_organizational_units"("_cq_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "snyk_reporting_latest_issues__cq_id_key" ON "snyk_reporting_latest_issues"("_cq_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "snyk_reporting_latest_issues__cq_id_key" ON "snyk_reporting_latest_issues"("_cq_id");
 
