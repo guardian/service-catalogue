@@ -131,6 +131,7 @@ SET search_path FROM CURRENT;
 DROP INDEX IF EXISTS idx_aws_resources_account_id;
 DROP INDEX IF EXISTS idx_aws_resources_arn;
 DROP VIEW IF EXISTS aws_resources;
+DROP MATERIALIZED VIEW IF EXISTS aws_resources;
 CREATE MATERIALIZED VIEW aws_resources AS
 SELECT
     partition,
