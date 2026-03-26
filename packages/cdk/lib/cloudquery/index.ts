@@ -719,7 +719,7 @@ export function addCloudqueryEcsCluster(
 
 	const cliPolicyProps: GuWorkloadPolicyProps = {
 		permission: 'service-catalogue-cli',
-		description: 'Service Catalogue CLI',
+		description: `Service Catalogue CLI ${stage}`,
 		statements: [ecsPolicy, SSMPolicy, dbSecretPolicy],
 	};
 

@@ -24143,7 +24143,7 @@ spec:
     },
     "ServiceCatalogueCliPolicy7789F330": {
       "Properties": {
-        "Description": "Service Catalogue CLI",
+        "Description": "Service Catalogue CLI PROD",
         "Path": "/developer-policy/service-catalogue-cli/",
         "PolicyDocument": {
           "Statement": [
