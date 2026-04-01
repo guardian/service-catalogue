@@ -705,22 +705,40 @@ export function addCloudqueryEcsCluster(
 
 	const cloudqueryClusterArnForTasks = cluster.arnForTasks('*');
 
+	const tagCondition = {
+		StringEquals: {
+			'ecs:ResourceTag/Stage': stage,
+		},
+	};
+
 	const ecsPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
 		actions: ['ecs:RunTask', 'ecs:List*', 'ecs:Describe*'],
-		resources: [cloudqueryClusterArnForTasks],
+		resources: [cloudqueryClusterArnForTasks, cluster.clusterArn],
+	});
+
+	const listTaskDefinitionsPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:ListTaskDefinitions'],
+		resources: ['*'], // ListTaskDefinitions does not support resource-level permissions, so we have to allow it for all resources.
 	});
 
 	const dbSecretPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
 		actions: ['secretsmanager:GetSecretValue', 'secretsmanager:ListSecrets'],
 		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
+		conditions: tagCondition,
 	});
 
 	const cliPolicyProps: GuWorkloadPolicyProps = {
 		permission: 'service-catalogue-cli',
 		description: `Service Catalogue CLI ${stage}`,
-		statements: [ecsPolicy, SSMPolicy, dbSecretPolicy],
+		statements: [
+			ecsPolicy,
+			SSMPolicy,
+			dbSecretPolicy,
+			listTaskDefinitionsPolicy,
+		],
 	};
 
 	new GuDeveloperPolicyExperimental(
