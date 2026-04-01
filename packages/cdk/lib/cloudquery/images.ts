@@ -25,7 +25,7 @@ export const Images = {
 	 * 	https://github.com/guardian/service-catalogue/pkgs/container/service-catalogue%2Fprisma-migrate
 	 */
 	prismaMigrate: ContainerImage.fromRegistry(
-		'ghcr.io/guardian/service-catalogue/prisma-migrate:stable',
+		'ghcr.io/guardian/service-catalogue/prisma-migrate:sha256:883595fbd03a69689cb41b726a1b4e92a4c85ec3a04655e698941800dcefa9bb',
 	),
 	otelCollector: ContainerImage.fromRegistry(
 		'public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0',
