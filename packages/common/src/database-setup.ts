@@ -1,9 +1,7 @@
 import { loadEnvFile } from 'node:process';
 import { Signer } from '@aws-sdk/rds-signer';
-import { PrismaPg } from '@prisma/adapter-pg';
 import { awsClientConfig } from 'common/src/aws.js';
 import { getEnvOrThrow } from 'common/src/functions.js';
-import { PrismaClient } from 'common/src/prisma-client/client.js';
 
 export interface DatabaseConfig {
 	/**
@@ -81,22 +79,4 @@ export function getDatabaseConnectionString(config: DatabaseConfig) {
 	return `postgres://${user}:${encodeURIComponent(
 		password,
 	)}@${hostname}:${databasePort}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
-}
-
-export function getPrismaClient(config: PrismaConfig): PrismaClient {
-	const adapter = new PrismaPg({
-		connectionString: config.databaseConnectionString,
-	});
-
-	return new PrismaClient({
-		adapter,
-		...(config.withQueryLogging && {
-			log: [
-				{
-					emit: 'stdout',
-					level: 'query',
-				},
-			],
-		}),
-	});
 }

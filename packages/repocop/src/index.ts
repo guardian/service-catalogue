@@ -13,7 +13,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from 'common/prisma-client/client.js';
-import { getPrismaClient } from 'common/src/database-setup.js';
+import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { Config } from './config.js';
 import { getConfig } from './config.js';

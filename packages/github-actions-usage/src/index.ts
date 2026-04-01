@@ -1,4 +1,4 @@
-import { getPrismaClient } from 'common/src/database-setup.js';
+import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import { getConfig } from './config.js';
 import { getWorkflows } from './db-read.js';
 import { saveResults } from './db-write.js';

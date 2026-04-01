@@ -1,4 +1,4 @@
-import { getPrismaClient } from 'common/src/database-setup.js';
+import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import { getPluginUsageSummary } from './cloudquery-api.js';
 import { getConfig } from './config.js';
 import { getDateRange } from './date.js';

@@ -4,7 +4,7 @@ import { awsClientConfig } from 'common/aws.js';
 import { logger } from 'common/logs.js';
 import type { cloudbuster_fsbp_vulnerabilities } from 'common/prisma-client/client.js';
 import { getFsbpFindings } from 'common/src/database-queries.js';
-import { getPrismaClient } from 'common/src/database-setup.js';
+import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import type { SecurityHubSeverity } from 'common/src/types.js';
 import { getConfig } from './config.js';
 import { createDigestsFromFindings, sendDigest } from './digests.js';
