@@ -1,7 +1,7 @@
+import { loadEnvFile } from 'node:process';
 import { Signer } from '@aws-sdk/rds-signer';
-import { PrismaClient } from '@prisma/client';
-import { awsClientConfig } from 'common/aws.js';
-import { getEnvOrThrow } from 'common/functions.js';
+import { awsClientConfig } from 'common/src/aws.js';
+import { getEnvOrThrow } from 'common/src/functions.js';
 
 export interface DatabaseConfig {
 	/**
@@ -50,6 +50,8 @@ async function getRdsToken(stage: string, hostname: string, username: string) {
 }
 
 export function getDevDatabaseConfig(): Promise<DatabaseConfig> {
+	loadEnvFile(`../../.env`);
+
 	return Promise.resolve({
 		hostname: getEnvOrThrow('DATABASE_HOSTNAME'),
 		user: getEnvOrThrow('DATABASE_USER'),
@@ -77,22 +79,4 @@ export function getDatabaseConnectionString(config: DatabaseConfig) {
 	return `postgres://${user}:${encodeURIComponent(
 		password,
 	)}@${hostname}:${databasePort}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
-}
-
-export function getPrismaClient(config: PrismaConfig): PrismaClient {
-	return new PrismaClient({
-		datasources: {
-			db: {
-				url: config.databaseConnectionString,
-			},
-		},
-		...(config.withQueryLogging && {
-			log: [
-				{
-					emit: 'stdout',
-					level: 'query',
-				},
-			],
-		}),
-	});
 }

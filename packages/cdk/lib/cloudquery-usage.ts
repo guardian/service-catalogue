@@ -35,6 +35,7 @@ export function addCloudqueryUsageLambda(
 			DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 			QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
 			CQ_API_KEY_PATH: cloudqueryApiKey.secretName,
+			NODE_EXTRA_CA_CERTS: '/var/runtime/ca-cert.pem',
 		},
 		rules: [
 			{

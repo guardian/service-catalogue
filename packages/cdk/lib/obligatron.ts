@@ -31,6 +31,7 @@ export class Obligatron {
 			environment: {
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
+				NODE_EXTRA_CA_CERTS: '/var/runtime/ca-cert.pem',
 			},
 			timeout: Duration.minutes(5),
 			// Unfortunately Prisma doesn't support streaming data from Postgres at the moment https://github.com/prisma/prisma/issues/5055

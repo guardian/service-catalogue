@@ -33,6 +33,7 @@ export function addGithubActionsUsageLambda(
 		environment: {
 			DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 			QUERY_LOGGING: 'false', // Set this to 'true' to enable SQL query logging
+			NODE_EXTRA_CA_CERTS: '/var/runtime/ca-cert.pem',
 		},
 		runtime: Runtime.NODEJS_20_X,
 		timeout: Duration.minutes(10),

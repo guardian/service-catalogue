@@ -50,6 +50,7 @@ export class CloudBuster {
 				DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
 				QUERY_LOGGING: 'false',
 				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),
+				NODE_EXTRA_CA_CERTS: '/var/runtime/ca-cert.pem',
 			},
 			timeout: Duration.minutes(2),
 			memorySize: 512,
