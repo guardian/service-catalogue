@@ -8,6 +8,6 @@ export function createPrismaMigrateLambda(scope: GuStack) {
 		architecture: Architecture.ARM_64,
 		runtime: Runtime.NODEJS_20_X,
 		fileName: 'prisma.zip',
-		handler: 'prisma-migrate.main',
+		handler: 'dist/src/prisma-migrate.main',
 	});
 }
