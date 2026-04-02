@@ -17,7 +17,7 @@ jobs:
           java-version: 21
       - name: Submit dependencies
         id: submit
-        uses: gradle/actions/dependency-submission@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+        uses: gradle/actions/dependency-submission@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
       - name: Log snapshot for user validation
         id: validate
         run: cat "$GITHUB_WORKSPACE/dependency-graph-reports/update_dependency_graph_for_gradle-dependency-graph.json" | jq
