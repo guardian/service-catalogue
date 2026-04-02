@@ -26284,7 +26284,7 @@ spec:
             "STAGE": "PROD",
           },
         },
-        "Handler": "src/prisma-migrate.main",
+        "Handler": "prisma-migrate.main",
         "LoggingConfig": {
           "LogFormat": "JSON",
         },
