@@ -8,7 +8,9 @@
 	"scripts": {
 		"postinstall": "npx prisma generate",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
-		"typecheck": "tsc"
+		"typecheck": "tsc",
+		"build": "tsc",
+		"apply-database-migrations": "tsx src/prisma-migrate.ts"
 	},
 	"dependencies": {
 		"@aws-sdk/client-secrets-manager": "^3.1008.0",
