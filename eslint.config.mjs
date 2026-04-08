@@ -4,7 +4,7 @@ import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
 export default [
 	{
-		ignores: ['**/*/dist/**', 'packages/common/src/prisma-client/**'],
+		ignores: ['**/*/dist/**', 'packages/common/prisma-client/**'],
 	},
 	...guardian.configs.recommended,
 	...guardian.configs.jest,

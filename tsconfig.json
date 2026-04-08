@@ -1,16 +1,18 @@
 {
-  "extends": "@guardian/tsconfig/tsconfig.json",
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "common": ["packages/common/src"],
-      "common/*": ["packages/common/src/*"],
-      "cloudquery-tables": ["packages/cloudquery-tables/src"],
-      "cloudquery-tables/*": ["packages/cloudquery-tables/src/*"]
-    },
-    "skipLibCheck": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-  }
+	"extends": "@guardian/tsconfig/tsconfig.json",
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"baseUrl": ".",
+		"paths": {
+			"common": ["packages/common/src"],
+			"common/*": ["packages/common/src/*"],
+			"common/prisma-client": ["packages/common/prisma-client"],
+			"common/prisma-client/*": ["packages/common/prisma-client/*"],
+			"cloudquery-tables": ["packages/cloudquery-tables/src"],
+			"cloudquery-tables/*": ["packages/cloudquery-tables/src/*"]
+		},
+		"skipLibCheck": true,
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext"
+	}
 }
