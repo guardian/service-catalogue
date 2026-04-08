@@ -8,7 +8,9 @@
 	"scripts": {
 		"postinstall": "npx prisma generate",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
-		"typecheck": "tsc"
+		"typecheck": "tsc",
+		"build": "tsc",
+		"apply-database-migrations": "tsx src/prisma-migrate.ts"
 	},
 	"dependencies": {
 		"@aws-sdk/client-secrets-manager": "^3.1008.0",
@@ -19,6 +21,7 @@
 		"@octokit/graphql": "^9.0.3",
 		"@prisma/adapter-pg": "^7.3.0",
 		"@prisma/client": "^7.3.0",
+		"execa": "^9.6.1",
 		"octokit": "^5.0.5",
 		"octokit-plugin-create-pull-request": "^6.0.1"
 	},

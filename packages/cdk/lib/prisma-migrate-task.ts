@@ -174,6 +174,7 @@ export function addPrismaMigrateTask(
 
 	// Rule that is triggered when the prisma.zip is PUT into the artifact bucket
 	const rule = new Rule(scope, 'PrismaMigrateArtifactPutRule', {
+		enabled: false,
 		eventPattern: {
 			source: ['aws.s3'],
 			detailType: ['Object Created'],

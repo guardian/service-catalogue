@@ -50,6 +50,7 @@ import { addDataAuditLambda } from './data-audit';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Obligatron } from './obligatron';
+import { createPrismaMigrateLambda } from './prisma-migrate-lambda';
 import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
 import { Repocop } from './repocop';
@@ -373,6 +374,8 @@ export class ServiceCatalogue extends GuStack {
 			dbAccess: applicationToPostgresSecurityGroup,
 			cluster: cloudqueryCluster,
 		});
+
+		createPrismaMigrateLambda(this);
 
 		addRefreshMaterializedViewLambda(this, {
 			vpc,

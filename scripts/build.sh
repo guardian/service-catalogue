@@ -56,7 +56,8 @@ createPrismaZip() {
   echo "Creating zip of Prisma files"
   (
     cd "$ROOT_DIR/packages/common"
-    zip -qr prisma.zip ./prisma
+    zip -qr prisma.zip package.json ./prisma ./dist/src/prisma-migrate.js ./dist/prisma.config.js \
+      ../../node_modules/prisma ../../node_modules/@prisma
   )
 }
 
