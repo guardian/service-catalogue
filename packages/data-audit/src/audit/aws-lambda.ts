@@ -61,7 +61,27 @@ async function numberOfLambdaFunctionsFromAws(
 ): Promise<number> {
 	const promises = accounts.flatMap((account) => {
 		return regions.map((region) => {
-			return numberOfLambdaFunctionsForAwsAccount(stage, account.Id!, region);
+			try {
+				return numberOfLambdaFunctionsForAwsAccount(stage, account.Id!, region);
+			} catch (e) {
+				// Some accounts have an SCP denying account access in some regions.
+				// On AccessDeniedException (403), log and skip that account/region combination.
+				if (e instanceof Error && e.name === 'AccessDeniedException') {
+					console.error(
+						JSON.stringify({
+							message:
+								'AccessDeniedException querying lambda functions, skipping.',
+							account: account.Id,
+							region,
+							client: `${account.Id}:${region}`,
+						}),
+					);
+					return Promise.resolve(0);
+				}
+
+				// Rethrow other errors
+				throw e;
+			}
 		});
 	});
 	const results = await Promise.all(promises);
