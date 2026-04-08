@@ -8,19 +8,25 @@ export async function main() {
 		});
 
 		let out = '';
+		let err = '';
 		proc.stdout.on('data', (chunk: Buffer) => {
 			out += chunk.toString();
 			process.stdout.write(chunk);
 		});
 		proc.stderr.on('data', (chunk: Buffer) => {
+			err += chunk.toString();
 			process.stderr.write(chunk);
 		});
-		proc.on('error', reject);
+		proc.on('error', (e) => reject(e));
 		proc.on('close', (code) => {
 			if (code === 0) {
 				resolve(out);
 			} else {
-				reject(new Error(`prisma migrate deploy exited with code ${code}`));
+				reject(
+					new Error(
+						`prisma migrate deploy exited with code ${code}\n\nSTDOUT:\n${out}\n\nSTDERR:\n${err}`,
+					),
+				);
 			}
 		});
 	});
