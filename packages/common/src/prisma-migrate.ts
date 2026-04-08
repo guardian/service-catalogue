@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 export async function main() {
 	console.log(`Running prisma migrate deploy`);
 	const stdout = await new Promise<string>((resolve, reject) => {
-		const proc = spawn('npx', ['prisma', 'migrate', 'deploy'], {
+		const proc = spawn('./node_modules/.bin/prisma', ['migrate', 'deploy'], {
 			env: process.env,
 		});
 
