@@ -52,6 +52,7 @@ createZip() {
   )
 }
 
+# This is used by the ECS prisma-migrate task and will be removed when the task is deprecated
 createPrismaZip() {
   echo "Creating zip of Prisma files"
   (
@@ -59,6 +60,30 @@ createPrismaZip() {
     zip -qr prisma.zip package.json ./prisma ./dist/src/prisma-migrate.js ./dist/prisma.config.js \
       ../../node_modules/prisma ../../node_modules/@prisma
   )
+}
+
+createPrismaLambdaZip() {
+  echo "Creating prisma-lambda.zip (Lambda runtime artifact)"
+
+  out_zip="$ROOT_DIR/packages/common/prisma-lambda.zip"
+  stage_dir="$ROOT_DIR/.tmp/prisma-lambda"
+
+  rm -rf "$stage_dir" "$out_zip"
+  mkdir -p "$stage_dir/dist/src" "$stage_dir/dist" "$stage_dir/node_modules"
+
+  cp "$ROOT_DIR/packages/common/package.json" "$stage_dir/package.json"
+  cp "$ROOT_DIR/packages/common/dist/src/prisma-migrate.js" "$stage_dir/dist/src/prisma-migrate.js"
+  cp "$ROOT_DIR/packages/common/dist/prisma.config.js" "$stage_dir/dist/prisma.config.js"
+  cp -R "$ROOT_DIR/packages/common/prisma" "$stage_dir/prisma"
+  cp -R "$ROOT_DIR/node_modules/prisma" "$stage_dir/node_modules/prisma"
+  cp -R "$ROOT_DIR/node_modules/@prisma" "$stage_dir/node_modules/@prisma"
+
+  (
+    cd "$stage_dir"
+    zip -qr "$out_zip" .
+  )
+
+  checkLambdaArtifactSize "$out_zip"
 }
 
 verify() {
@@ -81,6 +106,7 @@ verify best-practices "packages/best-practices/best-practices.md"
 createZip "interactive-monitor"
 createZip "dependency-graph-integrator"
 createPrismaZip
+createPrismaLambdaZip
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"

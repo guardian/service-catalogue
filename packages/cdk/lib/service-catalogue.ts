@@ -375,7 +375,11 @@ export class ServiceCatalogue extends GuStack {
 			cluster: cloudqueryCluster,
 		});
 
-		createPrismaMigrateLambda(this);
+		createPrismaMigrateLambda(this, {
+			db,
+			vpc,
+			dbAccess: applicationToPostgresSecurityGroup,
+		});
 
 		addRefreshMaterializedViewLambda(this, {
 			vpc,

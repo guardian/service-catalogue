@@ -26275,11 +26275,15 @@ spec:
           "S3Bucket": {
             "Ref": "DistributionBucketName",
           },
-          "S3Key": "deploy/PROD/prisma-migrate/prisma.zip",
+          "S3Key": "deploy/PROD/prisma-migrate/prisma-lambda.zip",
         },
         "Environment": {
           "Variables": {
             "APP": "prisma-migrate",
+            "DB_SECRET_ARN": {
+              "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+            },
+            "NODE_EXTRA_CA_CERTS": "/var/runtime/ca-cert.pem",
             "STACK": "deploy",
             "STAGE": "PROD",
           },
@@ -26318,7 +26322,20 @@ spec:
             "Value": "PROD",
           },
         ],
-        "Timeout": 30,
+        "Timeout": 300,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": {
+            "Ref": "PrivateSubnets",
+          },
+        },
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -26361,7 +26378,7 @@ spec:
                       {
                         "Ref": "DistributionBucketName",
                       },
-                      "/deploy/PROD/prisma-migrate/prisma.zip",
+                      "/deploy/PROD/prisma-migrate/prisma-lambda.zip",
                     ],
                   ],
                 },
@@ -26402,6 +26419,16 @@ spec:
                 ],
               },
             },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -26438,6 +26465,18 @@ spec:
                   "Ref": "AWS::Partition",
                 },
                 ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
               ],
             ],
           },
