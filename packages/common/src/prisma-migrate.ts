@@ -5,7 +5,15 @@ import {
 	SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
 
-async function getDatabaseUrl(): Promise<string> {
+type DatabaseSecret = {
+	username: string;
+	password: string;
+	host: string;
+	port: number;
+	dbname: string;
+};
+
+async function getDatabaseSecret(): Promise<DatabaseSecret> {
 	const secretArn = process.env.DB_SECRET_ARN;
 	if (!secretArn) {
 		throw new Error('DB_SECRET_ARN env var is not set');
@@ -19,22 +27,13 @@ async function getDatabaseUrl(): Promise<string> {
 	if (!response.SecretString) {
 		throw new Error('Secret has no SecretString');
 	}
-
-	const secret = JSON.parse(response.SecretString) as {
-		username: string;
-		password: string;
-		host: string;
-		port: number;
-		dbname: string;
-	};
-
-	return `postgresql://${secret.username}:${encodeURIComponent(secret.password)}@${secret.host}:${secret.port}/${secret.dbname}`;
+	return JSON.parse(response.SecretString) as DatabaseSecret;
 }
 
 export async function main() {
 	console.log('Running prisma migrate deploy');
 
-	const databaseUrl = await getDatabaseUrl();
+	const secret = await getDatabaseSecret();
 	const cwd = process.cwd();
 	const prismaCli = path.join(
 		cwd,
@@ -44,14 +43,28 @@ export async function main() {
 		'index.js',
 	);
 	const schemaPath = path.join(cwd, 'prisma', 'schema.prisma');
+	const configPath = path.join(cwd, 'dist', 'prisma.config.js');
 
 	const stdout = await new Promise<string>((resolve, reject) => {
 		const proc = spawn(
 			process.execPath,
-			[prismaCli, 'migrate', 'deploy', '--schema', schemaPath],
+			[
+				prismaCli,
+				'migrate',
+				'deploy',
+				'--schema',
+				schemaPath,
+				'--config',
+				configPath,
+			],
 			{
-				env: { ...process.env, DATABASE_URL: databaseUrl },
 				cwd,
+				env: {
+					...process.env,
+					DATABASE_HOSTNAME: secret.host,
+					DATABASE_USER: secret.username,
+					DATABASE_PASSWORD: secret.password,
+				},
 			},
 		);
 
