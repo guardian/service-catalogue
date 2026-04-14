@@ -68,17 +68,38 @@ createPrismaLambdaZip() {
   stage_dir="$ROOT_DIR/.tmp/prisma-lambda"
 
   rm -rf "$stage_dir" "$out_zip"
-  mkdir -p "$stage_dir/dist/src" "$stage_dir/dist" "$stage_dir/node_modules"
+  mkdir -p "$stage_dir/dist/src" "$stage_dir/dist"
 
-  cp "$ROOT_DIR/packages/common/package.json" "$stage_dir/package.json"
   cp "$ROOT_DIR/packages/common/dist/src/prisma-migrate.js" "$stage_dir/dist/src/prisma-migrate.js"
   cp "$ROOT_DIR/packages/common/dist/prisma.config.js" "$stage_dir/dist/prisma.config.js"
   cp -R "$ROOT_DIR/packages/common/prisma" "$stage_dir/prisma"
-  cp -R "$ROOT_DIR/node_modules/prisma" "$stage_dir/node_modules/prisma"
-  cp -R "$ROOT_DIR/node_modules/@prisma" "$stage_dir/node_modules/@prisma"
+
+  PRISMA_VERSION=$(node -p "require('$ROOT_DIR/packages/common/package.json').dependencies.prisma")
+  AWS_SM_VERSION=$(node -p "require('$ROOT_DIR/packages/common/package.json').dependencies['@aws-sdk/client-secrets-manager']")
+
+  cat > "$stage_dir/package.json" <<EOF
+{
+  "name": "prisma-migrate-lambda-artifact",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "prisma": "$PRISMA_VERSION",
+    "@aws-sdk/client-secrets-manager": "$AWS_SM_VERSION"
+  }
+}
+EOF
 
   (
     cd "$stage_dir"
+
+    # only fetch Prisma engines for Lambda target
+    export PRISMA_CLI_BINARY_TARGETS="linux-arm64-openssl-3.0.x"
+
+    npm install --omit=dev --omit=optional --no-audit --no-fund
+
+    # safe-ish size trim
+    find node_modules -type f \( -name "*.md" -o -name "*.map" -o -name "LICENSE*" \) -delete
+
     zip -qr "$out_zip" .
   )
 
