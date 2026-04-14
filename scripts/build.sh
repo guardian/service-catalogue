@@ -67,6 +67,12 @@ createPrismaLambdaZip() {
   out_zip="$ROOT_DIR/packages/common/prisma-lambda.zip"
   stage_dir="$ROOT_DIR/.tmp/prisma-lambda"
 
+  cleanup() {
+    rm -rf "$stage_dir"
+    rmdir "$ROOT_DIR/.tmp" 2>/dev/null || true
+  }
+  trap cleanup RETURN
+
   rm -rf "$stage_dir" "$out_zip"
   mkdir -p "$stage_dir/dist/src" "$stage_dir/dist"
 
@@ -92,10 +98,7 @@ EOF
   (
     cd "$stage_dir"
 
-    # only fetch Prisma engines for Lambda target
-    export PRISMA_CLI_BINARY_TARGETS="linux-arm64-openssl-3.0.x"
-
-    npm install --omit=dev --omit=optional --no-audit --no-fund
+    npm install 
 
     # safe-ish size trim
     find node_modules -type f \( -name "*.md" -o -name "*.map" -o -name "LICENSE*" \) -delete
