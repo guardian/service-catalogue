@@ -34,6 +34,21 @@ updates:
         patterns:
           - '@grafana/*'
 
+  - package-ecosystem: 'npm'
+    directory: '/lambda-runtime/prisma-migrate'
+    schedule:
+      interval: 'monthly'
+    cooldown:
+      default-days: 7
+    groups:
+      aws-sdk:
+        patterns:
+          - '@aws-sdk/*'
+      prisma:
+        patterns:
+          - 'prisma'
+          - '@prisma/client'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:

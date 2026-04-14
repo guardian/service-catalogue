@@ -64,7 +64,7 @@ createPrismaZip() {
 createPrismaLambdaZip() {
   echo "Creating prisma-lambda.zip (Lambda runtime artifact)"
 
-  out_zip="$ROOT_DIR/packages/common/prisma-lambda.zip"
+  out_zip="$ROOT_DIR/lambda-runtime/prisma-migrate/prisma-lambda.zip"
   stage_dir="$ROOT_DIR/.tmp/prisma-lambda"
 
   cleanup() {
@@ -74,35 +74,21 @@ createPrismaLambdaZip() {
   trap cleanup RETURN
 
   rm -rf "$stage_dir" "$out_zip"
-  mkdir -p "$stage_dir/dist/src" "$stage_dir/dist"
+  mkdir -p "$stage_dir/dist"
 
-  cp "$ROOT_DIR/packages/common/dist/src/prisma-migrate.js" "$stage_dir/dist/src/prisma-migrate.js"
-  cp "$ROOT_DIR/packages/common/dist/prisma.lambda.config.js" "$stage_dir/dist/prisma.lambda.config.js"
+  # compile the standalone lambda package first
+  npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" ci --workspaces=false
+  npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" run build --workspaces=false
+
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/dist/prisma-migrate.js" "$stage_dir/dist/prisma-migrate.js"
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/dist/prisma.lambda.config.js" "$stage_dir/dist/prisma.lambda.config.js"
   cp -R "$ROOT_DIR/packages/common/prisma" "$stage_dir/prisma"
-
-  PRISMA_VERSION=$(node -p "require('$ROOT_DIR/packages/common/package.json').dependencies.prisma")
-  AWS_SM_VERSION=$(node -p "require('$ROOT_DIR/packages/common/package.json').dependencies['@aws-sdk/client-secrets-manager']")
-
-  cat > "$stage_dir/package.json" <<EOF
-{
-  "name": "prisma-migrate-lambda-artifact",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "prisma": "$PRISMA_VERSION",
-    "@aws-sdk/client-secrets-manager": "$AWS_SM_VERSION"
-  }
-}
-EOF
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/package.json" "$stage_dir/package.json"
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/package-lock.json" "$stage_dir/package-lock.json"
 
   (
     cd "$stage_dir"
-
-    npm install 
-
-    # safe-ish size trim
-    find node_modules -type f \( -name "*.md" -o -name "*.map" -o -name "LICENSE*" \) -delete
-
+    npm ci --omit=dev --no-audit --no-fund
     zip -qr "$out_zip" .
   )
 

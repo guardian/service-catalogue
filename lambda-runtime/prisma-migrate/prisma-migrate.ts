@@ -13,7 +13,7 @@ type DatabaseSecret = {
 	dbname: string;
 };
 
-async function getDatabaseSecret(): Promise<DatabaseSecret> {
+async function getDatabaseUrl(): Promise<string> {
 	const secretArn = process.env.DB_SECRET_ARN;
 	if (!secretArn) {
 		throw new Error('DB_SECRET_ARN env var is not set');
@@ -27,13 +27,16 @@ async function getDatabaseSecret(): Promise<DatabaseSecret> {
 	if (!response.SecretString) {
 		throw new Error('Secret has no SecretString');
 	}
-	return JSON.parse(response.SecretString) as DatabaseSecret;
+
+	const secret = JSON.parse(response.SecretString) as DatabaseSecret;
+
+	return `postgresql://${secret.username}:${encodeURIComponent(secret.password)}@${secret.host}:${secret.port}/${secret.dbname}?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
 }
 
 export async function main() {
 	console.log('Running prisma migrate deploy');
 
-	const secret = await getDatabaseSecret();
+	const url = await getDatabaseUrl();
 	const cwd = process.cwd();
 	const prismaCli = path.join(
 		cwd,
@@ -61,9 +64,7 @@ export async function main() {
 				cwd,
 				env: {
 					...process.env,
-					DATABASE_HOSTNAME: secret.host,
-					DATABASE_USER: secret.username,
-					DATABASE_PASSWORD: secret.password,
+					DATABASE_URL: url,
 				},
 			},
 		);

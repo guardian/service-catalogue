@@ -24,7 +24,7 @@ export function createPrismaMigrateLambda(
 		architecture: Architecture.ARM_64,
 		runtime: Runtime.NODEJS_20_X,
 		fileName: 'prisma-lambda.zip',
-		handler: 'dist/src/prisma-migrate.main',
+		handler: 'dist/prisma-migrate.main',
 		vpc,
 		securityGroups: [dbAccess],
 		environment: {

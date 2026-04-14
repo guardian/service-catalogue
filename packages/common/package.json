@@ -9,7 +9,6 @@
 		"postinstall": "npx prisma generate",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
 		"typecheck": "tsc",
-		"build": "tsc",
 		"apply-database-migrations": "tsx src/prisma-migrate.ts"
 	},
 	"dependencies": {
