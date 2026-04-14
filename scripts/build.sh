@@ -77,7 +77,7 @@ createPrismaLambdaZip() {
   mkdir -p "$stage_dir/dist/src" "$stage_dir/dist"
 
   cp "$ROOT_DIR/packages/common/dist/src/prisma-migrate.js" "$stage_dir/dist/src/prisma-migrate.js"
-  cp "$ROOT_DIR/packages/common/dist/prisma.config.js" "$stage_dir/dist/prisma.config.js"
+  cp "$ROOT_DIR/packages/common/dist/prisma.lambda.config.js" "$stage_dir/dist/prisma.lambda.config.js"
   cp -R "$ROOT_DIR/packages/common/prisma" "$stage_dir/prisma"
 
   PRISMA_VERSION=$(node -p "require('$ROOT_DIR/packages/common/package.json').dependencies.prisma")

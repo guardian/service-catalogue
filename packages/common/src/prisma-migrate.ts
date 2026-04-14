@@ -43,7 +43,7 @@ export async function main() {
 		'index.js',
 	);
 	const schemaPath = path.join(cwd, 'prisma', 'schema.prisma');
-	const configPath = path.join(cwd, 'dist', 'prisma.config.js');
+	const configPath = path.join(cwd, 'dist', 'prisma.lambda.config.js');
 
 	const stdout = await new Promise<string>((resolve, reject) => {
 		const proc = spawn(
