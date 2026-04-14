@@ -24148,15 +24148,11 @@ spec:
     "ServiceCatalogueCliPolicy7789F330": {
       "Properties": {
         "Description": "Service Catalogue CLI PROD",
-        "Path": "/developer-policy/service-catalogue-cli/",
+        "Path": "/developer-policy/guardian/service-catalogue/deploy/PROD/service-catalogue-cli/",
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": [
-                "ecs:RunTask",
-                "ecs:List*",
-                "ecs:Describe*",
-              ],
+              "Action": "ecs:RunTask",
               "Effect": "Allow",
               "Resource": {
                 "Fn::Join": [
@@ -24178,6 +24174,42 @@ spec:
                   ],
                 ],
               },
+            },
+            {
+              "Action": [
+                "ecs:ListTasks",
+                "ecs:DescribeTasks",
+                "ecs:DescribeClusters",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "servicecatalogueCluster5FC34DC5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":ecs:eu-west-1:",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":task/",
+                      {
+                        "Ref": "servicecatalogueCluster5FC34DC5",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
             {
               "Action": "ssm:GetParameter",

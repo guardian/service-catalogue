@@ -4,7 +4,7 @@ import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import type { GuWorkloadPolicyProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import type { GuDeveloperPolicyExperimentalProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
@@ -705,10 +705,18 @@ export function addCloudqueryEcsCluster(
 
 	const cloudqueryClusterArnForTasks = cluster.arnForTasks('*');
 
-	const ecsPolicy = new PolicyStatement({
+	// Allow running any task in the cluster.
+	const ecsRunTaskPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
-		actions: ['ecs:RunTask', 'ecs:List*', 'ecs:Describe*'],
+		actions: ['ecs:RunTask'],
 		resources: [cloudqueryClusterArnForTasks],
+	});
+
+	// Allow inspecting tasks and the cluster itself, scoped to this cluster only.
+	const ecsReadPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:ListTasks', 'ecs:DescribeTasks', 'ecs:DescribeClusters'],
+		resources: [cluster.clusterArn, cloudqueryClusterArnForTasks],
 	});
 
 	const dbSecretPolicy = new PolicyStatement({
@@ -717,10 +725,12 @@ export function addCloudqueryEcsCluster(
 		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
 	});
 
-	const cliPolicyProps: GuWorkloadPolicyProps = {
-		permission: 'service-catalogue-cli',
-		description: `Service Catalogue CLI ${stage}`,
-		statements: [ecsPolicy, SSMPolicy, dbSecretPolicy],
+	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
+		grantId: 'service-catalogue-cli',
+		friendlyName: `Service Catalogue CLI ${stage}`,
+		statements: [ecsRunTaskPolicy, ecsReadPolicy, SSMPolicy, dbSecretPolicy],
+		// TODO: Why do we need this?
+		withoutPolicyChecks: true,
 	};
 
 	new GuDeveloperPolicyExperimental(
