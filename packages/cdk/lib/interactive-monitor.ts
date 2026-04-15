@@ -26,7 +26,7 @@ export class InteractiveMonitor {
 			architecture: Architecture.ARM_64,
 			fileName: `${service}.zip`,
 			handler: 'index.handler',
-			runtime: Runtime.NODEJS_20_X,
+			runtime: Runtime.NODEJS_22_X,
 			environment: {
 				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				GITHUB_APP_SECRET: githubCredentials.secretName,

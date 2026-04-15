@@ -29,7 +29,7 @@ export function addCloudqueryUsageLambda(
 		handler: 'index.main',
 		monitoringConfiguration: { noMonitoring: true },
 		architecture: Architecture.ARM_64,
-		runtime: Runtime.NODEJS_20_X,
+		runtime: Runtime.NODEJS_22_X,
 		securityGroups: [dbAccess],
 		environment: {
 			DATABASE_HOSTNAME: db.dbInstanceEndpointAddress,
