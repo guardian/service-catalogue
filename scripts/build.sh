@@ -67,6 +67,14 @@ createPrismaLambdaZip() {
   out_zip="$ROOT_DIR/lambda-runtime/prisma-migrate/prisma-lambda.zip"
   stage_dir="$ROOT_DIR/.tmp/prisma-lambda"
 
+  configured_target=$(npm pkg get config.prismaCliBinaryTarget --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" | tr -d '"')
+  prisma_target="${PRISMA_MIGRATE_BINARY_TARGET:-$configured_target}"
+
+  if [ -z "$prisma_target" ] || [ "$prisma_target" = "undefined" ]; then
+    echo "Missing prisma target. Set config.prismaCliBinaryTarget in lambda-runtime/prisma-migrate/package.json or PRISMA_MIGRATE_BINARY_TARGET."
+    exit 1
+  fi
+
   cleanup() {
     rm -rf "$stage_dir"
     rmdir "$ROOT_DIR/.tmp" 2>/dev/null || true
@@ -76,8 +84,7 @@ createPrismaLambdaZip() {
   rm -rf "$stage_dir" "$out_zip"
   mkdir -p "$stage_dir/dist"
 
-  # compile the standalone lambda package first
-  npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" ci --workspaces=false
+  PRISMA_CLI_BINARY_TARGETS="$prisma_target" npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" ci --workspaces=false
   npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" run build --workspaces=false
 
   cp "$ROOT_DIR/lambda-runtime/prisma-migrate/dist/prisma-migrate.js" "$stage_dir/dist/prisma-migrate.js"
@@ -88,13 +95,12 @@ createPrismaLambdaZip() {
 
   (
     cd "$stage_dir"
-    npm ci --omit=dev --no-audit --no-fund
+    PRISMA_CLI_BINARY_TARGETS="$prisma_target" npm ci --omit=dev --no-audit --no-fund
     zip -qr "$out_zip" .
   )
 
   checkLambdaArtifactSize "$out_zip"
 }
-
 verify() {
   package_name=$1
   file_name=$2
@@ -115,7 +121,6 @@ verify best-practices "packages/best-practices/best-practices.md"
 createZip "interactive-monitor"
 createZip "dependency-graph-integrator"
 createPrismaZip
-createPrismaLambdaZip
 createLambdaWithPrisma "repocop"
 createLambdaWithPrisma "data-audit"
 createLambdaWithPrisma "github-actions-usage"
@@ -123,3 +128,5 @@ createLambdaWithPrisma "obligatron"
 createLambdaWithPrisma "refresh-materialized-view"
 createLambdaWithPrisma "cloudbuster"
 createLambdaWithPrisma "cloudquery-usage"
+createPrismaLambdaZip
+
