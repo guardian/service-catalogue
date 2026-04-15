@@ -12,7 +12,12 @@ type DatabaseSecret = {
 	port: number;
 };
 
-async function getDatabaseUrl(): Promise<string> {
+type DatabaseConnection = {
+	url: string;
+	host: string;
+};
+
+async function getDatabaseUrl(): Promise<DatabaseConnection> {
 	const secretArn = process.env.DB_SECRET_ARN;
 	if (!secretArn) {
 		throw new Error('DB_SECRET_ARN env var is not set');
@@ -29,13 +34,19 @@ async function getDatabaseUrl(): Promise<string> {
 
 	const secret = JSON.parse(response.SecretString) as DatabaseSecret;
 
-	return `postgresql://${encodeURIComponent(secret.username)}:${encodeURIComponent(secret.password)}@${encodeURIComponent(secret.host)}:${encodeURIComponent(secret.port)}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
+	return {
+		url: `postgresql://${encodeURIComponent(secret.username)}:${encodeURIComponent(secret.password)}@${encodeURIComponent(secret.host)}:${secret.port}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`,
+		host: secret.host,
+	};
 }
 
 export async function main() {
 	console.log('Running prisma migrate deploy');
 
-	const url = await getDatabaseUrl();
+	const { url, host } = await getDatabaseUrl();
+
+	const redact = (s: string) =>
+		s.replace(url, '[REDACTED]').replace(host, '[REDACTED]');
 	const cwd = process.cwd();
 	const prismaCli = path.join(
 		cwd,
@@ -77,16 +88,14 @@ export async function main() {
 			if (code === 0) {
 				resolve(out);
 			} else {
-				const redactedErr = err.replace(url, '[REDACTED]');
-				const redactedOut = out.replace(url, '[REDACTED]');
 				reject(
 					new Error(
-						`prisma migrate deploy exited with code ${code}\n\nSTDOUT:\n${redactedOut}\n\nSTDERR:\n${redactedErr}`,
+						`prisma migrate deploy exited with code ${code}\n\nSTDOUT:\n${redact(out)}\n\nSTDERR:\n${redact(err)}`,
 					),
 				);
 			}
 		});
 	});
 
-	console.log(stdout.replace(url, '[REDACTED]'));
+	console.log(redact(stdout));
 }
