@@ -10,7 +10,7 @@ RUN apk --no-cache add aws-cli
 # This will allow us to use the prisma migrate deploy command
 RUN npm init -y
 # TODO: Keep the version automatically in sync with common/package.json
-RUN npm install prisma@5.11.0
+RUN npm install prisma@7.6.0
 
 COPY ./run-prisma-migrate.sh /usr/src/app/run-prisma-migrate.sh
 RUN chmod +x /usr/src/app/run-prisma-migrate.sh
