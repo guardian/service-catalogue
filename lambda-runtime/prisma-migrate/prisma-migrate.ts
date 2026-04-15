@@ -10,7 +10,6 @@ type DatabaseSecret = {
 	password: string;
 	host: string;
 	port: number;
-	dbname: string;
 };
 
 async function getDatabaseUrl(): Promise<string> {
@@ -30,7 +29,7 @@ async function getDatabaseUrl(): Promise<string> {
 
 	const secret = JSON.parse(response.SecretString) as DatabaseSecret;
 
-	return `postgresql://${secret.username}:${encodeURIComponent(secret.password)}@${secret.host}:${secret.port}/${secret.dbname}?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
+	return `postgresql://${encodeURIComponent(secret.username)}:${encodeURIComponent(secret.password)}@${encodeURIComponent(secret.host)}:${encodeURIComponent(secret.port)}/postgres?schema=public&sslmode=verify-full&connection_limit=20&pool_timeout=20`;
 }
 
 export async function main() {
@@ -74,16 +73,20 @@ export async function main() {
 		proc.stdout.on('data', (chunk: Buffer) => (out += chunk.toString()));
 		proc.stderr.on('data', (chunk: Buffer) => (err += chunk.toString()));
 		proc.on('error', reject);
-		proc.on('close', (code) =>
-			code === 0
-				? resolve(out)
-				: reject(
-						new Error(
-							`prisma migrate deploy exited with code ${code}\n\nSTDOUT:\n${out}\n\nSTDERR:\n${err}`,
-						),
+		proc.on('close', (code) => {
+			if (code === 0) {
+				resolve(out);
+			} else {
+				const redactedErr = err.replace(url, '[REDACTED]');
+				const redactedOut = out.replace(url, '[REDACTED]');
+				reject(
+					new Error(
+						`prisma migrate deploy exited with code ${code}\n\nSTDOUT:\n${redactedOut}\n\nSTDERR:\n${redactedErr}`,
 					),
-		);
+				);
+			}
+		});
 	});
 
-	console.log(stdout);
+	console.log(stdout.replace(url, '[REDACTED]'));
 }
