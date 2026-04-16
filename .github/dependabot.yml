@@ -41,6 +41,6 @@ updates:
     cooldown:
       default-days: 7
     groups:
-      all:
+      gh-actions:
         patterns:
           - '*'
