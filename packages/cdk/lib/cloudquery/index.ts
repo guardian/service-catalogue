@@ -703,7 +703,58 @@ export function addCloudqueryEcsCluster(
 		],
 	});
 
+	const dbSecretPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['secretsmanager:GetSecretValue', 'secretsmanager:ListSecrets'],
+		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
+	});
+
 	const cloudqueryClusterArnForTasks = cluster.arnForTasks('*');
+
+	// These actions can only operate on '*'
+	const ecsListPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:ListClusters', 'ecs:ListTaskDefinitions'],
+		resources: ['*'],
+	});
+
+	const ecsListTagsPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:ListTagsForResource'],
+		resources: [
+			// We need to get tags from all clusters to determine which operates in a given stage
+			scope.formatArn({
+				service: 'ecs',
+				resource: 'cluster',
+				resourceName: '*',
+			}),
+			/* We need to get tags from all task definitions
+			 * because we can't tell which operate in any given stage from their name */
+			scope.formatArn({
+				service: 'ecs',
+				resource: 'task-definition',
+				resourceName: '*:*',
+			}),
+		],
+	});
+
+	// A task needs to have a role passed to it to be able to run
+	const iamRolePolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['iam:PassRole'],
+		resources: [
+			scope.formatArn({
+				service: 'iam',
+				resource: 'role',
+				resourceName: `deploy-${stage}-service-*`,
+			}),
+		],
+		conditions: {
+			StringEquals: {
+				'iam:PassedToService': 'ecs-tasks.amazonaws.com',
+			},
+		},
+	});
 
 	// Allow running any task in the cluster.
 	const ecsRunTaskPolicy = new PolicyStatement({
@@ -712,24 +763,18 @@ export function addCloudqueryEcsCluster(
 		resources: [cloudqueryClusterArnForTasks],
 	});
 
-	// Allow inspecting tasks and the cluster itself, scoped to this cluster only.
-	const ecsReadPolicy = new PolicyStatement({
-		effect: Effect.ALLOW,
-		actions: ['ecs:ListTasks', 'ecs:DescribeTasks', 'ecs:DescribeClusters'],
-		resources: [cluster.clusterArn, cloudqueryClusterArnForTasks],
-	});
-
-	const dbSecretPolicy = new PolicyStatement({
-		effect: Effect.ALLOW,
-		actions: ['secretsmanager:GetSecretValue', 'secretsmanager:ListSecrets'],
-		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
-	});
-
 	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
 		grantId: 'service-catalogue-cli',
 		friendlyName: `Service Catalogue CLI ${stage}`,
-		statements: [ecsRunTaskPolicy, ecsReadPolicy, SSMPolicy, dbSecretPolicy],
-		// TODO: Why do we need this?
+		statements: [
+			SSMPolicy,
+			dbSecretPolicy,
+			ecsListPolicy,
+			ecsListTagsPolicy,
+			iamRolePolicy,
+			ecsRunTaskPolicy,
+		],
+		// Not enforcing checks because we're using wildcards knowingly and safely in some places.
 		withoutPolicyChecks: true,
 	};
 

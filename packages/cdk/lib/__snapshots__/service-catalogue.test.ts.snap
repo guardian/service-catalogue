@@ -24152,66 +24152,6 @@ spec:
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "ecs:RunTask",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ecs:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":task/",
-                    {
-                      "Ref": "servicecatalogueCluster5FC34DC5",
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
-                "ecs:ListTasks",
-                "ecs:DescribeTasks",
-                "ecs:DescribeClusters",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "servicecatalogueCluster5FC34DC5",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":ecs:eu-west-1:",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":task/",
-                      {
-                        "Ref": "servicecatalogueCluster5FC34DC5",
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
               "Action": "ssm:GetParameter",
               "Effect": "Allow",
               "Resource": [
@@ -24273,6 +24213,101 @@ spec:
               "Effect": "Allow",
               "Resource": {
                 "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "ecs:ListClusters",
+                "ecs:ListTaskDefinitions",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "ecs:ListTagsForResource",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":ecs:eu-west-1:",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":cluster/*",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":ecs:eu-west-1:",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":task-definition/*:*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "iam:PassRole",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": "ecs-tasks.amazonaws.com",
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":iam:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":role/deploy-PROD-service-*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecs:RunTask",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
               },
             },
           ],
