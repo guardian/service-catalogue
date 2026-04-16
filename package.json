@@ -22,7 +22,7 @@
     "@guardian/prettier": "10.0.0",
     "@guardian/tsconfig": "^1.0.1",
     "@swc/core": "1.15.21",
-    "@types/node": "^25.5.2",
+    "@types/node": "25.5.2",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "concurrently": "^9.2.1",
     "esbuild": "^0.27.4",
