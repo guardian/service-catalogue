@@ -1,0 +1,7 @@
+CREATE USER devreadonly;
+GRANT USAGE ON SCHEMA public TO devreadonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO devreadonly;
+
+SET ROLE cloudquery;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO devreadonly;
+RESET ROLE;

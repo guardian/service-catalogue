@@ -107,5 +107,10 @@ DELETE FROM guardian_github_actions_usage
 WHERE full_name = 'guardian/service-catalogue';
 
 
+-- Switch to the `devreadonly` user and test read access
+SET ROLE devreadonly;
+SELECT * FROM github_repositories LIMIT 1;
+SELECT * FROM view_repo_ownership LIMIT 1;
+
 -- Switch back to the original user
 RESET role;
