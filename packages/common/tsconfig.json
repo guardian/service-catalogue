@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "prisma.config.ts"],
+  "include": ["src", "prisma-client", "prisma.config.ts"],
   "compilerOptions": {
     "target": "ES2023",
     "module": "ESNext",
