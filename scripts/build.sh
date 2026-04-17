@@ -61,7 +61,7 @@ createPrismaZip() {
   echo "Adding Prisma CLI to prisma zip"
   (
     cd "$ROOT_DIR"
-    zip -qr "$ROOT_DIR/packages/common/prisma.zip" node_modules/prisma node_modules/@prisma node_modules/.bin/prisma
+    zip -qr "$ROOT_DIR/packages/common/prisma.zip" node_modules/prisma node_modules/@prisma
   )
 }
 
