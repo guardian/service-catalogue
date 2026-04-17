@@ -24167,7 +24167,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":parameter//PROD/deploy/service-catalogue/*",
+                      ":parameter/PROD/deploy/service-catalogue/*",
                     ],
                   ],
                 },
@@ -24183,7 +24183,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":parameter//PROD/deploy/riff-raff/external-database-access-security-group",
+                      ":parameter/PROD/deploy/riff-raff/external-database-access-security-group",
                     ],
                   ],
                 },
@@ -24199,7 +24199,7 @@ spec:
                       {
                         "Ref": "AWS::AccountId",
                       },
-                      ":parameter//account/vpc/primary/subnets/private",
+                      ":parameter/account/vpc/primary/subnets/private",
                     ],
                   ],
                 },

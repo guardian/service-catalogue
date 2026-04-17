@@ -68,7 +68,9 @@ function ssmArn(stack: GuStack, parameterName: string): string {
 	return stack.formatArn({
 		service: 'ssm',
 		resource: 'parameter',
-		resourceName: parameterName,
+		/* Strip any leading slash because formatArn already inserts a separator between
+		   resource and resourceName so a leading slash would produce a double slash. */
+		resourceName: parameterName.replace(/^\//, ''),
 	});
 }
 
@@ -694,10 +696,10 @@ export function addCloudqueryEcsCluster(
 		effect: Effect.ALLOW,
 		actions: ['ssm:GetParameter'],
 		resources: [
-			ssmArn(scope, `/${stage}/${stack}/${app}/*`),
+			ssmArn(scope, `${stage}/${stack}/${app}/*`),
 			ssmArn(
 				scope,
-				`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+				`${stage}/deploy/riff-raff/external-database-access-security-group`,
 			),
 			ssmArn(scope, NAMED_SSM_PARAMETER_PATHS.PrimaryVpcPrivateSubnets.path),
 		],
