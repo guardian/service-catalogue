@@ -185,5 +185,7 @@ jobs:
               - packages/cloudbuster/dist/cloudbuster.zip
             cloudquery-usage:
               - packages/cloudquery-usage/dist/cloudquery-usage.zip
+            prisma-migrate:
+              - lambda-runtime/prisma-migrate/prisma-lambda.zip
     env:
       NODE_OPTIONS: '--max_old_space_size=4096'

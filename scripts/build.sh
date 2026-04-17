@@ -52,6 +52,7 @@ createZip() {
   )
 }
 
+# This is used by the ECS prisma-migrate task and will be removed when the task is deprecated
 createPrismaZip() {
   echo "Creating zip of Prisma files"
   (
@@ -65,6 +66,46 @@ createPrismaZip() {
   )
 }
 
+createPrismaLambdaZip() {
+  echo "Creating prisma-lambda.zip (Lambda runtime artifact)"
+
+  out_zip="$ROOT_DIR/lambda-runtime/prisma-migrate/prisma-lambda.zip"
+  stage_dir="$ROOT_DIR/.tmp/prisma-lambda"
+
+  configured_target=$(npm pkg get config.prismaCliBinaryTarget --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" | tr -d '"')
+  prisma_target="${PRISMA_MIGRATE_BINARY_TARGET:-$configured_target}"
+
+  if [ -z "$prisma_target" ] || [ "$prisma_target" = "undefined" ]; then
+    echo "Missing prisma target. Set config.prismaCliBinaryTarget in lambda-runtime/prisma-migrate/package.json or PRISMA_MIGRATE_BINARY_TARGET."
+    exit 1
+  fi
+
+  cleanup() {
+    rm -rf "$stage_dir"
+    rmdir "$ROOT_DIR/.tmp" 2>/dev/null || true
+  }
+  trap cleanup RETURN
+
+  rm -rf "$stage_dir" "$out_zip"
+  mkdir -p "$stage_dir/dist"
+
+  PRISMA_CLI_BINARY_TARGETS="$prisma_target" npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" ci --workspaces=false
+  npm --prefix "$ROOT_DIR/lambda-runtime/prisma-migrate" run build --workspaces=false
+
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/dist/prisma-migrate.js" "$stage_dir/dist/prisma-migrate.js"
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/dist/prisma.lambda.config.js" "$stage_dir/dist/prisma.lambda.config.js"
+  cp -R "$ROOT_DIR/packages/common/prisma" "$stage_dir/prisma"
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/package.json" "$stage_dir/package.json"
+  cp "$ROOT_DIR/lambda-runtime/prisma-migrate/package-lock.json" "$stage_dir/package-lock.json"
+
+  (
+    cd "$stage_dir"
+    PRISMA_CLI_BINARY_TARGETS="$prisma_target" npm ci --omit=dev --no-audit --no-fund
+    zip -qr "$out_zip" .
+  )
+
+  checkLambdaArtifactSize "$out_zip"
+}
 verify() {
   package_name=$1
   file_name=$2
@@ -92,3 +133,5 @@ createLambdaWithPrisma "obligatron"
 createLambdaWithPrisma "refresh-materialized-view"
 createLambdaWithPrisma "cloudbuster"
 createLambdaWithPrisma "cloudquery-usage"
+createPrismaLambdaZip
+
