@@ -711,8 +711,6 @@ export function addCloudqueryEcsCluster(
 		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
 	});
 
-	const cloudqueryClusterArnForTasks = cluster.arnForTasks('*');
-
 	// These actions can only operate on '*'
 	const ecsListPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
@@ -759,11 +757,17 @@ export function addCloudqueryEcsCluster(
 		},
 	});
 
-	// Allow running any task in the cluster.
+	// Allow running any task because task definition names have no stage-specific patterns
 	const ecsRunTaskPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
 		actions: ['ecs:RunTask'],
-		resources: [cloudqueryClusterArnForTasks],
+		resources: [
+			scope.formatArn({
+				service: 'ecs',
+				resource: 'task-definition',
+				resourceName: '*:*',
+			}),
+		],
 	});
 
 	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {

@@ -24301,11 +24301,7 @@ spec:
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":task/",
-                    {
-                      "Ref": "servicecatalogueCluster5FC34DC5",
-                    },
-                    "/*",
+                    ":task-definition/*:*",
                   ],
                 ],
               },
