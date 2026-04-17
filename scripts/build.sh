@@ -54,15 +54,34 @@ createZip() {
 
 createPrismaZip() {
   echo "Creating zip of Prisma files"
+  
+  TEMP_DIR=$(mktemp -d)
+  
+  # Copy prisma schema
+  cp -r "$ROOT_DIR/packages/common/prisma" "$TEMP_DIR/prisma"
+  
+  # Create a minimal package.json and install prisma deps
+  cat > "$TEMP_DIR/package.json" <<EOF
+{
+  "dependencies": {
+    "prisma": "$(node -e "console.log(require('./node_modules/prisma/package.json').version)")",
+    "@prisma/client": "$(node -e "console.log(require('./node_modules/@prisma/client/package.json').version)")"
+  }
+}
+EOF
+
   (
-    cd "$ROOT_DIR/packages/common"
-    zip -qr prisma.zip ./prisma
+    cd "$TEMP_DIR"
+    npm install --omit=dev --quiet
   )
-  echo "Adding Prisma CLI to prisma zip"
+  
+  # Zip everything
   (
-    cd "$ROOT_DIR"
-    zip -qr "$ROOT_DIR/packages/common/prisma.zip" node_modules/prisma node_modules/@prisma
+    cd "$TEMP_DIR"
+    zip -qr "$ROOT_DIR/packages/common/prisma.zip" .
   )
+  
+  rm -rf "$TEMP_DIR"
 }
 
 verify() {

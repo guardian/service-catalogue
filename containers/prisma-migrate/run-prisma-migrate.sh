@@ -16,6 +16,8 @@ unzip -q "${ARTIFACT_FILE}" -d "${ROOT_DIR}/prisma"
 
 DB_PORT=5432
 export DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/postgres
+export NODE_PATH="${ROOT_DIR}/prisma/node_modules"
+
 
 echo 'Running prisma migrate deploy'
 node "${ROOT_DIR}/prisma/node_modules/prisma/build/index.js" migrate deploy --config "${ROOT_DIR}/prisma.config.ts"
