@@ -24277,7 +24277,7 @@ spec:
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":iam:eu-west-1:",
+                    ":iam::",
                     {
                       "Ref": "AWS::AccountId",
                     },

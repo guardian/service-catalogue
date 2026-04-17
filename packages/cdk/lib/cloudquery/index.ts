@@ -745,6 +745,7 @@ export function addCloudqueryEcsCluster(
 		resources: [
 			scope.formatArn({
 				service: 'iam',
+				region: '',
 				resource: 'role',
 				resourceName: `deploy-${stage}-service-*`,
 			}),
