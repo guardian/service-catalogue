@@ -23342,6 +23342,38 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
+    "DevReadonlyPassword82519B98": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Description": "Password for the devreadonly Postgres user (readonly access)",
+        "GenerateSecretString": {},
+        "Name": "/PROD/deploy/service-catalogue/devreadonly-password",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
     "EBSByteBalanceAlarm": {
       "Properties": {
         "ActionsEnabled": true,
