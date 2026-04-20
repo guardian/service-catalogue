@@ -55,7 +55,9 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 
 const riffRaff = new RiffRaffYamlFile(app);
 
-const deployments = riffRaff.configuration.get(UnknownRiffRaffProjectName)?.deployments;
+const deployments = riffRaff.configuration.get(
+	UnknownRiffRaffProjectName,
+)?.deployments;
 
 deployments?.set('service-catalogue-prisma-migrations', {
 	type: 'aws-s3',
