@@ -721,6 +721,7 @@ export function addCloudqueryEcsCluster(
 		permission: 'service-catalogue-cli',
 		description: `Service Catalogue CLI ${stage}`,
 		statements: [ecsPolicy, SSMPolicy, dbSecretPolicy],
+		withoutPolicyChecks: true,
 	};
 
 	new GuDeveloperPolicyExperimental(
