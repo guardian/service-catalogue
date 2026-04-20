@@ -1,5 +1,6 @@
 import 'source-map-support/register';
 import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
+import { UnknownRiffRaffProjectName } from '@guardian/cdk/lib/riff-raff-yaml-file/types';
 import { App, Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
@@ -54,9 +55,9 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 
 const riffRaff = new RiffRaffYamlFile(app);
 
-const deployments = riffRaff.riffRaffYaml.deployments;
+const deployments = riffRaff.configuration.get(UnknownRiffRaffProjectName)?.deployments;
 
-deployments.set('service-catalogue-prisma-migrations', {
+deployments?.set('service-catalogue-prisma-migrations', {
 	type: 'aws-s3',
 	contentDirectory: 'prisma',
 	app: 'prisma-migrate-task',
