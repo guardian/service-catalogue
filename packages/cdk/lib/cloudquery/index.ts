@@ -783,6 +783,7 @@ export function addCloudqueryEcsCluster(
 		],
 		// Not enforcing checks because we're using wildcards knowingly and safely in some places.
 		withoutPolicyChecks: true,
+		withoutPolicyChecks: true,
 	};
 
 	new GuDeveloperPolicyExperimental(
