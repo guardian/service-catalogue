@@ -1,6 +1,5 @@
 import 'source-map-support/register';
 import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
-import { UnknownRiffRaffProjectName } from '@guardian/cdk/lib/riff-raff-yaml-file/types';
 import { App, Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
@@ -11,11 +10,13 @@ const app = new App();
 
 const stack = 'deploy';
 const region = 'eu-west-1';
+const riffRaffProjectName = 'deploy::service-catalogue';
 
 export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 	stack,
 	stage: 'PROD',
 	env: { region },
+	riffRaffProjectName,
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
 	securityAlertSchedule: Schedule.cron({
 		weekDay: 'MON-FRI',
@@ -39,6 +40,7 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stack,
 	stage: 'CODE',
 	env: { region },
+	riffRaffProjectName,
 	securityAlertSchedule: Schedule.rate(Duration.days(30)),
 	cloudFormationStackName: 'deploy-CODE-service-catalogue',
 
@@ -55,9 +57,8 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 
 const riffRaff = new RiffRaffYamlFile(app);
 
-const deployments = riffRaff.configuration.get(
-	UnknownRiffRaffProjectName,
-)?.deployments;
+const deployments =
+	riffRaff.configuration.get(riffRaffProjectName)?.deployments;
 
 if (!deployments) {
 	throw new Error('Could not find deployments for project.');
