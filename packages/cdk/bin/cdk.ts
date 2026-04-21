@@ -11,13 +11,11 @@ const app = new App();
 
 const stack = 'deploy';
 const region = 'eu-west-1';
-const riffRaffProjectName = 'deploy::service-catalogue';
 
 export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 	stack,
 	stage: 'PROD',
 	env: { region },
-	riffRaffProjectName,
 	cloudFormationStackName: 'deploy-PROD-service-catalogue',
 	securityAlertSchedule: Schedule.cron({
 		weekDay: 'MON-FRI',
@@ -41,7 +39,6 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	stack,
 	stage: 'CODE',
 	env: { region },
-	riffRaffProjectName,
 	securityAlertSchedule: Schedule.rate(Duration.days(30)),
 	cloudFormationStackName: 'deploy-CODE-service-catalogue',
 
