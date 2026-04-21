@@ -33,6 +33,12 @@ updates:
       grafana:
         patterns:
           - '@grafana/*'
+      nonbreaking-npm:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: 'github-actions'
     directory: '/'
