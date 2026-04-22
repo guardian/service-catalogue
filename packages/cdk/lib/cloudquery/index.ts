@@ -4,7 +4,7 @@ import type { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { GuStringParameter } from '@guardian/cdk/lib/constructs/core';
 import { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { GuS3Bucket } from '@guardian/cdk/lib/constructs/s3';
-import type { GuWorkloadPolicyProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import type { GuDeveloperPolicyExperimentalProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
@@ -68,7 +68,9 @@ function ssmArn(stack: GuStack, parameterName: string): string {
 	return stack.formatArn({
 		service: 'ssm',
 		resource: 'parameter',
-		resourceName: parameterName,
+		/* Strip any leading slash because formatArn already inserts a separator between
+		   resource and resourceName so a leading slash would produce a double slash. */
+		resourceName: parameterName.replace(/^\//, ''),
 	});
 }
 
@@ -694,21 +696,13 @@ export function addCloudqueryEcsCluster(
 		effect: Effect.ALLOW,
 		actions: ['ssm:GetParameter'],
 		resources: [
-			ssmArn(scope, `/${stage}/${stack}/${app}/*`),
+			ssmArn(scope, `${stage}/${stack}/${app}/*`),
 			ssmArn(
 				scope,
-				`/${stage}/deploy/riff-raff/external-database-access-security-group`,
+				`${stage}/deploy/riff-raff/external-database-access-security-group`,
 			),
 			ssmArn(scope, NAMED_SSM_PARAMETER_PATHS.PrimaryVpcPrivateSubnets.path),
 		],
-	});
-
-	const cloudqueryClusterArnForTasks = cluster.arnForTasks('*');
-
-	const ecsPolicy = new PolicyStatement({
-		effect: Effect.ALLOW,
-		actions: ['ecs:RunTask', 'ecs:List*', 'ecs:Describe*'],
-		resources: [cloudqueryClusterArnForTasks],
 	});
 
 	const dbSecretPolicy = new PolicyStatement({
@@ -717,10 +711,77 @@ export function addCloudqueryEcsCluster(
 		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
 	});
 
-	const cliPolicyProps: GuWorkloadPolicyProps = {
-		permission: 'service-catalogue-cli',
-		description: `Service Catalogue CLI ${stage}`,
-		statements: [ecsPolicy, SSMPolicy, dbSecretPolicy],
+	// These actions can only operate on '*'
+	const ecsListPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:ListClusters', 'ecs:ListTaskDefinitions'],
+		resources: ['*'],
+	});
+
+	const ecsListTagsPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:ListTagsForResource'],
+		resources: [
+			// We need to get tags from all clusters to determine which operates in a given stage
+			scope.formatArn({
+				service: 'ecs',
+				resource: 'cluster',
+				resourceName: '*',
+			}),
+			/* We need to get tags from all task definitions
+			 * because we can't tell which operate in any given stage from their name */
+			scope.formatArn({
+				service: 'ecs',
+				resource: 'task-definition',
+				resourceName: '*:*',
+			}),
+		],
+	});
+
+	// A task needs to have a role passed to it to be able to run
+	const iamRolePolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['iam:PassRole'],
+		resources: [
+			scope.formatArn({
+				service: 'iam',
+				region: '',
+				resource: 'role',
+				resourceName: `deploy-${stage}-service-*`,
+			}),
+		],
+		conditions: {
+			StringEquals: {
+				'iam:PassedToService': 'ecs-tasks.amazonaws.com',
+			},
+		},
+	});
+
+	// Allow running any task because task definition names have no stage-specific patterns
+	const ecsRunTaskPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['ecs:RunTask'],
+		resources: [
+			scope.formatArn({
+				service: 'ecs',
+				resource: 'task-definition',
+				resourceName: '*:*',
+			}),
+		],
+	});
+
+	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
+		grantId: 'service-catalogue-cli',
+		friendlyName: `Service Catalogue CLI ${stage}`,
+		statements: [
+			SSMPolicy,
+			dbSecretPolicy,
+			ecsListPolicy,
+			ecsListTagsPolicy,
+			iamRolePolicy,
+			ecsRunTaskPolicy,
+		],
+		// Not enforcing checks because we're using wildcards knowingly and safely in some places.
 		withoutPolicyChecks: true,
 	};
 
