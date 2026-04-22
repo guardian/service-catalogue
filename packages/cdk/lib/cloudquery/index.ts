@@ -772,7 +772,7 @@ export function addCloudqueryEcsCluster(
 
 	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
 		grantId: 'service-catalogue-cli',
-		friendlyName: `Service Catalogue CLI ${stage}`,
+		friendlyName: 'Service Catalogue CLI',
 		statements: [
 			SSMPolicy,
 			dbSecretPolicy,
