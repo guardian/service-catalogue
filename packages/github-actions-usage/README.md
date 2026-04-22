@@ -14,7 +14,7 @@ This app, deployed as an AWS Lambda, tracks which GitHub Actions are in use acro
 
 ## Querying the data
 
-The Lambda writes to the [`github_actions_usage` table](../common/prisma/migrations/20240222201635_guardian_github_actions_usage/migration.sql).
+The Lambda writes to the [`guardian_github_actions_usage` table](../common/prisma/migrations/20240222201635_guardian_github_actions_usage/migration.sql).
 
 The [`view_github_actions` SQL view](../common/prisma/migrations/20240222201635_guardian_github_actions_usage/migration.sql) also exists
 to make it easier to query the data.
