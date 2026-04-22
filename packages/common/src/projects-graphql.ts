@@ -40,16 +40,12 @@ export function addToProjectQuery(
 	  }`;
 }
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment  -- this is not unsafe */
-/* eslint-disable @typescript-eslint/no-unsafe-call  -- this is not unsafe */
-
 export async function addPrToProject(
 	stage: string,
 	shortRepoName: string,
 	boardNumber: number,
 	author: string,
 ) {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access  -- this is not unsafe
 	const graphqlWithAuth = (await stageAwareOctokit(stage)).graphql;
 
 	const projectDetails: ProjectId = await graphqlWithAuth(
@@ -78,5 +74,3 @@ export async function addPrToProject(
 		}),
 	);
 }
-/* eslint-enable @typescript-eslint/no-unsafe-assignment */
-/* eslint-enable @typescript-eslint/no-unsafe-call */
