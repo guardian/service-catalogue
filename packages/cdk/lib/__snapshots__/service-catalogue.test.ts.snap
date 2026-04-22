@@ -24147,7 +24147,7 @@ spec:
     },
     "ServiceCatalogueCliPolicy7789F330": {
       "Properties": {
-        "Description": "Service Catalogue CLI PROD",
+        "Description": "Service Catalogue CLI",
         "Path": "/developer-policy/guardian/service-catalogue/deploy/PROD/service-catalogue-cli/",
         "PolicyDocument": {
           "Statement": [
