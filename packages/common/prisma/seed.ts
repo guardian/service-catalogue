@@ -22,7 +22,7 @@ function createTeam(id: number, slug: string, org: string = orgName, cq_source_n
         description: `The ${slug} team`,
         org,
         url: `https://github.com/orgs/${org}/teams/${slug}`,
-        cq_source_name: cqSourceName,
+        cq_source_name,
         cq_id: crypto.randomUUID(),
         //less useful fields - just populating with nulls or defaults
         cq_sync_time: null,
