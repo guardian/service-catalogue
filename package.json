@@ -23,7 +23,6 @@
     "@guardian/tsconfig": "^1.0.1",
     "@swc/core": "1.15.26",
     "@types/node": "25.6.0",
-    "@typescript-eslint/eslint-plugin": "^8.58.2",
     "concurrently": "^9.2.1",
     "esbuild": "^0.28.0",
     "eslint": "9.39.2",
