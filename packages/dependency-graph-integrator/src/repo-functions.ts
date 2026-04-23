@@ -1,8 +1,6 @@
 import type { Octokit } from 'octokit';
 import type { StatusCode } from './types.js';
 
-const ghHeaders = { 'X-GitHub-Api-Version': '2022-11-28' };
-
 export async function enableDependabotAlerts(
 	repo: string,
 	octokit: Octokit,
@@ -14,7 +12,6 @@ export async function enableDependabotAlerts(
 		{
 			owner,
 			repo,
-			headers: ghHeaders,
 		},
 	);
 	return enableResponse.status;

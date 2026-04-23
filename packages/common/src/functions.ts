@@ -1,8 +1,8 @@
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
+import { Octokit } from '@octokit/core';
 import type { SNSEvent } from 'aws-lambda';
-import { Octokit } from 'octokit';
 import {
 	type GitHubAppConfig,
 	type GithubAppSecret,
@@ -12,6 +12,12 @@ import {
 } from 'common/src/types.js';
 /* eslint-disable @typescript-eslint/no-unsafe-assignment  -- this is not unsafe */
 /* eslint-disable @typescript-eslint/no-unsafe-call  -- this is not unsafe */
+
+const apiVersion = '2022-11-28';
+const ServiceCatalogueOctokit = Octokit.defaults({
+	headers: { 'X-GitHub-Api-Version': apiVersion },
+});
+
 export async function getGithubClient(
 	githubAppConfig: GitHubAppConfig,
 ): Promise<Octokit> {
@@ -22,10 +28,25 @@ export async function getGithubClient(
 		installationId: githubAppConfig.installationId,
 	});
 
-	const octokit: Octokit = new Octokit({
+	const octokit = new ServiceCatalogueOctokit({
 		auth: installationAuthentication.token,
 	});
+
 	return octokit;
+}
+
+export async function stageAwareOctokit(stage: string): Promise<Octokit> {
+	if (stage === 'CODE' || stage === 'PROD') {
+		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
+		const octokit: Octokit = await getGithubClient(githubAppConfig);
+		return octokit;
+	} else {
+		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
+
+		new ServiceCatalogueOctokit({
+			auth: token,
+		});
+	}
 }
 
 export function getEnvOrThrow(key: string): string {
@@ -64,18 +85,6 @@ export async function getGitHubAppConfig(): Promise<GitHubAppConfig> {
 	const secretString = await getGithubAppSecret();
 	const githubAppConfig = parseSecretJson(secretString);
 	return githubAppConfig;
-}
-
-export async function stageAwareOctokit(stage: string): Promise<Octokit> {
-	if (stage === 'CODE' || stage === 'PROD') {
-		const githubAppConfig: GitHubAppConfig = await getGitHubAppConfig();
-		const octokit: Octokit = await getGithubClient(githubAppConfig);
-		return octokit;
-	} else {
-		const token = getEnvOrThrow('GITHUB_ACCESS_TOKEN');
-
-		return new Octokit({ auth: token });
-	}
 }
 
 export function parseEvent<T>(event: SNSEvent): T[] {
