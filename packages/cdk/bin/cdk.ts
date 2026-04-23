@@ -1,6 +1,5 @@
 import 'source-map-support/register';
 import { RiffRaffYamlFile } from '@guardian/cdk/lib/riff-raff-yaml-file';
-import { UnknownRiffRaffProjectName } from '@guardian/cdk/lib/riff-raff-yaml-file/types';
 import { App, Duration } from 'aws-cdk-lib';
 import { InstanceClass, InstanceSize, InstanceType } from 'aws-cdk-lib/aws-ec2';
 import { Schedule } from 'aws-cdk-lib/aws-events';
@@ -11,6 +10,8 @@ const app = new App();
 
 const stack = 'deploy';
 const region = 'eu-west-1';
+
+const riffRaffProjectName = 'deploy::service-catalogue';
 
 export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 	stack,
@@ -27,6 +28,7 @@ export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 	databaseMultiAz: true,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
 	databaseEbsByteBalanceAlarm: true,
+	riffRaffProjectName,
 };
 
 new ServiceCatalogue(
@@ -49,17 +51,23 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 	databaseMultiAz: false,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 	databaseEbsByteBalanceAlarm: false,
+	riffRaffProjectName,
 });
 
 // Add an additional S3 deployment type and synth riff-raff.yaml
 
 const riffRaff = new RiffRaffYamlFile(app);
 
-const deployments = riffRaff.configuration.get(
-	UnknownRiffRaffProjectName,
-)?.deployments;
+const deployments =
+	riffRaff.configuration.get(riffRaffProjectName)?.deployments;
 
-deployments?.set('service-catalogue-prisma-migrations', {
+if (!deployments) {
+	throw new Error(
+		`Could not find deployments for project: ${riffRaffProjectName}`,
+	);
+}
+
+deployments.set('service-catalogue-prisma-migrations', {
 	type: 'aws-s3',
 	contentDirectory: 'prisma',
 	app: 'prisma-migrate-task',
