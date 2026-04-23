@@ -161,7 +161,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
           projectName: deploy::service-catalogue
-          configPath: packages/cdk/cdk.out/riff-raff.yaml
+          configPath: packages/cdk/cdk.out/deploy::service-catalogue/riff-raff.yaml
           contentDirectories: |
             cdk.out:
               - packages/cdk/cdk.out

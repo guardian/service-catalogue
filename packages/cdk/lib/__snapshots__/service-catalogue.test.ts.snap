@@ -87,6 +87,10 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -154,6 +158,10 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AmigoBakePackages",
           },
@@ -192,6 +200,10 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -304,6 +316,10 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -730,6 +746,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AmigoBakePackages",
           },
@@ -777,6 +797,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -1187,6 +1211,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsCostExplorer",
           },
@@ -1236,6 +1264,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsCostExplorer",
           },
@@ -1274,6 +1306,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -1388,6 +1424,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsCostExplorer",
           },
@@ -1478,6 +1518,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -1912,6 +1956,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsDelegatedToSecurityAccount",
           },
@@ -1961,6 +2009,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsDelegatedToSecurityAccount",
           },
@@ -1999,6 +2051,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -2113,6 +2169,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsDelegatedToSecurityAccount",
           },
@@ -2205,6 +2265,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -2270,6 +2334,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -2634,6 +2702,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsLambda",
           },
@@ -2691,6 +2763,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -2805,6 +2881,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsLambda",
           },
@@ -2895,6 +2975,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -3295,6 +3379,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsListOrgs",
           },
@@ -3344,6 +3432,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsListOrgs",
           },
@@ -3382,6 +3474,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -3496,6 +3592,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsListOrgs",
           },
@@ -3586,6 +3686,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -3978,6 +4082,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideAutoScalingGroups",
           },
@@ -4025,6 +4133,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -4140,6 +4252,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideAutoScalingGroups",
           },
@@ -4177,6 +4293,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -4269,6 +4389,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -4663,6 +4787,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideBackup",
           },
@@ -4712,6 +4840,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideBackup",
           },
@@ -4750,6 +4882,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -4864,6 +5000,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideBackup",
           },
@@ -4956,6 +5096,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -5021,6 +5165,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -5376,6 +5524,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCertificates",
           },
@@ -5433,6 +5585,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -5547,6 +5703,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCertificates",
           },
@@ -5639,6 +5799,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -5706,6 +5870,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCloudFormation",
           },
@@ -5744,6 +5912,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -5856,6 +6028,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -6281,6 +6457,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCloudFormation",
           },
@@ -6328,6 +6508,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -6720,6 +6904,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCloudwatchAlarms",
           },
@@ -6769,6 +6957,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCloudwatchAlarms",
           },
@@ -6807,6 +6999,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -6921,6 +7117,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideCloudwatchAlarms",
           },
@@ -7011,6 +7211,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -7408,6 +7612,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideDynamoDB",
           },
@@ -7457,6 +7665,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideDynamoDB",
           },
@@ -7495,6 +7707,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -7672,6 +7888,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideDynamoDB",
           },
@@ -7699,6 +7919,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -8120,6 +8344,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideEc2Images",
           },
@@ -8169,6 +8397,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideEc2Images",
           },
@@ -8207,6 +8439,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -8321,6 +8557,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideEc2Images",
           },
@@ -8411,6 +8651,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -8833,6 +9077,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideEc2",
           },
@@ -8882,6 +9130,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideEc2",
           },
@@ -8920,6 +9172,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -9034,6 +9290,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideEc2",
           },
@@ -9124,6 +9384,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -9516,6 +9780,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideIamCredentialReports",
           },
@@ -9565,6 +9833,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideIamCredentialReports",
           },
@@ -9603,6 +9875,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -9717,6 +9993,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideIamCredentialReports",
           },
@@ -9807,6 +10087,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -10208,6 +10492,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideLoadBalancers",
           },
@@ -10257,6 +10545,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideLoadBalancers",
           },
@@ -10295,6 +10587,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -10409,6 +10705,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideLoadBalancers",
           },
@@ -10499,6 +10799,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -10894,6 +11198,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideRDS",
           },
@@ -10943,6 +11251,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideRDS",
           },
@@ -10981,6 +11293,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -11095,6 +11411,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideRDS",
           },
@@ -11185,6 +11505,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -11592,6 +11916,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideS3",
           },
@@ -11641,6 +11969,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideS3",
           },
@@ -11679,6 +12011,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -11856,6 +12192,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideS3",
           },
@@ -11883,6 +12223,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -11950,6 +12294,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -12305,6 +12653,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideSns",
           },
@@ -12437,6 +12789,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsOrgWideSns",
           },
@@ -12474,6 +12830,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -12568,6 +12928,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -12635,6 +12999,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsRemainingData",
           },
@@ -12673,6 +13041,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -12785,6 +13157,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -13573,6 +13949,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsRemainingData",
           },
@@ -13620,6 +14000,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -13687,6 +14071,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -14042,6 +14430,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsSSMParameters",
           },
@@ -14099,6 +14491,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -14213,6 +14609,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "AwsSSMParameters",
           },
@@ -14303,6 +14703,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -14688,6 +15092,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "EndOfLife",
           },
@@ -14737,6 +15145,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "EndOfLife",
           },
@@ -14775,6 +15187,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -14889,6 +15305,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "EndOfLife",
           },
@@ -14981,6 +15401,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -15046,6 +15470,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -15416,6 +15844,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "FastlyServices",
           },
@@ -15548,6 +15980,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "FastlyServices",
           },
@@ -15660,6 +16096,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "FastlyServices",
           },
@@ -15687,6 +16127,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -16108,6 +16552,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "Galaxies",
           },
@@ -16157,6 +16605,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "Galaxies",
           },
@@ -16195,6 +16647,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -16309,6 +16765,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "Galaxies",
           },
@@ -16401,6 +16861,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -16468,6 +16932,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubIssues",
           },
@@ -16506,6 +16974,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -16618,6 +17090,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -17090,6 +17566,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubIssues",
           },
@@ -17137,6 +17617,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -17204,6 +17688,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -17599,6 +18087,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubLanguages",
           },
@@ -17656,6 +18148,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -17770,6 +18266,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubLanguages",
           },
@@ -17870,6 +18370,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -18306,6 +18810,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubReleases",
           },
@@ -18355,6 +18863,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubReleases",
           },
@@ -18393,6 +18905,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -18507,6 +19023,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubReleases",
           },
@@ -18607,6 +19127,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -19049,6 +19573,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubRepositories",
           },
@@ -19098,6 +19626,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubRepositories",
           },
@@ -19136,6 +19668,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -19250,6 +19786,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubRepositories",
           },
@@ -19350,6 +19890,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -19787,6 +20331,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubSecretScanningAlerts",
           },
@@ -19836,6 +20384,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubSecretScanningAlerts",
           },
@@ -19874,6 +20426,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -20061,6 +20617,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubSecretScanningAlerts",
           },
@@ -20088,6 +20648,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -20530,6 +21094,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubTeams",
           },
@@ -20579,6 +21147,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubTeams",
           },
@@ -20617,6 +21189,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -20731,6 +21307,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "GitHubTeams",
           },
@@ -20831,6 +21411,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -21254,6 +21838,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "NS1",
           },
@@ -21303,6 +21891,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "NS1",
           },
@@ -21341,6 +21933,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -21528,6 +22124,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "NS1",
           },
@@ -21555,6 +22155,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -21627,6 +22231,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "RiffRaffData",
           },
@@ -21665,6 +22273,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -21777,6 +22389,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -22242,6 +22858,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "RiffRaffData",
           },
@@ -22432,6 +23052,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -22492,6 +23116,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -22699,6 +23327,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -22766,6 +23398,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -22807,6 +23443,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -22881,6 +23521,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -23094,6 +23738,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -23179,6 +23827,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -23256,6 +23908,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -23397,6 +24053,7 @@ spec:
           "Stage": "PROD",
           "gu:cdk:version": "TEST",
           "gu:repo": "guardian/service-catalogue",
+          "gu:riff-raff-project": "deploy::service-catalogue",
         },
         "Tier": "Standard",
         "Type": "String",
@@ -23431,6 +24088,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -23514,6 +24175,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -23576,6 +24241,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -23619,6 +24288,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -23665,6 +24338,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -23685,6 +24362,7 @@ spec:
           "Stage": "PROD",
           "gu:cdk:version": "TEST",
           "gu:repo": "guardian/service-catalogue",
+          "gu:riff-raff-project": "deploy::service-catalogue",
         },
         "Tier": "Standard",
         "Type": "String",
@@ -23728,6 +24406,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -23798,6 +24480,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -23909,6 +24595,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -23986,6 +24676,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24131,6 +24825,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24324,6 +25022,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -24394,6 +25096,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24519,6 +25225,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24714,6 +25424,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -24741,6 +25455,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24797,6 +25515,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24863,6 +25585,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -24926,6 +25652,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -24994,6 +25724,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -25139,6 +25873,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -25162,6 +25900,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -25188,6 +25930,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -25274,6 +26020,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -25309,6 +26059,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -25498,6 +26252,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -25566,6 +26324,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -25726,6 +26488,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -25751,6 +26517,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -25821,6 +26591,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -25859,6 +26633,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -26013,6 +26791,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -26058,6 +26840,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -26115,6 +26901,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -26192,6 +26982,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -26347,6 +27141,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -26634,6 +27432,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "prisma-migrate-task",
           },
@@ -26685,6 +27487,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -26799,6 +27605,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Name",
             "Value": "prisma-migrate-task",
           },
@@ -26865,6 +27675,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Name",
@@ -26934,6 +27748,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -27049,6 +27867,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -27122,6 +27944,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -27237,6 +28063,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -27331,6 +28161,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -27404,6 +28238,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -27498,6 +28336,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -27613,6 +28455,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -27686,6 +28532,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -27782,6 +28632,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -27874,6 +28728,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -27989,6 +28847,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -28083,6 +28945,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -28156,6 +29022,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -28271,6 +29141,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -28344,6 +29218,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -28440,6 +29318,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -28534,6 +29416,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -28626,6 +29512,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -28739,6 +29629,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -28866,6 +29760,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -28931,6 +29829,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -29119,6 +30021,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -29168,6 +30074,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -29206,6 +30116,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -29378,6 +30292,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -29426,6 +30344,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -29561,6 +30483,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -29687,6 +30613,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -29822,6 +30752,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -29953,6 +30887,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -30088,6 +31026,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -30219,6 +31161,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -30354,6 +31300,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -30485,6 +31435,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -30620,6 +31574,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -30751,6 +31709,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -30901,6 +31863,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -31049,6 +32015,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -31180,6 +32150,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -31315,6 +32289,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -31446,6 +32424,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -31581,6 +32563,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -31712,6 +32698,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -31847,6 +32837,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -31980,6 +32974,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -32103,6 +33101,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -32224,6 +33226,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -32364,6 +33370,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -32485,6 +33495,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -32610,6 +33624,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -32731,6 +33749,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -32856,6 +33878,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -32977,6 +34003,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
@@ -33102,6 +34132,10 @@ spec:
             "Value": "guardian/service-catalogue",
           },
           {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
             "Key": "Stack",
             "Value": "deploy",
           },
@@ -33223,6 +34257,10 @@ spec:
           {
             "Key": "gu:repo",
             "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
           },
           {
             "Key": "Stack",
