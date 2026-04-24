@@ -1,5 +1,6 @@
 # CloudQuery Usage
 Tracks the number of rows collected with [CloudQuery plugin, per day](https://api-docs.cloudquery.io/#tag/teams/operation/GetGroupedTeamUsageSummary).
+The resulting table `cloudquery_plugin_usage` powers the Grafana dashboard CloudQuery paid usage.
 
 By default, yesterday's data is collected. To customise this, set the `START_DATE` and `END_DATE` environment variables.
 
