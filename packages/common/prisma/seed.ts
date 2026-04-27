@@ -83,6 +83,7 @@ function createRepoAndChildren(id: number, name: string, languages: string[], or
         language: languages[0] || null,
         cq_id: crypto.randomUUID(),
         cq_source_name,
+        topics: ['production'],
         //less useful fields - just populating with nulls or defaults
         cq_sync_time: null,
         cq_parent_id: null,
@@ -123,7 +124,6 @@ function createRepoAndChildren(id: number, name: string, languages: string[], or
         squash_merge_commit_message: null,
         merge_commit_title: null,
         merge_commit_message: null,
-        topics: [],
         archived: null,
         disabled: null,
         license: Prisma.DbNull,
@@ -367,6 +367,15 @@ function createCloudFormationStack(name: string, cq_source_name: string = cqSour
     };
 }
 
+function createGithubActionsUsage(name: string, workflow_uses: string[], workflow_path: string = 'ci.yaml'): Prisma.guardian_github_actions_usageCreateManyInput {
+    return {
+        evaluated_on: new Date(),
+        full_name: `guardian/${name}`,
+        workflow_path: '.github/workflows/' + workflow_path,
+        workflow_uses
+    };
+}
+
 const frontendTeam = createTeam(1, 'frontend');
 const backendTeam = createTeam(2, 'backend');
 const devopsTeam = createTeam(3, 'devops');
@@ -397,6 +406,13 @@ const devopsStack = createCloudFormationStack('devops');
 
 const cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[] = [frontendStack, backendStack, devopsStack];
 
+const frontendGithubActionsUsage = createGithubActionsUsage('frontend', ['actions/checkout@v2', 'actions/setup-node@v2']);
+const backendGithubActionsUsage = createGithubActionsUsage('backend', ['actions/checkout@v2', 'actions/setup-scala@v1']);
+const devopsGithubActionsUsage = createGithubActionsUsage('devops', ['actions/checkout@v2', 'actions/setup-python@v2']);
+const cricketGithubActionsUsage = createGithubActionsUsage('cricket', ['actions/checkout@v2', 'actions/setup-go@v2']);
+
+const githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[] = [frontendGithubActionsUsage, backendGithubActionsUsage, devopsGithubActionsUsage, cricketGithubActionsUsage];
+
 console.log('Seeding teams, repos, languages, and team-repo relationships...');
 
 const seedFilter = {
@@ -415,7 +431,6 @@ console.log(table);
 await prisma.github_repositories.deleteMany(seedFilter);
 await prisma.github_repositories.createMany({ data: repos });
 
-
 await prisma.github_languages.deleteMany(seedFilter);
 await prisma.github_languages.createMany({ data: languages });
 
@@ -427,6 +442,9 @@ await prisma.github_repository_branches.createMany({ data: branches });
 
 await prisma.aws_cloudformation_stacks.deleteMany(seedFilter);
 await prisma.aws_cloudformation_stacks.createMany({ data: cloudFormationStacks });
+
+await prisma.guardian_github_actions_usage.deleteMany();
+await prisma.guardian_github_actions_usage.createMany({ data: githubActionsUsages });
 
 console.log('Seeding complete!');
 
