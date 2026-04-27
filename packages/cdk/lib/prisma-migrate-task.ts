@@ -160,13 +160,24 @@ export function addPrismaMigrateTask(
 	const prismaArtifactVolume: Volume = {
 		name: 'artifact-volume',
 	};
+	const prismaEngineVolume: Volume = {
+		name: 'engine-volume',
+	};
 
 	taskDefinition.addVolume(prismaArtifactVolume);
+	taskDefinition.addVolume(prismaEngineVolume);
 
 	prismaTask.addMountPoints({
 		// So that we can download the prisma.zip from the artifact bucket
 		containerPath: '/usr/src/app/prisma',
 		sourceVolume: prismaArtifactVolume.name,
+		readOnly: false,
+	});
+
+	prismaTask.addMountPoints({
+		// So that we can write Prisma engine binary at runtime
+		containerPath: '/tmp',
+		sourceVolume: prismaEngineVolume.name,
 		readOnly: false,
 	});
 
