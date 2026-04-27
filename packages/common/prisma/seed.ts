@@ -317,6 +317,56 @@ function createRepoOwnership(repo: Prisma.github_repositoriesCreateManyInput, te
     }
 }
 
+function createCloudFormationStack(name: string, cq_source_name: string = cqSourceName): Prisma.aws_cloudformation_stacksCreateManyInput {
+
+    const accountId = '0000000000000';
+    const region = 'eu-west-1';
+    const uuid = crypto.randomUUID();
+    const arn = `arn:aws:cloudformation:${region}:${accountId}:stack/${name}/${uuid}`;
+    const tags: { Key: string, Value: string }[] = [
+        { Key: 'Stack', Value: `${name}-stack` },
+        { Key: 'Stage', Value: 'PROD' }, // TODO VARY THIS
+        { Key: 'App', Value: `${name}-app` },
+        { Key: 'gu:repo', Value: `guardian/${name}` }
+    ];
+
+    return {
+        cq_sync_time: null,
+        cq_source_name,
+        cq_id: uuid,
+        cq_parent_id: null,
+        id: arn,
+        tags: tags as Prisma.InputJsonValue,
+        account_id: '0000000000000',
+        region: 'eu-west-1',
+        stack_status: 'CREATE_COMPLETE',
+        creation_time: new Date('2020-01-01T00:00:00Z'),
+        arn: arn,
+        stack_name: name,
+        capabilities: [],
+        change_set_id: null,
+        deletion_time: null,
+        description: `The ${name} stack`,
+        disable_rollback: false,
+        drift_information: Prisma.DbNull,
+        enable_termination_protection: false,
+        last_updated_time: null,
+        notification_arns: undefined,
+        outputs: Prisma.DbNull,
+        parameters: Prisma.DbNull,
+        parent_id: null,
+        retain_except_on_create: null,
+        role_arn: null,
+        rollback_configuration: Prisma.DbNull,
+        root_id: null,
+        stack_id: arn,
+        stack_status_reason: null,
+        timeout_in_minutes: null,
+        deletion_mode: null,
+        detailed_status: null
+    };
+}
+
 const frontendTeam = createTeam(1, 'frontend');
 const backendTeam = createTeam(2, 'backend');
 const devopsTeam = createTeam(3, 'devops');
@@ -340,6 +390,12 @@ const backendRepoOwnership2 = createRepoOwnership(theBackendRepo.repo, devopsTea
 const cricketRepoOwnership = createRepoOwnership(theCricketRepo.repo, cricketTeam, 'admin');
 
 const teamRepos: Prisma.github_team_repositoriesCreateManyInput[] = [frontendRepoOwnership, backendRepoOwnership, devopsRepoOwnership, backendRepoOwnership2, cricketRepoOwnership];
+
+const frontendStack = createCloudFormationStack('frontend');
+const backendStack = createCloudFormationStack('backend');
+const devopsStack = createCloudFormationStack('devops');
+
+const cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[] = [frontendStack, backendStack, devopsStack];
 
 console.log('Seeding teams, repos, languages, and team-repo relationships...');
 
@@ -368,6 +424,11 @@ await prisma.github_team_repositories.createMany({ data: teamRepos });
 
 await prisma.github_repository_branches.deleteMany(seedFilter);
 await prisma.github_repository_branches.createMany({ data: branches });
+
+await prisma.aws_cloudformation_stacks.deleteMany(seedFilter);
+await prisma.aws_cloudformation_stacks.createMany({ data: cloudFormationStacks });
+
+console.log('Seeding complete!');
 
 await prisma.$disconnect();
 
