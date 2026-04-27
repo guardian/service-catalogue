@@ -193,7 +193,7 @@ function createRepoAndChildren(id: number, name: string, languages: string[], or
             cq_id: crypto.randomUUID(),
             cq_parent_id: null,
         },
-        branches: [createBranch(repo, 'main'), createBranch(repo, 'develop', cq_source_name), createBranch(repo, 'feature-1', cq_source_name)]
+        branches: [createBranch(repo, 'main'), createBranch(repo, 'develop', cq_source_name), createBranch(repo, 'feature-1', cq_source_name)],
     };
 }
 
@@ -367,6 +367,19 @@ function createCloudFormationStack(name: string, cq_source_name: string = cqSour
     };
 }
 
+function createCustomProperties(repo_id: number | bigint): Prisma.github_repository_custom_propertiesCreateManyInput {
+    return {
+        cq_sync_time: null,
+        cq_source_name: cqSourceName,
+        cq_id: crypto.randomUUID(),
+        cq_parent_id: null,
+        org: 'guardian',
+        property_name: 'gu_dependency_graph_integrator_ignore',
+        repository_id: BigInt(repo_id),
+        value: ['true']
+    }
+}
+
 function createGithubActionsUsage(name: string, workflow_uses: string[], workflow_path: string = 'ci.yaml'): Prisma.guardian_github_actions_usageCreateManyInput {
     return {
         evaluated_on: new Date(),
@@ -413,6 +426,8 @@ const cricketGithubActionsUsage = createGithubActionsUsage('cricket', ['actions/
 
 const githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[] = [frontendGithubActionsUsage, backendGithubActionsUsage, devopsGithubActionsUsage, cricketGithubActionsUsage];
 
+const customProperties = createCustomProperties(theBackendRepo.repo.id);
+
 console.log('Seeding teams, repos, languages, and team-repo relationships...');
 
 const seedFilter = {
@@ -442,6 +457,9 @@ await prisma.github_repository_branches.createMany({ data: branches });
 
 await prisma.aws_cloudformation_stacks.deleteMany(seedFilter);
 await prisma.aws_cloudformation_stacks.createMany({ data: cloudFormationStacks });
+
+await prisma.github_repository_custom_properties.deleteMany(seedFilter);
+await prisma.github_repository_custom_properties.createMany({ data: customProperties });
 
 await prisma.guardian_github_actions_usage.deleteMany();
 await prisma.guardian_github_actions_usage.createMany({ data: githubActionsUsages });
