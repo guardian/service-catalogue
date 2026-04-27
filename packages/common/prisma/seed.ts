@@ -327,7 +327,7 @@ function createCloudFormationStack(name: string, cq_source_name: string = cqSour
         { Key: 'Stack', Value: `${name}-stack` },
         { Key: 'Stage', Value: 'PROD' }, // TODO VARY THIS
         { Key: 'App', Value: `${name}-app` },
-        { Key: 'gu:repo', Value: `guardian/${name}` }
+        { Key: 'gu:repo', Value: `${orgName}/${name}` }
     ];
 
     return {
@@ -373,7 +373,7 @@ function createCustomProperties(repo_id: number | bigint): Prisma.github_reposit
         cq_source_name: cqSourceName,
         cq_id: crypto.randomUUID(),
         cq_parent_id: null,
-        org: 'guardian',
+        org: orgName,
         property_name: 'gu_dependency_graph_integrator_ignore',
         repository_id: BigInt(repo_id),
         value: ['true']
@@ -383,7 +383,7 @@ function createCustomProperties(repo_id: number | bigint): Prisma.github_reposit
 function createGithubActionsUsage(name: string, workflow_uses: string[], workflow_path: string = 'ci.yaml'): Prisma.guardian_github_actions_usageCreateManyInput {
     return {
         evaluated_on: new Date(),
-        full_name: `guardian/${name}`,
+        full_name: `${orgName}/${name}`,
         workflow_path: '.github/workflows/' + workflow_path,
         workflow_uses
     };
@@ -396,37 +396,43 @@ const cricketTeam = createTeam(4, 'cricket');
 
 const teams: Prisma.github_teamsCreateManyInput[] = [frontendTeam, backendTeam, devopsTeam, cricketTeam];
 
-const theFrontendRepo = createRepoAndChildren(1, 'frontend', ['TypeScript', 'JavaScript', 'HTML', 'CSS', 'Shell']);
-const theBackendRepo = createRepoAndChildren(2, 'backend', ['Scala', 'Dockerfile', 'Shell']);
-const theDevopsRepo = createRepoAndChildren(3, 'devops', ['Python', 'Terraform', 'Shell']);
-const theCricketRepo = createRepoAndChildren(4, 'cricket', ['Go', 'Shell']);
+//using a couple of public repos for now, so that at least some calls to the GitHub API are made by repocop for the moment.
+const dcr = 'dotcom-rendering';
+const janus = 'janus-app';
+const devops = 'fsbp-fix';
+const cricket = 'cricket';
 
-const repos: Prisma.github_repositoriesCreateManyInput[] = [theFrontendRepo.repo, theBackendRepo.repo, theDevopsRepo.repo, theCricketRepo.repo];
-const languages: Prisma.github_languagesCreateManyInput[] = [theFrontendRepo.languages, theBackendRepo.languages, theDevopsRepo.languages, theCricketRepo.languages];
-const branches: Prisma.github_repository_branchesCreateManyInput[] = [...theFrontendRepo.branches, ...theBackendRepo.branches, ...theDevopsRepo.branches, ...theCricketRepo.branches];
+const dcrRepo = createRepoAndChildren(1, dcr, ['TypeScript', 'JavaScript', 'HTML', 'CSS', 'Shell']);
+const janusRepo = createRepoAndChildren(2, janus, ['Scala', 'Dockerfile', 'Shell']);
+const theDevopsRepo = createRepoAndChildren(3, devops, ['Go', 'Shell']);
+const theCricketRepo = createRepoAndChildren(4, cricket, ['Python', 'Terraform', 'Shell']);
 
-const frontendRepoOwnership = createRepoOwnership(theFrontendRepo.repo, frontendTeam, 'admin');
-const backendRepoOwnership = createRepoOwnership(theBackendRepo.repo, backendTeam, 'admin');
+const repos: Prisma.github_repositoriesCreateManyInput[] = [dcrRepo.repo, janusRepo.repo, theDevopsRepo.repo, theCricketRepo.repo];
+const languages: Prisma.github_languagesCreateManyInput[] = [dcrRepo.languages, janusRepo.languages, theDevopsRepo.languages, theCricketRepo.languages];
+const branches: Prisma.github_repository_branchesCreateManyInput[] = [...dcrRepo.branches, ...janusRepo.branches, ...theDevopsRepo.branches, ...theCricketRepo.branches];
+
+const dcrRepoOwnership = createRepoOwnership(dcrRepo.repo, frontendTeam, 'admin');
+const janusRepoOwnership = createRepoOwnership(janusRepo.repo, backendTeam, 'admin');
 const devopsRepoOwnership = createRepoOwnership(theDevopsRepo.repo, devopsTeam, 'admin');
-const backendRepoOwnership2 = createRepoOwnership(theBackendRepo.repo, devopsTeam, 'admin'); //example of a repo with multiple owners
+const backendRepoOwnership2 = createRepoOwnership(janusRepo.repo, devopsTeam, 'admin'); //example of a repo with multiple owners
 const cricketRepoOwnership = createRepoOwnership(theCricketRepo.repo, cricketTeam, 'admin');
 
-const teamRepos: Prisma.github_team_repositoriesCreateManyInput[] = [frontendRepoOwnership, backendRepoOwnership, devopsRepoOwnership, backendRepoOwnership2, cricketRepoOwnership];
+const teamRepos: Prisma.github_team_repositoriesCreateManyInput[] = [dcrRepoOwnership, janusRepoOwnership, devopsRepoOwnership, backendRepoOwnership2, cricketRepoOwnership];
 
-const frontendStack = createCloudFormationStack('frontend');
-const backendStack = createCloudFormationStack('backend');
-const devopsStack = createCloudFormationStack('devops');
+const frontendStack = createCloudFormationStack(dcr);
+const backendStack = createCloudFormationStack(janus);
+const cricketStack = createCloudFormationStack(cricket);
 
-const cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[] = [frontendStack, backendStack, devopsStack];
+const cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[] = [frontendStack, backendStack, cricketStack];
 
-const frontendGithubActionsUsage = createGithubActionsUsage('frontend', ['actions/checkout@v2', 'actions/setup-node@v2']);
-const backendGithubActionsUsage = createGithubActionsUsage('backend', ['actions/checkout@v2', 'actions/setup-scala@v1']);
-const devopsGithubActionsUsage = createGithubActionsUsage('devops', ['actions/checkout@v2', 'actions/setup-python@v2']);
-const cricketGithubActionsUsage = createGithubActionsUsage('cricket', ['actions/checkout@v2', 'actions/setup-go@v2']);
+const frontendGithubActionsUsage = createGithubActionsUsage(dcr, ['actions/checkout@v2', 'actions/setup-node@v2']);
+const backendGithubActionsUsage = createGithubActionsUsage(janus, ['actions/checkout@v2', 'actions/setup-scala@v1']);
+const devopsGithubActionsUsage = createGithubActionsUsage(devops, ['actions/checkout@v2', 'actions/setup-python@v2']);
+const cricketGithubActionsUsage = createGithubActionsUsage(cricket, ['actions/checkout@v2', 'actions/setup-go@v2']);
 
 const githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[] = [frontendGithubActionsUsage, backendGithubActionsUsage, devopsGithubActionsUsage, cricketGithubActionsUsage];
 
-const customProperties = createCustomProperties(theBackendRepo.repo.id);
+const customProperties = createCustomProperties(janusRepo.repo.id);
 
 console.log('Seeding teams, repos, languages, and team-repo relationships...');
 
