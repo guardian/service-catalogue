@@ -13,7 +13,7 @@ ROOT_DIR=$(realpath "${DIR}/..")
 STEP_COUNT=0
 
 step(){
-  ((STEP_COUNT++))
+  STEP_COUNT=$((STEP_COUNT+1))
   echo -e "${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
