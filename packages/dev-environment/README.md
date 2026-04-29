@@ -39,7 +39,7 @@ It includes:
    ./packages/dev-environment/script/start
    ```
 
-   This will create an sql directory, start the Docker containers, and CloudQuery will start collecting data.
+   This will create a sql directory with the definition of the tables to be populated in the dev envionment, will start the Docker containers, and CloudQuery will start collecting data.
 
 3. Wait for tables to start being populated. Usually the first tables show up after a few seconds, but this could take
    as long as a minute.
