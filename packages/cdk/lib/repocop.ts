@@ -117,7 +117,7 @@ function stageAwareIntegratorLambda(
 		fileName: `${app}.zip`,
 		handler: 'index.handler',
 		memorySize: 1024,
-		runtime: Runtime.NODEJS_20_X,
+		runtime: Runtime.NODEJS_24_X,
 		vpc,
 		timeout: Duration.minutes(5),
 		environment: {
