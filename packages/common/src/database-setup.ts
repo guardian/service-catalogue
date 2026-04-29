@@ -76,7 +76,7 @@ export async function getDatabaseConfig(
 export function getDatabaseConnectionString(config: DatabaseConfig) {
 	const { user, password, hostname } = config;
 
-        const sslmode = hostname === "localhost" ? "disable" : "verify-full"
+	const sslmode = hostname === 'localhost' ? 'disable' : 'verify-full';
 
 	return `postgres://${user}:${encodeURIComponent(
 		password,
