@@ -27034,6 +27034,11 @@ spec:
                 "ReadOnly": false,
                 "SourceVolume": "artifact-volume",
               },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "engine-volume",
+              },
             ],
             "Name": "prisma-migrate-taskContainer",
             "ReadonlyRootFilesystem": true,
@@ -27134,6 +27139,9 @@ spec:
           },
           {
             "Name": "artifact-volume",
+          },
+          {
+            "Name": "engine-volume",
           },
         ],
       },
