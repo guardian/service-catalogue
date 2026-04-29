@@ -15,6 +15,8 @@ export interface Config extends PrismaConfig {
 
 export async function getConfig(): Promise<Config> {
 	const stage = getEnvOrThrow('STAGE');
+	const nodeVersion = process.version;
+	console.log(`Obligatron is running under node version ${nodeVersion} in stage ${stage}`);
 	const databaseConfig =
 		stage === 'DEV'
 			? await getDevDatabaseConfig()

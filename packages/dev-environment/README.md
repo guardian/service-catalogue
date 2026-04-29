@@ -17,7 +17,7 @@ It includes:
 
 ## Setup
 
-1. Get deployTools credentials from Janus. The `Service Catalogue CLI CODE` dev policy is required.
+1. Get deployTools credentials from Janus. Service Catalogue read-only is appropriate
 2. In the project root, run the following, and follow the resulting instructions:
 
 ```sh
