@@ -13,7 +13,9 @@ ROOT_DIR=$(realpath "${DIR}/..")
 STEP_COUNT=0
 
 step(){
-  ((STEP_COUNT++))
+  # ((STEP_COUNT++)) does return 0 for some bash versions and in combination with set -e,
+  # it can cause the script to exit with an error depending on the dev environment.
+  STEP_COUNT=$((STEP_COUNT+1))
   echo -e "${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
