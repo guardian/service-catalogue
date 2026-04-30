@@ -8,7 +8,7 @@
 	"scripts": {
 		"copy-templates": "cp ../../.github/workflows/template_dep_submission_gradle.yaml src/template_dep_submission_gradle.yaml && cp ../../.github/workflows/template_dep_submission_sbt.yaml src/template_dep_submission_sbt.yaml",
 		"copy-templates:dist": "cp ../../.github/workflows/template_dep_submission_gradle.yaml dist/template_dep_submission_gradle.yaml && cp ../../.github/workflows/template_dep_submission_sbt.yaml dist/template_dep_submission_sbt.yaml",
-		"build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20  --outdir=dist --external:@aws-sdk --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" && npm run copy-templates:dist",
+		"build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node24  --outdir=dist --external:@aws-sdk --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" && npm run copy-templates:dist",
 		"postbuild": "cp package.json dist/package.json",
 		"prestart": "npm run copy-templates",
 		"start": "tsx src/run-locally.ts",
