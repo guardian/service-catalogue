@@ -112,7 +112,7 @@ function createDependencyGraphIntegratorLambda(
 	app: `${string}-integrator`,
 	gitHubOrg: string,
 ): GuLambdaFunction {
-	const nonProdLambdaProps = {
+	const baseLambdaProps = {
 		app,
 		architecture: Architecture.ARM_64,
 		fileName: `${app}.zip`,
@@ -132,9 +132,9 @@ function createDependencyGraphIntegratorLambda(
 		});
 
 		const lambda = new GuLambdaFunction(guStack, app, {
-			...nonProdLambdaProps,
+			...baseLambdaProps,
 			environment: {
-				...nonProdLambdaProps.environment,
+				...baseLambdaProps.environment,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
 			},
 		});
@@ -143,6 +143,6 @@ function createDependencyGraphIntegratorLambda(
 
 		return lambda;
 	} else {
-		return new GuLambdaFunction(guStack, app, nonProdLambdaProps);
+		return new GuLambdaFunction(guStack, app, baseLambdaProps);
 	}
 }
