@@ -92,7 +92,8 @@ export class Repocop {
 		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 
-		const dependencyGraphIntegratorLambda = stageAwareIntegratorLambda(
+		const dependencyGraphIntegratorLambda =
+			createDependencyGraphIntegratorLambda(
 			guStack,
 			vpc,
 			'dependency-graph-integrator',
@@ -105,7 +106,7 @@ export class Repocop {
 	}
 }
 
-function stageAwareIntegratorLambda(
+function createDependencyGraphIntegratorLambda(
 	guStack: GuStack,
 	vpc: IVpc,
 	app: `${string}-integrator`,
