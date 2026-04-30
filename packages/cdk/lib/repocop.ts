@@ -40,7 +40,7 @@ export class Repocop {
 			},
 		);
 
-		const repocopLampdaProps: GuScheduledLambdaProps = {
+		const repocopLambdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			architecture: Architecture.ARM_64,
 			fileName: 'repocop.zip',
@@ -71,7 +71,7 @@ export class Repocop {
 		const repocopLambda = new GuScheduledLambda(
 			guStack,
 			'repocop',
-			repocopLampdaProps,
+			repocopLambdaProps,
 		);
 
 		const policyStatement = new PolicyStatement({
