@@ -94,11 +94,11 @@ export class Repocop {
 
 		const dependencyGraphIntegratorLambda =
 			createDependencyGraphIntegratorLambda(
-			guStack,
-			vpc,
-			'dependency-graph-integrator',
-			gitHubOrg,
-		);
+				guStack,
+				vpc,
+				'dependency-graph-integrator',
+				gitHubOrg,
+			);
 
 		dependencyGraphIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(dependencyGraphIntegratorLambda, {}),
@@ -136,6 +136,10 @@ function createDependencyGraphIntegratorLambda(
 			environment: {
 				...baseLambdaProps.environment,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
+			},
+			errorPercentageMonitoring: {
+				toleratedErrorPercentage: 0,
+				snsTopicName: 'devx-alerts',
 			},
 		});
 
