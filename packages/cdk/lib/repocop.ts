@@ -126,7 +126,7 @@ function createDependencyGraphIntegratorLambda(
 		},
 	};
 
-	if (guStack.stage === 'PROD' || guStack.stage === 'TEST') {
+	if (guStack.stage === 'PROD') {
 		const githubAppSecret = new Secret(guStack, `${app}-github-app-auth`, {
 			secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/${app}-github-app-secret`,
 		});
