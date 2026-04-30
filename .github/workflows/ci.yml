@@ -95,7 +95,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version-file: '.tool-versions'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - uses: guardian/actions-read-private-repos@48bc5aeef8584a03a3a89ec82f9a7d06c7736855 # v1.0.0
@@ -143,7 +143,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version-file: '.tool-versions'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - uses: guardian/actions-read-private-repos@48bc5aeef8584a03a3a89ec82f9a7d06c7736855 # v1.0.0
