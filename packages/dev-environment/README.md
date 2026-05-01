@@ -47,7 +47,7 @@ It includes:
 5. To restart on your local machine, delete the container in docker and go back to step 2.
 
 > **Note**
-> You can also use other Postgres clients, such as `psql` to query the data, or even your IDE!
+> You can also use other Postgres clients, such as `psql` to query the data, or even your IDE using the local development credentials from the [.env](../../.env) file!
 
 ## Testing the prima migration container
 
