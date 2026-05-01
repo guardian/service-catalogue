@@ -48,7 +48,7 @@ export class Repocop {
 			memorySize: 2048,
 			monitoringConfiguration,
 			rules: [{ schedule }],
-			runtime: Runtime.NODEJS_20_X,
+			runtime: Runtime.NODEJS_24_X,
 			environment: {
 				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				DATABASE_HOSTNAME: cloudqueryDB.dbInstanceEndpointAddress,
