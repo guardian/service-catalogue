@@ -77,6 +77,11 @@ export async function getConfig(): Promise<Config> {
 
 	const stage = getEnvOrThrow('STAGE');
 
+	const nodeVersion = process.version;
+	console.log(
+		`Repocop is running under node version ${nodeVersion} in stage ${stage}`,
+	);
+
 	const databaseConfig: DatabaseConfig =
 		stage === 'DEV'
 			? await getDevDatabaseConfig()
