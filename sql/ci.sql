@@ -109,8 +109,36 @@ WHERE full_name = 'guardian/service-catalogue';
 
 -- Switch to the `devreadonly` user and test read access
 SET ROLE devreadonly;
+-- It should be able to read from cloudquery tables
 SELECT * FROM github_repositories LIMIT 1;
+SELECT * FROM aws_cloudformation_stacks LIMIT 1;
+-- It should be able to read from views
 SELECT * FROM view_repo_ownership LIMIT 1;
+
+-- It should NOT be able to write to any table
+DO
+$do$
+    BEGIN
+        INSERT INTO github_repositories (_cq_id, _cq_sync_time) VALUES (gen_random_uuid(), NOW());
+        RAISE EXCEPTION 'devreadonly should not be able to insert into github_repositories';
+    EXCEPTION
+        WHEN insufficient_privilege THEN
+            -- Expected: write access denied
+            NULL;
+    END
+$do$;
+
+DO
+$do$
+    BEGIN
+        DELETE FROM aws_cloudformation_stacks WHERE FALSE;
+        RAISE EXCEPTION 'devreadonly should not be able to delete from aws_cloudformation_stacks';
+    EXCEPTION
+        WHEN insufficient_privilege THEN
+            -- Expected: write access denied
+            NULL;
+    END
+$do$;
 
 -- Switch back to the original user
 RESET role;
