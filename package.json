@@ -34,8 +34,5 @@
     "tsx": "4.21.0",
     "typescript": "^5.9.3"
   },
-  "prettier": "@guardian/prettier",
-  "dependencies": {
-    "get-east-asian-width": "^1.5.0"
-  }
+  "prettier": "@guardian/prettier"
 }
