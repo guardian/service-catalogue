@@ -279,8 +279,8 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
-		new Secret(this, 'DevReadonlyPassword', {
-			secretName: `/${stage}/${stack}/${app}/devreadonly-password`,
+		new Secret(this, 'DevReadOnlyPostgresPassword', {
+			secretName: `/${stage}/${stack}/${app}/devreadonly-postgres-password`,
 			description:
 				'Password for the devreadonly Postgres user (readonly access)',
 		});

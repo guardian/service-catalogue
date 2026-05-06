@@ -23342,12 +23342,12 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "DevReadonlyPassword82519B98": {
+    "DevReadOnlyPostgresPassword4318B657": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Description": "Password for the devreadonly Postgres user (readonly access)",
         "GenerateSecretString": {},
-        "Name": "/PROD/deploy/service-catalogue/devreadonly-password",
+        "Name": "/PROD/deploy/service-catalogue/devreadonly-postgres-password",
         "Tags": [
           {
             "Key": "gu:cdk:version",
