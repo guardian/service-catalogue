@@ -51,6 +51,11 @@ export async function migrateRdsDatabase(
 	const dbConfig = await getRdsConfig(client, stage);
 	const connectionString = getDatabaseConnectionString(dbConfig);
 
+	console.log('Setting Prisma env vars');
+	process.env.STAGE = stage;
+	process.env.DATABASE_HOSTNAME = dbConfig.hostname;
+	process.env.DATABASE_USER = dbConfig.user;
+	process.env.DATABASE_PASSWORD = dbConfig.password;
 	console.log('Setting DATABASE_URL');
 	process.env.DATABASE_URL = connectionString;
 
