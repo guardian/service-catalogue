@@ -78,6 +78,44 @@ export async function migrateRdsDatabase(
 	return Promise.resolve(0);
 }
 
+type ResolveState = 'rolled-back' | 'applied';
+
+export async function resolveRdsMigration(
+	stage: string,
+	client: SecretsManagerClient,
+	migration: string,
+	state: ResolveState,
+): Promise<number> {
+	console.log(`Resolving migration in ${stage}: ${migration} (${state})`);
+
+	const connectedToVpn = await isConnectedToVpn();
+	if (!connectedToVpn) {
+		throw new Error('Not connected to VPN');
+	}
+
+	console.log('Fetching database connection details from AWS Secrets Manager');
+	const dbConfig = await getRdsConfig(client, stage);
+	const connectionString = getDatabaseConnectionString(dbConfig);
+
+	console.log('Setting Prisma env vars');
+	process.env.STAGE = stage;
+	process.env.DATABASE_HOSTNAME = dbConfig.hostname;
+	process.env.DATABASE_USER = dbConfig.user;
+	process.env.DATABASE_PASSWORD = dbConfig.password;
+
+	console.log('Setting DATABASE_URL');
+	process.env.DATABASE_URL = connectionString;
+
+	const flag = state === 'rolled-back' ? '--rolled-back' : '--applied';
+
+	console.log(`Running prisma migrate resolve ${flag} ${migration}`);
+	const { stdout } =
+		await $`npx -w common prisma migrate resolve ${flag} ${migration}`;
+	console.log(stdout);
+
+	return Promise.resolve(0);
+}
+
 async function isConnectedToVpn(): Promise<boolean> {
 	console.log('Checking if connected to VPN');
 

@@ -7,13 +7,18 @@ import {
 	runAllTasks,
 	runOneTask,
 } from './aws.js';
-import { migrateDevDatabase, migrateRdsDatabase } from './database.js';
+import {
+	migrateDevDatabase,
+	migrateRdsDatabase,
+	resolveRdsMigration,
+} from './database.js';
 
 const Commands = {
 	list: 'list-tasks',
 	run: 'run-task',
 	runAll: 'run-all-tasks',
 	migrate: 'migrate',
+	migrateResolve: 'migrate-resolve',
 };
 
 const parseCommandLineArguments = () => {
@@ -126,6 +131,33 @@ const parseCommandLineArguments = () => {
 						default: false,
 					});
 			})
+			.command(
+				Commands.migrateResolve,
+				'Resolve a failed Prisma migration',
+				(yargs) => {
+					yargs
+						.option('stage', {
+							description: 'Target stage',
+							choices: ['CODE', 'PROD'],
+							demandOption: true,
+						})
+						.option('migration', {
+							description: 'Migration folder name',
+							type: 'string',
+							demandOption: true,
+						})
+						.option('state', {
+							description: 'Resolution state',
+							choices: ['rolled-back', 'applied'],
+							default: 'rolled-back',
+						})
+						.option('confirm', {
+							description: 'Confirm that you want to resolve this migration',
+							type: 'boolean',
+							default: false,
+						});
+				},
+			)
 			.demandCommand(1, '') // just print help
 			.help()
 			.alias('h', 'help').argv,
@@ -214,6 +246,19 @@ parseCommandLineArguments()
 					default:
 						throw new Error(`Unsupported stage: ${stage as string}`);
 				}
+			}
+			case Commands.migrateResolve: {
+				const { stage, migration, state, confirm } = argv;
+				if (!confirm) {
+					throw new Error('Refusing to resolve migration without --confirm');
+				}
+				const secretsManagerClient = getSecretsManagerClient();
+				return resolveRdsMigration(
+					stage as string,
+					secretsManagerClient,
+					migration as string,
+					state as 'rolled-back' | 'applied',
+				);
 			}
 			default:
 				throw new Error(`Unknown command ${command ?? ''}`);
