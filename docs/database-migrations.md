@@ -92,3 +92,47 @@ See also:
 
 - https://www.prisma.io/docs/orm/prisma-client/deployment/deploy-database-changes-with-prisma-migrate
 - https://www.prisma.io/docs/orm/prisma-migrate/workflows/patching-and-hotfixing#fixing-failed-migrations-with-migrate-diff-and-db-execute
+
+## Testing changes to the `prisma-migrate` container on CODE
+
+If you have made changes to the [`prisma-migrate`](../containers/prisma-migrate) container, you can test them on CODE before merging to `main` by following these steps:
+
+### 1. Publish a new image
+
+Trigger the [prisma-migrate image workflow](../.github/workflows/prisma-migrate-image.yml) manually via GitHub Actions:
+
+1. Go to the [prisma-migrate image workflow](https://github.com/guardian/service-catalogue/actions/workflows/prisma-migrate-image.yml)
+2. Click **Run workflow** and select your branch
+3. Once the workflow completes, find the SHA tag for your new image at:
+   https://github.com/guardian/service-catalogue/pkgs/container/service-catalogue%2Fprisma-migrate
+
+   The tag will be in the format `sha-<full-commit-sha>`.
+
+### 2. Update the image reference
+
+Temporarily update [`packages/cdk/lib/cloudquery/images.ts`](../packages/cdk/lib/cloudquery/images.ts) to reference the new tag:
+
+```typescript
+prismaMigrate: ContainerImage.fromRegistry(
+    'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-<your-sha-here>',
+),
+```
+
+> [!Warning]
+> This change should **not** be merged to `main`. Revert it before merging your PR.
+
+### 3. Deploy to CODE and observe
+
+Deploy to CODE and observe the ECS task logs to verify your changes work as expected.
+
+### 4. Revert the image reference
+
+Before merging your PR, revert the change made in step 2, restoring the `stable` tag:
+
+```typescript
+prismaMigrate: ContainerImage.fromRegistry(
+    'ghcr.io/guardian/service-catalogue/prisma-migrate:stable',
+),
+```
+
+When your PR is merged to `main`, CI will automatically build and publish a new image tagged as `stable`.

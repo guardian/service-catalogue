@@ -279,6 +279,12 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
+		new Secret(this, 'DevReadOnlyPostgresPassword', {
+			secretName: `/${stage}/${stack}/${app}/devreadonly-postgres-password`,
+			description:
+				'Password for the devreadonly Postgres user (readonly access)',
+		});
+
 		const loggingStreamName =
 			GuLoggingStreamNameParameter.getInstance(this).valueAsString;
 

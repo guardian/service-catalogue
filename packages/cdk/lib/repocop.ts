@@ -40,7 +40,7 @@ export class Repocop {
 			},
 		);
 
-		const repocopLampdaProps: GuScheduledLambdaProps = {
+		const repocopLambdaProps: GuScheduledLambdaProps = {
 			app: 'repocop',
 			architecture: Architecture.ARM_64,
 			fileName: 'repocop.zip',
@@ -71,7 +71,7 @@ export class Repocop {
 		const repocopLambda = new GuScheduledLambda(
 			guStack,
 			'repocop',
-			repocopLampdaProps,
+			repocopLambdaProps,
 		);
 
 		const policyStatement = new PolicyStatement({
@@ -92,12 +92,13 @@ export class Repocop {
 		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 
-		const dependencyGraphIntegratorLambda = stageAwareIntegratorLambda(
-			guStack,
-			vpc,
-			'dependency-graph-integrator',
-			gitHubOrg,
-		);
+		const dependencyGraphIntegratorLambda =
+			createDependencyGraphIntegratorLambda(
+				guStack,
+				vpc,
+				'dependency-graph-integrator',
+				gitHubOrg,
+			);
 
 		dependencyGraphIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(dependencyGraphIntegratorLambda, {}),
@@ -105,13 +106,13 @@ export class Repocop {
 	}
 }
 
-function stageAwareIntegratorLambda(
+function createDependencyGraphIntegratorLambda(
 	guStack: GuStack,
 	vpc: IVpc,
 	app: `${string}-integrator`,
 	gitHubOrg: string,
 ): GuLambdaFunction {
-	const nonProdLambdaProps = {
+	const baseLambdaProps = {
 		app,
 		architecture: Architecture.ARM_64,
 		fileName: `${app}.zip`,
@@ -125,16 +126,20 @@ function stageAwareIntegratorLambda(
 		},
 	};
 
-	if (guStack.stage === 'PROD' || guStack.stage === 'TEST') {
+	if (guStack.stage === 'PROD') {
 		const githubAppSecret = new Secret(guStack, `${app}-github-app-auth`, {
 			secretName: `/${guStack.stage}/${guStack.stack}/service-catalogue/${app}-github-app-secret`,
 		});
 
 		const lambda = new GuLambdaFunction(guStack, app, {
-			...nonProdLambdaProps,
+			...baseLambdaProps,
 			environment: {
-				...nonProdLambdaProps.environment,
+				...baseLambdaProps.environment,
 				GITHUB_APP_SECRET: githubAppSecret.secretArn,
+			},
+			errorPercentageMonitoring: {
+				toleratedErrorPercentage: 0,
+				snsTopicName: 'devx-alerts',
 			},
 		});
 
@@ -142,6 +147,6 @@ function stageAwareIntegratorLambda(
 
 		return lambda;
 	} else {
-		return new GuLambdaFunction(guStack, app, nonProdLambdaProps);
+		return new GuLambdaFunction(guStack, app, baseLambdaProps);
 	}
 }
