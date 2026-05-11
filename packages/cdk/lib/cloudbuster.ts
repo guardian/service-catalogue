@@ -41,7 +41,7 @@ export class CloudBuster {
 			app,
 			vpc,
 			architecture: Architecture.ARM_64,
-			runtime: Runtime.NODEJS_20_X,
+			runtime: Runtime.NODEJS_24_X,
 			securityGroups: [dbAccess],
 			fileName: `${app}.zip`,
 			handler: 'index.main',
