@@ -24,6 +24,12 @@ $do$
         GRANT SELECT ON public.aws_accounts TO dataaudit;
 
         -- The dataaudit user owns this table, so can do full CRUD operations
-        GRANT ALL ON public.audit_results TO dataaudit;
+        IF EXISTS (
+            SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_name = 'audit_results'
+        ) THEN
+            EXECUTE 'GRANT ALL ON public.audit_results TO dataaudit';
+        END IF;
     END
 $do$;
