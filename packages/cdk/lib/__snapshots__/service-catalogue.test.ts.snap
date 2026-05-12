@@ -615,7 +615,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -1080,7 +1080,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -1825,7 +1825,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -2571,7 +2571,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -3248,7 +3248,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -3951,7 +3951,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -4656,7 +4656,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -5393,7 +5393,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -6326,7 +6326,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -6773,7 +6773,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -7481,7 +7481,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -8213,7 +8213,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -8946,7 +8946,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -9649,7 +9649,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -10361,7 +10361,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -11067,7 +11067,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -11785,7 +11785,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -12522,7 +12522,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -13818,7 +13818,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -14299,7 +14299,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -14961,7 +14961,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -15713,7 +15713,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -16421,7 +16421,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -17435,7 +17435,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -17956,7 +17956,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -18679,7 +18679,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -19442,7 +19442,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -20200,7 +20200,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -20963,7 +20963,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -21707,7 +21707,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -22727,7 +22727,7 @@ spec:
               "",
             ],
             "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:16-alpine",
+            "Image": "public.ecr.aws/docker/library/postgres:17-alpine",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -23830,7 +23830,7 @@ spec:
         "EnableIAMDatabaseAuthentication": true,
         "EnablePerformanceInsights": true,
         "Engine": "postgres",
-        "EngineVersion": "16",
+        "EngineVersion": "17",
         "MasterUserPassword": {
           "Fn::Join": [
             "",
