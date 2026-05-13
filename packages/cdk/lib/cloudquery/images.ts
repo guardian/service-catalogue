@@ -14,7 +14,7 @@ export const Images = {
 		`ghcr.io/guardian/cq-source-ns1:${CloudQueryPluginVersions.CloudqueryNs1}`,
 	),
 	postgres: ContainerImage.fromRegistry(
-		'public.ecr.aws/docker/library/postgres:17-alpine',
+		'public.ecr.aws/docker/library/postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba',
 	),
 	/**
 	 * This image is built in CI by the service-catalogue, and tagged with the
