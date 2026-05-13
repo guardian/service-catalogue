@@ -71,7 +71,7 @@ jobs:
     services:
       # See https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
       postgres:
-        image: postgres:17.9-alpine@sha256:6f30057d31f5861b66f3545d4821f987aacf1dd920765f0acadea0c58ff975b1
+        image: postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba
 
         # Keep these in sync with `.env` file at the repository root
         env:
