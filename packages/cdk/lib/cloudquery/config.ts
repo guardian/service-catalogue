@@ -45,6 +45,11 @@ interface CloudqueryTableConfig {
 
 interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 	org: string;
+
+	/**
+	 * Whether to include archived repositories in the sync. We set this to true by default
+	 */
+	includeArchivedRepos?: boolean;
 }
 
 interface GitHubCloudqueryTableConfigForRepository extends CloudqueryTableConfig {
@@ -187,7 +192,7 @@ export function awsSourceConfigForAccount(
 export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
 ): CloudQuerySourceConfig {
-	const { tables, org } = tableConfig;
+	const { tables, org, includeArchivedRepos } = tableConfig;
 
 	return {
 		kind: 'source',
@@ -217,7 +222,7 @@ export function githubSourceConfig(
 							'}',
 					},
 				],
-				include_archived_repos: true,
+				include_archived_repos: includeArchivedRepos ?? true,
 			},
 		},
 	};

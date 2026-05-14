@@ -464,6 +464,7 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_repository_sboms'],
+				includeArchivedRepos: false,
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
