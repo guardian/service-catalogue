@@ -446,9 +446,24 @@ export function addCloudqueryEcsCluster(
 					'github_repository_branches',
 					'github_repository_collaborators',
 					'github_repository_custom_properties',
-					'github_repository_sboms',
 					'github_workflows',
 				],
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
+			/** github_repository_sboms does rely on github_repositories, but exceeds the rate limit, so it has a separate task. This is 10am Sydney time,
+			 *  but that's not a significant risk with data falling out of sync between this job, and GitHubRepositories.
+			 */
+			name: 'GitHubSboms',
+			description:
+				'Collect GitHub SBOM (Software Bill of Materials) data. Used to track dependencies, which is useful for supply chain attack monitoring.',
+			schedule: Schedule.cron({ minute: '0', hour: '1' }),
+			config: githubSourceConfig({
+				org: gitHubOrgName,
+				tables: ['github_repository_sboms'],
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
