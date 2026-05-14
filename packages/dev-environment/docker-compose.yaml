@@ -5,10 +5,10 @@ services:
     build:
       context: ../../containers/db-copy
       args:
-        alpine_version: 3.21.6
+        alpine_version: 3.23.4
     volumes:
       - ~/.aws/credentials:/.aws/credentials
-      - ./sql:/sql 
+      - ./sql:/sql
     environment:
       AWS_CONFIG_FILE: /.aws/config
       AWS_SHARED_CREDENTIALS_FILE: /.aws/credentials
@@ -44,7 +44,7 @@ services:
         - aws_autoscaling_groups
         - aws_elbv2_target_groups
   postgres:
-    image: postgres:17.9
+    image: postgres:18.3
     ports:
       - '${DATABASE_PORT}:${DATABASE_PORT}'
     environment:
