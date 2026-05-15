@@ -2,6 +2,7 @@
  * Tables collected with https://hub.cloudquery.io/plugins/source/cloudquery/github
  */
 export const githubTables = [
+	'github_billing_usage_report',
 	'github_issues',
 	'github_organization_members',
 	'github_organizations',
