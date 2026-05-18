@@ -19,16 +19,46 @@ step(){
   echo -e "${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
+get_required_node_version() {
+  local tool_versions_file="$ROOT_DIR/.tool-versions"
+
+  if [[ ! -r "$tool_versions_file" ]]; then
+    echo "Cannot read $tool_versions_file" >&2
+    return 1
+  fi
+
+  # Supports either "node" or "nodejs" keys, returns first version token.
+  awk '
+    $1 ~ /^(node|nodejs)$/ {
+      for (i = 2; i <= NF; i++) {
+        if ($i ~ /^#/) break
+        print $i
+        exit
+      }
+    }
+  ' "$tool_versions_file"
+}
+
 check_node_version() {
   step "Checking node version"
+  local runningNodeVersion requiredNodeVersion runningNodeVersionNumber
+  local runningNodeMajor requiredNodeMajor
+
   runningNodeVersion=$(node -v)
-  requiredNodeVersion=$(cat "$ROOT_DIR/.nvmrc")
+  requiredNodeVersion=$(get_required_node_version) || exit 1
 
-  # remove leading v
-  runningNodeVersionNumber=${runningNodeVersion//[v]/}
+  if [[ -z "$requiredNodeVersion" ]]; then
+    echo "No node version found in $ROOT_DIR/.tool-versions" >&2
+    exit 1
+  fi
 
-  if [ "$runningNodeVersionNumber" != "$requiredNodeVersion" ]; then
-    echo -e "Using wrong version of Node. Required ${requiredNodeVersion}. Running ${runningNodeVersion}."
+  # remove leading "v" only, then compare major version only
+  runningNodeVersionNumber=${runningNodeVersion#v}
+  runningNodeMajor=${runningNodeVersionNumber%%.*}
+  requiredNodeMajor=${requiredNodeVersion%%.*}
+
+  if [[ "$runningNodeMajor" != "$requiredNodeMajor" ]]; then
+    echo -e "Using wrong major version of Node. Required v${requiredNodeMajor}. Running ${runningNodeVersion}."
     setup_node_env
   fi
 }
@@ -36,18 +66,12 @@ check_node_version() {
 setup_node_env() {
   step "Setting up node environment"
   echo "Attempting to switch node versions for you..."
-  if command -v fnm &> /dev/null
+  if command -v mise &> /dev/null
   then
-      fnm use
+    mise install node
   else
-    if command -v nvm &> /dev/null
-    then
-      echo "You are using 'nvm', 'fnm' is preferred (it's quicker)!"
-      nvm use
-    else
-      echo "Please install fnm: 'brew install fnm'"
-      exit 1
-    fi
+    echo "Please install mise: 'brew install mise'"
+    exit 1
   fi
 }
 
