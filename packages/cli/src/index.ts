@@ -1,13 +1,12 @@
 import yargs from 'yargs';
 import {
 	getEcsClient,
-	getSecretsManagerClient,
 	getSsmClient,
 	listTasks,
 	runAllTasks,
 	runOneTask,
 } from './aws.js';
-import { migrateDevDatabase, migrateRdsDatabase } from './database.js';
+import { migrateDevDatabase } from './database.js';
 
 const Commands = {
 	list: 'list-tasks',
@@ -195,28 +194,8 @@ parseCommandLineArguments()
 				);
 			}
 			case Commands.migrate: {
-				const { stage, confirm, fromStart } = argv;
-
-				switch (stage) {
-					case 'DEV': {
-						return migrateDevDatabase();
-					}
-					case 'CODE':
-					case 'PROD': {
-						const secretsManagerClient = getSecretsManagerClient();
-						return migrateRdsDatabase(
-							stage as string,
-							secretsManagerClient,
-							confirm as boolean,
-							fromStart as boolean,
-						);
-					}
-					default:
-						throw new Error(`Unsupported stage: ${stage as string}`);
-				}
+				return migrateDevDatabase();
 			}
-			default:
-				throw new Error(`Unknown command ${command ?? ''}`);
 		}
 	})
 	.then((commandResponse) => {
