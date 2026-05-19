@@ -196,6 +196,8 @@ parseCommandLineArguments()
 			case Commands.migrate: {
 				return migrateDevDatabase();
 			}
+			default:
+				throw new Error(`Unknown command ${command ?? ''}`);
 		}
 	})
 	.then((commandResponse) => {
