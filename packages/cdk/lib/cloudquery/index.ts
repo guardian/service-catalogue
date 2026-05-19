@@ -721,12 +721,6 @@ export function addCloudqueryEcsCluster(
 		],
 	});
 
-	const dbSecretPolicy = new PolicyStatement({
-		effect: Effect.ALLOW,
-		actions: ['secretsmanager:GetSecretValue', 'secretsmanager:ListSecrets'],
-		resources: [db.secret!.secretArn], // The secret definitely exists, as CloudQuery needs it to connect to the database.
-	});
-
 	// These actions can only operate on '*'
 	const ecsListPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
@@ -791,7 +785,6 @@ export function addCloudqueryEcsCluster(
 		friendlyName: 'Service Catalogue CLI',
 		statements: [
 			SSMPolicy,
-			dbSecretPolicy,
 			ecsListPolicy,
 			ecsListTagsPolicy,
 			iamRolePolicy,

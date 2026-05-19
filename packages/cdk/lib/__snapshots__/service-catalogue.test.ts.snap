@@ -25371,16 +25371,6 @@ spec:
             },
             {
               "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:ListSecrets",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-              },
-            },
-            {
-              "Action": [
                 "ecs:ListClusters",
                 "ecs:ListTaskDefinitions",
               ],
