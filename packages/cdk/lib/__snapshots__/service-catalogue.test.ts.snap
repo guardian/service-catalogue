@@ -10161,6 +10161,7 @@ spec:
   path: cloudquery/aws
   version: v32.47.1
   tables:
+    - aws_autoscaling_groups
     - aws_elbv1_load_balancer_policies
     - aws_elbv1_load_balancers
     - aws_elbv2_listener_certificates
@@ -10351,7 +10352,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_load_balancer_policies', 1800000),('aws_elbv1_load_balancers', 1800000),('aws_elbv2_listener_certificates', 1800000),('aws_elbv2_listener_rules', 1800000),('aws_elbv2_listeners', 1800000),('aws_elbv2_load_balancer_attributes', 1800000),('aws_elbv2_load_balancer_web_acls', 1800000),('aws_elbv2_load_balancers', 1800000),('aws_elbv2_target_group_target_health_descriptions', 1800000),('aws_elbv2_target_groups', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_autoscaling_groups', 1800000),('aws_elbv1_load_balancer_policies', 1800000),('aws_elbv1_load_balancers', 1800000),('aws_elbv2_listener_certificates', 1800000),('aws_elbv2_listener_rules', 1800000),('aws_elbv2_listeners', 1800000),('aws_elbv2_load_balancer_attributes', 1800000),('aws_elbv2_load_balancer_web_acls', 1800000),('aws_elbv2_load_balancers', 1800000),('aws_elbv2_target_group_target_health_descriptions', 1800000),('aws_elbv2_target_groups', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",

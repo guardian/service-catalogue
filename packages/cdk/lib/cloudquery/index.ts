@@ -222,7 +222,10 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.rate(Duration.minutes(30)),
 			// Use this to test filtering:
 			config: awsSourceConfigForOrganisation({
-				tables: filterCloudQueryTables([/^aws_elbv1_.*$/, /^aws_elbv2_.*$/]),
+				tables: [
+					...filterCloudQueryTables([/^aws_elbv1_.*$/, /^aws_elbv2_.*$/]),
+					'aws_autoscaling_groups',
+				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
