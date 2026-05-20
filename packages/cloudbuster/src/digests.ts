@@ -128,8 +128,11 @@ function createEmailBody(
 		})
 		.join('\n\n');
 
-	return `The following ${severity} vulnerabilities have been found in your account in the last ${cutOffInDays} days:
-	        ${msg}`;
+	return [
+		`The following ${severity} vulnerabilities have been found in your account in the last ${cutOffInDays} days:`,
+		msg,
+		`Questions? Please contact devx.security@theguardian.com.`,
+	].join('\n\n');
 }
 
 export async function sendDigest(
