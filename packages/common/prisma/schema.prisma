@@ -1251,6 +1251,50 @@ model github_organizations {
   @@ignore
 }
 
+model aws_ecs_cluster_services {
+  cq_sync_time                      DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                    String?   @map("_cq_source_name")
+  cq_id                             String    @id(map: "aws_ecs_cluster_services_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                      String?   @map("_cq_parent_id") @db.Uuid
+  account_id                        String?
+  region                            String?
+  arn                               String?
+  tags                              Json?
+  capacity_provider_strategy        Json?
+  cluster_arn                       String?
+  created_at                        DateTime? @db.Timestamp(6)
+  created_by                        String?
+  deployment_configuration          Json?
+  deployment_controller             Json?
+  deployments                       Json?
+  desired_count                     BigInt?
+  enable_ecs_managed_tags           Boolean?
+  enable_execute_command            Boolean?
+  events                            Json?
+  health_check_grace_period_seconds BigInt?
+  launch_type                       String?
+  load_balancers                    Json?
+  network_configuration             Json?
+  pending_count                     BigInt?
+  placement_constraints             Json?
+  placement_strategy                Json?
+  platform_family                   String?
+  platform_version                  String?
+  propagate_tags                    String?
+  role_arn                          String?
+  running_count                     BigInt?
+  scheduling_strategy               String?
+  service_arn                       String?
+  service_name                      String?
+  service_registries                Json?
+  status                            String?
+  task_definition                   String?
+  task_sets                         Json?
+  availability_zone_rebalancing     String?
+
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
@@ -1387,12 +1431,14 @@ view view_availability_dashboard {
   app                           String?
   repo                          String?
   riffraff_project              String?
-  auto_scaling_group_arn        String?
-  auto_scaling_group_name       String?
+  target_group_arn              String?
+  target_group_origin_type      String?
+  target_group_origin_arn       String?
+  target_group_origin_name      String?
   elk_index                     String?
   grafana_cloudwatch_datasource String?
   kibana_space                  String?
-  slo                           String?
+  slo                           Float?
   state_value                   String?
   domain_names                  String[]
 
