@@ -230,16 +230,6 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'AwsOrgWideAutoScalingGroups',
-			description:
-				'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
-			schedule: Schedule.cron({ minute: '0', hour: '0' }),
-			config: awsSourceConfigForOrganisation({
-				tables: ['aws_autoscaling_groups'],
-			}),
-			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-		},
-		{
 			name: 'AwsOrgWideCertificates',
 			description:
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
