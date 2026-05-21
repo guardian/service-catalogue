@@ -48,7 +48,7 @@ export async function main() {
 
 	if (tableContents.length !== uniqueTableContents.length) {
 		logger.warn({
-			message: `${tableContents.length - uniqueTableContents.length} duplicate FSBP findings detected with control IDs and resource ARNs: ${duplicateControlIdArns.join(', ')}`,
+			message: `${tableContents.length - uniqueTableContents.length} duplicate FSBP findings detected with control IDs and resource ARNs, including: ${duplicateControlIdArns.slice(0, 10).join(', ')}`,
 		});
 	}
 
@@ -57,7 +57,14 @@ export async function main() {
 		data: uniqueTableContents,
 	});
 
-	const activeFindings = uniqueTableContents.filter((row) => !row.suppressed);
+	const activeFindings: cloudbuster_fsbp_vulnerabilities[] =
+		uniqueTableContents.filter((row) => !row.suppressed);
+
+	logger.log({ message: `${activeFindings.length} active FSBP findings.` });
+
+	logger.log({
+		message: `Creating digests for 'CRITICAL' severity findings.`,
+	});
 
 	const digests = createDigestsFromFindings(
 		activeFindings,
@@ -67,6 +74,7 @@ export async function main() {
 
 	const isTuesday = new Date().getDay() === 2;
 	if (isTuesday) {
+		logger.log({ message: "Creating digests for 'HIGH' severity findings." });
 		digests.push(
 			...createDigestsFromFindings(activeFindings, 'HIGH', config.cutOffInDays),
 		);
@@ -78,9 +86,12 @@ export async function main() {
 		config.anghammaradSnsTopic,
 	);
 
+	logger.log({ message: `Sending ${digests.length} digests.` });
 	await Promise.all(
 		digests.map(
 			async (digest) => await sendDigest(anghammaradClient, config, digest),
 		),
 	);
+
+	logger.log({ message: 'Cloudbuster run completed.' });
 }

@@ -18,7 +18,9 @@ UPDATE cloudquery_table_frequency SET frequency_milliseconds = CASE
     WHEN frequency = 'DAILY' THEN 86400000
     WHEN frequency = 'WEEKLY' THEN 604800000
     ELSE 0 -- this should never happen
-END;
+END
+-- intentional full-table update
+WHERE frequency IS NOT NULL;
 
 ALTER TABLE cloudquery_table_frequency ALTER COLUMN frequency_milliseconds SET NOT NULL;
 
