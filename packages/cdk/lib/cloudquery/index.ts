@@ -216,23 +216,18 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
 		{
-			name: 'AwsOrgWideLoadBalancers',
-			description:
-				'Collecting load balancer data across the organisation. Uses include building SLO dashboards.',
+			name: 'AwsResourcesForAvailabilityDashboard',
+			description: 'Resources queried by the Availability dashboard',
 			schedule: Schedule.rate(Duration.minutes(30)),
-			// Use this to test filtering:
 			config: awsSourceConfigForOrganisation({
-				tables: filterCloudQueryTables([/^aws_elbv1_.*$/, /^aws_elbv2_.*$/]),
-			}),
-			policies: [listOrgsPolicy, cloudqueryAccess('*')],
-		},
-		{
-			name: 'AwsOrgWideAutoScalingGroups',
-			description:
-				'Collecting ASG data across the organisation. Uses include building SLO dashboards.',
-			schedule: Schedule.cron({ minute: '0', hour: '0' }),
-			config: awsSourceConfigForOrganisation({
-				tables: ['aws_autoscaling_groups'],
+				tables: [
+					...filterCloudQueryTables([
+						/^aws_elbv1_.*$/,
+						/^aws_elbv2_.*$/,
+						/^aws_ecs_.*$/,
+					]),
+					'aws_autoscaling_groups',
+				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
