@@ -10077,718 +10077,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceAwsOrgWideLoadBalancersScheduledEventRuleE82A6C43": {
-      "Properties": {
-        "ScheduleExpression": "rate(30 minutes)",
-        "State": "ENABLED",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "servicecatalogueCluster5FC34DC5",
-                "Arn",
-              ],
-            },
-            "EcsParameters": {
-              "LaunchType": "FARGATE",
-              "NetworkConfiguration": {
-                "AwsVpcConfiguration": {
-                  "AssignPublicIp": "DISABLED",
-                  "SecurityGroups": [
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
-                        "GroupId",
-                      ],
-                    },
-                  ],
-                  "Subnets": {
-                    "Ref": "PrivateSubnets",
-                  },
-                },
-              },
-              "PropagateTags": "TASK_DEFINITION",
-              "TaskCount": 1,
-              "TaskDefinitionArn": {
-                "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinition333F61F5",
-              },
-            },
-            "Id": "Target0",
-            "Input": "{}",
-            "RoleArn": {
-              "Fn::GetAtt": [
-                "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionEventsRole4A9EDE15",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinition333F61F5": {
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Command": [
-              "/bin/sh",
-              "-c",
-              "printf 'kind: source
-spec:
-  name: aws
-  path: cloudquery/aws
-  version: v32.47.1
-  tables:
-    - aws_elbv1_load_balancer_policies
-    - aws_elbv1_load_balancers
-    - aws_elbv2_listener_certificates
-    - aws_elbv2_listener_rules
-    - aws_elbv2_listeners
-    - aws_elbv2_load_balancer_attributes
-    - aws_elbv2_load_balancer_web_acls
-    - aws_elbv2_load_balancers
-    - aws_elbv2_target_group_target_health_descriptions
-    - aws_elbv2_target_groups
-  skip_dependent_tables: true
-  destinations:
-    - postgresql
-  otel_endpoint: 0.0.0.0:4318
-  otel_endpoint_insecure: true
-  spec:
-    org:
-      member_role_name: cloudquery-access
-      organization_units:
-        - ou-123
-' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
-spec:
-  name: postgresql
-  registry: cloudquery
-  path: cloudquery/postgresql
-  version: v8.13.0
-  write_mode: overwrite-delete-stale
-  migrate_mode: forced
-  send_sync_summary: true
-  spec:
-    connection_string: >-
-      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
-      dbname=postgres sslmode=verify-full
-' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}",
-            ],
-            "DependsOn": [
-              {
-                "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-AwsOrgWideLoadBalancersAWSOTELCollector",
-              },
-            ],
-            "DockerLabels": {
-              "App": "service-catalogue",
-              "Name": "AwsOrgWideLoadBalancers",
-              "Stack": "deploy",
-              "Stage": "PROD",
-            },
-            "EntryPoint": [
-              "",
-            ],
-            "Environment": [
-              {
-                "Name": "GOMEMLIMIT",
-                "Value": "409MiB",
-              },
-              {
-                "Name": "CLOUDQUERY_LOG_LEVEL",
-                "Value": "info",
-              },
-            ],
-            "Essential": true,
-            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:stable",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": "eu-west-1",
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/usr/share/cloudquery",
-                "ReadOnly": false,
-                "SourceVolume": "config-volume",
-              },
-              {
-                "ContainerPath": "/app/.cq",
-                "ReadOnly": false,
-                "SourceVolume": "cloudquery-volume",
-              },
-              {
-                "ContainerPath": "/tmp",
-                "ReadOnly": false,
-                "SourceVolume": "tmp-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideLoadBalancersContainer",
-            "ReadonlyRootFilesystem": true,
-            "Secrets": [
-              {
-                "Name": "DB_USERNAME",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":username::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "DB_HOST",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":host::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "DB_PASSWORD",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":password::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "CLOUDQUERY_API_KEY",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "cloudqueryapikeyCCF82F53",
-                      },
-                      ":api-key::",
-                    ],
-                  ],
-                },
-              },
-            ],
-          },
-          {
-            "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
-            ],
-            "Essential": true,
-            "HealthCheck": {
-              "Command": [
-                "CMD",
-                "/healthcheck",
-              ],
-              "Interval": 5,
-              "Retries": 3,
-              "Timeout": 5,
-            },
-            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": "eu-west-1",
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "Name": "CloudquerySource-AwsOrgWideLoadBalancersAWSOTELCollector",
-            "PortMappings": [
-              {
-                "ContainerPort": 4318,
-                "Protocol": "tcp",
-              },
-            ],
-            "ReadonlyRootFilesystem": true,
-          },
-          {
-            "Command": [
-              "/bin/sh",
-              "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_load_balancer_policies', 1800000),('aws_elbv1_load_balancers', 1800000),('aws_elbv2_listener_certificates', 1800000),('aws_elbv2_listener_rules', 1800000),('aws_elbv2_listeners', 1800000),('aws_elbv2_load_balancer_attributes', 1800000),('aws_elbv2_load_balancer_web_acls', 1800000),('aws_elbv2_load_balancers', 1800000),('aws_elbv2_target_group_target_health_descriptions', 1800000),('aws_elbv2_target_groups', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
-            ],
-            "DockerLabels": {
-              "App": "service-catalogue",
-              "Name": "AwsOrgWideLoadBalancers",
-              "Stack": "deploy",
-              "Stage": "PROD",
-            },
-            "EntryPoint": [
-              "",
-            ],
-            "Essential": false,
-            "Image": "public.ecr.aws/docker/library/postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba",
-            "LogConfiguration": {
-              "LogDriver": "awsfirelens",
-              "Options": {
-                "Name": "kinesis_streams",
-                "region": "eu-west-1",
-                "retry_limit": "2",
-                "stream": {
-                  "Ref": "LoggingStreamName",
-                },
-              },
-            },
-            "Name": "CloudquerySource-AwsOrgWideLoadBalancersPostgresContainer",
-            "ReadonlyRootFilesystem": true,
-            "Secrets": [
-              {
-                "Name": "PGUSER",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":username::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "PGHOST",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":host::",
-                    ],
-                  ],
-                },
-              },
-              {
-                "Name": "PGPASSWORD",
-                "ValueFrom": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                      },
-                      ":password::",
-                    ],
-                  ],
-                },
-              },
-            ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideLoadBalancers",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionCloudquerySourceAwsOrgWideLoadBalancersFirelensLogGroup52712979",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideLoadBalancersFirelens",
-            "ReadonlyRootFilesystem": true,
-          },
-        ],
-        "Cpu": "256",
-        "ExecutionRoleArn": {
-          "Fn::GetAtt": [
-            "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionExecutionRoleD042731A",
-            "Arn",
-          ],
-        },
-        "Family": "AwsOrgWideLoadBalancers",
-        "Memory": "512",
-        "NetworkMode": "awsvpc",
-        "RequiresCompatibilities": [
-          "FARGATE",
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "AwsOrgWideLoadBalancers",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-        "TaskRoleArn": {
-          "Fn::GetAtt": [
-            "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B",
-            "Arn",
-          ],
-        },
-        "Volumes": [
-          {
-            "Name": "config-volume",
-          },
-          {
-            "Name": "cloudquery-volume",
-          },
-          {
-            "Name": "tmp-volume",
-          },
-          {
-            "Name": "firelens-volume",
-          },
-        ],
-      },
-      "Type": "AWS::ECS::TaskDefinition",
-    },
-    "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionCloudquerySourceAwsOrgWideLoadBalancersFirelensLogGroup52712979": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "RetentionInDays": 1,
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "AwsOrgWideLoadBalancers",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionEventsRole4A9EDE15": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "AwsOrgWideLoadBalancers",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionEventsRoleDefaultPolicy2F850C58": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "servicecatalogueCluster5FC34DC5",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinition333F61F5",
-              },
-            },
-            {
-              "Action": "ecs:TagResource",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ecs:eu-west-1:*:task/",
-                    {
-                      "Ref": "servicecatalogueCluster5FC34DC5",
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionExecutionRoleD042731A",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionEventsRoleDefaultPolicy2F850C58",
-        "Roles": [
-          {
-            "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionEventsRole4A9EDE15",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionExecutionRoleD042731A": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "AwsOrgWideLoadBalancers",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionExecutionRoleDefaultPolicy7A95B87A": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-              },
-            },
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "cloudqueryapikeyCCF82F53",
-              },
-            },
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionCloudquerySourceAwsOrgWideLoadBalancersFirelensLogGroup52712979",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "ecr:GetAuthorizationToken",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-              ],
-              "Effect": "Allow",
-              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionExecutionRoleDefaultPolicy7A95B87A",
-        "Roles": [
-          {
-            "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinitionExecutionRoleD042731A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "CloudquerySourceAwsOrgWideRDSScheduledEventRule95E5DE51": {
       "Properties": {
         "ScheduleExpression": "cron(0 6 * * ? *)",
@@ -13989,6 +13277,718 @@ spec:
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardScheduledEventRule508D6FD1": {
+      "Properties": {
+        "ScheduleExpression": "rate(30 minutes)",
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "PropagateTags": "TASK_DEFINITION",
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinition6F2F6F41",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionEventsRole14589E5F",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinition6F2F6F41": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "printf 'kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v32.47.1
+  tables:
+    - aws_elbv1_load_balancer_policies
+    - aws_elbv1_load_balancers
+    - aws_elbv2_listener_certificates
+    - aws_elbv2_listener_rules
+    - aws_elbv2_listeners
+    - aws_elbv2_load_balancer_attributes
+    - aws_elbv2_load_balancer_web_acls
+    - aws_elbv2_load_balancers
+    - aws_elbv2_target_group_target_health_descriptions
+    - aws_elbv2_target_groups
+  skip_dependent_tables: true
+  destinations:
+    - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
+  spec:
+    org:
+      member_role_name: cloudquery-access
+      organization_units:
+        - ou-123
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: cloudquery
+  path: cloudquery/postgresql
+  version: v8.13.0
+  write_mode: overwrite-delete-stale
+  migrate_mode: forced
+  send_sync_summary: true
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-AwsResourcesForAvailabilityDashboardAWSOTELCollector",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsResourcesForAvailabilityDashboard",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+              {
+                "Name": "CLOUDQUERY_LOG_LEVEL",
+                "Value": "info",
+              },
+            ],
+            "Essential": true,
+            "Image": "ghcr.io/guardian/service-catalogue/cloudquery:stable",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsResourcesForAvailabilityDashboardContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "CLOUDQUERY_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "cloudqueryapikeyCCF82F53",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Command": [
+              "--config=/etc/ecs/ecs-xray.yaml",
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsResourcesForAvailabilityDashboardAWSOTELCollector",
+            "PortMappings": [
+              {
+                "ContainerPort": 4318,
+                "Protocol": "tcp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_elbv1_load_balancer_policies', 1800000),('aws_elbv1_load_balancers', 1800000),('aws_elbv2_listener_certificates', 1800000),('aws_elbv2_listener_rules', 1800000),('aws_elbv2_listeners', 1800000),('aws_elbv2_load_balancer_attributes', 1800000),('aws_elbv2_load_balancer_web_acls', 1800000),('aws_elbv2_load_balancers', 1800000),('aws_elbv2_target_group_target_health_descriptions', 1800000),('aws_elbv2_target_groups', 1800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 1800000"",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsResourcesForAvailabilityDashboard",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "public.ecr.aws/docker/library/postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsResourcesForAvailabilityDashboardPostgresContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "PGUSER",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGHOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGPASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsResourcesForAvailabilityDashboard",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionCloudquerySourceAwsResourcesForAvailabilityDashboardFirelensLogGroup050F1B04",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsResourcesForAvailabilityDashboardFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionExecutionRole7E0F4008",
+            "Arn",
+          ],
+        },
+        "Family": "AwsResourcesForAvailabilityDashboard",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsResourcesForAvailabilityDashboard",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "servicecataloguePRODtaskAwsResourcesForAvailabilityDashboard05EFBAD0",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionCloudquerySourceAwsResourcesForAvailabilityDashboardFirelensLogGroup050F1B04": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsResourcesForAvailabilityDashboard",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionEventsRole14589E5F": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsResourcesForAvailabilityDashboard",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionEventsRoleDefaultPolicy609A9387": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinition6F2F6F41",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionExecutionRole7E0F4008",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecataloguePRODtaskAwsResourcesForAvailabilityDashboard05EFBAD0",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionEventsRoleDefaultPolicy609A9387",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionEventsRole14589E5F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionExecutionRole7E0F4008": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsResourcesForAvailabilityDashboard",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionExecutionRoleDefaultPolicy0EFA8B3C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionCloudquerySourceAwsResourcesForAvailabilityDashboardFirelensLogGroup050F1B04",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionExecutionRoleDefaultPolicy0EFA8B3C",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionExecutionRole7E0F4008",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "CloudquerySourceAwsSSMParametersScheduledEventRule0A998B82": {
       "Properties": {
@@ -29562,104 +29562,6 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerAwsOrgWideLoadBalancers4A6D50CD": {
-      "Properties": {
-        "EventPattern": {
-          "detail": {
-            "clusterArn": [
-              {
-                "Fn::GetAtt": [
-                  "servicecatalogueCluster5FC34DC5",
-                  "Arn",
-                ],
-              },
-            ],
-            "containers.exitCode": [
-              {
-                "numeric": [
-                  "=",
-                  0,
-                ],
-              },
-            ],
-            "containers.name": [
-              "CloudquerySource-AwsOrgWideLoadBalancersContainer",
-            ],
-            "lastStatus": [
-              "STOPPED",
-            ],
-            "stopCode": [
-              "EssentialContainerExited",
-            ],
-            "taskDefinitionArn": [
-              {
-                "Ref": "CloudquerySourceAwsOrgWideLoadBalancersTaskDefinition333F61F5",
-              },
-            ],
-          },
-          "detail-type": [
-            "ECS Task State Change",
-          ],
-          "source": [
-            "aws.ecs",
-          ],
-        },
-        "State": "ENABLED",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "RefreshMaterializedViewF0E38938",
-                "Arn",
-              ],
-            },
-            "Id": "Target0",
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
-    "refreshmaterializedviewlambdatriggerAwsOrgWideLoadBalancersAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE94485EC1BA09": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerAwsOrgWideLoadBalancers4A6D50CD",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
     "refreshmaterializedviewlambdatriggerAwsOrgWideRDSAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448026B60B5": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
@@ -30051,6 +29953,104 @@ spec:
         },
       },
       "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsResourcesForAvailabilityDashboardAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448AD67A2E4": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsResourcesForAvailabilityDashboardC8216263",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsResourcesForAvailabilityDashboardC8216263": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsResourcesForAvailabilityDashboardContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinition6F2F6F41",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
     },
     "refreshmaterializedviewlambdatriggerAwsSSMParameters30000672": {
       "Properties": {
@@ -32704,143 +32704,6 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
-              ],
-            ],
-          },
-        ],
-        "RoleName": "service-catalogue-PROD-task-AwsOrgWideLoadBalancers",
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff-project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "servicecataloguePRODtaskAwsOrgWideLoadBalancersDefaultPolicy5F4E9AE5": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:Describe*",
-                "kinesis:Put*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kinesis:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":stream/",
-                    {
-                      "Ref": "LoggingStreamName",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "organizations:List*",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
-            },
-            {
-              "Action": "rds-db:connect",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":rds-db:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":dbuser:",
-                    {
-                      "Fn::GetAtt": [
-                        "PostgresInstance16DE4286E",
-                        "DbiResourceId",
-                      ],
-                    },
-                    "/{{resolve:secretsmanager:",
-                    {
-                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-                    },
-                    ":SecretString:username::}}",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "servicecataloguePRODtaskAwsOrgWideLoadBalancersDefaultPolicy5F4E9AE5",
-        "Roles": [
-          {
-            "Ref": "servicecataloguePRODtaskAwsOrgWideLoadBalancers3ECAAF8B",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "servicecataloguePRODtaskAwsOrgWideRDS2AD886D1": {
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -33384,6 +33247,143 @@ spec:
         "Roles": [
           {
             "Ref": "servicecataloguePRODtaskAwsRemainingDataD00498F8",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "servicecataloguePRODtaskAwsResourcesForAvailabilityDashboard05EFBAD0": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-AwsResourcesForAvailabilityDashboard",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff-project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskAwsResourcesForAvailabilityDashboardDefaultPolicy86A46FC1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "organizations:List*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "servicecataloguePRODtaskAwsResourcesForAvailabilityDashboardDefaultPolicy86A46FC1",
+        "Roles": [
+          {
+            "Ref": "servicecataloguePRODtaskAwsResourcesForAvailabilityDashboard05EFBAD0",
           },
         ],
       },
