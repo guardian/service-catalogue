@@ -220,7 +220,11 @@ export function addCloudqueryEcsCluster(
 			description: 'Resources queried by the Availability dashboard',
 			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
-				tables: filterCloudQueryTables([/^aws_elbv1_.*$/, /^aws_elbv2_.*$/]),
+				tables: filterCloudQueryTables([
+					/^aws_elbv1_.*$/,
+					/^aws_elbv2_.*$/,
+					/^aws_ecs_.*$/,
+				]),
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
