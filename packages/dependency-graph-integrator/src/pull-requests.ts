@@ -54,6 +54,7 @@ export async function createPullRequest(
 		body,
 		head: branchName,
 		base: baseBranch,
+		labels: ['maintenance'],
 		changes: changes.map(({ commitMessage, files }) => ({
 			commit: commitMessage,
 			files,
