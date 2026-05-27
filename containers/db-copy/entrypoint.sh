@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -z "$TABLES" ]]; then
+if [ -z "$TABLES" ]; then
   echo "TABLES environment variable is not set. Nothing to do."
   exit 0
 fi

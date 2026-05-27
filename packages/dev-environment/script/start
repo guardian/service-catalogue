@@ -66,21 +66,13 @@ start_containers() {
   docker compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE" --env-file "$LOCAL_ENV_FILE" up -d --build
 }
 
-check_vpn_connection() {
-  step "Checking VPN connection"
-
-  if ifconfig | grep -q '10.249.'; then
-    echo "You're connected to the VPN"
-  else
-    echo "You're not connected to VPN. Please connect and retry."
-    exit 1
-  fi
+remind_vpn() {
+  echo "You will need to be connected to the VPN to run dev-environment"
 }
 
 main() {
   create_sql_migrations
   check_aws_credentials
-  check_vpn_connection
   start_containers
 }
 
