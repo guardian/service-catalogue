@@ -69,6 +69,8 @@ export type DependencyScope = 'runtime' | 'development';
 
 export type AlertType = 'general' | 'malware';
 
+export type DigestType = 'vulnerability' | 'malware';
+
 export function chooseDependencyScope(
 	scope: string | null | undefined,
 	dependency: string,
@@ -118,7 +120,7 @@ export interface RepositoryWithDepGraphLanguage extends Repository {
 }
 
 // The number of days teams have to fix vulnerabilities of a given severity
-export const SLAs: Record<Severity, number | undefined> = {
+export const generalSLAs: Record<Severity, number | undefined> = {
 	critical: 2,
 	high: 30,
 	medium: undefined,

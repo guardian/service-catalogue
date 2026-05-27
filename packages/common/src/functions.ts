@@ -4,11 +4,11 @@ import { createAppAuth } from '@octokit/auth-app';
 import type { SNSEvent } from 'aws-lambda';
 import { Octokit } from 'octokit';
 import {
+	generalSLAs,
 	type GitHubAppConfig,
 	type GithubAppSecret,
 	type NonEmptyArray,
 	type Severity,
-	SLAs,
 } from 'common/src/types.js';
 /* eslint-disable @typescript-eslint/no-unsafe-assignment  -- this is not unsafe */
 /* eslint-disable @typescript-eslint/no-unsafe-call  -- this is not unsafe */
@@ -202,7 +202,7 @@ export function daysLeftToFix(
 	alert_date: Date,
 	severity: Severity,
 ): number | undefined {
-	const daysToFix = SLAs[severity];
+	const daysToFix = generalSLAs[severity];
 	if (!daysToFix) {
 		return undefined;
 	}

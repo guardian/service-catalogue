@@ -6,8 +6,9 @@ import type {
 	view_repo_ownership,
 } from 'common/prisma-client/client.js';
 import { isWithinSlaTime, partition } from 'common/src/functions.js';
-import { chooseDependencyScope, SLAs } from 'common/src/types.js';
+import { chooseDependencyScope, generalSLAs } from 'common/src/types.js';
 import type {
+	AlertType,
 	DepGraphLanguage,
 	RepocopVulnerability,
 	Repository,
@@ -269,8 +270,14 @@ function findArchivedReposWithStacks(
 	return archivedReposWithPotentialStacks;
 }
 
-export function vulnerabilityExceedsSla(date: Date, severity: Severity) {
-	const daysToRemediate = SLAs[severity];
+export function vulnerabilityExceedsSla(
+	date: Date,
+	severity: Severity,
+	alert_type: AlertType,
+) {
+	const MALWARE_SLA = 1; // all severities of malware have SLA of 1 working day
+	const daysToRemediate =
+		alert_type === 'general' ? generalSLAs[severity] : MALWARE_SLA;
 
 	if (daysToRemediate === undefined) {
 		return false;
@@ -289,7 +296,11 @@ export function hasOldAlerts(
 		return false;
 	}
 	const oldAlerts = alerts.filter((a) =>
-		vulnerabilityExceedsSla(new Date(a.alert_issue_date), a.severity),
+		vulnerabilityExceedsSla(
+			new Date(a.alert_issue_date),
+			a.severity,
+			a.alert_type,
+		),
 	);
 
 	if (oldAlerts.length > 0) {
@@ -527,7 +538,7 @@ export function evaluateRepositories(
 	owners: view_repo_ownership[],
 	repoLanguages: github_languages[],
 	dependabotVulnerabilities: RepocopVulnerability[],
-	productionWorkflowUsages: guardian_github_actions_usage[],
+	workflowUsages: guardian_github_actions_usage[],
 ): EvaluationResult[] {
 	const evaluatedRepos = repositories.map((r) => {
 		const vulnsForRepo = dependabotVulnerabilities.filter(
@@ -536,7 +547,7 @@ export function evaluateRepositories(
 
 		const teamsForRepo = owners.filter((o) => o.full_repo_name === r.full_name);
 		const branchesForRepo = branches.filter((b) => b.repository_id === r.id);
-		const workflowsForRepo = productionWorkflowUsages.filter(
+		const workflowsForRepo = workflowUsages.filter(
 			(repo) => repo.full_name === r.full_name,
 		);
 
