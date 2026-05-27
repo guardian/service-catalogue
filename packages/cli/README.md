@@ -56,6 +56,4 @@ This sets the CloudQuery log level to `debug`, providing more detailed output fo
 
 ### Database migrations
 
-```bash
-npm -w cli start migrate -- --stage [DEV|CODE|PROD]
-```
+See [Database migrations](../../docs/database-migrations.md)

@@ -79,13 +79,7 @@ Prerequisite:
 You can apply a migration to CODE or PROD using the [CLI](../packages/cli)):
 
 ```bash
-npm -w cli start migrate -- --stage [CODE|PROD]
-```
-
-The command above will not apply the migration without a `--confirm` flag. If satisfied with the output of the above, you can run:
-
-```bash
-npm -w cli start migrate -- --stage [CODE|PROD] --confirm
+npm -w cli start run-task -- --stage [CODE|PROD] --name prisma-migrate-task
 ```
 
 See also:
