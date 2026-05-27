@@ -77,6 +77,8 @@ async function getAlertsForRepo(
 	octokit: Octokit,
 	orgName: string,
 	repoName: string,
+	classification: string,
+	severities: string,
 ): Promise<Alert[] | undefined> {
 	const prefix = `${orgName}/`;
 	if (repoName.startsWith(prefix)) {
@@ -89,7 +91,8 @@ async function getAlertsForRepo(
 				owner: orgName,
 				repo: repoName,
 				per_page: 100,
-				severity: 'critical,high',
+				classification,
+				severity: severities,
 				state: 'open',
 				sort: 'created',
 				direction: 'asc', //retrieve oldest vulnerabilities first
@@ -112,10 +115,18 @@ export async function getDependabotVulnerabilities(
 	orgName: string,
 	octokit: Octokit,
 ) {
+	const classification = 'general';
+	const severities = 'critical,high';
 	const dependabotVulnerabilities: RepocopVulnerability[] = (
 		await Promise.all(
 			repos.map(async (repo) => {
-				const alerts = await getAlertsForRepo(octokit, orgName, repo.name);
+				const alerts = await getAlertsForRepo(
+					octokit,
+					orgName,
+					repo.name,
+					classification,
+					severities,
+				);
 				if (alerts) {
 					return alerts.map((a) =>
 						dependabotAlertToRepocopVulnerability(repo.full_name, a),
@@ -128,6 +139,39 @@ export async function getDependabotVulnerabilities(
 
 	console.log(
 		`Found ${dependabotVulnerabilities.length} dependabot vulnerabilities across ${repos.length} repos`,
+	);
+
+	return dependabotVulnerabilities;
+}
+export async function getDependabotMalware(
+	repos: Repository[],
+	orgName: string,
+	octokit: Octokit,
+) {
+	const classification = 'malware';
+	const severities = 'critical,high,medium,low';
+	const dependabotVulnerabilities: RepocopVulnerability[] = (
+		await Promise.all(
+			repos.map(async (repo) => {
+				const alerts = await getAlertsForRepo(
+					octokit,
+					orgName,
+					repo.name,
+					classification,
+					severities,
+				);
+				if (alerts) {
+					return alerts.map((a) =>
+						dependabotAlertToRepocopVulnerability(repo.full_name, a),
+					);
+				}
+				return [];
+			}),
+		)
+	).flat();
+
+	console.log(
+		`Found ${dependabotVulnerabilities.length} dependabot malware across ${repos.length} repos`,
 	);
 
 	return dependabotVulnerabilities;
