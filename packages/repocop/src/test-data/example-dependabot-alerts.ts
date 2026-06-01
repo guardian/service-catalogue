@@ -83,6 +83,7 @@ export const exampleDependabotAlert: Alert[] = [
 			published_at: '2018-10-03T21:13:54Z',
 			updated_at: '2022-04-26T18:35:37Z',
 			withdrawn_at: null,
+			classification: 'general',
 		},
 		security_vulnerability: {
 			package: {
@@ -214,6 +215,7 @@ export const exampleDependabotAlert: Alert[] = [
 			published_at: '2021-06-01T17:38:00Z',
 			updated_at: '2021-08-12T23:06:00Z',
 			withdrawn_at: null,
+			classification: 'general',
 		},
 		security_vulnerability: {
 			package: {

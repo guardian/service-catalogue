@@ -4,6 +4,7 @@ import type {
 } from 'common/prisma-client/client.js';
 import { stringToSeverity, toNonEmptyArray } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
+import type { AlertType } from 'common/src/types.js';
 import {
 	chooseDependencyScope,
 	type NonEmptyArray,
@@ -22,6 +23,7 @@ function prismaToCustomType(
 	return {
 		...vuln,
 		severity: stringToSeverity(vuln.severity),
+		alert_type: vuln.alert_type as AlertType,
 		scope: chooseDependencyScope(
 			vuln.scope as string | null | undefined, // This is safe as the type of vuln.scope is string.
 			vuln.package,
@@ -34,7 +36,7 @@ async function getRepocopVulnerabilities(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<ObligatronRepocopVulnerability>> {
 	const rawResponse = await client.repocop_vulnerabilities.findMany({});
-
+	// TODO:  filter for alert_type 'general' only
 	return toNonEmptyArray(rawResponse.map(prismaToCustomType));
 }
 

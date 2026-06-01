@@ -88,6 +88,7 @@ const highRecentVuln: RepocopVulnerability = {
 	cves: ['CVE-123'],
 	within_sla: true,
 	scope: 'runtime',
+	alert_type: 'general',
 };
 
 void describe('createDigest', () => {
@@ -240,6 +241,7 @@ void describe('createDigest', () => {
 			cves: ['CVE-123'],
 			within_sla: true,
 			scope: 'runtime',
+			alert_type: 'general',
 		};
 		const anotherResultWithVuln: EvaluationResult = {
 			...anotherResult,
