@@ -43,7 +43,13 @@ export interface AwsCloudFormationStack extends StackFields {
 export type DependabotVulnResponse =
 	Endpoints['GET /repos/{owner}/{repo}/dependabot/alerts']['response'];
 
-export type Alert = DependabotVulnResponse['data'][number];
+export type BaseAlert = DependabotVulnResponse['data'][number];
+
+export type Alert = BaseAlert & {
+	security_advisory: BaseAlert['security_advisory'] & {
+		classification: 'general' | 'malware' | null;
+	};
+};
 
 export interface RepoAndAlerts {
 	shortName: string;
