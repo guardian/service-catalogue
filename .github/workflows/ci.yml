@@ -156,7 +156,6 @@ jobs:
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@581c043714b5b8353d5a23d79b958cd416c996e0 # v4.3.2
         with:
-          app: service-catalogue
           roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
