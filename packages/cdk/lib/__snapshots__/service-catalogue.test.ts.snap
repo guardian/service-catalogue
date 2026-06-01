@@ -30190,7 +30190,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30322,7 +30322,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::000000000015:role/cloudquery-access",
+              "Resource": "arn:aws:iam::000000000015:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30459,7 +30459,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30596,7 +30596,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::000000000018:role/cloudquery-access",
+              "Resource": "arn:aws:iam::000000000018:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30733,7 +30733,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30870,7 +30870,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31007,7 +31007,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31144,7 +31144,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31281,7 +31281,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31433,7 +31433,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31585,7 +31585,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31722,7 +31722,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31859,7 +31859,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31996,7 +31996,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32133,7 +32133,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32270,7 +32270,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32407,7 +32407,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32544,7 +32544,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
