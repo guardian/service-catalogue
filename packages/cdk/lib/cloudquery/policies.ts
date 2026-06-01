@@ -10,12 +10,12 @@ export const listOrgsPolicy = new PolicyStatement({
 /**
  * This role is provisioned in https://github.com/guardian/aws-account-setup.
  *
- * @see https://github.com/guardian/aws-account-setup/blob/main/packages/cdk/lib/constructs/cloudquery-role.ts
+ * @see https://github.com/guardian/aws-account-setup/blob/main/packages/cdk/lib/service-catalogue-access.ts
  */
 export function cloudqueryAccess(accountId: string) {
 	return new PolicyStatement({
 		effect: Effect.ALLOW,
-		resources: [`arn:aws:iam::${accountId}:role/cloudquery-access`],
+		resources: [`arn:aws:iam::${accountId}:role/service-catalogue-access`],
 		actions: ['sts:AssumeRole'],
 	});
 }

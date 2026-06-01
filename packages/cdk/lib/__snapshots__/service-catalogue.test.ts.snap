@@ -877,7 +877,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
     use_paid_apis: true
@@ -2388,7 +2388,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -3770,7 +3770,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -4507,7 +4507,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -5440,7 +5440,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -5887,7 +5887,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -6595,7 +6595,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -7298,7 +7298,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -8031,7 +8031,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -8763,7 +8763,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -9469,7 +9469,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -10187,7 +10187,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -10924,7 +10924,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -12216,7 +12216,7 @@ spec:
   spec:
     concurrency: 2000
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -12677,7 +12677,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -13414,7 +13414,7 @@ spec:
   otel_endpoint_insecure: true
   spec:
     org:
-      member_role_name: cloudquery-access
+      member_role_name: service-catalogue-access
       organization_units:
         - ou-123
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
@@ -30190,7 +30190,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30322,7 +30322,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::000000000015:role/cloudquery-access",
+              "Resource": "arn:aws:iam::000000000015:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30459,7 +30459,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30596,7 +30596,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::000000000018:role/cloudquery-access",
+              "Resource": "arn:aws:iam::000000000018:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30733,7 +30733,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -30870,7 +30870,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31007,7 +31007,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31144,7 +31144,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31281,7 +31281,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31433,7 +31433,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31585,7 +31585,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31722,7 +31722,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31859,7 +31859,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -31996,7 +31996,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32133,7 +32133,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32270,7 +32270,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32407,7 +32407,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",
@@ -32544,7 +32544,7 @@ spec:
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::*:role/cloudquery-access",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
             },
             {
               "Action": "rds-db:connect",

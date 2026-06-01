@@ -156,7 +156,7 @@ export function awsSourceConfigForOrganisation(
 	return awsSourceConfig(tableConfig, {
 		org: {
 			// See: https://github.com/guardian/aws-account-setup/pull/58
-			member_role_name: 'cloudquery-access',
+			member_role_name: 'service-catalogue-access',
 			organization_units: [GuardianOrganisationalUnits.Root],
 		},
 		...extraConfig,
