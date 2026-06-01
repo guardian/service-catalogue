@@ -50,7 +50,7 @@ describe('Config generation, and converting to YAML', () => {
 		  otel_endpoint_insecure: true
 		  spec:
 		    org:
-		      member_role_name: cloudquery-access
+		      member_role_name: service-catalogue-access
 		      organization_units:
 		        - ou-123
 		"
