@@ -493,6 +493,10 @@ export function dependabotAlertToRepocopVulnerability(
 	const alertIssueDate = new Date(alert.created_at);
 
 	const severity = alert.security_advisory.severity;
+	const alert_type: RepocopVulnerability['alert_type'] =
+		alert.security_advisory.classification === 'malware'
+			? 'malware'
+			: 'general';
 
 	return {
 		open: alert.state === 'open',
@@ -513,6 +517,7 @@ export function dependabotAlertToRepocopVulnerability(
 			alert.security_vulnerability.package.name,
 			fullName,
 		),
+		alert_type,
 	};
 }
 

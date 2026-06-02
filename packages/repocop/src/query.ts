@@ -95,7 +95,7 @@ async function getAlertsForRepo(
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
 
-		return alert.data;
+		return alert.data as Alert[];
 	} catch (error) {
 		console.debug(
 			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,

@@ -67,6 +67,8 @@ export type Severity = Lowercase<SecurityHubSeverity> | 'unknown';
 
 export type DependencyScope = 'runtime' | 'development';
 
+export type AlertType = 'general' | 'malware';
+
 export function chooseDependencyScope(
 	scope: string | null | undefined,
 	dependency: string,
@@ -84,10 +86,11 @@ export function chooseDependencyScope(
 
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
-	'id' | 'repo_owner' | 'severity' | 'scope'
+	'id' | 'repo_owner' | 'severity' | 'scope' | 'alert_type'
 > & {
 	severity: Severity;
 	scope: DependencyScope;
+	alert_type: AlertType;
 };
 
 type RepositoryFields = Pick<
