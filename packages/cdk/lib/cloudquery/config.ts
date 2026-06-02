@@ -164,11 +164,11 @@ export function awsSourceConfigForOrganisation(
 }
 
 /**
- * Create a ServiceCatalogue configuration for a single AWS account.
+ * Create CloudQuery configuration for a single AWS account.
  * Use this for those services running across the organisation which are aggregated in a single account.
  * For example, Access Analyzer.
  *
- * @param accountNumber The AWS account to query. ServiceCatalogue will assume the role `cloudquery-access` in this account.
+ * @param accountNumber The AWS account to query. CloudQuery will assume the role `service-catalogue-access` in this account.
  * @param tableConfig Which tables to include or exclude.
  * @param extraConfig Extra spec fields.
  * @see https://www.cloudquery.io/docs/plugins/sources/aws/configuration#account
@@ -182,7 +182,7 @@ export function awsSourceConfigForAccount(
 		accounts: [
 			{
 				id: `cq-for-${accountNumber}`,
-				role_arn: `arn:aws:iam::${accountNumber}:role/cloudquery-access`,
+				role_arn: `arn:aws:iam::${accountNumber}:role/service-catalogue-access`,
 			},
 		],
 		...extraConfig,
