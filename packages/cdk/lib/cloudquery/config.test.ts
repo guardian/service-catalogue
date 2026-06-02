@@ -81,7 +81,7 @@ describe('Config generation, and converting to YAML', () => {
 		  spec:
 		    accounts:
 		      - id: cq-for-000000000015
-		        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+		        role_arn: arn:aws:iam::000000000015:role/service-catalogue-access
 		"
 	`);
 	});
@@ -116,7 +116,7 @@ describe('Config generation, and converting to YAML', () => {
 		  spec:
 		    accounts:
 		      - id: cq-for-000000000015
-		        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+		        role_arn: arn:aws:iam::000000000015:role/service-catalogue-access
 		    table_options:
 		      securityhub_findings:
 		        record_state: ACTIVE

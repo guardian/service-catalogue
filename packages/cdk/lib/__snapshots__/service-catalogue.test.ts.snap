@@ -1611,7 +1611,7 @@ spec:
     concurrency: 2000
     accounts:
       - id: cq-for-000000000015
-        role_arn: arn:aws:iam::000000000015:role/cloudquery-access
+        role_arn: arn:aws:iam::000000000015:role/service-catalogue-access
     table_options:
       aws_securityhub_findings:
         get_findings:
@@ -3067,7 +3067,7 @@ spec:
   spec:
     accounts:
       - id: cq-for-000000000018
-        role_arn: arn:aws:iam::000000000018:role/cloudquery-access
+        role_arn: arn:aws:iam::000000000018:role/service-catalogue-access
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql
