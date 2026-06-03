@@ -9,6 +9,7 @@ import type { EvaluationResult, Team } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
 import {
 	createDigestForSeverity,
+	createMalwareDigest,
 	removeNonRuntimeVulns,
 } from './vuln-digest.js';
 
@@ -56,6 +57,8 @@ const anotherOwnershipRecord: view_repo_ownership = {
 	github_team_name: anotherTeam.name,
 	github_team_id: anotherTeam.id,
 	full_repo_name: anotherFullName,
+	github_team_slug: anotherTeam.slug,
+    short_repo_name: removeRepoOwner(anotherFullName),
 };
 
 const anotherRepocopRuleEvaluation: repocop_github_repository_rules = {
@@ -379,5 +382,217 @@ void describe('removeNonRuntimeVulns', () => {
 
 		const filtered = removeNonRuntimeVulns([resultWithDevVuln]);
 		assert.strictEqual(filtered.length, 0);
+	});
+});
+
+const recentMalware: RepocopVulnerability = {
+	...highRecentVuln,
+	alert_type: 'malware',
+	package: 'bad-package',
+};
+
+void describe('createMalwareDigest', () => {
+	void it('returns undefined when the total malware count is zero', () => {
+		assert.strictEqual(
+			createMalwareDigest(team, [ownershipRecord], [result, anotherResult], 60),
+			undefined,
+		);
+	});
+
+	void it('returns a digest when a result contains malware', () => {
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [recentMalware],
+		};
+
+		const digest = createMalwareDigest(
+			team,
+			[ownershipRecord],
+			[resultWithMalware],
+			60,
+		);
+
+		assert.strictEqual(digest?.teamSlug, team.slug);
+		assert.ok(digest.message.includes('bad-package'));
+		assert.ok(digest.subject.includes(`Malware Digest for ${team.name}`));
+	});
+
+	void it('returns the correct malware digest for the correct team', () => {
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [recentMalware],
+		};
+
+		const anotherMalware: RepocopVulnerability = {
+			...recentMalware,
+			full_name: anotherFullName,
+			package: 'totally-different-package',
+		};
+
+		const anotherResultWithMalware: EvaluationResult = {
+			...anotherResult,
+			vulnerabilities: [anotherMalware],
+		};
+
+		const digest = createMalwareDigest(
+			team,
+			[ownershipRecord, anotherOwnershipRecord],
+			[resultWithMalware, anotherResultWithMalware],
+			60,
+		);
+		assert.strictEqual(digest?.teamSlug, team.slug);
+		assert.ok(digest.message.includes('bad-package'));
+		assert.ok(!digest.message.includes('totally-different-package'));
+
+		const anotherDigest = createMalwareDigest(
+			anotherTeam,
+			[ownershipRecord, anotherOwnershipRecord],
+			[resultWithMalware, anotherResultWithMalware],
+			60,
+		);
+		assert.strictEqual(anotherDigest?.teamSlug, anotherTeam.slug);
+		assert.ok(anotherDigest.message.includes('totally-different-package'));
+		assert.ok(!anotherDigest.message.includes('bad-package'));
+	});
+
+	void it('only returns malware created in the last 60 days', () => {
+		const fiftyNineDaysAgo = new Date();
+		fiftyNineDaysAgo.setDate(fiftyNineDaysAgo.getDate() - 59);
+
+		const sixtyOneDaysAgo = new Date();
+		sixtyOneDaysAgo.setDate(sixtyOneDaysAgo.getDate() - 61);
+
+		const excluded: RepocopVulnerability = {
+			...recentMalware,
+			package: 'old-malware',
+			alert_issue_date: sixtyOneDaysAgo,
+		};
+
+		const included: RepocopVulnerability = {
+			...recentMalware,
+			package: 'recent-malware',
+			alert_issue_date: fiftyNineDaysAgo,
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [excluded, included],
+		};
+
+		const digest = createMalwareDigest(
+			team,
+			[ownershipRecord],
+			[resultWithMalware],
+			60,
+		);
+
+		assert.ok(digest?.message.includes('recent-malware'));
+		assert.ok(!digest?.message.includes('old-malware'));
+	});
+
+	void it('returns a correctly ordered list of malware in the message', () => {
+		const today = new Date();
+		const yesterday = new Date(today);
+		yesterday.setDate(today.getDate() - 1);
+
+		const patchableOutsideSLA: RepocopVulnerability = {
+			...recentMalware,
+			package: 'patchableOutsideSLA',
+			is_patchable: true,
+			within_sla: false,
+			alert_issue_date: today,
+		};
+
+		const patchableInSLA: RepocopVulnerability = {
+			...recentMalware,
+			package: 'patchableInSLA',
+			is_patchable: true,
+			within_sla: true,
+			alert_issue_date: today,
+		};
+
+		const unpatchableOutsideSLA: RepocopVulnerability = {
+			...recentMalware,
+			package: 'unpatchableOutsideSLA',
+			is_patchable: false,
+			within_sla: false,
+			alert_issue_date: today,
+		};
+
+		const unpatchableInSLAOlder: RepocopVulnerability = {
+			...recentMalware,
+			package: 'unpatchableInSLAOlder',
+			is_patchable: false,
+			within_sla: true,
+			alert_issue_date: yesterday,
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [
+				unpatchableInSLAOlder,
+				unpatchableOutsideSLA,
+				patchableInSLA,
+				patchableOutsideSLA,
+			],
+		};
+
+		const message = createMalwareDigest(
+			team,
+			[ownershipRecord],
+			[resultWithMalware],
+			60,
+		)!.message;
+
+		const lines = message
+			.split('\n')
+			.filter((line) => line.includes('contains malware from'));
+
+		assert.ok(lines[0]!.includes('patchableOutsideSLA'));
+		assert.ok(lines[1]!.includes('patchableInSLA'));
+		assert.ok(lines[2]!.includes('unpatchableOutsideSLA'));
+		assert.ok(lines[3]!.includes('unpatchableInSLAOlder'));
+	});
+
+	void it('uses a fallback when there is no CVE', () => {
+		const malwareWithoutCve: RepocopVulnerability = {
+			...recentMalware,
+			cves: [],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [malwareWithoutCve],
+		};
+
+		assert.ok(
+			createMalwareDigest(
+				team,
+				[ownershipRecord],
+				[resultWithMalware],
+				60,
+			)?.message.includes('No CVE provided'),
+		);
+	});
+
+	void it('uses plain package text when there is no URL', () => {
+		const malwareWithoutUrl: RepocopVulnerability = {
+			...recentMalware,
+			urls: [],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [malwareWithoutUrl],
+		};
+
+		assert.ok(
+			!createMalwareDigest(
+				team,
+				[ownershipRecord],
+				[resultWithMalware],
+				60,
+			)?.message.includes(`[${malwareWithoutUrl.package}](`),
+		);
 	});
 });
