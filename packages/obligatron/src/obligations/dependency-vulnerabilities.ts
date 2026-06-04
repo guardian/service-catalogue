@@ -36,8 +36,11 @@ async function getRepocopVulnerabilities(
 	client: PrismaClient,
 ): Promise<NonEmptyArray<ObligatronRepocopVulnerability>> {
 	const rawResponse = await client.repocop_vulnerabilities.findMany({});
-	// TODO:  filter for alert_type 'general' only
-	return toNonEmptyArray(rawResponse.map(prismaToCustomType));
+	return toNonEmptyArray(
+		rawResponse
+			.filter((r) => r.alert_type === 'general') // exclude malware alerts
+			.map(prismaToCustomType),
+	);
 }
 
 async function getProductionRepos(client: PrismaClient): Promise<Repository[]> {
