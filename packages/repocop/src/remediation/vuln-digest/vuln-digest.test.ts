@@ -58,7 +58,7 @@ const anotherOwnershipRecord: view_repo_ownership = {
 	github_team_id: anotherTeam.id,
 	full_repo_name: anotherFullName,
 	github_team_slug: anotherTeam.slug,
-    short_repo_name: removeRepoOwner(anotherFullName),
+	short_repo_name: removeRepoOwner(anotherFullName),
 };
 
 const anotherRepocopRuleEvaluation: repocop_github_repository_rules = {
