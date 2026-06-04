@@ -4,7 +4,11 @@ import { awsClientConfig } from 'common/aws.js';
 import type { view_repo_ownership } from 'common/prisma-client/client.js';
 import { daysLeftToFix } from 'common/src/functions.js';
 import { generalSLAs } from 'common/src/types.js';
-import type { AlertType, DigestType, RepocopVulnerability } from 'common/src/types.js';
+import type {
+	AlertType,
+	DigestType,
+	RepocopVulnerability,
+} from 'common/src/types.js';
 import type { Config } from '../../config.js';
 import type {
 	EvaluationResult,
