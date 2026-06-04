@@ -5,7 +5,11 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from 'common/prisma-client/client.js';
-import { isWithinSlaTime, partition } from 'common/src/functions.js';
+import {
+	isWithinSlaTime,
+	MALWARE_SLA,
+	partition,
+} from 'common/src/functions.js';
 import { chooseDependencyScope, generalSLAs } from 'common/src/types.js';
 import type {
 	AlertType,
@@ -269,13 +273,12 @@ function findArchivedReposWithStacks(
 
 	return archivedReposWithPotentialStacks;
 }
-
+//TODO: remove this function as it's not used
 export function vulnerabilityExceedsSla(
 	date: Date,
 	severity: Severity,
 	alert_type: AlertType,
 ) {
-	const MALWARE_SLA = 1; // all severities of malware have SLA of 1 working day
 	const daysToRemediate =
 		alert_type === 'general' ? generalSLAs[severity] : MALWARE_SLA;
 
@@ -288,6 +291,7 @@ export function vulnerabilityExceedsSla(
 	return date < cutOffDate;
 }
 
+//TODO: remove this function as it's not used
 export function hasOldAlerts(
 	alerts: RepocopVulnerability[],
 	repo: Repository,
@@ -452,7 +456,7 @@ export function evaluateOneRepo(
 	workflowsForRepo: guardian_github_actions_usage[],
 ): EvaluationResult {
 	const vulnerabilities = dependabotAlertsForRepo ?? [];
-	hasOldAlerts(vulnerabilities, repo);
+	hasOldAlerts(vulnerabilities, repo); // TODO: remove as we do nothing with this
 
 	const repocopRules: repocop_github_repository_rules = {
 		full_name: repo.full_name,
@@ -522,7 +526,7 @@ export function dependabotAlertToRepocopVulnerability(
 		alert_issue_date: alertIssueDate,
 		is_patchable: !!alert.security_vulnerability.first_patched_version,
 		cves: CVEs,
-		within_sla: isWithinSlaTime(alertIssueDate, severity),
+		within_sla: isWithinSlaTime(alertIssueDate, severity, alert_type),
 		scope: chooseDependencyScope(
 			alert.dependency.scope,
 			alert.security_vulnerability.package.name,

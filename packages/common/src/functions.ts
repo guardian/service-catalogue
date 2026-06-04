@@ -3,6 +3,7 @@ import type { Action } from '@guardian/anghammarad';
 import { createAppAuth } from '@octokit/auth-app';
 import type { SNSEvent } from 'aws-lambda';
 import { Octokit } from 'octokit';
+import type { AlertType } from 'common/src/types.js';
 import {
 	generalSLAs,
 	type GitHubAppConfig,
@@ -198,22 +199,29 @@ function weekendOffset(date: Date): number {
 	}
 }
 
+export const MALWARE_SLA = 1; // all severities of malware have SLA of 1 working day
+
 export function daysLeftToFix(
 	alert_date: Date,
 	severity: Severity,
+	alertType: AlertType = 'general',
 ): number | undefined {
-	const daysToFix = generalSLAs[severity];
+	const daysToFix =
+		alertType === 'malware' ? MALWARE_SLA : generalSLAs[severity];
+
 	if (!daysToFix) {
 		return undefined;
 	}
+
 	const fixDate = new Date(alert_date);
 	fixDate.setDate(fixDate.getDate() + daysToFix);
+
 	const millisecondsInADay = 1000 * 60 * 60 * 24;
 	const daysLeftToFix = Math.ceil(
 		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
 	);
 
-	if (severity === 'critical') {
+	if (severity === 'critical' && alertType === 'general') {
 		const weekendOffsetValue = weekendOffset(alert_date);
 		return Math.max(0, daysLeftToFix + weekendOffsetValue);
 	} else {
@@ -227,13 +235,14 @@ export function daysLeftToFix(
 export function isWithinSlaTime(
 	firstObservedAt: Date | null,
 	severity: Severity,
+	alertType: AlertType = 'general',
 ): boolean {
 	if (!firstObservedAt) {
 		console.warn('No first observed date provided');
 		return false;
 	}
 
-	const daysToFix = daysLeftToFix(firstObservedAt, severity);
+	const daysToFix = daysLeftToFix(firstObservedAt, severity, alertType);
 	if (daysToFix === undefined) {
 		return false;
 	}
