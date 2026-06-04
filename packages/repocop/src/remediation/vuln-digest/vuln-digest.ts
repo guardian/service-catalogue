@@ -4,7 +4,7 @@ import { awsClientConfig } from 'common/aws.js';
 import type { view_repo_ownership } from 'common/prisma-client/client.js';
 import { daysLeftToFix } from 'common/src/functions.js';
 import { generalSLAs } from 'common/src/types.js';
-import type { DigestType, RepocopVulnerability } from 'common/src/types.js';
+import type { AlertType, DigestType, RepocopVulnerability } from 'common/src/types.js';
 import type { Config } from '../../config.js';
 import type {
 	EvaluationResult,
@@ -47,11 +47,20 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
-function createTeamDashboardLinkAction(team: Team, vulnCount: number) {
-	return {
-		cta: `View all ${vulnCount} vulnerabilities on Grafana`,
-		url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-REPO_OWNER=${team.slug}&var-SCOPE=runtime`,
-	};
+function createTeamDashboardLinkAction(
+	team: Team,
+	vulnCount: number,
+	alert_type: AlertType,
+) {
+	return alert_type === 'general'
+		? {
+				cta: `View all ${vulnCount} vulnerabilities on Grafana`,
+				url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-REPO_OWNER=${team.slug}&var-SCOPE=runtime`,
+			}
+		: {
+				cta: `View all ${vulnCount} malware alerts on Grafana`,
+				url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-REPO_OWNER=${team.slug}&var-SCOPE=All`,
+			};
 }
 
 const patchableFirstThenWithinSLAThenDate = (
@@ -123,7 +132,9 @@ Note: DevX only aggregates vulnerability information for runtime dependencies in
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
-	const actions = [createTeamDashboardLinkAction(team, vulns.length)];
+	const actions = [
+		createTeamDashboardLinkAction(team, vulns.length, 'general'),
+	];
 
 	return {
 		teamSlug: team.slug,
@@ -277,7 +288,9 @@ export function createMalwareDigest(
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
-	const actions = [createTeamDashboardLinkAction(team, malwareAlerts.length)];
+	const actions = [
+		createTeamDashboardLinkAction(team, malwareAlerts.length, 'malware'),
+	];
 
 	return {
 		teamSlug: team.slug,
