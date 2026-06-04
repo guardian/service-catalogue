@@ -1,8 +1,6 @@
 import type { RepocopVulnerability, Repository } from 'common/src/types.js';
 import type { EvaluationResult } from './types.js';
 
-export const MALWARE_SLA = 1; // all severities of malware have SLA of 1 working day
-
 export function isProduction(repo: Repository) {
 	return repo.topics.includes('production') && !repo.archived;
 }
