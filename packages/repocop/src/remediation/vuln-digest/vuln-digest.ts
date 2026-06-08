@@ -22,20 +22,20 @@ function getOwningRepos(
 	repoOwners: view_repo_ownership[],
 	results: EvaluationResult[],
 ) {
-	const reposOwnedByTeam = repoOwners.filter(
-		(repoOwner) => repoOwner.github_team_id === team.id,
+	const resultsByFullName = new Map(
+		results.map((result) => [result.fullName, result]),
 	);
 
-	const resultsOwnedByTeam = reposOwnedByTeam
-		.map((repo) => {
-			return results.find((result) => result.fullName === repo.full_repo_name);
-		})
+	return repoOwners
+		.filter((repoOwner) => repoOwner.github_team_id === team.id)
+		.map((repoOwner) => resultsByFullName.get(repoOwner.full_repo_name))
 		.filter((result): result is EvaluationResult => result !== undefined);
-
-	return resultsOwnedByTeam;
 }
 
-function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
+function createHumanReadableMessage(
+	vuln: RepocopVulnerability,
+	alertType: AlertType = 'general',
+): string {
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
@@ -47,8 +47,8 @@ function createHumanReadableVulnMessage(vuln: RepocopVulnerability): string {
 
 	const cveHyperlink = vuln.cves[0] ?? 'no CVE provided';
 
-	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) contains a ${vuln.severity} severity vulnerability, ${cveHyperlink}, from ${vulnHyperlink}, introduced via ${ecosystem}.
-There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
+	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) ${alertType === 'general' ? `contains a ${vuln.severity} severity vulnerability` : 'contains malware'}, ${cveHyperlink}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}.
+		There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
 function createTeamDashboardLinkAction(
@@ -110,7 +110,9 @@ export function createDigestForSeverity(
 		repoOwners,
 		results,
 	);
-	const vulns = resultsForTeam.flatMap((r) => r.vulnerabilities);
+	const vulns = resultsForTeam
+		.flatMap((r) => r.vulnerabilities)
+		.filter((vuln) => vuln.alert_type === 'general');
 
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
@@ -132,7 +134,7 @@ export function createDigestForSeverity(
 Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
 	const digestString = vulnsSinceImplementationDate
-		.map((v) => createHumanReadableVulnMessage(v))
+		.map((v) => createHumanReadableMessage(v))
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
@@ -246,30 +248,20 @@ export async function createAndSendVulnerabilityDigests(
 	}
 }
 
-function createHumanReadableMalwareMessage(
-	malware: RepocopVulnerability,
-): string {
-	const malwareHyperlink: string = malware.urls[0]
-		? `[${malware.package}](${malware.urls[0]})`
-		: malware.package;
-
-	const cveHyperlink = malware.cves[0] ?? 'No CVE provided';
-
-	return String.raw`[${removeRepoOwner(malware.full_name)}](https://github.com/${malware.full_name}) contains malware from ${malwareHyperlink}. It ${malware.is_patchable ? 'is ' : 'might not be '}patchable. ${cveHyperlink}`;
-}
-
 export function createMalwareDigest(
 	team: Team,
 	repoOwners: view_repo_ownership[],
-	malwareResults: EvaluationResult[],
+	results: EvaluationResult[],
 	cutOffInDays: number,
 ): VulnerabilityDigest | undefined {
 	const resultsForTeam: EvaluationResult[] = getOwningRepos(
 		team,
 		repoOwners,
-		malwareResults,
+		results,
 	);
-	const malwareAlerts = resultsForTeam.flatMap((r) => r.vulnerabilities);
+	const malwareAlerts = resultsForTeam
+		.flatMap((r) => r.vulnerabilities)
+		.filter((vuln) => vuln.alert_type === 'malware');
 
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
@@ -288,7 +280,7 @@ export function createMalwareDigest(
 	Note: Malware information provided is only for repositories with a production topic. Currently the only ecosystem supported by Dependabot is npm.`;
 
 	const digestString = malwareSinceImplementationDate
-		.map((v) => createHumanReadableMalwareMessage(v))
+		.map((mal) => createHumanReadableMessage(mal, 'malware'))
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
