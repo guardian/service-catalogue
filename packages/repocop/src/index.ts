@@ -41,11 +41,7 @@ import {
 	createAndSendVulnerabilityDigests,
 } from './remediation/vuln-digest/vuln-digest.js';
 import type { AwsCloudFormationStack, EvaluationResult } from './types.js';
-import {
-	generalEvaluationResults,
-	isProduction,
-	malwareEvaluationResults,
-} from './utils.js';
+import { isProduction } from './utils.js';
 
 async function writeEvaluationTable(
 	evaluatedRepos: repocop_github_repository_rules[],
