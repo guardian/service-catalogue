@@ -184,19 +184,24 @@ export function stringToSeverity(severity: string): Severity {
 	}
 }
 
-function weekendOffset(date: Date): number {
+function weekendOffset(date: Date, alertType: AlertType): number {
 	const isFriday = date.getDay() === 5;
 	const isSaturday = date.getDay() === 6;
 	const isSunday = date.getDay() === 0;
 
-	if (isSunday) {
-		return 1;
-	}
-	if (isSaturday || isFriday) {
-		return 2;
+	if (alertType === 'general') {
+		if (isSunday) {
+			return 1;
+		}
+		if (isSaturday || isFriday) {
+			return 2;
+		}
 	} else {
-		return 0;
+		if (isFriday || isSaturday || isSunday) {
+			return 1;
+		}
 	}
+	return 0;
 }
 
 export const MALWARE_SLA = 1; // all severities of malware have SLA of 1 working day
@@ -221,8 +226,11 @@ export function daysLeftToFix(
 		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
 	);
 
-	if (severity === 'critical' && alertType === 'general') {
-		const weekendOffsetValue = weekendOffset(alert_date);
+	if (
+		(severity === 'critical' && alertType === 'general') ||
+		alertType === 'malware'
+	) {
+		const weekendOffsetValue = weekendOffset(alert_date, alertType);
 		return Math.max(0, daysLeftToFix + weekendOffsetValue);
 	} else {
 		return Math.max(0, daysLeftToFix);
