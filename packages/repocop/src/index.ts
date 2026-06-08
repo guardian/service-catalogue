@@ -229,19 +229,17 @@ export async function main() {
 		);
 
 		// Message teams about vulnerabilities and malware
-		const generalResults = generalEvaluationResults(evaluationResults);
 		await createAndSendVulnerabilityDigests(
 			config,
 			engineeringTeams,
 			repoOwners,
-			generalResults,
+			evaluationResults,
 		);
-		const malwareResults = malwareEvaluationResults(evaluationResults);
 		await createAndSendMalwareDigests(
 			config,
 			engineeringTeams,
 			repoOwners,
-			malwareResults,
+			evaluationResults,
 		);
 
 		await applyProductionTopicAndMessageTeams(
