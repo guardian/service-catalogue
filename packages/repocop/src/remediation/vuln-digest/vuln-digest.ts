@@ -26,10 +26,15 @@ function getOwningRepos(
 		results.map((result) => [result.fullName, result]),
 	);
 
-	return repoOwners
-		.filter((repoOwner) => repoOwner.github_team_id === team.id)
+	const reposOwnedByTeam = repoOwners.filter(
+		(repoOwner) => repoOwner.github_team_id === team.id,
+	);
+
+	const resultsOwnedByTeam = reposOwnedByTeam
 		.map((repoOwner) => resultsByFullName.get(repoOwner.full_repo_name))
 		.filter((result): result is EvaluationResult => result !== undefined);
+
+	return resultsOwnedByTeam;
 }
 
 function createHumanReadableMessage(
