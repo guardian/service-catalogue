@@ -706,7 +706,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		const expected = ['https://github.com/advisories/GHSA-rf4j-j272-fj86'];
 		assert.deepStrictEqual(actual?.slice(0, 1), expected);
 	});
-	void test('marks a new general alert as within SLA', () => {
+	void test('marks a new dependency vulnerability as within SLA', () => {
 		const alert = buildDependabotAlert(
 			new Date().toISOString(),
 			'high',
@@ -722,7 +722,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		assert.strictEqual(result.within_sla, true);
 	});
 
-	void test('marks an old general alert as outside SLA', () => {
+	void test('marks an out-of-date dependency vulnerability as outside SLA', () => {
 		const oldDate = new Date();
 		oldDate.setDate(oldDate.getDate() - 31);
 
@@ -775,6 +775,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		assert.strictEqual(result.alert_type, 'malware');
 		assert.strictEqual(result.within_sla, false);
 	});
+
 	void test('treats a null classification as a general alert', () => {
 		const alert = buildDependabotAlert(new Date().toISOString(), 'high', null);
 
