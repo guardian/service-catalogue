@@ -217,10 +217,8 @@ export function daysLeftToFix(
 	if (!daysToFix) {
 		return undefined;
 	}
-
 	const fixDate = new Date(alert_date);
 	fixDate.setDate(fixDate.getDate() + daysToFix);
-
 	const millisecondsInADay = 1000 * 60 * 60 * 24;
 	const daysLeftToFix = Math.ceil(
 		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
