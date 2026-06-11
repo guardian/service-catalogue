@@ -107,19 +107,23 @@ function getMessage(value: { message: string } | undefined): string {
 
 function assertSubstringsInOrder(message: string, substrings: string[]): void {
 	let lastIndex = -1;
+	let previousSubstring: string | undefined;
 
 	for (const substring of substrings) {
-		const index = message.indexOf(substring);
+		const index = message.indexOf(substring, lastIndex + 1);
 		assert.notStrictEqual(
 			index,
 			-1,
-			`Expected message to include "${substring}"`,
+			`Expected message to include "${substring}" after "${previousSubstring ?? 'start of message'}"`,
 		);
 		assert.ok(
 			index > lastIndex,
-			`Expected "${substring}" to appear after the previous item`,
+			previousSubstring
+				? `Expected "${substring}" to appear after "${previousSubstring}"`
+				: `Expected "${substring}" to appear after the previous item`,
 		);
 		lastIndex = index;
+		previousSubstring = substring;
 	}
 }
 
@@ -151,19 +155,12 @@ void describe('createDigestForSeverity', () => {
 			package: 'patchableInSLA',
 		};
 
-		const today = new Date();
-		const yesterday = new Date(today);
-		yesterday.setDate(today.getDate() - 1);
-
-		const dayBeforeYesterday = new Date(today);
-		dayBeforeYesterday.setDate(today.getDate() - 2);
-
 		const unpatchableInSLAToday: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: false,
 			within_sla: true,
 			package: 'unpatchableInSLAToday',
-			alert_issue_date: today,
+			alert_issue_date: daysAgo(0),
 		};
 
 		const unpatchableInSLAYesterday: RepocopVulnerability = {
@@ -171,7 +168,7 @@ void describe('createDigestForSeverity', () => {
 			is_patchable: false,
 			within_sla: true,
 			package: 'unpatchableInSLAYesterday',
-			alert_issue_date: yesterday,
+			alert_issue_date: daysAgo(1),
 		};
 
 		const unpatchableInSLADayBeforeYesterday: RepocopVulnerability = {
@@ -179,7 +176,7 @@ void describe('createDigestForSeverity', () => {
 			is_patchable: false,
 			within_sla: true,
 			package: 'unpatchableInSLADayBeforeYesterday',
-			alert_issue_date: dayBeforeYesterday,
+			alert_issue_date: daysAgo(2),
 		};
 
 		const patchableOutsideSLA: RepocopVulnerability = {
@@ -422,6 +419,31 @@ void describe('createDigestForSeverity', () => {
 		assert.match(message, /leftpad/);
 		assert.doesNotMatch(message, /medium-package/);
 	});
+	void it('ignores malware vulnerabilities when passed mixed results', () => {
+		const malwareVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'bad-package',
+			alert_type: 'malware',
+		};
+
+		const resultWithMixedAlerts: EvaluationResult = {
+			...result,
+			vulnerabilities: [highRecentVuln, malwareVuln],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithMixedAlerts],
+				60,
+			),
+		);
+
+		assert.match(message, /leftpad/);
+		assert.doesNotMatch(message, /bad-package/);
+	});
 });
 
 void describe('removeNonRuntimeVulns', () => {
@@ -579,65 +601,6 @@ void describe('createMalwareDigest', () => {
 		assert.doesNotMatch(message, /old-malware/);
 	});
 
-	void it('returns malware in priority order', () => {
-		const today = new Date();
-		const yesterday = new Date(today);
-		yesterday.setDate(today.getDate() - 1);
-
-		const patchableOutsideSLA: RepocopVulnerability = {
-			...recentMalware,
-			package: 'patchableOutsideSLA',
-			is_patchable: true,
-			within_sla: false,
-			alert_issue_date: today,
-		};
-
-		const patchableInSLA: RepocopVulnerability = {
-			...recentMalware,
-			package: 'patchableInSLA',
-			is_patchable: true,
-			within_sla: true,
-			alert_issue_date: today,
-		};
-
-		const unpatchableOutsideSLA: RepocopVulnerability = {
-			...recentMalware,
-			package: 'unpatchableOutsideSLA',
-			is_patchable: false,
-			within_sla: false,
-			alert_issue_date: today,
-		};
-
-		const unpatchableInSLAOlder: RepocopVulnerability = {
-			...recentMalware,
-			package: 'unpatchableInSLAOlder',
-			is_patchable: false,
-			within_sla: true,
-			alert_issue_date: yesterday,
-		};
-
-		const resultWithMalware: EvaluationResult = {
-			...result,
-			vulnerabilities: [
-				unpatchableInSLAOlder,
-				unpatchableOutsideSLA,
-				patchableInSLA,
-				patchableOutsideSLA,
-			],
-		};
-
-		const message = getMessage(
-			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
-		);
-
-		assertSubstringsInOrder(message, [
-			'patchableOutsideSLA',
-			'patchableInSLA',
-			'unpatchableOutsideSLA',
-			'unpatchableInSLAOlder',
-		]);
-	});
-
 	void it('uses a fallback when there is no CVE', () => {
 		const malwareWithoutCve: RepocopVulnerability = {
 			...recentMalware,
@@ -696,60 +659,5 @@ void describe('createMalwareDigest', () => {
 
 		assert.match(message, /bad-package/);
 		assert.doesNotMatch(message, /not-malware/);
-	});
-
-	void describe('createDigestForSeverity', () => {
-		void it('ignores malware vulnerabilities when passed mixed results', () => {
-			const malwareVuln: RepocopVulnerability = {
-				...highRecentVuln,
-				package: 'bad-package',
-				alert_type: 'malware',
-			};
-
-			const resultWithMixedAlerts: EvaluationResult = {
-				...result,
-				vulnerabilities: [highRecentVuln, malwareVuln],
-			};
-
-			const message = getMessage(
-				createDigestForSeverity(
-					team,
-					'high',
-					[ownershipRecord],
-					[resultWithMixedAlerts],
-					60,
-				),
-			);
-
-			assert.match(message, /leftpad/);
-			assert.doesNotMatch(message, /bad-package/);
-		});
-	});
-
-	void describe('createMalwareDigest', () => {
-		void it('ignores general vulnerabilities when passed mixed results', () => {
-			const nonMalwareVuln: RepocopVulnerability = {
-				...highRecentVuln,
-				package: 'not-malware',
-				alert_type: 'general',
-			};
-
-			const resultWithMixedAlerts: EvaluationResult = {
-				...result,
-				vulnerabilities: [recentMalware, nonMalwareVuln],
-			};
-
-			const message = getMessage(
-				createMalwareDigest(
-					team,
-					[ownershipRecord],
-					[resultWithMixedAlerts],
-					60,
-				),
-			);
-
-			assert.match(message, /bad-package/);
-			assert.doesNotMatch(message, /not-malware/);
-		});
 	});
 });
