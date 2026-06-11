@@ -19179,7 +19179,7 @@ spec:
     },
     "CloudquerySourceGitHubSbomsScheduledEventRuleCDCF1384": {
       "Properties": {
-        "ScheduleExpression": "cron(0 1 * * ? *)",
+        "ScheduleExpression": "cron(15 1 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
