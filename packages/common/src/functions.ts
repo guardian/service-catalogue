@@ -218,14 +218,21 @@ export function daysLeftToFix(
 	alertType: AlertType = 'general',
 ): number | undefined {
 	const slaDays = alertType === 'malware' ? MALWARE_SLA : generalSLAs[severity];
-	if (slaDays === undefined) return undefined;
+	if (slaDays === undefined) {
+		return undefined;
+	}
 
 	const fixDate = new Date(alert_date);
 	fixDate.setDate(fixDate.getDate() + slaDays);
 	const millisecondsInADay = 1000 * 60 * 60 * 24;
-	const baseDaysLeft = Math.ceil((fixDate.getTime() - Date.now()) / millisecondsInADay);
+	const baseDaysLeft = Math.ceil(
+		(fixDate.getTime() - Date.now()) / millisecondsInADay,
+	);
 
-	if (alertType === 'malware' || (alertType === 'general' && severity === 'critical')) {
+	if (
+		(alertType === 'general' && severity === 'critical') ||
+		alertType === 'malware'
+	) {
 		return Math.max(0, baseDaysLeft + weekendOffset(alert_date, alertType));
 	}
 
