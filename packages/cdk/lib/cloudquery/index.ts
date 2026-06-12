@@ -114,10 +114,10 @@ export function addCloudqueryEcsCluster(
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 				tables:
 					/*
-      Collect all AWS Organisation tables, including account names, and which OU they belong to.
-      A wildcard is used, as there are a lot of tables!
-      See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
-       */
+	  Collect all AWS Organisation tables, including account names, and which OU they belong to.
+	  A wildcard is used, as there are a lot of tables!
+	  See https://www.cloudquery.io/docs/advanced-topics/performance-tuning#use-wildcard-matching
+	   */
 					filterCloudQueryTables([/^aws_organization.*$/]),
 			}),
 			policies: [
@@ -455,7 +455,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubSboms',
 			description:
 				'Collect GitHub SBOM (Software Bill of Materials) data. Used to track dependencies, which is useful for supply chain attack monitoring.',
-			schedule: Schedule.cron({ minute: '0', hour: '1' }),
+			schedule: Schedule.cron({ minute: '15', hour: '1' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_repository_sboms'],
