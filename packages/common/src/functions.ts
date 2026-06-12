@@ -184,55 +184,52 @@ export function stringToSeverity(severity: string): Severity {
 	}
 }
 
-function weekendOffset(date: Date, alertType: AlertType): number {
-	const isFriday = date.getDay() === 5;
-	const isSaturday = date.getDay() === 6;
-	const isSunday = date.getDay() === 0;
-
-	if (alertType === 'general') {
-		if (isSunday) {
-			return 1;
-		}
-		if (isSaturday || isFriday) {
-			return 2;
-		}
-	} else {
-		if (isFriday || isSaturday || isSunday) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
 export const MALWARE_SLA = 1; // all severities of malware have SLA of 1 working day
+
+const WEEKEND_OFFSETS: Record<AlertType, Partial<Record<number, number>>> = {
+	general: {
+		0: 1, // Sunday
+		5: 2, // Friday
+		6: 2, // Saturday
+	},
+	malware: {
+		0: 1, // Sunday
+		5: 3, // Friday
+		6: 2, // Saturday
+	},
+};
+
+/**
+ * Returns the weekend SLA adjustment (in days) for a given alert date and type.
+ *
+ * The value is looked up from `WEEKEND_OFFSETS` using:
+ * - `alertType` (`general` or `malware`)
+ * - `date.getDay()` (0 = Sunday, 5 = Friday, 6 = Saturday)
+ *
+ * If no rule exists for that day/type, returns `0`.
+ */
+function weekendOffset(date: Date, alertType: AlertType): number {
+	return WEEKEND_OFFSETS[alertType][date.getDay()] ?? 0;
+}
 
 export function daysLeftToFix(
 	alert_date: Date,
 	severity: Severity,
 	alertType: AlertType = 'general',
 ): number | undefined {
-	const daysToFix =
-		alertType === 'malware' ? MALWARE_SLA : generalSLAs[severity];
+	const slaDays = alertType === 'malware' ? MALWARE_SLA : generalSLAs[severity];
+	if (slaDays === undefined) return undefined;
 
-	if (!daysToFix) {
-		return undefined;
-	}
 	const fixDate = new Date(alert_date);
-	fixDate.setDate(fixDate.getDate() + daysToFix);
+	fixDate.setDate(fixDate.getDate() + slaDays);
 	const millisecondsInADay = 1000 * 60 * 60 * 24;
-	const daysLeftToFix = Math.ceil(
-		(fixDate.getTime() - new Date().getTime()) / millisecondsInADay,
-	);
+	const baseDaysLeft = Math.ceil((fixDate.getTime() - Date.now()) / millisecondsInADay);
 
-	if (
-		(severity === 'critical' && alertType === 'general') ||
-		alertType === 'malware'
-	) {
-		const weekendOffsetValue = weekendOffset(alert_date, alertType);
-		return Math.max(0, daysLeftToFix + weekendOffsetValue);
-	} else {
-		return Math.max(0, daysLeftToFix);
+	if (alertType === 'malware' || (alertType === 'general' && severity === 'critical')) {
+		return Math.max(0, baseDaysLeft + weekendOffset(alert_date, alertType));
 	}
+
+	return Math.max(0, baseDaysLeft);
 }
 
 /**
