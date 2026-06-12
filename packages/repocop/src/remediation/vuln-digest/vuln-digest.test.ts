@@ -9,6 +9,7 @@ import type { EvaluationResult, Team } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
 import {
 	createDigestForSeverity,
+	createMalwareDigest,
 	removeNonRuntimeVulns,
 } from './vuln-digest.js';
 
@@ -56,6 +57,8 @@ const anotherOwnershipRecord: view_repo_ownership = {
 	github_team_name: anotherTeam.name,
 	github_team_id: anotherTeam.id,
 	full_repo_name: anotherFullName,
+	github_team_slug: anotherTeam.slug,
+	short_repo_name: removeRepoOwner(anotherFullName),
 };
 
 const anotherRepocopRuleEvaluation: repocop_github_repository_rules = {
@@ -91,8 +94,47 @@ const highRecentVuln: RepocopVulnerability = {
 	alert_type: 'general',
 };
 
-void describe('createDigest', () => {
-	void it('returns undefined when the total vuln count is zero', () => {
+const recentMalware: RepocopVulnerability = {
+	...highRecentVuln,
+	alert_type: 'malware',
+	package: 'bad-package',
+};
+
+function getMessage(value: { message: string } | undefined): string {
+	assert.ok(value, 'Expected a digest to be returned');
+	return value.message;
+}
+
+function assertSubstringsInOrder(message: string, substrings: string[]): void {
+	let lastIndex = -1;
+	let previousSubstring: string | undefined;
+
+	for (const substring of substrings) {
+		const index = message.indexOf(substring, lastIndex + 1);
+		assert.notStrictEqual(
+			index,
+			-1,
+			`Expected message to include "${substring}" after "${previousSubstring ?? 'start of message'}"`,
+		);
+		assert.ok(
+			index > lastIndex,
+			previousSubstring
+				? `Expected "${substring}" to appear after "${previousSubstring}"`
+				: `Expected "${substring}" to appear after the previous item`,
+		);
+		lastIndex = index;
+		previousSubstring = substring;
+	}
+}
+
+function daysAgo(days: number): Date {
+	const value = new Date();
+	value.setDate(value.getDate() - days);
+	return value;
+}
+
+void describe('createDigestForSeverity', () => {
+	void it('returns undefined when the total vulnerability count is zero', () => {
 		assert.strictEqual(
 			createDigestForSeverity(
 				team,
@@ -105,55 +147,52 @@ void describe('createDigest', () => {
 		);
 	});
 
-	void it('returns a correctly ordered list of vulns in the message', () => {
-		const patchableInSLA = {
+	void it('returns vulnerabilities in priority order', () => {
+		const patchableInSLA: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: true,
 			within_sla: true,
 			package: 'patchableInSLA',
 		};
 
-		const today = new Date();
-
-		const yesterday = new Date(today);
-		yesterday.setDate(today.getDate() - 1);
-
-		const dayBeforeYesterday = new Date(today);
-		dayBeforeYesterday.setDate(today.getDate() - 2);
-
-		const unpatchableInSLAToday = {
+		const unpatchableInSLAToday: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: false,
 			within_sla: true,
 			package: 'unpatchableInSLAToday',
-			alert_issue_date: today,
+			alert_issue_date: daysAgo(0),
 		};
-		const unpatchableInSLAYesterday = {
+
+		const unpatchableInSLAYesterday: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: false,
 			within_sla: true,
 			package: 'unpatchableInSLAYesterday',
-			alert_issue_date: yesterday,
+			alert_issue_date: daysAgo(1),
 		};
-		const unpatchableInSLADayBeforeYesterday = {
+
+		const unpatchableInSLADayBeforeYesterday: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: false,
 			within_sla: true,
 			package: 'unpatchableInSLADayBeforeYesterday',
-			alert_issue_date: dayBeforeYesterday,
+			alert_issue_date: daysAgo(2),
 		};
-		const patchableOutsideSLA = {
+
+		const patchableOutsideSLA: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: true,
 			within_sla: false,
 			package: 'patchableOutsideSLA',
 		};
-		const unpatchableOutsideSLA = {
+
+		const unpatchableOutsideSLA: RepocopVulnerability = {
 			...highRecentVuln,
 			is_patchable: false,
 			within_sla: false,
 			package: 'unpatchableOutsideSLA',
 		};
+
 		const resultWithVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [
@@ -165,24 +204,25 @@ void describe('createDigest', () => {
 				patchableOutsideSLA,
 			],
 		};
-		const messages: string = createDigestForSeverity(
-			team,
-			'high',
-			[ownershipRecord],
-			[resultWithVuln],
-			60,
-		)!.message;
-		const messagesAsArray = messages
-			.split('\n')
-			.filter((ss) => ss.includes('contains a high severity vulnerability'));
-		assert.ok(messagesAsArray[0]!.includes('patchableOutsideSLA'));
-		assert.ok(messagesAsArray[1]!.includes('patchableInSLA'));
-		assert.ok(messagesAsArray[2]!.includes('unpatchableOutsideSLA'));
-		assert.ok(
-			messagesAsArray[3]!.includes('unpatchableInSLADayBeforeYesterday'),
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			),
 		);
-		assert.ok(messagesAsArray[4]!.includes('unpatchableInSLAYesterday'));
-		assert.ok(messagesAsArray[5]!.includes('unpatchableInSLAToday'));
+
+		assertSubstringsInOrder(message, [
+			'patchableOutsideSLA',
+			'patchableInSLA',
+			'unpatchableOutsideSLA',
+			'unpatchableInSLADayBeforeYesterday',
+			'unpatchableInSLAYesterday',
+			'unpatchableInSLAToday',
+		]);
 	});
 
 	void it('returns a digest when a result contains a vulnerability', () => {
@@ -190,37 +230,43 @@ void describe('createDigest', () => {
 			...result,
 			vulnerabilities: [highRecentVuln],
 		};
-		assert.ok(
-			createDigestForSeverity(
-				team,
-				'high',
-				[ownershipRecord],
-				[resultWithVuln],
-				60,
-			)?.message.includes('leftpad'),
+
+		const digest = createDigestForSeverity(
+			team,
+			'high',
+			[ownershipRecord],
+			[resultWithVuln],
+			60,
 		);
+
+		assert.ok(digest);
+		assert.match(digest.message, /leftpad/);
 	});
 
-	void it('recognises that a SBT dependency could come from Maven', () => {
+	void it('recognises that an SBT dependency could come from Maven', () => {
 		const vuln: RepocopVulnerability = {
 			...highRecentVuln,
 			package: 'jackson',
 			urls: ['example.com'],
 			ecosystem: 'maven',
 		};
+
 		const resultWithVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [vuln],
 		};
-		assert.ok(
+
+		const message = getMessage(
 			createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message.includes('sbt or maven'),
+			),
 		);
+
+		assert.match(message, /sbt or maven/);
 	});
 
 	void it('returns the correct digest for the correct team', () => {
@@ -228,25 +274,18 @@ void describe('createDigest', () => {
 			...result,
 			vulnerabilities: [highRecentVuln],
 		};
+
 		const anotherVuln: RepocopVulnerability = {
-			source: 'Dependabot',
-			full_name: fullName,
-			open: true,
-			severity: 'high',
+			...highRecentVuln,
+			full_name: anotherFullName,
 			package: 'rightpad',
-			urls: ['example.com'],
-			ecosystem: 'pip',
-			alert_issue_date: new Date(),
-			is_patchable: true,
-			cves: ['CVE-123'],
-			within_sla: true,
-			scope: 'runtime',
-			alert_type: 'general',
 		};
+
 		const anotherResultWithVuln: EvaluationResult = {
 			...anotherResult,
 			vulnerabilities: [anotherVuln],
 		};
+
 		const digest = createDigestForSeverity(
 			team,
 			'high',
@@ -254,8 +293,11 @@ void describe('createDigest', () => {
 			[resultWithVuln, anotherResultWithVuln],
 			60,
 		);
-		assert.strictEqual(digest?.teamSlug, team.slug);
-		assert.ok(digest.message.includes('leftpad'));
+
+		assert.ok(digest);
+		assert.strictEqual(digest.teamSlug, team.slug);
+		assert.match(digest.message, /leftpad/);
+		assert.doesNotMatch(digest.message, /rightpad/);
 
 		const anotherDigest = createDigestForSeverity(
 			anotherTeam,
@@ -264,25 +306,24 @@ void describe('createDigest', () => {
 			[resultWithVuln, anotherResultWithVuln],
 			60,
 		);
-		assert.strictEqual(anotherDigest?.teamSlug, anotherTeam.slug);
-		assert.ok(anotherDigest.message.includes('rightpad'));
+
+		assert.ok(anotherDigest);
+		assert.strictEqual(anotherDigest.teamSlug, anotherTeam.slug);
+		assert.match(anotherDigest.message, /rightpad/);
+		assert.doesNotMatch(anotherDigest.message, /leftpad/);
 	});
 
-	void it('only returns vulnerabilities created in  the last 60 days', () => {
-		const fiftyNineDaysAgo = new Date();
-		fiftyNineDaysAgo.setDate(fiftyNineDaysAgo.getDate() - 59);
-		const sixtyOneDaysAgo = new Date();
-		sixtyOneDaysAgo.setDate(sixtyOneDaysAgo.getDate() - 61);
+	void it('only returns vulnerabilities created in the last 60 days', () => {
+		const included: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'rightpad',
+			alert_issue_date: daysAgo(59),
+		};
 
 		const excluded: RepocopVulnerability = {
 			...highRecentVuln,
-			alert_issue_date: sixtyOneDaysAgo,
-		};
-
-		const included = {
-			...excluded,
-			package: 'rightpad',
-			alert_issue_date: fiftyNineDaysAgo,
+			package: 'oldpad',
+			alert_issue_date: daysAgo(61),
 		};
 
 		const resultWithVuln: EvaluationResult = {
@@ -290,94 +331,333 @@ void describe('createDigest', () => {
 			vulnerabilities: [excluded, included],
 		};
 
-		const msg = createDigestForSeverity(
-			team,
-			'high',
-			[ownershipRecord],
-			[resultWithVuln],
-			60,
-		)?.message;
-		console.log(msg);
-
-		assert.ok(msg?.includes(included.package));
-		assert.ok(!msg?.includes(excluded.package));
-	});
-});
-
-void describe('createDigestForSeverity', () => {
-	void it('should take notice when there are no valid CVEs', () => {
-		const noCveVuln: RepocopVulnerability = {
-			...highRecentVuln,
-			cves: [],
-		};
-		const resultWithVuln: EvaluationResult = {
-			...result,
-			vulnerabilities: [noCveVuln],
-		};
-
-		assert.ok(
+		const message = getMessage(
 			createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message.includes('no CVE provided'),
+			),
 		);
-	});
-});
 
-void describe('createDigestForSeverity', () => {
-	void it('should take notice when there are no valid URLs', () => {
-		const noUrlVuln: RepocopVulnerability = {
+		assert.match(message, /rightpad/);
+		assert.doesNotMatch(message, /oldpad/);
+	});
+
+	void it('uses a fallback when there is no CVE', () => {
+		const noCveVuln: RepocopVulnerability = {
 			...highRecentVuln,
-			urls: [],
+			cves: [],
 		};
+
 		const resultWithVuln: EvaluationResult = {
 			...result,
-			vulnerabilities: [noUrlVuln],
+			vulnerabilities: [noCveVuln],
 		};
-		/**  node:test way of determining if the message doesn't include the noUrlVuln.package 
-			 - equivalent of `not.toContain` in Jest  */
-		assert.ok(
-			!createDigestForSeverity(
+
+		const message = getMessage(
+			createDigestForSeverity(
 				team,
 				'high',
 				[ownershipRecord],
 				[resultWithVuln],
 				60,
-			)?.message.includes(`[${noUrlVuln.package}](`),
+			),
 		);
+
+		assert.match(message, /no cve provided/i);
+	});
+
+	void it('uses plain package text when there are no valid URLs', () => {
+		const noUrlVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			urls: [],
+		};
+
+		const resultWithVuln: EvaluationResult = {
+			...result,
+			vulnerabilities: [noUrlVuln],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVuln],
+				60,
+			),
+		);
+
+		assert.doesNotMatch(message, new RegExp(`\\[${noUrlVuln.package}\\]\\(`));
+		assert.match(message, new RegExp(noUrlVuln.package));
+	});
+
+	void it('ignores vulnerabilities with a different severity', () => {
+		const mediumVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			severity: 'medium',
+			package: 'medium-package',
+		};
+
+		const resultWithMixedVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [highRecentVuln, mediumVuln],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithMixedVulns],
+				60,
+			),
+		);
+
+		assert.match(message, /leftpad/);
+		assert.doesNotMatch(message, /medium-package/);
+	});
+	void it('ignores malware vulnerabilities when passed mixed results', () => {
+		const malwareVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'bad-package',
+			alert_type: 'malware',
+		};
+
+		const resultWithMixedAlerts: EvaluationResult = {
+			...result,
+			vulnerabilities: [highRecentVuln, malwareVuln],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithMixedAlerts],
+				60,
+			),
+		);
+
+		assert.match(message, /leftpad/);
+		assert.doesNotMatch(message, /bad-package/);
 	});
 });
 
 void describe('removeNonRuntimeVulns', () => {
-	void it('should remove non-runtime vulnerabilities', () => {
+	void it('removes non-runtime vulnerabilities', () => {
 		const runtimeAndDevVulns: RepocopVulnerability[] = [
 			highRecentVuln,
-			{ ...highRecentVuln, scope: 'development' },
+			{ ...highRecentVuln, scope: 'development', package: 'dev-only' },
 		];
+
 		const resultWithVulns: EvaluationResult = {
 			...result,
 			vulnerabilities: runtimeAndDevVulns,
 		};
 
 		const filtered = removeNonRuntimeVulns([resultWithVulns]);
+
 		assert.strictEqual(filtered.length, 1);
 		assert.strictEqual(filtered[0]!.vulnerabilities.length, 1);
 		assert.strictEqual(filtered[0]!.vulnerabilities[0]!.scope, 'runtime');
+		assert.strictEqual(filtered[0]!.vulnerabilities[0]!.package, 'leftpad');
 	});
-	void it('should remove results with no runtime vulnerabilities', () => {
+
+	void it('removes results with no runtime vulnerabilities', () => {
 		const devVuln: RepocopVulnerability = {
 			...highRecentVuln,
 			scope: 'development',
 		};
+
 		const resultWithDevVuln: EvaluationResult = {
 			...result,
 			vulnerabilities: [devVuln],
 		};
 
 		const filtered = removeNonRuntimeVulns([resultWithDevVuln]);
+
 		assert.strictEqual(filtered.length, 0);
+	});
+
+	void it('does not mutate the original results', () => {
+		const runtimeAndDevVulns: RepocopVulnerability[] = [
+			highRecentVuln,
+			{ ...highRecentVuln, scope: 'development', package: 'dev-only' },
+		];
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: runtimeAndDevVulns,
+		};
+
+		const originalLength = resultWithVulns.vulnerabilities.length;
+
+		void removeNonRuntimeVulns([resultWithVulns]);
+
+		assert.strictEqual(resultWithVulns.vulnerabilities.length, originalLength);
+		assert.strictEqual(resultWithVulns.vulnerabilities[1]!.package, 'dev-only');
+		assert.strictEqual(
+			resultWithVulns.vulnerabilities[1]!.scope,
+			'development',
+		);
+	});
+});
+
+void describe('createMalwareDigest', () => {
+	void it('returns undefined when the total malware count is zero', () => {
+		assert.strictEqual(
+			createMalwareDigest(team, [ownershipRecord], [result, anotherResult], 60),
+			undefined,
+		);
+	});
+
+	void it('returns a digest when a result contains malware', () => {
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [recentMalware],
+		};
+
+		const digest = createMalwareDigest(
+			team,
+			[ownershipRecord],
+			[resultWithMalware],
+			60,
+		);
+
+		assert.ok(digest);
+		assert.strictEqual(digest.teamSlug, team.slug);
+		assert.match(digest.message, /bad-package/);
+		assert.match(digest.subject, new RegExp(`Malware Digest for ${team.name}`));
+	});
+
+	void it('returns the correct malware digest for the correct team', () => {
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [recentMalware],
+		};
+
+		const anotherMalware: RepocopVulnerability = {
+			...recentMalware,
+			full_name: anotherFullName,
+			package: 'totally-different-package',
+		};
+
+		const anotherResultWithMalware: EvaluationResult = {
+			...anotherResult,
+			vulnerabilities: [anotherMalware],
+		};
+
+		const digest = createMalwareDigest(
+			team,
+			[ownershipRecord, anotherOwnershipRecord],
+			[resultWithMalware, anotherResultWithMalware],
+			60,
+		);
+
+		assert.ok(digest);
+		assert.strictEqual(digest.teamSlug, team.slug);
+		assert.match(digest.message, /bad-package/);
+		assert.doesNotMatch(digest.message, /totally-different-package/);
+
+		const anotherDigest = createMalwareDigest(
+			anotherTeam,
+			[ownershipRecord, anotherOwnershipRecord],
+			[resultWithMalware, anotherResultWithMalware],
+			60,
+		);
+
+		assert.ok(anotherDigest);
+		assert.strictEqual(anotherDigest.teamSlug, anotherTeam.slug);
+		assert.match(anotherDigest.message, /totally-different-package/);
+		assert.doesNotMatch(anotherDigest.message, /bad-package/);
+	});
+
+	void it('only returns malware created in the last 60 days', () => {
+		const excluded: RepocopVulnerability = {
+			...recentMalware,
+			package: 'old-malware',
+			alert_issue_date: daysAgo(61),
+		};
+
+		const included: RepocopVulnerability = {
+			...recentMalware,
+			package: 'recent-malware',
+			alert_issue_date: daysAgo(59),
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [excluded, included],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		assert.match(message, /recent-malware/);
+		assert.doesNotMatch(message, /old-malware/);
+	});
+
+	void it('uses a fallback when there is no CVE', () => {
+		const malwareWithoutCve: RepocopVulnerability = {
+			...recentMalware,
+			cves: [],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [malwareWithoutCve],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		assert.match(message, /no cve provided/i);
+	});
+
+	void it('uses plain package text when there is no URL', () => {
+		const malwareWithoutUrl: RepocopVulnerability = {
+			...recentMalware,
+			urls: [],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [malwareWithoutUrl],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		assert.doesNotMatch(
+			message,
+			new RegExp(`\\[${malwareWithoutUrl.package}\\]\\(`),
+		);
+		assert.match(message, new RegExp(malwareWithoutUrl.package));
+	});
+
+	void it('ignores non-malware vulnerabilities', () => {
+		const nonMalwareVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'not-malware',
+			alert_type: 'general',
+		};
+
+		const resultWithMixedAlerts: EvaluationResult = {
+			...result,
+			vulnerabilities: [recentMalware, nonMalwareVuln],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMixedAlerts], 60),
+		);
+
+		assert.match(message, /bad-package/);
+		assert.doesNotMatch(message, /not-malware/);
 	});
 });

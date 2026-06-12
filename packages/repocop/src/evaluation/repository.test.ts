@@ -8,7 +8,7 @@ import type {
 } from 'common/prisma-client/client.js';
 import type { RepocopVulnerability, Repository } from 'common/src/types.js';
 import { exampleDependabotAlert } from '../test-data/example-dependabot-alerts.js';
-import type { AwsCloudFormationStack } from '../types.js';
+import type { Alert, AwsCloudFormationStack } from '../types.js';
 import {
 	deduplicateVulnerabilitiesByCve,
 	dependabotAlertToRepocopVulnerability,
@@ -630,6 +630,27 @@ void describe('NO RULE - Dependabot alerts', () => {
 	});
 });
 
+function buildDependabotAlert(
+	createdAt: string,
+	severity: Alert['security_advisory']['severity'],
+	classification: Alert['security_advisory']['classification'],
+): Alert {
+	const baseAlert = exampleDependabotAlert[0];
+	if (!baseAlert) {
+		throw new Error('Missing example Dependabot alert fixture');
+	}
+
+	return {
+		...baseAlert,
+		created_at: createdAt,
+		security_advisory: {
+			...baseAlert.security_advisory,
+			severity,
+			classification,
+		},
+	};
+}
+
 void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 	const fullName = 'guardian/myrepo';
 	const result: RepocopVulnerability[] = exampleDependabotAlert.map((alert) =>
@@ -684,6 +705,86 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 		const actual = result.map((r) => r.urls)[0];
 		const expected = ['https://github.com/advisories/GHSA-rf4j-j272-fj86'];
 		assert.deepStrictEqual(actual?.slice(0, 1), expected);
+	});
+	void test('marks a new dependency vulnerability as within SLA', () => {
+		const alert = buildDependabotAlert(
+			new Date().toISOString(),
+			'high',
+			'general',
+		);
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.strictEqual(result.alert_type, 'general');
+		assert.strictEqual(result.within_sla, true);
+	});
+
+	void test('marks an out-of-date dependency vulnerability as outside SLA', () => {
+		const oldDate = new Date();
+		oldDate.setDate(oldDate.getDate() - 31);
+
+		const alert = buildDependabotAlert(
+			oldDate.toISOString(),
+			'high',
+			'general',
+		);
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.strictEqual(result.alert_type, 'general');
+		assert.strictEqual(result.within_sla, false);
+	});
+
+	void test('marks a new malware alert as within SLA', () => {
+		const alert = buildDependabotAlert(
+			new Date().toISOString(),
+			'low',
+			'malware',
+		);
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.strictEqual(result.alert_type, 'malware');
+		assert.strictEqual(result.within_sla, true);
+	});
+
+	void test('marks an old malware alert as outside SLA regardless of severity', () => {
+		const oldDate = new Date();
+		oldDate.setDate(oldDate.getDate() - 2);
+
+		const alert = buildDependabotAlert(
+			oldDate.toISOString(),
+			'high',
+			'malware',
+		);
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.strictEqual(result.alert_type, 'malware');
+		assert.strictEqual(result.within_sla, false);
+	});
+
+	void test('treats a null classification as a general alert', () => {
+		const alert = buildDependabotAlert(new Date().toISOString(), 'high', null);
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.strictEqual(result.alert_type, 'general');
 	});
 });
 
