@@ -273,7 +273,7 @@ function findArchivedReposWithStacks(
 
 	return archivedReposWithPotentialStacks;
 }
-//TODO: remove this function as it's not used
+// TODO: remove this helper if/when `hasOldAlerts` (which uses it) is removed.
 export function vulnerabilityExceedsSla(
 	date: Date,
 	severity: Severity,
