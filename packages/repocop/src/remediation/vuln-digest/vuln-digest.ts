@@ -56,8 +56,7 @@ function createHumanReadableMessage(
 
 	const cveHyperlink = vuln.cves[0] ?? 'no CVE provided';
 
-	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) ${alertType === 'general' ? `contains a ${vuln.severity} severity vulnerability` : 'contains malware'}, ${cveHyperlink}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}.
-		There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
+	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) ${alertType === 'general' ? `contains a ${vuln.severity} severity vulnerability` : 'contains malware'}, ${cveHyperlink}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
 function createTeamDashboardLinkAction(
@@ -285,8 +284,8 @@ export function createMalwareDigest(
 		return undefined;
 	}
 
-	const preamble = String.raw`Found ${totalNewMalwareCount} malware alerts introduced in the last ${cutOffInDays} days. Please address within 1 working day. 
-	Note: Malware information provided is only for repositories with a production topic. Currently the only ecosystem supported by Dependabot is npm.`;
+	const preamble = String.raw`Found ${totalNewMalwareCount} malware alerts introduced in the last ${cutOffInDays} days. Please address within 1 working day.
+Note: Malware information provided is only for repositories with a production topic. Currently the only ecosystem supported by Dependabot is npm.`;
 
 	const digestString = malwareSinceImplementationDate
 		.map((mal) => createHumanReadableMessage(mal, 'malware'))
