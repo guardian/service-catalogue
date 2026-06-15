@@ -63,9 +63,9 @@ function createHumanReadableMessage(
 function createTeamDashboardLinkAction(
 	team: Team,
 	vulnCount: number,
-	alert_type: AlertType,
+	alertType: AlertType,
 ) {
-	return alert_type === 'general'
+	return alertType === 'general'
 		? {
 				cta: `View all ${vulnCount} vulnerabilities on Grafana`,
 				url: `https://metrics.gutools.co.uk/d/fdib3p8l85jwgd?var-REPO_OWNER=${team.slug}&var-SCOPE=runtime`,
