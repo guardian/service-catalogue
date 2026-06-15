@@ -150,7 +150,7 @@ export async function getDependabotMalware(
 ) {
 	const classification = 'malware';
 	const severities = 'critical,high,medium,low';
-	const dependabotVulnerabilities: RepocopVulnerability[] = (
+	const dependabotMalware: RepocopVulnerability[] = (
 		await Promise.all(
 			repos.map(async (repo) => {
 				const alerts = await getAlertsForRepo(
@@ -171,10 +171,10 @@ export async function getDependabotMalware(
 	).flat();
 
 	console.log(
-		`Found ${dependabotVulnerabilities.length} dependabot malware across ${repos.length} repos`,
+		`Found ${dependabotMalware.length} dependabot malware across ${repos.length} repos`,
 	);
 
-	return dependabotVulnerabilities;
+	return dependabotMalware;
 }
 
 export async function getProductionWorkflowUsages(
