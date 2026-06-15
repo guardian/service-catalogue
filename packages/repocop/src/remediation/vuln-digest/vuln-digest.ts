@@ -206,7 +206,7 @@ export async function createAndSendVulnDigestsForSeverity(
 		)
 		.filter((d): d is VulnerabilityDigest => d !== undefined);
 
-	console.log(`Sending ${severity} vulnerability digests`);
+	console.log(`Logging ${severity} vulnerability digests`);
 	digests.forEach((digest) => console.log(JSON.stringify(digest)));
 	if (config.stage === 'PROD') {
 		await sendVulnerabilityDigests(digests, config, 'vulnerability');
