@@ -56,7 +56,7 @@ function createHumanReadableMessage(
 
 	const cveHyperlink = vuln.cves[0] ?? 'no CVE provided';
 
-	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) ${alertType === 'general' ? `contains a ${vuln.severity} severity vulnerability` : 'contains malware'}, ${cveHyperlink}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to fix this vulnerability. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
+	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) ${alertType === 'general' ? `contains a ${vuln.severity} severity vulnerability` : 'contains malware'}, ${cveHyperlink}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to fix this ${alertType === 'general' ? 'vulnerability' : 'malware alert'}. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
 }
 
 function createTeamDashboardLinkAction(
