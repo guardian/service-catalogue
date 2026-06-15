@@ -44,7 +44,11 @@ function createHumanReadableMessage(
 	const ecosystem =
 		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
 
-	const daysToFix = daysLeftToFix(vuln.alert_issue_date, vuln.severity);
+	const daysToFix = daysLeftToFix(
+		vuln.alert_issue_date,
+		vuln.severity,
+		alertType,
+	);
 
 	const vulnHyperlink: string = vuln.urls[0]
 		? `[${vuln.package}](${vuln.urls[0]})`
