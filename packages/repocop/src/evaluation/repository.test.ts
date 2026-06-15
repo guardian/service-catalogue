@@ -759,7 +759,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 
 	void test('marks an old malware alert as outside SLA regardless of severity', () => {
 		const oldDate = new Date();
-		oldDate.setDate(oldDate.getDate() - 2);
+		oldDate.setDate(oldDate.getDate() - 5);
 
 		const alert = buildDependabotAlert(
 			oldDate.toISOString(),
