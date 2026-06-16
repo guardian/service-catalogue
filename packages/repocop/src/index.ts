@@ -23,6 +23,7 @@ import {
 } from './evaluation/repository.js';
 import { sendToCloudwatch } from './metrics.js';
 import {
+	getDependabotMalware,
 	getDependabotVulnerabilities,
 	getProductionWorkflowUsages,
 	getRepositoryBranches,
@@ -35,7 +36,10 @@ import { applyBranchProtectionAndMessageTeams } from './remediation/branch-prote
 import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns.js';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive.js';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production.js';
-import { createAndSendVulnerabilityDigests } from './remediation/vuln-digest/vuln-digest.js';
+import {
+	createAndSendMalwareDigests,
+	createAndSendVulnerabilityDigests,
+} from './remediation/vuln-digest/vuln-digest.js';
 import type { AwsCloudFormationStack, EvaluationResult } from './types.js';
 import { isProduction } from './utils.js';
 
@@ -90,12 +94,21 @@ export async function main() {
 	const repoOwners = await getRepoOwnership(prisma);
 
 	const productionRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+
+	// Critical and high Dependabot alerts with alert_type: 'general'
 	const productionDependabotVulnerabilities: RepocopVulnerability[] =
 		await getDependabotVulnerabilities(
 			productionRepos,
 			config.gitHubOrg,
 			octokit,
 		);
+
+	// All severity Dependabot alerts with alert_type: 'malware'
+	const productionDependabotMalware: RepocopVulnerability[] =
+		await getDependabotMalware(productionRepos, config.gitHubOrg, octokit);
+
+	const combinedProdDependabotVulns: RepocopVulnerability[] =
+		productionDependabotVulnerabilities.concat(productionDependabotMalware);
 
 	const productionWorkflowUsages: guardian_github_actions_usage[] =
 		await getProductionWorkflowUsages(prisma, productionRepos);
@@ -105,26 +118,39 @@ export async function main() {
 		branches,
 		repoOwners,
 		repoLanguages,
-		productionDependabotVulnerabilities,
+		combinedProdDependabotVulns,
 		productionWorkflowUsages,
 	);
 
 	const repocopRules = evaluationResults.map((r) => r.repocopRules);
+
 	const severityPredicate = (x: RepocopVulnerability) => x.severity === 'high';
-	const [high, critical] = partition(
-		evaluationResults.flatMap((r) => r.vulnerabilities),
-		severityPredicate,
+
+	const allVulnerabilities = evaluationResults.flatMap(
+		(r) => r.vulnerabilities,
 	);
+	const generalVulnerabilities = allVulnerabilities.filter(
+		(v) => v.alert_type === 'general',
+	);
+	const [high, critical] = partition(generalVulnerabilities, severityPredicate);
 
 	const highPatchable = high.filter((x) => x.is_patchable).length;
 	const criticalPatchable = critical.filter((x) => x.is_patchable).length;
 
 	console.warn(
-		`Found ${high.length} out of date high vulnerabilities, of which ${highPatchable} are patchable`,
+		`Found ${high.length} high dependency vulnerabilities, of which ${highPatchable} are patchable`,
 	);
 	console.warn(
-		`Found ${critical.length} out of date critical vulnerabilities, of which ${criticalPatchable} are patchable`,
+		`Found ${critical.length} critical dependency vulnerabilities, of which ${criticalPatchable} are patchable`,
 	);
+
+	const malwareVulnerabilities = allVulnerabilities.filter(
+		(v) => v.alert_type === 'malware',
+	);
+
+	if (malwareVulnerabilities.length > 0) {
+		console.warn(`Found ${malwareVulnerabilities.length} malware alerts`);
+	}
 
 	function combineVulnWithOwners(
 		vuln: RepocopVulnerability,
@@ -139,13 +165,13 @@ export async function main() {
 	}
 
 	/**
-	 * Create repocop vulnerabilities and write to repocop_vulnerabilities table
+	 * Create repocop vulnerabilities (general and malware) and write to repocop_vulnerabilities table
 	 */
-	const vulnerabilities = evaluationResults
-		.flatMap((result) => result.vulnerabilities)
-		.flatMap((vuln) => combineVulnWithOwners(vuln, repoOwners));
+	const vulnerabilitiesWithOwners = allVulnerabilities.flatMap((vuln) =>
+		combineVulnWithOwners(vuln, repoOwners),
+	);
 
-	await writeVulnerabilitiesTable(vulnerabilities, prisma);
+	await writeVulnerabilitiesTable(vulnerabilitiesWithOwners, prisma);
 
 	const awsConfig = awsClientConfig(config.stage);
 	const cloudwatch = new CloudWatchClient(awsConfig);
@@ -182,6 +208,7 @@ export async function main() {
 	);
 
 	await writeEvaluationTable(repocopRules, prisma);
+
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
 
@@ -197,7 +224,14 @@ export async function main() {
 			(team) => !externalTeams.includes(team.slug),
 		);
 
+		// Message teams about vulnerabilities and malware
 		await createAndSendVulnerabilityDigests(
+			config,
+			engineeringTeams,
+			repoOwners,
+			evaluationResults,
+		);
+		await createAndSendMalwareDigests(
 			config,
 			engineeringTeams,
 			repoOwners,

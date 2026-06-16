@@ -7,7 +7,6 @@ import { logger } from 'common/src/logs.js';
 import type { AlertType } from 'common/src/types.js';
 import {
 	chooseDependencyScope,
-	type NonEmptyArray,
 	type RepocopVulnerability,
 	type Repository,
 } from 'common/src/types.js';
@@ -34,10 +33,11 @@ function prismaToCustomType(
 
 async function getRepocopVulnerabilities(
 	client: PrismaClient,
-): Promise<NonEmptyArray<ObligatronRepocopVulnerability>> {
+): Promise<ObligatronRepocopVulnerability[]> {
 	const rawResponse = await client.repocop_vulnerabilities.findMany({});
-	// TODO:  filter for alert_type 'general' only
-	return toNonEmptyArray(rawResponse.map(prismaToCustomType));
+	return rawResponse
+		.filter((r) => r.alert_type === 'general') // exclude malware alerts
+		.map(prismaToCustomType);
 }
 
 async function getProductionRepos(client: PrismaClient): Promise<Repository[]> {
@@ -90,6 +90,11 @@ export async function evaluateDependencyVulnerabilityObligation(
 	const vulns = (await getRepocopVulnerabilities(client)).filter(
 		(v) => !v.within_sla,
 	);
+
+	if (vulns.length === 0) {
+		logger.log({ message: 'No dependency vulnerabilities found outside SLA' });
+		return [];
+	}
 
 	const resultsOrUndefined: Array<ObligationResult | undefined> = repos.map(
 		(repo) => {

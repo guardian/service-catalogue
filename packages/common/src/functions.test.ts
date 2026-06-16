@@ -281,6 +281,24 @@ void describe('daysLeftToFix', () => {
 		assert.strictEqual(isSunday, true);
 		assert.strictEqual(daysLeftToFix(sunday, 'critical'), 2);
 	});
+	void it('should reset malware SLA to 1 day remaining when raised on Friday, Saturday, or Sunday', () => {
+		const friday = new Date('2024-10-04'); // Friday
+		const saturday = new Date('2024-10-05'); // Saturday
+		const sunday = new Date('2024-10-06'); // Sunday
+
+		assert.strictEqual(daysLeftToFix(friday, 'critical', 'malware'), 1);
+		assert.strictEqual(daysLeftToFix(saturday, 'critical', 'malware'), 1);
+		assert.strictEqual(daysLeftToFix(sunday, 'critical', 'malware'), 1);
+	});
+
+	void it('should apply the same malware SLA regardless of severity', () => {
+		const friday = new Date('2024-10-04');
+
+		assert.strictEqual(daysLeftToFix(friday, 'low', 'malware'), 1);
+		assert.strictEqual(daysLeftToFix(friday, 'medium', 'malware'), 1);
+		assert.strictEqual(daysLeftToFix(friday, 'high', 'malware'), 1);
+		assert.strictEqual(daysLeftToFix(friday, 'critical', 'malware'), 1);
+	});
 });
 
 const MOCK_TODAY = new Date('2024-01-10');
