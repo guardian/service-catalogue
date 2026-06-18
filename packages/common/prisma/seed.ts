@@ -21,6 +21,16 @@ const orgName = 'guardian';
 const cqSourceName = 'seed';
 const seededAt = new Date('2026-06-01T12:00:00.000Z');
 
+const defaultBranchName = 'main';
+const branchNames = [defaultBranchName, 'develop', 'feature-1'] as const;
+const repositoryCreatedAt = new Date('2020-01-01T00:00:00Z');
+const repositoryUpdatedAt = new Date('2021-01-01T00:00:00Z');
+const workflowDirectory = '.github/workflows';
+const defaultWorkflowPath = 'ci.yaml';
+const cloudFormationAccountId = '000000000000';
+const cloudFormationRegion = 'eu-west-1';
+const defaultRepoTopics = ['production'] as const;
+
 type RoleName = 'triage' | 'read' | 'maintain' | 'write' | 'admin';
 type TeamSlug = 'frontend' | 'backend' | 'devops' | 'cricket';
 
@@ -36,9 +46,20 @@ interface RepoDefinition {
 }
 
 interface RepoBundle {
+	repositoryId: bigint;
 	repo: Prisma.github_repositoriesCreateManyInput;
 	languages: Prisma.github_languagesCreateManyInput;
 	branches: Prisma.github_repository_branchesCreateManyInput[];
+}
+
+interface SeedData {
+	repos: Prisma.github_repositoriesCreateManyInput[];
+	languages: Prisma.github_languagesCreateManyInput[];
+	branches: Prisma.github_repository_branchesCreateManyInput[];
+	teamRepos: Prisma.github_team_repositoriesCreateManyInput[];
+	cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[];
+	githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[];
+	customProperties: Prisma.github_repository_custom_propertiesCreateManyInput[];
 }
 
 const teamDefinitions = [
@@ -48,7 +69,7 @@ const teamDefinitions = [
 	{ id: 4, slug: 'cricket' },
 ] as const satisfies ReadonlyArray<{ id: number; slug: TeamSlug }>;
 
-const repoDefinitions = [
+const repoDefinitions: readonly RepoDefinition[] = [
 	{
 		id: 1,
 		name: 'dotcom-rendering',
@@ -84,7 +105,7 @@ const repoDefinitions = [
 		githubActionsUses: ['actions/checkout@v2', 'actions/setup-go@v2'],
 		cloudFormation: true,
 	},
-] as const satisfies readonly RepoDefinition[];
+];
 
 const createSeedMetadata = (cq_source_name: string = cqSourceName) => ({
 	cq_sync_time: null,
@@ -92,6 +113,10 @@ const createSeedMetadata = (cq_source_name: string = cqSourceName) => ({
 	cq_id: randomUUID(),
 	cq_parent_id: null,
 });
+
+function capitalise(value: string): string {
+	return value.charAt(0).toUpperCase() + value.slice(1);
+}
 
 function createTeam(
 	id: number,
@@ -102,7 +127,7 @@ function createTeam(
 	return {
 		...createSeedMetadata(cq_source_name),
 		id: BigInt(id),
-		name: slug.charAt(0).toUpperCase() + slug.slice(1),
+		name: capitalise(slug),
 		slug,
 		description: `The ${slug} team`,
 		org,
@@ -137,7 +162,7 @@ function createBranch(
 		protection: Prisma.DbNull,
 		name: branchName,
 		commit: Prisma.DbNull,
-		protected: branchName === 'main',
+		protected: branchName === defaultBranchName,
 	};
 }
 
@@ -148,22 +173,24 @@ function createRepoAndChildren(
 	org: string = orgName,
 	cq_source_name: string = cqSourceName,
 ): RepoBundle {
+	const repositoryId = BigInt(id);
 	const fullName = `${org}/${name}`;
+
 	const repo: Prisma.github_repositoriesCreateManyInput = {
 		...createSeedMetadata(cq_source_name),
 		org,
-		id: BigInt(id),
+		id: repositoryId,
 		node_id: null,
 		owner: Prisma.DbNull,
 		name,
 		full_name: fullName,
 		description: `The ${name} repository`,
-		created_at: new Date('2020-01-01T00:00:00Z'),
-		default_branch: 'main',
-		pushed_at: new Date('2021-01-01T00:00:00Z'),
-		updated_at: new Date('2021-01-01T00:00:00Z'),
+		created_at: repositoryCreatedAt,
+		default_branch: defaultBranchName,
+		pushed_at: repositoryUpdatedAt,
+		updated_at: repositoryUpdatedAt,
 		language: languageList[0] ?? null,
-		topics: ['production'],
+		topics: [...defaultRepoTopics],
 		homepage: null,
 		code_of_conduct: Prisma.DbNull,
 		master_branch: null,
@@ -261,6 +288,7 @@ function createRepoAndChildren(
 	};
 
 	return {
+		repositoryId,
 		repo,
 		languages: {
 			...createSeedMetadata(cq_source_name),
@@ -268,8 +296,8 @@ function createRepoAndChildren(
 			name,
 			languages: [...languageList],
 		},
-		branches: ['main', 'develop', 'feature-1'].map((branchName) =>
-			createBranch(repo.id, repo.org, branchName, cq_source_name),
+		branches: branchNames.map((branchName) =>
+			createBranch(repositoryId, org, branchName, cq_source_name),
 		),
 	};
 }
@@ -293,10 +321,8 @@ function createCloudFormationStack(
 	name: string,
 	cq_source_name: string = cqSourceName,
 ): Prisma.aws_cloudformation_stacksCreateManyInput {
-	const accountId = '000000000000';
-	const region = 'eu-west-1';
 	const uuid = randomUUID();
-	const arn = `arn:aws:cloudformation:${region}:${accountId}:stack/${name}/${uuid}`;
+	const arn = `arn:aws:cloudformation:${cloudFormationRegion}:${cloudFormationAccountId}:stack/${name}/${uuid}`;
 
 	return {
 		...createSeedMetadata(cq_source_name),
@@ -307,10 +333,10 @@ function createCloudFormationStack(
 			{ Key: 'App', Value: `${name}-app` },
 			{ Key: 'gu:repo', Value: `${orgName}/${name}` },
 		] as Prisma.InputJsonValue,
-		account_id: accountId,
-		region,
+		account_id: cloudFormationAccountId,
+		region: cloudFormationRegion,
 		stack_status: 'CREATE_COMPLETE',
-		creation_time: new Date('2020-01-01T00:00:00Z'),
+		creation_time: repositoryCreatedAt,
 		arn,
 		stack_name: name,
 		capabilities: [],
@@ -339,9 +365,10 @@ function createCloudFormationStack(
 
 function createCustomProperties(
 	repoId: bigint,
+	cq_source_name: string = cqSourceName,
 ): Prisma.github_repository_custom_propertiesCreateManyInput {
 	return {
-		...createSeedMetadata(),
+		...createSeedMetadata(cq_source_name),
 		org: orgName,
 		property_name: 'gu_dependency_graph_integrator_ignore',
 		repository_id: repoId,
@@ -352,78 +379,79 @@ function createCustomProperties(
 function createGithubActionsUsage(
 	name: string,
 	workflowUses: readonly string[],
-	workflowPath: string = 'ci.yaml',
+	workflowPath: string = defaultWorkflowPath,
 ): Prisma.guardian_github_actions_usageCreateManyInput {
 	return {
 		evaluated_on: seededAt,
 		full_name: `${orgName}/${name}`,
-		workflow_path: `.github/workflows/${workflowPath}`,
+		workflow_path: `${workflowDirectory}/${workflowPath}`,
 		workflow_uses: [...workflowUses],
+	};
+}
+
+function createEmptySeedData(): SeedData {
+	return {
+		repos: [],
+		languages: [],
+		branches: [],
+		teamRepos: [],
+		cloudFormationStacks: [],
+		githubActionsUsages: [],
+		customProperties: [],
 	};
 }
 
 async function main() {
 	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
-	const teamsBySlug = new Map(
-		teamDefinitions.map(({ slug }, index) => [slug, teams[index]] as const),
+	const teamIdsBySlug = new Map<TeamSlug, bigint>(
+		teamDefinitions.map(({ id, slug }) => [slug, BigInt(id)] as const),
 	);
 
-	const repoBundles = repoDefinitions.map(({ id, name, languages }) =>
-		createRepoAndChildren(id, name, languages),
-	);
-	const repoByName = new Map(
-		repoDefinitions.map(
-			({ name }, index) => [name, repoBundles[index]] as const,
-		),
-	);
+	const seedData = repoDefinitions.reduce<SeedData>((acc, definition) => {
+		const repoBundle = createRepoAndChildren(
+			definition.id,
+			definition.name,
+			definition.languages,
+		);
 
-	const repos = repoBundles.map(({ repo }) => repo);
-	const languages = repoBundles.map(
-		({ languages: repoLanguages }) => repoLanguages,
-	);
-	const branches = repoBundles.flatMap(
-		({ branches: repoBranches }) => repoBranches,
-	);
+		acc.repos.push(repoBundle.repo);
+		acc.languages.push(repoBundle.languages);
+		acc.branches.push(...repoBundle.branches);
+		acc.githubActionsUsages.push(
+			createGithubActionsUsage(
+				definition.name,
+				definition.githubActionsUses,
+				definition.workflowPath ?? defaultWorkflowPath,
+			),
+		);
 
-	const teamRepos = repoDefinitions.flatMap(({ name, owners }) => {
-		const repoBundle = repoByName.get(name);
-		if (!repoBundle) {
-			throw new Error(`Missing seeded repo: ${name}`);
-		}
-
-		return owners.map(({ teamSlug, roleName }) => {
-			const team = teamsBySlug.get(teamSlug);
-			if (!team) {
+		for (const { teamSlug, roleName } of definition.owners) {
+			const teamId = teamIdsBySlug.get(teamSlug);
+			if (!teamId) {
 				throw new Error(`Missing seeded team: ${teamSlug}`);
 			}
 
-			return createRepoOwnership(repoBundle.repo, team.id, roleName);
-		});
-	});
+			acc.teamRepos.push(
+				createRepoOwnership(repoBundle.repo, teamId, roleName),
+			);
+		}
 
-	const cloudFormationStacks = repoDefinitions
-		.filter(({ cloudFormation }) => cloudFormation)
-		.map(({ name }) => createCloudFormationStack(name));
+		if (definition.cloudFormation === true) {
+			acc.cloudFormationStacks.push(createCloudFormationStack(definition.name));
+		}
 
-	const githubActionsUsages = repoDefinitions.map(
-		({ name, githubActionsUses, workflowPath }) =>
-			createGithubActionsUsage(name, githubActionsUses, workflowPath),
+		if (definition.customProperties === true) {
+			acc.customProperties.push(
+				createCustomProperties(repoBundle.repositoryId),
+			);
+		}
+
+		return acc;
+	}, createEmptySeedData());
+
+	const seededRepoFullNames = repoDefinitions.map(
+		({ name }) => `${orgName}/${name}`,
 	);
-
-	const customProperties = repoDefinitions
-		.filter(({ customProperties }) => customProperties)
-		.map(({ name }) => {
-			const repoBundle = repoByName.get(name);
-			if (!repoBundle) {
-				throw new Error(`Missing seeded repo for custom properties: ${name}`);
-			}
-
-			return createCustomProperties(repoBundle.repo.id);
-		});
-
-	const seededRepoFullNames = repos
-		.map(({ full_name }) => full_name)
-		.filter((value): value is string => value !== null);
 
 	const seedFilter = { where: { cq_source_name: cqSourceName } };
 
@@ -435,7 +463,6 @@ async function main() {
 		await tx.github_repository_branches.deleteMany(seedFilter);
 		await tx.github_repository_custom_properties.deleteMany(seedFilter);
 		await tx.github_team_repositories.deleteMany(seedFilter);
-		await tx.github_workflows.deleteMany(seedFilter);
 		await tx.github_languages.deleteMany(seedFilter);
 		await tx.guardian_github_actions_usage.deleteMany({
 			where: {
@@ -448,23 +475,28 @@ async function main() {
 		await tx.github_teams.deleteMany(seedFilter);
 
 		await tx.github_teams.createMany({ data: teams });
-		await tx.github_repositories.createMany({ data: repos });
-		await tx.github_languages.createMany({ data: languages });
-		await tx.github_team_repositories.createMany({ data: teamRepos });
-		await tx.github_repository_branches.createMany({ data: branches });
-		await tx.aws_cloudformation_stacks.createMany({
-			data: cloudFormationStacks,
-		});
+		await tx.github_repositories.createMany({ data: seedData.repos });
+		await tx.github_languages.createMany({ data: seedData.languages });
+		await tx.github_team_repositories.createMany({ data: seedData.teamRepos });
+		await tx.github_repository_branches.createMany({ data: seedData.branches });
 
-		if (customProperties.length > 0) {
-			await tx.github_repository_custom_properties.createMany({
-				data: customProperties,
+		if (seedData.cloudFormationStacks.length > 0) {
+			await tx.aws_cloudformation_stacks.createMany({
+				data: seedData.cloudFormationStacks,
 			});
 		}
 
-		await tx.guardian_github_actions_usage.createMany({
-			data: githubActionsUsages,
-		});
+		if (seedData.customProperties.length > 0) {
+			await tx.github_repository_custom_properties.createMany({
+				data: seedData.customProperties,
+			});
+		}
+
+		if (seedData.githubActionsUsages.length > 0) {
+			await tx.guardian_github_actions_usage.createMany({
+				data: seedData.githubActionsUsages,
+			});
+		}
 	});
 
 	console.log('Seeding complete!');
