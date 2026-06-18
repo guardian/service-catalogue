@@ -88,7 +88,7 @@ export function chooseDependencyScope(
 
 export type RepocopVulnerability = Omit<
 	repocop_vulnerabilities,
-	'id' | 'repo_owner' | 'severity' | 'scope' | 'alert_type'
+	'id' | 'repo_owner' | 'severity' | 'scope' | 'alert_type' | 'ingested_at'
 > & {
 	severity: Severity;
 	scope: DependencyScope;
