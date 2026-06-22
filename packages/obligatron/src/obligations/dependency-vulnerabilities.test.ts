@@ -34,6 +34,11 @@ void describe('The dependency vulnerabilities obligation', () => {
 		within_sla: false,
 		scope: 'runtime',
 		alert_type: 'general',
+		advisory_published_at: someDate,
+		advisory_updated_at: someDate,
+		advisory_withdrawn_at: null,
+		alert_updated_at: someDate,
+		html_url: 'https://github.com/some/repo/security/dependabot/1',
 	};
 
 	void it('should return something if it finds a vulnerability on a repo', () => {

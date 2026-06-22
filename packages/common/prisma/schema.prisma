@@ -657,21 +657,27 @@ model guardian_github_actions_usage {
 }
 
 model repocop_vulnerabilities {
-  source           String
-  full_name        String
-  open             Boolean
-  severity         String
-  package          String
-  urls             String[]
-  ecosystem        String
-  alert_issue_date DateTime
-  is_patchable     Boolean
-  cves             String[]
-  repo_owner       String
-  id               String   @id @default(uuid())
-  within_sla       Boolean
-  scope            String   @default("runtime")
-  alert_type       String
+  source                String
+  full_name             String
+  open                  Boolean
+  severity              String
+  package               String
+  urls                  String[]
+  ecosystem             String
+  alert_issue_date      DateTime
+  is_patchable          Boolean
+  cves                  String[]
+  repo_owner            String
+  id                    String    @id @default(uuid())
+  within_sla            Boolean
+  scope                 String    @default("runtime")
+  alert_type            String
+  ingested_at           DateTime  @default(now()) @db.Timestamptz(6)
+  advisory_published_at DateTime  @db.Timestamptz(6)
+  advisory_updated_at   DateTime  @db.Timestamptz(6)
+  advisory_withdrawn_at DateTime? @db.Timestamptz(6)
+  alert_updated_at      DateTime  @db.Timestamptz(6)
+  html_url              String
 }
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.

@@ -533,6 +533,13 @@ export function dependabotAlertToRepocopVulnerability(
 			fullName,
 		),
 		alert_type,
+		advisory_published_at: new Date(alert.security_advisory.published_at),
+		advisory_updated_at: new Date(alert.security_advisory.updated_at),
+		advisory_withdrawn_at: alert.security_advisory.withdrawn_at
+			? new Date(alert.security_advisory.withdrawn_at)
+			: null,
+		alert_updated_at: new Date(alert.updated_at),
+		html_url: alert.html_url,
 	};
 }
 

@@ -572,6 +572,11 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	within_sla: false,
 	scope: 'runtime',
 	alert_type: 'general',
+	advisory_published_at: new Date('2026-06-18T00:00:00.000Z'),
+	advisory_updated_at: new Date('2026-06-18T00:00:00.000Z'),
+	advisory_withdrawn_at: null,
+	alert_updated_at: new Date('2026-06-18T00:00:00.000Z'),
+	html_url: 'https://github.com/guardian/some-repo/security/dependabot/1',
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -677,6 +682,11 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			within_sla: false,
 			scope: 'runtime',
 			alert_type: 'general',
+			advisory_published_at: new Date('2018-10-03T21:13:54Z'),
+			advisory_updated_at: new Date('2022-04-26T18:35:37Z'),
+			advisory_withdrawn_at: null,
+			alert_updated_at: new Date('2022-08-23T14:29:47Z'),
+			html_url: 'https://github.com/octo-org/octo-repo/security/dependabot/2',
 		};
 
 		const expected2: RepocopVulnerability = {
@@ -697,6 +707,11 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 			within_sla: false,
 			scope: 'runtime',
 			alert_type: 'general',
+			advisory_published_at: new Date('2021-06-01T17:38:00Z'),
+			advisory_updated_at: new Date('2021-08-12T23:06:00Z'),
+			advisory_withdrawn_at: null,
+			alert_updated_at: new Date('2022-06-14T15:21:52Z'),
+			html_url: 'https://github.com/octo-org/hello-world/security/dependabot/1',
 		};
 
 		assert.deepStrictEqual(result, [expected1, expected2]);
@@ -786,6 +801,75 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 
 		assert.strictEqual(result.alert_type, 'general');
 	});
+
+	void test('maps a non-null withdrawn_at ISO timestamp to a Date', () => {
+		const withdrawnAt = '2024-03-15T10:00:00Z';
+		const baseAlert = exampleDependabotAlert[0];
+		if (!baseAlert) {
+			throw new Error('Missing example Dependabot alert fixture');
+		}
+		const alert: Alert = {
+			...baseAlert,
+			security_advisory: {
+				...baseAlert.security_advisory,
+				withdrawn_at: withdrawnAt,
+			},
+		};
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.deepStrictEqual(result.advisory_withdrawn_at, new Date(withdrawnAt));
+	});
+
+	void test('maps advisory and alert metadata fields from the source alert', () => {
+		const baseAlert = exampleDependabotAlert[0];
+		if (!baseAlert) {
+			throw new Error('Missing example Dependabot alert fixture');
+		}
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			baseAlert,
+		);
+
+		assert.deepStrictEqual(
+			result.advisory_published_at,
+			new Date(baseAlert.security_advisory.published_at),
+		);
+		assert.deepStrictEqual(
+			result.advisory_updated_at,
+			new Date(baseAlert.security_advisory.updated_at),
+		);
+		assert.deepStrictEqual(
+			result.alert_updated_at,
+			new Date(baseAlert.updated_at),
+		);
+		assert.strictEqual(result.html_url, baseAlert.html_url);
+	});
+
+	void test('maps a null withdrawn_at to null', () => {
+		const baseAlert = exampleDependabotAlert[0];
+		if (!baseAlert) {
+			throw new Error('Missing example Dependabot alert fixture');
+		}
+		const alert: Alert = {
+			...baseAlert,
+			security_advisory: {
+				...baseAlert.security_advisory,
+				withdrawn_at: null,
+			},
+		};
+
+		const result = dependabotAlertToRepocopVulnerability(
+			'guardian/some-repo',
+			alert,
+		);
+
+		assert.strictEqual(result.advisory_withdrawn_at, null);
+	});
 });
 
 void describe('Deduplication of repocop vulnerabilities', () => {
@@ -804,6 +888,11 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		within_sla: false,
 		scope: 'runtime',
 		alert_type: 'general',
+		advisory_published_at: new Date('2018-10-03T21:13:54Z'),
+		advisory_updated_at: new Date('2022-04-26T18:35:37Z'),
+		advisory_withdrawn_at: null,
+		alert_updated_at: new Date('2022-06-15T07:43:03Z'),
+		html_url: 'https://github.com/guardian/myrepo/security/dependabot/1',
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
@@ -819,6 +908,11 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		within_sla: false,
 		scope: 'runtime',
 		alert_type: 'general',
+		advisory_published_at: new Date('2018-10-03T21:13:54Z'),
+		advisory_updated_at: new Date('2022-04-26T18:35:37Z'),
+		advisory_withdrawn_at: null,
+		alert_updated_at: new Date('2022-06-15T07:43:03Z'),
+		html_url: 'https://github.com/guardian/myrepo/security/dependabot/2',
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	void test('Should happen if two vulnerabilities share the same CVEs', () => {
