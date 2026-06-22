@@ -60,6 +60,7 @@ interface SeedData {
 	cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[];
 	githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[];
 	customProperties: Prisma.github_repository_custom_propertiesCreateManyInput[];
+	securityHubFindings: Prisma.aws_securityhub_findingsCreateManyInput[];
 }
 
 const teamDefinitions = [
@@ -228,7 +229,7 @@ function createRepoAndChildren(
 		squash_merge_commit_message: null,
 		merge_commit_title: null,
 		merge_commit_message: null,
-		archived: null,
+		archived: false,
 		disabled: null,
 		license: Prisma.DbNull,
 		private: null,
@@ -389,6 +390,53 @@ function createGithubActionsUsage(
 	};
 }
 
+function createSecurityHubFinding(
+	accountId: string,
+	accountName: string,
+	controlId: string,
+	title: string,
+	severityLabel: 'CRITICAL' | 'HIGH',
+	severityNormalized: number,
+	resourceArn: string,
+	resourceRegion: string,
+	resourceType: string,
+	resourceTags: Record<string, string>,
+	cq_source_name: string = cqSourceName,
+): Prisma.aws_securityhub_findingsCreateManyInput {
+	return {
+		...createSeedMetadata(cq_source_name),
+		request_account_id: accountId,
+		request_region: resourceRegion,
+		aws_account_id: accountId,
+		aws_account_name: accountName,
+		title,
+		generator_id: `aws-foundational-security-best-practices/v/1.0.0/${controlId}`,
+		product_fields: { ControlId: controlId },
+		severity: { Label: severityLabel, Normalized: severityNormalized },
+		resources: [
+			{
+				Id: resourceArn,
+				Region: resourceRegion,
+				Type: resourceType,
+				Tags: resourceTags,
+			},
+		],
+		remediation: {
+			Recommendation: {
+				Url: `https://docs.aws.amazon.com/console/securityhub/${controlId}/remediation`,
+			},
+		},
+		workflow: { Status: 'NEW' },
+		record_state: 'ACTIVE',
+		compliance: { Status: 'FAILED' },
+		first_observed_at: seededAt,
+		created_at: seededAt,
+		updated_at: seededAt,
+		region: resourceRegion,
+		types: ['Software and Configuration Checks/AWS Security Best Practices'],
+	};
+}
+
 function createEmptySeedData(): SeedData {
 	return {
 		repos: [],
@@ -398,6 +446,7 @@ function createEmptySeedData(): SeedData {
 		cloudFormationStacks: [],
 		githubActionsUsages: [],
 		customProperties: [],
+		securityHubFindings: [],
 	};
 }
 
@@ -438,6 +487,26 @@ async function main() {
 
 		if (definition.cloudFormation === true) {
 			acc.cloudFormationStacks.push(createCloudFormationStack(definition.name));
+
+			acc.securityHubFindings.push(
+				createSecurityHubFinding(
+					cloudFormationAccountId,
+					'guardian-deploy-tools',
+					'S3.5',
+					`Sample finding for ${definition.name}`,
+					'HIGH',
+					70,
+					`arn:aws:s3:::${definition.name}-bucket`,
+					cloudFormationRegion,
+					'AwsS3Bucket',
+					{
+						Stack: `${definition.name}-stack`,
+						Stage: 'PROD',
+						App: `${definition.name}-app`,
+						'gu:repo': `${orgName}/${definition.name}`,
+					},
+				),
+			);
 		}
 
 		if (definition.customProperties === true) {
@@ -470,9 +539,11 @@ async function main() {
 				full_name: { in: seededRepoFullNames },
 			},
 		});
+		await tx.aws_securityhub_findings.deleteMany(seedFilter);
 		await tx.aws_cloudformation_stacks.deleteMany(seedFilter);
 		await tx.github_repositories.deleteMany(seedFilter);
 		await tx.github_teams.deleteMany(seedFilter);
+		await tx.cloudbuster_fsbp_vulnerabilities.deleteMany({});
 
 		await tx.github_teams.createMany({ data: teams });
 		await tx.github_repositories.createMany({ data: seedData.repos });
@@ -495,6 +566,12 @@ async function main() {
 		if (seedData.githubActionsUsages.length > 0) {
 			await tx.guardian_github_actions_usage.createMany({
 				data: seedData.githubActionsUsages,
+			});
+		}
+
+		if (seedData.securityHubFindings.length > 0) {
+			await tx.aws_securityhub_findings.createMany({
+				data: seedData.securityHubFindings,
 			});
 		}
 	});
