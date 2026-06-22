@@ -450,6 +450,15 @@ function createEmptySeedData(): SeedData {
 	};
 }
 
+async function createManyIfAny<T>(
+	data: T[],
+	create: (rows: T[]) => Promise<unknown>,
+): Promise<void> {
+	if (data.length > 0) {
+		await create(data);
+	}
+}
+
 async function main() {
 	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
 	const teamIdsBySlug = new Map<TeamSlug, bigint>(
@@ -543,7 +552,12 @@ async function main() {
 		await tx.aws_cloudformation_stacks.deleteMany(seedFilter);
 		await tx.github_repositories.deleteMany(seedFilter);
 		await tx.github_teams.deleteMany(seedFilter);
+
+		// runtime/output tables: always clear for reproducible local runs
 		await tx.cloudbuster_fsbp_vulnerabilities.deleteMany({});
+		await tx.repocop_github_repository_rules.deleteMany({});
+		await tx.repocop_vulnerabilities.deleteMany({});
+		await tx.obligatron_results.deleteMany({});
 
 		await tx.github_teams.createMany({ data: teams });
 		await tx.github_repositories.createMany({ data: seedData.repos });
@@ -551,29 +565,21 @@ async function main() {
 		await tx.github_team_repositories.createMany({ data: seedData.teamRepos });
 		await tx.github_repository_branches.createMany({ data: seedData.branches });
 
-		if (seedData.cloudFormationStacks.length > 0) {
-			await tx.aws_cloudformation_stacks.createMany({
-				data: seedData.cloudFormationStacks,
-			});
-		}
+		await createManyIfAny(seedData.cloudFormationStacks, (data) =>
+			tx.aws_cloudformation_stacks.createMany({ data }),
+		);
 
-		if (seedData.customProperties.length > 0) {
-			await tx.github_repository_custom_properties.createMany({
-				data: seedData.customProperties,
-			});
-		}
+		await createManyIfAny(seedData.customProperties, (data) =>
+			tx.github_repository_custom_properties.createMany({ data }),
+		);
 
-		if (seedData.githubActionsUsages.length > 0) {
-			await tx.guardian_github_actions_usage.createMany({
-				data: seedData.githubActionsUsages,
-			});
-		}
+		await createManyIfAny(seedData.githubActionsUsages, (data) =>
+			tx.guardian_github_actions_usage.createMany({ data }),
+		);
 
-		if (seedData.securityHubFindings.length > 0) {
-			await tx.aws_securityhub_findings.createMany({
-				data: seedData.securityHubFindings,
-			});
-		}
+		await createManyIfAny(seedData.securityHubFindings, (data) =>
+			tx.aws_securityhub_findings.createMany({ data }),
+		);
 	});
 
 	console.log('Seeding complete!');
