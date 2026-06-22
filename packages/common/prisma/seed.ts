@@ -70,24 +70,33 @@ const teamDefinitions = [
 	{ id: 4, slug: 'cricket' },
 ] as const satisfies ReadonlyArray<{ id: number; slug: TeamSlug }>;
 
+const owner = (
+	teamSlug: TeamSlug,
+	roleName: RoleName = 'admin',
+): { teamSlug: TeamSlug; roleName: RoleName } => ({ teamSlug, roleName });
+
+const githubActionUses = {
+	node: ['actions/checkout@v2', 'actions/setup-node@v2'],
+	scala: ['actions/checkout@v2', 'actions/setup-scala@v1'],
+	python: ['actions/checkout@v2', 'actions/setup-python@v2'],
+	go: ['actions/checkout@v2', 'actions/setup-go@v2'],
+} as const;
+
 const repoDefinitions: readonly RepoDefinition[] = [
 	{
 		id: 1,
 		name: 'dotcom-rendering',
 		languages: ['TypeScript', 'JavaScript', 'HTML', 'CSS', 'Shell'],
-		owners: [{ teamSlug: 'frontend', roleName: 'admin' }],
-		githubActionsUses: ['actions/checkout@v2', 'actions/setup-node@v2'],
+		owners: [owner('frontend')],
+		githubActionsUses: githubActionUses.node,
 		cloudFormation: true,
 	},
 	{
 		id: 2,
 		name: 'janus-app',
 		languages: ['Scala', 'Dockerfile', 'Shell'],
-		owners: [
-			{ teamSlug: 'backend', roleName: 'admin' },
-			{ teamSlug: 'devops', roleName: 'admin' },
-		],
-		githubActionsUses: ['actions/checkout@v2', 'actions/setup-scala@v1'],
+		owners: [owner('backend'), owner('devops')],
+		githubActionsUses: githubActionUses.scala,
 		cloudFormation: true,
 		customProperties: true,
 	},
@@ -95,15 +104,15 @@ const repoDefinitions: readonly RepoDefinition[] = [
 		id: 3,
 		name: 'fsbp-fix',
 		languages: ['Go', 'Shell'],
-		owners: [{ teamSlug: 'devops', roleName: 'admin' }],
-		githubActionsUses: ['actions/checkout@v2', 'actions/setup-python@v2'],
+		owners: [owner('devops')],
+		githubActionsUses: githubActionUses.python,
 	},
 	{
 		id: 4,
 		name: 'cricket',
 		languages: ['Python', 'Terraform', 'Shell'],
-		owners: [{ teamSlug: 'cricket', roleName: 'admin' }],
-		githubActionsUses: ['actions/checkout@v2', 'actions/setup-go@v2'],
+		owners: [owner('cricket')],
+		githubActionsUses: githubActionUses.go,
 		cloudFormation: true,
 	},
 ];
@@ -437,6 +446,36 @@ function createSecurityHubFinding(
 	};
 }
 
+function addOptionalSeedData(acc: SeedData, definition: RepoDefinition): void {
+	if (definition.cloudFormation === true) {
+		acc.cloudFormationStacks.push(createCloudFormationStack(definition.name));
+
+		acc.securityHubFindings.push(
+			createSecurityHubFinding(
+				cloudFormationAccountId,
+				'guardian-deploy-tools',
+				'S3.5',
+				`Sample finding for ${definition.name}`,
+				'HIGH',
+				70,
+				`arn:aws:s3:::${definition.name}-bucket`,
+				cloudFormationRegion,
+				'AwsS3Bucket',
+				{
+					Stack: `${definition.name}-stack`,
+					Stage: 'PROD',
+					App: `${definition.name}-app`,
+					'gu:repo': `${orgName}/${definition.name}`,
+				},
+			),
+		);
+	}
+
+	if (definition.customProperties === true) {
+		acc.customProperties.push(createCustomProperties(BigInt(definition.id)));
+	}
+}
+
 function createEmptySeedData(): SeedData {
 	return {
 		repos: [],
@@ -475,6 +514,7 @@ async function main() {
 		acc.repos.push(repoBundle.repo);
 		acc.languages.push(repoBundle.languages);
 		acc.branches.push(...repoBundle.branches);
+
 		acc.githubActionsUsages.push(
 			createGithubActionsUsage(
 				definition.name,
@@ -494,35 +534,8 @@ async function main() {
 			);
 		}
 
-		if (definition.cloudFormation === true) {
-			acc.cloudFormationStacks.push(createCloudFormationStack(definition.name));
-
-			acc.securityHubFindings.push(
-				createSecurityHubFinding(
-					cloudFormationAccountId,
-					'guardian-deploy-tools',
-					'S3.5',
-					`Sample finding for ${definition.name}`,
-					'HIGH',
-					70,
-					`arn:aws:s3:::${definition.name}-bucket`,
-					cloudFormationRegion,
-					'AwsS3Bucket',
-					{
-						Stack: `${definition.name}-stack`,
-						Stage: 'PROD',
-						App: `${definition.name}-app`,
-						'gu:repo': `${orgName}/${definition.name}`,
-					},
-				),
-			);
-		}
-
-		if (definition.customProperties === true) {
-			acc.customProperties.push(
-				createCustomProperties(repoBundle.repositoryId),
-			);
-		}
+		// handles cloudFormation + customProperties in one place
+		addOptionalSeedData(acc, definition);
 
 		return acc;
 	}, createEmptySeedData());
