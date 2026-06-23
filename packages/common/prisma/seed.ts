@@ -497,8 +497,31 @@ async function createManyIfAny<T>(
 		await create(data);
 	}
 }
+// Local seed data needs this helper because the aws_resources materialized view
+// depends on it, and refresh-materialized-view refreshes that view in DEV.
+async function ensureTableHasColumnFunction(): Promise<void> {
+	await prisma.$executeRawUnsafe(`
+        CREATE OR REPLACE FUNCTION public.table_has_column(
+            p_table_name information_schema.sql_identifier,
+            p_column_name text
+        )
+        RETURNS boolean
+        LANGUAGE sql
+        STABLE
+        AS $$
+            SELECT EXISTS (
+                SELECT 1
+                FROM information_schema.columns c
+                WHERE c.table_schema = 'public'
+                    AND c.table_name = p_table_name
+                    AND c.column_name = p_column_name
+            );
+        $$;
+    `);
+}
 
 async function main() {
+	await ensureTableHasColumnFunction();
 	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
 	const teamIdsBySlug = new Map<TeamSlug, bigint>(
 		teamDefinitions.map(({ id, slug }) => [slug, BigInt(id)] as const),
