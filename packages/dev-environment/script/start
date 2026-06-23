@@ -71,6 +71,11 @@ ensure_container_runtime() {
   done
 }
 
+generate_prisma_client() {
+  step "Generating Prisma client"
+  (cd "$ROOT_DIR/packages/common" && npx prisma generate)
+}
+
 start_app_containers() {
   step "Launching CloudQuery and Grafana"
   "${COMPOSE_CMD[@]}" up -d --build cloudquery grafana
@@ -79,8 +84,8 @@ start_app_containers() {
 main() {
   ensure_container_runtime
   start_postgres
-  seed_database
-  
+  generate_prisma_client
+  seed_database  
   start_app_containers
 }
 
