@@ -58,28 +58,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  
+
   prisma-seed:
     image: node:24.16-trixie
+    # Runs as root to avoid permission issues with named volumes in local dev
+    user: "0:0"
     working_dir: /workspace/packages/common
     volumes:
       - ../../:/workspace
+      - prisma_seed_root_node_modules:/workspace/node_modules
+      - prisma_seed_common_node_modules:/workspace/packages/common/node_modules
     environment:
       DATABASE_HOSTNAME: postgres
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:${DATABASE_PORT}/${DATABASE_NAME}
-      STAGE: local
+      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable
+      STAGE: DEV
     depends_on:
       postgres:
         condition: service_healthy
-    command:
-      - /bin/sh
-      - -exc
-      - |
-        npm install --no-save --ignore-scripts --prefix /tmp/prisma-bin prisma@${PRISMA_VERSION}
-        /tmp/prisma-bin/node_modules/.bin/prisma migrate deploy
-        /tmp/prisma-bin/node_modules/.bin/prisma db seed
+    command: /workspace/packages/dev-environment/script/prisma-seed
 
   cloudquery:
     build:
@@ -102,10 +100,11 @@ services:
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
-      GALAXIES_BUCKET: ${GALAXIES_BUCKET}
+      GALAXIES_BUCKET: ${GALAXIES_BUCKET:-}
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
       DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
+
   grafana:
     image: grafana/grafana-oss:10.3.1
     depends_on:
@@ -122,3 +121,7 @@ services:
       GF_LOG_LEVEL: debug
       GF_DATAPROXY_LOGGING: 1
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: theguardian-servicecatalogue-app
+
+volumes:
+  prisma_seed_root_node_modules:
+  prisma_seed_common_node_modules:
