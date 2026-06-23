@@ -1,0 +1,50 @@
+#!/bin/sh
+set -eu
+
+cd /workspace
+mkdir -p /workspace/node_modules
+mkdir -p /workspace/packages/common/node_modules
+
+# Hash package-lock.json to detect dependency changes
+if [ ! -f /workspace/package-lock.json ]; then
+  echo "package-lock.json not found. Run npm install first."
+  exit 1
+fi
+
+LOCK_HASH_FILE=/workspace/node_modules/.prisma-seed-lockhash
+CURRENT_LOCK_HASH="$(sha256sum /workspace/package-lock.json | awk '{print $1}')"
+
+if [ ! -x /workspace/node_modules/.bin/tsx ] || \
+   [ ! -f "$LOCK_HASH_FILE" ] || \
+   [ "$CURRENT_LOCK_HASH" != "$(cat "$LOCK_HASH_FILE")" ]; then
+  echo "Installing dependencies..."
+  # Installs root + common workspace only; sufficient for seed.ts
+  npm ci --workspace common --include-workspace-root
+  echo "$CURRENT_LOCK_HASH" > "$LOCK_HASH_FILE"
+else
+  echo "Dependencies up to date, skipping install."
+fi
+
+# Read Prisma version from package.json, checking both dep types
+PRISMA_VERSION="$(node -p "
+  const p = require('/workspace/packages/common/package.json');
+  p.devDependencies?.prisma || p.dependencies?.prisma || (() => { throw new Error('prisma version not found') })()
+")"
+
+PRISMA_BIN=/workspace/node_modules/.prisma-bin
+PRISMA_VERSION_FILE=/workspace/node_modules/.prisma-bin-version
+
+if [ ! -x "$PRISMA_BIN/node_modules/.bin/prisma" ] || \
+   [ ! -f "$PRISMA_VERSION_FILE" ] || \
+   [ "$PRISMA_VERSION" != "$(cat "$PRISMA_VERSION_FILE")" ]; then
+  echo "Installing Prisma CLI $PRISMA_VERSION..."
+  # Remove stale cached CLI before reinstalling
+  rm -rf "$PRISMA_BIN"
+  npm install --no-save --prefix "$PRISMA_BIN" "prisma@$PRISMA_VERSION"
+  echo "$PRISMA_VERSION" > "$PRISMA_VERSION_FILE"
+fi
+
+cd /workspace/packages/common
+"$PRISMA_BIN/node_modules/.bin/prisma" generate
+"$PRISMA_BIN/node_modules/.bin/prisma" migrate deploy
+"$PRISMA_BIN/node_modules/.bin/prisma" db seed
