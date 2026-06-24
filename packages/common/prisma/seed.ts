@@ -667,7 +667,7 @@ async function main() {
 				full_name: { in: seededRepoFullNames },
 			},
 		});
-        await tx.cloudquery_plugin_usage.deleteMany({});
+		await tx.cloudquery_plugin_usage.deleteMany({});
 		await tx.cloudbuster_fsbp_vulnerabilities.deleteMany({});
 		await tx.repocop_github_repository_rules.deleteMany({});
 		await tx.repocop_vulnerabilities.deleteMany({});
