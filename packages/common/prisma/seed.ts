@@ -70,6 +70,7 @@ interface SeedData {
 	teamRepos: Prisma.github_team_repositoriesCreateManyInput[];
 	cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[];
 	githubWorkflows: Prisma.github_workflowsCreateManyInput[];
+	githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[];
 	customProperties: Prisma.github_repository_custom_propertiesCreateManyInput[];
 	securityHubFindings: Prisma.aws_securityhub_findingsCreateManyInput[];
 }
@@ -433,6 +434,19 @@ function createGithubWorkflow(
 	};
 }
 
+function createGithubActionsUsage(
+	fullName: string,
+	workflowUses: readonly string[],
+	workflowPath: string = defaultWorkflowPath,
+): Prisma.guardian_github_actions_usageCreateManyInput {
+	return {
+		full_name: fullName,
+		workflow_path: `${workflowDirectory}/${workflowPath}`,
+		evaluated_on: seededAt,
+		workflow_uses: [...workflowUses],
+	};
+}
+
 function createSecurityHubFinding(
 	accountId: string,
 	accountName: string,
@@ -518,6 +532,7 @@ function createEmptySeedData(): SeedData {
 		teamRepos: [],
 		cloudFormationStacks: [],
 		githubWorkflows: [],
+		githubActionsUsages: [],
 		customProperties: [],
 		securityHubFindings: [],
 	};
@@ -573,6 +588,7 @@ async function main() {
 			definition.name,
 			definition.languages,
 		);
+		const repoFullName = `${orgName}/${definition.name}`;
 
 		acc.repos.push(repoBundle.repo);
 		acc.languages.push(repoBundle.languages);
@@ -584,6 +600,14 @@ async function main() {
 			createGithubWorkflow(
 				primaryWorkflowId,
 				repoBundle.repositoryId,
+				definition.githubActionsUses,
+				definition.workflowPath ?? defaultWorkflowPath,
+			),
+		);
+
+		acc.githubActionsUsages.push(
+			createGithubActionsUsage(
+				repoFullName,
 				definition.githubActionsUses,
 				definition.workflowPath ?? defaultWorkflowPath,
 			),
@@ -643,6 +667,7 @@ async function main() {
 				full_name: { in: seededRepoFullNames },
 			},
 		});
+        await tx.cloudquery_plugin_usage.deleteMany({});
 		await tx.cloudbuster_fsbp_vulnerabilities.deleteMany({});
 		await tx.repocop_github_repository_rules.deleteMany({});
 		await tx.repocop_vulnerabilities.deleteMany({});
@@ -653,6 +678,10 @@ async function main() {
 
 		await createManyIfAny(seedData.githubWorkflows, (data) =>
 			tx.github_workflows.createMany({ data }),
+		);
+
+		await createManyIfAny(seedData.githubActionsUsages, (data) =>
+			tx.guardian_github_actions_usage.createMany({ data }),
 		);
 
 		await tx.github_languages.createMany({ data: seedData.languages });
