@@ -499,29 +499,34 @@ async function createManyIfAny<T>(
 }
 // Local seed data needs this helper because the aws_resources materialized view
 // depends on it, and refresh-materialized-view refreshes that view in DEV.
-async function ensureTableHasColumnFunction(): Promise<void> {
+async function ensureAwsResourcesRawFunction(): Promise<void> {
 	await prisma.$executeRawUnsafe(`
-        CREATE OR REPLACE FUNCTION public.table_has_column(
-            p_table_name information_schema.sql_identifier,
-            p_column_name text
-        )
-        RETURNS boolean
-        LANGUAGE sql
-        STABLE
+        CREATE OR REPLACE FUNCTION public.aws_resources_raw()
+            RETURNS TABLE (
+                cq_table      text,
+                partition     text,
+                service       text,
+                region        text,
+                account_id    text,
+                resource_type text,
+                arn           text,
+                taggable      boolean,
+                tags          jsonb
+            )
+            LANGUAGE sql
         AS $$
-            SELECT EXISTS (
-                SELECT 1
-                FROM information_schema.columns c
-                WHERE c.table_schema = 'public'
-                    AND c.table_name = p_table_name
-                    AND c.column_name = p_column_name
-            );
+            SELECT
+                NULL::text, NULL::text, NULL::text, NULL::text,
+                NULL::text, NULL::text, NULL::text, NULL::boolean,
+                NULL::jsonb
+            WHERE false;
         $$;
     `);
 }
 
 async function main() {
-	await ensureTableHasColumnFunction();
+	await ensureAwsResourcesRawFunction();
+
 	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
 	const teamIdsBySlug = new Map<TeamSlug, bigint>(
 		teamDefinitions.map(({ id, slug }) => [slug, BigInt(id)] as const),
@@ -619,6 +624,21 @@ async function main() {
 	});
 
 	console.log('Seeding complete!');
+
+	console.log('Refreshing materialized view aws_resources...');
+	try {
+		await prisma.$executeRawUnsafe('REFRESH MATERIALIZED VIEW aws_resources;');
+		console.log('Materialized view refreshed.');
+	} catch (error) {
+		console.warn(
+			'Skipping materialized view refresh - no AWS tables present in local seed DB.',
+			error instanceof Error ? error.message : error,
+		);
+		// Populate with empty data so the view is queryable
+		await prisma.$executeRawUnsafe(
+			'REFRESH MATERIALIZED VIEW aws_resources WITH NO DATA;',
+		);
+	}
 }
 
 main()
