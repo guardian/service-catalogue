@@ -8,30 +8,14 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready --host 127.0.0.1']
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready --host 127.0.0.1 --username "${DATABASE_USER}" --dbname "${DATABASE_NAME}"',
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  prisma-seed:
-    image: node:24.16-trixie
-    # Runs as root to avoid permission issues with named volumes in local dev
-    user: "0:0"
-    working_dir: /workspace/packages/common
-    volumes:
-      - ../../:/workspace
-      - prisma_seed_root_node_modules:/workspace/node_modules
-      - prisma_seed_common_node_modules:/workspace/packages/common/node_modules
-    environment:
-      DATABASE_HOSTNAME: postgres
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable
-      STAGE: DEV
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: /workspace/packages/dev-environment/script/prisma-seed
 
   cloudquery:
     build:
@@ -75,7 +59,3 @@ services:
       GF_LOG_LEVEL: debug
       GF_DATAPROXY_LOGGING: 1
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: theguardian-servicecatalogue-app
-
-volumes:
-  prisma_seed_root_node_modules:
-  prisma_seed_common_node_modules:

@@ -35,8 +35,22 @@ start_postgres() {
 }
 
 seed_database() {
-  step "Seeding database with Prisma"
-  "${COMPOSE_CMD[@]}" run --rm --no-deps prisma-seed
+  step "Running Prisma migrations and seeding database"
+
+  set -a
+  source "$MAIN_ENV_FILE"
+  if [[ -f "$LOCAL_ENV_FILE" ]]; then
+    source "$LOCAL_ENV_FILE"
+  fi
+  set +a
+
+  (
+    cd "$ROOT_DIR/packages/common"
+    DATABASE_HOSTNAME=127.0.0.1 \
+    DATABASE_URL="postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@127.0.0.1:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable" \
+    STAGE=DEV \
+    npx prisma migrate deploy && npx prisma generate && npx prisma db seed
+  )
 }
 
 ensure_container_runtime() {
