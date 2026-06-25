@@ -1,48 +1,4 @@
 services:
-  # This service will copy data from the CODE database, writing .sql files to the sql directory.
-  # The files will then be loaded into the postgres service on launch.
-  db-copy:
-    build:
-      context: ../../containers/db-copy
-      args:
-        alpine_version: 3.23.4
-    volumes:
-      - ~/.aws/credentials:/.aws/credentials
-      - ./sql:/sql
-    environment:
-      AWS_CONFIG_FILE: /.aws/config
-      AWS_SHARED_CREDENTIALS_FILE: /.aws/credentials
-      AWS_DEFAULT_PROFILE: deployTools
-      AWS_REGION: eu-west-1
-
-      # These tables will be copied from the CODE database, and loaded into the DEV database.
-      TABLES: |
-        - guardian_github_actions_usage
-        - galaxies_teams_table
-        - github_team_repositories
-        - github_teams
-        - github_repositories
-        - github_repository_branches
-        - github_repository_custom_properties
-        - github_workflows
-        - github_languages
-        - github_organizations
-        - aws_ec2_instances
-        - aws_ec2_route_tables
-        - aws_ec2_subnets
-        - aws_ec2_vpcs
-        - aws_cloudformation_stacks
-        - amigo_bake_packages
-        - aws_cloudfront_distributions
-        - aws_elbv1_load_balancers
-        - aws_elbv2_load_balancers
-        - aws_acm_certificates
-        - aws_apigateway_domain_names
-        - fastly_service_backends
-        - fastly_service_domains
-        - aws_cloudwatch_alarms
-        - aws_autoscaling_groups
-        - aws_elbv2_target_groups
   postgres:
     image: postgres:18.3
     ports:
@@ -51,19 +7,16 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    volumes:
-      # Runs the .sql files from the db-copy service on launch.
-      # See https://hub.docker.com/_/postgres#:~:text=Initialization%20scripts.
-      - ./sql:/docker-entrypoint-initdb.d/
-    depends_on:
-      db-copy:
-        condition: service_completed_successfully
     healthcheck:
-      # Ensures the initialisation scripts have completed, before accepting connections from CloudQuery, Grafana, etc.
-      test: ['CMD-SHELL', 'pg_isready --host 127.0.0.1']
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready --host 127.0.0.1 --username "${DATABASE_USER}" --dbname "${DATABASE_NAME}"',
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   cloudquery:
     build:
       context: ../../containers/cloudquery
@@ -85,10 +38,11 @@ services:
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
-      GALAXIES_BUCKET: ${GALAXIES_BUCKET}
+      GALAXIES_BUCKET: ${GALAXIES_BUCKET:-}
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
       DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
+
   grafana:
     image: grafana/grafana-oss:10.3.1
     depends_on:
