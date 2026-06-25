@@ -23,12 +23,41 @@ step() {
   echo -e "\n${cyan}Step ${STEP_COUNT}${clear}: $1"
 }
 
+ensure_container_runtime() {
+  step "Checking container runtime"
+
+  until docker info >/dev/null 2>&1; do
+    echo -e "${yellow}Docker daemon is not available.${clear}"
+    echo -e "${yellow}If you use an alternative runtime (for example podman/minikube) aliased to 'docker', start it now.${clear}"
+    echo "Standing by for container runtime to start..."
+    echo ""
+    sleep 5
+  done
+}
+
+ensure_prisma_available() {
+  step "Checking Prisma CLI"
+
+  if ! npm --prefix "$ROOT_DIR/packages/common" exec prisma -- --version >/dev/null 2>&1; then
+    echo "Prisma is not installed for packages/common."
+    echo "Run 'npm install' in the repository root first."
+    exit 1
+  fi
+}
+
 start_postgres() {
   step "Launching postgres"
   "${COMPOSE_CMD[@]}" up -d --build postgres
 
-  POSTGRES_CONTAINER=$("${COMPOSE_CMD[@]}" ps -q postgres)
-  until [[ "$(docker inspect -f '{{.State.Health.Status}}' "$POSTGRES_CONTAINER")" == "healthy" ]]; do
+  local postgres_container
+  postgres_container=$("${COMPOSE_CMD[@]}" ps -q postgres)
+
+  if [[ -z "$postgres_container" ]]; then
+    echo "Postgres container was not created."
+    exit 1
+  fi
+
+  until [[ "$(docker inspect -f '{{.State.Health.Status}}' "$postgres_container" 2>/dev/null || true)" == "healthy" ]]; do
     echo "Waiting for postgres to become healthy..."
     sleep 2
   done
@@ -46,23 +75,15 @@ seed_database() {
 
   (
     cd "$ROOT_DIR/packages/common"
-    DATABASE_HOSTNAME=127.0.0.1 \
-    DATABASE_URL="postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@127.0.0.1:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable" \
-    STAGE=DEV \
-    npx prisma migrate deploy && npx prisma generate && npx prisma db seed
+
+    export DATABASE_HOSTNAME=127.0.0.1
+    export DATABASE_URL="postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@127.0.0.1:${DATABASE_PORT}/${DATABASE_NAME}?sslmode=disable"
+    export STAGE=DEV
+
+    npm exec prisma -- migrate deploy
+    npm exec prisma -- generate
+    npm exec prisma -- db seed
   )
-}
-
-ensure_container_runtime() {
-  step "Checking container runtime"
-
-  until docker info >/dev/null 2>&1; do
-    echo -e "${yellow}Docker daemon is not available.${clear}"
-    echo -e "${yellow}If you use an alternative runtime (for example podman/minikube) aliased to 'docker', start it now.${clear}"
-    echo "Standing by for container runtime to start..."
-    echo ""
-    sleep 5
-  done
 }
 
 start_app_containers() {
@@ -72,6 +93,7 @@ start_app_containers() {
 
 main() {
   ensure_container_runtime
+  ensure_prisma_available
   start_postgres
   seed_database
   start_app_containers
