@@ -44,6 +44,7 @@ We recommend using the repository dev container (via guardian/devenv) to run and
 3. This will:
    - start the local Postgres container
    - run Prisma migrations
+   - generate the Prisma client
    - seed the database with local development data using Prisma
    - start CloudQuery to collect additional data
    - start Grafana
@@ -63,13 +64,13 @@ The local development database is initialised with Prisma seed data from `packag
 
 The seeded database provides a predictable local starting point for development and testing. (It is not a snapshot or copy of any remote database.)
 
-It provides seed data, or at least empty tables, to allow all the packages in this repo that currently use the database to run successfully locally.
+It provides seed data, or at least empty tables, to allow all packages in this repo that currently use the database to run successfully locally.
 
 If you need to re-run the seed from a clean state, remove the local containers and volumes and then run `npm start -w dev-environment` again.
 
 ### Adding tables to the seed
 
-If you want to test new functionality, you can seed additional tables by updating `packages/common/prisma/seed.ts` with the relevant Prisma read, delete, and create calls.
+If you want to test new functionality, you can seed additional tables by updating `packages/common/prisma/seed.ts` with the relevant Prisma calls.
 
 When adding seed data:
 
@@ -96,7 +97,7 @@ This will run the `run-prisma-migrate.sh` script.
 
 ## Repocop
 
-To develop locally once the tables have been populated, follow the steps in the Repocop [README](../repocop/README.md)
+To develop locally once the tables have been populated, follow the steps in the Repocop [README](../repocop/README.md).
 
 ## Links
 
@@ -104,9 +105,9 @@ To develop locally once the tables have been populated, follow the steps in the 
 
 ## Tips and tricks
 
-The local instance of cloudquery executes sequentially according to the order of the plugins in the config file.
+The local instance of CloudQuery executes sequentially according to the order of the plugins in the config file.
 
-If cloudquery can't detect credentials for GitHub, it will skip those jobs. If you're not interested in GitHub
+If CloudQuery can't detect credentials for GitHub, it will skip those jobs. If you're not interested in GitHub
 data, you don't need to generate a token. It will still collect data from other sources.
 
 ## TODO
