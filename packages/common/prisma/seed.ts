@@ -550,7 +550,7 @@ async function createManyIfAny<T>(
 // Local seed data needs this helper because the aws_resources materialized view
 // depends on it, and refresh-materialized-view refreshes that view in DEV.
 async function ensureAwsResourcesRawFunction(): Promise<void> {
-	await prisma.$executeRawUnsafe(`
+	await prisma.$executeRaw`
         CREATE OR REPLACE FUNCTION public.aws_resources_raw()
             RETURNS TABLE (
                 cq_table      text,
@@ -571,7 +571,7 @@ async function ensureAwsResourcesRawFunction(): Promise<void> {
                 NULL::jsonb
             WHERE false;
         $$;
-    `);
+    `;
 }
 
 async function main() {
@@ -705,16 +705,14 @@ async function main() {
 
 	console.log('Refreshing materialized view aws_resources...');
 	try {
-		await prisma.$executeRawUnsafe('REFRESH MATERIALIZED VIEW aws_resources;');
+		await prisma.$executeRaw`REFRESH MATERIALIZED VIEW aws_resources;`;
 		console.log('Materialized view refreshed.');
 	} catch (error) {
 		console.warn(
 			'Skipping materialized view refresh - no AWS tables present in local seed DB.',
 			error instanceof Error ? error.message : error,
 		);
-		await prisma.$executeRawUnsafe(
-			'REFRESH MATERIALIZED VIEW aws_resources WITH NO DATA;',
-		);
+		await prisma.$executeRaw`REFRESH MATERIALIZED VIEW aws_resources WITH NO DATA;`;
 	}
 }
 
