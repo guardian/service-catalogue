@@ -13,7 +13,6 @@ const prisma = new PrismaClient({
 
 const orgName = 'guardian';
 const cqSourceName = 'seed';
-const seededAt = new Date('2026-06-01T12:00:00.000Z');
 
 const defaultBranchName = 'main';
 const branchNames = [defaultBranchName, 'develop', 'feature-1'] as const;
@@ -435,7 +434,7 @@ function createGithubActionsUsage(
 	return {
 		full_name: fullName,
 		workflow_path: `${workflowDirectory}/${workflowPath}`,
-		evaluated_on: seededAt,
+		evaluated_on: new Date('2024-01-01T12:00:00.000Z'), // Keep a fixed timestamp so local seed data is deterministic across runs
 		workflow_uses: [...workflowUses],
 	};
 }
