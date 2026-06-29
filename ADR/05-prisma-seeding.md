@@ -6,9 +6,7 @@ Proposed.
 
 ## Context
 
-The local development environment (`dev-environment`) previously populated its database by copying selected tables from CODE using a dedicated `db-copy` container.
-
-It now uses Prisma in the `common` package, including a seed script at `packages/common/prisma/seed.ts`.
+We run Service Catalogue projects locally by spinning up a Postgres database in a container, and testing against that.
 
 For local development, the database needs enough representative data to:
 
@@ -16,6 +14,10 @@ For local development, the database needs enough representative data to:
 - support local execution of packages and queries
 - provide a baseline for local debugging and development
 - allow further local population by CloudQuery where required.
+
+The local development environment (`dev-environment`) previously populated its database by copying selected tables from CODE using a dedicated `db-copy` container.
+
+It now uses Prisma in the `common` package, including a seed script at `packages/common/prisma/seed.ts`.
 
 This ADR records the decision to move local database initialisation away from copying CODE data and towards Prisma seeding.
 
@@ -39,6 +41,7 @@ In this implementation, the local database is populated by copying selected tabl
 - Adds operational complexity through an extra container and data-copy process.
 - Makes local debugging and test reproduction less reliable.
 - Brings more production-derived data into local environments than is necessary.
+- Allowing developers (and by extension, AIs) access to this database poses a security risk.
 
 ### 2. Seed the local database using Prisma
 
@@ -62,6 +65,7 @@ The seed data includes the minimum records needed for local development, such as
 - Data is deterministic and reproducible.
 - Seed data can be reviewed and versioned alongside schema changes.
 - Developers can evolve the local dataset intentionally to cover specific scenarios.
+- Deterministic data makes E2E and integration testing much simpler, something we only do manually at the moment.
 
 #### Disadvantages
 
@@ -107,7 +111,7 @@ The seeded dataset should remain intentionally small and focused on supporting l
 
 ### Positive
 
-- Local development is more reliable and reproducible.
+- Local development is more reliable, reproducible and faster.
 - Setup is simpler, with fewer environment-specific dependencies.
 - Schema and seed data now evolve together in the repository.
 - Local debugging is easier because the initial dataset is known.
