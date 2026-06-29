@@ -7,12 +7,6 @@ if (!databaseUrl) {
 	throw new Error('DATABASE_URL is not set');
 }
 
-try {
-	new URL(databaseUrl);
-} catch {
-	throw new Error(`DATABASE_URL is invalid: "${databaseUrl}"`);
-}
-
 const prisma = new PrismaClient({
 	adapter: new PrismaPg({ connectionString: databaseUrl }),
 });
