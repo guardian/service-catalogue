@@ -84,7 +84,7 @@ services:
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
-      GALAXIES_BUCKET: ${GALAXIES_BUCKET:-}
+      GALAXIES_BUCKET: ${GALAXIES_BUCKET:-} # the ':-' makes the variable default to an empty string if it is unset or empty
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
       DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
