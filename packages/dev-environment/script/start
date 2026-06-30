@@ -12,6 +12,10 @@ cyan='\033[0;36m'
 yellow="\033[1;33m"
 STEP_COUNT=0
 
+# Build a reusable docker compose command using layered env files.
+# The repo .env provides shared defaults, and the optional user-local
+# .env.local can override only the keys that differ for a given machine
+# or runtime setup. Docker Compose processes these env files in order.
 COMPOSE_CMD=(docker compose -f "${DIR}/../docker-compose.yaml" --env-file "$MAIN_ENV_FILE")
 if [[ -f "$LOCAL_ENV_FILE" ]]; then
   COMPOSE_CMD+=(--env-file "$LOCAL_ENV_FILE")
