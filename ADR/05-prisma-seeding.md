@@ -91,6 +91,30 @@ In this implementation, the local database starts empty and CloudQuery is respon
 - Some tables used by local development are derived or application-owned rather than directly synced.
 - A fully empty starting point makes local development and testing less predictable.
 
+### 4. Restore local data from a scheduled Postgres dump
+
+Here, a PostgreSQL dump of a representative environment is created on a schedule with pg_dump and stored in S3. Local development restores that dump into the local Postgres database during startup or setup.
+
+#### Advantages
+
+- Uses real data rather than synthetic fixtures.
+- Can make local development more reflective of CODE or PROD-derived data because more tables and relationships are populated.
+- Reduces the need to design and maintain Prisma seed fixtures by hand.
+- Decouples local setup from direct runtime access to CODE at startup time, since developers restore from a stored dump rather than copying live data.
+- A scheduled dump can provide a reasonably current dataset without requiring every developer to connect to source systems directly.
+
+#### Disadvantages
+
+- Reintroduces dependency on production-derived or environment-derived data, including the associated security, privacy and access-control risks.
+- Makes local datasets less deterministic than Prisma seeding, especially as dumps are refreshed over time.
+- Still introduces operational infrastructure to create, store, retain and restore dumps.
+- Dumps may drift from the current local schema or migration state, especially if the dump source and local code are not aligned.
+- Restoring a full or partial dump may be slower and heavier than inserting a small deterministic seed dataset.
+- Developers may need different dump sizes or sanitisation rules, which adds maintenance outside the application codebase.
+- A scheduled dump can still become stale between refreshes, and increasing refresh frequency increases operational cost and complexity.
+- If the dump contains all or most tables, local development may depend on significantly more data than is actually needed for routine iteration and debugging.
+- Large dumps may consume substantial local disk, database capacity and restore time.
+
 ## Decision
 
 Use Prisma seeding to initialise the local development database.
@@ -106,6 +130,8 @@ The local development flow will:
 This replaces the previous `db-copy` approach for local development.
 
 The seeded dataset should remain intentionally small and focused on supporting local development, rather than mirroring CODE in full.
+
+We chose Prisma seeding because it keeps the local dataset deterministic and versioned in the repo, without adding extra operational or data-governance overhead.
 
 ## Consequences
 
