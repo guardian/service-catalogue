@@ -48,9 +48,6 @@ We recommend using the repository dev container (via guardian/devenv) to run and
    - seed the database with local development data using Prisma
    - start CloudQuery to collect additional data
    - start Grafana
-
-   Unlike the previous setup, this does **not** copy data from another database.
-
 4. Wait for tables to start being populated. Seeded data should be available once the Prisma seed step completes, and CloudQuery-populated tables usually start appearing after a few seconds, though it can sometimes take up to a minute.
 5. Open Grafana on [http://localhost:3000](http://localhost:3000), and start querying the data.
 6. To restart on your local machine, delete the containers and volumes and start again from step 2.
