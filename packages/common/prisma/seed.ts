@@ -1,478 +1,41 @@
-import { randomUUID } from 'node:crypto';
+/**
+ * Seeds the local development database with deterministic repository, workflow,
+ * ownership, and auxiliary records used by the service catalogue stack.
+ *
+ * This entrypoint is intentionally limited to orchestration:
+ * - prepare database prerequisites
+ * - clear previously seeded records
+ * - insert the assembled seed payload
+ * - refresh dependent materialized views
+ */
 import { PrismaPg } from '@prisma/adapter-pg';
-import { Prisma, PrismaClient } from '../prisma-client/client.js';
+import { type Prisma, PrismaClient } from '../prisma-client/client.js';
+import { buildSeedData } from './seed/seed-assembly.js';
+import { createTeam } from './seed/seed-builders.js';
+import { cqSourceName, orgName } from './seed/seed-constants.js';
+import { repoDefinitions, teamDefinitions } from './seed/seed-data.js';
+import { createManyIfAny } from './seed/seed-helpers.js';
+import type { SeedData, SeedFilter } from './seed/seed-types.js';
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
 	throw new Error('DATABASE_URL is not set');
 }
-
 const prisma = new PrismaClient({
 	adapter: new PrismaPg({ connectionString: databaseUrl }),
 });
+const seedFilter: SeedFilter = {
+	where: { cq_source_name: cqSourceName },
+};
 
-const orgName = 'guardian';
-const cqSourceName = 'seed';
+const seededRepoFullNames = repoDefinitions.map(
+	({ name }) => `${orgName}/${name}`,
+);
 
-const defaultBranchName = 'main';
-const branchNames = [defaultBranchName, 'develop', 'feature-1'] as const;
-const repositoryCreatedAt = new Date('2020-01-01T00:00:00Z');
-const repositoryUpdatedAt = new Date('2021-01-01T00:00:00Z');
-const workflowDirectory = '.github/workflows';
-const cloudFormationAccountId = '000000000000';
-const cloudFormationRegion = 'eu-west-1';
-const defaultRepoTopics = ['production'] as const;
-
-const defaultWorkflowPath = 'ci.yaml';
-
-const invalidWorkflowPath = 'broken.yaml';
-const invalidWorkflowContents = `name: Broken
-on: [push
-jobs:
-  broken:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-`;
-
-type RoleName = 'triage' | 'read' | 'maintain' | 'write' | 'admin';
-type TeamSlug = 'frontend' | 'backend' | 'devops' | 'cricket';
-
-interface RepoDefinition {
-	id: number;
-	name: string;
-	languages: readonly string[];
-	owners: ReadonlyArray<{ teamSlug: TeamSlug; roleName: RoleName }>;
-	githubActionsUses: readonly string[];
-	cloudFormation?: boolean;
-	customProperties?: boolean;
-	workflowPath?: string;
-}
-
-interface RepoBundle {
-	repositoryId: bigint;
-	repo: Prisma.github_repositoriesCreateManyInput;
-	languages: Prisma.github_languagesCreateManyInput;
-	branches: Prisma.github_repository_branchesCreateManyInput[];
-}
-
-interface SeedData {
-	repos: Prisma.github_repositoriesCreateManyInput[];
-	languages: Prisma.github_languagesCreateManyInput[];
-	branches: Prisma.github_repository_branchesCreateManyInput[];
-	teamRepos: Prisma.github_team_repositoriesCreateManyInput[];
-	cloudFormationStacks: Prisma.aws_cloudformation_stacksCreateManyInput[];
-	githubWorkflows: Prisma.github_workflowsCreateManyInput[];
-	githubActionsUsages: Prisma.guardian_github_actions_usageCreateManyInput[];
-	customProperties: Prisma.github_repository_custom_propertiesCreateManyInput[];
-}
-
-const teamDefinitions = [
-	{ id: 1, slug: 'frontend' },
-	{ id: 2, slug: 'backend' },
-	{ id: 3, slug: 'devops' },
-	{ id: 4, slug: 'cricket' },
-] as const satisfies ReadonlyArray<{ id: number; slug: TeamSlug }>;
-
-const owner = (
-	teamSlug: TeamSlug,
-	roleName: RoleName = 'admin',
-): { teamSlug: TeamSlug; roleName: RoleName } => ({ teamSlug, roleName });
-
-const githubActionUses = {
-	node: ['actions/checkout@v2', 'actions/setup-node@v2'],
-	scala: ['actions/checkout@v2', 'actions/setup-scala@v1'],
-	python: ['actions/checkout@v2', 'actions/setup-python@v2'],
-	go: ['actions/checkout@v2', 'actions/setup-go@v2'],
-} as const;
-
-const repoDefinitions: readonly RepoDefinition[] = [
-	{
-		id: 1,
-		name: 'dotcom-rendering',
-		languages: ['TypeScript', 'JavaScript', 'HTML', 'CSS', 'Shell'],
-		owners: [owner('frontend')],
-		githubActionsUses: githubActionUses.node,
-		cloudFormation: true,
-	},
-	{
-		id: 2,
-		name: 'janus-app',
-		languages: ['Scala', 'Dockerfile', 'Shell'],
-		owners: [owner('backend'), owner('devops')],
-		githubActionsUses: githubActionUses.scala,
-		cloudFormation: true,
-		customProperties: true,
-	},
-	{
-		id: 3,
-		name: 'fsbp-fix',
-		languages: ['Go', 'Shell'],
-		owners: [owner('devops')],
-		githubActionsUses: githubActionUses.python,
-	},
-	{
-		id: 4,
-		name: 'cricket',
-		languages: ['Python', 'Terraform', 'Shell'],
-		owners: [owner('cricket')],
-		githubActionsUses: githubActionUses.go,
-		cloudFormation: true,
-	},
-];
-
-const createSeedMetadata = (cq_source_name: string = cqSourceName) => ({
-	cq_sync_time: null,
-	cq_source_name,
-	cq_id: randomUUID(),
-	cq_parent_id: null,
-});
-
-function capitalise(value: string): string {
-	return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function createTeam(
-	id: number,
-	slug: TeamSlug,
-	org: string = orgName,
-	cq_source_name: string = cqSourceName,
-): Prisma.github_teamsCreateManyInput {
-	return {
-		...createSeedMetadata(cq_source_name),
-		id: BigInt(id),
-		name: capitalise(slug),
-		slug,
-		description: `The ${slug} team`,
-		org,
-		url: `https://github.com/orgs/${org}/teams/${slug}`,
-		node_id: null,
-		permission: null,
-		permissions: Prisma.DbNull,
-		privacy: null,
-		members_count: null,
-		repos_count: null,
-		organization: Prisma.DbNull,
-		html_url: null,
-		members_url: null,
-		repositories_url: null,
-		parent: Prisma.DbNull,
-		ldap_dn: null,
-		notification_setting: null,
-		assignment: null,
-	};
-}
-
-function createBranch(
-	repositoryId: bigint,
-	org: string,
-	branchName: string,
-	cq_source_name: string = cqSourceName,
-): Prisma.github_repository_branchesCreateManyInput {
-	return {
-		...createSeedMetadata(cq_source_name),
-		org,
-		repository_id: repositoryId,
-		protection: Prisma.DbNull,
-		name: branchName,
-		commit: Prisma.DbNull,
-		protected: branchName === defaultBranchName,
-	};
-}
-
-function createRepoAndChildren(
-	id: number,
-	name: string,
-	languageList: readonly string[],
-	org: string = orgName,
-	cq_source_name: string = cqSourceName,
-): RepoBundle {
-	const repositoryId = BigInt(id);
-	const fullName = `${org}/${name}`;
-
-	const repo: Prisma.github_repositoriesCreateManyInput = {
-		...createSeedMetadata(cq_source_name),
-		org,
-		id: repositoryId,
-		node_id: null,
-		owner: Prisma.DbNull,
-		name,
-		full_name: fullName,
-		description: `The ${name} repository`,
-		created_at: repositoryCreatedAt,
-		default_branch: defaultBranchName,
-		pushed_at: repositoryUpdatedAt,
-		updated_at: repositoryUpdatedAt,
-		language: languageList[0] ?? null,
-		topics: [...defaultRepoTopics],
-		homepage: null,
-		code_of_conduct: Prisma.DbNull,
-		master_branch: null,
-		html_url: null,
-		clone_url: null,
-		git_url: null,
-		mirror_url: null,
-		ssh_url: null,
-		svn_url: null,
-		fork: null,
-		forks_count: null,
-		network_count: null,
-		open_issues_count: null,
-		open_issues: null,
-		stargazers_count: null,
-		subscribers_count: null,
-		watchers_count: null,
-		watchers: null,
-		size: null,
-		auto_init: null,
-		parent: Prisma.DbNull,
-		source: Prisma.DbNull,
-		template_repository: Prisma.DbNull,
-		organization: Prisma.DbNull,
-		permissions: Prisma.DbNull,
-		allow_rebase_merge: null,
-		allow_update_branch: null,
-		allow_squash_merge: null,
-		allow_merge_commit: null,
-		allow_auto_merge: null,
-		allow_forking: null,
-		delete_branch_on_merge: null,
-		use_squash_pr_title_as_default: null,
-		squash_merge_commit_title: null,
-		squash_merge_commit_message: null,
-		merge_commit_title: null,
-		merge_commit_message: null,
-		archived: false,
-		disabled: null,
-		license: Prisma.DbNull,
-		private: null,
-		has_issues: null,
-		has_wiki: null,
-		has_pages: null,
-		has_projects: null,
-		has_downloads: null,
-		has_discussions: null,
-		is_template: null,
-		license_template: null,
-		gitignore_template: null,
-		security_and_analysis: Prisma.DbNull,
-		team_id: null,
-		url: null,
-		archive_url: null,
-		assignees_url: null,
-		blobs_url: null,
-		branches_url: null,
-		collaborators_url: null,
-		comments_url: null,
-		commits_url: null,
-		compare_url: null,
-		contents_url: null,
-		contributors_url: null,
-		deployments_url: null,
-		downloads_url: null,
-		events_url: null,
-		forks_url: null,
-		git_commits_url: null,
-		git_refs_url: null,
-		git_tags_url: null,
-		hooks_url: null,
-		issue_comment_url: null,
-		issue_events_url: null,
-		issues_url: null,
-		keys_url: null,
-		labels_url: null,
-		languages_url: null,
-		merges_url: null,
-		milestones_url: null,
-		notifications_url: null,
-		pulls_url: null,
-		releases_url: null,
-		stargazers_url: null,
-		statuses_url: null,
-		subscribers_url: null,
-		subscription_url: null,
-		tags_url: null,
-		trees_url: null,
-		teams_url: null,
-		text_matches: Prisma.DbNull,
-		visibility: null,
-		role_name: null,
-		custom_properties: Prisma.DbNull,
-		web_commit_signoff_required: null,
-	};
-
-	return {
-		repositoryId,
-		repo,
-		languages: {
-			...createSeedMetadata(cq_source_name),
-			full_name: fullName,
-			name,
-			languages: [...languageList],
-		},
-		branches: branchNames.map((branchName) =>
-			createBranch(repositoryId, org, branchName, cq_source_name),
-		),
-	};
-}
-
-function createRepoOwnership(
-	repo: Prisma.github_repositoriesCreateManyInput,
-	teamId: bigint,
-	roleName: RoleName,
-	cq_source_name: string = cqSourceName,
-): Prisma.github_team_repositoriesCreateManyInput {
-	return {
-		...repo,
-		...createSeedMetadata(cq_source_name),
-		team_id: teamId,
-		role_name: roleName,
-		topics: repo.topics ?? [],
-	};
-}
-
-function createCloudFormationStack(
-	name: string,
-	cq_source_name: string = cqSourceName,
-): Prisma.aws_cloudformation_stacksCreateManyInput {
-	const uuid = randomUUID();
-	const arn = `arn:aws:cloudformation:${cloudFormationRegion}:${cloudFormationAccountId}:stack/${name}/${uuid}`;
-
-	return {
-		...createSeedMetadata(cq_source_name),
-		id: arn,
-		tags: [
-			{ Key: 'Stack', Value: `${name}-stack` },
-			{ Key: 'Stage', Value: 'PROD' },
-			{ Key: 'App', Value: `${name}-app` },
-			{ Key: 'gu:repo', Value: `${orgName}/${name}` },
-		] as Prisma.InputJsonValue,
-		account_id: cloudFormationAccountId,
-		region: cloudFormationRegion,
-		stack_status: 'CREATE_COMPLETE',
-		creation_time: repositoryCreatedAt,
-		arn,
-		stack_name: name,
-		capabilities: [],
-		change_set_id: null,
-		deletion_time: null,
-		description: `The ${name} stack`,
-		disable_rollback: false,
-		drift_information: Prisma.DbNull,
-		enable_termination_protection: false,
-		last_updated_time: null,
-		notification_arns: [],
-		outputs: Prisma.DbNull,
-		parameters: Prisma.DbNull,
-		parent_id: null,
-		retain_except_on_create: null,
-		role_arn: null,
-		rollback_configuration: Prisma.DbNull,
-		root_id: null,
-		stack_id: arn,
-		stack_status_reason: null,
-		timeout_in_minutes: null,
-		deletion_mode: null,
-		detailed_status: null,
-	};
-}
-
-function createCustomProperties(
-	repoId: bigint,
-	cq_source_name: string = cqSourceName,
-): Prisma.github_repository_custom_propertiesCreateManyInput {
-	return {
-		...createSeedMetadata(cq_source_name),
-		org: orgName,
-		property_name: 'gu_dependency_graph_integrator_ignore',
-		repository_id: repoId,
-		value: ['true'],
-	};
-}
-
-function createWorkflowContents(workflowUses: readonly string[]): string {
-	const usesSteps = workflowUses.map(
-		(workflowUse) => `      - uses: ${workflowUse}`,
-	);
-
-	return `name: CI
-on:
-  push:
-  pull_request:
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-${usesSteps.join('\n')}
-      - run: echo "seeded workflow"
-`;
-}
-
-function createGithubWorkflow(
-	id: bigint,
-	repositoryId: bigint,
-	workflowUses: readonly string[],
-	workflowPath: string = defaultWorkflowPath,
-	org: string = orgName,
-	cq_source_name: string = cqSourceName,
-): Prisma.github_workflowsCreateManyInput {
-	return {
-		...createSeedMetadata(cq_source_name),
-		org,
-		id,
-		repository_id: repositoryId,
-		path: `${workflowDirectory}/${workflowPath}`,
-		contents: createWorkflowContents(workflowUses),
-	};
-}
-
-function createGithubActionsUsage(
-	fullName: string,
-	workflowUses: readonly string[],
-	workflowPath: string = defaultWorkflowPath,
-): Prisma.guardian_github_actions_usageCreateManyInput {
-	return {
-		full_name: fullName,
-		workflow_path: `${workflowDirectory}/${workflowPath}`,
-		evaluated_on: new Date('2024-01-01T12:00:00.000Z'), // Keep a fixed timestamp so local seed data is deterministic across runs
-		workflow_uses: [...workflowUses],
-	};
-}
-
-function addOptionalSeedData(acc: SeedData, definition: RepoDefinition): void {
-	if (definition.cloudFormation === true) {
-		acc.cloudFormationStacks.push(createCloudFormationStack(definition.name));
-	}
-
-	if (definition.customProperties === true) {
-		acc.customProperties.push(createCustomProperties(BigInt(definition.id)));
-	}
-}
-
-function createEmptySeedData(): SeedData {
-	return {
-		repos: [],
-		languages: [],
-		branches: [],
-		teamRepos: [],
-		cloudFormationStacks: [],
-		githubWorkflows: [],
-		githubActionsUsages: [],
-		customProperties: [],
-	};
-}
-
-async function createManyIfAny<T>(
-	data: T[],
-	create: (rows: T[]) => Promise<unknown>,
-): Promise<void> {
-	if (data.length > 0) {
-		await create(data);
-	}
-}
-
-// Local seed data needs this helper because the aws_resources materialized view
-// depends on it, and refresh-materialized-view refreshes that view in DEV.
+/**
+ * Ensures the placeholder aws_resources_raw function exists so local materialized
+ * view refreshes can succeed even when AWS source tables are not present.
+ */
 async function ensureAwsResourcesRawFunction(): Promise<void> {
 	await prisma.$executeRaw`
         CREATE OR REPLACE FUNCTION public.aws_resources_raw()
@@ -498,131 +61,76 @@ async function ensureAwsResourcesRawFunction(): Promise<void> {
     `;
 }
 
-async function main() {
-	await ensureAwsResourcesRawFunction();
+/**
+ * Removes previously seeded records for the current seed source and clears
+ * runtime tables that must be reproducible across local runs.
+ */
+async function clearExistingSeedData(
+	tx: Prisma.TransactionClient,
+	seedFilter: SeedFilter,
+	seededRepoFullNames: string[],
+): Promise<void> {
+	await tx.github_repository_branches.deleteMany(seedFilter);
+	await tx.github_repository_custom_properties.deleteMany(seedFilter);
+	await tx.github_team_repositories.deleteMany(seedFilter);
+	await tx.github_languages.deleteMany(seedFilter);
+	await tx.github_workflows.deleteMany(seedFilter);
+	await tx.aws_cloudformation_stacks.deleteMany(seedFilter);
+	await tx.github_repositories.deleteMany(seedFilter);
+	await tx.github_teams.deleteMany(seedFilter);
 
-	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
-	const teamIdsBySlug = new Map<TeamSlug, bigint>(
-		teamDefinitions.map(({ id, slug }) => [slug, BigInt(id)] as const),
-	);
-
-	const seedData = repoDefinitions.reduce<SeedData>((acc, definition) => {
-		const repoBundle = createRepoAndChildren(
-			definition.id,
-			definition.name,
-			definition.languages,
-		);
-		const repoFullName = `${orgName}/${definition.name}`;
-
-		acc.repos.push(repoBundle.repo);
-		acc.languages.push(repoBundle.languages);
-		acc.branches.push(...repoBundle.branches);
-
-		const primaryWorkflowId = BigInt(definition.id * 100);
-
-		acc.githubWorkflows.push(
-			createGithubWorkflow(
-				primaryWorkflowId,
-				repoBundle.repositoryId,
-				definition.githubActionsUses,
-				definition.workflowPath ?? defaultWorkflowPath,
-			),
-		);
-
-		acc.githubActionsUsages.push(
-			createGithubActionsUsage(
-				repoFullName,
-				definition.githubActionsUses,
-				definition.workflowPath ?? defaultWorkflowPath,
-			),
-		);
-
-		if (definition.id === 1) {
-			acc.githubWorkflows.push({
-				...createSeedMetadata(),
-				org: orgName,
-				id: primaryWorkflowId + 1n,
-				repository_id: repoBundle.repositoryId,
-				path: `${workflowDirectory}/${invalidWorkflowPath}`,
-				contents: invalidWorkflowContents,
-			});
-		}
-
-		for (const { teamSlug, roleName } of definition.owners) {
-			const teamId = teamIdsBySlug.get(teamSlug);
-			if (!teamId) {
-				throw new Error(`Missing seeded team: ${teamSlug}`);
-			}
-
-			acc.teamRepos.push(
-				createRepoOwnership(repoBundle.repo, teamId, roleName),
-			);
-		}
-
-		addOptionalSeedData(acc, definition);
-
-		return acc;
-	}, createEmptySeedData());
-
-	const seededRepoFullNames = repoDefinitions.map(
-		({ name }) => `${orgName}/${name}`,
-	);
-
-	const seedFilter = { where: { cq_source_name: cqSourceName } };
-
-	console.log(
-		'Seeding teams, repos, workflows, languages, and related records...',
-	);
-
-	await prisma.$transaction(async (tx) => {
-		await tx.github_repository_branches.deleteMany(seedFilter);
-		await tx.github_repository_custom_properties.deleteMany(seedFilter);
-		await tx.github_team_repositories.deleteMany(seedFilter);
-		await tx.github_languages.deleteMany(seedFilter);
-		await tx.github_workflows.deleteMany(seedFilter);
-		await tx.aws_cloudformation_stacks.deleteMany(seedFilter);
-		await tx.github_repositories.deleteMany(seedFilter);
-		await tx.github_teams.deleteMany(seedFilter);
-
-		// runtime/output tables: always clear for reproducible local runs
-		await tx.guardian_github_actions_usage.deleteMany({
-			where: {
-				full_name: { in: seededRepoFullNames },
-			},
-		});
-		await tx.cloudquery_plugin_usage.deleteMany({});
-		await tx.cloudbuster_fsbp_vulnerabilities.deleteMany({});
-		await tx.repocop_github_repository_rules.deleteMany({});
-		await tx.repocop_vulnerabilities.deleteMany({});
-		await tx.obligatron_results.deleteMany({});
-
-		await tx.github_teams.createMany({ data: teams });
-		await tx.github_repositories.createMany({ data: seedData.repos });
-
-		await createManyIfAny(seedData.githubWorkflows, (data) =>
-			tx.github_workflows.createMany({ data }),
-		);
-
-		await createManyIfAny(seedData.githubActionsUsages, (data) =>
-			tx.guardian_github_actions_usage.createMany({ data }),
-		);
-
-		await tx.github_languages.createMany({ data: seedData.languages });
-		await tx.github_team_repositories.createMany({ data: seedData.teamRepos });
-		await tx.github_repository_branches.createMany({ data: seedData.branches });
-
-		await createManyIfAny(seedData.cloudFormationStacks, (data) =>
-			tx.aws_cloudformation_stacks.createMany({ data }),
-		);
-
-		await createManyIfAny(seedData.customProperties, (data) =>
-			tx.github_repository_custom_properties.createMany({ data }),
-		);
+	// runtime/output tables: always clear for reproducible local runs
+	await tx.guardian_github_actions_usage.deleteMany({
+		where: {
+			full_name: { in: seededRepoFullNames },
+		},
 	});
+	await tx.cloudquery_plugin_usage.deleteMany({});
+	await tx.cloudbuster_fsbp_vulnerabilities.deleteMany({});
+	await tx.repocop_github_repository_rules.deleteMany({});
+	await tx.repocop_vulnerabilities.deleteMany({});
+	await tx.obligatron_results.deleteMany({});
+}
 
-	console.log('Seeding complete!');
+/**
+ * Inserts the assembled seed payload inside the active Prisma transaction.
+ */
+async function insertSeedData(
+	tx: Prisma.TransactionClient,
+	teams: Prisma.github_teamsCreateManyInput[],
+	seedData: SeedData,
+): Promise<void> {
+	await tx.github_teams.createMany({ data: teams });
+	await tx.github_repositories.createMany({ data: seedData.repos });
 
-	console.log('Refreshing materialized view aws_resources...');
+	await createManyIfAny(seedData.githubWorkflows, (data) =>
+		tx.github_workflows.createMany({ data }),
+	);
+
+	await createManyIfAny(seedData.githubActionsUsages, (data) =>
+		tx.guardian_github_actions_usage.createMany({ data }),
+	);
+
+	await tx.github_languages.createMany({ data: seedData.languages });
+	await tx.github_team_repositories.createMany({ data: seedData.teamRepos });
+	await tx.github_repository_branches.createMany({ data: seedData.branches });
+
+	await createManyIfAny(seedData.cloudFormationStacks, (data) =>
+		tx.aws_cloudformation_stacks.createMany({ data }),
+	);
+
+	await createManyIfAny(seedData.customProperties, (data) =>
+		tx.github_repository_custom_properties.createMany({ data }),
+	);
+}
+
+/**
+ * Refreshes the aws_resources materialized view after seeding.
+ *
+ * Falls back to WITH NO DATA when local seed databases do not contain the
+ * underlying AWS source tables.
+ */
+async function refreshAwsResourcesView(): Promise<void> {
 	try {
 		await prisma.$executeRaw`REFRESH MATERIALIZED VIEW aws_resources;`;
 		console.log('Materialized view refreshed.');
@@ -633,6 +141,31 @@ async function main() {
 		);
 		await prisma.$executeRaw`REFRESH MATERIALIZED VIEW aws_resources WITH NO DATA;`;
 	}
+}
+
+/**
+ * Runs the end-to-end local seed flow.
+ */
+async function main(): Promise<void> {
+	await ensureAwsResourcesRawFunction();
+
+	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
+
+	const seedData = buildSeedData();
+
+	console.log(
+		'Seeding teams, repos, workflows, languages, and related records...',
+	);
+
+	await prisma.$transaction(async (tx) => {
+		await clearExistingSeedData(tx, seedFilter, seededRepoFullNames);
+		await insertSeedData(tx, teams, seedData);
+	});
+
+	console.log('Seeding complete!');
+
+	console.log('Refreshing materialized view aws_resources...');
+	await refreshAwsResourcesView();
 }
 
 main()
