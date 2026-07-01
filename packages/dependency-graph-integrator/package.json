@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.161"
+		"@types/aws-lambda": "^8.10.162"
 	},
 	"scripts": {
 		"copy-templates": "cp ../../.github/workflows/template_dep_submission_gradle.yaml src/template_dep_submission_gradle.yaml && cp ../../.github/workflows/template_dep_submission_sbt.yaml src/template_dep_submission_sbt.yaml",
@@ -20,6 +20,6 @@
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.1030.0",
 		"ts-markdown": "^1.2.0",
-		"yaml": "^2.8.3"
+		"yaml": "^2.9.0"
 	}
 }
