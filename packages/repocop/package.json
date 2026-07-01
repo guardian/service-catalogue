@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.161"
+		"@types/aws-lambda": "^8.10.162"
 	},
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node24 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma  --format=esm --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\"",
@@ -16,6 +16,6 @@
 		"@aws-sdk/client-cloudwatch": "^3.1030.0",
 		"@aws-sdk/client-sns": "^3.1030.0",
 		"ts-markdown": "^1.2.0",
-		"yaml": "^2.8.3"
+		"yaml": "^2.9.0"
 	}
 }
