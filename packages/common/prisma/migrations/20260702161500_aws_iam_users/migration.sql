@@ -50,5 +50,5 @@ BEGIN TRANSACTION;
         CONSTRAINT "aws_iam_credential_reports_cqpk" PRIMARY KEY ("_cq_id")
     );
 
-    ALTER TABLE "aws_organizations_accounts" ADD COLUMN "state" TEXT;
+    ALTER TABLE "aws_organizations_accounts" ADD COLUMN IF NOT EXISTS "state" TEXT;
 COMMIT TRANSACTION;

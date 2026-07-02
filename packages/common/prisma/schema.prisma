@@ -185,6 +185,7 @@ model aws_organizations_accounts {
   joined_timestamp   DateTime? @db.Timestamp(6)
   name               String?
   status             String?
+  state              String?
 
   @@ignore
 }
@@ -1256,6 +1257,53 @@ model github_organizations {
 
   @@id([org, id], map: "github_organizations_cqpk")
   @@ignore
+}
+
+model aws_iam_credential_reports {
+  cq_sync_time                  DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                String?   @map("_cq_source_name")
+  cq_id                         String    @id(map: "aws_iam_credential_reports_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                  String?   @map("_cq_parent_id") @db.Uuid
+  arn                           String?
+  user_creation_time            DateTime? @db.Timestamp(6)
+  password_last_changed         DateTime? @db.Timestamp(6)
+  password_next_rotation        DateTime? @db.Timestamp(6)
+  access_key_1_last_rotated     DateTime? @db.Timestamp(6)
+  access_key_2_last_rotated     DateTime? @db.Timestamp(6)
+  cert_1_last_rotated           DateTime? @db.Timestamp(6)
+  cert_2_last_rotated           DateTime? @db.Timestamp(6)
+  access_key_1_last_used_date   DateTime? @db.Timestamp(6)
+  access_key_2_last_used_date   DateTime? @db.Timestamp(6)
+  password_last_used            DateTime? @db.Timestamp(6)
+  password_enabled              String?
+  user                          String?
+  password_status               String?
+  mfa_active                    Boolean?
+  access_key1_active            Boolean?
+  access_key2_active            Boolean?
+  cert1_active                  Boolean?
+  cert2_active                  Boolean?
+  access_key1_last_used_region  String?
+  access_key1_last_used_service String?
+  access_key2_last_used_region  String?
+  access_key2_last_used_service String?
+  account_id                    String?
+}
+
+model aws_iam_users {
+  cq_sync_time         DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name       String?   @map("_cq_source_name")
+  cq_id                String    @id(map: "aws_iam_users_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id         String?   @map("_cq_parent_id") @db.Uuid
+  account_id           String?
+  arn                  String?
+  tags                 Json?
+  create_date          DateTime? @db.Timestamp(6)
+  path                 String?
+  user_id              String?
+  user_name            String?
+  password_last_used   DateTime? @db.Timestamp(6)
+  permissions_boundary Json?
 }
 
 view view_repo_ownership {
