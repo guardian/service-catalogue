@@ -32,7 +32,7 @@ import type { SeedData, TeamSlug } from './seed-types.js';
 /**
  * Builds the intentionally invalid workflow row used by local testing scenarios.
  */
-function createInvalidSeedWorkflow(
+function createInvalidGithubWorkflow(
 	repositoryId: bigint,
 	invalidWorkflowId: bigint,
 ): Prisma.github_workflowsCreateManyInput {
@@ -87,7 +87,7 @@ export function buildSeedData(): SeedData {
 
 		if (definition.id === invalidWorkflowRepoId) {
 			acc.githubWorkflows.push(
-				createInvalidSeedWorkflow(
+				createInvalidGithubWorkflow(
 					repoBundle.repositoryId,
 					primaryWorkflowId + 1n,
 				),
