@@ -139,7 +139,7 @@ We chose Prisma seeding because it keeps the local dataset deterministic and ver
 
 ### Positive
 
-- Local development is more reliable, reproducible and faster.
+- Local development is more reliable, reproducible and typically faster because it starts from a small deterministic dataset rather than restoring or copying larger production-derived data.
 - Setup is simpler, with fewer environment-specific dependencies.
 - Schema and seed data now evolve together in the repository.
 - Local debugging is easier because the initial dataset is known.
