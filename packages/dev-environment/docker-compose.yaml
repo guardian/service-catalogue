@@ -1,7 +1,4 @@
 services:
-  # Postgres starts empty. The schema is created and the database is seeded by
-  # Prisma (migrate deploy + seed) from the start script, so no init scripts are
-  # mounted here.
   postgres:
     image: postgres:18.3
     ports:
