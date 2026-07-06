@@ -90,9 +90,37 @@ seed_database() {
   )
 }
 
-start_app_containers() {
-  step "Launching CloudQuery and Grafana"
-  "${COMPOSE_CMD[@]}" up -d --build cloudquery grafana
+start_grafana() {
+  step "Launching Grafana"
+  "${COMPOSE_CMD[@]}" up -d --no-deps grafana
+}
+
+start_cloudquery() {
+  step "Launching CloudQuery"
+  "${COMPOSE_CMD[@]}" up -d --force-recreate --no-deps cloudquery
+
+  local cloudquery_container
+  cloudquery_container=$("${COMPOSE_CMD[@]}" ps -aq cloudquery)
+
+  if [[ -z "$cloudquery_container" ]]; then
+    echo -e "${red}CloudQuery container was not created.${clear}"
+    exit 1
+  fi
+
+  echo "Waiting for CloudQuery to finish..."
+
+  local exit_code
+  exit_code=$(docker wait "$cloudquery_container")
+
+  if [[ "$exit_code" == "0" ]]; then
+    echo "CloudQuery completed successfully."
+  else
+    echo -e "${red}CloudQuery failed.${clear}"
+    echo "CloudQuery exited with code ${exit_code}."
+    echo "Showing recent CloudQuery logs:"
+    "${COMPOSE_CMD[@]}" logs --tail=100 cloudquery || true
+    exit 1
+  fi
 }
 
 main() {
@@ -100,7 +128,8 @@ main() {
   ensure_prisma_available
   start_postgres
   seed_database
-  start_app_containers
+  start_grafana
+  start_cloudquery
 }
 
 main
