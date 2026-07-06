@@ -100,8 +100,8 @@ Here, a PostgreSQL dump of a representative environment is created on a schedule
 - Uses real data rather than synthetic fixtures.
 - Can make local development more reflective of CODE or PROD-derived data because more tables and relationships are populated.
 - Reduces the need to design and maintain Prisma seed fixtures by hand.
-- Decouples local setup from direct runtime access to CODE at startup time, since developers restore from a stored dump rather than copying live data.
-- A scheduled dump can provide a reasonably current dataset without requiring every developer to connect to source systems directly.
+- Moves direct access to CODE out of the developer startup path, since developers restore a stored dump rather than copying live data during local setup.
+- A scheduled dump can provide a reasonably current dataset without requiring every developer to connect to source systems directly, although local startup still includes transferring and restoring that dump.
 
 #### Disadvantages
 
