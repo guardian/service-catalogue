@@ -39,7 +39,6 @@ spec:
 kind: destination
 spec:
   name: 'postgresql'
-  registry: 'github'
   path: 'cloudquery/postgresql'
   version: v${CQ_POSTGRES_DESTINATION}
 

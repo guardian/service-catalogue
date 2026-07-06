@@ -113,6 +113,15 @@ export async function main() {
 	const productionWorkflowUsages: guardian_github_actions_usage[] =
 		await getProductionWorkflowUsages(prisma, productionRepos);
 
+	const customProperties = await getRepositoryCustomProperties(prisma);
+	const customPropertiesExemptedFromDepGraphIntegration: github_repository_custom_properties[] =
+		customProperties.filter((property) => {
+			return (
+				property.property_name === 'gu_dependency_graph_integrator_ignore' &&
+				property.value.length > 0
+			);
+		});
+
 	const evaluationResults: EvaluationResult[] = evaluateRepositories(
 		unarchivedRepos,
 		branches,
@@ -186,14 +195,6 @@ export async function main() {
 		config,
 	);
 
-	const customProperties = await getRepositoryCustomProperties(prisma);
-	const customPropertiesExemptedFromDepGraphIntegration: github_repository_custom_properties[] =
-		customProperties.filter((property) => {
-			return (
-				property.property_name === 'gu_dependency_graph_integrator_ignore' &&
-				property.value.length > 0
-			);
-		});
 	const dependencyGraphIntegratorRepoCount = 5;
 
 	await sendReposToDependencyGraphIntegrator(

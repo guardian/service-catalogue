@@ -53,19 +53,16 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    volumes:
-      # Runs the .sql files from the db-copy service on launch.
-      # See https://hub.docker.com/_/postgres#:~:text=Initialization%20scripts.
-      - ./sql:/docker-entrypoint-initdb.d/
-    depends_on:
-      db-copy:
-        condition: service_completed_successfully
     healthcheck:
-      # Ensures the initialisation scripts have completed, before accepting connections from CloudQuery, Grafana, etc.
-      test: ['CMD-SHELL', 'pg_isready --host 127.0.0.1']
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready --host 127.0.0.1 --username "${DATABASE_USER}" --dbname "${DATABASE_NAME}"',
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   cloudquery:
     build:
       context: ../../containers/cloudquery
@@ -87,10 +84,11 @@ services:
       CQ_AWS: ${CQ_AWS}
       CQ_GITHUB: ${CQ_GITHUB}
       GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
-      GALAXIES_BUCKET: ${GALAXIES_BUCKET}
+      GALAXIES_BUCKET: ${GALAXIES_BUCKET:-} # the ':-' makes the variable default to an empty string if it is unset or empty
       CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
       DATABASE_URL: ${CQ_DATABASE_URL}
     command: sync /cloudquery.yaml --log-console --log-level info
+
   grafana:
     image: grafana/grafana-oss:10.3.1
     depends_on:
