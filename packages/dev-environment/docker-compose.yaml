@@ -31,6 +31,8 @@ services:
         - aws_ec2_route_tables
         - aws_ec2_subnets
         - aws_ec2_vpcs
+        - aws_iam_users
+        - aws_aws_iam_credential_reports
         - aws_cloudformation_stacks
         - amigo_bake_packages
         - aws_cloudfront_distributions

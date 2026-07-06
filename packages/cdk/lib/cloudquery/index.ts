@@ -359,7 +359,7 @@ export function addCloudqueryEcsCluster(
 				'Collecting IAM credential reports to surface information about outdated or inactive users and access keys',
 			schedule: Schedule.rate(Duration.hours(4)),
 			config: awsSourceConfigForOrganisation({
-				tables: ['aws_iam_credential_reports'],
+				tables: ['aws_iam_credential_reports', 'aws_iam_users'],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
