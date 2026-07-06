@@ -65,7 +65,7 @@ The seed data includes the minimum records needed for local development, such as
 - Data is deterministic and reproducible.
 - Seed data can be reviewed and versioned alongside schema changes.
 - Developers can evolve the local dataset intentionally to cover specific scenarios.
-- Deterministic data makes E2E and integration testing much simpler, something we only do manually at the moment.
+- Deterministic data makes automated lambda, E2E and integration testing much simpler locally and in CI, something we only do manually at the moment.
 
 #### Disadvantages
 
@@ -107,6 +107,8 @@ Here, a PostgreSQL dump of a representative environment is created on a schedule
 
 - Reintroduces dependency on production-derived or environment-derived data, including the associated security, privacy and access-control risks.
 - Makes local datasets less deterministic than Prisma seeding, especially as dumps are refreshed over time.
+- Non-deterministic or periodically refreshed table contents make automated lambda and integration testing harder to run reliably on local machines and CI runners.
+- Supporting this approach in CI may require giving runners access to production-derived data, even if stale or sanitised, which increases security risk.
 - Still introduces operational infrastructure to create, store, retain and restore dumps.
 - Dumps may drift from the current local schema or migration state, especially if the dump source and local code are not aligned.
 - Restoring a full or partial dump may be slower and heavier than inserting a small deterministic seed dataset.
@@ -131,7 +133,7 @@ This replaces the previous `db-copy` approach for local development.
 
 The seeded dataset should remain intentionally small and focused on supporting local development, rather than mirroring CODE in full.
 
-We chose Prisma seeding because it keeps the local dataset deterministic and versioned in the repo, without adding extra operational or data-governance overhead.
+We chose Prisma seeding because it keeps the local dataset deterministic and versioned in the repo, supports repeatable automated testing of lambdas locally and in CI, and avoids extra operational or data-governance overhead.
 
 ## Consequences
 
@@ -141,6 +143,7 @@ We chose Prisma seeding because it keeps the local dataset deterministic and ver
 - Setup is simpler, with fewer environment-specific dependencies.
 - Schema and seed data now evolve together in the repository.
 - Local debugging is easier because the initial dataset is known.
+- Automated lambda and integration testing is easier to run repeatably in local development and CI.
 
 ### Negative
 
