@@ -4,5 +4,5 @@ BEGIN TRANSACTION;
     GRANT SELECT ON ALL TABLES IN SCHEMA public TO cloudbuster;
 
     -- Grant read access to all future tables, and views
-        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO cloudbuster;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO cloudbuster;
 COMMIT TRANSACTION;
