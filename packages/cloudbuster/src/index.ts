@@ -93,7 +93,7 @@ async function createFsbpTableAndAlerts(
 	);
 }
 
-async function userReport(prisma: PrismaClient) {
+async function breakglassUserReport(prisma: PrismaClient) {
 	const user = await prisma.aws_iam_users.findFirst();
 	const report = await prisma.aws_iam_credential_reports.findFirst();
 
@@ -102,6 +102,7 @@ async function userReport(prisma: PrismaClient) {
 }
 
 export async function main() {
+	logger.log({ message: 'Cloudbuster run starting.' });
 	// *** SETUP ***
 	const config = await getConfig();
 	const prisma = getPrismaClient(config);
@@ -112,6 +113,6 @@ export async function main() {
 	);
 
 	await createFsbpTableAndAlerts(config, prisma, anghammaradClient);
-	await userReport(prisma);
+	await breakglassUserReport(prisma);
 	logger.log({ message: 'Cloudbuster run completed.' });
 }
