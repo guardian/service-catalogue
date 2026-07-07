@@ -6,9 +6,15 @@ import type {
 	cloudbuster_fsbp_vulnerabilities,
 	PrismaClient,
 } from 'common/prisma-client/client.js';
-import { getFsbpFindings } from 'common/src/database-queries.js';
+import {
+	getAwsAccounts,
+	getFsbpFindings,
+	getIamCredentialReports,
+	getIamUsers,
+} from 'common/src/database-queries.js';
 import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import type { SecurityHubSeverity } from 'common/src/types.js';
+import { createBreakglassUserReport } from './breakglass.js';
 import type { Config } from './config.js';
 import { getConfig } from './config.js';
 import { createDigestsFromFindings, sendDigest } from './digests.js';
@@ -94,11 +100,27 @@ async function createFsbpTableAndAlerts(
 }
 
 async function breakglassUserReport(prisma: PrismaClient) {
-	const user = await prisma.aws_iam_users.findFirst();
-	const report = await prisma.aws_iam_credential_reports.findFirst();
+	const [credentialReports, awsAccounts, iamUsers] = await Promise.all([
+		getIamCredentialReports(prisma),
+		getAwsAccounts(prisma),
+		getIamUsers(prisma),
+	]);
 
-	console.log(`User: ${user?.user_name}`);
-	console.log(`Report: ${report?.user}`);
+	const report = createBreakglassUserReport(
+		credentialReports,
+		awsAccounts,
+		iamUsers,
+	);
+
+
+	logger.log({
+		message: report.map((r) => ({
+			accountName: r.accountName,
+			user: r.user,
+		})).toLocaleString(),
+	});
+
+	return report;
 }
 
 export async function main() {

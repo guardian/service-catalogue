@@ -1,4 +1,7 @@
 import type {
+	aws_accounts,
+	aws_iam_credential_reports,
+	aws_iam_users,
 	aws_securityhub_findings,
 	PrismaClient,
 	view_repo_ownership,
@@ -69,4 +72,22 @@ export async function getExternalTeams(
 ): Promise<string[]> {
 	const teams = await client.guardian_non_p_and_e_github_teams.findMany();
 	return toNonEmptyArray(teams.map((t) => t.team_name));
+}
+
+export async function getIamCredentialReports(
+	client: PrismaClient,
+): Promise<aws_iam_credential_reports[]> {
+	return await client.aws_iam_credential_reports.findMany();
+}
+
+export async function getIamUsers(
+	client: PrismaClient,
+): Promise<aws_iam_users[]> {
+	return await client.aws_iam_users.findMany();
+}
+
+export async function getAwsAccounts(
+	client: PrismaClient,
+): Promise<aws_accounts[]> {
+	return await client.aws_accounts.findMany();
 }
