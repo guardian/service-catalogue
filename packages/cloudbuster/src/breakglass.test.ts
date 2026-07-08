@@ -217,10 +217,12 @@ void describe('createBreakglassUserReport', () => {
 				credentialReport({
 					user: 'alice',
 					arn: 'arn:aws:iam::111111111111:user/alice',
+					account_id: '111111111111',
 				}),
 				credentialReport({
 					user: 'bob',
 					arn: 'arn:aws:iam::222222222222:user/bob',
+					account_id: '222222222222',
 				}),
 			],
 			[

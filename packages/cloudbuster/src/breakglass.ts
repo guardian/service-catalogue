@@ -13,16 +13,6 @@ export interface BreakglassUser {
 }
 
 /**
- * Extracts the 12-digit AWS account id from an IAM ARN.
- * ARNs have the form `arn:aws:iam::<account-id>:<resource>`, so the account id
- * is the 5th colon-delimited segment.
- * E.g. `arn:aws:iam::123456789012:user/alice` -> `123456789012`.
- */
-function accountIdFromArn(arn: string | null): string | null {
-	return arn?.split(':')[4] ?? null;
-}
-
-/**
  * Builds the breakglass user report by joining IAM credential reports to their
  * AWS account and IAM user records, filtering to users that have passwords.
  */
@@ -37,7 +27,7 @@ export function createBreakglassUserReport(
 	return credentialReports
 		.filter((cr) => cr.password_enabled === 'true')
 		.map((cr) => {
-			const accountId = accountIdFromArn(cr.arn);
+			const accountId = cr.account_id;
 			const account = accountId ? accountsById.get(accountId) : undefined;
 			const user = cr.arn ? usersByArn.get(cr.arn) : undefined;
 			const tags = user?.tags as Record<string, string> | null | undefined;
