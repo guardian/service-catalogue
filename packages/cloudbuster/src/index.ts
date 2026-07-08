@@ -112,12 +112,13 @@ async function breakglassUserReport(prisma: PrismaClient) {
 		iamUsers,
 	);
 
-
 	logger.log({
-		message: report.map((r) => ({
-			accountName: r.accountName,
-			user: r.user,
-		})).toLocaleString(),
+		message: JSON.stringify(
+			report.map((r) => ({
+				accountName: r.accountName,
+				user: r.user,
+			})),
+		),
 	});
 
 	return report;

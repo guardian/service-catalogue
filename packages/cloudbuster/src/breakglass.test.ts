@@ -78,7 +78,7 @@ function iamUser(overrides: Partial<aws_iam_users>): aws_iam_users {
 void describe('createBreakglassUserReport', () => {
     void it('joins credential reports to accounts and users', () => {
         const report = createBreakglassUserReport(
-            [credentialReport({})],
+            [credentialReport({ mfa_active: false })],
             [awsAccount({})],
             [iamUser({})],
         );
@@ -87,7 +87,7 @@ void describe('createBreakglassUserReport', () => {
             accountName: 'my-account',
             user: 'alice',
             userUrl: 'https://console.aws.amazon.com/iam/home#/users/alice',
-            mfaActive: true,
+            mfaActive: false,
             hasUsernameTag: true,
         };
 
@@ -97,11 +97,16 @@ void describe('createBreakglassUserReport', () => {
     void it('only includes users with passwords', () => {
         const report = createBreakglassUserReport(
             [
-                credentialReport({ user: 'alice', password_enabled: 'true' }),
+                credentialReport({
+                    user: 'alice',
+                    password_enabled: 'true',
+                    mfa_active: false,
+                }),
                 credentialReport({
                     user: 'bob',
                     arn: 'arn:aws:iam::123456789012:user/bob',
                     password_enabled: 'false',
+                    mfa_active: false,
                 }),
             ],
             [awsAccount({})],
@@ -110,6 +115,63 @@ void describe('createBreakglassUserReport', () => {
 
         assert.strictEqual(report.length, 1);
         assert.strictEqual(report[0]?.user, 'alice');
+    });
+
+    void it('excludes users that have both MFA enabled and a GoogleUsername tag', () => {
+        const report = createBreakglassUserReport(
+            [credentialReport({ mfa_active: true })],
+            [awsAccount({})],
+            [iamUser({ tags: { GoogleUsername: 'alice.smith' } })],
+        );
+
+        assert.deepStrictEqual(report, []);
+    });
+
+    void it('includes users that have a GoogleUsername tag but no MFA', () => {
+        const report = createBreakglassUserReport(
+            [credentialReport({ mfa_active: false })],
+            [awsAccount({})],
+            [iamUser({ tags: { GoogleUsername: 'alice.smith' } })],
+        );
+
+        assert.strictEqual(report.length, 1);
+        assert.strictEqual(report[0]?.mfaActive, false);
+        assert.strictEqual(report[0]?.hasUsernameTag, true);
+    });
+
+    void it('includes users that have MFA but no GoogleUsername tag', () => {
+        const report = createBreakglassUserReport(
+            [credentialReport({ mfa_active: true })],
+            [awsAccount({})],
+            [iamUser({ tags: { SomeOtherTag: 'value' } })],
+        );
+
+        assert.strictEqual(report.length, 1);
+        assert.strictEqual(report[0]?.mfaActive, true);
+        assert.strictEqual(report[0]?.hasUsernameTag, false);
+    });
+
+    void it('includes users that have neither MFA nor a GoogleUsername tag', () => {
+        const report = createBreakglassUserReport(
+            [credentialReport({ mfa_active: false })],
+            [awsAccount({})],
+            [iamUser({ tags: { SomeOtherTag: 'value' } })],
+        );
+
+        assert.strictEqual(report.length, 1);
+        assert.strictEqual(report[0]?.mfaActive, false);
+        assert.strictEqual(report[0]?.hasUsernameTag, false);
+    });
+
+    void it('treats unknown MFA status (null) as missing MFA', () => {
+        const report = createBreakglassUserReport(
+            [credentialReport({ mfa_active: null })],
+            [awsAccount({})],
+            [iamUser({ tags: { GoogleUsername: 'alice.smith' } })],
+        );
+
+        assert.strictEqual(report.length, 1);
+        assert.strictEqual(report[0]?.mfaActive, null);
     });
 
     void it('reports hasUsernameTag as false when no matching user is found', () => {
