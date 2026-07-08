@@ -2,24 +2,28 @@ import { SNSClient } from '@aws-sdk/client-sns';
 import { Anghammarad } from '@guardian/anghammarad';
 import { awsClientConfig } from 'common/aws.js';
 import { logger } from 'common/logs.js';
-import type { cloudbuster_fsbp_vulnerabilities } from 'common/prisma-client/client.js';
+import type {
+	cloudbuster_fsbp_vulnerabilities,
+	PrismaClient,
+} from 'common/prisma-client/client.js';
 import { getFsbpFindings } from 'common/src/database-queries.js';
 import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import type { SecurityHubSeverity } from 'common/src/types.js';
+import type { Config } from './config.js';
 import { getConfig } from './config.js';
 import { createDigestsFromFindings, sendDigest } from './digests.js';
 import { findingsToGuardianFormat } from './findings.js';
 
-export async function main() {
+async function createFsbpTableAndAlerts(
+	config: Config,
+	prisma: PrismaClient,
+	anghammaradClient: Anghammarad,
+) {
 	const severities: SecurityHubSeverity[] = ['CRITICAL', 'HIGH'];
-
-	// *** SETUP ***
-	const config = await getConfig();
-	const prisma = getPrismaClient(config);
 
 	// *** DATA GATHERING ***
 	logger.log({
-		message: `Starting Cloudbuster. Level of severities that will be scanned: ${severities.join(', ')}`,
+		message: `Level of severities that will be scanned: ${severities.join(', ')}`,
 	});
 
 	const dbResults = await getFsbpFindings(prisma, severities);
@@ -79,19 +83,36 @@ export async function main() {
 			...createDigestsFromFindings(activeFindings, 'HIGH', config.cutOffInDays),
 		);
 	}
-	// *** NOTIFICATION SENDING ***
-	const snsClient = new SNSClient(awsClientConfig(config.stage));
-	const anghammaradClient = new Anghammarad(
-		snsClient,
-		config.anghammaradSnsTopic,
-	);
 
+	// *** NOTIFICATION SENDING ***
 	logger.log({ message: `Sending ${digests.length} digests.` });
 	await Promise.all(
 		digests.map(
 			async (digest) => await sendDigest(anghammaradClient, config, digest),
 		),
 	);
+}
 
+async function breakglassUserReport(prisma: PrismaClient) {
+	const user = await prisma.aws_iam_users.findFirst();
+	const report = await prisma.aws_iam_credential_reports.findFirst();
+
+	console.log(`User: ${user?.user_name}`);
+	console.log(`Report: ${report?.user}`);
+}
+
+export async function main() {
+	logger.log({ message: 'Cloudbuster run starting.' });
+	// *** SETUP ***
+	const config = await getConfig();
+	const prisma = getPrismaClient(config);
+	const snsClient = new SNSClient(awsClientConfig(config.stage));
+	const anghammaradClient = new Anghammarad(
+		snsClient,
+		config.anghammaradSnsTopic,
+	);
+
+	await createFsbpTableAndAlerts(config, prisma, anghammaradClient);
+	await breakglassUserReport(prisma);
 	logger.log({ message: 'Cloudbuster run completed.' });
 }
