@@ -230,6 +230,7 @@ export function addCloudqueryEcsCluster(
 				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			runAsSingleton: true,
 		},
 		{
 			name: 'AwsOrgWideCertificates',
