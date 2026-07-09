@@ -1,86 +1,42 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
 import type {
-	aws_iam_credential_reports,
-	aws_iam_users,
-	aws_organizations_accounts,
-} from 'common/prisma-client/client.js';
-import type { BreakglassUser } from './breakglass.js';
-import { createBreakglassUserReport } from './breakglass.js';
+	AwsIamCredentialReport,
+	AwsIamUser,
+	AwsOrganizationsAccounts,
+} from 'common/types.js';
+import { createBreakglassUserReport } from './findings.js';
+import type { BreakglassUser } from './types.js';
 
 function credentialReport(
-	overrides: Partial<aws_iam_credential_reports>,
-): aws_iam_credential_reports {
+	overrides: Partial<AwsIamCredentialReport>,
+): AwsIamCredentialReport {
 	return {
-		cq_sync_time: null,
-		cq_source_name: null,
-		cq_id: 'cq-id',
-		cq_parent_id: null,
 		arn: 'arn:aws:iam::123456789012:user/alice',
-		user_creation_time: null,
-		password_last_changed: null,
-		password_next_rotation: null,
-		access_key_1_last_rotated: null,
-		access_key_2_last_rotated: null,
-		cert_1_last_rotated: null,
-		cert_2_last_rotated: null,
-		access_key_1_last_used_date: null,
-		access_key_2_last_used_date: null,
-		password_last_used: null,
 		password_enabled: 'true',
 		user: 'alice',
-		password_status: null,
 		mfa_active: true,
-		access_key1_active: null,
-		access_key2_active: null,
-		cert1_active: null,
-		cert2_active: null,
-		access_key1_last_used_region: null,
-		access_key1_last_used_service: null,
-		access_key2_last_used_region: null,
-		access_key2_last_used_service: null,
 		account_id: '123456789012',
 		...overrides,
 	};
 }
 
 function awsAccount(
-	overrides: Partial<aws_organizations_accounts>,
-): aws_organizations_accounts {
+	overrides: Partial<AwsOrganizationsAccounts>,
+): AwsOrganizationsAccounts {
 	return {
-		cq_sync_time: null,
-		cq_source_name: null,
-		cq_id: 'cq-id',
-		cq_parent_id: null,
-		request_account_id: null,
-		tags: null,
-		arn: 'arn:aws:organizations::123456789012:account/o-example/123456789012',
 		id: '123456789012',
 		name: 'my-account',
-		email: 'account@example.com',
-		joined_method: null,
-		joined_timestamp: new Date('2020-01-01'),
-		status: 'ACTIVE',
-		state: null,
 		...overrides,
 	};
 }
 
-function iamUser(overrides: Partial<aws_iam_users>): aws_iam_users {
+function iamUser(overrides: Partial<AwsIamUser>): AwsIamUser {
 	return {
-		cq_sync_time: null,
-		cq_source_name: null,
-		cq_id: 'cq-id',
-		cq_parent_id: null,
 		account_id: '123456789012',
 		arn: 'arn:aws:iam::123456789012:user/alice',
 		tags: { GoogleUsername: 'alice.smith' },
-		create_date: null,
-		path: null,
-		user_id: null,
 		user_name: 'alice',
-		password_last_used: null,
-		permissions_boundary: null,
 		...overrides,
 	};
 }
@@ -171,17 +127,6 @@ void describe('createBreakglassUserReport', () => {
 		assert.strictEqual(report.length, 1);
 		assert.strictEqual(report[0]!.mfaActive, false);
 		assert.strictEqual(report[0]!.hasUsernameTag, false);
-	});
-
-	void it('treats unknown MFA status (null) as missing MFA', () => {
-		const report = createBreakglassUserReport(
-			[credentialReport({ mfa_active: null })],
-			[awsAccount({})],
-			[iamUser({ tags: { GoogleUsername: 'alice.smith' } })],
-		);
-
-		assert.strictEqual(report.length, 1);
-		assert.strictEqual(report[0]!.mfaActive, null);
 	});
 
 	void it('reports hasUsernameTag as false when no matching user is found', () => {

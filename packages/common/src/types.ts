@@ -1,5 +1,8 @@
 import { type StrategyOptions } from '@octokit/auth-app';
 import type {
+	aws_iam_credential_reports,
+	aws_iam_users,
+	aws_organizations_accounts,
 	aws_securityhub_findings,
 	github_repositories,
 	repocop_vulnerabilities,
@@ -148,3 +151,38 @@ export type SecurityHubFinding = Pick<
 	product_fields: { ControlId: string };
 	workflow: { Status: 'NEW' | 'NOTIFIED' | 'SUPPRESSED' | 'RESOLVED' }; //https://docs.aws.amazon.com/securityhub/latest/userguide/findings-workflow-status.html
 };
+
+type AwsIamUserFields = Pick<
+	aws_iam_users,
+	'account_id' | 'user_name' | 'tags'
+>;
+
+export interface AwsIamUser extends AwsIamUserFields {
+	account_id: NonNullable<AwsIamUserFields['account_id']>;
+	user_name: NonNullable<AwsIamUserFields['user_name']>;
+	arn: NonNullable<aws_iam_users['arn']>;
+	tags: AwsIamUserFields['tags'];
+}
+
+type AwsOrganizationsAccountsFields = Pick<
+	aws_organizations_accounts,
+	'id' | 'name'
+>;
+
+export interface AwsOrganizationsAccounts extends AwsOrganizationsAccountsFields {
+	id: NonNullable<AwsOrganizationsAccountsFields['id']>;
+	name: NonNullable<AwsOrganizationsAccountsFields['name']>;
+}
+
+type AwsIamCredentialReports = Pick<
+	aws_iam_credential_reports,
+	'account_id' | 'user' | 'arn' | 'password_enabled' | 'mfa_active'
+>;
+
+export interface AwsIamCredentialReport extends AwsIamCredentialReports {
+	account_id: NonNullable<AwsIamCredentialReports['account_id']>;
+	user: NonNullable<AwsIamCredentialReports['user']>;
+	arn: NonNullable<AwsIamCredentialReports['arn']>;
+	password_enabled: NonNullable<AwsIamCredentialReports['password_enabled']>;
+	mfa_active: NonNullable<AwsIamCredentialReports['mfa_active']>;
+}

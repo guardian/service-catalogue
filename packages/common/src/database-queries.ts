@@ -1,13 +1,13 @@
 import type {
-	aws_iam_credential_reports,
-	aws_iam_users,
-	aws_organizations_accounts,
 	aws_securityhub_findings,
 	PrismaClient,
 	view_repo_ownership,
 } from 'common/prisma-client/client.js';
 import { toNonEmptyArray } from './functions.js';
 import type {
+	AwsIamCredentialReport,
+	AwsIamUser,
+	AwsOrganizationsAccounts,
 	NonEmptyArray,
 	Repository,
 	SecurityHubFinding,
@@ -76,18 +76,19 @@ export async function getExternalTeams(
 
 export async function getIamCredentialReports(
 	client: PrismaClient,
-): Promise<aws_iam_credential_reports[]> {
-	return await client.aws_iam_credential_reports.findMany();
+): Promise<AwsIamCredentialReport[]> {
+	const reports = await client.aws_iam_credential_reports.findMany();
+	return toNonEmptyArray(reports.map((r) => r as AwsIamCredentialReport));
 }
 
-export async function getIamUsers(
-	client: PrismaClient,
-): Promise<aws_iam_users[]> {
-	return await client.aws_iam_users.findMany();
+export async function getIamUsers(client: PrismaClient): Promise<AwsIamUser[]> {
+	const users = await client.aws_iam_users.findMany();
+	return toNonEmptyArray(users.map((u) => u as AwsIamUser));
 }
 
 export async function getAwsAccounts(
 	client: PrismaClient,
-): Promise<aws_organizations_accounts[]> {
-	return await client.aws_organizations_accounts.findMany();
+): Promise<AwsOrganizationsAccounts[]> {
+	const accounts = await client.aws_organizations_accounts.findMany();
+	return toNonEmptyArray(accounts.map((a) => a as AwsOrganizationsAccounts));
 }
