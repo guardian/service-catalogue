@@ -1,7 +1,7 @@
 import type {
-	aws_accounts,
 	aws_iam_credential_reports,
 	aws_iam_users,
+	aws_organizations_accounts,
 	aws_securityhub_findings,
 	PrismaClient,
 	view_repo_ownership,
@@ -88,6 +88,6 @@ export async function getIamUsers(
 
 export async function getAwsAccounts(
 	client: PrismaClient,
-): Promise<aws_accounts[]> {
-	return await client.aws_accounts.findMany();
+): Promise<aws_organizations_accounts[]> {
+	return await client.aws_organizations_accounts.findMany();
 }

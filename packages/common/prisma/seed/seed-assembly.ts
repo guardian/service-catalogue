@@ -27,7 +27,7 @@ import {
 	teamDefinitions,
 } from './seed-data.js';
 import { createSeedMetadata } from './seed-helpers.js';
-import type { SeedData, TeamSlug } from './seed-types.js';
+import type { GitHubSeedData, TeamSlug } from './seed-types.js';
 
 /**
  * Builds the intentionally invalid workflow row used by local testing scenarios.
@@ -49,12 +49,12 @@ function createInvalidGithubWorkflow(
 /**
  * Expands repository fixture definitions into the full persisted seed payload.
  */
-export function buildSeedData(): SeedData {
+export function buildGitHubSeedData(): GitHubSeedData {
 	const teamIdsBySlug = new Map<TeamSlug, bigint>(
 		teamDefinitions.map(({ id, slug }) => [slug, BigInt(id)] as const),
 	);
 
-	return repoDefinitions.reduce<SeedData>((acc, definition) => {
+	return repoDefinitions.reduce<GitHubSeedData>((acc, definition) => {
 		const repoBundle = createRepoAndChildren(
 			definition.id,
 			definition.name,

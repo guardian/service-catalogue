@@ -19,7 +19,7 @@ export interface RepoDefinition {
 }
 
 /** Persisted seed payload assembled before insertion into the database. */
-export interface SeedData {
+export interface GitHubSeedData {
 	repos: Prisma.github_repositoriesCreateManyInput[];
 	languages: Prisma.github_languagesCreateManyInput[];
 	branches: Prisma.github_repository_branchesCreateManyInput[];

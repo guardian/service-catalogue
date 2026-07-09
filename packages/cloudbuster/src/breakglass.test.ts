@@ -1,9 +1,9 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
 import type {
-	aws_accounts,
 	aws_iam_credential_reports,
 	aws_iam_users,
+	aws_organizations_accounts,
 } from 'common/prisma-client/client.js';
 import type { BreakglassUser } from './breakglass.js';
 import { createBreakglassUserReport } from './breakglass.js';
@@ -44,15 +44,24 @@ function credentialReport(
 	};
 }
 
-function awsAccount(overrides: Partial<aws_accounts>): aws_accounts {
+function awsAccount(
+	overrides: Partial<aws_organizations_accounts>,
+): aws_organizations_accounts {
 	return {
+		cq_sync_time: null,
+		cq_source_name: null,
+		cq_id: 'cq-id',
+		cq_parent_id: null,
+		request_account_id: null,
+		tags: null,
+		arn: 'arn:aws:organizations::123456789012:account/o-example/123456789012',
 		id: '123456789012',
 		name: 'my-account',
 		email: 'account@example.com',
-		status: 'ACTIVE',
+		joined_method: null,
 		joined_timestamp: new Date('2020-01-01'),
-		ancestors: [],
-		is_product_and_engineering: true,
+		status: 'ACTIVE',
+		state: null,
 		...overrides,
 	};
 }

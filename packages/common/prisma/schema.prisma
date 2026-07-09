@@ -186,8 +186,6 @@ model aws_organizations_accounts {
   name               String?
   status             String?
   state              String?
-
-  @@ignore
 }
 
 model aws_organizations_organizational_units {
