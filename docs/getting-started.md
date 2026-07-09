@@ -55,7 +55,7 @@ You can get started in the Explore tab, as demonstrated below.
 
 ![A gif showing how to interact with CloudQuery using the Grafana UI](img/queryVideo.gif)
 
-### Read-only database user
+### Local SQL client
 
 An alternative way to query the database is using a local SQL client. To enable this use case, the database has a
 read-only user configured, the credentials for which are available in Secrets Manager at the path
