@@ -15,10 +15,10 @@ import {
 } from './seed-constants.js';
 import { createSeedMetadata } from './seed-helpers.js';
 import type {
+	GitHubSeedData,
 	RepoBundle,
 	RepoDefinition,
 	RoleName,
-	GitHubSeedData,
 	TeamSlug,
 } from './seed-types.js';
 
