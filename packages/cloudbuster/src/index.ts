@@ -1,5 +1,10 @@
 import { SNSClient } from '@aws-sdk/client-sns';
-import { Anghammarad } from '@guardian/anghammarad';
+import {
+	Anghammarad,
+	AnghammaradNotification,
+	RequestedChannel,
+	Target,
+} from '@guardian/anghammarad';
 import { awsClientConfig } from 'common/aws.js';
 import { logger } from 'common/logs.js';
 import type {
@@ -14,7 +19,7 @@ import {
 } from 'common/src/database-queries.js';
 import { getPrismaClient } from 'common/src/prisma-client-setup.js';
 import type { SecurityHubSeverity } from 'common/src/types.js';
-import { createBreakglassUserReport } from './breakglass.js';
+import { BreakglassUser, createBreakglassUserReport } from './breakglass.js';
 import type { Config } from './config.js';
 import { getConfig } from './config.js';
 import { createDigestsFromFindings, sendDigest } from './digests.js';
@@ -99,7 +104,23 @@ async function createFsbpTableAndAlerts(
 	);
 }
 
-async function breakglassUserReport(prisma: PrismaClient) {
+function formatUser(user: BreakglassUser): string {
+	const mfaString = user.mfaActive ? '' : 'MFA not active';
+	const tagString = user.hasUsernameTag ? '' : 'GoogleUsername tag not present';
+
+	const issues = [mfaString, tagString].filter(Boolean).join(', ');
+	return `[${user.user}](${user.userUrl}) - ${issues}.`;
+}
+
+function formatMessage(users: BreakglassUser[]): string {
+	return users.map(formatUser).join('\n');
+}
+
+async function breakglassUserReport(
+	config: Config,
+	prisma: PrismaClient,
+	anghammaradClient: Anghammarad,
+) {
 	const [credentialReports, awsAccounts, iamUsers] = await Promise.all([
 		getIamCredentialReports(prisma),
 		getAwsAccounts(prisma),
@@ -112,6 +133,8 @@ async function breakglassUserReport(prisma: PrismaClient) {
 		iamUsers,
 	);
 
+	//TODO store user count as a cloudwatch metric
+
 	console.table(
 		report.map(({ user, mfaActive, hasUsernameTag }) => ({
 			user,
@@ -119,6 +142,48 @@ async function breakglassUserReport(prisma: PrismaClient) {
 			hasUsernameTag,
 		})),
 	);
+
+	const usersPerAccount = awsAccounts
+		.map((account) => ({
+			acctId: account.id,
+			acctName: account.name,
+			users: report
+				.filter(
+					(user) => user.accountName === account.name && user.user != null,
+				)
+				.map((user) => user),
+		}))
+		.filter((account) => account.users.length > 0);
+
+	console.table(
+		usersPerAccount.map(({ acctName, users }) => ({
+			acctName,
+			numUsers: users.length,
+			users: users.map((u) => u.user).join(', '),
+		})),
+	);
+
+	const target: Target =
+		config.stage === 'PROD'
+			? { Stack: 'security' }
+			: { Stack: 'testing-alerts' };
+
+	usersPerAccount.forEach(async (account) => {
+		const notification: AnghammaradNotification = {
+			subject: `Breakglass User Report: ${account.acctName}`,
+			message: `${account.users.length} breakglass users are missing security configuration\n\n${formatMessage(account.users)}`,
+			actions: [
+				{
+					cta: 'View breakglass user report',
+					url: `https://metrics.gutools.co.uk/d/bdn97cui5rbi8f/var-account_name=${account.acctName}`,
+				},
+			],
+			target,
+			sender: `Cloudbuster ${config.stage}`,
+			channel: RequestedChannel.PreferHangouts,
+		};
+		await anghammaradClient.notify(notification);
+	});
 
 	return report;
 }
@@ -135,6 +200,6 @@ export async function main() {
 	);
 
 	await createFsbpTableAndAlerts(config, prisma, anghammaradClient);
-	await breakglassUserReport(prisma);
+	await breakglassUserReport(config, prisma, anghammaradClient);
 	logger.log({ message: 'Cloudbuster run completed.' });
 }
