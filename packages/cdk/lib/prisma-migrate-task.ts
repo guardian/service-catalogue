@@ -39,6 +39,8 @@ export function addPrismaMigrateTask(
 	}: PrismaMigrateTaskProps,
 ) {
 	const app = 'prisma-migrate-task';
+	// Keep ECS identity distinct while grouping migrate logs under the main app in Kibana
+	const logApp = 'service-catalogue';
 	const { stack, stage, region } = scope;
 
 	const roleName = `${app}-${stage}`;
@@ -84,7 +86,7 @@ export function addPrismaMigrateTask(
 			environment: {
 				STACK: stack,
 				STAGE: stage,
-				APP: app,
+				APP: logApp,
 				GU_REPO: 'guardian/service-catalogue',
 				TASK_NAME: app,
 			},
@@ -147,7 +149,8 @@ export function addPrismaMigrateTask(
 		dockerLabels: {
 			Stack: stack,
 			Stage: stage,
-			App: app,
+			// Match FireLens APP metadata so container labels and shipped logs agree
+			App: logApp,
 		},
 		logging: fireLensLogDriver,
 		readonlyRootFilesystem: true,
