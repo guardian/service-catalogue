@@ -18,14 +18,14 @@
 		"@octokit/auth-app": "^8.2.0",
 		"@octokit/graphql": "^9.0.3",
 		"@prisma/adapter-pg": "7.8.0",
-		"@prisma/client": "7.7.0",
+		"@prisma/client": "7.8.0",
 		"octokit": "^5.0.5",
 		"octokit-plugin-create-pull-request": "^6.0.1"
 	},
 	"devDependencies": {
 		"@octokit/types": "^16.0.0",
 		"@types/aws-lambda": "^8.10.162",
-		"prisma": "7.7.0",
+		"prisma": "7.8.0",
 		"tsx": "^4.21.0"
 	}
 }
