@@ -1,7 +1,7 @@
 import type {
-	aws_accounts,
 	aws_iam_credential_reports,
 	aws_iam_users,
+	aws_organizations_accounts,
 } from 'common/prisma-client/client.js';
 
 export interface BreakglassUser {
@@ -18,7 +18,7 @@ export interface BreakglassUser {
  */
 export function createBreakglassUserReport(
 	credentialReports: aws_iam_credential_reports[],
-	awsAccounts: aws_accounts[],
+	awsAccounts: aws_organizations_accounts[],
 	iamUsers: aws_iam_users[],
 ): BreakglassUser[] {
 	const accountsById = new Map(awsAccounts.map((a) => [a.id, a]));

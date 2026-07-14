@@ -15,10 +15,10 @@ import {
 } from './seed-constants.js';
 import { createSeedMetadata } from './seed-helpers.js';
 import type {
+	GitHubSeedData,
 	RepoBundle,
 	RepoDefinition,
 	RoleName,
-	SeedData,
 	TeamSlug,
 } from './seed-types.js';
 
@@ -374,7 +374,7 @@ export function createGithubActionsUsage(
  * Adds optional seeded records declared by a repository fixture definition.
  */
 export function addOptionalSeedData(
-	acc: SeedData,
+	acc: GitHubSeedData,
 	definition: RepoDefinition,
 ): void {
 	if (definition.cloudFormation === true) {
@@ -389,7 +389,7 @@ export function addOptionalSeedData(
 /**
  * Creates an empty mutable seed payload accumulator.
  */
-export function createEmptySeedData(): SeedData {
+export function createEmptySeedData(): GitHubSeedData {
 	return {
 		repos: [],
 		languages: [],

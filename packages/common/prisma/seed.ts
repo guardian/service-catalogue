@@ -10,12 +10,16 @@
  */
 import { PrismaPg } from '@prisma/adapter-pg';
 import { type Prisma, PrismaClient } from '../prisma-client/client.js';
-import { buildSeedData } from './seed/seed-assembly.js';
+import { buildGitHubSeedData } from './seed/seed-assembly.js';
+import {
+	type BreakglassSeedData,
+	buildBreakglassSeedData,
+} from './seed/seed-breakglass.js';
 import { createTeam } from './seed/seed-builders.js';
 import { cqSourceName, orgName } from './seed/seed-constants.js';
 import { repoDefinitions, teamDefinitions } from './seed/seed-data.js';
 import { createManyIfAny } from './seed/seed-helpers.js';
-import type { SeedData, SeedFilter } from './seed/seed-types.js';
+import type { GitHubSeedData, SeedFilter } from './seed/seed-types.js';
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
@@ -79,6 +83,10 @@ async function clearExistingSeedData(
 	await tx.github_repositories.deleteMany(seedFilter);
 	await tx.github_teams.deleteMany(seedFilter);
 
+	await tx.aws_iam_credential_reports.deleteMany(seedFilter);
+	await tx.aws_iam_users.deleteMany(seedFilter);
+	await tx.aws_organizations_accounts.deleteMany(seedFilter);
+
 	// runtime/output tables: always clear for reproducible local runs
 	await tx.guardian_github_actions_usage.deleteMany({
 		where: {
@@ -98,30 +106,45 @@ async function clearExistingSeedData(
 async function insertSeedData(
 	tx: Prisma.TransactionClient,
 	teams: Prisma.github_teamsCreateManyInput[],
-	seedData: SeedData,
+	gitHubSeedData: GitHubSeedData,
+	breakglassReportSeedData: BreakglassSeedData,
 ): Promise<void> {
 	await tx.github_teams.createMany({ data: teams });
-	await tx.github_repositories.createMany({ data: seedData.repos });
+	await tx.github_repositories.createMany({ data: gitHubSeedData.repos });
 
-	await createManyIfAny(seedData.githubWorkflows, (data) =>
+	await createManyIfAny(gitHubSeedData.githubWorkflows, (data) =>
 		tx.github_workflows.createMany({ data }),
 	);
 
-	await createManyIfAny(seedData.githubActionsUsages, (data) =>
+	await createManyIfAny(gitHubSeedData.githubActionsUsages, (data) =>
 		tx.guardian_github_actions_usage.createMany({ data }),
 	);
 
-	await tx.github_languages.createMany({ data: seedData.languages });
-	await tx.github_team_repositories.createMany({ data: seedData.teamRepos });
-	await tx.github_repository_branches.createMany({ data: seedData.branches });
+	await tx.github_languages.createMany({ data: gitHubSeedData.languages });
+	await tx.github_team_repositories.createMany({
+		data: gitHubSeedData.teamRepos,
+	});
+	await tx.github_repository_branches.createMany({
+		data: gitHubSeedData.branches,
+	});
 
-	await createManyIfAny(seedData.cloudFormationStacks, (data) =>
+	await createManyIfAny(gitHubSeedData.cloudFormationStacks, (data) =>
 		tx.aws_cloudformation_stacks.createMany({ data }),
 	);
 
-	await createManyIfAny(seedData.customProperties, (data) =>
+	await createManyIfAny(gitHubSeedData.customProperties, (data) =>
 		tx.github_repository_custom_properties.createMany({ data }),
 	);
+
+	await tx.aws_organizations_accounts.createMany({
+		data: breakglassReportSeedData.organizationsAccounts,
+	});
+	await tx.aws_iam_users.createMany({
+		data: breakglassReportSeedData.iamUsers,
+	});
+	await tx.aws_iam_credential_reports.createMany({
+		data: breakglassReportSeedData.iamCredentialReports,
+	});
 }
 
 /**
@@ -151,7 +174,8 @@ async function main(): Promise<void> {
 
 	const teams = teamDefinitions.map(({ id, slug }) => createTeam(id, slug));
 
-	const seedData = buildSeedData();
+	const gitHubSeedData = buildGitHubSeedData();
+	const breakglassReportSeedData = buildBreakglassSeedData();
 
 	console.log(
 		'Seeding teams, repos, workflows, languages, and related records...',
@@ -159,7 +183,7 @@ async function main(): Promise<void> {
 
 	await prisma.$transaction(async (tx) => {
 		await clearExistingSeedData(tx, seedFilter, seededRepoFullNames);
-		await insertSeedData(tx, teams, seedData);
+		await insertSeedData(tx, teams, gitHubSeedData, breakglassReportSeedData);
 	});
 
 	console.log('Seeding complete!');
