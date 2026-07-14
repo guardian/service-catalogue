@@ -27197,7 +27197,7 @@ spec:
               },
               {
                 "Name": "APP",
-                "Value": "prisma-migrate-task",
+                "Value": "service-catalogue",
               },
               {
                 "Name": "GU_REPO",
@@ -27235,7 +27235,7 @@ spec:
           },
           {
             "DockerLabels": {
-              "App": "prisma-migrate-task",
+              "App": "service-catalogue",
               "Stack": "deploy",
               "Stage": "PROD",
             },
