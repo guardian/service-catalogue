@@ -82,6 +82,12 @@ You can apply a migration to CODE or PROD using the [CLI](../packages/cli)):
 npm -w cli start run-task -- --stage [CODE|PROD] --name prisma-migrate-task
 ```
 
+#### Viewing migration logs
+
+> [!NOTE]
+> Although the ECS task is named `prisma-migrate-task`, its shipped logs are attributed to `service-catalogue` in Kibana.
+> To narrow to a specific migration run, use the ECS task ARN from the CLI log link.
+
 See also:
 
 - https://www.prisma.io/docs/orm/prisma-client/deployment/deploy-database-changes-with-prisma-migrate
@@ -118,6 +124,9 @@ prismaMigrate: ContainerImage.fromRegistry(
 ### 3. Deploy to CODE and observe
 
 Deploy to CODE and observe the ECS task logs to verify your changes work as expected.
+
+> [!NOTE]
+> See [Viewing migration logs](#viewing-migration-logs).
 
 ### 4. Revert the image reference
 
