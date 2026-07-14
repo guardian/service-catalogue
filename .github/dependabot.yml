@@ -41,7 +41,9 @@ updates:
           - patch
 
   - package-ecosystem: 'github-actions'
-    directory: '/'
+    directories:
+      - '/.github/workflows'
+      - '/.github/actions'
     schedule:
       interval: 'quarterly'
     cooldown:
