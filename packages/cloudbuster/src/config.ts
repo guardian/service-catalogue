@@ -8,6 +8,14 @@ import type { PrismaConfig } from 'common/src/database-setup.js';
 
 export interface Config extends PrismaConfig {
 	/**
+	 * The stack name.
+	 */
+	stack: string;
+	/**
+	 * The name of the application.
+	 */
+	app: string;
+	/**
 	 * The stage of the application, e.g. DEV, CODE, PROD.
 	 */
 	stage: string;
@@ -26,7 +34,9 @@ export interface Config extends PrismaConfig {
 }
 
 export async function getConfig(): Promise<Config> {
+	const stack = getEnvOrThrow('STACK');
 	const stage = getEnvOrThrow('STAGE');
+	const app = getEnvOrThrow('APP');
 	const anghammaradSnsTopic: string = getEnvOrThrow('ANGHAMMARAD_SNS_ARN');
 
 	const isDev = stage === 'DEV';
@@ -35,7 +45,9 @@ export async function getConfig(): Promise<Config> {
 		? await getDevDatabaseConfig()
 		: await getDatabaseConfig(stage, 'cloudbuster');
 	return {
+		stack,
 		stage,
+		app,
 		databaseConnectionString: getDatabaseConnectionString(databaseConfig),
 		withQueryLogging: isDev,
 		enableMessaging: !isDev,

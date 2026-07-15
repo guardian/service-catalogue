@@ -6,7 +6,7 @@ import {
 } from '@aws-sdk/credential-providers';
 import type { AwsCredentialIdentityProvider } from '@smithy/types';
 
-interface AwsClientConfig {
+export interface AwsClientConfig {
 	region: string;
 	credentials?: AwsCredentialIdentityProvider;
 }

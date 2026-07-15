@@ -9,18 +9,23 @@ import { createFsbpTableAndAlerts } from './fsbp/index.js';
 
 export async function main() {
 	logger.log({ message: 'Cloudbuster run starting.' });
-
-	const config = await getConfig();
-	const prisma = getPrismaClient(config);
-	const snsClient = new SNSClient(awsClientConfig(config.stage));
+	const cloudbusterConfig = await getConfig();
+	const awsConfig = awsClientConfig(cloudbusterConfig.stage);
+	const prisma = getPrismaClient(cloudbusterConfig);
+	const snsClient = new SNSClient(awsConfig);
 	const anghammaradClient = new Anghammarad(
 		snsClient,
-		config.anghammaradSnsTopic,
+		cloudbusterConfig.anghammaradSnsTopic,
 	);
 
 	await Promise.all([
-		createFsbpTableAndAlerts(config, prisma, anghammaradClient),
-		sendBreakglassUserAlerts(config, prisma, anghammaradClient),
+		createFsbpTableAndAlerts(cloudbusterConfig, prisma, anghammaradClient),
+		sendBreakglassUserAlerts(
+			cloudbusterConfig,
+			awsConfig,
+			prisma,
+			anghammaradClient,
+		),
 	]);
 
 	logger.log({ message: 'Cloudbuster run completed.' });
