@@ -69,8 +69,9 @@ export async function sendBreakglassUserAlerts(
 	await createBreakglassUserMetric(report, config, awsConfig);
 
 	console.table(
-		report.map(({ user, mfaActive, hasUsernameTag }) => ({
+		report.map(({ user, accountName, mfaActive, hasUsernameTag }) => ({
 			user,
+			accountName,
 			mfaActive,
 			hasUsernameTag,
 		})),
