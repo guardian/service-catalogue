@@ -18,18 +18,18 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@guardian/eslint-config": "14.0.1",
-    "@guardian/prettier": "10.0.0",
+    "@guardian/eslint-config": "16.0.0",
+    "@guardian/prettier": "11.0.0",
     "@guardian/tsconfig": "^1.0.1",
     "@swc/core": "1.15.43",
     "@types/node": "26.1.0",
     "concurrently": "^10.0.3",
     "esbuild": "^0.28.1",
-    "eslint": "9.39.2",
+    "eslint": "10.6.0",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-unicorn": "^64.0.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-unicorn": "^71.1.0",
     "npm-run-all": "^4.1.5",
     "tsx": "4.23.0",
     "typescript": "^5.9.3"
