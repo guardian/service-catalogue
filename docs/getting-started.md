@@ -43,16 +43,28 @@ contact details in CloudQuery!
 
 ## Accessing CloudQuery data
 
-The easiest way to access CloudQuery data is via [Grafana](https://metrics.gutools.co.uk/).
-You can get started in the explore tab, demonstrated below
-
-![A gif showing how to interact with CloudQuery using the Grafana UI](img/queryVideo.gif)
-
 We've stored our CloudQuery data in a Postgres database, so you can use SQL to query it. _You don't have to be technical
 or an engineer to be able to use SQL_. Its basic syntax is designed to be very intuitive. If you are unfamiliar with
 SQL, there are lots of resources online to get you started. Julia Evans has
 a [SQL playground](https://sql-playground.wizardzines.com/) to get beginners used to making simple queries.
 
+### Grafana
+
+The easiest way to run queries against the CloudQuery database is via [Grafana](https://metrics.gutools.co.uk/).
+You can get started in the Explore tab, as demonstrated below.
+
+![A gif showing how to interact with CloudQuery using the Grafana UI](img/queryVideo.gif)
+
+### Local SQL client
+
+An alternative way to query the database is using a local SQL client. To enable this use case, the database has a
+read-only user configured, the credentials for which are available in Secrets Manager at the path
+`/PROD/deploy/service-catalogue/devreadonly-postgres-password`.
+
+IntelliJ has a very good SQL client that, together with the AWS plugin, enables connecting to the database using
+just regular Janus credentials and the full ARN of `/PROD/deploy/service-catalogue/devreadonly-postgres-password`.
+
+### Tips for writing queries
 If you're unsure of where to start, we have
 an [example dashboard](https://metrics.gutools.co.uk/d/KpxfmalVz/devx-cloudquery-okr-dashboard?orgId=1&refresh=1d)
 answering some common questions such as:
