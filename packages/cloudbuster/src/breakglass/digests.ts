@@ -54,12 +54,13 @@ export async function sendAnghammaradNotification(
 				actions: [
 					{
 						cta: 'View breakglass user report',
-						url: `https://metrics.gutools.co.uk/d/bdn97cui5rbi8f/var-account_name=${account.name}`,
+						url: `https://metrics.gutools.co.uk/d/bdn97cui5rbi8f?var-account_name=${encodeURIComponent(account.name)}`,
 					},
 				],
 				target,
 				sender: `Cloudbuster ${config.stage}`,
 				channel: RequestedChannel.PreferHangouts,
+				threadKey: `breakglass-${new Date().toISOString().split('T')[0]}`,
 			};
 			await anghammaradClient.notify(notification);
 		}),
