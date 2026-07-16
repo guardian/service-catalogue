@@ -28,7 +28,7 @@ export function createBreakglassUserReport(
 			return {
 				accountName: account?.name ?? 'unknown',
 				user: cr.user,
-				userUrl: `https://console.aws.amazon.com/iam/home#/users/${cr.user}`,
+				userUrl: `https://console.aws.amazon.com/iam/home#/users/${encodeURIComponent(cr.user)}`,
 				mfaActive: cr.mfa_active,
 				hasUsernameTag: !!tags?.['GoogleUsername'],
 			};

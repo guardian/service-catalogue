@@ -79,7 +79,7 @@ export async function sendBreakglassUserAlerts(
 				actions: [
 					{
 						cta: 'View breakglass user report',
-						url: `https://metrics.gutools.co.uk/d/bdn97cui5rbi8f/var-account_name=${account.acctName}`,
+						url: `https://metrics.gutools.co.uk/d/bdn97cui5rbi8f?var-account_name=${encodeURIComponent(account.acctName)}`,
 					},
 				],
 				target,
