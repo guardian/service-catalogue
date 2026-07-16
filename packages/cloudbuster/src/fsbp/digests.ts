@@ -8,7 +8,7 @@ import type { cloudbuster_fsbp_vulnerabilities } from 'common/prisma-client/clie
 import { stringToSeverity } from 'common/src/functions.js';
 import { logger } from 'common/src/logs.js';
 import type { SecurityHubSeverity, Severity } from 'common/src/types.js';
-import { type Config } from './config.js';
+import { type Config } from './../config.js';
 import { groupFindingsByAccount } from './findings.js';
 import type { Digest } from './types.js';
 

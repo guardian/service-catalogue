@@ -1,25 +1,18 @@
 import type {
-	aws_iam_credential_reports,
-	aws_iam_users,
-	aws_organizations_accounts,
-} from 'common/prisma-client/client.js';
-
-export interface BreakglassUser {
-	accountName: string | null;
-	user: string | null;
-	userUrl: string | null;
-	mfaActive: boolean | null;
-	hasUsernameTag: boolean;
-}
+	AwsIamCredentialReport,
+	AwsIamUser,
+	AwsOrganizationsAccounts,
+} from 'common/types.js';
+import type { BreakglassUser } from './types.js';
 
 /**
  * Builds the breakglass user report by joining IAM credential reports to their
  * AWS account and IAM user records, filtering to users that have passwords.
  */
 export function createBreakglassUserReport(
-	credentialReports: aws_iam_credential_reports[],
-	awsAccounts: aws_organizations_accounts[],
-	iamUsers: aws_iam_users[],
+	credentialReports: AwsIamCredentialReport[],
+	awsAccounts: AwsOrganizationsAccounts[],
+	iamUsers: AwsIamUser[],
 ): BreakglassUser[] {
 	const accountsById = new Map(awsAccounts.map((a) => [a.id, a]));
 	const usersByArn = new Map(iamUsers.map((u) => [u.arn, u]));
@@ -33,15 +26,13 @@ export function createBreakglassUserReport(
 			const tags = user?.tags as Record<string, string> | null | undefined;
 
 			return {
-				accountName: account?.name ?? null,
+				accountName: account?.name ?? 'unknown',
 				user: cr.user,
-				userUrl: cr.user
-					? `https://console.aws.amazon.com/iam/home#/users/${cr.user}`
-					: null,
+				userUrl: `https://console.aws.amazon.com/iam/home#/users/${encodeURIComponent(cr.user)}`,
 				mfaActive: cr.mfa_active,
-				hasUsernameTag: tags?.['GoogleUsername'] != null,
+				hasUsernameTag: !!tags?.['GoogleUsername'],
 			};
 		})
-		.sort((a, b) => (a.accountName ?? '').localeCompare(b.accountName ?? ''))
+		.sort((a, b) => a.accountName.localeCompare(b.accountName))
 		.filter((user) => !user.hasUsernameTag || !user.mfaActive);
 }
