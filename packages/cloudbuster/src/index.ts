@@ -18,8 +18,10 @@ export async function main() {
 		config.anghammaradSnsTopic,
 	);
 
-	await createFsbpTableAndAlerts(config, prisma, anghammaradClient);
-	await sendBreakglassUserAlerts(config, prisma, anghammaradClient);
+	await Promise.all([
+		createFsbpTableAndAlerts(config, prisma, anghammaradClient),
+		sendBreakglassUserAlerts(config, prisma, anghammaradClient),
+	]);
 
 	logger.log({ message: 'Cloudbuster run completed.' });
 }
