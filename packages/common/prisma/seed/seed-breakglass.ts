@@ -20,6 +20,7 @@ const breakglassAccountEmail = 'service-catalogue-dev@example.com';
 
 interface BreakglassUserFixture {
 	userName: string;
+	hasPassword: boolean;
 	hasGoogleUsernameTag: boolean;
 	mfaActive: boolean;
 }
@@ -27,21 +28,31 @@ interface BreakglassUserFixture {
 const breakglassUserFixtures: readonly BreakglassUserFixture[] = [
 	{
 		userName: 'alice-correctly-configured',
+		hasPassword: true,
 		hasGoogleUsernameTag: true,
 		mfaActive: true,
 	},
 	{
 		userName: 'bob-missing-googleusername-tag',
+		hasPassword: true,
 		hasGoogleUsernameTag: false,
 		mfaActive: true,
 	},
 	{
 		userName: 'charlie-missing-mfa',
+		hasPassword: true,
 		hasGoogleUsernameTag: true,
 		mfaActive: false,
 	},
 	{
 		userName: 'dave-missing-tag-and-mfa',
+		hasPassword: true,
+		hasGoogleUsernameTag: false,
+		mfaActive: false,
+	},
+	{
+		userName: 'eve-the-robot',
+		hasPassword: false, //robots don't need passwords
 		hasGoogleUsernameTag: false,
 		mfaActive: false,
 	},
@@ -66,7 +77,9 @@ function createIamUser(
 		path: '/',
 		create_date: new Date('2023-01-01T00:00:00Z'),
 		tags,
-		password_last_used: null,
+		password_last_used: fixture.hasPassword
+			? new Date('2023-01-01T00:00:00Z')
+			: null,
 		permissions_boundary: Prisma.DbNull,
 	};
 }
@@ -79,7 +92,7 @@ function createIamCredentialReport(
 		account_id: breakglassAccountId,
 		arn: userArn(fixture.userName),
 		user: fixture.userName,
-		password_enabled: 'true',
+		password_enabled: fixture.hasPassword ? 'true' : 'false',
 		mfa_active: fixture.mfaActive,
 		user_creation_time: new Date('2023-01-01T00:00:00Z'),
 	};

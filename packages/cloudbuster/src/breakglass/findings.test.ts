@@ -13,7 +13,7 @@ function credentialReport(
 ): AwsIamCredentialReport {
 	return {
 		arn: 'arn:aws:iam::123456789012:user/alice',
-		password_enabled: 'true',
+		password_enabled: true,
 		user: 'alice',
 		mfa_active: true,
 		account_id: '123456789012',
@@ -65,13 +65,13 @@ void describe('createBreakglassUserReport', () => {
 			[
 				credentialReport({
 					user: 'alice',
-					password_enabled: 'true',
+					password_enabled: true,
 					mfa_active: false,
 				}),
 				credentialReport({
 					user: 'bob',
 					arn: 'arn:aws:iam::123456789012:user/bob',
-					password_enabled: 'false',
+					password_enabled: false,
 					mfa_active: false,
 				}),
 			],

@@ -78,7 +78,9 @@ export async function getIamCredentialReports(
 	client: PrismaClient,
 ): Promise<AwsIamCredentialReport[]> {
 	const reports = await client.aws_iam_credential_reports.findMany();
-	return toNonEmptyArray(reports.map((r) => r as AwsIamCredentialReport));
+	return toNonEmptyArray(
+		reports.map((r) => r as unknown as AwsIamCredentialReport),
+	);
 }
 
 export async function getIamUsers(client: PrismaClient): Promise<AwsIamUser[]> {

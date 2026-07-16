@@ -176,13 +176,13 @@ export interface AwsOrganizationsAccounts extends AwsOrganizationsAccountsFields
 
 type AwsIamCredentialReports = Pick<
 	aws_iam_credential_reports,
-	'account_id' | 'user' | 'arn' | 'password_enabled' | 'mfa_active'
+	'account_id' | 'user' | 'arn'
 >;
 
 export interface AwsIamCredentialReport extends AwsIamCredentialReports {
 	account_id: NonNullable<AwsIamCredentialReports['account_id']>;
 	user: NonNullable<AwsIamCredentialReports['user']>;
 	arn: NonNullable<AwsIamCredentialReports['arn']>;
-	password_enabled: NonNullable<AwsIamCredentialReports['password_enabled']>;
-	mfa_active: NonNullable<AwsIamCredentialReports['mfa_active']>;
+	password_enabled: boolean;
+	mfa_active: boolean;
 }
