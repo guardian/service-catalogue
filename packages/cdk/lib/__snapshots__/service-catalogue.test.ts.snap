@@ -25115,6 +25115,16 @@ spec:
               },
             },
             {
+              "Action": "cloudwatch:PutMetricData",
+              "Condition": {
+                "StringEquals": {
+                  "cloudwatch:namespace": "cloudbuster",
+                },
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
               "Action": "rds-db:connect",
               "Effect": "Allow",
               "Resource": {

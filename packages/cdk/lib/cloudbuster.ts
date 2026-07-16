@@ -8,6 +8,7 @@ import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration } from 'aws-cdk-lib';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
 import type { Schedule } from 'aws-cdk-lib/aws-events';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Architecture, LoggingFormat, Runtime } from 'aws-cdk-lib/aws-lambda';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { ITopic } from 'aws-cdk-lib/aws-sns';
@@ -37,6 +38,16 @@ export class CloudBuster {
 		} = props;
 		const app = 'cloudbuster';
 
+		const cloudwatchWrite = new PolicyStatement({
+			actions: ['cloudwatch:PutMetricData'],
+			resources: ['*'],
+			conditions: {
+				StringEquals: {
+					'cloudwatch:namespace': app,
+				},
+			},
+		});
+
 		const lambda = new GuScheduledLambda(stack, 'cloudbuster', {
 			app,
 			vpc,
@@ -59,7 +70,7 @@ export class CloudBuster {
 			rules: [{ schedule }],
 		});
 		anghammaradTopic.grantPublish(lambda);
-
+		lambda.addToRolePolicy(cloudwatchWrite);
 		db.grantConnect(lambda, 'cloudbuster');
 	}
 }

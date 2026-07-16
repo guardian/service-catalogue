@@ -1,9 +1,13 @@
+import type { MetricDatum } from '@aws-sdk/client-cloudwatch';
+import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
+import { PutMetricDataCommand } from '@aws-sdk/client-cloudwatch';
 import type {
 	Anghammarad,
 	AnghammaradNotification,
 	Target,
 } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
+import type { AwsClientConfig } from 'common/aws.js';
 import {
 	getAwsAccounts,
 	getIamCredentialReports,
@@ -15,8 +19,38 @@ import { formatMessage } from './digests.js';
 import { createBreakglassUserReport } from './findings.js';
 import type { BreakglassUser } from './types.js';
 
+async function createBreakglassUserMetric(
+	noncompliantUsers: BreakglassUser[],
+	config: Config,
+	awsClientConfig: AwsClientConfig,
+) {
+	const client = new CloudWatchClient(awsClientConfig);
+	const [stack, stage, app] = [config.stack, config.stage, config.app];
+	const Dimensions = [
+		{ Name: 'Stack', Value: stack },
+		{ Name: 'Stage', Value: stage },
+		{ Name: 'App', Value: app },
+	];
+
+	const metric: MetricDatum = {
+		MetricName: 'NoncompliantBreakglassUsers',
+		Value: noncompliantUsers.length,
+		Dimensions,
+	};
+
+	console.log('Sending metrics to Cloudwatch');
+
+	await client.send(
+		new PutMetricDataCommand({
+			Namespace: config.app,
+			MetricData: [metric],
+		}),
+	);
+}
+
 export async function sendBreakglassUserAlerts(
 	config: Config,
+	awsConfig: AwsClientConfig,
 	prisma: PrismaClient,
 	anghammaradClient: Anghammarad,
 ) {
@@ -32,11 +66,12 @@ export async function sendBreakglassUserAlerts(
 		iamUsers,
 	);
 
-	//TODO store user count as a cloudwatch metric
+	await createBreakglassUserMetric(report, config, awsConfig);
 
 	console.table(
-		report.map(({ user, mfaActive, hasUsernameTag }) => ({
+		report.map(({ user, accountName, mfaActive, hasUsernameTag }) => ({
 			user,
+			accountName,
 			mfaActive,
 			hasUsernameTag,
 		})),
