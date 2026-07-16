@@ -72,14 +72,10 @@ export async function sendBreakglassUserAlerts(
 		})),
 	);
 
-	await createBreakglassUserMetric(report, config, awsConfig);
-
-	await sendAnghammaradNotification(
-		config,
-		awsAccounts,
-		report,
-		anghammaradClient,
-	);
+	await Promise.all([
+		createBreakglassUserMetric(report, config, awsConfig),
+		sendAnghammaradNotification(config, awsAccounts, report, anghammaradClient),
+	]);
 
 	return report;
 }
