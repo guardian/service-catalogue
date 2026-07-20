@@ -131,7 +131,7 @@ describe('Config generation, and converting to YAML', () => {
 				tables: ['aws_securityhub_findings'],
 			},
 			{},
-			true,
+			'incremental',
 		);
 		expect(dump(config)).toMatchInlineSnapshot(`
 		"kind: source
@@ -193,7 +193,7 @@ describe('Config generation, and converting to YAML', () => {
 				tables: ['github_repositories'],
 				org: 'guardian',
 			},
-			true,
+			'incremental',
 		);
 		expect(dump(config)).toMatchInlineSnapshot(`
 		"kind: source
