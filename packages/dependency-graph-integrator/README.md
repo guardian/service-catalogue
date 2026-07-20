@@ -89,7 +89,20 @@ In non-production environments, such as CODE, or when running locally, the depen
 
 The lambda can safely be invoked in the CODE environment, as it will only attempt to create a PR if the `STAGE` environment variable is set to `PROD`. Additionally, there are no GitHub credentials available to the CODE lambda - any attempt to instantiate a GitHub client will fail.
 
-The format of input to the lambda on the CODE environment is that of an SNS message. It's not trivial to construct, so some sample events have been provided in the Test tab of the lambda in the AWS console.
+The format of input to the lambda on the CODE environment is that of an SNS message. You can send a test message to the CODE environment using the provided script in [`test-code.ts`](./src/test-code.ts) by running `npm run send-test-event -w dependency-graph-integrator`. There are also some sample events which have been provided in the Test tab of the lambda in the AWS console.
+
+You can control which workflow template is used by setting the `language` field in the test message defined in the script:
+
+- `'Scala'` → sbt workflow
+- `'Kotlin'` → Gradle workflow
+
+```ts
+const message: DependencyGraphIntegratorEvent = {
+	name: 'service-catalogue',
+	language: 'Scala',
+	admins: ['devx-security'],
+};
+```
 
 #### DEV
 
@@ -97,22 +110,7 @@ The format of input to the lambda on the CODE environment is that of an SNS mess
 
 The lambda can be invoked locally by running `npm run start -w dependency-graph-integrator` from the root of the repo, or `npm run start` from the root of the dependency-graph-integrator package.
 
-You can preview the generated YAML and PR body locally by setting the language in [`run-locally.ts`](./src/run-locally.ts). This controls which workflow template is used:
-
-- Scala → sbt workflow
-- Kotlin → Gradle workflow
-
-Example:
-
-```ts
-if (isMain) {
-	void main({
-		name: 'service-catalogue', // repo name
-		language: 'Scala', // 'Scala' or 'Kotlin'
-		admins: ['my-team-slug'], // optional, use [] if none
-	});
-}
-```
+As described above for the CODE script, you can preview the generated YAML and PR body locally by setting the language in [`run-locally.ts`](./src/run-locally.ts).
 
 The package uses snapshot tests to verify the generated workflow YAML and PR body formatting.
 
