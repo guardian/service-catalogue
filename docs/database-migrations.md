@@ -74,7 +74,6 @@ Prerequisite:
 
 1. You have an approved Pull Request
 2. You have `deployTools` credentials from Janus
-3. You are connected to the VPN
 
 You can apply a migration to CODE or PROD using the [CLI](../packages/cli)):
 

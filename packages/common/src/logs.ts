@@ -10,6 +10,12 @@ interface CentralElkProps {
 	columns?: string[];
 }
 
+interface EcsTaskLogsProps {
+	stage: string;
+	ecsTaskArn: string;
+	columns?: string[];
+}
+
 /**
  * Builds a deep link to the logs within Central ELK.
  */
@@ -36,6 +42,20 @@ export function getCentralElkLink(props: CentralElkProps): string {
 		.join('&');
 
 	return `${base}?${queryString}`;
+}
+
+/**
+ * Builds a deep link to the logs for a single ECS task run within Central ELK.
+ */
+export function getEcsTaskLogsLink({
+	stage,
+	ecsTaskArn,
+	columns,
+}: EcsTaskLogsProps): string {
+	return getCentralElkLink({
+		filters: { stage, ecs_task_arn: ecsTaskArn },
+		columns,
+	});
 }
 
 interface LogLine {
