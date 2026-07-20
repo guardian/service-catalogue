@@ -18,7 +18,9 @@ export function createBreakglassUserReport(
 	const usersByArn = new Map(iamUsers.map((u) => [u.arn, u]));
 
 	return credentialReports
-		.filter((cr) => cr.password_enabled === 'true')
+		.filter(
+			(cr) => cr.password_enabled === 'true' && cr.user !== '<root_account>',
+		)
 		.map((cr) => {
 			const accountId = cr.account_id;
 			const account = accountId ? accountsById.get(accountId) : undefined;

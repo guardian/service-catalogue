@@ -191,4 +191,34 @@ void describe('createBreakglassUserReport', () => {
 			['aardvark-account', 'zebra-account'],
 		);
 	});
+	void it('excludes root users from the report', () => {
+		const report = createBreakglassUserReport(
+			[
+				credentialReport({
+					user: '<root_account>',
+					arn: 'arn:aws:iam::123456789012:root',
+					account_id: '123456789012',
+					mfa_active: false,
+				}),
+				credentialReport({
+					user: 'alice',
+					arn: 'arn:aws:iam::123456789012:user/alice',
+					account_id: '123456789012',
+					mfa_active: false,
+				}),
+			],
+			[awsAccount({})],
+			[
+				iamUser({}),
+				iamUser({
+					user_name: '<root_account>',
+					arn: 'arn:aws:iam::123456789012:root',
+					tags: {},
+				}),
+			],
+		);
+
+		assert.strictEqual(report.length, 1);
+		assert.strictEqual(report[0]!.user, 'alice');
+	});
 });
