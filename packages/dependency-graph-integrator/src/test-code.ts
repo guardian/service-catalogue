@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import { getEnvOrThrow } from 'common/functions.js';
 import { awsClientConfig } from 'common/src/aws.js';
+import { getCentralElkLink } from 'common/src/logs.js';
 import type { DependencyGraphIntegratorEvent } from 'common/types.js';
 
 loadEnvFile(`${homedir()}/.gu/service_catalogue/.env.local`);
@@ -35,4 +36,11 @@ if (isMain) {
 	console.log(
 		"Test event sent to CODE dependency-graph-integrator's input topic.",
 	);
+	const logLink = getCentralElkLink({
+		filters: {
+			stage: 'CODE',
+			app: 'dependency-graph-integrator',
+		},
+	});
+	console.log(`View the logs at ${logLink}`);
 }
