@@ -124,6 +124,39 @@ describe('Config generation, and converting to YAML', () => {
 	`);
 	});
 
+	it('Should create an AWS source configuration for a single account with incremental sync', () => {
+		const config = awsSourceConfigForAccount(
+			GuardianAwsAccounts.Security,
+			{
+				tables: ['aws_securityhub_findings'],
+			},
+			{},
+			true,
+		);
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: aws
+		  path: cloudquery/aws
+		  version: v32.47.1
+		  tables:
+		    - aws_securityhub_findings
+		  skip_dependent_tables: true
+		  destinations:
+		    - postgresql
+		  otel_endpoint: 0.0.0.0:4318
+		  otel_endpoint_insecure: true
+		  backend_options:
+		    table_name: cq-state-aws
+		    connection: '@@plugins.postgresql.connection'
+		  spec:
+		    accounts:
+		      - id: cq-for-000000000015
+		        role_arn: arn:aws:iam::000000000015:role/service-catalogue-access
+		"
+	`);
+	});
+
 	it('Should create a GitHub source configuration', () => {
 		const config = githubSourceConfig({
 			tables: ['github_repositories'],
@@ -140,6 +173,42 @@ describe('Config generation, and converting to YAML', () => {
 		  skip_dependent_tables: true
 		  destinations:
 		    - postgresql
+		  spec:
+		    concurrency: 1000
+		    orgs:
+		      - guardian
+		    app_auth:
+		      - org: guardian
+		        private_key_path: /usr/share/cloudquery/github-private-key
+		        app_id: \${file:/usr/share/cloudquery/github-app-id}
+		        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+		    include_archived_repos: true
+		"
+	`);
+	});
+
+	it('Should create a GitHub source configuration with incremental sync', () => {
+		const config = githubSourceConfig(
+			{
+				tables: ['github_repositories'],
+				org: 'guardian',
+			},
+			true,
+		);
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: github
+		  path: cloudquery/github
+		  version: v15.2.0
+		  tables:
+		    - github_repositories
+		  skip_dependent_tables: true
+		  destinations:
+		    - postgresql
+		  backend_options:
+		    table_name: cq-state-github
+		    connection: '@@plugins.postgresql.connection'
 		  spec:
 		    concurrency: 1000
 		    orgs:

@@ -14,6 +14,10 @@ export type CloudQuerySourceConfig = {
 		tables: readonly CloudQueryTableToSync[];
 		[k: string]: unknown;
 	};
+	backend_options?: {
+		table_name: `cq-state-${string}`;
+		connection: '@@plugins.postgresql.connection';
+	};
 	[k: string]: unknown;
 };
 
@@ -121,8 +125,16 @@ export function postgresDestinationConfig(
 export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
+	incremental?: boolean,
 ): CloudQuerySourceConfig {
 	const { tables, concurrency } = tableConfig;
+
+	const backendTableOptions = incremental
+		? {
+				table_name: `cq-state-aws`,
+				connection: '@@plugins.postgresql.connection',
+			}
+		: undefined;
 
 	return {
 		kind: 'source',
@@ -135,6 +147,7 @@ export function awsSourceConfig(
 			destinations: ['postgresql'],
 			otel_endpoint: '0.0.0.0:4318',
 			otel_endpoint_insecure: true,
+			backend_options: backendTableOptions,
 			spec: {
 				concurrency,
 				...extraConfig,
@@ -177,22 +190,35 @@ export function awsSourceConfigForAccount(
 	accountNumber: string,
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
+	incremental?: boolean,
 ): CloudQuerySourceConfig {
-	return awsSourceConfig(tableConfig, {
-		accounts: [
-			{
-				id: `cq-for-${accountNumber}`,
-				role_arn: `arn:aws:iam::${accountNumber}:role/service-catalogue-access`,
-			},
-		],
-		...extraConfig,
-	});
+	return awsSourceConfig(
+		tableConfig,
+		{
+			accounts: [
+				{
+					id: `cq-for-${accountNumber}`,
+					role_arn: `arn:aws:iam::${accountNumber}:role/service-catalogue-access`,
+				},
+			],
+			...extraConfig,
+		},
+		incremental,
+	);
 }
 
 export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
+	incremental?: boolean,
 ): CloudQuerySourceConfig {
 	const { tables, org, includeArchivedRepos } = tableConfig;
+
+	const backendTableOptions = incremental
+		? {
+				table_name: `cq-state-github`,
+				connection: '@@plugins.postgresql.connection',
+			}
+		: undefined;
 
 	return {
 		kind: 'source',
@@ -203,6 +229,7 @@ export function githubSourceConfig(
 			tables,
 			skip_dependent_tables: true,
 			destinations: ['postgresql'],
+			backend_options: backendTableOptions,
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
 				orgs: [org],
