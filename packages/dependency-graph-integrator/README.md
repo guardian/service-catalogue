@@ -89,7 +89,7 @@ In non-production environments, such as CODE, or when running locally, the depen
 
 The lambda can safely be invoked in the CODE environment, as it will only attempt to create a PR if the `STAGE` environment variable is set to `PROD`. Additionally, there are no GitHub credentials available to the CODE lambda - any attempt to instantiate a GitHub client will fail.
 
-The format of input to the lambda on the CODE environment is that of an SNS message. You can send a test message to the CODE environment using the provided script in [`test-code.ts`](./src/test-code.ts) by running `npm run send-test-event -w dependency-graph-integrator`. There are also some sample events which have been provided in the Test tab of the lambda in the AWS console.
+The format of input to the lambda on the CODE environment is that of an SNS message. You can send a test message to the CODE environment using the provided script in [`test-code.ts`](./src/test-code.ts) by running `npm run invoke-code -w dependency-graph-integrator`. There are also some sample events which have been provided in the Test tab of the lambda in the AWS console.
 
 You can control which workflow template is used by setting the `language` field in the test message defined in the script:
 

@@ -12,7 +12,7 @@
 		"postbuild": "cp package.json dist/package.json",
 		"prestart": "npm run copy-templates",
 		"start": "tsx src/run-locally.ts",
-		"send-test-event": "tsx src/test-code.ts",
+		"invoke-code": "tsx src/test-code.ts",
 		"pretest": "npm run copy-templates",
 		"test": "node --import tsx --test **/*.test.ts",
 		"test:update": "UPDATE_SNAPSHOTS=true node --import tsx --test **/*.test.ts",
