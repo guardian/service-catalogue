@@ -53,8 +53,12 @@ export async function sendAnghammaradNotification(
 				message: `${account.users.length} breakglass users are missing security configuration\n\n${formatMessage(account.users)}`,
 				actions: [
 					{
-						cta: 'View breakglass user report',
+						cta: 'Full breakglass user report',
 						url: `https://metrics.gutools.co.uk/d/bdn97cui5rbi8f?var-account_name=${encodeURIComponent(account.name)}`,
+					},
+					{
+						cta: 'Breakglass user setup guide',
+						url: 'https://docs.google.com/document/d/1Jyx51PcBR-H8quAv944fC5eKLNsI9iLWQDG6Le0sGHQ',
 					},
 				],
 				target,
