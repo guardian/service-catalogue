@@ -11,11 +11,12 @@ import type { BreakglassUser } from './types.js';
 
 type VariableAnghammaradFields = Pick<
 	AnghammaradNotification,
-	'subject' | 'message' | 'actions'
+	'subject' | 'message' | 'actions' | 'target'
 >;
 
 type UsersPerAccount = {
 	name: string;
+	id: string;
 	users: BreakglassUser[];
 };
 
@@ -36,8 +37,9 @@ function groupUsersByAccount(
 	awsAccounts: AwsOrganizationsAccounts[],
 ): UsersPerAccount[] {
 	const usersPerAccount = awsAccounts
-		.map(({ name }) => ({
+		.map(({ name, id }) => ({
 			name,
+			id,
 			users: users.filter((user) => user.accountName === name),
 		}))
 		.filter(({ users }) => users.length > 0);
@@ -54,6 +56,8 @@ function groupUsersByAccount(
 
 function createNotificationFields(
 	accountName: string,
+	accountId: string,
+	stage: string,
 	users: BreakglassUser[],
 ): VariableAnghammaradFields {
 	const subject = `Breakglass User Report: ${accountName}`;
@@ -68,16 +72,20 @@ function createNotificationFields(
 			url: 'https://docs.google.com/document/d/1Jyx51PcBR-H8quAv944fC5eKLNsI9iLWQDG6Le0sGHQ',
 		},
 	];
-	return { subject, message, actions };
+
+	const target: Target =
+		stage === 'PROD' ? { AwsAccount: accountId } : { Stack: 'testing-alerts' };
+	return { subject, message, actions, target };
 }
 
 export function groupUsersAndCreateNotifications(
 	users: BreakglassUser[],
 	awsAccounts: AwsOrganizationsAccounts[],
+	stage: string,
 ): VariableAnghammaradFields[] {
 	const usersPerAccount = groupUsersByAccount(users, awsAccounts);
-	return usersPerAccount.map(({ name, users }) =>
-		createNotificationFields(name, users),
+	return usersPerAccount.map(({ name, id, users }) =>
+		createNotificationFields(name, id, stage, users),
 	);
 }
 
@@ -87,22 +95,16 @@ export async function sendAnghammaradNotification(
 	report: BreakglassUser[],
 	anghammaradClient: Anghammarad,
 ) {
-	const target: Target =
-		config.stage === 'PROD'
-			? { Stack: 'security' }
-			: { Stack: 'testing-alerts' };
-
 	const date = new Date().toISOString().split('T')[0];
 
 	const fixedFields = {
 		sender: `Cloudbuster ${config.stage}`,
 		threadKey: `breakglass-${date}`,
 		channel: RequestedChannel.PreferHangouts,
-		target, // TODO this will need to be a variable field, based on AWS Account, when we are ready to go live.
 	};
 
 	const variableFields: VariableAnghammaradFields[] =
-		groupUsersAndCreateNotifications(report, awsAccounts);
+		groupUsersAndCreateNotifications(report, awsAccounts, config.stage);
 
 	const isThursday = new Date().getDay() === 4;
 
