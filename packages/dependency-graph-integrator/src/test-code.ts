@@ -42,5 +42,6 @@ if (isMain) {
 			app: 'dependency-graph-integrator',
 		},
 	});
-	console.log(`View the logs at ${logLink}`);
+	console.log('View the logs at:');
+	console.log(`  "${logLink}"`);
 }
