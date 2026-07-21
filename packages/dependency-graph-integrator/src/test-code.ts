@@ -6,6 +6,7 @@ import { getEnvOrThrow } from 'common/functions.js';
 import { awsClientConfig } from 'common/src/aws.js';
 import { getCentralElkLink } from 'common/src/logs.js';
 import type { DependencyGraphIntegratorEvent } from 'common/types.js';
+import terminalLink from 'terminal-link';
 
 loadEnvFile(`${homedir()}/.gu/service_catalogue/.env.local`);
 
@@ -42,6 +43,5 @@ if (isMain) {
 			app: 'dependency-graph-integrator',
 		},
 	});
-	console.log('View the logs at:');
-	console.log(`  "${logLink}"`);
+	console.log(terminalLink('View the logs here', logLink));
 }
