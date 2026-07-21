@@ -15,7 +15,6 @@ interface CreatePullRequestOptions {
 	title: string;
 	body: string;
 	branchName: string;
-	baseBranch?: string;
 	changes: Change[];
 	admins: string[];
 }
