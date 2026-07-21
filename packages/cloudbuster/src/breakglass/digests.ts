@@ -104,6 +104,7 @@ export async function sendAnghammaradNotification(
 	const variableFields: VariableAnghammaradFields[] =
 		groupUsersAndCreateNotifications(report, awsAccounts);
 
+	// Avoid Mondays (Bank Holidays), Fridays (weekends) and Tuesdays (used for other notifications)
 	const isThursday = new Date().getDay() === 4;
 
 	if (config.enableMessaging && isThursday) {
