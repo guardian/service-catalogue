@@ -14,6 +14,7 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
+
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import {
@@ -52,6 +53,7 @@ import { Obligatron } from './obligatron';
 import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
 import { Repocop } from './repocop';
+import { createCloudqueryCliDeveloperPolicy } from './developer-policies';
 
 function createProdMonitoringConfiguration(
 	app: string,
@@ -82,6 +84,7 @@ function createLambdaMonitoringConfiguration(
 		return { noMonitoring: true };
 	}
 }
+
 export interface ServiceCatalogueProps extends GuStackProps {
 	/**
 	 * When to run the RepoCop and CloudBuster apps.
@@ -397,5 +400,7 @@ export class ServiceCatalogue extends GuStack {
 			schedule: securityAlertSchedule,
 			digestCutOffInDays,
 		});
+
+		createCloudqueryCliDeveloperPolicy(this);
 	}
 }
