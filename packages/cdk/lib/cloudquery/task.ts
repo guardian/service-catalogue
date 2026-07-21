@@ -238,8 +238,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				'-c',
 				[
 					...additionalCommands,
-					`printf '${renderCloudquerySourceConfig(sourceConfig)}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
-					`printf '${dump(destinationConfig)}' > ${serviceCatalogueConfigDirectory}/destination.yaml`,
+					`printf '${renderCloudquerySourceConfig(sourceConfig).replaceAll("'", "'\\''")}' > ${serviceCatalogueConfigDirectory}/source.yaml`,
+					`printf '${dump(destinationConfig).replaceAll("'", "'\\''")}' > ${serviceCatalogueConfigDirectory}/destination.yaml`,
 					`/app/cloudquery sync ${serviceCatalogueConfigDirectory}/source.yaml ${serviceCatalogueConfigDirectory}/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}`,
 				].join(';'),
 			],

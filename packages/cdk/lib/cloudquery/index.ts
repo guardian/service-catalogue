@@ -137,16 +137,35 @@ export function addCloudqueryEcsCluster(
 						/^aws_accessanalyzer_.*$/,
 						/^aws_securityhub_.*$/,
 						/^aws_guardduty_.*$/,
-						/^aws_inspector2_findings$/,
 					]),
 					concurrency: 2000,
 				},
 				{
 					table_options: {
 						aws_securityhub_findings: securityHubTableOptions,
+					},
+				},
+			),
+			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
+			memoryLimitMiB: 2048,
+			cpu: 1024,
+		},
+		{
+			name: 'AwsIncrementalInspector2Findings',
+			description: 'Collect inspector 2 findings incrementally',
+			schedule: Schedule.cron({ minute: '0', hour: '21' }),
+			config: awsSourceConfigForAccount(
+				GuardianAwsAccounts.Security,
+				{
+					tables: ['aws_inspector2_findings'],
+					concurrency: 2000,
+				},
+				{
+					table_options: {
 						aws_inspector2_findings: inspector2TableOptions,
 					},
 				},
+				'incremental',
 			),
 			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
 			memoryLimitMiB: 2048,

@@ -8,12 +8,33 @@ import { riffraffTables } from 'cloudquery-tables/riffraff';
 import { CloudQueryPluginVersions } from 'cloudquery-tables/versions';
 import { dump } from 'js-yaml';
 
+export type SyncMode = 'default' | 'incremental';
+
+type BackendOptions = {
+	table_name: `cq-state-${string}`;
+	connection: '@@plugins.postgresql.connection';
+};
+
+function backendOptions(
+	platform: 'aws' | 'github',
+	mode?: SyncMode,
+): BackendOptions | undefined {
+	if (mode === 'incremental') {
+		return {
+			table_name: `cq-state-${platform}`,
+			connection: '@@plugins.postgresql.connection',
+		};
+	}
+	return undefined;
+}
+
 export type CloudQuerySourceConfig = {
 	kind: 'source';
 	spec: {
 		tables: readonly CloudQueryTableToSync[];
 		[k: string]: unknown;
 	};
+	backend_options?: BackendOptions;
 	[k: string]: unknown;
 };
 
@@ -121,6 +142,7 @@ export function postgresDestinationConfig(
 export function awsSourceConfig(
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
+	mode?: SyncMode,
 ): CloudQuerySourceConfig {
 	const { tables, concurrency } = tableConfig;
 
@@ -135,6 +157,7 @@ export function awsSourceConfig(
 			destinations: ['postgresql'],
 			otel_endpoint: '0.0.0.0:4318',
 			otel_endpoint_insecure: true,
+			backend_options: backendOptions('aws', mode),
 			spec: {
 				concurrency,
 				...extraConfig,
@@ -177,20 +200,26 @@ export function awsSourceConfigForAccount(
 	accountNumber: string,
 	tableConfig: CloudqueryTableConfig,
 	extraConfig: Record<string, unknown> = {},
+	syncMode?: SyncMode,
 ): CloudQuerySourceConfig {
-	return awsSourceConfig(tableConfig, {
-		accounts: [
-			{
-				id: `cq-for-${accountNumber}`,
-				role_arn: `arn:aws:iam::${accountNumber}:role/service-catalogue-access`,
-			},
-		],
-		...extraConfig,
-	});
+	return awsSourceConfig(
+		tableConfig,
+		{
+			accounts: [
+				{
+					id: `cq-for-${accountNumber}`,
+					role_arn: `arn:aws:iam::${accountNumber}:role/service-catalogue-access`,
+				},
+			],
+			...extraConfig,
+		},
+		syncMode,
+	);
 }
 
 export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
+	syncMode?: SyncMode,
 ): CloudQuerySourceConfig {
 	const { tables, org, includeArchivedRepos } = tableConfig;
 
@@ -203,6 +232,7 @@ export function githubSourceConfig(
 			tables,
 			skip_dependent_tables: true,
 			destinations: ['postgresql'],
+			backend_options: backendOptions('github', syncMode),
 			spec: {
 				concurrency: 1000, // TODO what's the ideal value here?!
 				orgs: [org],
