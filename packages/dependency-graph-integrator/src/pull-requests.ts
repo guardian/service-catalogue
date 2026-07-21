@@ -37,15 +37,7 @@ export async function createPullRequest(
 	octokit: Octokit,
 	props: CreatePullRequestOptions,
 ): Promise<UrlAndNumber | undefined> {
-	const {
-		repoName,
-		owner,
-		title,
-		body,
-		branchName,
-		baseBranch = 'main',
-		changes,
-	} = props;
+	const { repoName, owner, title, body, branchName, changes } = props;
 
 	const response = await composeCreatePullRequest(octokit, {
 		owner,
@@ -53,7 +45,6 @@ export async function createPullRequest(
 		title,
 		body,
 		head: branchName,
-		base: baseBranch,
 		labels: ['maintenance'],
 		changes: changes.map(({ commitMessage, files }) => ({
 			commit: commitMessage,
