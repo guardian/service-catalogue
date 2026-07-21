@@ -137,14 +137,12 @@ export function addCloudqueryEcsCluster(
 						/^aws_accessanalyzer_.*$/,
 						/^aws_securityhub_.*$/,
 						/^aws_guardduty_.*$/,
-						/^aws_inspector2_findings$/, //TODO remove
 					]),
 					concurrency: 2000,
 				},
 				{
 					table_options: {
 						aws_securityhub_findings: securityHubTableOptions,
-						aws_inspector2_findings: inspector2TableOptions, //TODO remove
 					},
 				},
 			),

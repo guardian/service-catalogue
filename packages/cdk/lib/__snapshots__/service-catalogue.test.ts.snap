@@ -1598,7 +1598,6 @@ spec:
     - aws_guardduty_detector_members
     - aws_guardduty_detector_publishing_destinations
     - aws_guardduty_detectors
-    - aws_inspector2_findings
     - aws_securityhub_enabled_standards
     - aws_securityhub_findings
     - aws_securityhub_hubs
@@ -1630,17 +1629,6 @@ spec:
                 - comparison: EQUALS
                   value: Security Hub
               severity_label:
-                - comparison: EQUALS
-                  value: CRITICAL
-                - comparison: EQUALS
-                  value: HIGH
-      aws_inspector2_findings:
-        list_findings:
-          - filter_criteria:
-              finding_status:
-                - comparison: EQUALS
-                  value: ACTIVE
-              severity:
                 - comparison: EQUALS
                   value: CRITICAL
                 - comparison: EQUALS
@@ -1815,7 +1803,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_analyzer_findings', 86400000),('aws_accessanalyzer_analyzer_findings_v2', 86400000),('aws_accessanalyzer_analyzers', 86400000),('aws_guardduty_detector_filters', 86400000),('aws_guardduty_detector_findings', 86400000),('aws_guardduty_detector_members', 86400000),('aws_guardduty_detector_publishing_destinations', 86400000),('aws_guardduty_detectors', 86400000),('aws_inspector2_findings', 86400000),('aws_securityhub_enabled_standards', 86400000),('aws_securityhub_findings', 86400000),('aws_securityhub_hubs', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_accessanalyzer_analyzer_findings', 86400000),('aws_accessanalyzer_analyzer_findings_v2', 86400000),('aws_accessanalyzer_analyzers', 86400000),('aws_guardduty_detector_filters', 86400000),('aws_guardduty_detector_findings', 86400000),('aws_guardduty_detector_members', 86400000),('aws_guardduty_detector_publishing_destinations', 86400000),('aws_guardduty_detectors', 86400000),('aws_securityhub_enabled_standards', 86400000),('aws_securityhub_findings', 86400000),('aws_securityhub_hubs', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
