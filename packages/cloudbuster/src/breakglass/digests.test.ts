@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { describe, it } from 'node:test';
-import { formatMessage } from './digests.js';
+import type { AwsOrganizationsAccounts } from 'common/types.js';
+import { formatMessage, groupUsersAndCreateNotifications } from './digests.js';
 import type { BreakglassUser } from './types.js';
 
 const compliantUser: BreakglassUser = {
@@ -53,5 +54,50 @@ void describe('The noncompliant breakglass users message', () => {
 			'[anotheruser](https://example.com/anotheruser) - MFA not active, GoogleUsername tag not present.';
 		assert.strictEqual(actual, expected);
 		assert.ok(actual.includes('\n'));
+	});
+});
+
+void describe('Breakglass notification grouping', () => {
+	const nonCompliantUser: BreakglassUser = {
+		...compliantUser,
+		mfaActive: false,
+		hasUsernameTag: false,
+	};
+
+	void it('should create a notification for an account with one noncompliant user', () => {
+		const user = { ...nonCompliantUser, accountName: 'security' };
+		const accounts: AwsOrganizationsAccounts[] = [
+			{ id: '123456789012', name: 'security' },
+		];
+		const actual = groupUsersAndCreateNotifications([user], accounts);
+
+		assert.strictEqual(actual.length, 1);
+	});
+
+	void it('should group users from the same account into one notification', () => {
+		const users: BreakglassUser[] = [
+			{ ...nonCompliantUser, accountName: 'platform' },
+			{
+				...nonCompliantUser,
+				accountName: 'platform',
+				user: 'anotheruser',
+				userUrl: 'https://example.com/anotheruser',
+			},
+		];
+		const accounts = [{ id: '234567890123', name: 'platform' }];
+		const actual = groupUsersAndCreateNotifications(users, accounts);
+
+		assert.strictEqual(actual.length, 1);
+		assert.match(actual[0]!.message, /2 breakglass users/);
+	});
+
+	void it('should omit an existing account with no noncompliant users', () => {
+		const users = [{ ...nonCompliantUser, accountName: 'security' }];
+		const accounts = [
+			{ id: '456789012345', name: 'account-with-no-report-users' },
+		];
+		const actual = groupUsersAndCreateNotifications(users, accounts);
+
+		assert.deepStrictEqual(actual, []);
 	});
 });
