@@ -63,13 +63,14 @@ void describe('Breakglass notification grouping', () => {
 		mfaActive: false,
 		hasUsernameTag: false,
 	};
+	const stage = 'DEV';
 
 	void it('should create a notification for an account with one noncompliant user', () => {
 		const user = { ...nonCompliantUser, accountName: 'security' };
 		const accounts: AwsOrganizationsAccounts[] = [
 			{ id: '123456789012', name: 'security' },
 		];
-		const actual = groupUsersAndCreateNotifications([user], accounts);
+		const actual = groupUsersAndCreateNotifications([user], accounts, stage);
 
 		assert.strictEqual(actual.length, 1);
 	});
@@ -85,7 +86,7 @@ void describe('Breakglass notification grouping', () => {
 			},
 		];
 		const accounts = [{ id: '234567890123', name: 'platform' }];
-		const actual = groupUsersAndCreateNotifications(users, accounts);
+		const actual = groupUsersAndCreateNotifications(users, accounts, stage);
 
 		assert.strictEqual(actual.length, 1);
 		assert.match(actual[0]!.message, /2 breakglass users/);
@@ -96,7 +97,7 @@ void describe('Breakglass notification grouping', () => {
 		const accounts = [
 			{ id: '456789012345', name: 'account-with-no-report-users' },
 		];
-		const actual = groupUsersAndCreateNotifications(users, accounts);
+		const actual = groupUsersAndCreateNotifications(users, accounts, stage);
 
 		assert.deepStrictEqual(actual, []);
 	});
