@@ -17,6 +17,8 @@ import { Topic } from 'aws-cdk-lib/aws-sns';
 import { LambdaSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 
 export class Repocop {
+	public readonly dependencyGraphIntegratorInputTopic: Topic;
+
 	constructor(
 		guStack: GuStack,
 		schedule: Schedule,
@@ -32,7 +34,7 @@ export class Repocop {
 		gitHubOrg: string,
 		digestCutOffInDays: number,
 	) {
-		const dependencyGraphIntegratorInputTopic = new Topic(
+		this.dependencyGraphIntegratorInputTopic = new Topic(
 			guStack,
 			`dependency-graph-integrator-input-topic-${guStack.stage}`,
 			{
@@ -57,7 +59,7 @@ export class Repocop {
 				GITHUB_APP_SECRET: repocopGithubSecret.secretArn,
 				INTERACTIVES_COUNT: guStack.stage === 'PROD' ? '40' : '3',
 				DEPENDENCY_GRAPH_INPUT_TOPIC_ARN:
-					dependencyGraphIntegratorInputTopic.topicArn,
+					this.dependencyGraphIntegratorInputTopic.topicArn,
 				GITHUB_ORG: gitHubOrg,
 				CUT_OFF_IN_DAYS: digestCutOffInDays.toString(),
 				BRANCH_PROTECTION_ENABLED: 'true',
@@ -89,7 +91,7 @@ export class Repocop {
 		repocopGithubSecret.grantRead(repocopLambda);
 		anghammaradTopic.grantPublish(repocopLambda);
 		interactiveMonitorTopic.grantPublish(repocopLambda);
-		dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
+		this.dependencyGraphIntegratorInputTopic.grantPublish(repocopLambda);
 		repocopLambda.addToRolePolicy(policyStatement);
 
 		const dependencyGraphIntegratorLambda =
@@ -100,7 +102,7 @@ export class Repocop {
 				gitHubOrg,
 			);
 
-		dependencyGraphIntegratorInputTopic.addSubscription(
+		this.dependencyGraphIntegratorInputTopic.addSubscription(
 			new LambdaSubscription(dependencyGraphIntegratorLambda, {}),
 		);
 	}

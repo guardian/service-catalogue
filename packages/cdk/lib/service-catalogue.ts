@@ -14,7 +14,6 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import {
@@ -47,13 +46,16 @@ import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { cloudqueryApiKeySecret } from './cloudquery/api-key';
 import { addCloudqueryUsageLambda } from './cloudquery-usage';
+import {
+	createCloudqueryCliDeveloperPolicy,
+	createLocalExecutionDeveloperPolicy,
+} from './developer-policies';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
 import { Obligatron } from './obligatron';
 import { addPrismaMigrateTask } from './prisma-migrate-task';
 import { addRefreshMaterializedViewLambda } from './refresh-materialized-view';
 import { Repocop } from './repocop';
-import { createCloudqueryCliDeveloperPolicy } from './developer-policies';
 
 function createProdMonitoringConfiguration(
 	app: string,
@@ -348,7 +350,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const digestCutOffInDays = 45;
 
-		new Repocop(
+		const repocop = new Repocop(
 			this,
 			securityAlertSchedule,
 			anghammaradTopic,
@@ -401,6 +403,14 @@ export class ServiceCatalogue extends GuStack {
 			digestCutOffInDays,
 		});
 
-		createCloudqueryCliDeveloperPolicy(this);
+		if (stage === 'CODE') {
+			createCloudqueryCliDeveloperPolicy(this);
+			createLocalExecutionDeveloperPolicy(
+				this,
+				interactiveMonitor.topic,
+				repocop.dependencyGraphIntegratorInputTopic,
+				anghammaradTopicParameter.valueAsString,
+			);
+		}
 	}
 }

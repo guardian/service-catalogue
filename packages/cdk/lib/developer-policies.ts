@@ -1,10 +1,9 @@
-import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import { NAMED_SSM_PARAMETER_PATHS } from '@guardian/cdk/lib/constants';
-import {
-	GuDeveloperPolicyExperimental,
-	GuDeveloperPolicyExperimentalProps,
-} from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import type { GuStack } from '@guardian/cdk/lib/constructs/core';
+import type { GuDeveloperPolicyExperimentalProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Topic } from 'node_modules/aws-cdk-lib/aws-sns/lib';
 
 function ssmArn(stack: GuStack, parameterName: string): string {
 	return stack.formatArn({
@@ -53,8 +52,7 @@ export function createCloudqueryCliDeveloperPolicy(
 				resource: 'cluster',
 				resourceName: '*',
 			}),
-			/* We need to get tags from all task definitions
-			 * because we can't tell which operate in any given stage from their name */
+			// We need to get tags from all task definitions because we can't tell which operate in any given stage from their name
 			scope.formatArn({
 				service: 'ecs',
 				resource: 'task-definition',
@@ -112,6 +110,55 @@ export function createCloudqueryCliDeveloperPolicy(
 	return new GuDeveloperPolicyExperimental(
 		scope,
 		'ServiceCatalogueCliPolicy',
+		cliPolicyProps,
+	);
+}
+
+/**
+ * A single policy granting the AWS permissions needed to run any of the service catalogue's
+ * lambdas locally (e.g. cloudbuster, repocop, interactive-monitor). Local development uses a
+ * local Postgres database, so no RDS/IAM-auth permissions are included here.
+ */
+export function createLocalExecutionDeveloperPolicy(
+	scope: GuStack,
+	interactiveMonitorTopic: Topic,
+	dgiTopic: Topic,
+	anghammaradTopicArn: string,
+): GuDeveloperPolicyExperimental {
+	// Lambdas report metrics under a namespace matching their app name.
+	const cloudwatchWrite = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['cloudwatch:PutMetricData'],
+		resources: ['*'],
+		conditions: {
+			StringEquals: {
+				'cloudwatch:namespace': ['repocop', 'cloudbuster'],
+			},
+		},
+	});
+
+	// Topics used to communicate between service catalogue's own lambdas.
+	const snsPublish = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['sns:Publish'],
+		resources: [
+			anghammaradTopicArn,
+			interactiveMonitorTopic.topicArn,
+			dgiTopic.topicArn,
+		],
+	});
+
+	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
+		grantId: 'service-catalogue-local-lambda-execution',
+		friendlyName: 'Service Catalogue Local Lambda Execution',
+		statements: [cloudwatchWrite, snsPublish],
+		// Not enforcing checks because we're using wildcards knowingly and safely in some places.
+		withoutPolicyChecks: true,
+	};
+
+	return new GuDeveloperPolicyExperimental(
+		scope,
+		'ServiceCatalogueLocalExecutionPolicy',
 		cliPolicyProps,
 	);
 }
