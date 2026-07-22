@@ -17236,6 +17236,9 @@ spec:
   skip_dependent_tables: true
   destinations:
     - postgresql
+  backend_options:
+    table_name: cq-state-github
+    connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
     concurrency: 1000
     orgs:
