@@ -4,6 +4,7 @@ import type {
 	Target,
 } from '@guardian/anghammarad';
 import { RequestedChannel } from '@guardian/anghammarad';
+import { logger } from 'common/logs.js';
 import type { AwsOrganizationsAccounts } from 'common/types.js';
 import type { Config } from '../config.js';
 import type { BreakglassUser } from './types.js';
@@ -44,8 +45,7 @@ function groupUsersByAccount(
 	console.table(
 		usersPerAccount.map(({ name, users }) => ({
 			name,
-			numUsers: users.length,
-			users: users.map((u) => u.user).join(', '),
+			nonCompliantUsers: users.length,
 		})),
 	);
 
@@ -104,13 +104,22 @@ export async function sendAnghammaradNotification(
 	const variableFields: VariableAnghammaradFields[] =
 		groupUsersAndCreateNotifications(report, awsAccounts);
 
-	await Promise.all(
-		variableFields.map(async (fields) => {
-			const notification: AnghammaradNotification = {
-				...fixedFields,
-				...fields,
-			};
-			await anghammaradClient.notify(notification);
-		}),
-	);
+	// Avoid Mondays (Bank Holidays), Fridays (weekends) and Tuesdays (used for other notifications)
+	const isThursday = new Date().getDay() === 4;
+
+	if (config.enableMessaging && isThursday) {
+		await Promise.all(
+			variableFields.map(async (fields) => {
+				const notification: AnghammaradNotification = {
+					...fixedFields,
+					...fields,
+				};
+				await anghammaradClient.notify(notification);
+			}),
+		);
+	} else {
+		logger.log({
+			message: `Skipping sending breakglass user notifications. Is Thursday: ${isThursday}, enableMessaging: ${config.enableMessaging}`,
+		});
+	}
 }
