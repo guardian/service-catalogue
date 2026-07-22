@@ -436,7 +436,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -1639,7 +1639,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -2613,7 +2613,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -3103,7 +3103,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -3780,7 +3780,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -4485,7 +4485,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -5222,7 +5222,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -6155,7 +6155,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -6602,7 +6602,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -7310,7 +7310,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -8013,7 +8013,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -8746,7 +8746,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -9479,7 +9479,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -10185,7 +10185,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -10903,7 +10903,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -11640,7 +11640,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -12931,7 +12931,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -13392,7 +13392,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -14158,7 +14158,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -14820,7 +14820,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -15558,7 +15558,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -16277,7 +16277,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -17252,7 +17252,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -17773,7 +17773,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -19523,7 +19523,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -20019,7 +20019,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -20777,7 +20777,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -21535,7 +21535,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -22298,7 +22298,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -23049,7 +23049,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
@@ -24062,7 +24062,7 @@ spec:
   registry: cloudquery
   path: cloudquery/postgresql
   version: v8.13.0
-  write_mode: overwrite-delete-stale
+  write_mode: overwrite
   migrate_mode: forced
   send_sync_summary: true
   spec:
