@@ -533,6 +533,7 @@ export function addCloudqueryEcsCluster(
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
+			writeMode: CloudqueryWriteMode.Overwrite,
 		},
 		{
 			name: 'GitHubSecretScanningAlerts',
