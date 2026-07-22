@@ -56,10 +56,19 @@ const baseEvaluatedRepo = {
 const testConfig: Config = {
 	app: 'repocop',
 	stage: 'PROD',
+	stack: 'test-stack',
+	anghammaradSnsTopic: 'test-topic',
+	interactiveMonitorSnsTopic: 'test-monitor-topic',
+	ignoredRepositoryPrefixes: [],
+	enableMessaging: true,
+	interactivesCount: 1,
 	gitHubOrg: 'guardian',
 	branchProtectionEnabled: true,
-	anghammaradSnSTopic: 'test-topic',
-} as unknown as Config;
+	dependencyGraphIntegratorTopic: 'test-dependency-graph-topic',
+	cutOffInDays: 30,
+	databaseConnectionString: 'postgresql://test',
+	withQueryLogging: false,
+};
 
 void describe('Team slugs should be findable for every team associated with a repo', () => {
 	void test('A repository that is owned by a team should be included in the list of messages', () => {
