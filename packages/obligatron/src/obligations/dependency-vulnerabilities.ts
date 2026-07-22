@@ -51,7 +51,7 @@ async function getProductionRepos(client: PrismaClient): Promise<Repository[]> {
 		},
 	});
 
-	return toNonEmptyArray(repositories.map((r) => r as Repository));
+	return toNonEmptyArray(repositories);
 }
 
 export function evaluateObligationForOneRepo(
