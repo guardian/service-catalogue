@@ -151,8 +151,8 @@ export function addCloudqueryEcsCluster(
 			cpu: 1024,
 		},
 		{
-			name: 'AwsIncrementalInspector2Findings',
-			description: 'Collect inspector 2 findings incrementally',
+			name: 'AwsInspector2Findings',
+			description: 'Collect inspector 2 findings',
 			schedule: Schedule.cron({ minute: '0', hour: '21' }),
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
@@ -165,7 +165,6 @@ export function addCloudqueryEcsCluster(
 						aws_inspector2_findings: inspector2TableOptions,
 					},
 				},
-				'incremental',
 			),
 			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
 			memoryLimitMiB: 2048,

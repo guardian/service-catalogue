@@ -2241,7 +2241,7 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CloudquerySourceAwsIncrementalInspector2FindingsScheduledEventRuleBBCC5C30": {
+    "CloudquerySourceAwsInspector2FindingsScheduledEventRule3644BA8A": {
       "Properties": {
         "ScheduleExpression": "cron(0 21 * * ? *)",
         "State": "ENABLED",
@@ -2296,14 +2296,14 @@ spec:
               "PropagateTags": "TASK_DEFINITION",
               "TaskCount": 1,
               "TaskDefinitionArn": {
-                "Ref": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionF007F7CE",
+                "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionE18B7EA2",
               },
             },
             "Id": "Target0",
             "Input": "{}",
             "RoleArn": {
               "Fn::GetAtt": [
-                "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionEventsRole9E421F15",
+                "CloudquerySourceAwsInspector2FindingsTaskDefinitionEventsRoleE05E0FB3",
                 "Arn",
               ],
             },
@@ -2312,7 +2312,7 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionCloudquerySourceAwsIncrementalInspector2FindingsFirelensLogGroup89A74EE2": {
+    "CloudquerySourceAwsInspector2FindingsTaskDefinitionCloudquerySourceAwsInspector2FindingsFirelensLogGroup23800BF0": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "RetentionInDays": 1,
@@ -2331,7 +2331,7 @@ spec:
           },
           {
             "Key": "Name",
-            "Value": "AwsIncrementalInspector2Findings",
+            "Value": "AwsInspector2Findings",
           },
           {
             "Key": "Stack",
@@ -2346,229 +2346,7 @@ spec:
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionEventsRole9E421F15": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "AwsIncrementalInspector2Findings",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionEventsRoleDefaultPolicyBC9BA6DA": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ecs:RunTask",
-              "Condition": {
-                "ArnEquals": {
-                  "ecs:cluster": {
-                    "Fn::GetAtt": [
-                      "servicecatalogueCluster5FC34DC5",
-                      "Arn",
-                    ],
-                  },
-                },
-              },
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionF007F7CE",
-              },
-            },
-            {
-              "Action": "ecs:TagResource",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ecs:eu-west-1:*:task/",
-                    {
-                      "Ref": "servicecatalogueCluster5FC34DC5",
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionExecutionRole2E7AA756",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "iam:PassRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "servicecataloguePRODtaskAwsIncrementalInspector2Findings7F797066",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionEventsRoleDefaultPolicyBC9BA6DA",
-        "Roles": [
-          {
-            "Ref": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionEventsRole9E421F15",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionExecutionRole2E7AA756": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/service-catalogue",
-          },
-          {
-            "Key": "gu:riff-raff:project",
-            "Value": "deploy::service-catalogue",
-          },
-          {
-            "Key": "Name",
-            "Value": "AwsIncrementalInspector2Findings",
-          },
-          {
-            "Key": "Stack",
-            "Value": "deploy",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionExecutionRoleDefaultPolicy6274B612": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
-              },
-            },
-            {
-              "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:DescribeSecret",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "cloudqueryapikeyCCF82F53",
-              },
-            },
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionCloudquerySourceAwsIncrementalInspector2FindingsFirelensLogGroup89A74EE2",
-                  "Arn",
-                ],
-              },
-            },
-            {
-              "Action": "ecr:GetAuthorizationToken",
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-              ],
-              "Effect": "Allow",
-              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionExecutionRoleDefaultPolicy6274B612",
-        "Roles": [
-          {
-            "Ref": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionExecutionRole2E7AA756",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionF007F7CE": {
+    "CloudquerySourceAwsInspector2FindingsTaskDefinitionE18B7EA2": {
       "Properties": {
         "ContainerDefinitions": [
           {
@@ -2587,9 +2365,6 @@ spec:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
-  backend_options:
-    table_name: cq-state-aws
-    connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
     concurrency: 2000
     accounts:
@@ -2625,12 +2400,12 @@ spec:
             "DependsOn": [
               {
                 "Condition": "HEALTHY",
-                "ContainerName": "CloudquerySource-AwsIncrementalInspector2FindingsAWSOTELCollector",
+                "ContainerName": "CloudquerySource-AwsInspector2FindingsAWSOTELCollector",
               },
             ],
             "DockerLabels": {
               "App": "service-catalogue",
-              "Name": "AwsIncrementalInspector2Findings",
+              "Name": "AwsInspector2Findings",
               "Stack": "deploy",
               "Stage": "PROD",
             },
@@ -2677,7 +2452,7 @@ spec:
                 "SourceVolume": "tmp-volume",
               },
             ],
-            "Name": "CloudquerySource-AwsIncrementalInspector2FindingsContainer",
+            "Name": "CloudquerySource-AwsInspector2FindingsContainer",
             "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
@@ -2764,7 +2539,7 @@ spec:
                 },
               },
             },
-            "Name": "CloudquerySource-AwsIncrementalInspector2FindingsAWSOTELCollector",
+            "Name": "CloudquerySource-AwsInspector2FindingsAWSOTELCollector",
             "PortMappings": [
               {
                 "ContainerPort": 4318,
@@ -2781,7 +2556,7 @@ spec:
             ],
             "DockerLabels": {
               "App": "service-catalogue",
-              "Name": "AwsIncrementalInspector2Findings",
+              "Name": "AwsInspector2Findings",
               "Stack": "deploy",
               "Stage": "PROD",
             },
@@ -2801,7 +2576,7 @@ spec:
                 },
               },
             },
-            "Name": "CloudquerySource-AwsIncrementalInspector2FindingsPostgresContainer",
+            "Name": "CloudquerySource-AwsInspector2FindingsPostgresContainer",
             "ReadonlyRootFilesystem": true,
             "Secrets": [
               {
@@ -2868,7 +2643,7 @@ spec:
               },
               {
                 "Name": "TASK_NAME",
-                "Value": "AwsIncrementalInspector2Findings",
+                "Value": "AwsInspector2Findings",
               },
             ],
             "Essential": true,
@@ -2880,7 +2655,7 @@ spec:
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionCloudquerySourceAwsIncrementalInspector2FindingsFirelensLogGroup89A74EE2",
+                  "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionCloudquerySourceAwsInspector2FindingsFirelensLogGroup23800BF0",
                 },
                 "awslogs-region": "eu-west-1",
                 "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
@@ -2893,18 +2668,18 @@ spec:
                 "SourceVolume": "firelens-volume",
               },
             ],
-            "Name": "CloudquerySource-AwsIncrementalInspector2FindingsFirelens",
+            "Name": "CloudquerySource-AwsInspector2FindingsFirelens",
             "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "1024",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
-            "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionExecutionRole2E7AA756",
+            "CloudquerySourceAwsInspector2FindingsTaskDefinitionExecutionRoleA88C1B3B",
             "Arn",
           ],
         },
-        "Family": "AwsIncrementalInspector2Findings",
+        "Family": "AwsInspector2Findings",
         "Memory": "2048",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
@@ -2925,7 +2700,7 @@ spec:
           },
           {
             "Key": "Name",
-            "Value": "AwsIncrementalInspector2Findings",
+            "Value": "AwsInspector2Findings",
           },
           {
             "Key": "Stack",
@@ -2938,7 +2713,7 @@ spec:
         ],
         "TaskRoleArn": {
           "Fn::GetAtt": [
-            "servicecataloguePRODtaskAwsIncrementalInspector2Findings7F797066",
+            "servicecataloguePRODtaskAwsInspector2Findings0C4F0893",
             "Arn",
           ],
         },
@@ -2958,6 +2733,228 @@ spec:
         ],
       },
       "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceAwsInspector2FindingsTaskDefinitionEventsRoleDefaultPolicy3B5F06E9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionE18B7EA2",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsInspector2FindingsTaskDefinitionExecutionRoleA88C1B3B",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecataloguePRODtaskAwsInspector2Findings0C4F0893",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsInspector2FindingsTaskDefinitionEventsRoleDefaultPolicy3B5F06E9",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionEventsRoleE05E0FB3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceAwsInspector2FindingsTaskDefinitionEventsRoleE05E0FB3": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsInspector2Findings",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsInspector2FindingsTaskDefinitionExecutionRoleA88C1B3B": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsInspector2Findings",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsInspector2FindingsTaskDefinitionExecutionRoleDefaultPolicy2A8771CA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsInspector2FindingsTaskDefinitionCloudquerySourceAwsInspector2FindingsFirelensLogGroup23800BF0",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsInspector2FindingsTaskDefinitionExecutionRoleDefaultPolicy2A8771CA",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionExecutionRoleA88C1B3B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "CloudquerySourceAwsLambdaScheduledEventRuleC1529FB1": {
       "Properties": {
@@ -28527,7 +28524,26 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
-    "refreshmaterializedviewlambdatriggerAwsIncrementalInspector2Findings3772C284": {
+    "refreshmaterializedviewlambdatriggerAwsInspector2FindingsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944827D0CDCA": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsInspector2FindingsCBB8FC2D",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsInspector2FindingsCBB8FC2D": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -28548,7 +28564,7 @@ spec:
               },
             ],
             "containers.name": [
-              "CloudquerySource-AwsIncrementalInspector2FindingsContainer",
+              "CloudquerySource-AwsInspector2FindingsContainer",
             ],
             "lastStatus": [
               "STOPPED",
@@ -28558,7 +28574,7 @@ spec:
             ],
             "taskDefinitionArn": [
               {
-                "Ref": "CloudquerySourceAwsIncrementalInspector2FindingsTaskDefinitionF007F7CE",
+                "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionE18B7EA2",
               },
             ],
           },
@@ -28605,25 +28621,6 @@ spec:
         ],
       },
       "Type": "AWS::Events::Rule",
-    },
-    "refreshmaterializedviewlambdatriggerAwsIncrementalInspector2FindingsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448C1869BC7": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RefreshMaterializedViewF0E38938",
-            "Arn",
-          ],
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "refreshmaterializedviewlambdatriggerAwsIncrementalInspector2Findings3772C284",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
     },
     "refreshmaterializedviewlambdatriggerAwsLambda026DCBB2": {
       "Properties": {
@@ -31210,7 +31207,7 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
-    "servicecataloguePRODtaskAwsIncrementalInspector2Findings7F797066": {
+    "servicecataloguePRODtaskAwsInspector2Findings0C4F0893": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -31238,7 +31235,7 @@ spec:
             ],
           },
         ],
-        "RoleName": "service-catalogue-PROD-task-AwsIncrementalInspector2Findings",
+        "RoleName": "service-catalogue-PROD-task-AwsInspector2Findings",
         "Tags": [
           {
             "Key": "gu:cdk:version",
@@ -31264,7 +31261,7 @@ spec:
       },
       "Type": "AWS::IAM::Role",
     },
-    "servicecataloguePRODtaskAwsIncrementalInspector2FindingsDefaultPolicy3BE2E9E4": {
+    "servicecataloguePRODtaskAwsInspector2FindingsDefaultPolicy84508068": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -31333,10 +31330,10 @@ spec:
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "servicecataloguePRODtaskAwsIncrementalInspector2FindingsDefaultPolicy3BE2E9E4",
+        "PolicyName": "servicecataloguePRODtaskAwsInspector2FindingsDefaultPolicy84508068",
         "Roles": [
           {
-            "Ref": "servicecataloguePRODtaskAwsIncrementalInspector2Findings7F797066",
+            "Ref": "servicecataloguePRODtaskAwsInspector2Findings0C4F0893",
           },
         ],
       },
