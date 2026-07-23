@@ -1,0 +1,4 @@
+BEGIN TRANSACTION;
+    DROP TABLE IF EXISTS "cq-state-aws";
+    DROP TABLE IF EXISTS "cq-state-github";
+COMMIT TRANSACTION;
