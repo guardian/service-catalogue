@@ -96,7 +96,11 @@ verify() {
   fi
 }
 
-npm ci
+if [ ! -d "$ROOT_DIR/node_modules" ]; then
+ echo "node_modules not found. Run 'npm ci' first."
+ exit 1
+fi
+
 npm run build
 
 verify best-practices "packages/best-practices/best-practices.md"
