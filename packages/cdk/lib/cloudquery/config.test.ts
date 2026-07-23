@@ -147,7 +147,7 @@ describe('Config generation, and converting to YAML', () => {
 		  otel_endpoint: 0.0.0.0:4318
 		  otel_endpoint_insecure: true
 		  backend_options:
-		    table_name: cq-state-aws
+		    table_name: cq_state_aws
 		    connection: '@@plugins.postgresql.connection'
 		  spec:
 		    accounts:
@@ -207,7 +207,7 @@ describe('Config generation, and converting to YAML', () => {
 		  destinations:
 		    - postgresql
 		  backend_options:
-		    table_name: cq-state-github
+		    table_name: cq_state_github
 		    connection: '@@plugins.postgresql.connection'
 		  spec:
 		    concurrency: 1000
