@@ -189,7 +189,7 @@ export class CloudqueryCluster extends Cluster {
 				additionalSecurityGroups,
 				runAsSingleton = false,
 				dockerDistributedPluginImage,
-				writeMode = CloudqueryWriteMode.OverwriteDeleteStale,
+				writeMode = CloudqueryWriteMode.Overwrite,
 			}) => {
 				return new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,

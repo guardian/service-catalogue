@@ -468,6 +468,22 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 2048,
 		},
 		{
+			name: 'GitHubRepositoriesIncremental',
+			description:
+				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
+			schedule: Schedule.cron({ minute: '0', hour: '0' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: ['github_repositories'],
+				},
+				'incremental',
+			),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
 			/** github_repository_sboms does rely on github_repositories, but exceeds the rate limit, so it has a separate task. This is 10am Sydney time,
 			 *  but that's not a significant risk with data falling out of sync between this job, and GitHubRepositories.
 			 */
