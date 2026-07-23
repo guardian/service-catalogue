@@ -11,7 +11,7 @@ import { dump } from 'js-yaml';
 export type SyncMode = 'default' | 'incremental';
 
 type BackendOptions = {
-	table_name: `cq-state-${string}`;
+	table_name: `cq_state_${string}`;
 	connection: '@@plugins.postgresql.connection';
 };
 
@@ -21,7 +21,7 @@ function backendOptions(
 ): BackendOptions | undefined {
 	if (mode === 'incremental') {
 		return {
-			table_name: `cq-state-${platform}`,
+			table_name: `cq_state_${platform}`,
 			connection: '@@plugins.postgresql.connection',
 		};
 	}
