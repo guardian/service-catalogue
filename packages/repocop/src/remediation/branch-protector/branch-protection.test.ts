@@ -38,7 +38,7 @@ const baseRepo: Repository = {
 	created_at: new Date('2024-01-01T00:00:00Z'),
 	pushed_at: new Date('2024-01-01T00:00:00Z'),
 	updated_at: new Date('2024-01-01T00:00:00Z'),
-} as Repository;
+};
 
 const baseEvaluatedRepo = {
 	full_name: '',
@@ -198,7 +198,7 @@ void describe('applyBranchProtectionAndMessageTeams', () => {
 			full_name: 'guardian/test-repo',
 			name: 'test-repo',
 			topics: ['production'],
-		} as Repository,
+		},
 	];
 
 	const testEvaluatedReposUnprotected = [
@@ -485,7 +485,7 @@ void describe('applyBranchProtectionAndMessageTeams', () => {
 		const codeConfig: Config = {
 			...testConfig,
 			stage: 'CODE',
-		} as unknown as Config;
+		};
 
 		const repoOwners: view_repo_ownership[] = [
 			{
@@ -513,7 +513,7 @@ void describe('applyBranchProtectionAndMessageTeams', () => {
 		const disabledConfig: Config = {
 			...testConfig,
 			branchProtectionEnabled: false,
-		} as unknown as Config;
+		};
 
 		const repoOwners: view_repo_ownership[] = [
 			{

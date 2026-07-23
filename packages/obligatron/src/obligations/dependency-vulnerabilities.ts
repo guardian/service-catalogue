@@ -23,11 +23,7 @@ function prismaToCustomType(
 		...vuln,
 		severity: stringToSeverity(vuln.severity),
 		alert_type: vuln.alert_type as AlertType,
-		scope: chooseDependencyScope(
-			vuln.scope as string | null | undefined, // This is safe as the type of vuln.scope is string.
-			vuln.package,
-			vuln.full_name,
-		),
+		scope: chooseDependencyScope(vuln.scope, vuln.package, vuln.full_name),
 	};
 }
 

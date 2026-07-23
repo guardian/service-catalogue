@@ -54,7 +54,7 @@ export async function createPullRequest(
 	console.log('PR url:', response?.data.html_url);
 	console.log('PR number:', response?.data.number);
 
-	return response?.data as UrlAndNumber;
+	return response?.data;
 }
 
 export async function requestTeamReview(
