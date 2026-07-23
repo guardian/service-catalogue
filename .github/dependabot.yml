@@ -41,9 +41,7 @@ updates:
           - patch
 
   - package-ecosystem: 'github-actions'
-    directories:
-      - '/.github/workflows'
-      - '/.github/actions/npm-run'
+    directory: '/'
     schedule:
       interval: 'quarterly'
     cooldown:
