@@ -125,9 +125,30 @@ jobs:
             run: npm run test
           - name: typecheck
             run: npm run typecheck
+          - name: build
+            run: npm run build
 
-      - name: Build zip files
-        run: ./scripts/build.sh
+      - parallel:
+          - name: Create build artifact for interactive-monitor
+            run: ./scripts/create-lambda-artifact.sh interactive-monitor
+          - name: Create build artifact for dependency-graph-integrator
+            run: ./scripts/create-lambda-artifact.sh dependency-graph-integrator
+          - name: Create build artifact for repocop
+            run: ./scripts/create-lambda-artifact.sh repocop --include-prisma
+          - name: Create build artifact for github-actions-usage
+            run: ./scripts/create-lambda-artifact.sh github-actions-usage --include-prisma
+          - name: Create build artifact for obligatron
+            run: ./scripts/create-lambda-artifact.sh obligatron --include-prisma
+          - name: Create build artifact for refresh-materialized-view
+            run: ./scripts/create-lambda-artifact.sh refresh-materialized-view --include-prisma
+          - name: Create build artifact for cloudbuster
+            run: ./scripts/create-lambda-artifact.sh cloudbuster --include-prisma
+          - name: Create build artifact for cloudquery-usage
+            run: ./scripts/create-lambda-artifact.sh cloudquery-usage --include-prisma
+          - name: Create build artifact for prisma migrations
+            run: ./scripts/create-prisma-migrations-artifact.sh
+          - name: Verify best-practices
+            run: ./scripts/verify-best-practices.sh
 
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@ab360a150e2540439f7f675c37d170a2fd6c8604 # v4.3.4
