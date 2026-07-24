@@ -522,13 +522,17 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubIssues',
 			description: 'Collect GitHub issue data (PRs and Issues)',
 			schedule: Schedule.cron({ minute: '0', hour: '2' }),
-			config: githubSourceConfig({
-				org: gitHubOrgName,
-				tables: ['github_issues'],
-			}),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: ['github_issues'],
+				},
+				'incremental',
+			),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
+			writeMode: CloudqueryWriteMode.Overwrite,
 		},
 		{
 			name: 'GitHubSecretScanningAlerts',
