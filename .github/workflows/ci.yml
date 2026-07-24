@@ -23,42 +23,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - uses: ./.github/actions/npm-run
-        with:
-          script: lint
-          deployment_key: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
-
-  test:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - uses: ./.github/actions/npm-run
-        with:
-          script: test
-          deployment_key: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
-
-  typecheck:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - uses: ./.github/actions/npm-run
-        with:
-          script: typecheck
-          deployment_key: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
-
   db-migration:
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -128,7 +92,7 @@ jobs:
   CI:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: [lint, test, typecheck, db-migration]
+    needs: [db-migration]
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
     permissions:
@@ -150,8 +114,42 @@ jobs:
         with:
           private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
 
-      - name: Build zip files
-        run: ./scripts/build.sh
+      - name: install dependencies
+        shell: bash
+        run: npm ci
+
+      - parallel:
+          - name: lint
+            run: npm run lint
+          - name: test
+            run: npm run test
+          - name: typecheck
+            run: npm run typecheck
+
+      - name: build
+        run: npm run build
+
+      - parallel:
+          - name: Create build artifact for interactive-monitor
+            run: ./scripts/create-lambda-artifact.sh interactive-monitor
+          - name: Create build artifact for dependency-graph-integrator
+            run: ./scripts/create-lambda-artifact.sh dependency-graph-integrator
+          - name: Create build artifact for repocop
+            run: ./scripts/create-lambda-artifact.sh repocop --include-prisma
+          - name: Create build artifact for github-actions-usage
+            run: ./scripts/create-lambda-artifact.sh github-actions-usage --include-prisma
+          - name: Create build artifact for obligatron
+            run: ./scripts/create-lambda-artifact.sh obligatron --include-prisma
+          - name: Create build artifact for refresh-materialized-view
+            run: ./scripts/create-lambda-artifact.sh refresh-materialized-view --include-prisma
+          - name: Create build artifact for cloudbuster
+            run: ./scripts/create-lambda-artifact.sh cloudbuster --include-prisma
+          - name: Create build artifact for cloudquery-usage
+            run: ./scripts/create-lambda-artifact.sh cloudquery-usage --include-prisma
+          - name: Create build artifact for prisma migrations
+            run: ./scripts/create-prisma-migrations-artifact.sh
+          - name: Verify best-practices
+            run: ./scripts/verify-best-practices.sh
 
       - name: Upload to riff-raff
         uses: guardian/actions-riff-raff@ab360a150e2540439f7f675c37d170a2fd6c8604 # v4.3.4
