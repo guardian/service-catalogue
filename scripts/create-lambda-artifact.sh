@@ -31,7 +31,7 @@ checkLambdaArtifactSize() {
   fi
 }
 
-createZip() {
+createLambda() {
   echo "Creating $PACKAGE_NAME package"
 
   (
@@ -63,5 +63,5 @@ createLambdaWithPrisma() {
 if [ "$INCLUDE_PRISMA" = "--include-prisma" ]; then
   createLambdaWithPrisma
 else
-  createZip
+  createLambda
 fi
