@@ -125,8 +125,9 @@ jobs:
             run: npm run test
           - name: typecheck
             run: npm run typecheck
-          - name: build
-            run: npm run build
+
+      - name: build
+        run: npm run build
 
       - parallel:
           - name: Create build artifact for interactive-monitor
