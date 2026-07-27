@@ -1,3 +1,7 @@
+# This file is used by dependency-graph-integrator to generate a PR for repositories using Scala.
+# dependency-graph-integrator has some snapshot tests which will need updating when this file is updated,
+# do this via `npm -w dependency-graph-integrator run test:update`.
+
 name: Update Dependency Graph for sbt
 on:
   workflow_call:

@@ -37,6 +37,9 @@ export async function createYaml(prBranch: string, language: DepGraphLanguage) {
 	// Ensure job permissions are contents: write
 	doc.setIn(['jobs', 'dependency-graph', 'permissions', 'contents'], 'write');
 
+	// Remove internal documentation comments
+	doc.commentBefore = null;
+
 	const outputYaml = String(doc).replaceAll('{}', '');
 
 	return outputYaml;
