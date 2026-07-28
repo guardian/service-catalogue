@@ -20,7 +20,7 @@
   "devDependencies": {
     "@guardian/eslint-config": "16.0.0",
     "@guardian/prettier": "11.0.0",
-    "@guardian/tsconfig": "^1.0.1",
+    "@guardian/tsconfig": "^2.0.0",
     "@swc/core": "1.15.43",
     "@types/node": "26.1.1",
     "concurrently": "^10.0.3",
