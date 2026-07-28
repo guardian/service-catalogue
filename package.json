@@ -21,7 +21,7 @@
     "@guardian/eslint-config": "16.0.0",
     "@guardian/prettier": "11.0.0",
     "@guardian/tsconfig": "^2.0.0",
-    "@swc/core": "1.15.43",
+    "@swc/core": "1.15.46",
     "@types/node": "26.1.1",
     "concurrently": "^10.0.3",
     "esbuild": "^0.28.1",
@@ -31,7 +31,7 @@
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-unicorn": "^64.0.0",
     "npm-run-all": "^4.1.5",
-    "tsx": "4.23.0",
+    "tsx": "4.23.1",
     "typescript": "^5.9.3"
   },
   "prettier": "@guardian/prettier"
