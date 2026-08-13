@@ -542,6 +542,18 @@ export function addCloudqueryEcsCluster(
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
 		},
+		{
+			name: 'GitHubCopilotBilling',
+			description: 'Collect GitHub Copilot billing data',
+			schedule: Schedule.cron({ hour: '03', minute: '30' }),
+			config: githubSourceConfig({
+				org: gitHubOrgName,
+				tables: ['github_copilot_billing', 'github_copilot_seats'],
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
 	];
 
 	const fastlyCredentials = new SecretsManager(scope, 'fastly-credentials', {
