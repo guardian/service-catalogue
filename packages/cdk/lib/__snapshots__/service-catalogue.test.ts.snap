@@ -566,7 +566,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -1031,7 +1031,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -1766,7 +1766,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -2515,7 +2515,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -3227,7 +3227,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -3904,7 +3904,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -4609,7 +4609,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -5346,7 +5346,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -6279,7 +6279,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -6726,7 +6726,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -7434,7 +7434,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -8141,7 +8141,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -8874,7 +8874,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -9603,7 +9603,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -10309,7 +10309,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -11027,7 +11027,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -11764,7 +11764,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -13055,7 +13055,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -13520,7 +13520,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -14282,7 +14282,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -14944,7 +14944,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -15696,7 +15696,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -16404,7 +16404,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -17153,7 +17153,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -18177,7 +18177,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -18698,7 +18698,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -19421,7 +19421,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -20183,7 +20183,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -20941,7 +20941,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -21699,7 +21699,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -22462,7 +22462,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -23189,7 +23189,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {
@@ -24226,7 +24226,7 @@ spec:
           },
           {
             "Command": [
-              "--config=/etc/ecs/ecs-xray.yaml",
+              "--config=/etc/ecs/ecs-cloudwatch-xray.yaml",
             ],
             "Essential": true,
             "HealthCheck": {

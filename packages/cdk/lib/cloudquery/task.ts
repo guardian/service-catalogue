@@ -284,7 +284,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 
 		const otel = task.addContainer(`${id}AWSOTELCollector`, {
 			image: Images.otelCollector,
-			command: ['--config=/etc/ecs/ecs-xray.yaml'],
+			command: ['--config=/etc/ecs/ecs-cloudwatch-xray.yaml'],
 			logging: fireLensLogDriver,
 			healthCheck: {
 				command: ['CMD', '/healthcheck'],
@@ -349,7 +349,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				/*
 				A container listed as a dependency of another cannot be marked as essential.
 				Below, we describe a dependency such that CloudQuery will only start if the singleton step succeeds.
-			 	*/
+				  */
 				essential: false,
 			});
 
