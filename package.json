@@ -8,7 +8,7 @@
     "pretypecheck": "npm --workspace=common --workspace=cloudquery-tables run typecheck",
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces --if-present",
-    "lint": "NODE_OPTIONS=--max-old-space-size=8192 eslint packages/** --ext .ts,.tsx --no-error-on-unmatched-pattern",
+    "lint": "eslint packages/** --ext .ts,.tsx --no-error-on-unmatched-pattern",
     "cloudbuster:start": "npm run start --workspace cloudbuster",
     "cloudbuster:test": "npm run test --workspace cloudbuster",
     "local-ci": "concurrently 'npm run typecheck' 'npm run lint' 'npm run test' 'npm run build'"
