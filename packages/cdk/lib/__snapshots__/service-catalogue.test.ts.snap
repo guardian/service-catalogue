@@ -2367,7 +2367,7 @@ spec:
   otel_endpoint_insecure: true
   backend_options:
     table_name: cq_state_aws
-    connection: '\''@@plugins.postgresql.connection'\''
+    connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
     concurrency: 2000
     accounts:
@@ -17997,7 +17997,7 @@ spec:
     - postgresql
   backend_options:
     table_name: cq_state_github
-    connection: '\''@@plugins.postgresql.connection'\''
+    connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
     concurrency: 1000
     orgs:
