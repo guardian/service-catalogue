@@ -2365,6 +2365,9 @@ spec:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
+  backend_options:
+    table_name: cq_state_aws
+    connection: '\''@@plugins.postgresql.connection'\''
   spec:
     concurrency: 2000
     accounts:
@@ -17992,6 +17995,9 @@ spec:
   skip_dependent_tables: true
   destinations:
     - postgresql
+  backend_options:
+    table_name: cq_state_github
+    connection: '\''@@plugins.postgresql.connection'\''
   spec:
     concurrency: 1000
     orgs:
