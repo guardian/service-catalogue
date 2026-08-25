@@ -141,9 +141,18 @@ export function createDigestForSeverity(
 	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced in the last ${cutOffInDays} days. Teams have ${generalSLAs[severity]} days to fix these.
 Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
-	const digestString = vulnsSinceImplementationDate
-		.map((v) => createHumanReadableMessage(v))
-		.join('\n\n');
+	const topVulns = vulnsSinceImplementationDate.slice(0, 20);
+	const remainingVulns = vulnsSinceImplementationDate.length - topVulns.length;
+
+	const vulnMessages = topVulns.map((v) => createHumanReadableMessage(v));
+	const andOthersMessage =
+		remainingVulns > 0
+			? [
+					`… and ${remainingVulns} others. See the full list on Grafana using the link below.`,
+				]
+			: [];
+
+	const digestString = [...vulnMessages, ...andOthersMessage].join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
 	const actions = [

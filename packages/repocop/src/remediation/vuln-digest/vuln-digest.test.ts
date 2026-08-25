@@ -449,6 +449,34 @@ void describe('createDigestForSeverity', () => {
 		assert.match(message, /leftpad/);
 		assert.doesNotMatch(message, /bad-package/);
 	});
+	void it('truncates the message after 20 results', () => {
+		const manyVulns: RepocopVulnerability[] =
+			Array<RepocopVulnerability>(20).fill(highRecentVuln);
+
+		const anotherVuln: RepocopVulnerability = {
+			...highRecentVuln,
+			full_name: anotherFullName,
+			package: 'rightpad',
+		};
+		const resultWithManyAlerts: EvaluationResult = {
+			...result,
+			vulnerabilities: [...manyVulns, anotherVuln],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithManyAlerts],
+				60,
+			),
+		);
+
+		assert.match(message, /leftpad/);
+		assert.doesNotMatch(message, /rightpad/);
+		assert.match(message, /and 1 others/);
+	});
 });
 
 void describe('removeNonRuntimeVulns', () => {
