@@ -165,6 +165,7 @@ export function addCloudqueryEcsCluster(
 						aws_inspector2_findings: inspector2TableOptions,
 					},
 				},
+				'incremental',
 			),
 			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
 			memoryLimitMiB: 2048,
@@ -522,10 +523,13 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubIssues',
 			description: 'Collect GitHub issue data (PRs and Issues)',
 			schedule: Schedule.cron({ minute: '0', hour: '2' }),
-			config: githubSourceConfig({
-				org: gitHubOrgName,
-				tables: ['github_issues'],
-			}),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: ['github_issues'],
+				},
+				'incremental',
+			),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,

@@ -5,16 +5,20 @@ spec:
   version: v${CQ_AWS}
   destinations: ['postgresql']
   tables:
-    - aws_lambda_functions
-    - aws_securityhub_findings
-    - aws_s3_buckets
-    - aws_ec2_images
-    - aws_organizations_accounts
-    - aws_organizations_account_parents
-    - aws_organizations_organizational_units
-    - aws_organizations_organizational_unit_parents
-    - aws_organizations_roots
+    #- aws_lambda_functions
+    #- aws_securityhub_findings
+    #- aws_s3_buckets
+    #- aws_ec2_images
+    #- aws_organizations_accounts
+    #- aws_organizations_account_parents
+    #- aws_organizations_organizational_units
+    #- aws_organizations_organizational_unit_parents
+    #- aws_organizations_roots
+    - aws_inspector2_findings
   skip_dependent_tables: true
+  backend_options: 
+    table_name: "cq_state_aws"
+    connection: "@@plugins.postgresql.connection"
   spec:
     regions:
       - eu-west-1
@@ -35,6 +39,15 @@ spec:
               workflow_status:
                 - comparison: 'NOT_EQUALS'
                   value: 'RESOLVED'
+      aws_inspector2_findings:
+        list_findings: # https://docs.aws.amazon.com/inspector/v2/APIReference/API_Finding.html
+          - filters: # https://docs.aws.amazon.com/inspector/v2/APIReference/API_Filter.html
+              finding_statuses:
+                - 'ACTIVE'
+              severity:
+                - 'CRITICAL'
+                - 'HIGH'
+        
 ---
 kind: destination
 spec:
