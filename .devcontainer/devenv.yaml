@@ -4,6 +4,7 @@ modules:
   - mise
   - docker-in-docker
   - node
+  - github-copilot
 
 mounts:
   - 'source=${localEnv:HOME}/.gu/service_catalogue,target=/home/vscode/.gu/service_catalogue,type=bind,consistency=cached'
