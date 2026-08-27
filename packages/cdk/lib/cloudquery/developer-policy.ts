@@ -30,10 +30,10 @@ export function buildCliDeveloperPolicy(scope: GuStack) {
 		],
 	});
 
-	// These actions can only operate on '*'
 	const ecsListPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
 		actions: ['ecs:ListClusters', 'ecs:ListTaskDefinitions'],
+		// These actions don't support resource-level permissions, resource must be '*'
 		resources: ['*'],
 	});
 
