@@ -18,7 +18,7 @@ spec:
     - aws_organizations_organizational_units
     - aws_organizations_organizational_unit_parents
     - aws_organizations_roots
-    - aws_inspector2_findings
+    # - aws_inspector2_findings # large table! only uncomment and activate if we need it
   skip_dependent_tables: true
   backend_options: 
     table_name: "cq_state_aws"
