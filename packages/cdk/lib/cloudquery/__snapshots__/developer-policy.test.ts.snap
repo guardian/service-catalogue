@@ -13,7 +13,7 @@ exports[`Developer policies for the ServiceCatalogue stack CLI developer policy 
     "ServiceCatalogueCliPolicy7789F330": {
       "Properties": {
         "Description": "Invoke Cloudquery jobs from CLI",
-        "Path": "/developer-policy/guardian/service-catalogue/deploy/TEST/service-catalogue-cli/",
+        "Path": "/developer-policy/guardian/service-catalogue/deploy/TEST/service-catalogue-dev/",
         "PolicyDocument": {
           "Statement": [
             {
@@ -208,7 +208,7 @@ exports[`Developer policies for the ServiceCatalogue stack local run developer p
     "ServiceCatalogueLocalPolicyB9DA4166": {
       "Properties": {
         "Description": "Run Service Catalogue Cloudquery jobs locally",
-        "Path": "/developer-policy/guardian/service-catalogue/deploy/TEST/run-service-catalogue-locally/",
+        "Path": "/developer-policy/guardian/service-catalogue/deploy/TEST/service-catalogue-dev/",
         "PolicyDocument": {
           "Statement": [
             {

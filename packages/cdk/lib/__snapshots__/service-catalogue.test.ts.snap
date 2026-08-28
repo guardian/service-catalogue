@@ -26107,7 +26107,7 @@ spec:
     "ServiceCatalogueCliPolicy7789F330": {
       "Properties": {
         "Description": "Invoke Cloudquery jobs from CLI",
-        "Path": "/developer-policy/guardian/service-catalogue/deploy/PROD/service-catalogue-cli/",
+        "Path": "/developer-policy/guardian/service-catalogue/deploy/PROD/service-catalogue-dev/",
         "PolicyDocument": {
           "Statement": [
             {

@@ -15,6 +15,8 @@ function ssmArn(stack: GuStack, parameterName: string): string {
 	});
 }
 
+const GRANT_ID = 'service-catalogue-dev';
+
 export function buildCliDeveloperPolicy(scope: GuStack) {
 	const { stage, stack, app = 'service-catalogue' } = scope;
 	const SSMPolicy = new PolicyStatement({
@@ -90,7 +92,7 @@ export function buildCliDeveloperPolicy(scope: GuStack) {
 	});
 
 	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
-		grantId: 'service-catalogue-cli',
+		grantId: GRANT_ID,
 		friendlyName: 'Invoke Cloudquery jobs from CLI',
 		statements: [
 			SSMPolicy,
@@ -213,7 +215,7 @@ export function buildRunLocallyDeveloperPolicy(
 	});
 
 	const runLocalPolicyProps: GuDeveloperPolicyExperimentalProps = {
-		grantId: 'run-service-catalogue-locally',
+		grantId: GRANT_ID,
 		friendlyName: 'Run Service Catalogue Cloudquery jobs locally',
 		statements: [
 			SSMPolicy,
