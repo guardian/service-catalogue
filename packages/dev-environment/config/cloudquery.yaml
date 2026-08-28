@@ -5,16 +5,20 @@ spec:
   version: v${CQ_AWS}
   destinations: ['postgresql']
   tables:
-    #- aws_lambda_functions
-    #- aws_securityhub_findings
-    #- aws_s3_buckets
-    #- aws_ec2_images
-    #- aws_organizations_accounts
-    #- aws_organizations_account_parents
-    #- aws_organizations_organizational_units
-    #- aws_organizations_organizational_unit_parents
-    #- aws_organizations_roots
-    - aws_inspector2_findings
+    # Testing a new table? Remember to add the necessary permissions (looked up from this page:
+    #   https://www.cloudquery.io/hub/plugins/source/cloudquery/aws/latest/tables
+    # ) to the developer policy for running locally:
+    #   https://github.com/guardian/service-catalogue/blob/main/packages/cdk/lib/cloudquery/developer-policy.ts
+    - aws_lambda_functions
+    - aws_securityhub_findings
+    - aws_s3_buckets
+    - aws_ec2_images
+    - aws_organizations_accounts
+    - aws_organizations_account_parents
+    - aws_organizations_organizational_units
+    - aws_organizations_organizational_unit_parents
+    - aws_organizations_roots
+    # - aws_inspector2_findings # large table! only uncomment and activate if we need it
   skip_dependent_tables: true
   backend_options: 
     table_name: "cq_state_aws"
