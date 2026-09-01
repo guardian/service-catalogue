@@ -533,6 +533,7 @@ export function dependabotAlertToRepocopVulnerability(
 			fullName,
 		),
 		alert_type,
+		epss_percentage: alert.security_advisory.epss?.percentage,
 		advisory_published_at: new Date(alert.security_advisory.published_at),
 		advisory_updated_at: new Date(alert.security_advisory.updated_at),
 		advisory_withdrawn_at: alert.security_advisory.withdrawn_at
