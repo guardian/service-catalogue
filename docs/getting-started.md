@@ -64,7 +64,47 @@ read-only user configured, the credentials for which are available in Secrets Ma
 IntelliJ has a very good SQL client that, together with the AWS plugin, enables connecting to the database using
 just regular Janus credentials and the full ARN of `/PROD/deploy/service-catalogue/devreadonly-postgres-password`.
 
+#### DBeaver and other JDBC tools
+
+AWS has a JDBC client that wraps RDS hosted JDBC libraries with a shim
+that fetches the config from [Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_jdbc.html), in which one
+uses the secret name in place of the database URL and the username.
+
+To use this in DBeaver, you first need to create a new driver in `Driver Manager`:
+| Setting | Value |
+|---------|-------|
+| Class Name | com.amazonaws.secretsmanager.sql.AWSSecretsManagerPostgreSQLDriver |
+|URL Template | jdbc-secretsmanager:postgresql://{host}[:port]/[database]|
+| Allow Empty Password | True |
+
+Under Libraries you need to add the Postgres driver and the Secrets Manager wrapper. This is easiest using `Add Artifact` which allows you to paste in the XML directly.
+
+```xml
+<dependency>
+    <groupId>com.amazonaws.secretsmanager</groupId>
+    <artifactId>aws-secretsmanager-jdbc</artifactId>
+    <version>2.1.3</version>
+    <scope>compile</scope>
+</dependency>
+```
+
+and
+
+```xml
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.7.13</version>
+    <scope>compile</scope>
+</dependency>
+```
+
+When creating a new connection in DBeaver, if the Secret is configured properly, select "Connect by URL" and enter the Secret Name for the URL, the username and leave the password blank. If it tries to access a database named after the user (eg `devreadonly`) then the `dbname` parameter is ßmissing from the secret and needs to be added with the value `postgres`.
+
+**AWS Credentials** To talk to Secrets Manager, AWS Credentials must be set in a terminal from Janus! At the moment it seems that they must be set in the `default` profile.
+
 ### Tips for writing queries
+
 If you're unsure of where to start, we have
 an [example dashboard](https://metrics.gutools.co.uk/d/KpxfmalVz/devx-cloudquery-okr-dashboard?orgId=1&refresh=1d)
 answering some common questions such as:
