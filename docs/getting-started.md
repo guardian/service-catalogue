@@ -68,7 +68,7 @@ just regular Janus credentials and the full ARN of `/PROD/deploy/service-catalog
 
 AWS has a JDBC client that wraps RDS hosted JDBC libraries with a shim
 that fetches the config from [Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_jdbc.html), in which one
-uses the secret name in place of the database URL and the username.
+uses the secret name in place of the database URL and the username. The secret must have a [particular structure](https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_secret_json_structure.html#reference_secret_json_structure_rds) for this to work - the same structure is used by the database client in IntelliJ IDEA.
 
 To use this in DBeaver, you first need to create a new driver in `Driver Manager`:
 | Setting | Value |
@@ -77,29 +77,32 @@ To use this in DBeaver, you first need to create a new driver in `Driver Manager
 |URL Template | jdbc-secretsmanager:postgresql://{host}[:port]/[database]|
 | Allow Empty Password | True |
 
-Under Libraries you need to add the Postgres driver and the Secrets Manager wrapper. This is easiest using `Add Artifact` which allows you to paste in the XML directly.
+Under Libraries you need to add the Postgres driver and the Secrets Manager wrapper. This is easiest using `Add Artifact` which allows you to paste in the XML directly. The XML can be copied from Maven.
+
+[Maven: AWS Secrets Manager SQL Connection Library](https://mvnrepository.com/artifact/com.amazonaws.secretsmanager/aws-secretsmanager-jdbc)
 
 ```xml
 <dependency>
     <groupId>com.amazonaws.secretsmanager</groupId>
     <artifactId>aws-secretsmanager-jdbc</artifactId>
-    <version>2.1.3</version>
+    <version>2.1.3</version> <!-- please use latest version! -->
     <scope>compile</scope>
 </dependency>
 ```
 
-and
+and  
+[<Maven: PostgreSQL JDBC Driver](https://mvnrepository.com/artifact/org.postgresql/postgresql)
 
 ```xml
 <dependency>
     <groupId>org.postgresql</groupId>
     <artifactId>postgresql</artifactId>
-    <version>42.7.13</version>
+    <version>42.7.13</version> <!-- please use latest version! -->
     <scope>compile</scope>
 </dependency>
 ```
 
-When creating a new connection in DBeaver, if the Secret is configured properly, select "Connect by URL" and enter the Secret Name for the URL, the username and leave the password blank. If it tries to access a database named after the user (eg `devreadonly`) then the `dbname` parameter is ßmissing from the secret and needs to be added with the value `postgres`.
+When creating a new connection in DBeaver: select "Connect by URL", then enter the Secret Name for the URL and also for the username - leaving the password blank. If it tries to access a database named after the user (eg `devreadonly`) then the `dbname` parameter is missing from the secret and needs to be added with the value `postgres`.
 
 **AWS Credentials** To talk to Secrets Manager, AWS Credentials must be set in a terminal from Janus! At the moment it seems that they must be set in the `default` profile.
 

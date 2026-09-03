@@ -1,5 +1,15 @@
 # Incremental Updates
 
+CloudQuery has two methods of synchronising data: `full` and `incremental`. Both types may be used in a single job. A `full` sync captures the full set of data on each run; an `incremental` sync only fetches data that have changed since the last run. Further details may be found in the CloudQuery Docs:
+
+- [Syncs](https://www.cloudquery.io/docs/cli/core-concepts/syncs)
+- [Managing Incremental Tables](https://www.cloudquery.io/docs/cli/advanced/managing-incremental-tables)
+
+Not all tables support incremental updating - please check the tables listed for each integration in the CloudQuery Docs to see which are included for incremental, filtering the table list by `Show only incremental`.
+
+- [AWS](https://www.cloudquery.io/hub/plugins/source/cloudquery/aws/latest/tables)
+- [GitHub](https://www.cloudquery.io/hub/plugins/source/cloudquery/github/latest/tables)
+
 Incremental updates are being enabled on the tables that support them. This should reduce our monthly rowcount and make it easier to stay within our licenced limit (currently 150 million per month - [Paid Usage Monitor](https://metrics.gutools.co.uk/d/debncbyh7b37ke/cloudquery-paid-usage))
 
 Enabling incremental updates in the CDK config is straightforward: the syncmode is the final parameter on a CloudQuery Source, and should be set to `incremental`. The overwrite mode has been left as `overwrite-delete-stale`.
