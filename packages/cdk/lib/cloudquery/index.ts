@@ -454,7 +454,7 @@ export function addCloudqueryEcsCluster(
 					'github_repository_custom_properties',
 					'github_workflows',
 				],
-				concurrency: 1,
+				concurrency: 10,
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
