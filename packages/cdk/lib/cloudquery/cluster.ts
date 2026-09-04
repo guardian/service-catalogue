@@ -35,6 +35,11 @@ export interface CloudquerySource {
 	schedule: Schedule;
 
 	/**
+	 * Whether to run the task on the specified schedule, or only manually using the CLI.
+	 */
+	scheduleEnabled: boolean;
+
+	/**
 	 * Cloudquery config (aka 'spec') for this source.
 	 *
 	 * This should be the JS version of whatever YAML config you want to use for this source.
@@ -133,13 +138,6 @@ interface CloudqueryClusterProps extends AppIdentity {
 	logShippingPolicy: PolicyStatement;
 
 	cloudqueryApiKey: SecretsManager;
-
-	/**
-	 * Each CloudQuery data collection task has a schedule.
-	 * When true, the schedule will be enabled, and data collection will occur as defined.
-	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
-	 */
-	enableCloudquerySchedules: boolean;
 }
 
 /**
@@ -164,7 +162,6 @@ export class CloudqueryCluster extends Cluster {
 			loggingStreamName,
 			logShippingPolicy,
 			cloudqueryApiKey,
-			enableCloudquerySchedules,
 		} = props;
 
 		const taskProps = {
@@ -179,6 +176,7 @@ export class CloudqueryCluster extends Cluster {
 			({
 				name,
 				schedule,
+				scheduleEnabled,
 				config,
 				managedPolicies = [],
 				policies = [],
@@ -193,7 +191,7 @@ export class CloudqueryCluster extends Cluster {
 			}) => {
 				return new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
 					...taskProps,
-					enabled: enableCloudquerySchedules,
+					enabled: scheduleEnabled,
 					name,
 					managedPolicies,
 					policies: [logShippingPolicy, ...policies],

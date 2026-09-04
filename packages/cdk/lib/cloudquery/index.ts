@@ -102,6 +102,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Data about the AWS Organisation, including accounts and OUs. Uses include mapping account IDs to account names.',
 			schedule: Schedule.rate(Duration.days(1)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForAccount(GuardianAwsAccounts.DeployTools, {
 				tables:
 					/*
@@ -121,6 +122,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Organisation wide security data, from access analyzer and security hub. Uses include identifying lambdas using deprecated runtimes.',
 			schedule: Schedule.cron({ minute: '0', hour: '22' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
@@ -145,6 +147,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsInspector2Findings',
 			description: 'Collect inspector 2 findings',
 			schedule: Schedule.cron({ minute: '0', hour: '21' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
@@ -167,6 +170,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting CloudFormation data across the organisation. We use CloudFormation stacks as a proxy for a service, so collect the data multiple times a day',
 			schedule: Schedule.rate(Duration.hours(3)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: filterCloudQueryTables([/^aws_cloudformation_.*$/]),
 			}),
@@ -178,6 +182,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collects daily AWS costs (aggregated by App, Stack and Stage tags). We aim to keep historical data for this table (unlike other tables)',
 			schedule: Schedule.cron({ minute: '0', hour: '0' }),
+			scheduleEnabled: enableCloudquerySchedules,
 
 			// TODO replace with time variable substitution once it supports relative date only strings.
 			//  See https://cli-docs.cloudquery.io/docs/advanced-topics/environment-variable-substitution#time-variable-substitution-example
@@ -229,6 +234,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsResourcesForAvailabilityDashboard',
 			description: 'Resources queried by the Availability dashboard',
 			schedule: Schedule.rate(Duration.minutes(30)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: [
 					...filterCloudQueryTables([
@@ -247,6 +253,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting certificate data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.cron({ minute: '0', hour: '1' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: filterCloudQueryTables([/^aws_acm_.*$/]),
 			}),
@@ -256,6 +263,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsLambda',
 			description: 'Collecting lambda data across the organisation.',
 			schedule: Schedule.cron({ minute: '10', hour: '1' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: filterCloudQueryTables([/^aws_lambda_.*$/]),
 			}),
@@ -265,6 +273,7 @@ export function addCloudqueryEcsCluster(
 			name: 'AwsSSMParameters',
 			description: 'Collecting ssm parameters across the organisation.',
 			schedule: Schedule.cron({ minute: '20', hour: '1' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_ssm_parameters'],
 			}),
@@ -275,6 +284,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.rate(Duration.minutes(30)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_cloudwatch_alarms'],
 			}),
@@ -285,6 +295,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting SNS data across the organisation. Uses include monitoring alarm configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '3' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_sns_topics'],
 			}),
@@ -295,6 +306,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting S3 data across the organisation. Uses include identifying which account a bucket resides.',
 			schedule: Schedule.cron({ minute: '0', hour: '4' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: filterCloudQueryTables([/^aws_s3.*$/]),
 			}),
@@ -305,6 +317,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting DynamoDB data across the organisation. Uses include auditing backup configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '5' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: filterCloudQueryTables([/^aws_dynamodb.*$/]),
 			}),
@@ -315,6 +328,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting RDS data across the organisation. Uses include auditing backup configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '6' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: [
 					'aws_rds_instances',
@@ -330,6 +344,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting Backup data across the organisation. Uses include auditing backup configuration.',
 			schedule: Schedule.cron({ minute: '0', hour: '7' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: [
 					'aws_backup_protected_resources',
@@ -345,6 +360,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting EC2 instance information, and their security groups. Uses include identifying instances failing the "30 day old" SLO, and (eventually) replacing Prism.',
 			schedule: Schedule.rate(Duration.minutes(30)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_ec2_instances', 'aws_ec2_security_groups'],
 			}),
@@ -357,6 +373,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting EC2 image information. Uses include getting information for base images used in AMIgo.',
 			schedule: Schedule.cron({ minute: '0', hour: '0' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_ec2_images'],
 			}),
@@ -369,6 +386,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collecting IAM credential reports to surface information about outdated or inactive users and access keys',
 			schedule: Schedule.rate(Duration.hours(4)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: awsSourceConfigForOrganisation({
 				tables: ['aws_iam_credential_reports', 'aws_iam_users'],
 			}),
@@ -395,6 +413,7 @@ export function addCloudqueryEcsCluster(
 		name: 'AwsRemainingData',
 		description: 'Data fetched across all accounts in the organisation.',
 		schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+		scheduleEnabled: enableCloudquerySchedules,
 		config: awsSourceConfigForOrganisation({
 			tables: remainingAwsTables,
 
@@ -445,6 +464,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
 			schedule: Schedule.cron({ hour: '0', minute: '0' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -468,6 +488,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collect GitHub SBOM (Software Bill of Materials) data. Used to track dependencies, which is useful for supply chain attack monitoring.',
 			schedule: Schedule.cron({ hour: '1', minute: '15' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_repository_sboms'],
@@ -481,6 +502,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubReleases',
 			description: '',
 			schedule: Schedule.cron({ weekDay: 'MON', hour: '10', minute: '0' }), // Every Monday, at 10AM UTC
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfigForRepository({
 				org: gitHubOrgName,
 				repositories: ['guardian/cdk'],
@@ -495,6 +517,7 @@ export function addCloudqueryEcsCluster(
 			description:
 				'Collect GitHub team data. Uses include identifying which repositories a team owns.',
 			schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -515,6 +538,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubIssues',
 			description: 'Collect GitHub issue data (PRs and Issues)',
 			schedule: Schedule.cron({ hour: '2', minute: '0' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfig(
 				{
 					org: gitHubOrgName,
@@ -530,6 +554,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubSecretScanningAlerts',
 			description: 'Collect GitHub secret scanning alerts',
 			schedule: Schedule.cron({ hour: '23', minute: '0' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_secret_scanning_alerts'],
@@ -542,6 +567,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubCopilotBilling',
 			description: 'Collect GitHub Copilot billing data',
 			schedule: Schedule.cron({ hour: '03', minute: '30' }),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_copilot_billing', 'github_copilot_seats'],
@@ -561,6 +587,7 @@ export function addCloudqueryEcsCluster(
 			name: 'FastlyServices',
 			description: 'Fastly services data',
 			schedule: Schedule.rate(Duration.days(1)),
+			scheduleEnabled: enableCloudquerySchedules,
 			config: fastlySourceConfig({
 				tables: fastlyTables,
 			}),
@@ -591,6 +618,7 @@ export function addCloudqueryEcsCluster(
 			name: 'Galaxies',
 			description: 'Galaxies data',
 			schedule: Schedule.rate(Duration.days(1)),
+			scheduleEnabled: enableCloudquerySchedules,
 			policies: [
 				readBucketPolicy(
 					`${actionsStaticSiteBucket.bucketArn}/galaxies.gutools.co.uk/data/*`,
@@ -612,6 +640,7 @@ export function addCloudqueryEcsCluster(
 		name: 'RiffRaffData',
 		description: "Source deployment data directly from riff-raff's database",
 		schedule: Schedule.cron({ hour: '0', minute: '0' }),
+		scheduleEnabled: enableCloudquerySchedules,
 		config: riffraffSourcesConfig(),
 		additionalSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
 		secrets: {
@@ -635,6 +664,7 @@ export function addCloudqueryEcsCluster(
 		name: 'GitHubLanguages',
 		description: 'Collect GitHub languages data',
 		schedule: Schedule.rate(Duration.days(7)),
+		scheduleEnabled: enableCloudquerySchedules,
 		config: githubLanguagesConfig({
 			tables: githubLanguagesTables,
 			org: gitHubOrgName,
@@ -651,6 +681,7 @@ export function addCloudqueryEcsCluster(
 		name: 'NS1',
 		description: 'DNS records from NS1',
 		schedule: Schedule.cron({ hour: '0', minute: '0' }),
+		scheduleEnabled: enableCloudquerySchedules,
 		dockerDistributedPluginImage: Images.ns1Source,
 		secrets: {
 			NS1_API_KEY: Secret.fromSecretsManager(ns1ApiKey, 'api-key'),
@@ -681,6 +712,7 @@ export function addCloudqueryEcsCluster(
 		name: 'AmigoBakePackages',
 		description: 'Packages installed in Amigo bakes.',
 		schedule: Schedule.cron({ hour: '3', minute: '0' }),
+		scheduleEnabled: enableCloudquerySchedules,
 		config: amigoBakePackagesConfig(
 			baseImagesTableName,
 			recipesTableName,
@@ -704,11 +736,11 @@ export function addCloudqueryEcsCluster(
 		name: 'EndOfLife',
 		description: 'Collecting data from endoflife.date',
 		schedule: Schedule.cron({ day: '1', hour: '0', minute: '0' }),
+		scheduleEnabled: enableCloudquerySchedules,
 		config: endOfLifeSourceConfig(),
 	};
 
 	const cluster = new CloudqueryCluster(scope, `${app}Cluster`, {
-		enableCloudquerySchedules,
 		app,
 		vpc,
 		db,
