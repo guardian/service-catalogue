@@ -20006,7 +20006,7 @@ spec:
   destinations:
     - postgresql
   spec:
-    concurrency: 10
+    concurrency: 1
     orgs:
       - guardian
     app_auth:
