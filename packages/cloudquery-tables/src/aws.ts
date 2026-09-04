@@ -71,6 +71,7 @@ export const awsTables = [
 	'aws_backup_report_plans',
 	'aws_backup_vault_recovery_points',
 	'aws_backup_vaults',
+	'aws_budgets_actions',
 	'aws_budgets_budgets',
 	'aws_cloudformation_stack_instance_resource_drifts',
 	'aws_cloudformation_stack_instance_summaries',
