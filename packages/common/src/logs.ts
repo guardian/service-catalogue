@@ -25,7 +25,7 @@ interface EcsTaskLogsProps {
  * Builds a deep link to the logs within Central ELK.
  */
 export function getCentralElkLink(props: CentralElkProps): string {
-	const { filters, columns, autoRefresh: autorefresh } = props;
+	const { filters, columns, autoRefresh } = props;
 
 	const kibanaFilters = Object.entries(filters).map(([key, value]) => {
 		return `(query:(match_phrase:(${key}:'${value}')))`;
@@ -37,7 +37,7 @@ export function getCentralElkLink(props: CentralElkProps): string {
 
 	const query = {
 		_g: `(filters:!(${kibanaFilters.join(',')})${
-			autorefresh
+			autoRefresh
 				? ',refreshInterval:(pause:!f,value:10000),time:(from:now-15m,to:now)'
 				: ''
 		})`,
