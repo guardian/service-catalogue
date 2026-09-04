@@ -1,0 +1,70 @@
+kind: source
+spec:
+  name: 'aws'
+  path: 'cloudquery/aws'
+  version: v${CQ_AWS}
+  destinations: ['postgresql']
+  tables:
+    # Testing a new table? Remember to add the necessary permissions (looked up from this page:
+    #   https://www.cloudquery.io/hub/plugins/source/cloudquery/aws/latest/tables
+    # ) to the developer policy for running locally:
+    #   https://github.com/guardian/service-catalogue/blob/main/packages/cdk/lib/cloudquery/developer-policy.ts
+    - aws_lambda_functions
+    - aws_securityhub_findings
+    - aws_s3_buckets
+    - aws_ec2_images
+    - aws_organizations_accounts
+    - aws_organizations_account_parents
+    - aws_organizations_organizational_units
+    - aws_organizations_organizational_unit_parents
+    - aws_organizations_roots
+    # - aws_inspector2_findings # large table! only uncomment and activate if we need it
+  skip_dependent_tables: true
+  backend_options: 
+    table_name: "cq_state_aws"
+    connection: "@@plugins.postgresql.connection"
+  spec:
+    regions:
+      - eu-west-1
+      - us-east-1
+    accounts:
+      - id: 'deployTools'
+        local_profile: 'deployTools'
+    table_options:
+      aws_securityhub_findings:
+        get_findings: # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
+          - filters: # https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_StringFilter.html
+              record_state:
+                - comparison: 'EQUALS'
+                  value: 'ACTIVE'
+              compliance_status:
+                - comparison: 'NOT_EQUALS'
+                  value: 'PASSED'
+              workflow_status:
+                - comparison: 'NOT_EQUALS'
+                  value: 'RESOLVED'
+      aws_inspector2_findings:
+        list_findings: # https://docs.aws.amazon.com/inspector/v2/APIReference/API_Finding.html
+          - filters: # https://docs.aws.amazon.com/inspector/v2/APIReference/API_Filter.html
+              finding_statuses:
+                - 'ACTIVE'
+              severity:
+                - 'CRITICAL'
+                - 'HIGH'
+        
+---
+kind: destination
+spec:
+  name: 'postgresql'
+  path: 'cloudquery/postgresql'
+  version: v${CQ_POSTGRES_DESTINATION}
+
+  # Automatically apply migrations whenever plugins are updated.
+  # Note: This is not encouraged if risk averse, so we should consider removing this once fully in production.
+  # See: https://www.cloudquery.io/docs/advanced-topics/managing-versions#managing-plugin-versions
+  migrate_mode: 'forced'
+
+  # When `true`, each sync will add a row to the `cloudquery_sync_summaries` table.
+  send_sync_summary: true
+  spec:
+    connection_string: ${DATABASE_URL}
