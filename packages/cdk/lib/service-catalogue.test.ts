@@ -3,7 +3,7 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { _cloudQueryTablesToSync } from 'cloudquery-tables';
 import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { ScheduledCloudqueryTask } from './cloudquery/task';
+import { CloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
@@ -96,8 +96,7 @@ describe('The ServiceCatalogue stack', () => {
 		const tasks = stack.node
 			.findAll()
 			.filter(
-				(child): child is ScheduledCloudqueryTask =>
-					child instanceof ScheduledCloudqueryTask,
+				(child): child is CloudqueryTask => child instanceof CloudqueryTask,
 			);
 
 		const collected: string[] = tasks.flatMap(
@@ -122,8 +121,7 @@ describe('The ServiceCatalogue stack', () => {
 		const tasks = stack.node
 			.findAll()
 			.filter(
-				(child): child is ScheduledCloudqueryTask =>
-					child instanceof ScheduledCloudqueryTask,
+				(child): child is CloudqueryTask => child instanceof CloudqueryTask,
 			);
 
 		const invalidTasks = tasks
