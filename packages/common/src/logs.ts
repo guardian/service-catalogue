@@ -5,14 +5,14 @@ interface CentralElkProps {
 	filters: Record<string, string>;
 
 	/**
+	 * Whether the logs should automatically refresh.
+	 */
+	autoRefresh: boolean;
+
+	/**
 	 * Which columns to display in the Kibana table.
 	 */
 	columns?: string[];
-
-	/**
-	 * Whether the logs should automatically refresh.
-	 */
-	autorefresh?: boolean;
 }
 
 interface EcsTaskLogsProps {
@@ -25,7 +25,7 @@ interface EcsTaskLogsProps {
  * Builds a deep link to the logs within Central ELK.
  */
 export function getCentralElkLink(props: CentralElkProps): string {
-	const { filters, columns, autorefresh } = props;
+	const { filters, columns, autoRefresh: autorefresh } = props;
 
 	const kibanaFilters = Object.entries(filters).map(([key, value]) => {
 		return `(query:(match_phrase:(${key}:'${value}')))`;
@@ -64,7 +64,7 @@ export function getEcsTaskLogsLink({
 	return getCentralElkLink({
 		filters: { stage, ecs_task_arn: ecsTaskArn },
 		columns,
-		autorefresh: true,
+		autoRefresh: true,
 	});
 }
 

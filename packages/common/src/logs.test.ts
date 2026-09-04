@@ -10,6 +10,7 @@ void describe('getCentralElkLink', () => {
 				stage: 'CODE',
 				app: 'service-catalogue',
 			},
+			autoRefresh: false,
 		});
 		const expected =
 			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stack:'deploy'))),(query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(app:'service-catalogue')))))";
@@ -24,6 +25,7 @@ void describe('getCentralElkLink', () => {
 				app: 'service-catalogue',
 			},
 			columns: ['message'],
+			autoRefresh: false,
 		});
 		const expected =
 			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stack:'deploy'))),(query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(app:'service-catalogue')))))&_a=(columns:!(message))";
