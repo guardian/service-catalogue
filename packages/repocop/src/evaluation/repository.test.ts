@@ -577,7 +577,7 @@ const oldCriticalDependabotVuln: RepocopVulnerability = {
 	advisory_withdrawn_at: null,
 	alert_updated_at: new Date('2026-06-18T00:00:00.000Z'),
 	html_url: 'https://github.com/guardian/some-repo/security/dependabot/1',
-	epss_percentage: 0.1
+	epss_percentage: 0.1,
 };
 
 const newCriticalDependabotVuln: RepocopVulnerability = {
@@ -703,7 +703,7 @@ void describe('NO RULE - Vulnerabilities from Dependabot', () => {
 				'https://bugzilla.redhat.com/show_bug.cgi?id=1916813',
 			],
 			ecosystem: 'pip',
-			epss_percentage: undefined,
+			epss_percentage: null,
 			alert_issue_date: new Date('2022-06-14T15:21:52Z'),
 			is_patchable: true,
 			cves: ['CVE-2021-20191'],
@@ -896,7 +896,7 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		advisory_withdrawn_at: null,
 		alert_updated_at: new Date('2022-06-15T07:43:03Z'),
 		html_url: 'https://github.com/guardian/myrepo/security/dependabot/1',
-		epss_percentage: 0.1
+		epss_percentage: 0.1,
 	};
 	const vuln2: RepocopVulnerability = {
 		full_name: fullName,
@@ -917,7 +917,7 @@ void describe('Deduplication of repocop vulnerabilities', () => {
 		advisory_withdrawn_at: null,
 		alert_updated_at: new Date('2022-06-15T07:43:03Z'),
 		html_url: 'https://github.com/guardian/myrepo/security/dependabot/2',
-		epss_percentage: undefined
+		epss_percentage: null,
 	};
 	const actual = deduplicateVulnerabilitiesByCve([vuln1, vuln2]);
 	void test('Should happen if two vulnerabilities share the same CVEs', () => {
