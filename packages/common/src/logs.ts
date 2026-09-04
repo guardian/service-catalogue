@@ -8,6 +8,11 @@ interface CentralElkProps {
 	 * Which columns to display in the Kibana table.
 	 */
 	columns?: string[];
+
+	/**
+	 * Whether the logs should automatically refresh.
+	 */
+	autorefresh?: boolean;
 }
 
 interface EcsTaskLogsProps {
@@ -20,7 +25,7 @@ interface EcsTaskLogsProps {
  * Builds a deep link to the logs within Central ELK.
  */
 export function getCentralElkLink(props: CentralElkProps): string {
-	const { filters, columns } = props;
+	const { filters, columns, autorefresh } = props;
 
 	const kibanaFilters = Object.entries(filters).map(([key, value]) => {
 		return `(query:(match_phrase:(${key}:'${value}')))`;
@@ -31,7 +36,11 @@ export function getCentralElkLink(props: CentralElkProps): string {
 	const base = 'https://logs.gutools.co.uk/s/devx/app/discover#/';
 
 	const query = {
-		_g: `(filters:!(${kibanaFilters.join(',')}))`,
+		_g: `(filters:!(${kibanaFilters.join(',')})${
+			autorefresh
+				? ',refreshInterval:(pause:!f,value:10000),time:(from:now-15m,to:now)'
+				: ''
+		})`,
 		...(columns && {
 			_a: `(columns:!(${columns.join(',')}))`,
 		}),
@@ -55,6 +64,7 @@ export function getEcsTaskLogsLink({
 	return getCentralElkLink({
 		filters: { stage, ecs_task_arn: ecsTaskArn },
 		columns,
+		autorefresh: true,
 	});
 }
 
