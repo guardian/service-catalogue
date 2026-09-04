@@ -677,7 +677,7 @@ model repocop_vulnerabilities {
   advisory_withdrawn_at DateTime? @db.Timestamptz(6)
   alert_updated_at      DateTime  @db.Timestamptz(6)
   html_url              String
-  epss_percentage       Decimal?  @db.Decimal
+  epss_percentage       Float?
 }
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
