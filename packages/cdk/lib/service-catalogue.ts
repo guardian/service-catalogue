@@ -67,6 +67,7 @@ function createProdMonitoringConfiguration(
 					stage: 'PROD',
 					app,
 				},
+				autoRefresh: false,
 			},
 		)}`,
 	};
