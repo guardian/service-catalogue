@@ -96,7 +96,7 @@ export type RepocopVulnerability = Omit<
 	severity: Severity;
 	scope: DependencyScope;
 	alert_type: AlertType;
-	epss_percentage: number | undefined;
+	epss_percentage: number | null;
 };
 
 type RepositoryFields = Pick<
