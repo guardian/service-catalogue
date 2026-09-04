@@ -221,7 +221,7 @@ export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
 	syncMode?: SyncMode,
 ): CloudQuerySourceConfig {
-	const { tables, org, includeArchivedRepos } = tableConfig;
+	const { tables, org, includeArchivedRepos, concurrency } = tableConfig;
 
 	return {
 		kind: 'source',
@@ -234,7 +234,7 @@ export function githubSourceConfig(
 			destinations: ['postgresql'],
 			backend_options: backendOptions('github', syncMode),
 			spec: {
-				concurrency: 1000, // TODO what's the ideal value here?!
+				concurrency: concurrency ?? 1000, // TODO what's the ideal value here?!
 				orgs: [org],
 				app_auth: [
 					{
