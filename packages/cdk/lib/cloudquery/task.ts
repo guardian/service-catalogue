@@ -2,7 +2,12 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
-import type { Cluster, RepositoryImage, Volume } from 'aws-cdk-lib/aws-ecs';
+import type {
+	Cluster,
+	FargateTaskDefinitionProps,
+	RepositoryImage,
+	Volume,
+} from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerDependencyCondition,
 	FargateTaskDefinition,
@@ -12,8 +17,8 @@ import {
 	PropagatedTagSource,
 	Secret,
 } from 'aws-cdk-lib/aws-ecs';
-import type { ScheduledFargateTaskProps } from 'aws-cdk-lib/aws-ecs-patterns';
 import { ScheduledFargateTask } from 'aws-cdk-lib/aws-ecs-patterns';
+import type { Schedule } from 'aws-cdk-lib/aws-events';
 import type { IManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import {
 	Effect,
@@ -35,8 +40,8 @@ import { Images } from './images';
 import { singletonPolicy } from './policies';
 import { scheduleFrequencyMs } from './schedule';
 
-export interface ScheduledCloudqueryTaskProps
-	extends AppIdentity, Omit<ScheduledFargateTaskProps, 'cluster'> {
+export interface CloudqueryTaskProps
+	extends AppIdentity, FargateTaskDefinitionProps {
 	/**
 	 * The name of the task.
 	 * This will get added to the `Name` tag of the task definition.
@@ -47,11 +52,6 @@ export interface ScheduledCloudqueryTaskProps
 	 * The Postgres database for CloudQuery to connect to.
 	 */
 	db: DatabaseInstance;
-
-	/**
-	 * The security group to allow CloudQuery to connect to the database.
-	 */
-	dbAccess: GuSecurityGroup;
 
 	/**
 	 * The ECS cluster to run the task in.
@@ -97,12 +97,6 @@ export interface ScheduledCloudqueryTaskProps
 	additionalCommands?: string[];
 
 	/**
-	 * Any additional security groups applied to the task.
-	 * For example, a group allowing access to Riff-Raff.
-	 */
-	additionalSecurityGroups?: ISecurityGroup[];
-
-	/**
 	 * Run this task as a singleton?
 	 * Useful to help avoid overlapping runs.
 	 */
@@ -133,35 +127,30 @@ export interface ScheduledCloudqueryTaskProps
 	writeMode: CloudqueryWriteMode;
 }
 
-export class ScheduledCloudqueryTask extends ScheduledFargateTask {
-	public readonly sourceConfig: CloudQuerySourceConfig;
-	public readonly name: string;
-	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
+export class CloudqueryTask extends FargateTaskDefinition {
+	public readonly fireLensLogDriver: FireLensLogDriver;
+
+	constructor(scope: GuStack, id: string, props: CloudqueryTaskProps) {
 		const {
 			name,
 			db,
 			cluster,
 			app,
-			dbAccess,
-			schedule,
 			managedPolicies,
 			policies,
 			loggingStreamName,
 			sourceConfig,
-			enabled,
 			secrets,
 			additionalCommands = [],
 			memoryLimitMiB = 512,
 			cpu,
-			additionalSecurityGroups = [],
-			runAsSingleton,
-			cloudQueryApiKey,
-			dockerDistributedPluginImage,
 			writeMode,
+			cloudQueryApiKey,
+			runAsSingleton,
+			dockerDistributedPluginImage,
 		} = props;
 		const { region, stack, stage } = scope;
 		const thisRepo = 'guardian/service-catalogue'; // TODO get this from GuStack
-		const frequency = scheduleFrequencyMs(schedule);
 
 		const roleName = `${app}-${stage}-task-${name}`;
 		const taskRole = new Role(scope, roleName, {
@@ -173,7 +162,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			'AWSXrayWriteOnlyAccess',
 		);
 
-		const task = new FargateTaskDefinition(scope, `${id}TaskDefinition`, {
+		super(scope, `${id}TaskDefinition`, {
 			memoryLimitMiB,
 			cpu,
 			taskRole,
@@ -183,9 +172,8 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		/*
 		The `Name` tag is used by our `cli` project.
 		See `/repo/root/packages/cli`.
-		A scheduled task (i.e. `this`) cannot be tagged, so we tag the task definition instead.
 		 */
-		Tags.of(task).add('Name', name);
+		Tags.of(this).add('Name', name);
 
 		const destinationConfig = postgresDestinationConfig(writeMode);
 
@@ -210,7 +198,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		});
 
-		const cloudqueryTask = task.addContainer(`${id}Container`, {
+		const cloudqueryTask = this.addContainer(`${id}Container`, {
 			image: Images.cloudquery,
 			entryPoint: [''],
 			environment: {
@@ -249,17 +237,17 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		const configVolume: Volume = {
 			name: 'config-volume',
 		};
-		task.addVolume(configVolume);
+		this.addVolume(configVolume);
 
 		const cqVolume: Volume = {
 			name: 'cloudquery-volume',
 		};
-		task.addVolume(cqVolume);
+		this.addVolume(cqVolume);
 
 		const tmpVolume: Volume = {
 			name: 'tmp-volume',
 		};
-		task.addVolume(tmpVolume);
+		this.addVolume(tmpVolume);
 
 		cloudqueryTask.addMountPoints(
 			{
@@ -282,7 +270,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			},
 		);
 
-		const otel = task.addContainer(`${id}AWSOTELCollector`, {
+		const otel = this.addContainer(`${id}AWSOTELCollector`, {
 			image: Images.otelCollector,
 			command: ['--config=/etc/ecs/ecs-xray.yaml'],
 			logging: fireLensLogDriver,
@@ -304,7 +292,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 		});
 
 		if (dockerDistributedPluginImage) {
-			const additionalCloudQueryContainer = task.addContainer(
+			const additionalCloudQueryContainer = this.addContainer(
 				`${id}PluginContainer`,
 				{
 					image: dockerDistributedPluginImage,
@@ -324,7 +312,7 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			const operationInProgress = 114;
 			const success = 0;
 
-			const singletonTask = task.addContainer(`${id}AwsCli`, {
+			const singletonTask = this.addContainer(`${id}AwsCli`, {
 				image: Images.singletonImage,
 				entryPoint: [''],
 				command: [
@@ -358,8 +346,137 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 				condition: ContainerDependencyCondition.SUCCESS,
 			});
 
-			task.addToTaskRolePolicy(singletonPolicy(cluster));
+			this.addToTaskRolePolicy(singletonPolicy(cluster));
 		}
+
+		const firelensLogRouter = this.addFirelensLogRouter(`${id}Firelens`, {
+			image: Images.devxLogs,
+			logging: LogDrivers.awsLogs({
+				streamPrefix: [stack, stage, app].join('/'),
+				logRetention: RetentionDays.ONE_DAY,
+			}),
+			environment: {
+				STACK: stack,
+				STAGE: stage,
+				APP: app,
+				GU_REPO: thisRepo,
+				TASK_NAME: name,
+			},
+			firelensConfig: {
+				type: FirelensLogRouterType.FLUENTBIT,
+			},
+			readonlyRootFilesystem: true,
+		});
+
+		const firelensVolume: Volume = {
+			name: 'firelens-volume',
+		};
+		this.addVolume(firelensVolume);
+
+		firelensLogRouter.addMountPoints({
+			containerPath: '/init',
+			sourceVolume: firelensVolume.name,
+			readOnly: false,
+		});
+
+		managedPolicies.forEach((policy) => this.taskRole.addManagedPolicy(policy));
+		policies.forEach((policy) => this.addToTaskRolePolicy(policy));
+		this.taskRole.addManagedPolicy(xrayPolicy);
+
+		/*
+		GuardDuty is enabled at the organisation level and runs as a sidecar.
+		We need to add specific permissions to allow pulling the GuardDuty image.
+		See https://docs.aws.amazon.com/guardduty/latest/ug/prereq-runtime-monitoring-ecs-support.html.
+		 */
+		const guardDutyPolicies = [
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ['ecr:GetAuthorizationToken'],
+				resources: ['*'],
+			}),
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: [
+					'ecr:BatchCheckLayerAvailability',
+					'ecr:GetDownloadUrlForLayer',
+					'ecr:BatchGetImage',
+				],
+				resources: [
+					// See https://docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring-ecr-repository-gdu-agent.html
+					'arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate',
+				],
+			}),
+		];
+
+		guardDutyPolicies.forEach((policy) =>
+			this.addToExecutionRolePolicy(policy),
+		);
+
+		db.grantConnect(this.taskRole);
+
+		this.fireLensLogDriver = fireLensLogDriver;
+	}
+}
+
+export interface ScheduledCloudqueryTaskProps extends CloudqueryTaskProps {
+	/**
+	 * The schedule or rate (frequency) that determines when CloudWatch Events
+	 * runs the rule. For more information, see
+	 * [Schedule Expression Syntax for Rules](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html)
+	 * in the Amazon CloudWatch User Guide.
+	 */
+	readonly schedule: Schedule;
+
+	/**
+	 * Indicates whether the rule is enabled.
+	 */
+	readonly enabled: boolean;
+
+	/**
+	 * The security group to allow CloudQuery to connect to the database.
+	 */
+	dbAccess: GuSecurityGroup;
+
+	/**
+	 * Any additional security groups applied to the task.
+	 * For example, a group allowing access to Riff-Raff.
+	 */
+	additionalSecurityGroups?: ISecurityGroup[];
+}
+
+export class ScheduledCloudqueryTask extends ScheduledFargateTask {
+	public readonly sourceConfig: CloudQuerySourceConfig;
+	public readonly name: string;
+	constructor(scope: GuStack, id: string, props: ScheduledCloudqueryTaskProps) {
+		const {
+			name,
+			db,
+			cluster,
+			app,
+			dbAccess,
+			schedule,
+			sourceConfig,
+			enabled,
+			additionalSecurityGroups = [],
+		} = props;
+		const { stack, stage } = scope;
+		const frequency = scheduleFrequencyMs(schedule);
+
+		const task = new CloudqueryTask(scope, id, props);
+
+		/*
+		This error shouldn't ever be thrown as AWS CDK creates a secret by default,
+		it is just typed as optional.
+
+		See https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_rds.DatabaseInstance.html#credentials.
+
+		TODO: Remove this once IAM auth is working.
+		 */
+		if (!db.secret) {
+			throw new Error('DB Secret is missing');
+		}
+
+		const { fireLensLogDriver } = task;
 
 		const tableValues = sourceConfig.spec.tables
 			.toSorted()
@@ -391,71 +508,6 @@ export class ScheduledCloudqueryTask extends ScheduledFargateTask {
 			essential: false,
 			readonlyRootFilesystem: true,
 		});
-
-		const firelensLogRouter = task.addFirelensLogRouter(`${id}Firelens`, {
-			image: Images.devxLogs,
-			logging: LogDrivers.awsLogs({
-				streamPrefix: [stack, stage, app].join('/'),
-				logRetention: RetentionDays.ONE_DAY,
-			}),
-			environment: {
-				STACK: stack,
-				STAGE: stage,
-				APP: app,
-				GU_REPO: thisRepo,
-				TASK_NAME: name,
-			},
-			firelensConfig: {
-				type: FirelensLogRouterType.FLUENTBIT,
-			},
-			readonlyRootFilesystem: true,
-		});
-
-		const firelensVolume: Volume = {
-			name: 'firelens-volume',
-		};
-		task.addVolume(firelensVolume);
-
-		firelensLogRouter.addMountPoints({
-			containerPath: '/init',
-			sourceVolume: firelensVolume.name,
-			readOnly: false,
-		});
-
-		managedPolicies.forEach((policy) => task.taskRole.addManagedPolicy(policy));
-		policies.forEach((policy) => task.addToTaskRolePolicy(policy));
-		task.taskRole.addManagedPolicy(xrayPolicy);
-
-		/*
-		GuardDuty is enabled at the organisation level and runs as a sidecar.
-		We need to add specific permissions to allow pulling the GuardDuty image.
-		See https://docs.aws.amazon.com/guardduty/latest/ug/prereq-runtime-monitoring-ecs-support.html.
-		 */
-		const guardDutyPolicies = [
-			new PolicyStatement({
-				effect: Effect.ALLOW,
-				actions: ['ecr:GetAuthorizationToken'],
-				resources: ['*'],
-			}),
-			new PolicyStatement({
-				effect: Effect.ALLOW,
-				actions: [
-					'ecr:BatchCheckLayerAvailability',
-					'ecr:GetDownloadUrlForLayer',
-					'ecr:BatchGetImage',
-				],
-				resources: [
-					// See https://docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring-ecr-repository-gdu-agent.html
-					'arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate',
-				],
-			}),
-		];
-
-		guardDutyPolicies.forEach((policy) =>
-			task.addToExecutionRolePolicy(policy),
-		);
-
-		db.grantConnect(task.taskRole);
 
 		super(scope, id, {
 			schedule,

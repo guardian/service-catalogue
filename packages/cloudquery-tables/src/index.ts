@@ -8,6 +8,13 @@ import { ns1Tables } from './ns1';
 import { riffraffTables } from './riffraff';
 
 /**
+ * A table name to be populated via an environment variable when a sync is executed on demand.
+ *
+ * @see https://www.cloudquery.io/docs/cli/managing-cloudquery/environment-variables#environment-variable-substitution-example
+ */
+export const OnDemandCloudQueryTable = '${TABLE_NAME}' as const;
+
+/**
  * The tables that are being collected with CloudQuery.
  */
 export type CloudQueryTableToSync =
@@ -19,7 +26,8 @@ export type CloudQueryTableToSync =
 	| (typeof githubTables)[number]
 	| (typeof githubLanguagesTables)[number]
 	| (typeof ns1Tables)[number]
-	| (typeof riffraffTables)[number];
+	| (typeof riffraffTables)[number]
+	| typeof OnDemandCloudQueryTable;
 
 /**
  * The tables that are collected by CloudQuery.
