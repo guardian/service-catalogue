@@ -24,6 +24,21 @@ function stringFilter(
 	};
 }
 
+interface AwsDateFilter {
+	start_inclusive: string;
+	end_inclusive: string;
+}
+
+function dateFilter(
+	start_inclusive: string,
+	end_inclusive: string,
+): AwsDateFilter {
+	return {
+		start_inclusive: start_inclusive,
+		end_inclusive: end_inclusive,
+	};
+}
+
 // https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
 export const securityHubTableOptions = {
 	get_findings: [
@@ -50,11 +65,12 @@ export const inspector2TableOptions = {
 	list_findings: [
 		{
 			filter_criteria: {
-				finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
+				//finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
 				severity: [
 					stringFilter(AwsComparison.Equals, 'CRITICAL'),
 					stringFilter(AwsComparison.Equals, 'HIGH'),
 				],
+				updated_at: [dateFilter('2026-08-24T00:00:00', '2026-09-05T00:00:00')],
 			},
 		},
 	],

@@ -2365,9 +2365,6 @@ spec:
     - postgresql
   otel_endpoint: 0.0.0.0:4318
   otel_endpoint_insecure: true
-  backend_options:
-    table_name: cq_state_aws
-    connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
     concurrency: 2000
     accounts:
@@ -2377,14 +2374,14 @@ spec:
       aws_inspector2_findings:
         list_findings:
           - filter_criteria:
-              finding_status:
-                - comparison: EQUALS
-                  value: ACTIVE
               severity:
                 - comparison: EQUALS
                   value: CRITICAL
                 - comparison: EQUALS
                   value: HIGH
+              updated_at:
+                - start_inclusive: '\\''2026-08-24T00:00:00'\\''
+                  end_inclusive: '\\''2026-09-05T00:00:00'\\''
 ' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
 spec:
   name: postgresql

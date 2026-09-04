@@ -156,7 +156,7 @@ export function addCloudqueryEcsCluster(
 						aws_inspector2_findings: inspector2TableOptions,
 					},
 				},
-				'incremental',
+				//'incremental',
 			),
 			policies: [cloudqueryAccess(GuardianAwsAccounts.Security)],
 			memoryLimitMiB: 2048,
