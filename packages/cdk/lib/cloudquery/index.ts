@@ -444,7 +444,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubRepositories',
 			description:
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
-			schedule: Schedule.cron({ minute: '0', hour: '0' }),
+			schedule: Schedule.cron({ hour: '0', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -454,6 +454,7 @@ export function addCloudqueryEcsCluster(
 					'github_repository_custom_properties',
 					'github_workflows',
 				],
+				concurrency: 10,
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -466,7 +467,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubSboms',
 			description:
 				'Collect GitHub SBOM (Software Bill of Materials) data. Used to track dependencies, which is useful for supply chain attack monitoring.',
-			schedule: Schedule.cron({ minute: '15', hour: '1' }),
+			schedule: Schedule.cron({ hour: '1', minute: '15' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: ['github_repository_sboms'],
@@ -513,7 +514,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'GitHubIssues',
 			description: 'Collect GitHub issue data (PRs and Issues)',
-			schedule: Schedule.cron({ minute: '0', hour: '2' }),
+			schedule: Schedule.cron({ hour: '2', minute: '0' }),
 			config: githubSourceConfig(
 				{
 					org: gitHubOrgName,
@@ -610,7 +611,7 @@ export function addCloudqueryEcsCluster(
 	const riffRaffSources: CloudquerySource = {
 		name: 'RiffRaffData',
 		description: "Source deployment data directly from riff-raff's database",
-		schedule: Schedule.cron({ minute: '0', hour: '0' }),
+		schedule: Schedule.cron({ hour: '0', minute: '0' }),
 		config: riffraffSourcesConfig(),
 		additionalSecurityGroups: [applicationToRiffRaffDatabaseSecurityGroup],
 		secrets: {
@@ -649,7 +650,7 @@ export function addCloudqueryEcsCluster(
 	const ns1Source: CloudquerySource = {
 		name: 'NS1',
 		description: 'DNS records from NS1',
-		schedule: Schedule.cron({ minute: '0', hour: '0' }),
+		schedule: Schedule.cron({ hour: '0', minute: '0' }),
 		dockerDistributedPluginImage: Images.ns1Source,
 		secrets: {
 			NS1_API_KEY: Secret.fromSecretsManager(ns1ApiKey, 'api-key'),
@@ -679,7 +680,7 @@ export function addCloudqueryEcsCluster(
 	const amigoBakePackagesSource: CloudquerySource = {
 		name: 'AmigoBakePackages',
 		description: 'Packages installed in Amigo bakes.',
-		schedule: Schedule.cron({ minute: '0', hour: '3' }),
+		schedule: Schedule.cron({ hour: '3', minute: '0' }),
 		config: amigoBakePackagesConfig(
 			baseImagesTableName,
 			recipesTableName,
