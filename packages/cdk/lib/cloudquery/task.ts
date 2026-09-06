@@ -2,12 +2,7 @@ import type { AppIdentity, GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { GuSecurityGroup } from '@guardian/cdk/lib/constructs/ec2';
 import { Duration, Tags } from 'aws-cdk-lib';
 import type { ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
-import type {
-	Cluster,
-	FargateTaskDefinitionProps,
-	RepositoryImage,
-	Volume,
-} from 'aws-cdk-lib/aws-ecs';
+import type { Cluster, RepositoryImage, Volume } from 'aws-cdk-lib/aws-ecs';
 import {
 	ContainerDependencyCondition,
 	FargateTaskDefinition,
@@ -40,8 +35,19 @@ import { Images } from './images';
 import { singletonPolicy } from './policies';
 import { scheduleFrequencyMs } from './schedule';
 
-export interface CloudqueryTaskProps
-	extends AppIdentity, FargateTaskDefinitionProps {
+export interface CloudqueryTaskProps extends AppIdentity {
+	/**
+	 * The amount (in MiB) of memory used by the task.
+	 *
+	 * @default 512
+	 */
+	memoryLimitMiB?: number;
+
+	/**
+	 * The number of cpu units used by the task.
+	 */
+	cpu?: number;
+
 	/**
 	 * The name of the task.
 	 * This will get added to the `Name` tag of the task definition.
