@@ -47,6 +47,7 @@ void describe('vulnSortingPredicate', () => {
 			advisory_withdrawn_at: null,
 			alert_updated_at: new Date('2026-06-18T00:00:00.000Z'),
 			html_url: 'https://github.com/test/test/security/dependabot/1',
+			epss_percentage: 0.1,
 		};
 		const criticalNotPatchable: RepocopVulnerability = {
 			...criticalPatchable,

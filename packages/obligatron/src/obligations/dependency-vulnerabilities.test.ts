@@ -39,6 +39,7 @@ void describe('The dependency vulnerabilities obligation', () => {
 		advisory_withdrawn_at: null,
 		alert_updated_at: someDate,
 		html_url: 'https://github.com/some/repo/security/dependabot/1',
+		epss_percentage: 0.05,
 	};
 
 	void it('should return something if it finds a vulnerability on a repo', () => {
