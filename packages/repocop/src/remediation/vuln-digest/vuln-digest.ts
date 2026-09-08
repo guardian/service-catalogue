@@ -117,13 +117,15 @@ function createHumanReadableMessage(
 	const cves = group.vulnerabilities.flatMap((vuln) => vuln.cves);
 	const cveText = cves.length > 0 ? cves.join(', ') : 'no CVE provided';
 
+	const patchable = group.isPatchable ? 'with a patch' : 'without a patch';
+
 	const vulnCount = group.vulnerabilities.length;
 	const vulnerabilityDescription =
 		vulnCount === 1
 			? `a ${representative.severity} severity vulnerability`
 			: `${vulnCount} ${representative.severity} severity vulnerabilities`;
 
-	return String.raw`[${removeRepoOwner(group.fullName)}](https://github.com/${group.fullName}) ${alertType === 'general' ? `contains ${vulnerabilityDescription}` : 'contains malware'}, ${cveText}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to ${alertType === 'general' ? 'fix this vulnerability' : 'resolve this malware alert'}. It ${group.isPatchable ? 'is ' : 'might not be '}patchable.`;
+	return String.raw`[${removeRepoOwner(group.fullName)}](https://github.com/${group.fullName}) ${alertType === 'general' ? `contains ${vulnerabilityDescription}` : 'contains malware'} ${patchable}, ${cveText}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to resolve the ${group.vulnerabilities.length > 1 ? 'earliest ' : ''}alert.`;
 }
 
 function createTeamDashboardLinkAction(
