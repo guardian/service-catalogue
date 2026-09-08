@@ -17,6 +17,69 @@ import type {
 } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
 
+// A group of vulnerabilities affecting the same package, in the same repo,
+// with the same patchable status. `representative` is the vulnerability
+// within the group with the soonest fix deadline, and is used to drive the
+// "days left to fix" figure and priority sorting for the group as a whole.
+export interface VulnerabilityGroup {
+	fullName: string;
+	package: string;
+	isPatchable: boolean;
+	vulnerabilities: RepocopVulnerability[];
+	representative: RepocopVulnerability;
+}
+
+function groupKey(vuln: RepocopVulnerability): string {
+	return `${vuln.full_name}::${vuln.package}::${String(vuln.is_patchable)}`;
+}
+
+// daysLeftToFix is nullable in principle (its type permits undefined), but in
+// practice every vulnerability we handle here always has a computable value.
+// Falling back to 0 is a defensive default that should never be hit.
+function pickSoonestToExpire(
+	vulns: RepocopVulnerability[],
+	alertType: AlertType,
+): RepocopVulnerability {
+	return vulns.reduce((soonest, vuln) => {
+		const soonestDays =
+			daysLeftToFix(soonest.alert_issue_date, soonest.severity, alertType) ?? 0;
+		const vulnDays =
+			daysLeftToFix(vuln.alert_issue_date, vuln.severity, alertType) ?? 0;
+		return vulnDays < soonestDays ? vuln : soonest;
+	});
+}
+
+// Consolidates vulnerabilities into one group per package, per repo, per
+// patchable status, so that a digest can contain a single message per
+// library rather than one message per CVE.
+export function groupVulnerabilitiesByPackage(
+	vulns: RepocopVulnerability[],
+	alertType: AlertType = 'general',
+): VulnerabilityGroup[] {
+	const groupedByKey = new Map<string, RepocopVulnerability[]>();
+
+	for (const vuln of vulns) {
+		const key = groupKey(vuln);
+		const existing = groupedByKey.get(key);
+		if (existing) {
+			existing.push(vuln);
+		} else {
+			groupedByKey.set(key, [vuln]);
+		}
+	}
+
+	return Array.from(groupedByKey.values()).map((groupVulns) => {
+		const representative = pickSoonestToExpire(groupVulns, alertType);
+		return {
+			fullName: representative.full_name,
+			package: representative.package,
+			isPatchable: representative.is_patchable,
+			vulnerabilities: groupVulns,
+			representative,
+		};
+	});
+}
+
 function getOwningRepos(
 	team: Team,
 	repoOwners: view_repo_ownership[],
