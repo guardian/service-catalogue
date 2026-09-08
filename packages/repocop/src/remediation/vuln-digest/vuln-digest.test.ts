@@ -557,6 +557,54 @@ void describe('createDigestForSeverity', () => {
 		assert.match(message, /CVE-due-soon/);
 		assert.match(message, /CVE-due-later/);
 	});
+
+	void it('matches the full digest message snapshot for a representative scenario', (t) => {
+		// alert_issue_date is expressed relative to "now" (via daysAgo) rather
+		// than a fixed calendar date, so the resulting "days left to fix" value
+		// -- and therefore this snapshot -- stays stable no matter which day the
+		// test suite is run on.
+		const patchableWithTwoCves: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'leftpad',
+			cves: ['CVE-100'],
+			is_patchable: true,
+			within_sla: true,
+			alert_issue_date: daysAgo(5),
+		};
+		const patchableSecondCve: RepocopVulnerability = {
+			...patchableWithTwoCves,
+			cves: ['CVE-200'],
+		};
+		const unpatchableWithOneCve: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'rightpad',
+			cves: ['CVE-300'],
+			is_patchable: false,
+			within_sla: true,
+			alert_issue_date: daysAgo(2),
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [
+				patchableWithTwoCves,
+				patchableSecondCve,
+				unpatchableWithOneCve,
+			],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		t.assert.snapshot(message);
+	});
 });
 
 void describe('groupVulnerabilitiesByPackage', () => {
@@ -879,5 +927,33 @@ void describe('createMalwareDigest', () => {
 		// Splitting on the package name confirms it appears exactly once (i.e. one
 		// message for the whole group), rather than once per CVE.
 		assert.strictEqual(message.split('bad-package').length - 1, 1);
+	});
+
+	void it('matches the full digest message snapshot for a representative scenario', (t) => {
+		// alert_issue_date is expressed relative to "now" (via daysAgo) rather
+		// than a fixed calendar date, so the resulting "days left to fix" value
+		// -- and therefore this snapshot -- stays stable no matter which day the
+		// test suite is run on.
+		const malwareWithTwoCves: RepocopVulnerability = {
+			...recentMalware,
+			package: 'bad-package',
+			cves: ['CVE-M1'],
+			alert_issue_date: daysAgo(0),
+		};
+		const malwareSecondCve: RepocopVulnerability = {
+			...malwareWithTwoCves,
+			cves: ['CVE-M2'],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [malwareWithTwoCves, malwareSecondCve],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		t.assert.snapshot(message);
 	});
 });
