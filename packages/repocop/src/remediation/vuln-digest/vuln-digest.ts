@@ -225,9 +225,7 @@ Note: DevX only aggregates vulnerability information for runtime dependencies in
 	const vulnMessages = topGroups.map((g) => createHumanReadableMessage(g));
 	const andOthersMessage =
 		remainingGroups > 0
-			? [
-					`… and ${remainingGroups} others. See the full list on Grafana using the link below.`,
-				]
+			? [`… and others. See the full list on Grafana using the link below.`]
 			: [];
 
 	const digestString = [...vulnMessages, ...andOthersMessage].join('\n\n');

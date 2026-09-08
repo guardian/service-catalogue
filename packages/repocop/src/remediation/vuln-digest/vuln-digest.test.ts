@@ -483,7 +483,7 @@ void describe('createDigestForSeverity', () => {
 
 		assert.match(message, /package-0/);
 		assert.doesNotMatch(message, /rightpad/);
-		assert.match(message, /and 1 others/);
+		assert.match(message, /and others/);
 	});
 
 	void it('consolidates multiple CVEs for the same package into a single message', () => {
