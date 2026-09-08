@@ -258,7 +258,10 @@ async function sendVulnerabilityDigests(
 					subject: digest.subject,
 					message: digest.message,
 					actions: digest.actions,
-					target: { GithubTeamSlug: digest.teamSlug },
+					target:
+						config.stage === 'PROD'
+							? { GithubTeamSlug: digest.teamSlug }
+							: { Stack: 'testing-alerts' },
 					channel: RequestedChannel.PreferHangouts,
 					sender: `${config.app} ${config.stage}`,
 					threadKey: `${digestType}-digest-${digest.teamSlug}`,
@@ -288,9 +291,7 @@ export async function createAndSendVulnDigestsForSeverity(
 
 	console.log(`Logging ${severity} vulnerability digests`);
 	digests.forEach((digest) => console.log(JSON.stringify(digest)));
-	if (config.stage === 'PROD') {
-		await sendVulnerabilityDigests(digests, config, 'vulnerability');
-	}
+	await sendVulnerabilityDigests(digests, config, 'vulnerability');
 }
 
 // Remove non-runtime vulnerabilities from the results
