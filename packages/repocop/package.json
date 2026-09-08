@@ -10,6 +10,7 @@
 		"postbuild": "cp package.json dist/package.json",
 		"start": "APP=repocop STAGE=DEV CUT_OFF_IN_DAYS=60 tsx src/run-locally.ts",
 		"test": "node --import tsx --test \"**/*.test.ts\"",
+		"test:update-snapshots": "node --import tsx --test --test-update-snapshots \"**/*.test.ts\"",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
