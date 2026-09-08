@@ -414,7 +414,5 @@ export async function createAndSendMalwareDigests(
 
 	console.log(`Sending malware digests`);
 	digests.forEach((digest) => console.log(JSON.stringify(digest)));
-	if (config.stage === 'PROD') {
-		await sendVulnerabilityDigests(digests, config, 'malware');
-	}
+	await sendVulnerabilityDigests(digests, config, 'malware');
 }
