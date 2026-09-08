@@ -4,6 +4,7 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from 'common/prisma-client/client.js';
+import { daysLeftToFix } from 'common/src/functions.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { EvaluationResult, Team } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
@@ -451,9 +452,14 @@ void describe('createDigestForSeverity', () => {
 		assert.match(message, /leftpad/);
 		assert.doesNotMatch(message, /bad-package/);
 	});
-	void it('truncates the message after 20 results', () => {
-		const manyVulns: RepocopVulnerability[] =
-			Array<RepocopVulnerability>(20).fill(highRecentVuln);
+	void it('truncates the message after 20 groups', () => {
+		const manyVulns: RepocopVulnerability[] = Array.from(
+			{ length: 20 },
+			(_, i) => ({
+				...highRecentVuln,
+				package: `package-${i}`,
+			}),
+		);
 
 		const anotherVuln: RepocopVulnerability = {
 			...highRecentVuln,
@@ -475,9 +481,81 @@ void describe('createDigestForSeverity', () => {
 			),
 		);
 
-		assert.match(message, /leftpad/);
+		assert.match(message, /package-0/);
 		assert.doesNotMatch(message, /rightpad/);
 		assert.match(message, /and 1 others/);
+	});
+
+	void it('consolidates multiple CVEs for the same package into a single message', () => {
+		const cveOne: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-1'],
+		};
+		const cveTwo: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-2'],
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [cveOne, cveTwo],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		assert.match(message, /CVE-1/);
+		assert.match(message, /CVE-2/);
+		// Splitting on the package name confirms it appears exactly once (i.e. one
+		// message for the whole group), rather than once per CVE.
+		assert.strictEqual(message.split('leftpad').length - 1, 1);
+	});
+
+	void it('shows the days left to fix for the soonest-expiring vulnerability in the group', () => {
+		const dueSoon: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-soon'],
+			alert_issue_date: daysAgo(29),
+		};
+		const dueLater: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-later'],
+			alert_issue_date: daysAgo(0),
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [dueLater, dueSoon],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		const expectedDaysToFix = daysLeftToFix(
+			dueSoon.alert_issue_date,
+			dueSoon.severity,
+			'general',
+		);
+
+		// Plain substring check (no regex needed) that the group's displayed
+		// deadline matches the soonest-expiring vulnerability, not the other one.
+		assert.ok(message.includes(`There are ${expectedDaysToFix} days left`));
+		assert.match(message, /CVE-due-soon/);
+		assert.match(message, /CVE-due-later/);
 	});
 });
 
@@ -775,5 +853,31 @@ void describe('createMalwareDigest', () => {
 
 		assert.match(message, /bad-package/);
 		assert.doesNotMatch(message, /not-malware/);
+	});
+
+	void it('consolidates multiple CVEs for the same malicious package into a single message', () => {
+		const cveOne: RepocopVulnerability = {
+			...recentMalware,
+			cves: ['CVE-malware-1'],
+		};
+		const cveTwo: RepocopVulnerability = {
+			...recentMalware,
+			cves: ['CVE-malware-2'],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [cveOne, cveTwo],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		assert.match(message, /CVE-malware-1/);
+		assert.match(message, /CVE-malware-2/);
+		// Splitting on the package name confirms it appears exactly once (i.e. one
+		// message for the whole group), rather than once per CVE.
+		assert.strictEqual(message.split('bad-package').length - 1, 1);
 	});
 });
