@@ -10,6 +10,7 @@ import { removeRepoOwner } from '../shared-utilities.js';
 import {
 	createDigestForSeverity,
 	createMalwareDigest,
+	groupVulnerabilitiesByPackage,
 	removeNonRuntimeVulns,
 } from './vuln-digest.js';
 
@@ -477,6 +478,87 @@ void describe('createDigestForSeverity', () => {
 		assert.match(message, /leftpad/);
 		assert.doesNotMatch(message, /rightpad/);
 		assert.match(message, /and 1 others/);
+	});
+});
+
+void describe('groupVulnerabilitiesByPackage', () => {
+	void it('merges multiple CVEs for the same package, repo, and patchable status into one group', () => {
+		const cveOne: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-1'],
+		};
+		const cveTwo: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-2'],
+		};
+
+		const groups = groupVulnerabilitiesByPackage([cveOne, cveTwo]);
+
+		assert.strictEqual(groups.length, 1);
+		assert.strictEqual(groups[0]!.vulnerabilities.length, 2);
+	});
+
+	void it('keeps groups for the same package separate when patchable status differs', () => {
+		const patchable: RepocopVulnerability = {
+			...highRecentVuln,
+			is_patchable: true,
+		};
+		const unpatchable: RepocopVulnerability = {
+			...highRecentVuln,
+			is_patchable: false,
+		};
+
+		const groups = groupVulnerabilitiesByPackage([patchable, unpatchable]);
+
+		assert.strictEqual(groups.length, 2);
+	});
+
+	void it('keeps groups for the same package separate when the repo differs', () => {
+		const inFirstRepo: RepocopVulnerability = {
+			...highRecentVuln,
+			full_name: fullName,
+		};
+		const inAnotherRepo: RepocopVulnerability = {
+			...highRecentVuln,
+			full_name: anotherFullName,
+		};
+
+		const groups = groupVulnerabilitiesByPackage([inFirstRepo, inAnotherRepo]);
+
+		assert.strictEqual(groups.length, 2);
+	});
+
+	void it('keeps groups for different packages in the same repo separate', () => {
+		const packageOne: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'leftpad',
+		};
+		const packageTwo: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'rightpad',
+		};
+
+		const groups = groupVulnerabilitiesByPackage([packageOne, packageTwo]);
+
+		assert.strictEqual(groups.length, 2);
+	});
+
+	void it('selects the vulnerability with the soonest deadline as the representative', () => {
+		const dueSoon: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-soon'],
+			alert_issue_date: daysAgo(29),
+		};
+		const dueLater: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-later'],
+			alert_issue_date: daysAgo(0),
+		};
+
+		const groups = groupVulnerabilitiesByPackage([dueLater, dueSoon]);
+
+		assert.strictEqual(groups.length, 1);
+		assert.deepStrictEqual(groups[0]!.representative.cves, ['CVE-due-soon']);
 	});
 });
 
