@@ -19,8 +19,7 @@ import { removeRepoOwner } from '../shared-utilities.js';
 
 // A group of vulnerabilities affecting the same package, in the same repo,
 // with the same patchable status. `representative` is the vulnerability
-// within the group with the soonest fix deadline, and is used to drive the
-// "days left to fix" figure and priority sorting for the group as a whole.
+// within the group with the shortest deadline.
 export interface VulnerabilityGroup {
 	fullName: string;
 	package: string;
@@ -33,9 +32,6 @@ function groupKey(vuln: RepocopVulnerability): string {
 	return `${vuln.full_name}::${vuln.package}::${String(vuln.is_patchable)}`;
 }
 
-// daysLeftToFix is nullable in principle (its type permits undefined), but in
-// practice every vulnerability we handle here always has a computable value.
-// Falling back to 0 is a defensive default that should never be hit.
 function pickSoonestToExpire(
 	vulns: RepocopVulnerability[],
 	alertType: AlertType,
@@ -49,9 +45,6 @@ function pickSoonestToExpire(
 	});
 }
 
-// Consolidates vulnerabilities into one group per package, per repo, per
-// patchable status, so that a digest can contain a single message per
-// library rather than one message per CVE.
 export function groupVulnerabilitiesByPackage(
 	vulns: RepocopVulnerability[],
 	alertType: AlertType = 'general',
