@@ -102,6 +102,11 @@ export interface ServiceCatalogueProps extends GuStackProps {
 	enableCloudquerySchedules: boolean;
 
 	/**
+	 * Whether a task should be provisioned which allows a single table to be collected on demand using the CLI.
+	 */
+	enableCloudqueryOnDemandTasks: boolean;
+
+	/**
 	 * Enable deletion protection for the RDS instance?
 	 */
 	databaseDeletionProtection: boolean;
@@ -133,6 +138,7 @@ export class ServiceCatalogue extends GuStack {
 			gitHubOrg = 'guardian',
 			securityAlertSchedule,
 			enableCloudquerySchedules,
+			enableCloudqueryOnDemandTasks,
 			databaseDeletionProtection,
 			databaseMultiAz,
 			databaseInstanceType,
@@ -305,6 +311,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const cloudqueryCluster = addCloudqueryEcsCluster(this, {
 			enableCloudquerySchedules,
+			enableCloudqueryOnDemandTasks,
 			db,
 			vpc,
 			dbAccess: applicationToPostgresSecurityGroup,
