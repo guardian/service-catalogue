@@ -13,7 +13,8 @@ import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import type { CloudQuerySourceConfig } from './config';
 import { CloudqueryWriteMode } from './config';
-import { ScheduledCloudqueryTask } from './task';
+import type { CloudqueryTaskProps } from './task';
+import { CloudqueryTask, ScheduledCloudqueryTask } from './task';
 
 export interface CloudquerySource {
 	/**
@@ -31,8 +32,9 @@ export interface CloudquerySource {
 	 * The rate at which to collect data.
 	 *
 	 * If this schedule is daily or weekly you should add an equivalent entry to the `cloudquery_table_frequency` table.
+	 * If not set, the task will only be executed on-demand.
 	 */
-	schedule: Schedule;
+	schedule?: Schedule;
 
 	/**
 	 * Cloudquery config (aka 'spec') for this source.
@@ -167,14 +169,6 @@ export class CloudqueryCluster extends Cluster {
 			enableCloudquerySchedules,
 		} = props;
 
-		const taskProps = {
-			app,
-			cluster: this,
-			db,
-			dbAccess,
-			loggingStreamName,
-		};
-
 		sources.forEach(
 			({
 				name,
@@ -191,19 +185,21 @@ export class CloudqueryCluster extends Cluster {
 				dockerDistributedPluginImage,
 				writeMode = CloudqueryWriteMode.OverwriteDeleteStale,
 			}) => {
-				return new ScheduledCloudqueryTask(scope, `CloudquerySource-${name}`, {
-					...taskProps,
-					enabled: enableCloudquerySchedules,
+				const taskId = `CloudquerySource-${name}`;
+
+				const taskProps: CloudqueryTaskProps = {
+					app,
+					cluster: this,
+					db,
+					loggingStreamName,
 					name,
 					managedPolicies,
 					policies: [logShippingPolicy, ...policies],
-					schedule,
 					sourceConfig: config,
 					secrets,
 					additionalCommands,
 					memoryLimitMiB,
 					cpu,
-					additionalSecurityGroups,
 					runAsSingleton,
 					cloudQueryApiKey: Secret.fromSecretsManager(
 						cloudqueryApiKey,
@@ -211,7 +207,19 @@ export class CloudqueryCluster extends Cluster {
 					),
 					dockerDistributedPluginImage,
 					writeMode,
-				});
+				};
+
+				if (schedule) {
+					return new ScheduledCloudqueryTask(scope, taskId, {
+						...taskProps,
+						dbAccess,
+						enabled: enableCloudquerySchedules,
+						schedule,
+						additionalSecurityGroups,
+					});
+				} else {
+					return new CloudqueryTask(scope, taskId, taskProps);
+				}
 			},
 		);
 	}

@@ -11,7 +11,10 @@ import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import { filterCloudQueryTables } from 'cloudquery-tables';
+import {
+	filterCloudQueryTables,
+	OnDemandCloudQueryTable,
+} from 'cloudquery-tables';
 import { awsTables } from 'cloudquery-tables/aws';
 import { fastlyTables } from 'cloudquery-tables/fastly';
 import { githubLanguagesTables } from 'cloudquery-tables/github';
@@ -63,6 +66,11 @@ interface CloudqueryEcsClusterProps {
 	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
 	 */
 	enableCloudquerySchedules: boolean;
+
+	/**
+	 * Whether a task should be provisioned which allows a single table to be collected on demand using the CLI.
+	 */
+	enableCloudqueryOnDemandTasks: boolean;
 }
 
 export function addCloudqueryEcsCluster(
@@ -79,6 +87,7 @@ export function addCloudqueryEcsCluster(
 		gitHubOrg: gitHubOrgName,
 		cloudqueryApiKey,
 		enableCloudquerySchedules,
+		enableCloudqueryOnDemandTasks,
 	} = props;
 
 	const riffRaffDatabaseAccessSecurityGroupParam =
@@ -707,6 +716,21 @@ export function addCloudqueryEcsCluster(
 		config: endOfLifeSourceConfig(),
 	};
 
+	const onDemandSyncs: CloudquerySource[] = [];
+
+	if (enableCloudqueryOnDemandTasks) {
+		const onDemandAwsSync: CloudquerySource = {
+			name: 'AwsOnDemand',
+			description: 'Collecting an AWS table on demand',
+			config: awsSourceConfigForOrganisation({
+				tables: [OnDemandCloudQueryTable],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+		};
+
+		onDemandSyncs.push(onDemandAwsSync);
+	}
+
 	const cluster = new CloudqueryCluster(scope, `${app}Cluster`, {
 		enableCloudquerySchedules,
 		app,
@@ -726,6 +750,7 @@ export function addCloudqueryEcsCluster(
 			ns1Source,
 			amigoBakePackagesSource,
 			endOfLifeSource,
+			...onDemandSyncs,
 		],
 		cloudqueryApiKey,
 	});

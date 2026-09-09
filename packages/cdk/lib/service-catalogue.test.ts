@@ -1,9 +1,15 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
-import { _cloudQueryTablesToSync } from 'cloudquery-tables';
-import { serviceCataloguePRODProperties } from '../bin/cdk';
-import { ScheduledCloudqueryTask } from './cloudquery/task';
+import {
+	_cloudQueryTablesToSync,
+	OnDemandCloudQueryTable,
+} from 'cloudquery-tables';
+import {
+	serviceCatalogueCODEProperties,
+	serviceCataloguePRODProperties,
+} from '../bin/cdk';
+import { CloudqueryTask } from './cloudquery/task';
 import { ServiceCatalogue } from './service-catalogue';
 
 describe('The ServiceCatalogue stack', () => {
@@ -93,11 +99,19 @@ describe('The ServiceCatalogue stack', () => {
 	});
 
 	it('collects all listed CloudQuery tables', () => {
+		const app = new App();
+
+		// Only CODE collects the `OnDemandCloudQueryTable`
+		const stack = new ServiceCatalogue(
+			app,
+			'ServiceCatalogue',
+			serviceCatalogueCODEProperties,
+		);
+
 		const tasks = stack.node
 			.findAll()
 			.filter(
-				(child): child is ScheduledCloudqueryTask =>
-					child instanceof ScheduledCloudqueryTask,
+				(child): child is CloudqueryTask => child instanceof CloudqueryTask,
 			);
 
 		const collected: string[] = tasks.flatMap(
@@ -118,12 +132,37 @@ describe('The ServiceCatalogue stack', () => {
 		expect(notCollected.length).toEqual(0);
 	});
 
+	test('PROD does not contain any on demand syncs', () => {
+		const app = new App();
+
+		const stack = new ServiceCatalogue(
+			app,
+			'ServiceCatalogue',
+			serviceCataloguePRODProperties,
+		);
+
+		const tasks = stack.node
+			.findAll()
+			.filter(
+				(child): child is CloudqueryTask => child instanceof CloudqueryTask,
+			);
+
+		const collected: string[] = tasks.flatMap(
+			(_) => _.sourceConfig.spec.tables,
+		);
+
+		const isOnDemandTableCollected = collected.includes(
+			OnDemandCloudQueryTable,
+		);
+
+		expect(isOnDemandTableCollected).toBe(false);
+	});
+
 	test('A task collects at least one table', () => {
 		const tasks = stack.node
 			.findAll()
 			.filter(
-				(child): child is ScheduledCloudqueryTask =>
-					child instanceof ScheduledCloudqueryTask,
+				(child): child is CloudqueryTask => child instanceof CloudqueryTask,
 			);
 
 		const invalidTasks = tasks
