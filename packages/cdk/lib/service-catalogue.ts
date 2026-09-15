@@ -14,6 +14,7 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
+import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import {
@@ -45,6 +46,7 @@ import { getCentralElkLink } from 'common/src/logs';
 import { CloudBuster } from './cloudbuster';
 import { addCloudqueryEcsCluster } from './cloudquery';
 import { cloudqueryApiKeySecret } from './cloudquery/api-key';
+import { GRANT_ID } from './cloudquery/developer-policy';
 import { addCloudqueryUsageLambda } from './cloudquery-usage';
 import { addGithubActionsUsageLambda } from './github-actions-usage';
 import { InteractiveMonitor } from './interactive-monitor';
@@ -286,10 +288,35 @@ export class ServiceCatalogue extends GuStack {
 			dataType: ParameterDataType.TEXT,
 		});
 
-		new Secret(this, 'DevReadOnlyPostgresPassword', {
-			secretName: `/${stage}/${stack}/${app}/devreadonly-postgres-password`,
-			description:
-				'Password for the devreadonly Postgres user (readonly access)',
+		const devReadOnlyPasswordSecret = new Secret(
+			this,
+			'DevReadOnlyPostgresPassword',
+			{
+				secretName: `/${stage}/${stack}/${app}/devreadonly-postgres-password`,
+				description:
+					'Password for the devreadonly Postgres user (readonly access)',
+			},
+		);
+
+		new GuDeveloperPolicyExperimental(this, 'DevReadOnlyDevPolicy', {
+			grantId: GRANT_ID,
+			friendlyName: 'Readonly access to the Service Catalogue database',
+			statements: [
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: [
+						'secretsmanager:GetSecretValue',
+						'secretsmanager:DescribeSecret',
+					],
+					resources: [devReadOnlyPasswordSecret.secretArn],
+				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['secretsmanager:ListSecrets'],
+					resources: ['*'],
+				}),
+			],
+			withoutPolicyChecks: true, // secretsmanager:ListSecrets must be used with `resources: *`
 		});
 
 		const loggingStreamName =

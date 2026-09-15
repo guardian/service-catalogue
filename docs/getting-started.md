@@ -59,10 +59,22 @@ You can get started in the Explore tab, as demonstrated below.
 
 An alternative way to query the database is using a local SQL client. To enable this use case, the database has a
 read-only user configured, the credentials for which are available in Secrets Manager at the path
-`/PROD/deploy/service-catalogue/devreadonly-postgres-password`.
+`/PROD/deploy/service-catalogue/devreadonly-postgres-password`. The database is accessible by using the "Digital Developers"
+VPN, or by SSH tunnelling via the Grafana instance.
 
-IntelliJ has a very good SQL client that, together with the AWS plugin, enables connecting to the database using
-just regular Janus credentials and the full ARN of `/PROD/deploy/service-catalogue/devreadonly-postgres-password`.
+#### IntelliJ
+
+IntelliJ has a very good SQL client that, together with the [AWS toolkit plugin](https://plugins.jetbrains.com/plugin/11349-aws-toolkit),
+enables connecting to the database using just regular Janus credentials and the full ARN of
+`/PROD/deploy/service-catalogue/devreadonly-postgres-password`. To set up a connection:
+
+1. Get Janus credentials (use the "Readonly access to the Service Catalogue database" developer policy which can access the database secret).
+2. Open the database panel (on the right, the icon of 4 disks sitting vertically)
+3. Create a new data source (`+` icon at the top of the panel) of type PostgreSQL.
+4. Under "Authentication" select the "SecretsManager Auth" option (if you don't have this option, make sure to install the [AWS toolkit plugin](https://plugins.jetbrains.com/plugin/11349-aws-toolkit))
+5. Select the `Profile:deployTools` credentials option, and `eu-west-1` for region
+6. Enter the secret ARN and tick the "Use the url and port from secret" tickbox.
+7. Use the "Test connection" option to check the connection succeeds.
 
 #### DBeaver and other JDBC tools
 

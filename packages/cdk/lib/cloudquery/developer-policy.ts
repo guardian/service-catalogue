@@ -5,6 +5,8 @@ import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/co
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 
+export const GRANT_ID = 'service-catalogue-dev';
+
 function ssmArn(stack: GuStack, parameterName: string): string {
 	return stack.formatArn({
 		service: 'ssm',
@@ -14,8 +16,6 @@ function ssmArn(stack: GuStack, parameterName: string): string {
 		resourceName: parameterName.replace(/^\//, ''),
 	});
 }
-
-const GRANT_ID = 'service-catalogue-dev';
 
 export function buildCliDeveloperPolicy(scope: GuStack) {
 	const { stage, stack, app = 'service-catalogue' } = scope;
