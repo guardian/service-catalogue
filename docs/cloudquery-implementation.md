@@ -32,16 +32,15 @@ For this reason, we have a number of ECS tasks, each running on their own schedu
 
 ### Postgres
 
-Each ECS task authenticates with Postgres using [IAM Authentication](https://repost.aws/knowledge-center/rds-postgresql-connect-using-iam).
+Each ECS task authenticates with Postgres using the root ("postgres") user, using the secret stored in Secrets Manager.
 
-The root (sudo) user is not used. Instead, we manually created a user:
+This isn't ideal, as the root user has the ability to control everything in the database and the password is a long-lived secret.
+Ideally, we'd instead authenticate with Postgres using [IAM Authentication](https://repost.aws/knowledge-center/rds-postgresql-connect-using-iam).
 
-```sql
--- Create user for CloudQuery, and grant RDS IAM authentication.
--- See https://repost.aws/knowledge-center/rds-postgresql-connect-using-iam
-CREATE USER cloudquery;
-GRANT rds_iam TO cloudquery;
-```
+However this isn't currently practical, as the tokens generated from RDS IAM auth last for maximum 15 minutes, but some Cloudquery jobs
+take more than 15 minutes to run, and we must generate and provide the token when the Cloudquery job starts, not at the moment when it
+opens a connection to the database. See [this PR](https://github.com/guardian/service-catalogue/pull/220) for a discussion of
+some of the problems.
 
 ### Grafana
 
@@ -64,7 +63,6 @@ CREATE USER grafanareaderprod WITH PASSWORD 'REDACTED';
 GRANT USAGE ON SCHEMA public TO grafanareaderprod;
 
 -- Provide Grafana with access to any new tables and views as soon as they're created.
-SET ROLE cloudquery;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO grafanareadercode;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO grafanareaderprod;
 ```
