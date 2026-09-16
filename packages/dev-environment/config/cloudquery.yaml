@@ -9,20 +9,20 @@ spec:
     #   https://www.cloudquery.io/hub/plugins/source/cloudquery/aws/latest/tables
     # ) to the developer policy for running locally:
     #   https://github.com/guardian/service-catalogue/blob/main/packages/cdk/lib/cloudquery/developer-policy.ts
-    - aws_lambda_functions
-    - aws_securityhub_findings
-    - aws_s3_buckets
-    - aws_ec2_images
-    - aws_organizations_accounts
-    - aws_organizations_account_parents
-    - aws_organizations_organizational_units
-    - aws_organizations_organizational_unit_parents
-    - aws_organizations_roots
-    # - aws_inspector2_findings # large table! only uncomment and activate if we need it
+    #- aws_lambda_functions
+    #- aws_securityhub_findings
+    #- aws_s3_buckets
+    #- aws_ec2_images
+    #- aws_organizations_accounts
+    #- aws_organizations_account_parents
+    #- aws_organizations_organizational_units
+    #- aws_organizations_organizational_unit_parents
+    #- aws_organizations_roots
+    - aws_inspector2_findings # large table! only uncomment and activate if we need it
   skip_dependent_tables: true
-  backend_options: 
-    table_name: "cq_state_aws"
-    connection: "@@plugins.postgresql.connection"
+  #backend_options:
+  #  table_name: 'cq_state_aws'
+  #  connection: '@@plugins.postgresql.connection'
   spec:
     regions:
       - eu-west-1
@@ -45,13 +45,28 @@ spec:
                   value: 'RESOLVED'
       aws_inspector2_findings:
         list_findings: # https://docs.aws.amazon.com/inspector/v2/APIReference/API_Finding.html
-          - filters: # https://docs.aws.amazon.com/inspector/v2/APIReference/API_Filter.html
-              finding_statuses:
-                - 'ACTIVE'
+          - filter_criteria:
               severity:
-                - 'CRITICAL'
-                - 'HIGH'
-        
+                - comparison: EQUALS
+                  value: CRITICAL
+                - comparison: EQUALS
+                  value: HIGH
+              finding_status:
+                - comparison: EQUALS
+                  value: ACTIVE
+              updated_at:
+                - start_inclusive: '2026-09-01T00:00:00Z'
+#                  end_inclusive: '2026-09-14T00:00:00Z'
+#          - filters: # https://docs.aws.amazon.com/inspecßtor/v2/APIReference/API_Filter.html
+#              finding_statuses:
+#                - 'ACTIVE'
+#              severity:
+#                - 'CRITICAL'
+#                - 'HIGH'
+#              updatedAt:
+#                - start_inclusive: 20260901T000000
+#                  end_inclusive: 20260914T000000
+
 ---
 kind: destination
 spec:
