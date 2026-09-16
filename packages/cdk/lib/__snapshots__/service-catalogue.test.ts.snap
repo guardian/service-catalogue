@@ -2368,7 +2368,7 @@ spec:
   backend_options:
     table_name: cq_state_aws
     connection: '\\''@@plugins.postgresql.connection'\\''
- spec:
+  spec:
     concurrency: 2000
     accounts:
       - id: cq-for-000000000015
