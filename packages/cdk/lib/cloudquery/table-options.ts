@@ -35,16 +35,13 @@ function dateFilter(
 ): AwsDateFilter {
 	// leaving out the end date makes it retrieve everything since the start date - but the
 	// parameter has to be absent rather than simply empty.
-	if (end_inclusive === undefined) {
-		return {
-			start_inclusive: start_inclusive,
-		};
-	} else {
-		return {
-			start_inclusive: start_inclusive,
-			end_inclusive: end_inclusive,
-		};
+	const filter: AwsDateFilter = {
+		start_inclusive: start_inclusive,
+	};
+	if (end_inclusive !== undefined) {
+		filter.end_inclusive = end_inclusive;
 	}
+	return filter;
 }
 
 // https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
