@@ -4,12 +4,14 @@ import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
 } from 'common/prisma-client/client.js';
+import { daysLeftToFix } from 'common/src/functions.js';
 import type { RepocopVulnerability } from 'common/src/types.js';
 import type { EvaluationResult, Team } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
 import {
 	createDigestForSeverity,
 	createMalwareDigest,
+	groupVulnerabilitiesByPackage,
 	removeNonRuntimeVulns,
 } from './vuln-digest.js';
 
@@ -450,9 +452,14 @@ void describe('createDigestForSeverity', () => {
 		assert.match(message, /leftpad/);
 		assert.doesNotMatch(message, /bad-package/);
 	});
-	void it('truncates the message after 20 results', () => {
-		const manyVulns: RepocopVulnerability[] =
-			Array<RepocopVulnerability>(20).fill(highRecentVuln);
+	void it('truncates the message after 20 groups', () => {
+		const manyVulns: RepocopVulnerability[] = Array.from(
+			{ length: 20 },
+			(_, i) => ({
+				...highRecentVuln,
+				package: `package-${i}`,
+			}),
+		);
 
 		const anotherVuln: RepocopVulnerability = {
 			...highRecentVuln,
@@ -474,9 +481,210 @@ void describe('createDigestForSeverity', () => {
 			),
 		);
 
-		assert.match(message, /leftpad/);
+		assert.match(message, /package-0/);
 		assert.doesNotMatch(message, /rightpad/);
-		assert.match(message, /and 1 others/);
+		assert.match(message, /and others/);
+	});
+
+	void it('consolidates multiple CVEs for the same package into a single message', () => {
+		const cveOne: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-1'],
+		};
+		const cveTwo: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-2'],
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [cveOne, cveTwo],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		assert.match(message, /CVE-1/);
+		assert.match(message, /CVE-2/);
+		// Splitting on the package name confirms it appears exactly once (i.e. one
+		// message for the whole group), rather than once per CVE.
+		assert.strictEqual(message.split('leftpad').length - 1, 1);
+	});
+
+	void it('shows the days left to fix for the soonest-expiring vulnerability in the group', () => {
+		const dueSoon: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-soon'],
+			alert_issue_date: daysAgo(29),
+		};
+		const dueLater: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-later'],
+			alert_issue_date: daysAgo(0),
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [dueLater, dueSoon],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		const expectedDaysToFix = daysLeftToFix(
+			dueSoon.alert_issue_date,
+			dueSoon.severity,
+			'general',
+		);
+
+		// Plain substring check (no regex needed) that the group's displayed
+		// deadline matches the soonest-expiring vulnerability, not the other one.
+		assert.ok(message.includes(`There are ${expectedDaysToFix} days left`));
+		assert.match(message, /CVE-due-soon/);
+		assert.match(message, /CVE-due-later/);
+	});
+
+	void it('matches the full digest message snapshot for a representative scenario', (t) => {
+		// alert_issue_date is expressed relative to "now" (via daysAgo) rather
+		// than a fixed calendar date, so the resulting "days left to fix" value
+		// -- and therefore this snapshot -- stays stable no matter which day the
+		// test suite is run on.
+		const patchableWithTwoCves: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'leftpad',
+			cves: ['CVE-100'],
+			is_patchable: true,
+			within_sla: true,
+			alert_issue_date: daysAgo(5),
+		};
+		const patchableSecondCve: RepocopVulnerability = {
+			...patchableWithTwoCves,
+			cves: ['CVE-200'],
+		};
+		const unpatchableWithOneCve: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'rightpad',
+			cves: ['CVE-300'],
+			is_patchable: false,
+			within_sla: true,
+			alert_issue_date: daysAgo(2),
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [
+				patchableWithTwoCves,
+				patchableSecondCve,
+				unpatchableWithOneCve,
+			],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		t.assert.snapshot(message);
+	});
+});
+
+void describe('groupVulnerabilitiesByPackage', () => {
+	void it('merges multiple CVEs for the same package, repo, and patchable status into one group', () => {
+		const cveOne: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-1'],
+		};
+		const cveTwo: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-2'],
+		};
+
+		const groups = groupVulnerabilitiesByPackage([cveOne, cveTwo]);
+
+		assert.strictEqual(groups.length, 1);
+		assert.strictEqual(groups[0]!.vulnerabilities.length, 2);
+	});
+
+	void it('keeps groups for the same package separate when patchable status differs', () => {
+		const patchable: RepocopVulnerability = {
+			...highRecentVuln,
+			is_patchable: true,
+		};
+		const unpatchable: RepocopVulnerability = {
+			...highRecentVuln,
+			is_patchable: false,
+		};
+
+		const groups = groupVulnerabilitiesByPackage([patchable, unpatchable]);
+
+		assert.strictEqual(groups.length, 2);
+	});
+
+	void it('keeps groups for the same package separate when the repo differs', () => {
+		const inFirstRepo: RepocopVulnerability = {
+			...highRecentVuln,
+			full_name: fullName,
+		};
+		const inAnotherRepo: RepocopVulnerability = {
+			...highRecentVuln,
+			full_name: anotherFullName,
+		};
+
+		const groups = groupVulnerabilitiesByPackage([inFirstRepo, inAnotherRepo]);
+
+		assert.strictEqual(groups.length, 2);
+	});
+
+	void it('keeps groups for different packages in the same repo separate', () => {
+		const packageOne: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'leftpad',
+		};
+		const packageTwo: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'rightpad',
+		};
+
+		const groups = groupVulnerabilitiesByPackage([packageOne, packageTwo]);
+
+		assert.strictEqual(groups.length, 2);
+	});
+
+	void it('selects the vulnerability with the soonest deadline as the representative', () => {
+		const dueSoon: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-soon'],
+			alert_issue_date: daysAgo(29),
+		};
+		const dueLater: RepocopVulnerability = {
+			...highRecentVuln,
+			cves: ['CVE-due-later'],
+			alert_issue_date: daysAgo(0),
+		};
+
+		const groups = groupVulnerabilitiesByPackage([dueLater, dueSoon]);
+
+		assert.strictEqual(groups.length, 1);
+		assert.deepStrictEqual(groups[0]!.representative.cves, ['CVE-due-soon']);
 	});
 });
 
@@ -693,5 +901,59 @@ void describe('createMalwareDigest', () => {
 
 		assert.match(message, /bad-package/);
 		assert.doesNotMatch(message, /not-malware/);
+	});
+
+	void it('consolidates multiple CVEs for the same malicious package into a single message', () => {
+		const cveOne: RepocopVulnerability = {
+			...recentMalware,
+			cves: ['CVE-malware-1'],
+		};
+		const cveTwo: RepocopVulnerability = {
+			...recentMalware,
+			cves: ['CVE-malware-2'],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [cveOne, cveTwo],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		assert.match(message, /CVE-malware-1/);
+		assert.match(message, /CVE-malware-2/);
+		// Splitting on the package name confirms it appears exactly once (i.e. one
+		// message for the whole group), rather than once per CVE.
+		assert.strictEqual(message.split('bad-package').length - 1, 1);
+	});
+
+	void it('matches the full digest message snapshot for a representative scenario', (t) => {
+		// alert_issue_date is expressed relative to "now" (via daysAgo) rather
+		// than a fixed calendar date, so the resulting "days left to fix" value
+		// -- and therefore this snapshot -- stays stable no matter which day the
+		// test suite is run on.
+		const malwareWithTwoCves: RepocopVulnerability = {
+			...recentMalware,
+			package: 'bad-package',
+			cves: ['CVE-M1'],
+			alert_issue_date: daysAgo(0),
+		};
+		const malwareSecondCve: RepocopVulnerability = {
+			...malwareWithTwoCves,
+			cves: ['CVE-M2'],
+		};
+
+		const resultWithMalware: EvaluationResult = {
+			...result,
+			vulnerabilities: [malwareWithTwoCves, malwareSecondCve],
+		};
+
+		const message = getMessage(
+			createMalwareDigest(team, [ownershipRecord], [resultWithMalware], 60),
+		);
+
+		t.assert.snapshot(message);
 	});
 });
