@@ -9,11 +9,13 @@ Cloudbuster does two things
 1. Evaluates AWS [FSBP](https://docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html) violations, collected from our Cloudquery-powered postgres DB, and sends alerts to the relevant teams.
 2. Makes sure that breakglass users in AWS have MFA set up, and are tagged with a google username.
 
-FSBP messages are sent daily for critical alerts, and on Tuesdays for high-severity alerts. We send alerts for messages less than 45 days old.
+FSBP messages are sent daily for critical alerts, and on Tuesdays for high-severity alerts. We send alerts for messages less than 45 days old. Breakglass alerts do not have a severity, and are sent every Tuesday.
 
-When running Cloudbuster on CODE, or locally, messages are sent to the anghammarad test channel to avoid teams receiving excessive or incorrect alerts.
+Developers should not invoke Cloudbuster PROD outside of its schedule without a good reason.
 
-Additionally, there is an enableMessaging flag set in [config.ts](./src/config.ts) that disables messaging completely.
+When running Cloudbuster outside of PROD,messages are sent to the anghammarad test channel to avoid teams receiving test alerts.
+
+Additionally, there is an enableMessaging flag set in [config.ts](./src/config.ts) that can be used to disable messaging completely.
 
 ### Why?
 
