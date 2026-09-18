@@ -24,6 +24,7 @@ export const serviceCataloguePRODProperties: ServiceCatalogueProps = {
 		minute: '0',
 	}),
 	enableCloudquerySchedules: true,
+	enableCloudqueryOnDemandTasks: false,
 	databaseDeletionProtection: true,
 	databaseMultiAz: true,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.LARGE),
@@ -37,7 +38,7 @@ new ServiceCatalogue(
 	serviceCataloguePRODProperties,
 );
 
-new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
+export const serviceCatalogueCODEProperties: ServiceCatalogueProps = {
 	stack,
 	stage: 'CODE',
 	env: { region },
@@ -46,13 +47,20 @@ new ServiceCatalogue(app, 'ServiceCatalogue-CODE', {
 
 	// Do not run CloudQuery tasks in CODE, preferring instead to run them manually using the CLI.
 	enableCloudquerySchedules: false,
+	enableCloudqueryOnDemandTasks: true,
 
 	databaseDeletionProtection: false,
 	databaseMultiAz: false,
 	databaseInstanceType: InstanceType.of(InstanceClass.T4G, InstanceSize.SMALL),
 	databaseEbsByteBalanceAlarm: false,
 	riffRaffProjectName,
-});
+};
+
+new ServiceCatalogue(
+	app,
+	'ServiceCatalogue-CODE',
+	serviceCatalogueCODEProperties,
+);
 
 // Add an additional S3 deployment type and synth riff-raff.yaml
 
