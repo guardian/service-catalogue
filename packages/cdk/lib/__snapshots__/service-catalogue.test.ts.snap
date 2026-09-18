@@ -8,6 +8,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuVpcParameter",
       "GuSecurityGroup",
       "GuSecurityGroup",
+      "GuDeveloperPolicyExperimental",
       "GuLoggingStreamNameParameter",
       "GuStringParameter",
       "GuStringParameter",
@@ -24896,6 +24897,33 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "DevReadOnlyDevPolicyD2501126": {
+      "Properties": {
+        "Description": "Readonly access to the Service Catalogue database",
+        "Path": "/developer-policy/guardian/service-catalogue/deploy/PROD/service-catalogue-dev/",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "DevReadOnlyPostgresPassword4318B657",
+              },
+            },
+            {
+              "Action": "secretsmanager:ListSecrets",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::ManagedPolicy",
     },
     "DevReadOnlyPostgresPassword4318B657": {
       "DeletionPolicy": "Delete",
