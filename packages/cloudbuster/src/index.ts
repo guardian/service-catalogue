@@ -20,6 +20,8 @@ export async function main() {
 
 	await Promise.all([
 		createFsbpTableAndAlerts(cloudbusterConfig, prisma, anghammaradClient),
+
+		// We send an alert but don't create a table to avoid creating a public list of "guilty" individuals
 		sendBreakglassUserAlerts(
 			cloudbusterConfig,
 			awsConfig,
