@@ -207,7 +207,7 @@ exports[`Developer policies for the ServiceCatalogue stack local run developer p
   "Resources": {
     "ServiceCatalogueLocalPolicyB9DA4166": {
       "Properties": {
-        "Description": "Run Service Catalogue Cloudquery jobs locally",
+        "Description": "Run Service Catalogue workloads locally",
         "Path": "/developer-policy/guardian/service-catalogue/deploy/TEST/service-catalogue-dev/",
         "PolicyDocument": {
           "Statement": [
@@ -256,6 +256,11 @@ exports[`Developer policies for the ServiceCatalogue stack local run developer p
                   ],
                 },
               ],
+            },
+            {
+              "Action": "cloudwatch:PutMetricData",
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": "secretsmanager:GetSecretValue",
