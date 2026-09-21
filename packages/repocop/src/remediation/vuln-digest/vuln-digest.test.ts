@@ -97,6 +97,7 @@ const highRecentVuln: RepocopVulnerability = {
 	advisory_withdrawn_at: null,
 	alert_updated_at: new Date('2026-06-18T00:00:00.000Z'),
 	html_url: 'https://github.com/guardian/some-repo/security/dependabot/1',
+	epss_percentage: 0.1,
 };
 
 const recentMalware: RepocopVulnerability = {

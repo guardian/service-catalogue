@@ -42,6 +42,7 @@ if (isMain) {
 			stage: 'CODE',
 			app: 'dependency-graph-integrator',
 		},
+		autoRefresh: false,
 	});
 	console.log(terminalLink('View the logs here', logLink));
 }

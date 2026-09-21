@@ -5,6 +5,8 @@ import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/co
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 
+export const GRANT_ID = 'service-catalogue-dev';
+
 function ssmArn(stack: GuStack, parameterName: string): string {
 	return stack.formatArn({
 		service: 'ssm',
@@ -14,8 +16,6 @@ function ssmArn(stack: GuStack, parameterName: string): string {
 		resourceName: parameterName.replace(/^\//, ''),
 	});
 }
-
-const GRANT_ID = 'service-catalogue-dev';
 
 export function buildCliDeveloperPolicy(scope: GuStack) {
 	const { stage, stack, app = 'service-catalogue' } = scope;
@@ -204,6 +204,13 @@ export function buildRunLocallyDeveloperPolicy(
 		resources: ['*'],
 	});
 
+	// for cloudbuster and repocop
+	const putMetrics = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['cloudwatch:PutMetricData'],
+		resources: ['*'],
+	});
+
 	const { stage, stack, app = 'service-catalogue' } = scope;
 	const SSMPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
@@ -214,21 +221,22 @@ export function buildRunLocallyDeveloperPolicy(
 		],
 	});
 
+	const cloudqueryAccessPolicies = [
+		fetchSecretPolicy,
+		listTopicsPolicy,
+		listRegions,
+		listFunctionsPolicy,
+		listSecurityhubFindings,
+		listS3Buckets,
+		listEc2Images,
+		listOrganizations,
+		listInspectorFindings,
+	];
+
 	const runLocalPolicyProps: GuDeveloperPolicyExperimentalProps = {
 		grantId: GRANT_ID,
-		friendlyName: 'Run Service Catalogue Cloudquery jobs locally',
-		statements: [
-			SSMPolicy,
-			fetchSecretPolicy,
-			listTopicsPolicy,
-			listRegions,
-			listFunctionsPolicy,
-			listSecurityhubFindings,
-			listS3Buckets,
-			listEc2Images,
-			listOrganizations,
-			listInspectorFindings,
-		],
+		friendlyName: 'Run Service Catalogue workloads locally',
+		statements: [SSMPolicy, putMetrics, ...cloudqueryAccessPolicies],
 		withoutPolicyChecks: true,
 	};
 
