@@ -13,7 +13,7 @@ FSBP messages are sent daily for critical alerts, and on Tuesdays for high-sever
 
 Developers should not invoke Cloudbuster PROD outside of its schedule without a good reason.
 
-When running Cloudbuster outside of PROD,messages are sent to the anghammarad test channel to avoid teams receiving test alerts.
+When running Cloudbuster outside of PROD, messages are sent to the Anghammarad test channel to avoid teams receiving test alerts.
 
 Additionally, there is an enableMessaging flag set in [config.ts](./src/config.ts) that can be used to disable messaging completely.
 
