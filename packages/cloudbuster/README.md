@@ -24,6 +24,6 @@ Additionally, there is an enableMessaging flag set in [config.ts](./src/config.t
 
 ### How do I run it?
 
-- Retrieve the `serviceCatalogueDevelopment` developer policy from Janus
+- Retrieve the `Run Service Catalogue workloads locally` developer policy from Janus
 - Run: `npm run start -w dev-environment; ` to set up a local CloudQuery DB
 - Run: `npm run start -w cloudbuster`
