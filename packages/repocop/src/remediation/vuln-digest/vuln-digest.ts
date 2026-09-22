@@ -17,6 +17,62 @@ import type {
 } from '../../types.js';
 import { removeRepoOwner } from '../shared-utilities.js';
 
+// A group of vulnerabilities affecting the same package, in the same repo,
+// with the same patchable status. `representative` is the vulnerability
+// within the group with the shortest deadline.
+export interface VulnerabilityGroup {
+	fullName: string;
+	package: string;
+	isPatchable: boolean;
+	vulnerabilities: RepocopVulnerability[];
+	representative: RepocopVulnerability;
+}
+
+function groupKey(vuln: RepocopVulnerability): string {
+	return `${vuln.full_name}::${vuln.package}::${String(vuln.is_patchable)}`;
+}
+
+function pickSoonestToExpire(
+	vulns: RepocopVulnerability[],
+	alertType: AlertType,
+): RepocopVulnerability {
+	return vulns.reduce((soonest, vuln) => {
+		const soonestDays =
+			daysLeftToFix(soonest.alert_issue_date, soonest.severity, alertType) ?? 0;
+		const vulnDays =
+			daysLeftToFix(vuln.alert_issue_date, vuln.severity, alertType) ?? 0;
+		return vulnDays < soonestDays ? vuln : soonest;
+	});
+}
+
+export function groupVulnerabilitiesByPackage(
+	vulns: RepocopVulnerability[],
+	alertType: AlertType = 'general',
+): VulnerabilityGroup[] {
+	const groupedByKey = new Map<string, RepocopVulnerability[]>();
+
+	for (const vuln of vulns) {
+		const key = groupKey(vuln);
+		const existing = groupedByKey.get(key);
+		if (existing) {
+			existing.push(vuln);
+		} else {
+			groupedByKey.set(key, [vuln]);
+		}
+	}
+
+	return Array.from(groupedByKey.values()).map((groupVulns) => {
+		const representative = pickSoonestToExpire(groupVulns, alertType);
+		return {
+			fullName: representative.full_name,
+			package: representative.package,
+			isPatchable: representative.is_patchable,
+			vulnerabilities: groupVulns,
+			representative,
+		};
+	});
+}
+
 function getOwningRepos(
 	team: Team,
 	repoOwners: view_repo_ownership[],
@@ -38,25 +94,38 @@ function getOwningRepos(
 }
 
 function createHumanReadableMessage(
-	vuln: RepocopVulnerability,
+	group: VulnerabilityGroup,
 	alertType: AlertType = 'general',
 ): string {
+	const representative = group.representative;
+
 	const ecosystem =
-		vuln.ecosystem === 'maven' ? 'sbt or maven' : vuln.ecosystem;
+		representative.ecosystem === 'maven'
+			? 'sbt or maven'
+			: representative.ecosystem;
 
 	const daysToFix = daysLeftToFix(
-		vuln.alert_issue_date,
-		vuln.severity,
+		representative.alert_issue_date,
+		representative.severity,
 		alertType,
 	);
 
-	const vulnHyperlink: string = vuln.urls[0]
-		? `[${vuln.package}](${vuln.urls[0]})`
-		: vuln.package;
+	const vulnHyperlink: string = representative.urls[0]
+		? `[${group.package}](${representative.urls[0]})`
+		: group.package;
 
-	const cveHyperlink = vuln.cves[0] ?? 'no CVE provided';
+	const cves = group.vulnerabilities.flatMap((vuln) => vuln.cves);
+	const cveText = cves.length > 0 ? cves.join(', ') : 'no CVE provided';
 
-	return String.raw`[${removeRepoOwner(vuln.full_name)}](https://github.com/${vuln.full_name}) ${alertType === 'general' ? `contains a ${vuln.severity} severity vulnerability` : 'contains malware'}, ${cveHyperlink}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to ${alertType === 'general' ? 'fix this vulnerability' : 'resolve this malware alert'}. It ${vuln.is_patchable ? 'is ' : 'might not be '}patchable.`;
+	const patchable = group.isPatchable ? 'with a patch' : 'without a patch';
+
+	const vulnCount = group.vulnerabilities.length;
+	const vulnerabilityDescription =
+		vulnCount === 1
+			? `a ${representative.severity} severity vulnerability`
+			: `${vulnCount} ${representative.severity} severity vulnerabilities`;
+
+	return String.raw`[${removeRepoOwner(group.fullName)}](https://github.com/${group.fullName}) ${alertType === 'general' ? `contains ${vulnerabilityDescription}` : 'contains malware'} ${patchable}, ${cveText}, from ${vulnHyperlink}${alertType === 'general' ? `, introduced via ${ecosystem}` : ''}. There are ${daysToFix} days left to resolve the ${group.vulnerabilities.length > 1 ? 'earliest ' : ''}alert.`;
 }
 
 function createTeamDashboardLinkAction(
@@ -125,12 +194,9 @@ export function createDigestForSeverity(
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
 
-	const vulnsSinceImplementationDate = vulns
-		.filter(
-			(v) =>
-				v.severity == severity && new Date(v.alert_issue_date) > cutOffDate,
-		)
-		.sort(patchableFirstThenWithinSLAThenDate);
+	const vulnsSinceImplementationDate = vulns.filter(
+		(v) => v.severity == severity && new Date(v.alert_issue_date) > cutOffDate,
+	);
 
 	const totalNewVulnsCount = vulnsSinceImplementationDate.length;
 
@@ -141,15 +207,20 @@ export function createDigestForSeverity(
 	const preamble = String.raw`Found ${totalNewVulnsCount} ${severity} vulnerabilities introduced in the last ${cutOffInDays} days. Teams have ${generalSLAs[severity]} days to fix these.
 Note: DevX only aggregates vulnerability information for runtime dependencies in repositories with a production topic.`;
 
-	const topVulns = vulnsSinceImplementationDate.slice(0, 20);
-	const remainingVulns = vulnsSinceImplementationDate.length - topVulns.length;
+	const groups = groupVulnerabilitiesByPackage(
+		vulnsSinceImplementationDate,
+		'general',
+	).sort((a, b) =>
+		patchableFirstThenWithinSLAThenDate(a.representative, b.representative),
+	);
 
-	const vulnMessages = topVulns.map((v) => createHumanReadableMessage(v));
+	const topGroups = groups.slice(0, 20);
+	const remainingGroups = groups.length - topGroups.length;
+
+	const vulnMessages = topGroups.map((g) => createHumanReadableMessage(g));
 	const andOthersMessage =
-		remainingVulns > 0
-			? [
-					`… and ${remainingVulns} others. See the full list on Grafana using the link below.`,
-				]
+		remainingGroups > 0
+			? [`… and others. See the full list on Grafana using the link below.`]
 			: [];
 
 	const digestString = [...vulnMessages, ...andOthersMessage].join('\n\n');
@@ -283,9 +354,9 @@ export function createMalwareDigest(
 	const cutOffDate = new Date();
 	cutOffDate.setDate(cutOffDate.getDate() - cutOffInDays);
 
-	const malwareSinceImplementationDate = malwareAlerts
-		.filter((a) => new Date(a.alert_issue_date) > cutOffDate)
-		.sort(patchableFirstThenWithinSLAThenDate);
+	const malwareSinceImplementationDate = malwareAlerts.filter(
+		(a) => new Date(a.alert_issue_date) > cutOffDate,
+	);
 
 	const totalNewMalwareCount = malwareSinceImplementationDate.length;
 
@@ -296,8 +367,15 @@ export function createMalwareDigest(
 	const preamble = String.raw`Found ${totalNewMalwareCount} malware alerts introduced in the last ${cutOffInDays} days. Please address within 1 working day.
 Note: Malware information provided is only for repositories with a production topic. Currently the only ecosystem supported by Dependabot is npm.`;
 
-	const digestString = malwareSinceImplementationDate
-		.map((mal) => createHumanReadableMessage(mal, 'malware'))
+	const groups = groupVulnerabilitiesByPackage(
+		malwareSinceImplementationDate,
+		'malware',
+	).sort((a, b) =>
+		patchableFirstThenWithinSLAThenDate(a.representative, b.representative),
+	);
+
+	const digestString = groups
+		.map((group) => createHumanReadableMessage(group, 'malware'))
 		.join('\n\n');
 
 	const message = `${preamble}\n\n${digestString}`;
