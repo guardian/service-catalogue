@@ -2,7 +2,7 @@ import assert from 'assert';
 import { describe, it } from 'node:test';
 import { getCentralElkLink, getEcsTaskLogsLink } from './logs.js';
 
-void describe('getCentralElkUrl', () => {
+void describe('getCentralElkLink', () => {
 	void it('should form a valid link', () => {
 		const actual = getCentralElkLink({
 			filters: {
@@ -10,6 +10,7 @@ void describe('getCentralElkUrl', () => {
 				stage: 'CODE',
 				app: 'service-catalogue',
 			},
+			autoRefresh: false,
 		});
 		const expected =
 			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stack:'deploy'))),(query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(app:'service-catalogue')))))";
@@ -24,6 +25,7 @@ void describe('getCentralElkUrl', () => {
 				app: 'service-catalogue',
 			},
 			columns: ['message'],
+			autoRefresh: false,
 		});
 		const expected =
 			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stack:'deploy'))),(query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(app:'service-catalogue')))))&_a=(columns:!(message))";
@@ -38,7 +40,7 @@ void describe('getEcsTaskLogsLink', () => {
 			ecsTaskArn: 'arn:aws:ecs:eu-west-1:123456789012:task/cluster-name/abc123',
 		});
 		const expected =
-			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(ecs_task_arn:'arn:aws:ecs:eu-west-1:123456789012:task/cluster-name/abc123')))))";
+			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(ecs_task_arn:'arn:aws:ecs:eu-west-1:123456789012:task/cluster-name/abc123')))),refreshInterval:(pause:!f,value:10000),time:(from:now-15m,to:now))";
 		assert.strictEqual(actual, expected);
 	});
 
@@ -49,7 +51,7 @@ void describe('getEcsTaskLogsLink', () => {
 			columns: ['message'],
 		});
 		const expected =
-			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(ecs_task_arn:'arn:aws:ecs:eu-west-1:123456789012:task/cluster-name/abc123')))))&_a=(columns:!(message))";
+			"https://logs.gutools.co.uk/s/devx/app/discover#/?_g=(filters:!((query:(match_phrase:(stage:'CODE'))),(query:(match_phrase:(ecs_task_arn:'arn:aws:ecs:eu-west-1:123456789012:task/cluster-name/abc123')))),refreshInterval:(pause:!f,value:10000),time:(from:now-15m,to:now))&_a=(columns:!(message))";
 		assert.strictEqual(actual, expected);
 	});
 });

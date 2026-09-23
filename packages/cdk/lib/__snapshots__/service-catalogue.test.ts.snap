@@ -8,6 +8,7 @@ exports[`The ServiceCatalogue stack matches the snapshot 1`] = `
       "GuVpcParameter",
       "GuSecurityGroup",
       "GuSecurityGroup",
+      "GuDeveloperPolicyExperimental",
       "GuLoggingStreamNameParameter",
       "GuStringParameter",
       "GuStringParameter",
@@ -600,6 +601,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AmigoBakePackages",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAmigoBakePackagesTaskDefinitionCloudquerySourceAmigoBakePackagesFirelensLogGroupA4EF0BA2",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AmigoBakePackagesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -673,54 +722,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AmigoBakePackages",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAmigoBakePackagesTaskDefinitionCloudquerySourceAmigoBakePackagesFirelensLogGroupA4EF0BA2",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AmigoBakePackagesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -1065,6 +1066,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsCostExplorer",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerFirelensLogGroup0D0D76FF",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsCostExplorerFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -1138,54 +1187,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsCostExplorer",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsCostExplorerTaskDefinitionCloudquerySourceAwsCostExplorerFirelensLogGroup0D0D76FF",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsCostExplorerFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -1800,6 +1801,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsDelegatedToSecurityAccount",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionCloudquerySourceAwsDelegatedToSecurityAccountFirelensLogGroupE468B6F3",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsDelegatedToSecurityAccountFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -1873,54 +1922,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsDelegatedToSecurityAccount",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsDelegatedToSecurityAccountTaskDefinitionCloudquerySourceAwsDelegatedToSecurityAccountFirelensLogGroupE468B6F3",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsDelegatedToSecurityAccountFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "1024",
@@ -2552,6 +2553,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsInspector2Findings",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionCloudquerySourceAwsInspector2FindingsFirelensLogGroup23800BF0",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsInspector2FindingsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -2625,54 +2674,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsInspector2Findings",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsInspector2FindingsTaskDefinitionCloudquerySourceAwsInspector2FindingsFirelensLogGroup23800BF0",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsInspector2FindingsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "1024",
@@ -3264,6 +3265,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsLambda",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsLambdaTaskDefinitionCloudquerySourceAwsLambdaFirelensLogGroupBB74129A",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsLambdaFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -3337,54 +3386,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsLambda",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsLambdaTaskDefinitionCloudquerySourceAwsLambdaFirelensLogGroupBB74129A",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsLambdaFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -3941,6 +3942,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsListOrgs",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsListOrgsTaskDefinitionCloudquerySourceAwsListOrgsFirelensLogGroup55343A0C",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsListOrgsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -4014,54 +4063,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsListOrgs",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsListOrgsTaskDefinitionCloudquerySourceAwsListOrgsFirelensLogGroup55343A0C",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsListOrgsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -4646,6 +4647,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideBackup",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideBackupTaskDefinitionCloudquerySourceAwsOrgWideBackupFirelensLogGroup336D3581",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideBackupFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -4719,54 +4768,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideBackup",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideBackupTaskDefinitionCloudquerySourceAwsOrgWideBackupFirelensLogGroup336D3581",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideBackupFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -5383,6 +5384,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideCertificates",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideCertificatesTaskDefinitionCloudquerySourceAwsOrgWideCertificatesFirelensLogGroup91D2F11E",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideCertificatesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -5456,54 +5505,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideCertificates",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideCertificatesTaskDefinitionCloudquerySourceAwsOrgWideCertificatesFirelensLogGroup91D2F11E",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideCertificatesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -6316,6 +6317,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideCloudFormation",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideCloudFormationTaskDefinitionCloudquerySourceAwsOrgWideCloudFormationFirelensLogGroup275B0945",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideCloudFormationFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -6389,54 +6438,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideCloudFormation",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideCloudFormationTaskDefinitionCloudquerySourceAwsOrgWideCloudFormationFirelensLogGroup275B0945",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideCloudFormationFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -6763,6 +6764,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideCloudwatchAlarms",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceAwsOrgWideCloudwatchAlarmsFirelensLogGroup953FDC49",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideCloudwatchAlarmsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -6836,54 +6885,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideCloudwatchAlarms",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideCloudwatchAlarmsTaskDefinitionCloudquerySourceAwsOrgWideCloudwatchAlarmsFirelensLogGroup953FDC49",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideCloudwatchAlarmsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -7471,6 +7472,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideDynamoDB",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideDynamoDBTaskDefinitionCloudquerySourceAwsOrgWideDynamoDBFirelensLogGroup7F40CCBC",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideDynamoDBFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -7544,54 +7593,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideDynamoDB",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideDynamoDBTaskDefinitionCloudquerySourceAwsOrgWideDynamoDBFirelensLogGroup7F40CCBC",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideDynamoDBFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -8203,6 +8204,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideEc2Images",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideEc2ImagesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -8276,54 +8325,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideEc2Images",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideEc2ImagesTaskDefinitionCloudquerySourceAwsOrgWideEc2ImagesFirelensLogGroup32711A11",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideEc2ImagesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -8936,6 +8937,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideEc2",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideEc2TaskDefinitionCloudquerySourceAwsOrgWideEc2FirelensLogGroupE01DEFEE",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideEc2Firelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -9009,54 +9058,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideEc2",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideEc2TaskDefinitionCloudquerySourceAwsOrgWideEc2FirelensLogGroupE01DEFEE",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideEc2Firelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -9640,6 +9641,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideIamCredentialReports",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinitionCloudquerySourceAwsOrgWideIamCredentialReportsFirelensLogGroupB7D88F87",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideIamCredentialReportsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -9713,54 +9762,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideIamCredentialReports",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideIamCredentialReportsTaskDefinitionCloudquerySourceAwsOrgWideIamCredentialReportsFirelensLogGroupB7D88F87",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideIamCredentialReportsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -10346,6 +10347,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideRDS",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideRDSTaskDefinitionCloudquerySourceAwsOrgWideRDSFirelensLogGroupA77166BD",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideRDSFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -10419,54 +10468,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideRDS",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideRDSTaskDefinitionCloudquerySourceAwsOrgWideRDSFirelensLogGroupA77166BD",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideRDSFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -11064,6 +11065,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideS3",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideS3TaskDefinitionCloudquerySourceAwsOrgWideS3FirelensLogGroup4CE08508",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideS3Firelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -11137,54 +11186,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideS3",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideS3TaskDefinitionCloudquerySourceAwsOrgWideS3FirelensLogGroup4CE08508",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideS3Firelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -11801,6 +11802,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsOrgWideSns",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsOrgWideSnsTaskDefinitionCloudquerySourceAwsOrgWideSnsFirelensLogGroupA37ABD31",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsOrgWideSnsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -11874,54 +11923,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsOrgWideSns",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsOrgWideSnsTaskDefinitionCloudquerySourceAwsOrgWideSnsFirelensLogGroupA37ABD31",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsOrgWideSnsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -12607,6 +12608,7 @@ spec:
     - aws_backup_plans
     - aws_backup_region_settings
     - aws_backup_report_plans
+    - aws_budgets_actions
     - aws_budgets_budgets
     - aws_cloudfront_cache_policies
     - aws_cloudfront_distributions
@@ -13092,10 +13094,58 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsRemainingData",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsRemainingDataTaskDefinitionCloudquerySourceAwsRemainingDataFirelensLogGroupAEF7D0F2",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsRemainingDataFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_account_alternate_contacts', 604800000),('aws_account_contacts', 604800000),('aws_amplify_apps', 604800000),('aws_apigateway_api_keys', 604800000),('aws_apigateway_client_certificates', 604800000),('aws_apigateway_domain_name_base_path_mappings', 604800000),('aws_apigateway_domain_names', 604800000),('aws_apigateway_rest_api_authorizers', 604800000),('aws_apigateway_rest_api_deployments', 604800000),('aws_apigateway_rest_api_documentation_parts', 604800000),('aws_apigateway_rest_api_documentation_versions', 604800000),('aws_apigateway_rest_api_gateway_responses', 604800000),('aws_apigateway_rest_api_models', 604800000),('aws_apigateway_rest_api_request_validators', 604800000),('aws_apigateway_rest_api_resource_method_integrations', 604800000),('aws_apigateway_rest_api_resource_methods', 604800000),('aws_apigateway_rest_api_resources', 604800000),('aws_apigateway_rest_api_stages', 604800000),('aws_apigateway_rest_apis', 604800000),('aws_apigateway_usage_plan_keys', 604800000),('aws_apigateway_usage_plans', 604800000),('aws_apigateway_vpc_links', 604800000),('aws_apigatewayv2_api_authorizers', 604800000),('aws_apigatewayv2_api_deployments', 604800000),('aws_apigatewayv2_api_integrations', 604800000),('aws_apigatewayv2_api_route_responses', 604800000),('aws_apigatewayv2_api_routes', 604800000),('aws_apigatewayv2_api_stages', 604800000),('aws_apigatewayv2_apis', 604800000),('aws_apigatewayv2_domain_name_rest_api_mappings', 604800000),('aws_apigatewayv2_domain_names', 604800000),('aws_apigatewayv2_vpc_links', 604800000),('aws_appconfig_deployment_strategies', 604800000),('aws_appflow_flows', 604800000),('aws_applicationautoscaling_policies', 604800000),('aws_applicationautoscaling_scalable_targets', 604800000),('aws_applicationautoscaling_scaling_activities', 604800000),('aws_apprunner_auto_scaling_configurations', 604800000),('aws_apprunner_observability_configurations', 604800000),('aws_appstream_images', 604800000),('aws_appstream_stack_user_associations', 604800000),('aws_appsync_graphql_apis', 604800000),('aws_athena_data_catalog_database_tables', 604800000),('aws_athena_data_catalog_databases', 604800000),('aws_athena_data_catalogs', 604800000),('aws_athena_work_group_named_queries', 604800000),('aws_athena_work_group_query_executions', 604800000),('aws_athena_work_groups', 604800000),('aws_autoscaling_group_scaling_policies', 604800000),('aws_autoscaling_launch_configurations', 604800000),('aws_autoscaling_scheduled_actions', 604800000),('aws_autoscaling_warm_pools', 604800000),('aws_availability_zones', 604800000),('aws_backup_global_settings', 604800000),('aws_backup_jobs', 604800000),('aws_backup_plan_selections', 604800000),('aws_backup_plans', 604800000),('aws_backup_region_settings', 604800000),('aws_backup_report_plans', 604800000),('aws_budgets_budgets', 604800000),('aws_cloudfront_cache_policies', 604800000),('aws_cloudfront_distributions', 604800000),('aws_cloudfront_origin_access_identities', 604800000),('aws_cloudfront_origin_request_policies', 604800000),('aws_cloudfront_response_headers_policies', 604800000),('aws_cloudhsmv2_backups', 604800000),('aws_cloudtrail_channels', 604800000),('aws_cloudtrail_imports', 604800000),('aws_cloudtrail_trail_event_selectors', 604800000),('aws_cloudtrail_trails', 604800000),('aws_cloudwatchlogs_log_group_subscription_filters', 604800000),('aws_cloudwatchlogs_log_groups', 604800000),('aws_cloudwatchlogs_metric_filters', 604800000),('aws_cloudwatchlogs_resource_policies', 604800000),('aws_codebuild_builds', 604800000),('aws_codebuild_projects', 604800000),('aws_codebuild_source_credentials', 604800000),('aws_codecommit_repositories', 604800000),('aws_codedeploy_applications', 604800000),('aws_codedeploy_deployment_configs', 604800000),('aws_codepipeline_pipelines', 604800000),('aws_codepipeline_webhooks', 604800000),('aws_cognito_identity_pools', 604800000),('aws_cognito_user_pool_identity_providers', 604800000),('aws_cognito_user_pools', 604800000),('aws_computeoptimizer_autoscaling_group_recommendations', 604800000),('aws_computeoptimizer_ebs_volume_recommendations', 604800000),('aws_computeoptimizer_ec2_instance_recommendations', 604800000),('aws_computeoptimizer_enrollment_statuses', 604800000),('aws_computeoptimizer_lambda_function_recommendations', 604800000),('aws_config_config_rule_compliance_details', 604800000),('aws_config_config_rule_compliances', 604800000),('aws_config_config_rules', 604800000),('aws_config_configuration_recorders', 604800000),('aws_config_delivery_channel_statuses', 604800000),('aws_config_delivery_channels', 604800000),('aws_datapipeline_pipelines', 604800000),('aws_datasync_agents', 604800000),('aws_datasync_azureblob_locations', 604800000),('aws_datasync_efs_locations', 604800000),('aws_datasync_hdfs_locations', 604800000),('aws_datasync_locations', 604800000),('aws_datasync_s3_locations', 604800000),('aws_detective_graph_members', 604800000),('aws_detective_graphs', 604800000),('aws_directconnect_connections', 604800000),('aws_directconnect_gateway_associations', 604800000),('aws_directconnect_gateway_attachments', 604800000),('aws_directconnect_gateways', 604800000),('aws_directconnect_locations', 604800000),('aws_directconnect_virtual_gateways', 604800000),('aws_directconnect_virtual_interfaces', 604800000),('aws_directoryservice_directories', 604800000),('aws_dms_replication_subnet_groups', 604800000),('aws_docdb_certificates', 604800000),('aws_docdb_event_categories', 604800000),('aws_docdb_event_subscriptions', 604800000),('aws_docdb_events', 604800000),('aws_docdb_subnet_groups', 604800000),('aws_ebs_default_kms_key_ids', 604800000),('aws_ebs_encryption_by_defaults', 604800000),('aws_ec2_account_attributes', 604800000),('aws_ec2_customer_gateways', 604800000),('aws_ec2_dhcp_options', 604800000),('aws_ec2_ebs_snapshot_attributes', 604800000),('aws_ec2_ebs_snapshots', 604800000),('aws_ec2_ebs_volume_statuses', 604800000),('aws_ec2_ebs_volumes', 604800000),('aws_ec2_egress_only_internet_gateways', 604800000),('aws_ec2_eips', 604800000),('aws_ec2_flow_logs', 604800000),('aws_ec2_image_block_public_access_states', 604800000),('aws_ec2_image_last_launched_times', 604800000),('aws_ec2_image_launch_permissions', 604800000),('aws_ec2_instance_connect_endpoints', 604800000),('aws_ec2_instance_credit_specifications', 604800000),('aws_ec2_instance_statuses', 604800000),('aws_ec2_internet_gateways', 604800000),('aws_ec2_ipam_discovered_accounts', 604800000),('aws_ec2_ipam_discovered_public_addresses', 604800000),('aws_ec2_ipam_discovered_resource_cidrs', 604800000),('aws_ec2_ipam_resource_discoveries', 604800000),('aws_ec2_ipam_resource_discovery_associations', 604800000),('aws_ec2_ipam_scopes', 604800000),('aws_ec2_ipams', 604800000),('aws_ec2_key_pairs', 604800000),('aws_ec2_launch_template_versions', 604800000),('aws_ec2_launch_templates', 604800000),('aws_ec2_managed_prefix_lists', 604800000),('aws_ec2_nat_gateways', 604800000),('aws_ec2_network_acls', 604800000),('aws_ec2_network_interfaces', 604800000),('aws_ec2_regional_configs', 604800000),('aws_ec2_replace_root_volume_tasks', 604800000),('aws_ec2_reserved_instances', 604800000),('aws_ec2_route_tables', 604800000),('aws_ec2_serial_console_access_statuses', 604800000),('aws_ec2_snapshot_block_public_access_states', 604800000),('aws_ec2_subnets', 604800000),('aws_ec2_transit_gateway_attachments', 604800000),('aws_ec2_transit_gateway_peering_attachments', 604800000),('aws_ec2_transit_gateway_route_tables', 604800000),('aws_ec2_transit_gateway_vpc_attachments', 604800000),('aws_ec2_transit_gateways', 604800000),('aws_ec2_vpc_endpoint_connections', 604800000),('aws_ec2_vpc_endpoint_service_configurations', 604800000),('aws_ec2_vpc_endpoints', 604800000),('aws_ec2_vpc_peering_connections', 604800000),('aws_ec2_vpcs', 604800000),('aws_ec2_vpn_connections', 604800000),('aws_ec2_vpn_gateways', 604800000),('aws_ecr_registries', 604800000),('aws_ecr_repositories', 604800000),('aws_ecr_repository_image_scan_findings', 604800000),('aws_ecr_repository_images', 604800000),('aws_ecr_repository_lifecycle_policies', 604800000),('aws_ecr_repository_policies', 604800000),('aws_efs_filesystems', 604800000),('aws_elasticache_clusters', 604800000),('aws_elasticache_global_replication_groups', 604800000),('aws_elasticache_replication_groups', 604800000),('aws_elasticache_reserved_cache_nodes', 604800000),('aws_elasticache_snapshots', 604800000),('aws_elasticache_subnet_groups', 604800000),('aws_elasticache_update_actions', 604800000),('aws_elasticache_users', 604800000),('aws_elasticbeanstalk_application_versions', 604800000),('aws_elasticbeanstalk_applications', 604800000),('aws_elasticsearch_domains', 604800000),('aws_elasticsearch_packages', 604800000),('aws_elasticsearch_reserved_instances', 604800000),('aws_elasticsearch_versions', 604800000),('aws_elastictranscoder_pipeline_jobs', 604800000),('aws_elastictranscoder_pipelines', 604800000),('aws_elastictranscoder_presets', 604800000),('aws_emr_block_public_access_configs', 604800000),('aws_emr_cluster_instance_fleets', 604800000),('aws_emr_cluster_instance_groups', 604800000),('aws_emr_cluster_instances', 604800000),('aws_emr_clusters', 604800000),('aws_emr_release_labels', 604800000),('aws_emr_security_configurations', 604800000),('aws_emr_steps', 604800000),('aws_emr_studios', 604800000),('aws_eventbridge_api_destinations', 604800000),('aws_eventbridge_archives', 604800000),('aws_eventbridge_connections', 604800000),('aws_eventbridge_event_bus_rules', 604800000),('aws_eventbridge_event_bus_targets', 604800000),('aws_eventbridge_event_buses', 604800000),('aws_eventbridge_event_sources', 604800000),('aws_firehose_delivery_streams', 604800000),('aws_fsx_data_repository_tasks', 604800000),('aws_glacier_data_retrieval_policies', 604800000),('aws_glacier_vault_notifications', 604800000),('aws_glacier_vaults', 604800000),('aws_globalaccelerator_accelerators', 604800000),('aws_glue_classifiers', 604800000),('aws_glue_crawlers', 604800000),('aws_glue_database_table_indexes', 604800000),('aws_glue_database_tables', 604800000),('aws_glue_databases', 604800000),('aws_glue_datacatalog_encryption_settings', 604800000),('aws_glue_job_runs', 604800000),('aws_glue_jobs', 604800000),('aws_glue_security_configurations', 604800000),('aws_glue_triggers', 604800000),('aws_health_affected_entities', 604800000),('aws_health_event_details', 604800000),('aws_health_events', 604800000),('aws_iam_account_authorization_details', 604800000),('aws_iam_accounts', 604800000),('aws_iam_group_attached_policies', 604800000),('aws_iam_group_last_accessed_details', 604800000),('aws_iam_group_policies', 604800000),('aws_iam_groups', 604800000),('aws_iam_instance_profiles', 604800000),('aws_iam_mfa_devices', 604800000),('aws_iam_openid_connect_identity_providers', 604800000),('aws_iam_password_policies', 604800000),('aws_iam_policies', 604800000),('aws_iam_policy_default_versions', 604800000),('aws_iam_policy_last_accessed_details', 604800000),('aws_iam_policy_versions', 604800000),('aws_iam_role_attached_policies', 604800000),('aws_iam_role_last_accessed_details', 604800000),('aws_iam_role_policies', 604800000),('aws_iam_roles', 604800000),('aws_iam_server_certificates', 604800000),('aws_iam_ssh_public_keys', 604800000),('aws_iam_user_access_keys', 604800000),('aws_iam_user_attached_policies', 604800000),('aws_iam_user_groups', 604800000),('aws_iam_user_last_accessed_details', 604800000),('aws_iam_user_policies', 604800000),('aws_iam_virtual_mfa_devices', 604800000),('aws_inspector2_covered_resources', 604800000),('aws_inspector_findings', 604800000),('aws_keyspaces_keyspaces', 604800000),('aws_kinesis_streams', 604800000),('aws_kms_aliases', 604800000),('aws_kms_key_grants', 604800000),('aws_kms_key_policies', 604800000),('aws_kms_key_rotation_statuses', 604800000),('aws_kms_key_rotations', 604800000),('aws_kms_keys', 604800000),('aws_lightsail_instance_port_states', 604800000),('aws_lightsail_instances', 604800000),('aws_mq_broker_configuration_revisions', 604800000),('aws_mq_broker_users', 604800000),('aws_neptune_cluster_snapshots', 604800000),('aws_neptune_clusters', 604800000),('aws_neptune_event_subscriptions', 604800000),('aws_neptune_subnet_groups', 604800000),('aws_networkfirewall_firewall_policies', 604800000),('aws_networkmanager_links', 604800000),('aws_opensearch_reserved_instances', 604800000),('aws_ram_principals', 604800000),('aws_ram_resource_share_associations', 604800000),('aws_ram_resource_share_invitations', 604800000),('aws_ram_resource_share_permissions', 604800000),('aws_ram_resource_shares', 604800000),('aws_ram_resource_types', 604800000),('aws_ram_resources', 604800000),('aws_rds_certificates', 604800000),('aws_rds_db_proxies', 604800000),('aws_rds_db_proxy_target_groups', 604800000),('aws_rds_db_proxy_targets', 604800000),('aws_rds_db_security_groups', 604800000),('aws_rds_event_subscriptions', 604800000),('aws_rds_events', 604800000),('aws_rds_option_groups', 604800000),('aws_rds_pending_maintenance_actions', 604800000),('aws_rds_reserved_instances', 604800000),('aws_rds_subnet_groups', 604800000),('aws_redshift_endpoint_authorizations', 604800000),('aws_redshift_reserved_nodes', 604800000),('aws_redshift_subnet_groups', 604800000),('aws_regions', 604800000),('aws_resiliencehub_suggested_resiliency_policies', 604800000),('aws_resourcegroups_resource_groups', 604800000),('aws_route53_delegation_sets', 604800000),('aws_route53_domains', 604800000),('aws_route53_health_checks', 604800000),('aws_route53_hosted_zone_resource_record_sets', 604800000),('aws_route53_hosted_zones', 604800000),('aws_route53_operations', 604800000),('aws_route53_traffic_policies', 604800000),('aws_route53_traffic_policy_versions', 604800000),('aws_route53recoveryreadiness_resource_sets', 604800000),('aws_route53resolver_firewall_configs', 604800000),('aws_route53resolver_firewall_domain_lists', 604800000),('aws_route53resolver_resolver_endpoints', 604800000),('aws_route53resolver_resolver_rule_associations', 604800000),('aws_route53resolver_resolver_rules', 604800000),('aws_sagemaker_endpoint_configurations', 604800000),('aws_sagemaker_endpoints', 604800000),('aws_sagemaker_models', 604800000),('aws_sagemaker_training_jobs', 604800000),('aws_scheduler_schedule_groups', 604800000),('aws_secretsmanager_secret_versions', 604800000),('aws_secretsmanager_secrets', 604800000),('aws_servicediscovery_instances', 604800000),('aws_servicediscovery_namespaces', 604800000),('aws_servicediscovery_services', 604800000),('aws_ses_active_receipt_rule_sets', 604800000),('aws_ses_configuration_set_event_destinations', 604800000),('aws_ses_configuration_sets', 604800000),('aws_ses_identities', 604800000),('aws_ses_templates', 604800000),('aws_sns_subscriptions', 604800000),('aws_sqs_queues', 604800000),('aws_ssm_associations', 604800000),('aws_ssm_compliance_summary_items', 604800000),('aws_ssm_document_versions', 604800000),('aws_ssm_documents', 604800000),('aws_ssm_instance_compliance_items', 604800000),('aws_ssm_instances', 604800000),('aws_ssm_inventories', 604800000),('aws_ssm_inventory_schemas', 604800000),('aws_ssm_patch_baselines', 604800000),('aws_ssmincidents_incident_timeline_events', 604800000),('aws_stepfunctions_activities', 604800000),('aws_stepfunctions_state_machines', 604800000),('aws_support_case_communications', 604800000),('aws_support_cases', 604800000),('aws_support_services', 604800000),('aws_support_severity_levels', 604800000),('aws_support_trusted_advisor_check_results', 604800000),('aws_support_trusted_advisor_check_summaries', 604800000),('aws_support_trusted_advisor_checks', 604800000),('aws_timestream_databases', 604800000),('aws_timestream_tables', 604800000),('aws_transfer_profiles', 604800000),('aws_transfer_servers', 604800000),('aws_transfer_users', 604800000),('aws_waf_rules', 604800000),('aws_waf_web_acls', 604800000),('aws_wafregional_rule_groups', 604800000),('aws_wafv2_ipsets', 604800000),('aws_wafv2_managed_rule_groups', 604800000),('aws_wafv2_regex_pattern_sets', 604800000),('aws_wafv2_rule_groups', 604800000),('aws_wafv2_web_acls', 604800000),('aws_workspaces_workspaces', 604800000),('aws_xray_encryption_configs', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_account_alternate_contacts', 604800000),('aws_account_contacts', 604800000),('aws_amplify_apps', 604800000),('aws_apigateway_api_keys', 604800000),('aws_apigateway_client_certificates', 604800000),('aws_apigateway_domain_name_base_path_mappings', 604800000),('aws_apigateway_domain_names', 604800000),('aws_apigateway_rest_api_authorizers', 604800000),('aws_apigateway_rest_api_deployments', 604800000),('aws_apigateway_rest_api_documentation_parts', 604800000),('aws_apigateway_rest_api_documentation_versions', 604800000),('aws_apigateway_rest_api_gateway_responses', 604800000),('aws_apigateway_rest_api_models', 604800000),('aws_apigateway_rest_api_request_validators', 604800000),('aws_apigateway_rest_api_resource_method_integrations', 604800000),('aws_apigateway_rest_api_resource_methods', 604800000),('aws_apigateway_rest_api_resources', 604800000),('aws_apigateway_rest_api_stages', 604800000),('aws_apigateway_rest_apis', 604800000),('aws_apigateway_usage_plan_keys', 604800000),('aws_apigateway_usage_plans', 604800000),('aws_apigateway_vpc_links', 604800000),('aws_apigatewayv2_api_authorizers', 604800000),('aws_apigatewayv2_api_deployments', 604800000),('aws_apigatewayv2_api_integrations', 604800000),('aws_apigatewayv2_api_route_responses', 604800000),('aws_apigatewayv2_api_routes', 604800000),('aws_apigatewayv2_api_stages', 604800000),('aws_apigatewayv2_apis', 604800000),('aws_apigatewayv2_domain_name_rest_api_mappings', 604800000),('aws_apigatewayv2_domain_names', 604800000),('aws_apigatewayv2_vpc_links', 604800000),('aws_appconfig_deployment_strategies', 604800000),('aws_appflow_flows', 604800000),('aws_applicationautoscaling_policies', 604800000),('aws_applicationautoscaling_scalable_targets', 604800000),('aws_applicationautoscaling_scaling_activities', 604800000),('aws_apprunner_auto_scaling_configurations', 604800000),('aws_apprunner_observability_configurations', 604800000),('aws_appstream_images', 604800000),('aws_appstream_stack_user_associations', 604800000),('aws_appsync_graphql_apis', 604800000),('aws_athena_data_catalog_database_tables', 604800000),('aws_athena_data_catalog_databases', 604800000),('aws_athena_data_catalogs', 604800000),('aws_athena_work_group_named_queries', 604800000),('aws_athena_work_group_query_executions', 604800000),('aws_athena_work_groups', 604800000),('aws_autoscaling_group_scaling_policies', 604800000),('aws_autoscaling_launch_configurations', 604800000),('aws_autoscaling_scheduled_actions', 604800000),('aws_autoscaling_warm_pools', 604800000),('aws_availability_zones', 604800000),('aws_backup_global_settings', 604800000),('aws_backup_jobs', 604800000),('aws_backup_plan_selections', 604800000),('aws_backup_plans', 604800000),('aws_backup_region_settings', 604800000),('aws_backup_report_plans', 604800000),('aws_budgets_actions', 604800000),('aws_budgets_budgets', 604800000),('aws_cloudfront_cache_policies', 604800000),('aws_cloudfront_distributions', 604800000),('aws_cloudfront_origin_access_identities', 604800000),('aws_cloudfront_origin_request_policies', 604800000),('aws_cloudfront_response_headers_policies', 604800000),('aws_cloudhsmv2_backups', 604800000),('aws_cloudtrail_channels', 604800000),('aws_cloudtrail_imports', 604800000),('aws_cloudtrail_trail_event_selectors', 604800000),('aws_cloudtrail_trails', 604800000),('aws_cloudwatchlogs_log_group_subscription_filters', 604800000),('aws_cloudwatchlogs_log_groups', 604800000),('aws_cloudwatchlogs_metric_filters', 604800000),('aws_cloudwatchlogs_resource_policies', 604800000),('aws_codebuild_builds', 604800000),('aws_codebuild_projects', 604800000),('aws_codebuild_source_credentials', 604800000),('aws_codecommit_repositories', 604800000),('aws_codedeploy_applications', 604800000),('aws_codedeploy_deployment_configs', 604800000),('aws_codepipeline_pipelines', 604800000),('aws_codepipeline_webhooks', 604800000),('aws_cognito_identity_pools', 604800000),('aws_cognito_user_pool_identity_providers', 604800000),('aws_cognito_user_pools', 604800000),('aws_computeoptimizer_autoscaling_group_recommendations', 604800000),('aws_computeoptimizer_ebs_volume_recommendations', 604800000),('aws_computeoptimizer_ec2_instance_recommendations', 604800000),('aws_computeoptimizer_enrollment_statuses', 604800000),('aws_computeoptimizer_lambda_function_recommendations', 604800000),('aws_config_config_rule_compliance_details', 604800000),('aws_config_config_rule_compliances', 604800000),('aws_config_config_rules', 604800000),('aws_config_configuration_recorders', 604800000),('aws_config_delivery_channel_statuses', 604800000),('aws_config_delivery_channels', 604800000),('aws_datapipeline_pipelines', 604800000),('aws_datasync_agents', 604800000),('aws_datasync_azureblob_locations', 604800000),('aws_datasync_efs_locations', 604800000),('aws_datasync_hdfs_locations', 604800000),('aws_datasync_locations', 604800000),('aws_datasync_s3_locations', 604800000),('aws_detective_graph_members', 604800000),('aws_detective_graphs', 604800000),('aws_directconnect_connections', 604800000),('aws_directconnect_gateway_associations', 604800000),('aws_directconnect_gateway_attachments', 604800000),('aws_directconnect_gateways', 604800000),('aws_directconnect_locations', 604800000),('aws_directconnect_virtual_gateways', 604800000),('aws_directconnect_virtual_interfaces', 604800000),('aws_directoryservice_directories', 604800000),('aws_dms_replication_subnet_groups', 604800000),('aws_docdb_certificates', 604800000),('aws_docdb_event_categories', 604800000),('aws_docdb_event_subscriptions', 604800000),('aws_docdb_events', 604800000),('aws_docdb_subnet_groups', 604800000),('aws_ebs_default_kms_key_ids', 604800000),('aws_ebs_encryption_by_defaults', 604800000),('aws_ec2_account_attributes', 604800000),('aws_ec2_customer_gateways', 604800000),('aws_ec2_dhcp_options', 604800000),('aws_ec2_ebs_snapshot_attributes', 604800000),('aws_ec2_ebs_snapshots', 604800000),('aws_ec2_ebs_volume_statuses', 604800000),('aws_ec2_ebs_volumes', 604800000),('aws_ec2_egress_only_internet_gateways', 604800000),('aws_ec2_eips', 604800000),('aws_ec2_flow_logs', 604800000),('aws_ec2_image_block_public_access_states', 604800000),('aws_ec2_image_last_launched_times', 604800000),('aws_ec2_image_launch_permissions', 604800000),('aws_ec2_instance_connect_endpoints', 604800000),('aws_ec2_instance_credit_specifications', 604800000),('aws_ec2_instance_statuses', 604800000),('aws_ec2_internet_gateways', 604800000),('aws_ec2_ipam_discovered_accounts', 604800000),('aws_ec2_ipam_discovered_public_addresses', 604800000),('aws_ec2_ipam_discovered_resource_cidrs', 604800000),('aws_ec2_ipam_resource_discoveries', 604800000),('aws_ec2_ipam_resource_discovery_associations', 604800000),('aws_ec2_ipam_scopes', 604800000),('aws_ec2_ipams', 604800000),('aws_ec2_key_pairs', 604800000),('aws_ec2_launch_template_versions', 604800000),('aws_ec2_launch_templates', 604800000),('aws_ec2_managed_prefix_lists', 604800000),('aws_ec2_nat_gateways', 604800000),('aws_ec2_network_acls', 604800000),('aws_ec2_network_interfaces', 604800000),('aws_ec2_regional_configs', 604800000),('aws_ec2_replace_root_volume_tasks', 604800000),('aws_ec2_reserved_instances', 604800000),('aws_ec2_route_tables', 604800000),('aws_ec2_serial_console_access_statuses', 604800000),('aws_ec2_snapshot_block_public_access_states', 604800000),('aws_ec2_subnets', 604800000),('aws_ec2_transit_gateway_attachments', 604800000),('aws_ec2_transit_gateway_peering_attachments', 604800000),('aws_ec2_transit_gateway_route_tables', 604800000),('aws_ec2_transit_gateway_vpc_attachments', 604800000),('aws_ec2_transit_gateways', 604800000),('aws_ec2_vpc_endpoint_connections', 604800000),('aws_ec2_vpc_endpoint_service_configurations', 604800000),('aws_ec2_vpc_endpoints', 604800000),('aws_ec2_vpc_peering_connections', 604800000),('aws_ec2_vpcs', 604800000),('aws_ec2_vpn_connections', 604800000),('aws_ec2_vpn_gateways', 604800000),('aws_ecr_registries', 604800000),('aws_ecr_repositories', 604800000),('aws_ecr_repository_image_scan_findings', 604800000),('aws_ecr_repository_images', 604800000),('aws_ecr_repository_lifecycle_policies', 604800000),('aws_ecr_repository_policies', 604800000),('aws_efs_filesystems', 604800000),('aws_elasticache_clusters', 604800000),('aws_elasticache_global_replication_groups', 604800000),('aws_elasticache_replication_groups', 604800000),('aws_elasticache_reserved_cache_nodes', 604800000),('aws_elasticache_snapshots', 604800000),('aws_elasticache_subnet_groups', 604800000),('aws_elasticache_update_actions', 604800000),('aws_elasticache_users', 604800000),('aws_elasticbeanstalk_application_versions', 604800000),('aws_elasticbeanstalk_applications', 604800000),('aws_elasticsearch_domains', 604800000),('aws_elasticsearch_packages', 604800000),('aws_elasticsearch_reserved_instances', 604800000),('aws_elasticsearch_versions', 604800000),('aws_elastictranscoder_pipeline_jobs', 604800000),('aws_elastictranscoder_pipelines', 604800000),('aws_elastictranscoder_presets', 604800000),('aws_emr_block_public_access_configs', 604800000),('aws_emr_cluster_instance_fleets', 604800000),('aws_emr_cluster_instance_groups', 604800000),('aws_emr_cluster_instances', 604800000),('aws_emr_clusters', 604800000),('aws_emr_release_labels', 604800000),('aws_emr_security_configurations', 604800000),('aws_emr_steps', 604800000),('aws_emr_studios', 604800000),('aws_eventbridge_api_destinations', 604800000),('aws_eventbridge_archives', 604800000),('aws_eventbridge_connections', 604800000),('aws_eventbridge_event_bus_rules', 604800000),('aws_eventbridge_event_bus_targets', 604800000),('aws_eventbridge_event_buses', 604800000),('aws_eventbridge_event_sources', 604800000),('aws_firehose_delivery_streams', 604800000),('aws_fsx_data_repository_tasks', 604800000),('aws_glacier_data_retrieval_policies', 604800000),('aws_glacier_vault_notifications', 604800000),('aws_glacier_vaults', 604800000),('aws_globalaccelerator_accelerators', 604800000),('aws_glue_classifiers', 604800000),('aws_glue_crawlers', 604800000),('aws_glue_database_table_indexes', 604800000),('aws_glue_database_tables', 604800000),('aws_glue_databases', 604800000),('aws_glue_datacatalog_encryption_settings', 604800000),('aws_glue_job_runs', 604800000),('aws_glue_jobs', 604800000),('aws_glue_security_configurations', 604800000),('aws_glue_triggers', 604800000),('aws_health_affected_entities', 604800000),('aws_health_event_details', 604800000),('aws_health_events', 604800000),('aws_iam_account_authorization_details', 604800000),('aws_iam_accounts', 604800000),('aws_iam_group_attached_policies', 604800000),('aws_iam_group_last_accessed_details', 604800000),('aws_iam_group_policies', 604800000),('aws_iam_groups', 604800000),('aws_iam_instance_profiles', 604800000),('aws_iam_mfa_devices', 604800000),('aws_iam_openid_connect_identity_providers', 604800000),('aws_iam_password_policies', 604800000),('aws_iam_policies', 604800000),('aws_iam_policy_default_versions', 604800000),('aws_iam_policy_last_accessed_details', 604800000),('aws_iam_policy_versions', 604800000),('aws_iam_role_attached_policies', 604800000),('aws_iam_role_last_accessed_details', 604800000),('aws_iam_role_policies', 604800000),('aws_iam_roles', 604800000),('aws_iam_server_certificates', 604800000),('aws_iam_ssh_public_keys', 604800000),('aws_iam_user_access_keys', 604800000),('aws_iam_user_attached_policies', 604800000),('aws_iam_user_groups', 604800000),('aws_iam_user_last_accessed_details', 604800000),('aws_iam_user_policies', 604800000),('aws_iam_virtual_mfa_devices', 604800000),('aws_inspector2_covered_resources', 604800000),('aws_inspector_findings', 604800000),('aws_keyspaces_keyspaces', 604800000),('aws_kinesis_streams', 604800000),('aws_kms_aliases', 604800000),('aws_kms_key_grants', 604800000),('aws_kms_key_policies', 604800000),('aws_kms_key_rotation_statuses', 604800000),('aws_kms_key_rotations', 604800000),('aws_kms_keys', 604800000),('aws_lightsail_instance_port_states', 604800000),('aws_lightsail_instances', 604800000),('aws_mq_broker_configuration_revisions', 604800000),('aws_mq_broker_users', 604800000),('aws_neptune_cluster_snapshots', 604800000),('aws_neptune_clusters', 604800000),('aws_neptune_event_subscriptions', 604800000),('aws_neptune_subnet_groups', 604800000),('aws_networkfirewall_firewall_policies', 604800000),('aws_networkmanager_links', 604800000),('aws_opensearch_reserved_instances', 604800000),('aws_ram_principals', 604800000),('aws_ram_resource_share_associations', 604800000),('aws_ram_resource_share_invitations', 604800000),('aws_ram_resource_share_permissions', 604800000),('aws_ram_resource_shares', 604800000),('aws_ram_resource_types', 604800000),('aws_ram_resources', 604800000),('aws_rds_certificates', 604800000),('aws_rds_db_proxies', 604800000),('aws_rds_db_proxy_target_groups', 604800000),('aws_rds_db_proxy_targets', 604800000),('aws_rds_db_security_groups', 604800000),('aws_rds_event_subscriptions', 604800000),('aws_rds_events', 604800000),('aws_rds_option_groups', 604800000),('aws_rds_pending_maintenance_actions', 604800000),('aws_rds_reserved_instances', 604800000),('aws_rds_subnet_groups', 604800000),('aws_redshift_endpoint_authorizations', 604800000),('aws_redshift_reserved_nodes', 604800000),('aws_redshift_subnet_groups', 604800000),('aws_regions', 604800000),('aws_resiliencehub_suggested_resiliency_policies', 604800000),('aws_resourcegroups_resource_groups', 604800000),('aws_route53_delegation_sets', 604800000),('aws_route53_domains', 604800000),('aws_route53_health_checks', 604800000),('aws_route53_hosted_zone_resource_record_sets', 604800000),('aws_route53_hosted_zones', 604800000),('aws_route53_operations', 604800000),('aws_route53_traffic_policies', 604800000),('aws_route53_traffic_policy_versions', 604800000),('aws_route53recoveryreadiness_resource_sets', 604800000),('aws_route53resolver_firewall_configs', 604800000),('aws_route53resolver_firewall_domain_lists', 604800000),('aws_route53resolver_resolver_endpoints', 604800000),('aws_route53resolver_resolver_rule_associations', 604800000),('aws_route53resolver_resolver_rules', 604800000),('aws_sagemaker_endpoint_configurations', 604800000),('aws_sagemaker_endpoints', 604800000),('aws_sagemaker_models', 604800000),('aws_sagemaker_training_jobs', 604800000),('aws_scheduler_schedule_groups', 604800000),('aws_secretsmanager_secret_versions', 604800000),('aws_secretsmanager_secrets', 604800000),('aws_servicediscovery_instances', 604800000),('aws_servicediscovery_namespaces', 604800000),('aws_servicediscovery_services', 604800000),('aws_ses_active_receipt_rule_sets', 604800000),('aws_ses_configuration_set_event_destinations', 604800000),('aws_ses_configuration_sets', 604800000),('aws_ses_identities', 604800000),('aws_ses_templates', 604800000),('aws_sns_subscriptions', 604800000),('aws_sqs_queues', 604800000),('aws_ssm_associations', 604800000),('aws_ssm_compliance_summary_items', 604800000),('aws_ssm_document_versions', 604800000),('aws_ssm_documents', 604800000),('aws_ssm_instance_compliance_items', 604800000),('aws_ssm_instances', 604800000),('aws_ssm_inventories', 604800000),('aws_ssm_inventory_schemas', 604800000),('aws_ssm_patch_baselines', 604800000),('aws_ssmincidents_incident_timeline_events', 604800000),('aws_stepfunctions_activities', 604800000),('aws_stepfunctions_state_machines', 604800000),('aws_support_case_communications', 604800000),('aws_support_cases', 604800000),('aws_support_services', 604800000),('aws_support_severity_levels', 604800000),('aws_support_trusted_advisor_check_results', 604800000),('aws_support_trusted_advisor_check_summaries', 604800000),('aws_support_trusted_advisor_checks', 604800000),('aws_timestream_databases', 604800000),('aws_timestream_tables', 604800000),('aws_transfer_profiles', 604800000),('aws_transfer_servers', 604800000),('aws_transfer_users', 604800000),('aws_waf_rules', 604800000),('aws_waf_web_acls', 604800000),('aws_wafregional_rule_groups', 604800000),('aws_wafv2_ipsets', 604800000),('aws_wafv2_managed_rule_groups', 604800000),('aws_wafv2_regex_pattern_sets', 604800000),('aws_wafv2_rule_groups', 604800000),('aws_wafv2_web_acls', 604800000),('aws_workspaces_workspaces', 604800000),('aws_xray_encryption_configs', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13165,54 +13215,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsRemainingData",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsRemainingDataTaskDefinitionCloudquerySourceAwsRemainingDataFirelensLogGroupAEF7D0F2",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsRemainingDataFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "1024",
@@ -13582,6 +13584,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsResourcesForAvailabilityDashboard",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionCloudquerySourceAwsResourcesForAvailabilityDashboardFirelensLogGroup050F1B04",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsResourcesForAvailabilityDashboardFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -13655,54 +13705,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsResourcesForAvailabilityDashboard",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsResourcesForAvailabilityDashboardTaskDefinitionCloudquerySourceAwsResourcesForAvailabilityDashboardFirelensLogGroup050F1B04",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsResourcesForAvailabilityDashboardFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -14319,6 +14321,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsSSMParameters",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsSSMParametersTaskDefinitionCloudquerySourceAwsSSMParametersFirelensLogGroup0210F31D",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsSSMParametersFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -14392,54 +14442,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "AwsSSMParameters",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceAwsSSMParametersTaskDefinitionCloudquerySourceAwsSSMParametersFirelensLogGroup0210F31D",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-AwsSSMParametersFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -14981,6 +14983,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "EndOfLife",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceEndOfLifeTaskDefinitionCloudquerySourceEndOfLifeFirelensLogGroup772C5E06",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-EndOfLifeFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -15054,54 +15104,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "EndOfLife",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceEndOfLifeTaskDefinitionCloudquerySourceEndOfLifeFirelensLogGroup772C5E06",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-EndOfLifeFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -15733,6 +15735,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "FastlyServices",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesFirelensLogGroupF5954401",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-FastlyServicesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -15806,54 +15856,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "FastlyServices",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceFastlyServicesTaskDefinitionCloudquerySourceFastlyServicesFirelensLogGroupF5954401",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-FastlyServicesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -16237,7 +16239,7 @@ spec:
   name: galaxies
   path: guardian/galaxies
   registry: github
-  version: v2.1.9
+  version: v2.1.11
   destinations:
     - postgresql
   tables:
@@ -16441,6 +16443,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "Galaxies",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesFirelensLogGroupB5272E0D",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GalaxiesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -16514,54 +16564,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "Galaxies",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGalaxiesTaskDefinitionCloudquerySourceGalaxiesFirelensLogGroupB5272E0D",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GalaxiesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -17190,6 +17192,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubCopilotBilling",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubCopilotBillingTaskDefinitionCloudquerySourceGitHubCopilotBillingFirelensLogGroup4DDAF2E0",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubCopilotBillingFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -17263,54 +17313,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubCopilotBilling",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubCopilotBillingTaskDefinitionCloudquerySourceGitHubCopilotBillingFirelensLogGroup4DDAF2E0",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubCopilotBillingFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -18217,6 +18219,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubIssues",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesFirelensLogGroupE9112ED9",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubIssuesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -18290,54 +18340,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubIssues",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubIssuesTaskDefinitionCloudquerySourceGitHubIssuesFirelensLogGroupE9112ED9",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubIssuesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -18738,6 +18740,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubLanguages",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubLanguagesTaskDefinitionCloudquerySourceGitHubLanguagesFirelensLogGroup38EAAC3E",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubLanguagesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -18811,54 +18861,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubLanguages",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubLanguagesTaskDefinitionCloudquerySourceGitHubLanguagesFirelensLogGroup38EAAC3E",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubLanguagesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -19461,6 +19463,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubReleases",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubReleasesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -19534,54 +19584,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubReleases",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubReleasesTaskDefinitionCloudquerySourceGitHubReleasesFirelensLogGroupC7D475A1",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubReleasesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -20005,7 +20007,7 @@ spec:
   destinations:
     - postgresql
   spec:
-    concurrency: 1000
+    concurrency: 10
     orgs:
       - guardian
     app_auth:
@@ -20223,6 +20225,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubRepositories",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubRepositoriesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -20296,54 +20346,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubRepositories",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubRepositoriesTaskDefinitionCloudquerySourceGitHubRepositoriesFirelensLogGroup42A4D85D",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubRepositoriesFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -20981,6 +20983,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubSboms",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubSbomsTaskDefinitionCloudquerySourceGitHubSbomsFirelensLogGroup04572763",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubSbomsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -21054,54 +21104,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubSboms",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubSbomsTaskDefinitionCloudquerySourceGitHubSbomsFirelensLogGroup04572763",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubSbomsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -21739,6 +21741,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubSecretScanningAlerts",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubSecretScanningAlertsTaskDefinitionCloudquerySourceGitHubSecretScanningAlertsFirelensLogGroup07A2F53B",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubSecretScanningAlertsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -21812,54 +21862,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubSecretScanningAlerts",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubSecretScanningAlertsTaskDefinitionCloudquerySourceGitHubSecretScanningAlertsFirelensLogGroup07A2F53B",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubSecretScanningAlertsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -22502,6 +22504,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubTeams",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsFirelensLogGroup8B1FFADC",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubTeamsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -22575,54 +22625,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "GitHubTeams",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceGitHubTeamsTaskDefinitionCloudquerySourceGitHubTeamsFirelensLogGroup8B1FFADC",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-GitHubTeamsFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "2048",
@@ -23230,7 +23232,7 @@ spec:
           },
           {
             "Essential": false,
-            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.23",
+            "Image": "ghcr.io/guardian/cq-source-ns1:0.1.25",
             "LogConfiguration": {
               "LogDriver": "awsfirelens",
               "Options": {
@@ -23243,6 +23245,54 @@ spec:
               },
             },
             "Name": "CloudquerySource-NS1PluginContainer",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "NS1",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-NS1Firelens",
             "ReadonlyRootFilesystem": true,
           },
           {
@@ -23319,54 +23369,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "NS1",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceNS1TaskDefinitionCloudquerySourceNS1FirelensLogGroup3A327514",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-NS1Firelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -24266,6 +24268,54 @@ spec:
             "ReadonlyRootFilesystem": true,
           },
           {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "RiffRaffData",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataFirelensLogGroup55CB2F37",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-RiffRaffDataFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
             "Command": [
               "/bin/sh",
               "-c",
@@ -24339,54 +24389,6 @@ spec:
                 },
               },
             ],
-          },
-          {
-            "Environment": [
-              {
-                "Name": "STACK",
-                "Value": "deploy",
-              },
-              {
-                "Name": "STAGE",
-                "Value": "PROD",
-              },
-              {
-                "Name": "APP",
-                "Value": "service-catalogue",
-              },
-              {
-                "Name": "GU_REPO",
-                "Value": "guardian/service-catalogue",
-              },
-              {
-                "Name": "TASK_NAME",
-                "Value": "RiffRaffData",
-              },
-            ],
-            "Essential": true,
-            "FirelensConfiguration": {
-              "Type": "fluentbit",
-            },
-            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-group": {
-                  "Ref": "CloudquerySourceRiffRaffDataTaskDefinitionCloudquerySourceRiffRaffDataFirelensLogGroup55CB2F37",
-                },
-                "awslogs-region": "eu-west-1",
-                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
-              },
-            },
-            "MountPoints": [
-              {
-                "ContainerPath": "/init",
-                "ReadOnly": false,
-                "SourceVolume": "firelens-volume",
-              },
-            ],
-            "Name": "CloudquerySource-RiffRaffDataFirelens",
-            "ReadonlyRootFilesystem": true,
           },
         ],
         "Cpu": "256",
@@ -24895,6 +24897,33 @@ spec:
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "DevReadOnlyDevPolicyD2501126": {
+      "Properties": {
+        "Description": "Readonly access to the Service Catalogue database",
+        "Path": "/developer-policy/guardian/service-catalogue/deploy/PROD/service-catalogue-dev/",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "DevReadOnlyPostgresPassword4318B657",
+              },
+            },
+            {
+              "Action": "secretsmanager:ListSecrets",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::ManagedPolicy",
     },
     "DevReadOnlyPostgresPassword4318B657": {
       "DeletionPolicy": "Delete",
@@ -31501,7 +31530,7 @@ spec:
         "ClusterSettings": [
           {
             "Name": "containerInsights",
-            "Value": "enabled",
+            "Value": "enhanced",
           },
         ],
         "Tags": [

@@ -46,6 +46,10 @@ export const exampleDependabotAlert: Alert[] = [
 				},
 			],
 			severity: 'high',
+			epss: {
+				percentage: 0.1,
+				percentile: 0.88,
+			},
 			cvss: {
 				vector_string: 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N',
 				score: 7.5,
