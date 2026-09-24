@@ -29,9 +29,6 @@ jobs:
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 
-    env:
-      NODE_OPTIONS: '--max_old_space_size=4096'
-
     services:
       # See https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
       postgres:
@@ -180,5 +177,3 @@ jobs:
               - packages/cloudbuster/dist/cloudbuster.zip
             cloudquery-usage:
               - packages/cloudquery-usage/dist/cloudquery-usage.zip
-    env:
-      NODE_OPTIONS: '--max_old_space_size=4096'

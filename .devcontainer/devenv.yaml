@@ -7,7 +7,3 @@ modules:
 
 mounts:
   - 'source=${localEnv:HOME}/.gu/service_catalogue,target=/home/vscode/.gu/service_catalogue,type=bind,consistency=cached'
-
-remoteEnv:
-  - name: NODE_OPTIONS
-    value: --max-old-space-size=8192
