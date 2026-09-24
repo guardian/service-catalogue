@@ -27,9 +27,6 @@
   "mounts" : [
     "source=${localEnv:HOME}/.gu/service_catalogue,target=/home/vscode/.gu/service_catalogue,type=bind,consistency=cached"
   ],
-  "remoteEnv" : {
-    "NODE_OPTIONS" : "--max-old-space-size=8192"
-  },
   "capAdd" : [
     "SYS_ADMIN"
   ],
