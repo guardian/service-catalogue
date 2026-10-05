@@ -17,15 +17,15 @@
 		"@aws-sdk/rds-signer": "^3.1140.0",
 		"@octokit/auth-app": "^8.3.1",
 		"@octokit/graphql": "^9.0.5",
-		"@prisma/adapter-pg": "7.8.0",
-		"@prisma/client": "7.8.0",
+		"@prisma/adapter-pg": "7.10.0",
+		"@prisma/client": "7.10.0",
 		"octokit": "^5.0.5",
 		"octokit-plugin-create-pull-request": "^6.0.1"
 	},
 	"devDependencies": {
 		"@octokit/types": "^18.0.0",
 		"@types/aws-lambda": "^8.10.163",
-		"prisma": "7.8.0",
+		"prisma": "7.10.0",
 		"tsx": "^4.23.15"
 	}
 }
