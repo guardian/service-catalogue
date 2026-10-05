@@ -10,8 +10,8 @@
     "@aws-sdk/client-ecs": "^3.1140.0",
     "@aws-sdk/client-ssm": "^3.1140.0",
     "@types/yargs": "^17.0.35",
-    "execa": "^10.0.0",
+    "execa": "^10.0.1",
     "terminal-link": "^5.0.0",
-    "yargs": "^18.0.0"
+    "yargs": "^18.2.0"
   }
 }
