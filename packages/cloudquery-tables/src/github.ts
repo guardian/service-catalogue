@@ -2,6 +2,7 @@
  * Tables collected with https://hub.cloudquery.io/plugins/source/cloudquery/github
  */
 export const githubTables = [
+	'github_code_scanning_alerts',
 	'github_copilot_billing',
 	'github_copilot_seats',
 	'github_issues',
