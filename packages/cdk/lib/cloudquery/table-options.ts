@@ -50,7 +50,7 @@ export const inspector2TableOptions = {
 	list_findings: [
 		{
 			filter_criteria: {
-				finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
+				//finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
 				severity: [
 					stringFilter(AwsComparison.Equals, 'CRITICAL'),
 					stringFilter(AwsComparison.Equals, 'HIGH'),
