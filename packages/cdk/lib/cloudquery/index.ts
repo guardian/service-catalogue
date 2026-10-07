@@ -536,13 +536,19 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 2048,
 		},
 		{
-			name: 'GitHubSecretScanningAlerts',
-			description: 'Collect GitHub secret scanning alerts',
+			name: 'GitHubAlerts',
+			description: 'Collect GitHub secret and code scanning alerts',
 			schedule: Schedule.cron({ hour: '23', minute: '0' }),
-			config: githubSourceConfig({
-				org: gitHubOrgName,
-				tables: ['github_secret_scanning_alerts'],
-			}),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: [
+						'github_secret_scanning_alerts',
+						'github_code_scanning_alerts',
+					],
+				},
+				'incremental',
+			),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
@@ -555,22 +561,6 @@ export function addCloudqueryEcsCluster(
 				org: gitHubOrgName,
 				tables: ['github_copilot_billing', 'github_copilot_seats'],
 			}),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 2048,
-		},
-		{
-			name: 'GitHubAlerts',
-			description: 'Collect GitHub code scanning data.',
-			schedule: Schedule.cron({ hour: '4', minute: '45' }),
-			config: githubSourceConfig(
-				{
-					org: gitHubOrgName,
-					tables: ['github_code_scanning_alerts'],
-					concurrency: 10,
-				},
-				'incremental',
-			),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
