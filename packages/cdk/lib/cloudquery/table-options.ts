@@ -24,6 +24,26 @@ function stringFilter(
 	};
 }
 
+interface AwsDateFilter {
+	start_inclusive: string;
+	end_inclusive?: string;
+}
+
+function dateFilter(
+	start_inclusive: string,
+	end_inclusive: string | undefined = undefined,
+): AwsDateFilter {
+	// leaving out the end date makes it retrieve everything since the start date - but the
+	// parameter has to be absent rather than simply empty.
+	const filter: AwsDateFilter = {
+		start_inclusive: start_inclusive,
+	};
+	if (end_inclusive !== undefined) {
+		filter.end_inclusive = end_inclusive;
+	}
+	return filter;
+}
+
 // https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html
 export const securityHubTableOptions = {
 	get_findings: [
@@ -50,10 +70,14 @@ export const inspector2TableOptions = {
 	list_findings: [
 		{
 			filter_criteria: {
-				finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
+				//finding_status: [stringFilter(AwsComparison.Equals, 'ACTIVE')],
 				severity: [
 					stringFilter(AwsComparison.Equals, 'CRITICAL'),
 					stringFilter(AwsComparison.Equals, 'HIGH'),
+				],
+				updated_at: [
+					// just the start date
+					dateFilter('2026-08-24T00:00:00Z'), //, '2026-09-05T00:00:00Z'),
 				],
 			},
 		},
