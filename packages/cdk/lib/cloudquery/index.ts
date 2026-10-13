@@ -503,7 +503,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubTeams',
 			description:
 				'Collect GitHub team data. Uses include identifying which repositories a team owns.',
-			schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
+			schedule: Schedule.cron({ weekDay: 'MON', hour: '10', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
