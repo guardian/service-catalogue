@@ -2244,7 +2244,7 @@ spec:
     },
     "CloudquerySourceAwsInspector2FindingsScheduledEventRule3644BA8A": {
       "Properties": {
-        "ScheduleExpression": "cron(0 21 * * ? *)",
+        "ScheduleExpression": "cron(0 21 ? * MON *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -2601,7 +2601,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector2_findings', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector2_findings', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",

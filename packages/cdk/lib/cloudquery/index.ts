@@ -153,7 +153,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsInspector2Findings',
 			description: 'Collect inspector 2 findings',
-			schedule: Schedule.cron({ minute: '0', hour: '21' }),
+			schedule: Schedule.cron({ weekDay: 'MON', hour: '21', minute: '0' }),
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
