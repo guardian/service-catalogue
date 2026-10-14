@@ -3,6 +3,10 @@ name: prisma-migrate image
 
 permissions:
   contents: read
+  # Allow the guardian/actions-ecr/push to authenticate with AWS using the Github OIDC token
+  id-token: write
+  # Allow the guardian/actions-ecr/push to comment on PRs
+  pull-requests: write
 
 on:
   pull_request:
@@ -25,9 +29,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-push:
-    uses: ./.github/workflows/release-image.yml
-    with:
-      IMAGE_NAME: prisma-migrate
-    permissions:
-      packages: write
+  prisma-migrate:
+    name: 'Build & Push prisma-migrate image'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: docker buildx build -t prisma-migrate:latest ./containers/prisma-migrate
+
+      - name: Publish image to ECR
+        uses: guardian/actions-ecr/push@v1.0.1
+        with:
+          app: prisma-migrate
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
