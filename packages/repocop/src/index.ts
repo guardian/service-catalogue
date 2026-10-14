@@ -107,11 +107,11 @@ export async function main() {
 	const productionDependabotMalware: RepocopVulnerability[] =
 		await getDependabotMalware(productionRepos, config.gitHubOrg, octokit);
 
-	const combinedProdDependabotVulns: RepocopVulnerability[] =
-		productionDependabotVulnerabilities.concat(productionDependabotMalware);
-
 	const productionWorkflowUsages: guardian_github_actions_usage[] =
 		await getProductionWorkflowUsages(prisma, productionRepos);
+
+	const combinedProdDependabotVulns: RepocopVulnerability[] =
+		productionDependabotVulnerabilities.concat(productionDependabotMalware);
 
 	const customProperties = await getRepositoryCustomProperties(prisma);
 	const customPropertiesExemptedFromDepGraphIntegration: github_repository_custom_properties[] =
