@@ -19279,7 +19279,7 @@ spec:
 spec:
   name: github-languages
   path: guardian/github-languages
-  version: v0.0.7
+  version: v0.1.0
   destinations:
     - postgresql
   tables:
