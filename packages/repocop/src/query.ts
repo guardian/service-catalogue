@@ -34,7 +34,9 @@ export async function getRepositoryBranches(
 	return toNonEmptyArray(branches);
 }
 
-export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
+export const getTeams = async (
+	client: PrismaClient,
+): Promise<NonEmptyArray<Team>> => {
 	const teams = (
 		await client.github_teams.findMany({
 			select: {
@@ -71,7 +73,27 @@ export async function getRepositoryLanguages(
 	return toNonEmptyArray(await client.github_languages.findMany({}));
 }
 
-//Octokit Queries
+export async function getProductionWorkflowUsages(
+	client: PrismaClient,
+	productionRepos: Repository[],
+): Promise<NonEmptyArray<guardian_github_actions_usage>> {
+	const actions_usage = await client.guardian_github_actions_usage.findMany({
+		where: {
+			full_name: { in: productionRepos.map((repo) => repo.full_name) },
+		},
+	});
+	return toNonEmptyArray(actions_usage);
+}
+
+export async function getRepositoryCustomProperties(
+	client: PrismaClient,
+): Promise<NonEmptyArray<github_repository_custom_properties>> {
+	const custom_properties =
+		await client.github_repository_custom_properties.findMany({});
+	return toNonEmptyArray(custom_properties);
+}
+
+//Octokit Queries - any of these could reasonably be empty, so we do not wrap them in NonEmptyArray
 
 async function getAlertsForRepo(
 	octokit: Octokit,
@@ -175,24 +197,4 @@ export async function getDependabotMalware(
 	);
 
 	return dependabotMalware;
-}
-
-export async function getProductionWorkflowUsages(
-	client: PrismaClient,
-	productionRepos: Repository[],
-): Promise<NonEmptyArray<guardian_github_actions_usage>> {
-	const actions_usage = await client.guardian_github_actions_usage.findMany({
-		where: {
-			full_name: { in: productionRepos.map((repo) => repo.full_name) },
-		},
-	});
-	return toNonEmptyArray(actions_usage);
-}
-
-export async function getRepositoryCustomProperties(
-	client: PrismaClient,
-): Promise<NonEmptyArray<github_repository_custom_properties>> {
-	const custom_properties =
-		await client.github_repository_custom_properties.findMany({});
-	return toNonEmptyArray(custom_properties);
 }
