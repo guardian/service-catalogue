@@ -3,6 +3,10 @@ name: Singleton image
 
 permissions:
   contents: read
+  # Allow the guardian/actions-ecr/push to authenticate with AWS using the Github OIDC token
+  id-token: write
+  # Allow the guardian/actions-ecr/push to comment on PRs
+  pull-requests: write
 
 on:
   pull_request:
@@ -29,9 +33,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-push:
-    uses: ./.github/workflows/release-image.yml
-    with:
-      IMAGE_NAME: singleton
-    permissions:
-      packages: write
+  singleton:
+    name: 'Build & Push singleton image'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: docker buildx build -t singleton:latest ./containers/singleton
+
+      - name: Publish image to ECR
+        uses: guardian/actions-ecr/push@v1.0.1
+        with:
+          app: singleton
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
