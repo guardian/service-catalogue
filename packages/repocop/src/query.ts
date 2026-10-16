@@ -31,6 +31,7 @@ export async function getRepositoryBranches(
 		},
 	});
 
+	console.log(`Found ${branches.length} GitHub repository branches.`);
 	return toNonEmptyArray(branches);
 }
 
@@ -46,7 +47,7 @@ export const getTeams = async (
 			},
 		})
 	).map((t) => t as Team);
-	console.debug(`Found ${teams.length} teams.`);
+	console.log(`Found ${teams.length} GitHub teams.`);
 	return toNonEmptyArray(teams);
 };
 
@@ -63,7 +64,7 @@ export async function getStacks(
 		})
 	).map((stack) => stack as AwsCloudFormationStack);
 
-	console.debug(`Found ${stacks.length} stacks.`);
+	console.log(`Found ${stacks.length} AWS CloudFormation stacks.`);
 	return toNonEmptyArray(stacks);
 }
 
@@ -90,6 +91,9 @@ export async function getRepositoryCustomProperties(
 ): Promise<NonEmptyArray<github_repository_custom_properties>> {
 	const custom_properties =
 		await client.github_repository_custom_properties.findMany({});
+	console.log(
+		`Found ${custom_properties.length} GitHub repository custom properties.`,
+	);
 	return toNonEmptyArray(custom_properties);
 }
 
@@ -119,10 +123,12 @@ async function getAlertsForRepo(
 				sort: 'created',
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
-
+		console.log(
+			`Found ${alert.data.length} Dependabot alerts for ${orgName}/${repoName}.`,
+		);
 		return alert.data as Alert[];
 	} catch (error) {
-		console.debug(
+		console.log(
 			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
 		);
 		console.debug(error);
@@ -160,7 +166,7 @@ export async function getDependabotVulnerabilities(
 	).flat();
 
 	console.log(
-		`Found ${dependabotVulnerabilities.length} dependabot vulnerabilities across ${repos.length} repos`,
+		`Found ${dependabotVulnerabilities.length} dependabot vulnerability alerts across ${repos.length} GitHub repos`,
 	);
 
 	return dependabotVulnerabilities;
@@ -193,7 +199,7 @@ export async function getDependabotMalware(
 	).flat();
 
 	console.log(
-		`Found ${dependabotMalware.length} dependabot malware across ${repos.length} repos`,
+		`Found ${dependabotMalware.length} dependabot malware alerts across ${repos.length} GitHub repos`,
 	);
 
 	return dependabotMalware;
