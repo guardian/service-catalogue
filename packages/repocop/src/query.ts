@@ -1,3 +1,4 @@
+import { logger } from 'common/logs.js';
 import type {
 	github_languages,
 	github_repository_branches,
@@ -31,7 +32,9 @@ export async function getRepositoryBranches(
 		},
 	});
 
-	console.log(`Found ${branches.length} GitHub repository branches.`);
+	logger.log({
+		message: `Found ${branches.length} GitHub repository branches.`,
+	});
 	return toNonEmptyArray(branches);
 }
 
@@ -47,7 +50,9 @@ export const getTeams = async (
 			},
 		})
 	).map((t) => t as Team);
-	console.log(`Found ${teams.length} GitHub teams.`);
+	logger.log({
+		message: `Found ${teams.length} GitHub teams.`,
+	});
 	return toNonEmptyArray(teams);
 };
 
@@ -64,7 +69,9 @@ export async function getStacks(
 		})
 	).map((stack) => stack as AwsCloudFormationStack);
 
-	console.log(`Found ${stacks.length} AWS CloudFormation stacks.`);
+	logger.log({
+		message: `Found ${stacks.length} AWS CloudFormation stacks.`,
+	});
 	return toNonEmptyArray(stacks);
 }
 
@@ -91,9 +98,9 @@ export async function getRepositoryCustomProperties(
 ): Promise<NonEmptyArray<github_repository_custom_properties>> {
 	const custom_properties =
 		await client.github_repository_custom_properties.findMany({});
-	console.log(
-		`Found ${custom_properties.length} GitHub repository custom properties.`,
-	);
+	logger.log({
+		message: `Found ${custom_properties.length} GitHub repository custom properties.`,
+	});
 	return toNonEmptyArray(custom_properties);
 }
 
@@ -123,14 +130,14 @@ async function getAlertsForRepo(
 				sort: 'created',
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
-		console.log(
-			`Found ${alert.data.length} Dependabot alerts for ${orgName}/${repoName}.`,
-		);
+		logger.log({
+			message: `Found ${alert.data.length} Dependabot alerts for ${orgName}/${repoName}.`,
+		});
 		return alert.data as Alert[];
 	} catch (error) {
-		console.log(
-			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
-		);
+		logger.log({
+			message: `Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
+		});
 		console.debug(error);
 		// Return undefined if dependabot is not enabled, to distinguish from
 		// the scenario where it is enabled, but there are no alerts
@@ -165,9 +172,9 @@ export async function getDependabotVulnerabilities(
 		)
 	).flat();
 
-	console.log(
-		`Found ${dependabotVulnerabilities.length} dependabot vulnerability alerts across ${repos.length} GitHub repos`,
-	);
+	logger.log({
+		message: `Found ${dependabotVulnerabilities.length} dependabot vulnerability alerts across ${repos.length} GitHub repos`,
+	});
 
 	return dependabotVulnerabilities;
 }
@@ -198,9 +205,9 @@ export async function getDependabotMalware(
 		)
 	).flat();
 
-	console.log(
-		`Found ${dependabotMalware.length} dependabot malware alerts across ${repos.length} GitHub repos`,
-	);
+	logger.log({
+		message: `Found ${dependabotMalware.length} dependabot malware alerts across ${repos.length} GitHub repos`,
+	});
 
 	return dependabotMalware;
 }
