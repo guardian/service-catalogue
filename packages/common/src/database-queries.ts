@@ -20,7 +20,7 @@ import type {
 export async function getFsbpFindings(
 	prisma: PrismaClient,
 	severities: SecurityHubSeverity[],
-): Promise<SecurityHubFinding[]> {
+): Promise<NonEmptyArray<SecurityHubFinding>> {
 	const findings: aws_securityhub_findings[] =
 		await prisma.aws_securityhub_findings.findMany({
 			where: {
@@ -35,7 +35,8 @@ export async function getFsbpFindings(
 			},
 		});
 
-	return findings as unknown as SecurityHubFinding[];
+	//This query will return suppressed findings so is unlikely to ever actually be empty
+	return toNonEmptyArray(findings as unknown as SecurityHubFinding[]);
 }
 
 export async function getRepoOwnership(

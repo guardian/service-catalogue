@@ -75,7 +75,6 @@ async function writeVulnerabilitiesTable(
 
 export async function main() {
 	const config: Config = await getConfig();
-
 	const prisma = getPrismaClient(config);
 	const octokit = await stageAwareOctokit(config.stage);
 
@@ -95,6 +94,11 @@ export async function main() {
 
 	const productionRepos = unarchivedRepos.filter((repo) => isProduction(repo));
 
+	const productionWorkflowUsages: guardian_github_actions_usage[] =
+		await getProductionWorkflowUsages(prisma, productionRepos);
+
+	const customProperties = await getRepositoryCustomProperties(prisma);
+
 	// Critical and high Dependabot alerts with alert_type: 'general'
 	const productionDependabotVulnerabilities: RepocopVulnerability[] =
 		await getDependabotVulnerabilities(
@@ -110,10 +114,6 @@ export async function main() {
 	const combinedProdDependabotVulns: RepocopVulnerability[] =
 		productionDependabotVulnerabilities.concat(productionDependabotMalware);
 
-	const productionWorkflowUsages: guardian_github_actions_usage[] =
-		await getProductionWorkflowUsages(prisma, productionRepos);
-
-	const customProperties = await getRepositoryCustomProperties(prisma);
 	const customPropertiesExemptedFromDepGraphIntegration: github_repository_custom_properties[] =
 		customProperties.filter((property) => {
 			return (
