@@ -82,6 +82,11 @@ export async function main() {
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes),
 		(repo) => !repo.archived,
 	);
+
+	console.log(
+		`Found ${unarchivedRepos.length} unarchived GitHub repositories and ${archivedRepos.length} archived GitHub repositories.`,
+	);
+
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const repoLanguages = await getRepositoryLanguages(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
