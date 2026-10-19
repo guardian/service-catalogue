@@ -14,7 +14,7 @@ import {
 	GuVpc,
 	SubnetType,
 } from '@guardian/cdk/lib/constructs/ec2';
-import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import { GuDeveloperPolicy } from '@guardian/cdk/lib/constructs/iam/policies';
 import type { App } from 'aws-cdk-lib';
 import { Duration, Tags } from 'aws-cdk-lib';
 import {
@@ -298,7 +298,7 @@ export class ServiceCatalogue extends GuStack {
 			},
 		);
 
-		new GuDeveloperPolicyExperimental(this, 'DevReadOnlyDevPolicy', {
+		new GuDeveloperPolicy(this, 'DevReadOnlyDevPolicy', {
 			grantId: GRANT_ID,
 			friendlyName: 'Readonly access to the Service Catalogue database',
 			statements: [
