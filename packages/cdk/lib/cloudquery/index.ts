@@ -153,7 +153,7 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'AwsInspector2Findings',
 			description: 'Collect inspector 2 findings',
-			schedule: Schedule.cron({ minute: '0', hour: '21' }),
+			schedule: Schedule.cron({ weekDay: 'MON', hour: '21', minute: '0' }),
 			config: awsSourceConfigForAccount(
 				GuardianAwsAccounts.Security,
 				{
@@ -450,10 +450,12 @@ export function addCloudqueryEcsCluster(
 
 	const githubSources: CloudquerySource[] = [
 		{
+			// Allow at least 3 hours for this job to finish due to rate limits/low concurrency
+			// Must finish before repocop runs at 3am
 			name: 'GitHubRepositories',
 			description:
 				'Collect GitHub repository data. Uses include RepoCop, which flags repositories that do not meet certain obligations.',
-			schedule: Schedule.cron({ hour: '0', minute: '0' }),
+			schedule: Schedule.cron({ hour: '21', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -463,7 +465,7 @@ export function addCloudqueryEcsCluster(
 					'github_repository_custom_properties',
 					'github_workflows',
 				],
-				concurrency: 10,
+				concurrency: 2,
 			}),
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
@@ -487,6 +489,51 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 2048,
 		},
 		{
+			name: 'GitHubAlerts',
+			description: 'Collect GitHub secret and code scanning alerts',
+			schedule: Schedule.cron({ hour: '2', minute: '30' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: [
+						'github_secret_scanning_alerts',
+						'github_code_scanning_alerts',
+					],
+				},
+				'incremental',
+			),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubIssues',
+			description: 'Collect GitHub issue data (PRs and Issues)',
+			schedule: Schedule.cron({ hour: '3', minute: '45' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: ['github_issues'],
+				},
+				'incremental',
+			),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubCopilotBilling',
+			description: 'Collect GitHub Copilot billing data',
+			schedule: Schedule.cron({ hour: '3', minute: '45' }),
+			config: githubSourceConfig({
+				org: gitHubOrgName,
+				tables: ['github_copilot_billing', 'github_copilot_seats'],
+			}),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
 			name: 'GitHubReleases',
 			description: '',
 			schedule: Schedule.cron({ weekDay: 'MON', hour: '10', minute: '0' }), // Every Monday, at 10AM UTC
@@ -503,7 +550,7 @@ export function addCloudqueryEcsCluster(
 			name: 'GitHubTeams',
 			description:
 				'Collect GitHub team data. Uses include identifying which repositories a team owns.',
-			schedule: Schedule.cron({ weekDay: '1', hour: '10', minute: '0' }),
+			schedule: Schedule.cron({ weekDay: 'MON', hour: '10', minute: '0' }),
 			config: githubSourceConfig({
 				org: gitHubOrgName,
 				tables: [
@@ -519,51 +566,6 @@ export function addCloudqueryEcsCluster(
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 4096,
 			cpu: 2048,
-		},
-		{
-			name: 'GitHubIssues',
-			description: 'Collect GitHub issue data (PRs and Issues)',
-			schedule: Schedule.cron({ hour: '2', minute: '0' }),
-			config: githubSourceConfig(
-				{
-					org: gitHubOrgName,
-					tables: ['github_issues'],
-				},
-				'incremental',
-			),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 2048,
-		},
-		{
-			name: 'GitHubAlerts',
-			description: 'Collect GitHub secret and code scanning alerts',
-			schedule: Schedule.cron({ hour: '23', minute: '0' }),
-			config: githubSourceConfig(
-				{
-					org: gitHubOrgName,
-					tables: [
-						'github_secret_scanning_alerts',
-						'github_code_scanning_alerts',
-					],
-				},
-				'incremental',
-			),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 2048,
-		},
-		{
-			name: 'GitHubCopilotBilling',
-			description: 'Collect GitHub Copilot billing data',
-			schedule: Schedule.cron({ hour: '03', minute: '30' }),
-			config: githubSourceConfig({
-				org: gitHubOrgName,
-				tables: ['github_copilot_billing', 'github_copilot_seats'],
-			}),
-			secrets: githubSecrets,
-			additionalCommands: additionalGithubCommands,
-			memoryLimitMiB: 2048,
 		},
 	];
 

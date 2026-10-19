@@ -2244,7 +2244,7 @@ spec:
     },
     "CloudquerySourceAwsInspector2FindingsScheduledEventRule3644BA8A": {
       "Properties": {
-        "ScheduleExpression": "cron(0 21 * * ? *)",
+        "ScheduleExpression": "cron(0 21 ? * MON *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -2378,9 +2378,6 @@ spec:
       aws_inspector2_findings:
         list_findings:
           - filter_criteria:
-              finding_status:
-                - comparison: EQUALS
-                  value: ACTIVE
               severity:
                 - comparison: EQUALS
                   value: CRITICAL
@@ -2604,7 +2601,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector2_findings', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_inspector2_findings', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -16886,7 +16883,7 @@ spec:
     },
     "CloudquerySourceGitHubAlertsScheduledEventRule2E45AFA1": {
       "Properties": {
-        "ScheduleExpression": "cron(0 23 * * ? *)",
+        "ScheduleExpression": "cron(30 2 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -17648,7 +17645,7 @@ spec:
     },
     "CloudquerySourceGitHubCopilotBillingScheduledEventRuleF2C54B52": {
       "Properties": {
-        "ScheduleExpression": "cron(30 03 * * ? *)",
+        "ScheduleExpression": "cron(45 3 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -18407,7 +18404,7 @@ spec:
     },
     "CloudquerySourceGitHubIssuesScheduledEventRuleAF7C253C": {
       "Properties": {
-        "ScheduleExpression": "cron(0 2 * * ? *)",
+        "ScheduleExpression": "cron(45 3 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -19282,7 +19279,7 @@ spec:
 spec:
   name: github-languages
   path: guardian/github-languages
-  version: v0.0.7
+  version: v0.1.0
   destinations:
     - postgresql
   tables:
@@ -20678,7 +20675,7 @@ spec:
     },
     "CloudquerySourceGitHubRepositoriesScheduledEventRuleC7F5836E": {
       "Properties": {
-        "ScheduleExpression": "cron(0 0 * * ? *)",
+        "ScheduleExpression": "cron(0 21 * * ? *)",
         "State": "ENABLED",
         "Tags": [
           {
@@ -20769,7 +20766,7 @@ spec:
   destinations:
     - postgresql
   spec:
-    concurrency: 10
+    concurrency: 2
     orgs:
       - guardian
     app_auth:
@@ -22198,7 +22195,7 @@ spec:
     },
     "CloudquerySourceGitHubTeamsScheduledEventRule051F542B": {
       "Properties": {
-        "ScheduleExpression": "cron(0 10 ? * 1 *)",
+        "ScheduleExpression": "cron(0 10 ? * MON *)",
         "State": "ENABLED",
         "Tags": [
           {
