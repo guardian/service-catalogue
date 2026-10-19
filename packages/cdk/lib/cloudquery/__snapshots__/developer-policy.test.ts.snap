@@ -5,7 +5,7 @@ exports[`Developer policies for the ServiceCatalogue stack CLI developer policy 
   "Metadata": {
     "gu:cdk:constructs": [
       "GuStack",
-      "GuDeveloperPolicyExperimental",
+      "GuDeveloperPolicy",
     ],
     "gu:cdk:version": "TEST",
   },
@@ -200,7 +200,7 @@ exports[`Developer policies for the ServiceCatalogue stack local run developer p
   "Metadata": {
     "gu:cdk:constructs": [
       "GuStack",
-      "GuDeveloperPolicyExperimental",
+      "GuDeveloperPolicy",
     ],
     "gu:cdk:version": "TEST",
   },

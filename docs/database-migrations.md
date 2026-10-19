@@ -96,19 +96,14 @@ Trigger the [prisma-migrate image workflow](../.github/workflows/prisma-migrate-
 
 1. Go to the [prisma-migrate image workflow](https://github.com/guardian/service-catalogue/actions/workflows/prisma-migrate-image.yml)
 2. Click **Run workflow** and select your branch
-3. Once the workflow completes, find the SHA tag for your new image at:
-   https://github.com/guardian/service-catalogue/pkgs/container/service-catalogue%2Fprisma-migrate
-
-   The tag will be in the format `sha-<full-commit-sha>`.
+3. Once the workflow completes, note the `build-<number>` tag it pushed to ECR (shown in the workflow summary / PR comment).
 
 ### 2. Update the image reference
 
-Temporarily update [`packages/cdk/lib/cloudquery/images.ts`](../packages/cdk/lib/cloudquery/images.ts) to reference the new tag:
+Temporarily pass the new tag to `getEcrImage` in [`packages/cdk/lib/prisma-migrate-task.ts`](../packages/cdk/lib/prisma-migrate-task.ts):
 
 ```typescript
-prismaMigrate: ContainerImage.fromRegistry(
-    'ghcr.io/guardian/service-catalogue/prisma-migrate:sha-<your-sha-here>',
-),
+image: getEcrImage(scope, 'prisma-migrate', 'build-<your-build-number>'),
 ```
 
 > [!Warning]
@@ -120,12 +115,10 @@ Deploy to CODE and observe the ECS task logs to verify your changes work as expe
 
 ### 4. Revert the image reference
 
-Before merging your PR, revert the change made in step 2, restoring the `stable` tag:
+Before merging your PR, revert the change made in step 2, restoring the default `branch-main` tag:
 
 ```typescript
-prismaMigrate: ContainerImage.fromRegistry(
-    'ghcr.io/guardian/service-catalogue/prisma-migrate:stable',
-),
+image: getEcrImage(scope, 'prisma-migrate'),
 ```
 
-When your PR is merged to `main`, CI will automatically build and publish a new image tagged as `stable`.
+When your PR is merged to `main`, CI will automatically build and publish a new image tagged as `branch-main`.
