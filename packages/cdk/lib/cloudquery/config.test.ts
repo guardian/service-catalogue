@@ -174,7 +174,7 @@ describe('Config generation, and converting to YAML', () => {
 		  destinations:
 		    - postgresql
 		  spec:
-		    concurrency: 1000
+		    concurrency: 100
 		    orgs:
 		      - guardian
 		    app_auth:
@@ -210,7 +210,7 @@ describe('Config generation, and converting to YAML', () => {
 		    table_name: cq_state_github
 		    connection: '@@plugins.postgresql.connection'
 		  spec:
-		    concurrency: 1000
+		    concurrency: 100
 		    orgs:
 		      - guardian
 		    app_auth:
@@ -221,5 +221,20 @@ describe('Config generation, and converting to YAML', () => {
 		    include_archived_repos: true
 		"
 	`);
+	});
+
+	it('Should throw an error if concurrency exceeds GitHub secondary rate limits', () => {
+		expect(() => {
+			githubSourceConfig(
+				{
+					tables: ['github_repositories'],
+					org: 'guardian',
+					concurrency: 101,
+				},
+				'incremental',
+			);
+		}).toThrow(
+			"Concurrency is set to 101, which exceeds GitHub's secondary rate limits.",
+		);
 	});
 });
