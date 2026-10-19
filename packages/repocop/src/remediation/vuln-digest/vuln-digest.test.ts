@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import type {
 	repocop_github_repository_rules,
 	view_repo_ownership,
@@ -14,6 +14,10 @@ import {
 	groupVulnerabilitiesByPackage,
 	removeNonRuntimeVulns,
 } from './vuln-digest.js';
+
+// Some tests rely on knowing the current date to calculate remaining days to fix.
+// This can be thrown off when tests are run on Fridays or Weekdays due to the way "days left to fix" is calculated.
+mock.timers.enable({ apis: ['Date'], now: new Date('2026-09-09') });
 
 const fullName = 'guardian/repo';
 const anotherFullName = 'guardian/another-repo';
@@ -559,10 +563,57 @@ void describe('createDigestForSeverity', () => {
 	});
 
 	void it('matches the full digest message snapshot for a representative scenario', (t) => {
-		// alert_issue_date is expressed relative to "now" (via daysAgo) rather
-		// than a fixed calendar date, so the resulting "days left to fix" value
-		// -- and therefore this snapshot -- stays stable no matter which day the
-		// test suite is run on.
+		// Mock the current date to ensure consistent "days left to fix" calculations in the snapshot.
+		mock.timers.setTime(new Date('2026-10-08').getMilliseconds());
+
+		const patchableWithTwoCves: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'leftpad',
+			cves: ['CVE-100'],
+			is_patchable: true,
+			within_sla: true,
+			alert_issue_date: daysAgo(5),
+		};
+		const patchableSecondCve: RepocopVulnerability = {
+			...patchableWithTwoCves,
+			cves: ['CVE-200'],
+		};
+		const unpatchableWithOneCve: RepocopVulnerability = {
+			...highRecentVuln,
+			package: 'rightpad',
+			cves: ['CVE-300'],
+			is_patchable: false,
+			within_sla: true,
+			alert_issue_date: daysAgo(2),
+		};
+
+		const resultWithVulns: EvaluationResult = {
+			...result,
+			vulnerabilities: [
+				patchableWithTwoCves,
+				patchableSecondCve,
+				unpatchableWithOneCve,
+			],
+		};
+
+		const message = getMessage(
+			createDigestForSeverity(
+				team,
+				'high',
+				[ownershipRecord],
+				[resultWithVulns],
+				60,
+			),
+		);
+
+		t.assert.snapshot(message);
+	});
+
+	void it('matches the full digest message snapshot for a representative scenario - friday', (t) => {
+		// Mock the current date to ensure consistent "days left to fix" calculations in the snapshot.
+		// Fridays and Saturdays add the remaining weekend days to the "days left to fix" calculation.
+		mock.timers.setTime(new Date('2026-10-09').getMilliseconds());
+
 		const patchableWithTwoCves: RepocopVulnerability = {
 			...highRecentVuln,
 			package: 'leftpad',

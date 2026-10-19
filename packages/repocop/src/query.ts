@@ -1,3 +1,4 @@
+import { logger } from 'common/logs.js';
 import type {
 	github_languages,
 	github_repository_branches,
@@ -31,10 +32,15 @@ export async function getRepositoryBranches(
 		},
 	});
 
+	logger.log({
+		message: `Found ${branches.length} GitHub repository branches.`,
+	});
 	return toNonEmptyArray(branches);
 }
 
-export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
+export const getTeams = async (
+	client: PrismaClient,
+): Promise<NonEmptyArray<Team>> => {
 	const teams = (
 		await client.github_teams.findMany({
 			select: {
@@ -44,7 +50,9 @@ export const getTeams = async (client: PrismaClient): Promise<Team[]> => {
 			},
 		})
 	).map((t) => t as Team);
-	console.debug(`Found ${teams.length} teams.`);
+	logger.log({
+		message: `Found ${teams.length} GitHub teams.`,
+	});
 	return toNonEmptyArray(teams);
 };
 
@@ -61,7 +69,9 @@ export async function getStacks(
 		})
 	).map((stack) => stack as AwsCloudFormationStack);
 
-	console.debug(`Found ${stacks.length} stacks.`);
+	logger.log({
+		message: `Found ${stacks.length} AWS CloudFormation stacks.`,
+	});
 	return toNonEmptyArray(stacks);
 }
 
@@ -71,7 +81,30 @@ export async function getRepositoryLanguages(
 	return toNonEmptyArray(await client.github_languages.findMany({}));
 }
 
-//Octokit Queries
+export async function getProductionWorkflowUsages(
+	client: PrismaClient,
+	productionRepos: Repository[],
+): Promise<NonEmptyArray<guardian_github_actions_usage>> {
+	const actions_usage = await client.guardian_github_actions_usage.findMany({
+		where: {
+			full_name: { in: productionRepos.map((repo) => repo.full_name) },
+		},
+	});
+	return toNonEmptyArray(actions_usage);
+}
+
+export async function getRepositoryCustomProperties(
+	client: PrismaClient,
+): Promise<NonEmptyArray<github_repository_custom_properties>> {
+	const custom_properties =
+		await client.github_repository_custom_properties.findMany({});
+	logger.log({
+		message: `Found ${custom_properties.length} GitHub repository custom properties.`,
+	});
+	return toNonEmptyArray(custom_properties);
+}
+
+//Octokit Queries - any of these could reasonably be empty, so we do not wrap them in NonEmptyArray
 
 async function getAlertsForRepo(
 	octokit: Octokit,
@@ -97,12 +130,14 @@ async function getAlertsForRepo(
 				sort: 'created',
 				direction: 'asc', //retrieve oldest vulnerabilities first
 			});
-
+		logger.log({
+			message: `Found ${alert.data.length} Dependabot alerts for ${orgName}/${repoName}.`,
+		});
 		return alert.data as Alert[];
 	} catch (error) {
-		console.debug(
-			`Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
-		);
+		logger.log({
+			message: `Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
+		});
 		console.debug(error);
 		// Return undefined if dependabot is not enabled, to distinguish from
 		// the scenario where it is enabled, but there are no alerts
@@ -137,9 +172,9 @@ export async function getDependabotVulnerabilities(
 		)
 	).flat();
 
-	console.log(
-		`Found ${dependabotVulnerabilities.length} dependabot vulnerabilities across ${repos.length} repos`,
-	);
+	logger.log({
+		message: `Found ${dependabotVulnerabilities.length} dependabot vulnerability alerts across ${repos.length} GitHub repos`,
+	});
 
 	return dependabotVulnerabilities;
 }
@@ -170,29 +205,9 @@ export async function getDependabotMalware(
 		)
 	).flat();
 
-	console.log(
-		`Found ${dependabotMalware.length} dependabot malware across ${repos.length} repos`,
-	);
+	logger.log({
+		message: `Found ${dependabotMalware.length} dependabot malware alerts across ${repos.length} GitHub repos`,
+	});
 
 	return dependabotMalware;
-}
-
-export async function getProductionWorkflowUsages(
-	client: PrismaClient,
-	productionRepos: Repository[],
-): Promise<NonEmptyArray<guardian_github_actions_usage>> {
-	const actions_usage = await client.guardian_github_actions_usage.findMany({
-		where: {
-			full_name: { in: productionRepos.map((repo) => repo.full_name) },
-		},
-	});
-	return toNonEmptyArray(actions_usage);
-}
-
-export async function getRepositoryCustomProperties(
-	client: PrismaClient,
-): Promise<NonEmptyArray<github_repository_custom_properties>> {
-	const custom_properties =
-		await client.github_repository_custom_properties.findMany({});
-	return toNonEmptyArray(custom_properties);
 }
