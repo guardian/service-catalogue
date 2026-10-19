@@ -223,6 +223,16 @@ export function githubSourceConfig(
 ): CloudQuerySourceConfig {
 	const { tables, org, includeArchivedRepos, concurrency } = tableConfig;
 
+	if (concurrency && concurrency > 100) {
+		console.error({
+			message:
+				'https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2026-03-10#about-secondary-rate-limits',
+		});
+		throw new Error(
+			`Concurrency is set to ${concurrency}, which exceeds GitHub's secondary rate limits.`,
+		);
+	}
+
 	return {
 		kind: 'source',
 		spec: {
@@ -234,7 +244,7 @@ export function githubSourceConfig(
 			destinations: ['postgresql'],
 			backend_options: backendOptions('github', syncMode),
 			spec: {
-				concurrency: concurrency ?? 1000, // TODO what's the ideal value here?!
+				concurrency: concurrency ?? 100, // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2026-03-10#about-secondary-rate-limits
 				orgs: [org],
 				app_auth: [
 					{

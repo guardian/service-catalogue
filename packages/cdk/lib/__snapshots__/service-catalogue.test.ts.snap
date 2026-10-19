@@ -16974,7 +16974,7 @@ spec:
     table_name: cq_state_github
     connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
-    concurrency: 1000
+    concurrency: 100
     orgs:
       - guardian
     app_auth:
@@ -17733,7 +17733,7 @@ spec:
   destinations:
     - postgresql
   spec:
-    concurrency: 1000
+    concurrency: 100
     orgs:
       - guardian
     app_auth:
@@ -18760,7 +18760,7 @@ spec:
     table_name: cq_state_github
     connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
-    concurrency: 1000
+    concurrency: 100
     orgs:
       - guardian
     app_auth:
@@ -21524,7 +21524,7 @@ spec:
   destinations:
     - postgresql
   spec:
-    concurrency: 1000
+    concurrency: 100
     orgs:
       - guardian
     app_auth:
@@ -22287,7 +22287,7 @@ spec:
   destinations:
     - postgresql
   spec:
-    concurrency: 1000
+    concurrency: 100
     orgs:
       - guardian
     app_auth:
