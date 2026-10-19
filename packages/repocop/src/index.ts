@@ -75,7 +75,6 @@ async function writeVulnerabilitiesTable(
 
 export async function main() {
 	const config: Config = await getConfig();
-
 	const prisma = getPrismaClient(config);
 	const octokit = await stageAwareOctokit(config.stage);
 
@@ -83,6 +82,11 @@ export async function main() {
 		await getRepositories(prisma, config.ignoredRepositoryPrefixes),
 		(repo) => !repo.archived,
 	);
+
+	console.log(
+		`Found ${unarchivedRepos.length} unarchived GitHub repositories and ${archivedRepos.length} archived GitHub repositories.`,
+	);
+
 	const branches = await getRepositoryBranches(prisma, unarchivedRepos);
 	const repoLanguages = await getRepositoryLanguages(prisma);
 	const nonPlaygroundStacks: AwsCloudFormationStack[] = (
@@ -94,6 +98,11 @@ export async function main() {
 	const repoOwners = await getRepoOwnership(prisma);
 
 	const productionRepos = unarchivedRepos.filter((repo) => isProduction(repo));
+
+	const productionWorkflowUsages: guardian_github_actions_usage[] =
+		await getProductionWorkflowUsages(prisma, productionRepos);
+
+	const customProperties = await getRepositoryCustomProperties(prisma);
 
 	// Critical and high Dependabot alerts with alert_type: 'general'
 	const productionDependabotVulnerabilities: RepocopVulnerability[] =
@@ -110,10 +119,6 @@ export async function main() {
 	const combinedProdDependabotVulns: RepocopVulnerability[] =
 		productionDependabotVulnerabilities.concat(productionDependabotMalware);
 
-	const productionWorkflowUsages: guardian_github_actions_usage[] =
-		await getProductionWorkflowUsages(prisma, productionRepos);
-
-	const customProperties = await getRepositoryCustomProperties(prisma);
 	const customPropertiesExemptedFromDepGraphIntegration: github_repository_custom_properties[] =
 		customProperties.filter((property) => {
 			return (
