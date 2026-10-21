@@ -361,6 +361,62 @@ async function findMostRecentCommitters(
 	return Object.values(uniqueCommitters);
 }
 
+async function tryToFindMostRecentCommitters(
+	config: Config,
+	fullName: string,
+	octokit: Octokit,
+): Promise<string[]> {
+	const committers = await (async () => {
+		try {
+			return await findMostRecentCommitters(
+				config.gitHubOrg,
+				fullName.split('/')[1] ?? '',
+				octokit,
+			);
+		} catch (error) {
+			console.log(`Failed to fetch committers for ${fullName}:`, error);
+			return [];
+		}
+	})();
+
+	console.log(
+		`Unmaintained repo: ${fullName}, recent guardian-addressed committers: `,
+		committers,
+	);
+
+	return committers.map((c) => c.email);
+}
+
+interface UnmaintainedRepoOwners {
+	repo: string;
+	owners: string[];
+	format: 'Team' | 'Email';
+}
+
+async function findUnmaintainedRepoOwners(
+	fullName: string,
+	repoOwners: view_repo_ownership[],
+	config: Config,
+	octokit: Octokit,
+): Promise<UnmaintainedRepoOwners> {
+	const owners = findContactableOwners(fullName, repoOwners);
+	console.log(`Owners for ${fullName}:`, owners);
+
+	if (owners.length === 0) {
+		await tryToFindMostRecentCommitters(config, fullName, octokit);
+		return {
+			repo: fullName,
+			owners: await tryToFindMostRecentCommitters(config, fullName, octokit),
+			format: 'Email',
+		};
+	}
+	return Promise.resolve({
+		repo: fullName,
+		owners: owners,
+		format: 'Team',
+	});
+}
+
 export async function testExperimentalRepocopFeatures(
 	evaluationResults: EvaluationResult[],
 	unarchivedRepos: Repository[],
@@ -378,40 +434,28 @@ export async function testExperimentalRepocopFeatures(
 	console.log(
 		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
+	const unmaintainedRepoOwners = (
+		await Promise.all(
+			unmaintainedRepos.map((fullName) =>
+				findUnmaintainedRepoOwners(fullName, repoOwners, config, octokit),
+			),
+		)
+	).filter((o) => o.owners.length > 0);
 
-	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 25);
-	for (const fullName of someUnmaintainedRepos) {
-		const owners = findContactableOwners(fullName, repoOwners);
-		if (owners.length > 0) {
-			console.log(`Owners for ${fullName}:`, owners);
-		} else {
-			const committers = await (async () => {
-				try {
-					return await findMostRecentCommitters(
-						config.gitHubOrg,
-						fullName.split('/')[1] ?? '',
-						octokit,
-					);
-				} catch (error) {
-					console.log(`Failed to fetch committers for ${fullName}:`, error);
-					return [];
-				}
-			})();
-			if (committers.length > 0) {
-				console.log(
-					`Unmaintained repo: ${fullName}, recent guardian-addressed committers: `,
-					committers,
-				);
-			}
-		}
-	}
+	const [teamOwners, emailOwners] = partition(
+		unmaintainedRepoOwners,
+		(o) => o.format === 'Team',
+	);
+	console.log(`Found team owners for ${teamOwners.length} unmaintained repos.`);
+	console.log(
+		`Found email owners for ${emailOwners.length} unmaintained repos.`,
+	);
 
 	const archivedWithStacks = findArchivedReposWithStacks(
 		archivedRepos,
 		unarchivedRepos,
 		nonPlaygroundStacks,
 	);
-
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
 
 	console.log(
