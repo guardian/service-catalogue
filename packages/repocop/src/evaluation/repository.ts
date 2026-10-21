@@ -387,7 +387,7 @@ export async function testExperimentalRepocopFeatures(
 		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
 
-	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 10);
+	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 25);
 	for (const fullName of someUnmaintainedRepos) {
 		const owners = findOwners(fullName, repoOwners);
 		if (owners.length > 0) {
