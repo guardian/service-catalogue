@@ -391,7 +391,10 @@ export async function testExperimentalRepocopFeatures(
 	for (const fullName of someUnmaintainedRepos) {
 		const owners = findOwners(fullName, repoOwners);
 		if (owners.length > 0) {
-			console.log(`Owners for ${fullName}:`, owners);
+			console.log(
+				`Owners for ${fullName}:`,
+				owners.map((o) => o.github_team_slug),
+			);
 		} else {
 			const committers = await (async () => {
 				try {
