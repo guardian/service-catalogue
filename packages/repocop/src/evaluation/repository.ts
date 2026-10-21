@@ -372,31 +372,31 @@ export async function testExperimentalRepocopFeatures(
 	config: Config,
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
-	const unmaintainedRepos = evaluatedRepos.filter(
-		(repo) => repo.archiving === false,
-	);
+	const unmaintainedRepos = evaluatedRepos
+		.filter((repo) => repo.archiving === false)
+		.map((r) => r.full_name);
 
 	console.log(
 		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
 
 	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 10);
-	for (const repo of someUnmaintainedRepos) {
+	for (const fullName of someUnmaintainedRepos) {
 		const committers = await (async () => {
 			try {
 				return await findMostRecentCommitters(
 					config.gitHubOrg,
-					repo.full_name.split('/')[1] ?? '',
+					fullName.split('/')[1] ?? '',
 					octokit,
 				);
 			} catch (error) {
-				console.log(`Failed to fetch committers for ${repo.full_name}:`, error);
+				console.log(`Failed to fetch committers for ${fullName}:`, error);
 				return [];
 			}
 		})();
 		if (committers.length > 0) {
 			console.log(
-				`Unmaintained repo: ${repo.full_name}, recent guardian-addressed committers: `,
+				`Unmaintained repo: ${fullName}, recent guardian-addressed committers: `,
 				committers,
 			);
 		}
