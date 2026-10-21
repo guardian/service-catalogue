@@ -196,6 +196,7 @@ export async function main() {
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
+		repoOwners,
 		octokit,
 		config,
 	);
