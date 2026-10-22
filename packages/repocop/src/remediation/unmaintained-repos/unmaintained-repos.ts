@@ -84,7 +84,6 @@ async function findUnmaintainedRepoOwners(
 	console.log(`Owners for ${fullName}:`, owners);
 
 	if (owners.length === 0) {
-		await tryToFindMostRecentCommitters(config, fullName, octokit);
 		return {
 			repo: fullName,
 			owners: await tryToFindMostRecentCommitters(config, fullName, octokit),
