@@ -70,3 +70,15 @@ export interface VulnerabilityDigest {
 	message: string;
 	actions: Action[];
 }
+
+export type Committer = {
+	name?: string;
+	username: string;
+	email: string;
+};
+
+export type UnmaintainedRepoOwners = {
+	repo: string;
+	owners: string[];
+	format: 'Team' | 'Email';
+};
