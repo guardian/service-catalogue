@@ -25,6 +25,7 @@ import {
 	supportedDependabotLanguages,
 } from '../languages.js';
 import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns.js';
+import { findContactableOwners } from '../remediation/shared-utilities.js';
 import type {
 	Alert,
 	AwsCloudFormationStack,
@@ -64,15 +65,6 @@ function hasBranchProtection(
 	}
 }
 
-function findOwners(
-	fullRepoName: string,
-	repoOwners: view_repo_ownership[],
-): view_repo_ownership[] {
-	return repoOwners.filter(
-		({ full_repo_name, role_name }) =>
-			full_repo_name === fullRepoName && role_name === 'admin',
-	);
-}
 /**
  * Evaluate the following rule for a Github repository:
  *   > Grant at least one GitHub team Admin access - typically, the dev team that own the project.
@@ -85,7 +77,7 @@ function hasAdminTeam(repo: Repository, teams: view_repo_ownership[]): boolean {
 	const isExempt =
 		repo.topics.filter((topic) => exemptedTopics.includes(topic)).length > 0;
 
-	const adminTeams = findOwners(repo.full_name, teams);
+	const adminTeams = findContactableOwners(repo.full_name, teams);
 	const hasAdminTeam = adminTeams.length > 0;
 
 	return isExempt || hasAdminTeam;
@@ -389,12 +381,9 @@ export async function testExperimentalRepocopFeatures(
 
 	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 25);
 	for (const fullName of someUnmaintainedRepos) {
-		const owners = findOwners(fullName, repoOwners);
+		const owners = findContactableOwners(fullName, repoOwners);
 		if (owners.length > 0) {
-			console.log(
-				`Owners for ${fullName}:`,
-				owners.map((o) => o.github_team_slug),
-			);
+			console.log(`Owners for ${fullName}:`, owners);
 		} else {
 			const committers = await (async () => {
 				try {
