@@ -18,8 +18,6 @@ import type {
 	Repository,
 	Severity,
 } from 'common/src/types.js';
-import type { Octokit } from 'octokit';
-import type { Config } from '../config.js';
 import {
 	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
@@ -315,142 +313,11 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
-type Committer = {
-	name?: string;
-	username: string;
-	email: string;
-};
-
-async function findMostRecentCommitters(
-	org: string,
-	short_repo_name: string,
-	octokit: Octokit,
-): Promise<Committer[]> {
-	const commitsResponse = await octokit.rest.repos.listCommits({
-		owner: org,
-		repo: short_repo_name,
-		per_page: 15,
-		page: 0,
-	});
-
-	const committers: Committer[] = commitsResponse.data
-		.map((commit) => ({
-			name: commit.commit.author?.name,
-			username: commit.author?.login,
-			email: commit.commit.author?.email,
-		}))
-		.filter(
-			(committer) => !!committer.email && !!committer.username,
-		) as Committer[];
-
-	const guardianCommitters = committers.filter(
-		(committer) =>
-			committer.email.endsWith('@guardian.co.uk') ||
-			committer.email.endsWith('@theguardian.com'),
-	);
-
-	// Deduplicate committers by email
-	const uniqueCommitters = guardianCommitters.reduce<Record<string, Committer>>(
-		(acc, committer) => {
-			acc[committer.email] = committer;
-			return acc;
-		},
-		{},
-	);
-
-	return Object.values(uniqueCommitters);
-}
-
-async function tryToFindMostRecentCommitters(
-	config: Config,
-	fullName: string,
-	octokit: Octokit,
-): Promise<string[]> {
-	const committers = await (async () => {
-		try {
-			return await findMostRecentCommitters(
-				config.gitHubOrg,
-				fullName.split('/')[1] ?? '',
-				octokit,
-			);
-		} catch (error) {
-			console.log(`Failed to fetch committers for ${fullName}:`, error);
-			return [];
-		}
-	})();
-
-	console.log(
-		`Unmaintained repo: ${fullName}, recent guardian-addressed committers: `,
-		committers,
-	);
-
-	return committers.map((c) => c.email);
-}
-
-interface UnmaintainedRepoOwners {
-	repo: string;
-	owners: string[];
-	format: 'Team' | 'Email';
-}
-
-async function findUnmaintainedRepoOwners(
-	fullName: string,
-	repoOwners: view_repo_ownership[],
-	config: Config,
-	octokit: Octokit,
-): Promise<UnmaintainedRepoOwners> {
-	const owners = findContactableOwners(fullName, repoOwners);
-	console.log(`Owners for ${fullName}:`, owners);
-
-	if (owners.length === 0) {
-		await tryToFindMostRecentCommitters(config, fullName, octokit);
-		return {
-			repo: fullName,
-			owners: await tryToFindMostRecentCommitters(config, fullName, octokit),
-			format: 'Email',
-		};
-	}
-	return Promise.resolve({
-		repo: fullName,
-		owners: owners,
-		format: 'Team',
-	});
-}
-
-export async function testExperimentalRepocopFeatures(
-	evaluationResults: EvaluationResult[],
+export function testExperimentalRepocopFeatures(
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
-	repoOwners: view_repo_ownership[],
-	octokit: Octokit,
-	config: Config,
 ) {
-	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
-	const unmaintainedRepos = evaluatedRepos
-		.filter((repo) => repo.archiving === false)
-		.map((r) => r.full_name);
-
-	console.log(
-		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
-	);
-	const unmaintainedRepoOwners = (
-		await Promise.all(
-			unmaintainedRepos.map((fullName) =>
-				findUnmaintainedRepoOwners(fullName, repoOwners, config, octokit),
-			),
-		)
-	).filter((o) => o.owners.length > 0);
-
-	const [teamOwners, emailOwners] = partition(
-		unmaintainedRepoOwners,
-		(o) => o.format === 'Team',
-	);
-	console.log(`Found team owners for ${teamOwners.length} unmaintained repos.`);
-	console.log(
-		`Found email owners for ${emailOwners.length} unmaintained repos.`,
-	);
-
 	const archivedWithStacks = findArchivedReposWithStacks(
 		archivedRepos,
 		unarchivedRepos,

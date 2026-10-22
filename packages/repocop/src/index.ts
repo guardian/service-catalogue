@@ -36,6 +36,7 @@ import { applyBranchProtectionAndMessageTeams } from './remediation/branch-prote
 import { sendReposToDependencyGraphIntegrator } from './remediation/dependency_graph-integrator/send-to-sns.js';
 import { sendPotentialInteractives } from './remediation/topics/topic-monitor-interactive.js';
 import { applyProductionTopicAndMessageTeams } from './remediation/topics/topic-monitor-production.js';
+import { findOwnersForAllUnmaintainedRepos } from './remediation/unmaintained-repos/unmaintained-repos.js';
 import {
 	createAndSendMalwareDigests,
 	createAndSendVulnerabilityDigests,
@@ -191,14 +192,10 @@ export async function main() {
 	const cloudwatch = new CloudWatchClient(awsConfig);
 	await sendToCloudwatch(repocopRules, cloudwatch, config);
 
-	await testExperimentalRepocopFeatures(
-		evaluationResults,
+	testExperimentalRepocopFeatures(
 		unarchivedRepos,
 		archivedRepos,
 		nonPlaygroundStacks,
-		repoOwners,
-		octokit,
-		config,
 	);
 
 	const dependencyGraphIntegratorRepoCount = 5;
@@ -215,6 +212,22 @@ export async function main() {
 	);
 
 	await writeEvaluationTable(repocopRules, prisma);
+
+	const unmaintainedRepoOwners = await findOwnersForAllUnmaintainedRepos(
+		evaluationResults,
+		repoOwners,
+		config,
+		octokit,
+	);
+
+	const [teamOwners, emailOwners] = partition(
+		unmaintainedRepoOwners,
+		(o) => o.format === 'Team',
+	);
+	console.log(`Found team owners for ${teamOwners.length} unmaintained repos.`);
+	console.log(
+		`Found email owners for ${emailOwners.length} unmaintained repos.`,
+	);
 
 	if (config.enableMessaging) {
 		await sendPotentialInteractives(repocopRules, config);
