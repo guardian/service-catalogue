@@ -25,6 +25,7 @@ import {
 	supportedDependabotLanguages,
 } from '../languages.js';
 import { doesRepoHaveDepSubmissionWorkflowForLanguage } from '../remediation/dependency_graph-integrator/send-to-sns.js';
+import { findContactableOwners } from '../remediation/shared-utilities.js';
 import type {
 	Alert,
 	AwsCloudFormationStack,
@@ -76,10 +77,7 @@ function hasAdminTeam(repo: Repository, teams: view_repo_ownership[]): boolean {
 	const isExempt =
 		repo.topics.filter((topic) => exemptedTopics.includes(topic)).length > 0;
 
-	const adminTeams = teams.filter(
-		({ full_repo_name, role_name }) =>
-			full_repo_name === repo.full_name && role_name === 'admin',
-	);
+	const adminTeams = findContactableOwners(repo.full_name, teams);
 	const hasAdminTeam = adminTeams.length > 0;
 
 	return isExempt || hasAdminTeam;
@@ -368,37 +366,43 @@ export async function testExperimentalRepocopFeatures(
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
+	repoOwners: view_repo_ownership[],
 	octokit: Octokit,
 	config: Config,
 ) {
 	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
-	const unmaintainedRepos = evaluatedRepos.filter(
-		(repo) => repo.archiving === false,
-	);
+	const unmaintainedRepos = evaluatedRepos
+		.filter((repo) => repo.archiving === false)
+		.map((r) => r.full_name);
 
 	console.log(
 		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
 	);
 
-	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 10);
-	for (const repo of someUnmaintainedRepos) {
-		const committers = await (async () => {
-			try {
-				return await findMostRecentCommitters(
-					config.gitHubOrg,
-					repo.full_name.split('/')[1] ?? '',
-					octokit,
+	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 25);
+	for (const fullName of someUnmaintainedRepos) {
+		const owners = findContactableOwners(fullName, repoOwners);
+		if (owners.length > 0) {
+			console.log(`Owners for ${fullName}:`, owners);
+		} else {
+			const committers = await (async () => {
+				try {
+					return await findMostRecentCommitters(
+						config.gitHubOrg,
+						fullName.split('/')[1] ?? '',
+						octokit,
+					);
+				} catch (error) {
+					console.log(`Failed to fetch committers for ${fullName}:`, error);
+					return [];
+				}
+			})();
+			if (committers.length > 0) {
+				console.log(
+					`Unmaintained repo: ${fullName}, recent guardian-addressed committers: `,
+					committers,
 				);
-			} catch (error) {
-				console.log(`Failed to fetch committers for ${repo.full_name}:`, error);
-				return [];
 			}
-		})();
-		if (committers.length > 0) {
-			console.log(
-				`Unmaintained repo: ${repo.full_name}, recent guardian-addressed committers: `,
-				committers,
-			);
 		}
 	}
 

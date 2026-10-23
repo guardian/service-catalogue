@@ -4,7 +4,9 @@ export function findContactableOwners(
 	repo: string,
 	allRepoOwners: view_repo_ownership[],
 ): string[] {
-	const owners = allRepoOwners.filter((owner) => owner.full_repo_name === repo);
+	const owners = allRepoOwners.filter(
+		(owner) => owner.full_repo_name === repo && owner.role_name === 'admin',
+	);
 	const teamSlugs = owners.map((owner) => owner.github_team_slug);
 	return teamSlugs;
 }
