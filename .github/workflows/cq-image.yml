@@ -3,6 +3,10 @@ name: CQ image
 
 permissions:
   contents: read
+  # Allow the guardian/actions-ecr/push to authenticate with AWS using the Github OIDC token
+  id-token: write
+  # Allow the guardian/actions-ecr/push to comment on PRs
+  pull-requests: write
 
 on:
   pull_request:
@@ -17,10 +21,6 @@ on:
   # Manual invocation.
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/cloudquery
-
 # Ensure we only ever have one build running at a time.
 # If we push twice in quick succession, the first build will be stopped once the second starts.
 # This avoids any race conditions.
@@ -29,8 +29,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  CQ_CLI:
-    name: 'Set CQ version'
+  cloudquery:
+    name: 'Build & Push cloudquery image'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -42,15 +42,13 @@ jobs:
         run: |
           source .env
           echo $CQ_CLI
-          echo "CQ_CLI=${CQ_CLI}" >> "$GITHUB_ENV"
-    outputs:
-      CQ_CLI: ${{ env.CQ_CLI }}
+          echo "CQ_CLI=$CQ_CLI" >> "$GITHUB_ENV"
 
-  build-and-push:
-    needs: CQ_CLI
-    uses: ./.github/workflows/release-image.yml
-    with:
-      IMAGE_NAME: cloudquery
-      BUILD_ARGS: CQ_CLI=${{ needs.CQ_CLI.outputs.CQ_CLI }}
-    permissions:
-      packages: write
+      - run: docker buildx build -t cloudquery:latest --build-arg CQ_CLI=$CQ_CLI ./containers/cloudquery
+
+      - name: Publish image to ECR
+        uses: guardian/actions-ecr/push@v1.0.1
+        with:
+          app: cloudquery
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -1,7 +1,7 @@
 import { NAMED_SSM_PARAMETER_PATHS } from '@guardian/cdk/lib/constants';
 import type { GuStack } from '@guardian/cdk/lib/constructs/core';
-import type { GuDeveloperPolicyExperimentalProps } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
-import { GuDeveloperPolicyExperimental } from '@guardian/cdk/lib/experimental/constructs/iam/policies';
+import type { GuDeveloperPolicyProps } from '@guardian/cdk/lib/constructs/iam/policies';
+import { GuDeveloperPolicy } from '@guardian/cdk/lib/constructs/iam/policies';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 
@@ -91,7 +91,7 @@ export function buildCliDeveloperPolicy(scope: GuStack) {
 		],
 	});
 
-	const cliPolicyProps: GuDeveloperPolicyExperimentalProps = {
+	const cliPolicyProps: GuDeveloperPolicyProps = {
 		grantId: GRANT_ID,
 		friendlyName: 'Invoke Cloudquery jobs from CLI',
 		statements: [
@@ -105,11 +105,7 @@ export function buildCliDeveloperPolicy(scope: GuStack) {
 		withoutPolicyChecks: true,
 	};
 
-	new GuDeveloperPolicyExperimental(
-		scope,
-		'ServiceCatalogueCliPolicy',
-		cliPolicyProps,
-	);
+	new GuDeveloperPolicy(scope, 'ServiceCatalogueCliPolicy', cliPolicyProps);
 }
 
 export function buildRunLocallyDeveloperPolicy(
@@ -233,14 +229,14 @@ export function buildRunLocallyDeveloperPolicy(
 		listInspectorFindings,
 	];
 
-	const runLocalPolicyProps: GuDeveloperPolicyExperimentalProps = {
+	const runLocalPolicyProps: GuDeveloperPolicyProps = {
 		grantId: GRANT_ID,
 		friendlyName: 'Run Service Catalogue workloads locally',
 		statements: [SSMPolicy, putMetrics, ...cloudqueryAccessPolicies],
 		withoutPolicyChecks: true,
 	};
 
-	new GuDeveloperPolicyExperimental(
+	new GuDeveloperPolicy(
 		scope,
 		'ServiceCatalogueLocalPolicy',
 		runLocalPolicyProps,
