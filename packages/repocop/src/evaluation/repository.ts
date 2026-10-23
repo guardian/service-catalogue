@@ -18,8 +18,6 @@ import type {
 	Repository,
 	Severity,
 } from 'common/src/types.js';
-import type { Octokit } from 'octokit';
-import type { Config } from '../config.js';
 import {
 	depGraphIntegratorSupportedLanguages,
 	supportedDependabotLanguages,
@@ -315,103 +313,16 @@ export function hasOldAlerts(
 	return oldAlerts.length > 0;
 }
 
-type Committer = {
-	name?: string;
-	username: string;
-	email: string;
-};
-
-async function findMostRecentCommitters(
-	org: string,
-	short_repo_name: string,
-	octokit: Octokit,
-): Promise<Committer[]> {
-	const commitsResponse = await octokit.rest.repos.listCommits({
-		owner: org,
-		repo: short_repo_name,
-		per_page: 15,
-		page: 0,
-	});
-
-	const committers: Committer[] = commitsResponse.data
-		.map((commit) => ({
-			name: commit.commit.author?.name,
-			username: commit.author?.login,
-			email: commit.commit.author?.email,
-		}))
-		.filter(
-			(committer) => !!committer.email && !!committer.username,
-		) as Committer[];
-
-	const guardianCommitters = committers.filter(
-		(committer) =>
-			committer.email.endsWith('@guardian.co.uk') ||
-			committer.email.endsWith('@theguardian.com'),
-	);
-
-	// Deduplicate committers by email
-	const uniqueCommitters = guardianCommitters.reduce<Record<string, Committer>>(
-		(acc, committer) => {
-			acc[committer.email] = committer;
-			return acc;
-		},
-		{},
-	);
-
-	return Object.values(uniqueCommitters);
-}
-
-export async function testExperimentalRepocopFeatures(
-	evaluationResults: EvaluationResult[],
+export function testExperimentalRepocopFeatures(
 	unarchivedRepos: Repository[],
 	archivedRepos: Repository[],
 	nonPlaygroundStacks: AwsCloudFormationStack[],
-	repoOwners: view_repo_ownership[],
-	octokit: Octokit,
-	config: Config,
 ) {
-	const evaluatedRepos = evaluationResults.map((r) => r.repocopRules);
-	const unmaintainedRepos = evaluatedRepos
-		.filter((repo) => repo.archiving === false)
-		.map((r) => r.full_name);
-
-	console.log(
-		`Found ${unmaintainedRepos.length} unmaintained repositories of ${unarchivedRepos.length}.`,
-	);
-
-	const someUnmaintainedRepos = unmaintainedRepos.slice(0, 25);
-	for (const fullName of someUnmaintainedRepos) {
-		const owners = findContactableOwners(fullName, repoOwners);
-		if (owners.length > 0) {
-			console.log(`Owners for ${fullName}:`, owners);
-		} else {
-			const committers = await (async () => {
-				try {
-					return await findMostRecentCommitters(
-						config.gitHubOrg,
-						fullName.split('/')[1] ?? '',
-						octokit,
-					);
-				} catch (error) {
-					console.log(`Failed to fetch committers for ${fullName}:`, error);
-					return [];
-				}
-			})();
-			if (committers.length > 0) {
-				console.log(
-					`Unmaintained repo: ${fullName}, recent guardian-addressed committers: `,
-					committers,
-				);
-			}
-		}
-	}
-
 	const archivedWithStacks = findArchivedReposWithStacks(
 		archivedRepos,
 		unarchivedRepos,
 		nonPlaygroundStacks,
 	);
-
 	console.log(`Found ${archivedWithStacks.length} archived repos with stacks.`);
 
 	console.log(
