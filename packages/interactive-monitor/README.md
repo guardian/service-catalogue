@@ -17,5 +17,12 @@ The lambda is stage aware, and will not attempt to make any changes to repos out
 #### Steps
 
 1. Navigate to the root of the `service-catalogue` repo
-2. Run `./script/setup.sh`, and follow any prompts it gives you. We are particularly interested in the GitHub setup.
-3. Run `npm run start -w interactive-monitor` and observe the output.
+2. Run
+```bash
+  scripts/setup.sh
+```
+3. Then run
+```bash
+npm run start -w interactive-monitor
+``` 
+and observe the output.
