@@ -8,46 +8,6 @@ import type {
 } from '../../types.js';
 import { findContactableOwners } from '../shared-utilities.js';
 
-async function findMostRecentCommitters(
-	org: string,
-	short_repo_name: string,
-	octokit: Octokit,
-): Promise<Committer[]> {
-	const commitsResponse = await octokit.rest.repos.listCommits({
-		owner: org,
-		repo: short_repo_name,
-		per_page: 15,
-		page: 0,
-	});
-
-	const committers: Committer[] = commitsResponse.data
-		.map((commit) => ({
-			name: commit.commit.author?.name,
-			username: commit.author?.login,
-			email: commit.commit.author?.email,
-		}))
-		.filter(
-			(committer) => !!committer.email && !!committer.username,
-		) as Committer[];
-
-	const guardianCommitters = committers.filter(
-		(committer) =>
-			committer.email.endsWith('@guardian.co.uk') ||
-			committer.email.endsWith('@theguardian.com'),
-	);
-
-	// Deduplicate committers by email
-	const uniqueCommitters = guardianCommitters.reduce<Record<string, Committer>>(
-		(acc, committer) => {
-			acc[committer.email] = committer;
-			return acc;
-		},
-		{},
-	);
-
-	return Object.values(uniqueCommitters);
-}
-
 async function tryToFindMostRecentCommitters(
 	config: Config,
 	fullName: string,
@@ -55,11 +15,38 @@ async function tryToFindMostRecentCommitters(
 ): Promise<string[]> {
 	const committers = await (async () => {
 		try {
-			return await findMostRecentCommitters(
-				config.gitHubOrg,
-				fullName.split('/')[1] ?? '',
-				octokit,
+			const commitsResponse = await octokit.rest.repos.listCommits({
+				owner: config.gitHubOrg,
+				repo: fullName.split('/')[1] ?? '',
+				per_page: 15,
+				page: 0,
+			});
+
+			const committers: Committer[] = commitsResponse.data
+				.map((commit) => ({
+					name: commit.commit.author?.name,
+					username: commit.author?.login,
+					email: commit.commit.author?.email,
+				}))
+				.filter(
+					(committer) => !!committer.email && !!committer.username,
+				) as Committer[];
+
+			const guardianCommitters = committers.filter(
+				(committer) =>
+					committer.email.endsWith('@guardian.co.uk') ||
+					committer.email.endsWith('@theguardian.com'),
 			);
+
+			// Deduplicate committers by email
+			const uniqueCommitters = guardianCommitters.reduce<
+				Record<string, Committer>
+			>((acc, committer) => {
+				acc[committer.email] = committer;
+				return acc;
+			}, {});
+
+			return Object.values(uniqueCommitters);
 		} catch (error) {
 			console.log(`Failed to fetch committers for ${fullName}:`, error);
 			return [];
