@@ -50,3 +50,8 @@ updates:
       gh-actions:
         patterns:
           - '*'
+
+- package-ecosystem: 'docker'
+  directories: 'containers'
+  schedule:
+    interval: 'quarterly'
