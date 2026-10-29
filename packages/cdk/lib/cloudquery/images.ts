@@ -19,6 +19,23 @@ export const Images = {
 
 type EcrApp = 'cloudquery' | 'singleton' | 'prisma-migrate';
 
+const digestEnvVars: Record<EcrApp, string> = {
+	cloudquery: 'CLOUDQUERY_IMAGE_DIGEST',
+	singleton: 'SINGLETON_IMAGE_DIGEST',
+	'prisma-migrate': 'PRISMA_MIGRATE_IMAGE_DIGEST',
+};
+
+export function getImageDigest(app: EcrApp): string {
+	const envVar = digestEnvVars[app];
+	const digest = process.env[envVar];
+
+	if (!digest) {
+		throw new Error(`${envVar} must be set`);
+	}
+
+	return digest;
+}
+
 /**
  * Images built in CI by the service-catalogue and published to ECR by
  * guardian/actions-ecr/push. Builds of `main` are tagged `branch-main`.
@@ -27,7 +44,7 @@ type EcrApp = 'cloudquery' | 'singleton' | 'prisma-migrate';
 export const getEcrImage = (
 	scope: GuStack,
 	app: EcrApp,
-	tag = 'branch-main',
+	digestOrTag: string,
 ) => {
 	const id = `${app}-repository`;
 	const repository =
@@ -36,5 +53,5 @@ export const getEcrImage = (
 			name: `guardian/service-catalogue/${app}`,
 		});
 
-	return repository.getImage(tag);
+	return repository.getImage(digestOrTag);
 };
