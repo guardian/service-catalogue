@@ -86,10 +86,97 @@ jobs:
             exit 1
           fi
 
+  cloudquery-image-push:
+    name: 'Build & Push cloudquery image'
+    runs-on: ubuntu-latest
+    outputs:
+      imageDigest: ${{ steps.publish-image-to-ecr.outputs.imageDigest }}
+
+    permissions:
+      # Allow the guardian/actions-ecr/push to authenticate with AWS using the GitHub OIDC token
+      id-token: write
+      pull-requests: write # Allow the guardian/actions-ecr/push to comment on PRs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set CQ_CLI
+        run: |
+          source .env
+          echo $CQ_CLI
+          echo "CQ_CLI=$CQ_CLI" >> "$GITHUB_ENV"
+
+      - run: docker buildx build -t cloudquery:latest --build-arg CQ_CLI=$CQ_CLI ./containers/cloudquery
+
+      - name: Publish image to ECR
+        id: publish-image-to-ecr
+        uses: guardian/actions-ecr/push@v1.0.1
+        with:
+          app: cloudquery
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  prisma-migrate-image-push:
+    name: 'Build & Push prisma-migrate image'
+    runs-on: ubuntu-latest
+    outputs:
+      imageDigest: ${{ steps.publish-image-to-ecr.outputs.imageDigest }}
+
+    permissions:
+      # Allow the guardian/actions-ecr/push to authenticate with AWS using the GitHub OIDC token
+      id-token: write
+      pull-requests: write # Allow the guardian/actions-ecr/push to comment on PRs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: docker buildx build -t prisma-migrate:latest ./containers/prisma-migrate
+
+      - name: Publish image to ECR
+        id: publish-image-to-ecr
+        uses: guardian/actions-ecr/push@v1.0.1
+        with:
+          app: prisma-migrate
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  singleton-image-push:
+    name: 'Build & Push singleton image'
+    runs-on: ubuntu-latest
+    outputs:
+      imageDigest: ${{ steps.publish-image-to-ecr.outputs.imageDigest }}
+
+    permissions:
+      # Allow the guardian/actions-ecr/push to authenticate with AWS using the GitHub OIDC token
+      id-token: write
+      pull-requests: write # Allow the guardian/actions-ecr/push to comment on PRs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: docker buildx build -t singleton:latest ./containers/singleton
+
+      - name: Publish image to ECR
+        id: publish-image-to-ecr
+        uses: guardian/actions-ecr/push@v1.0.1
+        with:
+          app: singleton
+          roleArn: ${{ secrets.GU_ARTIFACTS_ROLE_ARN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
   CI:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: [db-migration]
+    needs: [db-migration, cloudquery-image-push, prisma-migrate-image-push, singleton-image-push]
 
     # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
     permissions:
@@ -125,6 +212,10 @@ jobs:
 
       - name: build
         run: npm run build
+        env:
+          CLOUDQUERY_IMAGE_DIGEST: ${{needs.cloudquery-image-push.outputs.imageDigest}}
+          PRISMA_MIGRATE_IMAGE_DIGEST: ${{needs.prisma-migrate-image-push.outputs.imageDigest}}
+          SINGLETON_IMAGE_DIGEST: ${{needs.singleton-image-push.outputs.imageDigest}}
 
       - parallel:
           - name: Create build artifact for interactive-monitor

@@ -131,8 +131,13 @@ export function addPrismaMigrateTask(
 		artifactBucketName,
 	);
 
+	const imageDigest = process.env.PRISMA_MIGRATE_IMAGE_DIGEST
+	if (!imageDigest) {
+		throw new Error("PRISMA_MIGRATE_IMAGE_DIGEST must be set");
+	}
+
 	const prismaTask = taskDefinition.addContainer(`${app}Container`, {
-		image: getEcrImage(scope, 'prisma-migrate'),
+		image: getEcrImage(scope, 'prisma-migrate', imageDigest),
 		environment: {
 			// These are required so the task can retrieve the Prisma directory
 			// from the artifact bucket

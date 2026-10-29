@@ -27,7 +27,7 @@ type EcrApp = 'cloudquery' | 'singleton' | 'prisma-migrate';
 export const getEcrImage = (
 	scope: GuStack,
 	app: EcrApp,
-	tag = 'branch-main',
+	digestOrTag,
 ) => {
 	const id = `${app}-repository`;
 	const repository =
@@ -36,5 +36,5 @@ export const getEcrImage = (
 			name: `guardian/service-catalogue/${app}`,
 		});
 
-	return repository.getImage(tag);
+	return repository.getImage(digestOrTag);
 };

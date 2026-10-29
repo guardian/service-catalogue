@@ -206,8 +206,13 @@ export class CloudqueryTask extends FargateTaskDefinition {
 			},
 		});
 
+		const imageDigest = process.env.CLOUDQUERY_IMAGE_DIGEST
+		if (!imageDigest) {
+			throw new Error("CLOUDQUERY_IMAGE_DIGEST must be set");
+		}
+
 		const cloudqueryTask = this.addContainer(`${id}Container`, {
-			image: getEcrImage(scope, 'cloudquery'),
+			image: getEcrImage(scope, 'cloudquery', imageDigest),
 			entryPoint: [''],
 			environment: {
 				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
@@ -320,8 +325,13 @@ export class CloudqueryTask extends FargateTaskDefinition {
 			const operationInProgress = 114;
 			const success = 0;
 
+			const imageDigest = process.env.SINGLETON_IMAGE_DIGEST
+			if (!imageDigest) {
+				throw new Error("SINGLETON_IMAGE_DIGEST must be set");
+			}
+
 			const singletonTask = this.addContainer(`${id}AwsCli`, {
-				image: getEcrImage(scope, 'singleton'),
+				image: getEcrImage(scope, 'singleton', imageDigest),
 				entryPoint: [''],
 				command: [
 					'/bin/bash',

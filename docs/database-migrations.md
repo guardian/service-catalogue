@@ -88,37 +88,5 @@ See also:
 
 ## Testing changes to the `prisma-migrate` container on CODE
 
-If you have made changes to the [`prisma-migrate`](../containers/prisma-migrate) container, you can test them on CODE before merging to `main` by following these steps:
+Images are now built and published on every PR. Once a PR is raised you can deploy to CODE and it will use the latest image based on the image digest.
 
-### 1. Publish a new image
-
-Trigger the [prisma-migrate image workflow](../.github/workflows/prisma-migrate-image.yml) manually via GitHub Actions:
-
-1. Go to the [prisma-migrate image workflow](https://github.com/guardian/service-catalogue/actions/workflows/prisma-migrate-image.yml)
-2. Click **Run workflow** and select your branch
-3. Once the workflow completes, note the `build-<number>` tag it pushed to ECR (shown in the workflow summary / PR comment).
-
-### 2. Update the image reference
-
-Temporarily pass the new tag to `getEcrImage` in [`packages/cdk/lib/prisma-migrate-task.ts`](../packages/cdk/lib/prisma-migrate-task.ts):
-
-```typescript
-image: getEcrImage(scope, 'prisma-migrate', 'build-<your-build-number>'),
-```
-
-> [!Warning]
-> This change should **not** be merged to `main`. Revert it before merging your PR.
-
-### 3. Deploy to CODE and observe
-
-Deploy to CODE and observe the ECS task logs to verify your changes work as expected.
-
-### 4. Revert the image reference
-
-Before merging your PR, revert the change made in step 2, restoring the default `branch-main` tag:
-
-```typescript
-image: getEcrImage(scope, 'prisma-migrate'),
-```
-
-When your PR is merged to `main`, CI will automatically build and publish a new image tagged as `branch-main`.
