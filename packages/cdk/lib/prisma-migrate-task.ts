@@ -18,7 +18,7 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
-import { getEcrImage, Images } from './cloudquery/images';
+import { getEcrImage, getImageDigest, Images } from './cloudquery/images';
 
 interface PrismaMigrateTaskProps {
 	loggingStreamName: string;
@@ -131,13 +131,12 @@ export function addPrismaMigrateTask(
 		artifactBucketName,
 	);
 
-	const imageDigest = process.env.PRISMA_MIGRATE_IMAGE_DIGEST
-	if (!imageDigest) {
-		throw new Error("PRISMA_MIGRATE_IMAGE_DIGEST must be set");
-	}
-
 	const prismaTask = taskDefinition.addContainer(`${app}Container`, {
-		image: getEcrImage(scope, 'prisma-migrate', imageDigest),
+		image: getEcrImage(
+			scope,
+			'prisma-migrate',
+			getImageDigest('prisma-migrate'),
+		),
 		environment: {
 			// These are required so the task can retrieve the Prisma directory
 			// from the artifact bucket

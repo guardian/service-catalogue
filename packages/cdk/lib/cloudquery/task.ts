@@ -31,7 +31,7 @@ import {
 	postgresDestinationConfig,
 	serviceCatalogueConfigDirectory,
 } from './config';
-import { getEcrImage, Images } from './images';
+import { getEcrImage, getImageDigest, Images } from './images';
 import { singletonPolicy } from './policies';
 import { scheduleFrequencyMs } from './schedule';
 
@@ -206,13 +206,8 @@ export class CloudqueryTask extends FargateTaskDefinition {
 			},
 		});
 
-		const imageDigest = process.env.CLOUDQUERY_IMAGE_DIGEST
-		if (!imageDigest) {
-			throw new Error("CLOUDQUERY_IMAGE_DIGEST must be set");
-		}
-
 		const cloudqueryTask = this.addContainer(`${id}Container`, {
-			image: getEcrImage(scope, 'cloudquery', imageDigest),
+			image: getEcrImage(scope, 'cloudquery', getImageDigest('cloudquery')),
 			entryPoint: [''],
 			environment: {
 				GOMEMLIMIT: `${Math.floor(memoryLimitMiB * 0.8)}MiB`,
@@ -325,13 +320,8 @@ export class CloudqueryTask extends FargateTaskDefinition {
 			const operationInProgress = 114;
 			const success = 0;
 
-			const imageDigest = process.env.SINGLETON_IMAGE_DIGEST
-			if (!imageDigest) {
-				throw new Error("SINGLETON_IMAGE_DIGEST must be set");
-			}
-
 			const singletonTask = this.addContainer(`${id}AwsCli`, {
-				image: getEcrImage(scope, 'singleton', imageDigest),
+				image: getEcrImage(scope, 'singleton', getImageDigest('singleton')),
 				entryPoint: [''],
 				command: [
 					'/bin/bash',
