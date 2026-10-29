@@ -519,7 +519,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -998,7 +998,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -1771,7 +1771,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -2558,7 +2558,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -3308,7 +3308,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -4023,7 +4023,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -4766,7 +4766,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -5541,7 +5541,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -6536,7 +6536,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -6997,7 +6997,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -7743,7 +7743,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -8488,7 +8488,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -8637,7 +8637,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/singleton:branch-main",
+                  "/guardian/service-catalogue/singleton:test",
                 ],
               ],
             },
@@ -9297,7 +9297,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -9446,7 +9446,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/singleton:branch-main",
+                  "/guardian/service-catalogue/singleton:test",
                 ],
               ],
             },
@@ -10102,7 +10102,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -10846,7 +10846,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -11602,7 +11602,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -12377,7 +12377,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -13731,7 +13731,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -14210,7 +14210,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -14359,7 +14359,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/singleton:branch-main",
+                  "/guardian/service-catalogue/singleton:test",
                 ],
               ],
             },
@@ -15048,7 +15048,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -15748,7 +15748,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -16524,7 +16524,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -17284,7 +17284,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -18032,7 +18032,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -18829,7 +18829,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -19918,7 +19918,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -20453,7 +20453,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -21214,7 +21214,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -22015,7 +22015,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -22816,7 +22816,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -23609,7 +23609,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -24680,7 +24680,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/cloudquery:branch-main",
+                  "/guardian/service-catalogue/cloudquery:test",
                 ],
               ],
             },
@@ -29353,7 +29353,7 @@ spec:
                   {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/guardian/service-catalogue/prisma-migrate:branch-main",
+                  "/guardian/service-catalogue/prisma-migrate:test",
                 ],
               ],
             },

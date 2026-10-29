@@ -15,6 +15,6 @@ if (process.env.CI === 'true') {
 }
 
 // Set env vars used for image retrieval
-process.env.CLOUDQUERY_IMAGE_DIGEST = 'branch-main';
-process.env.SINGLETON_IMAGE_DIGEST = 'branch-main';
-process.env.PRISMA_MIGRATE_IMAGE_DIGEST = 'branch-main';
+process.env.CLOUDQUERY_IMAGE_DIGEST = 'test';
+process.env.SINGLETON_IMAGE_DIGEST = 'test';
+process.env.PRISMA_MIGRATE_IMAGE_DIGEST = 'test';
