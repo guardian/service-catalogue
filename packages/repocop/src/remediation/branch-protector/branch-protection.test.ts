@@ -22,7 +22,7 @@ const baseOwner: view_repo_ownership = {
 	github_team_name: '',
 	github_team_slug: '',
 	short_repo_name: '',
-	role_name: '',
+	role_name: 'admin',
 	archived: false,
 	galaxies_team: null,
 	team_contact_email: null,
