@@ -207,6 +207,13 @@ export function buildRunLocallyDeveloperPolicy(
 		resources: ['*'],
 	});
 
+	// for aws_iam_roles
+	const listRolesPolicy = new PolicyStatement({
+		effect: Effect.ALLOW,
+		actions: ['iam:GetRole', 'iam:ListRoles'],
+		resources: ['*'],
+	});
+
 	const { stage, stack, app = 'service-catalogue' } = scope;
 	const SSMPolicy = new PolicyStatement({
 		effect: Effect.ALLOW,
@@ -227,6 +234,7 @@ export function buildRunLocallyDeveloperPolicy(
 		listEc2Images,
 		listOrganizations,
 		listInspectorFindings,
+		listRolesPolicy,
 	];
 
 	const runLocalPolicyProps: GuDeveloperPolicyProps = {
