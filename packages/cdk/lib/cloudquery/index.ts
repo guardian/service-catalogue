@@ -177,6 +177,7 @@ export function addCloudqueryEcsCluster(
 			schedule: Schedule.rate(Duration.hours(3)),
 			config: awsSourceConfigForOrganisation({
 				tables: filterCloudQueryTables([/^aws_cloudformation_.*$/]),
+				concurrency: 20,
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
