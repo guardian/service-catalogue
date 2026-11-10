@@ -915,6 +915,7 @@ model aws_apigateway_domain_names {
   regional_hosted_zone_id                String?
   security_policy                        String?
   tags                                   Json?
+  endpoint_access_mode                   String?
 
   @@ignore
 }
