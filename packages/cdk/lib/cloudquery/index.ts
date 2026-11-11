@@ -284,7 +284,11 @@ export function addCloudqueryEcsCluster(
 				'Collecting CloudWatch Alarm data across the organisation. Uses include building SLO dashboards.',
 			schedule: Schedule.rate(Duration.minutes(30)),
 			config: awsSourceConfigForOrganisation({
-				tables: ['aws_cloudwatch_alarms'],
+				tables: [
+					'aws_cloudwatch_metric_alarms',
+					'aws_cloudwatch_composite_alarms',
+					'aws_cloudwatch_log_alarms',
+				],
 			}),
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 		},
