@@ -116,7 +116,9 @@ function isMaintained(repo: Repository): boolean {
 	const update: Date | undefined = mostRecentChange(repo);
 	const now = new Date();
 	const twoYearsAgo = new Date();
-	twoYearsAgo.setFullYear(now.getFullYear() - 2);
+	// setting to one year to match GitHub's definition of an inactive repo
+	// https://github.blog/changelog/2026-11-10-dependabot-alerts-will-pause-on-inactive-repositories/
+	twoYearsAgo.setFullYear(now.getFullYear() - 1);
 	//avoid false positives and use current moment if no dates are available for now
 	//a repo always has a created_at date, so this is unlikely to happen unless something is wrong with cloudquery
 	const recentlyUpdated = (update ?? new Date()) > twoYearsAgo;
