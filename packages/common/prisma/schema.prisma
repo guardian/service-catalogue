@@ -43,6 +43,8 @@ model aws_cloudformation_stacks {
   timeout_in_minutes            BigInt?
   deletion_mode                 String?
   detailed_status               String?
+  last_operations               Json?
+  deployment_config             Json?
 }
 
 model aws_ec2_images {
@@ -86,6 +88,8 @@ model aws_ec2_images {
   virtualization_type       String?
   deregistration_protection String?
   last_launched_time        String?
+  public_ssm_parameter_name String?
+  image_watermarks          Json?
 }
 
 model aws_ec2_instances {
@@ -186,6 +190,7 @@ model aws_organizations_accounts {
   name               String?
   status             String?
   state              String?
+  paths              String[]
 }
 
 model aws_organizations_organizational_units {
