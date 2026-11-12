@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS aws_cloudwatch_alarms, aws_ec2_image_last_launched_times, aws_elastictranscoder_pipeline_jobs, aws_elastictranscoder_presets, aws_inspector_findings;
