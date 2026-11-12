@@ -387,6 +387,16 @@ export function addCloudqueryEcsCluster(
 			policies: [listOrgsPolicy, cloudqueryAccess('*')],
 			memoryLimitMiB: 1024,
 		},
+		{
+			name: 'AwsIamRoles',
+			description: 'Collecting IAM role information',
+			schedule: Schedule.cron({ minute: '0', hour: '16', weekDay: 'SAT' }), // Every Saturday, at 4PM UTC
+			config: awsSourceConfigForOrganisation({
+				tables: ['aws_iam_roles'],
+			}),
+			policies: [listOrgsPolicy, cloudqueryAccess('*')],
+			memoryLimitMiB: 1024,
+		},
 	];
 
 	const collectedAwsTables = individualAwsSources.flatMap(
@@ -418,8 +428,8 @@ export function addCloudqueryEcsCluster(
 		policies: [listOrgsPolicy, cloudqueryAccess('*')],
 
 		// This task is quite expensive, and requires more power than the default (500MB memory, 0.25 vCPU).
-		memoryLimitMiB: 3072,
-		cpu: 1024,
+		memoryLimitMiB: 8192,
+		cpu: 2048,
 	};
 
 	const cloudqueryGithubCredentials = new SecretsManager(
