@@ -51,7 +51,7 @@ updates:
         patterns:
           - '*'
 
-- package-ecosystem: 'docker'
-  directories: 'containers'
-  schedule:
-    interval: 'quarterly'
+  - package-ecosystem: 'docker'
+    directories: 'containers'
+    schedule:
+      interval: 'quarterly'
