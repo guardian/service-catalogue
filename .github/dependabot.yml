@@ -52,6 +52,9 @@ updates:
           - '*'
 
   - package-ecosystem: 'docker'
-    directories: 'containers'
+    directories:
+      - 'containers/cloudquery'
+      - 'containers/prisma-migrate'
+      - 'containers/singleton'
     schedule:
       interval: 'quarterly'
