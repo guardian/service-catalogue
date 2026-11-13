@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.163"
+		"@types/aws-lambda": "^8.10.164"
 	},
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node24 --outdir=dist --external:@aws-sdk --external:@prisma/client --external:prisma  --format=esm --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\"",
