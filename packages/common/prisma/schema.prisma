@@ -1268,6 +1268,49 @@ model aws_iam_users {
   permissions_boundary Json?
 }
 
+model aws_cloudwatch_metric_alarms {
+  cq_sync_time                          DateTime? @map("_cq_sync_time") @db.Timestamp(6)
+  cq_source_name                        String?   @map("_cq_source_name")
+  cq_id                                 String    @id(map: "aws_cloudwatch_metric_alarms_cqpk") @map("_cq_id") @db.Uuid
+  cq_parent_id                          String?   @map("_cq_parent_id") @db.Uuid
+  account_id                            String?
+  region                                String?
+  tags                                  Json?
+  arn                                   String?
+  dimensions                            Json?
+  actions_enabled                       Boolean?
+  alarm_actions                         String[]
+  alarm_arn                             String?
+  alarm_configuration_updated_timestamp DateTime? @db.Timestamp(6)
+  alarm_description                     String?
+  alarm_name                            String?
+  comparison_operator                   String?
+  datapoints_to_alarm                   BigInt?
+  evaluate_low_sample_count_percentile  String?
+  evaluation_periods                    BigInt?
+  evaluation_state                      String?
+  extended_statistic                    String?
+  insufficient_data_actions             String[]
+  metric_name                           String?
+  metrics                               Json?
+  namespace                             String?
+  ok_actions                            String[]
+  period                                BigInt?
+  state_reason                          String?
+  state_reason_data                     String?
+  state_transitioned_timestamp          DateTime? @db.Timestamp(6)
+  state_updated_timestamp               DateTime? @db.Timestamp(6)
+  state_value                           String?
+  statistic                             String?
+  threshold                             Float?
+  threshold_metric_id                   String?
+  treat_missing_data                    String?
+  unit                                  String?
+  action_configuration                  Json?
+
+  @@ignore
+}
+
 view view_repo_ownership {
   github_team_id     BigInt
   github_team_name   String
