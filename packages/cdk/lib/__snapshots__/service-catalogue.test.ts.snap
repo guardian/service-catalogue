@@ -2365,6 +2365,747 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
+    "CloudquerySourceAwsIamRolesScheduledEventRule21A20D7A": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 16 ? * SAT *)",
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "PropagateTags": "TASK_DEFINITION",
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceAwsIamRolesTaskDefinition16E1CB16",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceAwsIamRolesTaskDefinitionEventsRole4A94E50D",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceAwsIamRolesTaskDefinition16E1CB16": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "printf 'kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: v35.9.0
+  tables:
+    - aws_iam_roles
+  skip_dependent_tables: true
+  destinations:
+    - postgresql
+  otel_endpoint: 0.0.0.0:4318
+  otel_endpoint_insecure: true
+  spec:
+    org:
+      member_role_name: service-catalogue-access
+      organization_units:
+        - ou-123
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: cloudquery
+  path: cloudquery/postgresql
+  version: v8.13.0
+  write_mode: overwrite-delete-stale
+  migrate_mode: forced
+  send_sync_summary: true
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-AwsIamRolesAWSOTELCollector",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsIamRoles",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "819MiB",
+              },
+              {
+                "Name": "CLOUDQUERY_LOG_LEVEL",
+                "Value": "info",
+              },
+            ],
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ArtifactsAccountId",
+                  },
+                  ".dkr.ecr.eu-west-1.",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/guardian/service-catalogue/cloudquery:test",
+                ],
+              ],
+            },
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsIamRolesContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "CLOUDQUERY_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "cloudqueryapikeyCCF82F53",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Command": [
+              "--config=/etc/ecs/ecs-xray.yaml",
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsIamRolesAWSOTELCollector",
+            "PortMappings": [
+              {
+                "ContainerPort": 4318,
+                "Protocol": "tcp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "AwsIamRoles",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceAwsIamRolesTaskDefinitionCloudquerySourceAwsIamRolesFirelensLogGroupABB646C7",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-AwsIamRolesFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_iam_roles', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "AwsIamRoles",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "public.ecr.aws/docker/library/postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-AwsIamRolesPostgresContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "PGUSER",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGHOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGPASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceAwsIamRolesTaskDefinitionExecutionRole50507611",
+            "Arn",
+          ],
+        },
+        "Family": "AwsIamRoles",
+        "Memory": "1024",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsIamRoles",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "servicecataloguePRODtaskAwsIamRoles8AAB73AD",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceAwsIamRolesTaskDefinitionCloudquerySourceAwsIamRolesFirelensLogGroupABB646C7": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsIamRoles",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceAwsIamRolesTaskDefinitionEventsRole4A94E50D": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsIamRoles",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsIamRolesTaskDefinitionEventsRoleDefaultPolicyEB8D4706": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceAwsIamRolesTaskDefinition16E1CB16",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsIamRolesTaskDefinitionExecutionRole50507611",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecataloguePRODtaskAwsIamRoles8AAB73AD",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsIamRolesTaskDefinitionEventsRoleDefaultPolicyEB8D4706",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsIamRolesTaskDefinitionEventsRole4A94E50D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceAwsIamRolesTaskDefinitionExecutionRole50507611": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "AwsIamRoles",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceAwsIamRolesTaskDefinitionExecutionRoleDefaultPolicy93A79F1F": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:eu-west-1:",
+                    {
+                      "Ref": "ArtifactsAccountId",
+                    },
+                    ":repository/guardian/service-catalogue/cloudquery",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceAwsIamRolesTaskDefinitionCloudquerySourceAwsIamRolesFirelensLogGroupABB646C7",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceAwsIamRolesTaskDefinitionExecutionRoleDefaultPolicy93A79F1F",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceAwsIamRolesTaskDefinitionExecutionRole50507611",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "CloudquerySourceAwsInspector2FindingsScheduledEventRule3644BA8A": {
       "Properties": {
         "ScheduleExpression": "cron(0 21 ? * MON *)",
@@ -13547,7 +14288,6 @@ spec:
     - aws_iam_role_attached_policies
     - aws_iam_role_last_accessed_details
     - aws_iam_role_policies
-    - aws_iam_roles
     - aws_iam_server_certificates
     - aws_iam_ssh_public_keys
     - aws_iam_user_access_keys
@@ -13709,7 +14449,7 @@ spec:
             "Environment": [
               {
                 "Name": "GOMEMLIMIT",
-                "Value": "2457MiB",
+                "Value": "6553MiB",
               },
               {
                 "Name": "CLOUDQUERY_LOG_LEVEL",
@@ -13908,7 +14648,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_account_alternate_contacts', 604800000),('aws_account_contacts', 604800000),('aws_amplify_apps', 604800000),('aws_apigateway_api_keys', 604800000),('aws_apigateway_client_certificates', 604800000),('aws_apigateway_domain_name_base_path_mappings', 604800000),('aws_apigateway_domain_names', 604800000),('aws_apigateway_rest_api_authorizers', 604800000),('aws_apigateway_rest_api_deployments', 604800000),('aws_apigateway_rest_api_documentation_parts', 604800000),('aws_apigateway_rest_api_documentation_versions', 604800000),('aws_apigateway_rest_api_gateway_responses', 604800000),('aws_apigateway_rest_api_models', 604800000),('aws_apigateway_rest_api_request_validators', 604800000),('aws_apigateway_rest_api_resource_method_integrations', 604800000),('aws_apigateway_rest_api_resource_methods', 604800000),('aws_apigateway_rest_api_resources', 604800000),('aws_apigateway_rest_api_stages', 604800000),('aws_apigateway_rest_apis', 604800000),('aws_apigateway_usage_plan_keys', 604800000),('aws_apigateway_usage_plans', 604800000),('aws_apigateway_vpc_links', 604800000),('aws_apigatewayv2_api_authorizers', 604800000),('aws_apigatewayv2_api_deployments', 604800000),('aws_apigatewayv2_api_integrations', 604800000),('aws_apigatewayv2_api_route_responses', 604800000),('aws_apigatewayv2_api_routes', 604800000),('aws_apigatewayv2_api_stages', 604800000),('aws_apigatewayv2_apis', 604800000),('aws_apigatewayv2_domain_name_rest_api_mappings', 604800000),('aws_apigatewayv2_domain_names', 604800000),('aws_apigatewayv2_vpc_links', 604800000),('aws_appconfig_deployment_strategies', 604800000),('aws_appflow_flows', 604800000),('aws_applicationautoscaling_policies', 604800000),('aws_applicationautoscaling_scalable_targets', 604800000),('aws_applicationautoscaling_scaling_activities', 604800000),('aws_apprunner_auto_scaling_configurations', 604800000),('aws_apprunner_observability_configurations', 604800000),('aws_appstream_images', 604800000),('aws_appstream_stack_user_associations', 604800000),('aws_appsync_graphql_apis', 604800000),('aws_athena_data_catalog_database_tables', 604800000),('aws_athena_data_catalog_databases', 604800000),('aws_athena_data_catalogs', 604800000),('aws_athena_work_group_named_queries', 604800000),('aws_athena_work_group_query_executions', 604800000),('aws_athena_work_groups', 604800000),('aws_autoscaling_group_scaling_policies', 604800000),('aws_autoscaling_launch_configurations', 604800000),('aws_autoscaling_scheduled_actions', 604800000),('aws_autoscaling_warm_pools', 604800000),('aws_availability_zones', 604800000),('aws_backup_global_settings', 604800000),('aws_backup_jobs', 604800000),('aws_backup_plan_selections', 604800000),('aws_backup_plans', 604800000),('aws_backup_region_settings', 604800000),('aws_backup_report_plans', 604800000),('aws_budgets_actions', 604800000),('aws_budgets_budgets', 604800000),('aws_cloudfront_cache_policies', 604800000),('aws_cloudfront_distributions', 604800000),('aws_cloudfront_origin_access_identities', 604800000),('aws_cloudfront_origin_request_policies', 604800000),('aws_cloudfront_response_headers_policies', 604800000),('aws_cloudhsmv2_backups', 604800000),('aws_cloudtrail_channels', 604800000),('aws_cloudtrail_imports', 604800000),('aws_cloudtrail_trail_event_selectors', 604800000),('aws_cloudtrail_trails', 604800000),('aws_cloudwatchlogs_log_group_subscription_filters', 604800000),('aws_cloudwatchlogs_log_groups', 604800000),('aws_cloudwatchlogs_metric_filters', 604800000),('aws_cloudwatchlogs_resource_policies', 604800000),('aws_codebuild_builds', 604800000),('aws_codebuild_projects', 604800000),('aws_codebuild_source_credentials', 604800000),('aws_codecommit_repositories', 604800000),('aws_codedeploy_applications', 604800000),('aws_codedeploy_deployment_configs', 604800000),('aws_codepipeline_pipelines', 604800000),('aws_codepipeline_webhooks', 604800000),('aws_cognito_identity_pools', 604800000),('aws_cognito_user_pool_identity_providers', 604800000),('aws_cognito_user_pools', 604800000),('aws_computeoptimizer_autoscaling_group_recommendations', 604800000),('aws_computeoptimizer_ebs_volume_recommendations', 604800000),('aws_computeoptimizer_ec2_instance_recommendations', 604800000),('aws_computeoptimizer_enrollment_statuses', 604800000),('aws_computeoptimizer_lambda_function_recommendations', 604800000),('aws_config_config_rule_compliance_details', 604800000),('aws_config_config_rule_compliances', 604800000),('aws_config_config_rules', 604800000),('aws_config_configuration_recorders', 604800000),('aws_config_delivery_channel_statuses', 604800000),('aws_config_delivery_channels', 604800000),('aws_datapipeline_pipelines', 604800000),('aws_datasync_agents', 604800000),('aws_datasync_azureblob_locations', 604800000),('aws_datasync_efs_locations', 604800000),('aws_datasync_hdfs_locations', 604800000),('aws_datasync_locations', 604800000),('aws_datasync_s3_locations', 604800000),('aws_detective_graph_members', 604800000),('aws_detective_graphs', 604800000),('aws_directconnect_connections', 604800000),('aws_directconnect_gateway_associations', 604800000),('aws_directconnect_gateway_attachments', 604800000),('aws_directconnect_gateways', 604800000),('aws_directconnect_locations', 604800000),('aws_directconnect_virtual_gateways', 604800000),('aws_directconnect_virtual_interfaces', 604800000),('aws_directoryservice_directories', 604800000),('aws_dms_replication_subnet_groups', 604800000),('aws_docdb_certificates', 604800000),('aws_docdb_event_categories', 604800000),('aws_docdb_event_subscriptions', 604800000),('aws_docdb_events', 604800000),('aws_docdb_subnet_groups', 604800000),('aws_ebs_default_kms_key_ids', 604800000),('aws_ebs_encryption_by_defaults', 604800000),('aws_ec2_account_attributes', 604800000),('aws_ec2_customer_gateways', 604800000),('aws_ec2_dhcp_options', 604800000),('aws_ec2_ebs_snapshot_attributes', 604800000),('aws_ec2_ebs_snapshots', 604800000),('aws_ec2_ebs_volume_statuses', 604800000),('aws_ec2_ebs_volumes', 604800000),('aws_ec2_egress_only_internet_gateways', 604800000),('aws_ec2_eips', 604800000),('aws_ec2_flow_logs', 604800000),('aws_ec2_image_block_public_access_states', 604800000),('aws_ec2_image_launch_permissions', 604800000),('aws_ec2_instance_connect_endpoints', 604800000),('aws_ec2_instance_credit_specifications', 604800000),('aws_ec2_instance_statuses', 604800000),('aws_ec2_internet_gateways', 604800000),('aws_ec2_ipam_discovered_accounts', 604800000),('aws_ec2_ipam_discovered_public_addresses', 604800000),('aws_ec2_ipam_discovered_resource_cidrs', 604800000),('aws_ec2_ipam_resource_discoveries', 604800000),('aws_ec2_ipam_resource_discovery_associations', 604800000),('aws_ec2_ipam_scopes', 604800000),('aws_ec2_ipams', 604800000),('aws_ec2_key_pairs', 604800000),('aws_ec2_launch_template_versions', 604800000),('aws_ec2_launch_templates', 604800000),('aws_ec2_managed_prefix_lists', 604800000),('aws_ec2_nat_gateways', 604800000),('aws_ec2_network_acls', 604800000),('aws_ec2_network_interfaces', 604800000),('aws_ec2_regional_configs', 604800000),('aws_ec2_replace_root_volume_tasks', 604800000),('aws_ec2_reserved_instances', 604800000),('aws_ec2_route_tables', 604800000),('aws_ec2_serial_console_access_statuses', 604800000),('aws_ec2_snapshot_block_public_access_states', 604800000),('aws_ec2_subnets', 604800000),('aws_ec2_transit_gateway_attachments', 604800000),('aws_ec2_transit_gateway_peering_attachments', 604800000),('aws_ec2_transit_gateway_route_tables', 604800000),('aws_ec2_transit_gateway_vpc_attachments', 604800000),('aws_ec2_transit_gateways', 604800000),('aws_ec2_vpc_endpoint_connections', 604800000),('aws_ec2_vpc_endpoint_service_configurations', 604800000),('aws_ec2_vpc_endpoints', 604800000),('aws_ec2_vpc_peering_connections', 604800000),('aws_ec2_vpcs', 604800000),('aws_ec2_vpn_connections', 604800000),('aws_ec2_vpn_gateways', 604800000),('aws_ecr_registries', 604800000),('aws_ecr_repositories', 604800000),('aws_ecr_repository_image_scan_findings', 604800000),('aws_ecr_repository_images', 604800000),('aws_ecr_repository_lifecycle_policies', 604800000),('aws_ecr_repository_policies', 604800000),('aws_efs_filesystems', 604800000),('aws_elasticache_clusters', 604800000),('aws_elasticache_global_replication_groups', 604800000),('aws_elasticache_replication_groups', 604800000),('aws_elasticache_reserved_cache_nodes', 604800000),('aws_elasticache_snapshots', 604800000),('aws_elasticache_subnet_groups', 604800000),('aws_elasticache_update_actions', 604800000),('aws_elasticache_users', 604800000),('aws_elasticbeanstalk_application_versions', 604800000),('aws_elasticbeanstalk_applications', 604800000),('aws_elasticsearch_domains', 604800000),('aws_elasticsearch_packages', 604800000),('aws_elasticsearch_reserved_instances', 604800000),('aws_elasticsearch_versions', 604800000),('aws_emr_block_public_access_configs', 604800000),('aws_emr_cluster_instance_fleets', 604800000),('aws_emr_cluster_instance_groups', 604800000),('aws_emr_cluster_instances', 604800000),('aws_emr_clusters', 604800000),('aws_emr_release_labels', 604800000),('aws_emr_security_configurations', 604800000),('aws_emr_steps', 604800000),('aws_emr_studios', 604800000),('aws_eventbridge_api_destinations', 604800000),('aws_eventbridge_archives', 604800000),('aws_eventbridge_connections', 604800000),('aws_eventbridge_event_bus_rules', 604800000),('aws_eventbridge_event_bus_targets', 604800000),('aws_eventbridge_event_buses', 604800000),('aws_eventbridge_event_sources', 604800000),('aws_firehose_delivery_streams', 604800000),('aws_fsx_data_repository_tasks', 604800000),('aws_glacier_data_retrieval_policies', 604800000),('aws_glacier_vault_notifications', 604800000),('aws_glacier_vaults', 604800000),('aws_globalaccelerator_accelerators', 604800000),('aws_glue_classifiers', 604800000),('aws_glue_crawlers', 604800000),('aws_glue_database_table_indexes', 604800000),('aws_glue_database_tables', 604800000),('aws_glue_databases', 604800000),('aws_glue_datacatalog_encryption_settings', 604800000),('aws_glue_job_runs', 604800000),('aws_glue_jobs', 604800000),('aws_glue_security_configurations', 604800000),('aws_glue_triggers', 604800000),('aws_health_affected_entities', 604800000),('aws_health_event_details', 604800000),('aws_health_events', 604800000),('aws_iam_account_authorization_details', 604800000),('aws_iam_accounts', 604800000),('aws_iam_group_attached_policies', 604800000),('aws_iam_group_last_accessed_details', 604800000),('aws_iam_group_policies', 604800000),('aws_iam_groups', 604800000),('aws_iam_instance_profiles', 604800000),('aws_iam_mfa_devices', 604800000),('aws_iam_openid_connect_identity_providers', 604800000),('aws_iam_password_policies', 604800000),('aws_iam_policies', 604800000),('aws_iam_policy_default_versions', 604800000),('aws_iam_policy_last_accessed_details', 604800000),('aws_iam_policy_versions', 604800000),('aws_iam_role_attached_policies', 604800000),('aws_iam_role_last_accessed_details', 604800000),('aws_iam_role_policies', 604800000),('aws_iam_roles', 604800000),('aws_iam_server_certificates', 604800000),('aws_iam_ssh_public_keys', 604800000),('aws_iam_user_access_keys', 604800000),('aws_iam_user_attached_policies', 604800000),('aws_iam_user_groups', 604800000),('aws_iam_user_last_accessed_details', 604800000),('aws_iam_user_policies', 604800000),('aws_iam_virtual_mfa_devices', 604800000),('aws_inspector2_covered_resources', 604800000),('aws_keyspaces_keyspaces', 604800000),('aws_kinesis_streams', 604800000),('aws_kms_aliases', 604800000),('aws_kms_key_grants', 604800000),('aws_kms_key_policies', 604800000),('aws_kms_key_rotation_statuses', 604800000),('aws_kms_key_rotations', 604800000),('aws_kms_keys', 604800000),('aws_lightsail_instance_port_states', 604800000),('aws_lightsail_instances', 604800000),('aws_mq_broker_configuration_revisions', 604800000),('aws_mq_broker_users', 604800000),('aws_neptune_cluster_snapshots', 604800000),('aws_neptune_clusters', 604800000),('aws_neptune_event_subscriptions', 604800000),('aws_neptune_subnet_groups', 604800000),('aws_networkfirewall_firewall_policies', 604800000),('aws_networkmanager_links', 604800000),('aws_opensearch_reserved_instances', 604800000),('aws_ram_principals', 604800000),('aws_ram_resource_share_associations', 604800000),('aws_ram_resource_share_invitations', 604800000),('aws_ram_resource_share_permissions', 604800000),('aws_ram_resource_shares', 604800000),('aws_ram_resource_types', 604800000),('aws_ram_resources', 604800000),('aws_rds_certificates', 604800000),('aws_rds_db_proxies', 604800000),('aws_rds_db_proxy_target_groups', 604800000),('aws_rds_db_proxy_targets', 604800000),('aws_rds_db_security_groups', 604800000),('aws_rds_event_subscriptions', 604800000),('aws_rds_events', 604800000),('aws_rds_option_groups', 604800000),('aws_rds_pending_maintenance_actions', 604800000),('aws_rds_reserved_instances', 604800000),('aws_rds_subnet_groups', 604800000),('aws_redshift_endpoint_authorizations', 604800000),('aws_redshift_reserved_nodes', 604800000),('aws_redshift_subnet_groups', 604800000),('aws_regions', 604800000),('aws_resiliencehub_suggested_resiliency_policies', 604800000),('aws_resourcegroups_resource_groups', 604800000),('aws_route53_delegation_sets', 604800000),('aws_route53_domains', 604800000),('aws_route53_health_checks', 604800000),('aws_route53_hosted_zone_resource_record_sets', 604800000),('aws_route53_hosted_zones', 604800000),('aws_route53_operations', 604800000),('aws_route53_traffic_policies', 604800000),('aws_route53_traffic_policy_versions', 604800000),('aws_route53recoveryreadiness_resource_sets', 604800000),('aws_route53resolver_firewall_configs', 604800000),('aws_route53resolver_firewall_domain_lists', 604800000),('aws_route53resolver_resolver_endpoints', 604800000),('aws_route53resolver_resolver_rule_associations', 604800000),('aws_route53resolver_resolver_rules', 604800000),('aws_sagemaker_endpoint_configurations', 604800000),('aws_sagemaker_endpoints', 604800000),('aws_sagemaker_models', 604800000),('aws_sagemaker_training_jobs', 604800000),('aws_scheduler_schedule_groups', 604800000),('aws_secretsmanager_secret_versions', 604800000),('aws_secretsmanager_secrets', 604800000),('aws_servicediscovery_instances', 604800000),('aws_servicediscovery_namespaces', 604800000),('aws_servicediscovery_services', 604800000),('aws_ses_active_receipt_rule_sets', 604800000),('aws_ses_configuration_set_event_destinations', 604800000),('aws_ses_configuration_sets', 604800000),('aws_ses_identities', 604800000),('aws_ses_templates', 604800000),('aws_sns_subscriptions', 604800000),('aws_sqs_queues', 604800000),('aws_ssm_associations', 604800000),('aws_ssm_compliance_summary_items', 604800000),('aws_ssm_document_versions', 604800000),('aws_ssm_documents', 604800000),('aws_ssm_instance_compliance_items', 604800000),('aws_ssm_instances', 604800000),('aws_ssm_inventories', 604800000),('aws_ssm_inventory_schemas', 604800000),('aws_ssm_patch_baselines', 604800000),('aws_ssmincidents_incident_timeline_events', 604800000),('aws_stepfunctions_activities', 604800000),('aws_stepfunctions_state_machines', 604800000),('aws_support_case_communications', 604800000),('aws_support_cases', 604800000),('aws_support_services', 604800000),('aws_support_severity_levels', 604800000),('aws_support_trusted_advisor_check_results', 604800000),('aws_support_trusted_advisor_check_summaries', 604800000),('aws_support_trusted_advisor_checks', 604800000),('aws_timestream_databases', 604800000),('aws_timestream_tables', 604800000),('aws_transfer_profiles', 604800000),('aws_transfer_servers', 604800000),('aws_transfer_users', 604800000),('aws_waf_rules', 604800000),('aws_waf_web_acls', 604800000),('aws_wafregional_rule_groups', 604800000),('aws_wafv2_ipsets', 604800000),('aws_wafv2_managed_rule_groups', 604800000),('aws_wafv2_regex_pattern_sets', 604800000),('aws_wafv2_rule_groups', 604800000),('aws_wafv2_web_acls', 604800000),('aws_workspaces_workspaces', 604800000),('aws_xray_encryption_configs', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('aws_account_alternate_contacts', 604800000),('aws_account_contacts', 604800000),('aws_amplify_apps', 604800000),('aws_apigateway_api_keys', 604800000),('aws_apigateway_client_certificates', 604800000),('aws_apigateway_domain_name_base_path_mappings', 604800000),('aws_apigateway_domain_names', 604800000),('aws_apigateway_rest_api_authorizers', 604800000),('aws_apigateway_rest_api_deployments', 604800000),('aws_apigateway_rest_api_documentation_parts', 604800000),('aws_apigateway_rest_api_documentation_versions', 604800000),('aws_apigateway_rest_api_gateway_responses', 604800000),('aws_apigateway_rest_api_models', 604800000),('aws_apigateway_rest_api_request_validators', 604800000),('aws_apigateway_rest_api_resource_method_integrations', 604800000),('aws_apigateway_rest_api_resource_methods', 604800000),('aws_apigateway_rest_api_resources', 604800000),('aws_apigateway_rest_api_stages', 604800000),('aws_apigateway_rest_apis', 604800000),('aws_apigateway_usage_plan_keys', 604800000),('aws_apigateway_usage_plans', 604800000),('aws_apigateway_vpc_links', 604800000),('aws_apigatewayv2_api_authorizers', 604800000),('aws_apigatewayv2_api_deployments', 604800000),('aws_apigatewayv2_api_integrations', 604800000),('aws_apigatewayv2_api_route_responses', 604800000),('aws_apigatewayv2_api_routes', 604800000),('aws_apigatewayv2_api_stages', 604800000),('aws_apigatewayv2_apis', 604800000),('aws_apigatewayv2_domain_name_rest_api_mappings', 604800000),('aws_apigatewayv2_domain_names', 604800000),('aws_apigatewayv2_vpc_links', 604800000),('aws_appconfig_deployment_strategies', 604800000),('aws_appflow_flows', 604800000),('aws_applicationautoscaling_policies', 604800000),('aws_applicationautoscaling_scalable_targets', 604800000),('aws_applicationautoscaling_scaling_activities', 604800000),('aws_apprunner_auto_scaling_configurations', 604800000),('aws_apprunner_observability_configurations', 604800000),('aws_appstream_images', 604800000),('aws_appstream_stack_user_associations', 604800000),('aws_appsync_graphql_apis', 604800000),('aws_athena_data_catalog_database_tables', 604800000),('aws_athena_data_catalog_databases', 604800000),('aws_athena_data_catalogs', 604800000),('aws_athena_work_group_named_queries', 604800000),('aws_athena_work_group_query_executions', 604800000),('aws_athena_work_groups', 604800000),('aws_autoscaling_group_scaling_policies', 604800000),('aws_autoscaling_launch_configurations', 604800000),('aws_autoscaling_scheduled_actions', 604800000),('aws_autoscaling_warm_pools', 604800000),('aws_availability_zones', 604800000),('aws_backup_global_settings', 604800000),('aws_backup_jobs', 604800000),('aws_backup_plan_selections', 604800000),('aws_backup_plans', 604800000),('aws_backup_region_settings', 604800000),('aws_backup_report_plans', 604800000),('aws_budgets_actions', 604800000),('aws_budgets_budgets', 604800000),('aws_cloudfront_cache_policies', 604800000),('aws_cloudfront_distributions', 604800000),('aws_cloudfront_origin_access_identities', 604800000),('aws_cloudfront_origin_request_policies', 604800000),('aws_cloudfront_response_headers_policies', 604800000),('aws_cloudhsmv2_backups', 604800000),('aws_cloudtrail_channels', 604800000),('aws_cloudtrail_imports', 604800000),('aws_cloudtrail_trail_event_selectors', 604800000),('aws_cloudtrail_trails', 604800000),('aws_cloudwatchlogs_log_group_subscription_filters', 604800000),('aws_cloudwatchlogs_log_groups', 604800000),('aws_cloudwatchlogs_metric_filters', 604800000),('aws_cloudwatchlogs_resource_policies', 604800000),('aws_codebuild_builds', 604800000),('aws_codebuild_projects', 604800000),('aws_codebuild_source_credentials', 604800000),('aws_codecommit_repositories', 604800000),('aws_codedeploy_applications', 604800000),('aws_codedeploy_deployment_configs', 604800000),('aws_codepipeline_pipelines', 604800000),('aws_codepipeline_webhooks', 604800000),('aws_cognito_identity_pools', 604800000),('aws_cognito_user_pool_identity_providers', 604800000),('aws_cognito_user_pools', 604800000),('aws_computeoptimizer_autoscaling_group_recommendations', 604800000),('aws_computeoptimizer_ebs_volume_recommendations', 604800000),('aws_computeoptimizer_ec2_instance_recommendations', 604800000),('aws_computeoptimizer_enrollment_statuses', 604800000),('aws_computeoptimizer_lambda_function_recommendations', 604800000),('aws_config_config_rule_compliance_details', 604800000),('aws_config_config_rule_compliances', 604800000),('aws_config_config_rules', 604800000),('aws_config_configuration_recorders', 604800000),('aws_config_delivery_channel_statuses', 604800000),('aws_config_delivery_channels', 604800000),('aws_datapipeline_pipelines', 604800000),('aws_datasync_agents', 604800000),('aws_datasync_azureblob_locations', 604800000),('aws_datasync_efs_locations', 604800000),('aws_datasync_hdfs_locations', 604800000),('aws_datasync_locations', 604800000),('aws_datasync_s3_locations', 604800000),('aws_detective_graph_members', 604800000),('aws_detective_graphs', 604800000),('aws_directconnect_connections', 604800000),('aws_directconnect_gateway_associations', 604800000),('aws_directconnect_gateway_attachments', 604800000),('aws_directconnect_gateways', 604800000),('aws_directconnect_locations', 604800000),('aws_directconnect_virtual_gateways', 604800000),('aws_directconnect_virtual_interfaces', 604800000),('aws_directoryservice_directories', 604800000),('aws_dms_replication_subnet_groups', 604800000),('aws_docdb_certificates', 604800000),('aws_docdb_event_categories', 604800000),('aws_docdb_event_subscriptions', 604800000),('aws_docdb_events', 604800000),('aws_docdb_subnet_groups', 604800000),('aws_ebs_default_kms_key_ids', 604800000),('aws_ebs_encryption_by_defaults', 604800000),('aws_ec2_account_attributes', 604800000),('aws_ec2_customer_gateways', 604800000),('aws_ec2_dhcp_options', 604800000),('aws_ec2_ebs_snapshot_attributes', 604800000),('aws_ec2_ebs_snapshots', 604800000),('aws_ec2_ebs_volume_statuses', 604800000),('aws_ec2_ebs_volumes', 604800000),('aws_ec2_egress_only_internet_gateways', 604800000),('aws_ec2_eips', 604800000),('aws_ec2_flow_logs', 604800000),('aws_ec2_image_block_public_access_states', 604800000),('aws_ec2_image_launch_permissions', 604800000),('aws_ec2_instance_connect_endpoints', 604800000),('aws_ec2_instance_credit_specifications', 604800000),('aws_ec2_instance_statuses', 604800000),('aws_ec2_internet_gateways', 604800000),('aws_ec2_ipam_discovered_accounts', 604800000),('aws_ec2_ipam_discovered_public_addresses', 604800000),('aws_ec2_ipam_discovered_resource_cidrs', 604800000),('aws_ec2_ipam_resource_discoveries', 604800000),('aws_ec2_ipam_resource_discovery_associations', 604800000),('aws_ec2_ipam_scopes', 604800000),('aws_ec2_ipams', 604800000),('aws_ec2_key_pairs', 604800000),('aws_ec2_launch_template_versions', 604800000),('aws_ec2_launch_templates', 604800000),('aws_ec2_managed_prefix_lists', 604800000),('aws_ec2_nat_gateways', 604800000),('aws_ec2_network_acls', 604800000),('aws_ec2_network_interfaces', 604800000),('aws_ec2_regional_configs', 604800000),('aws_ec2_replace_root_volume_tasks', 604800000),('aws_ec2_reserved_instances', 604800000),('aws_ec2_route_tables', 604800000),('aws_ec2_serial_console_access_statuses', 604800000),('aws_ec2_snapshot_block_public_access_states', 604800000),('aws_ec2_subnets', 604800000),('aws_ec2_transit_gateway_attachments', 604800000),('aws_ec2_transit_gateway_peering_attachments', 604800000),('aws_ec2_transit_gateway_route_tables', 604800000),('aws_ec2_transit_gateway_vpc_attachments', 604800000),('aws_ec2_transit_gateways', 604800000),('aws_ec2_vpc_endpoint_connections', 604800000),('aws_ec2_vpc_endpoint_service_configurations', 604800000),('aws_ec2_vpc_endpoints', 604800000),('aws_ec2_vpc_peering_connections', 604800000),('aws_ec2_vpcs', 604800000),('aws_ec2_vpn_connections', 604800000),('aws_ec2_vpn_gateways', 604800000),('aws_ecr_registries', 604800000),('aws_ecr_repositories', 604800000),('aws_ecr_repository_image_scan_findings', 604800000),('aws_ecr_repository_images', 604800000),('aws_ecr_repository_lifecycle_policies', 604800000),('aws_ecr_repository_policies', 604800000),('aws_efs_filesystems', 604800000),('aws_elasticache_clusters', 604800000),('aws_elasticache_global_replication_groups', 604800000),('aws_elasticache_replication_groups', 604800000),('aws_elasticache_reserved_cache_nodes', 604800000),('aws_elasticache_snapshots', 604800000),('aws_elasticache_subnet_groups', 604800000),('aws_elasticache_update_actions', 604800000),('aws_elasticache_users', 604800000),('aws_elasticbeanstalk_application_versions', 604800000),('aws_elasticbeanstalk_applications', 604800000),('aws_elasticsearch_domains', 604800000),('aws_elasticsearch_packages', 604800000),('aws_elasticsearch_reserved_instances', 604800000),('aws_elasticsearch_versions', 604800000),('aws_emr_block_public_access_configs', 604800000),('aws_emr_cluster_instance_fleets', 604800000),('aws_emr_cluster_instance_groups', 604800000),('aws_emr_cluster_instances', 604800000),('aws_emr_clusters', 604800000),('aws_emr_release_labels', 604800000),('aws_emr_security_configurations', 604800000),('aws_emr_steps', 604800000),('aws_emr_studios', 604800000),('aws_eventbridge_api_destinations', 604800000),('aws_eventbridge_archives', 604800000),('aws_eventbridge_connections', 604800000),('aws_eventbridge_event_bus_rules', 604800000),('aws_eventbridge_event_bus_targets', 604800000),('aws_eventbridge_event_buses', 604800000),('aws_eventbridge_event_sources', 604800000),('aws_firehose_delivery_streams', 604800000),('aws_fsx_data_repository_tasks', 604800000),('aws_glacier_data_retrieval_policies', 604800000),('aws_glacier_vault_notifications', 604800000),('aws_glacier_vaults', 604800000),('aws_globalaccelerator_accelerators', 604800000),('aws_glue_classifiers', 604800000),('aws_glue_crawlers', 604800000),('aws_glue_database_table_indexes', 604800000),('aws_glue_database_tables', 604800000),('aws_glue_databases', 604800000),('aws_glue_datacatalog_encryption_settings', 604800000),('aws_glue_job_runs', 604800000),('aws_glue_jobs', 604800000),('aws_glue_security_configurations', 604800000),('aws_glue_triggers', 604800000),('aws_health_affected_entities', 604800000),('aws_health_event_details', 604800000),('aws_health_events', 604800000),('aws_iam_account_authorization_details', 604800000),('aws_iam_accounts', 604800000),('aws_iam_group_attached_policies', 604800000),('aws_iam_group_last_accessed_details', 604800000),('aws_iam_group_policies', 604800000),('aws_iam_groups', 604800000),('aws_iam_instance_profiles', 604800000),('aws_iam_mfa_devices', 604800000),('aws_iam_openid_connect_identity_providers', 604800000),('aws_iam_password_policies', 604800000),('aws_iam_policies', 604800000),('aws_iam_policy_default_versions', 604800000),('aws_iam_policy_last_accessed_details', 604800000),('aws_iam_policy_versions', 604800000),('aws_iam_role_attached_policies', 604800000),('aws_iam_role_last_accessed_details', 604800000),('aws_iam_role_policies', 604800000),('aws_iam_server_certificates', 604800000),('aws_iam_ssh_public_keys', 604800000),('aws_iam_user_access_keys', 604800000),('aws_iam_user_attached_policies', 604800000),('aws_iam_user_groups', 604800000),('aws_iam_user_last_accessed_details', 604800000),('aws_iam_user_policies', 604800000),('aws_iam_virtual_mfa_devices', 604800000),('aws_inspector2_covered_resources', 604800000),('aws_keyspaces_keyspaces', 604800000),('aws_kinesis_streams', 604800000),('aws_kms_aliases', 604800000),('aws_kms_key_grants', 604800000),('aws_kms_key_policies', 604800000),('aws_kms_key_rotation_statuses', 604800000),('aws_kms_key_rotations', 604800000),('aws_kms_keys', 604800000),('aws_lightsail_instance_port_states', 604800000),('aws_lightsail_instances', 604800000),('aws_mq_broker_configuration_revisions', 604800000),('aws_mq_broker_users', 604800000),('aws_neptune_cluster_snapshots', 604800000),('aws_neptune_clusters', 604800000),('aws_neptune_event_subscriptions', 604800000),('aws_neptune_subnet_groups', 604800000),('aws_networkfirewall_firewall_policies', 604800000),('aws_networkmanager_links', 604800000),('aws_opensearch_reserved_instances', 604800000),('aws_ram_principals', 604800000),('aws_ram_resource_share_associations', 604800000),('aws_ram_resource_share_invitations', 604800000),('aws_ram_resource_share_permissions', 604800000),('aws_ram_resource_shares', 604800000),('aws_ram_resource_types', 604800000),('aws_ram_resources', 604800000),('aws_rds_certificates', 604800000),('aws_rds_db_proxies', 604800000),('aws_rds_db_proxy_target_groups', 604800000),('aws_rds_db_proxy_targets', 604800000),('aws_rds_db_security_groups', 604800000),('aws_rds_event_subscriptions', 604800000),('aws_rds_events', 604800000),('aws_rds_option_groups', 604800000),('aws_rds_pending_maintenance_actions', 604800000),('aws_rds_reserved_instances', 604800000),('aws_rds_subnet_groups', 604800000),('aws_redshift_endpoint_authorizations', 604800000),('aws_redshift_reserved_nodes', 604800000),('aws_redshift_subnet_groups', 604800000),('aws_regions', 604800000),('aws_resiliencehub_suggested_resiliency_policies', 604800000),('aws_resourcegroups_resource_groups', 604800000),('aws_route53_delegation_sets', 604800000),('aws_route53_domains', 604800000),('aws_route53_health_checks', 604800000),('aws_route53_hosted_zone_resource_record_sets', 604800000),('aws_route53_hosted_zones', 604800000),('aws_route53_operations', 604800000),('aws_route53_traffic_policies', 604800000),('aws_route53_traffic_policy_versions', 604800000),('aws_route53recoveryreadiness_resource_sets', 604800000),('aws_route53resolver_firewall_configs', 604800000),('aws_route53resolver_firewall_domain_lists', 604800000),('aws_route53resolver_resolver_endpoints', 604800000),('aws_route53resolver_resolver_rule_associations', 604800000),('aws_route53resolver_resolver_rules', 604800000),('aws_sagemaker_endpoint_configurations', 604800000),('aws_sagemaker_endpoints', 604800000),('aws_sagemaker_models', 604800000),('aws_sagemaker_training_jobs', 604800000),('aws_scheduler_schedule_groups', 604800000),('aws_secretsmanager_secret_versions', 604800000),('aws_secretsmanager_secrets', 604800000),('aws_servicediscovery_instances', 604800000),('aws_servicediscovery_namespaces', 604800000),('aws_servicediscovery_services', 604800000),('aws_ses_active_receipt_rule_sets', 604800000),('aws_ses_configuration_set_event_destinations', 604800000),('aws_ses_configuration_sets', 604800000),('aws_ses_identities', 604800000),('aws_ses_templates', 604800000),('aws_sns_subscriptions', 604800000),('aws_sqs_queues', 604800000),('aws_ssm_associations', 604800000),('aws_ssm_compliance_summary_items', 604800000),('aws_ssm_document_versions', 604800000),('aws_ssm_documents', 604800000),('aws_ssm_instance_compliance_items', 604800000),('aws_ssm_instances', 604800000),('aws_ssm_inventories', 604800000),('aws_ssm_inventory_schemas', 604800000),('aws_ssm_patch_baselines', 604800000),('aws_ssmincidents_incident_timeline_events', 604800000),('aws_stepfunctions_activities', 604800000),('aws_stepfunctions_state_machines', 604800000),('aws_support_case_communications', 604800000),('aws_support_cases', 604800000),('aws_support_services', 604800000),('aws_support_severity_levels', 604800000),('aws_support_trusted_advisor_check_results', 604800000),('aws_support_trusted_advisor_check_summaries', 604800000),('aws_support_trusted_advisor_checks', 604800000),('aws_timestream_databases', 604800000),('aws_timestream_tables', 604800000),('aws_transfer_profiles', 604800000),('aws_transfer_servers', 604800000),('aws_transfer_users', 604800000),('aws_waf_rules', 604800000),('aws_waf_web_acls', 604800000),('aws_wafregional_rule_groups', 604800000),('aws_wafv2_ipsets', 604800000),('aws_wafv2_managed_rule_groups', 604800000),('aws_wafv2_regex_pattern_sets', 604800000),('aws_wafv2_rule_groups', 604800000),('aws_wafv2_web_acls', 604800000),('aws_workspaces_workspaces', 604800000),('aws_xray_encryption_configs', 604800000) ON CONFLICT (table_name) DO UPDATE SET frequency = 604800000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -13980,7 +14720,7 @@ spec:
             ],
           },
         ],
-        "Cpu": "1024",
+        "Cpu": "2048",
         "ExecutionRoleArn": {
           "Fn::GetAtt": [
             "CloudquerySourceAwsRemainingDataTaskDefinitionExecutionRole7F5255B8",
@@ -13988,7 +14728,7 @@ spec:
           ],
         },
         "Family": "AwsRemainingData",
-        "Memory": "3072",
+        "Memory": "8192",
         "NetworkMode": "awsvpc",
         "RequiresCompatibilities": [
           "FARGATE",
@@ -29941,6 +30681,104 @@ spec:
       },
       "Type": "AWS::Events::Rule",
     },
+    "refreshmaterializedviewlambdatriggerAwsIamRolesAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE9448E276DDC1": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RefreshMaterializedViewF0E38938",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "refreshmaterializedviewlambdatriggerAwsIamRolesCFFC31BB",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "refreshmaterializedviewlambdatriggerAwsIamRolesCFFC31BB": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "clusterArn": [
+              {
+                "Fn::GetAtt": [
+                  "servicecatalogueCluster5FC34DC5",
+                  "Arn",
+                ],
+              },
+            ],
+            "containers.exitCode": [
+              {
+                "numeric": [
+                  "=",
+                  0,
+                ],
+              },
+            ],
+            "containers.name": [
+              "CloudquerySource-AwsIamRolesContainer",
+            ],
+            "lastStatus": [
+              "STOPPED",
+            ],
+            "stopCode": [
+              "EssentialContainerExited",
+            ],
+            "taskDefinitionArn": [
+              {
+                "Ref": "CloudquerySourceAwsIamRolesTaskDefinition16E1CB16",
+              },
+            ],
+          },
+          "detail-type": [
+            "ECS Task State Change",
+          ],
+          "source": [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "RefreshMaterializedViewF0E38938",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
     "refreshmaterializedviewlambdatriggerAwsInspector2FindingsAllowEventRuleServiceCatalogueRefreshMaterializedViewA9EE944827D0CDCA": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
@@ -32619,6 +33457,143 @@ spec:
         "Roles": [
           {
             "Ref": "servicecataloguePRODtaskAwsDelegatedToSecurityAccountD81B6FBC",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "servicecataloguePRODtaskAwsIamRoles8AAB73AD": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-AwsIamRoles",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskAwsIamRolesDefaultPolicy051CA0E2": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "organizations:List*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": "arn:aws:iam::*:role/service-catalogue-access",
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "servicecataloguePRODtaskAwsIamRolesDefaultPolicy051CA0E2",
+        "Roles": [
+          {
+            "Ref": "servicecataloguePRODtaskAwsIamRoles8AAB73AD",
           },
         ],
       },
