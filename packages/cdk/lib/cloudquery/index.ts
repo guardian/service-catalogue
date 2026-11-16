@@ -533,17 +533,18 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'GitHubCopilotMetrics',
 			description:
-				'Collect GitHub Copilot usage metrics for the enterprise, organisation and teams',
+				'Collect GitHub Copilot usage metrics for the enterprise, organisation, users and teams',
 			schedule: Schedule.cron({ hour: '4', minute: '30' }),
 			config: githubSourceConfig(
 				{
 					org: gitHubOrgName,
 					enterprises: ['guardian'],
 					tables: [
-						'github_copilot_organization_metrics',
-						'github_enterprise_copilot_metrics',
-						// A child of `github_teams`, which CloudQuery will also sync implicitly
-						'github_copilot_team_metrics',
+						'github_copilot_enterprise_usage_metrics',
+						'github_copilot_organization_usage_metrics',
+						// Join these two on (org, user_id, day) for team-level metrics
+						'github_copilot_organization_user_teams',
+						'github_copilot_organization_user_usage_metrics',
 					],
 				},
 				'incremental',

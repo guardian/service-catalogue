@@ -18697,7 +18697,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_code_scanning_alerts
     - github_secret_scanning_alerts
@@ -19497,7 +19497,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_copilot_billing
     - github_copilot_seats
@@ -20294,11 +20294,12 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
-    - github_copilot_organization_metrics
-    - github_copilot_team_metrics
-    - github_enterprise_copilot_metrics
+    - github_copilot_enterprise_usage_metrics
+    - github_copilot_organization_usage_metrics
+    - github_copilot_organization_user_teams
+    - github_copilot_organization_user_usage_metrics
   skip_dependent_tables: true
   destinations:
     - postgresql
@@ -20591,7 +20592,7 @@ spec:
             "Command": [
               "/bin/sh",
               "-c",
-              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_copilot_organization_metrics', 86400000),('github_copilot_team_metrics', 86400000),('github_enterprise_copilot_metrics', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_copilot_enterprise_usage_metrics', 86400000),('github_copilot_organization_usage_metrics', 86400000),('github_copilot_organization_user_teams', 86400000),('github_copilot_organization_user_usage_metrics', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
             ],
             "DockerLabels": {
               "App": "service-catalogue",
@@ -21387,7 +21388,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_issues
   skip_dependent_tables: true
@@ -22687,7 +22688,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_releases
   skip_dependent_tables: true
@@ -23482,7 +23483,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_repositories
     - github_repository_branches
@@ -24283,7 +24284,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_organization_members
     - github_organizations

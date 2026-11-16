@@ -167,7 +167,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v15.2.0
+		  version: v17.3.3
 		  tables:
 		    - github_repositories
 		  skip_dependent_tables: true
@@ -200,7 +200,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v15.2.0
+		  version: v17.3.3
 		  tables:
 		    - github_repositories
 		  skip_dependent_tables: true
@@ -225,7 +225,7 @@ describe('Config generation, and converting to YAML', () => {
 
 	it('Should create a GitHub source configuration with enterprises', () => {
 		const config = githubSourceConfig({
-			tables: ['github_enterprise_copilot_metrics'],
+			tables: ['github_copilot_enterprise_usage_metrics'],
 			org: 'guardian',
 			enterprises: ['guardian'],
 		});
@@ -234,9 +234,9 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v15.2.0
+		  version: v17.3.3
 		  tables:
-		    - github_enterprise_copilot_metrics
+		    - github_copilot_enterprise_usage_metrics
 		  skip_dependent_tables: true
 		  destinations:
 		    - postgresql

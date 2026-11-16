@@ -73,7 +73,7 @@ interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 	includeArchivedRepos?: boolean;
 
 	/**
-	 * GitHub Enterprise Cloud slugs to sync enterprise-level tables from, e.g. `github_enterprise_copilot_metrics`.
+	 * GitHub Enterprise Cloud slugs to sync enterprise-level tables from, e.g. `github_copilot_enterprise_usage_metrics`.
 	 */
 	enterprises?: string[];
 }
