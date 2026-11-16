@@ -531,6 +531,28 @@ export function addCloudqueryEcsCluster(
 			memoryLimitMiB: 2048,
 		},
 		{
+			name: 'GitHubCopilotMetrics',
+			description:
+				'Collect GitHub Copilot usage metrics for the enterprise, organisation and teams',
+			schedule: Schedule.cron({ hour: '4', minute: '30' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					enterprises: ['guardian'],
+					tables: [
+						'github_copilot_organization_metrics',
+						'github_enterprise_copilot_metrics',
+						// A child of `github_teams`, which CloudQuery will also sync implicitly
+						'github_copilot_team_metrics',
+					],
+				},
+				'incremental',
+			),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
 			name: 'GitHubReleases',
 			description: '',
 			schedule: Schedule.cron({ weekDay: 'MON', hour: '10', minute: '0' }), // Every Monday, at 10AM UTC

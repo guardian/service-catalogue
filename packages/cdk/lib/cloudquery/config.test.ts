@@ -223,6 +223,39 @@ describe('Config generation, and converting to YAML', () => {
 	`);
 	});
 
+	it('Should create a GitHub source configuration with enterprises', () => {
+		const config = githubSourceConfig({
+			tables: ['github_enterprise_copilot_metrics'],
+			org: 'guardian',
+			enterprises: ['guardian'],
+		});
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: github
+		  path: cloudquery/github
+		  version: v15.2.0
+		  tables:
+		    - github_enterprise_copilot_metrics
+		  skip_dependent_tables: true
+		  destinations:
+		    - postgresql
+		  spec:
+		    concurrency: 100
+		    orgs:
+		      - guardian
+		    enterprises:
+		      - guardian
+		    app_auth:
+		      - org: guardian
+		        private_key_path: /usr/share/cloudquery/github-private-key
+		        app_id: \${file:/usr/share/cloudquery/github-app-id}
+		        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+		    include_archived_repos: true
+		"
+	`);
+	});
+
 	it('Should throw an error if concurrency exceeds GitHub secondary rate limits', () => {
 		expect(() => {
 			githubSourceConfig(
