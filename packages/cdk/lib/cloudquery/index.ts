@@ -461,6 +461,28 @@ export function addCloudqueryEcsCluster(
 		`echo -n $GITHUB_INSTALLATION_ID >  ${serviceCatalogueConfigDirectory}/github-installation-id`,
 	];
 
+	// Created manually. Credentials for the GitHub App installed on the enterprise, which cannot access org resources.
+	const cloudqueryGithubEnterpriseCredentials = SecretsManager.fromSecretNameV2(
+		scope,
+		'github-ent-credentials',
+		`/${stage}/${stack}/${app}/github-ent-credentials`,
+	);
+
+	const githubEnterpriseSecrets: Record<string, Secret> = {
+		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
+			cloudqueryGithubEnterpriseCredentials,
+			'private-key',
+		),
+		GITHUB_APP_ID: Secret.fromSecretsManager(
+			cloudqueryGithubEnterpriseCredentials,
+			'app-id',
+		),
+		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+			cloudqueryGithubEnterpriseCredentials,
+			'installation-id',
+		),
+	};
+
 	const githubSources: CloudquerySource[] = [
 		{
 			// Allow at least 3 hours for this job to finish due to rate limits/low concurrency
@@ -533,14 +555,12 @@ export function addCloudqueryEcsCluster(
 		{
 			name: 'GitHubCopilotMetrics',
 			description:
-				'Collect GitHub Copilot usage metrics for the enterprise, organisation, users and teams',
+				'Collect GitHub Copilot usage metrics for the organisation, users and teams',
 			schedule: Schedule.cron({ hour: '4', minute: '30' }),
 			config: githubSourceConfig(
 				{
 					org: gitHubOrgName,
-					enterprises: ['guardian'],
 					tables: [
-						'github_copilot_enterprise_usage_metrics',
 						'github_copilot_organization_usage_metrics',
 						// Join these two on (org, user_id, day) for team-level metrics
 						'github_copilot_organization_user_teams',
@@ -552,6 +572,21 @@ export function addCloudqueryEcsCluster(
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubCopilotEnterpriseMetrics',
+			description: 'Collect GitHub Copilot usage metrics for the enterprise',
+			schedule: Schedule.cron({ hour: '4', minute: '45' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					enterprises: ['guardian'],
+					tables: ['github_copilot_enterprise_usage_metrics'],
+				},
+				'incremental',
+			),
+			secrets: githubEnterpriseSecrets,
+			additionalCommands: additionalGithubCommands,
 		},
 		{
 			name: 'GitHubReleases',
