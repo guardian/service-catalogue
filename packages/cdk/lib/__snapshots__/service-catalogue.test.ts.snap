@@ -20305,8 +20305,6 @@ spec:
     connection: '\\''@@plugins.postgresql.connection'\\''
   spec:
     concurrency: 100
-    orgs:
-      - guardian
     enterprises:
       - guardian
     app_auth:

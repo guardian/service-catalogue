@@ -242,8 +242,6 @@ describe('Config generation, and converting to YAML', () => {
 		    - postgresql
 		  spec:
 		    concurrency: 100
-		    orgs:
-		      - guardian
 		    enterprises:
 		      - guardian
 		    app_auth:

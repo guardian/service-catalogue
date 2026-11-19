@@ -9,6 +9,7 @@ import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import type { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import {
@@ -440,20 +441,16 @@ export function addCloudqueryEcsCluster(
 		},
 	);
 
-	const githubSecrets: Record<string, Secret> = {
-		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
-			'private-key',
-		),
-		GITHUB_APP_ID: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
-			'app-id',
-		),
+	const githubAppSecrets = (secret: ISecret): Record<string, Secret> => ({
+		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(secret, 'private-key'),
+		GITHUB_APP_ID: Secret.fromSecretsManager(secret, 'app-id'),
 		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
+			secret,
 			'installation-id',
 		),
-	};
+	});
+
+	const githubSecrets = githubAppSecrets(cloudqueryGithubCredentials);
 
 	const additionalGithubCommands = [
 		`echo -n $GITHUB_PRIVATE_KEY | base64 -d > ${serviceCatalogueConfigDirectory}/github-private-key`,
@@ -468,20 +465,9 @@ export function addCloudqueryEcsCluster(
 		`/${stage}/${stack}/${app}/github-ent-credentials`,
 	);
 
-	const githubEnterpriseSecrets: Record<string, Secret> = {
-		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-			cloudqueryGithubEnterpriseCredentials,
-			'private-key',
-		),
-		GITHUB_APP_ID: Secret.fromSecretsManager(
-			cloudqueryGithubEnterpriseCredentials,
-			'app-id',
-		),
-		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-			cloudqueryGithubEnterpriseCredentials,
-			'installation-id',
-		),
-	};
+	const githubEnterpriseSecrets = githubAppSecrets(
+		cloudqueryGithubEnterpriseCredentials,
+	);
 
 	const githubSources: CloudquerySource[] = [
 		{
