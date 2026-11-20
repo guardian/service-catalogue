@@ -71,6 +71,12 @@ interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 	 * Whether to include archived repositories in the sync. We set this to true by default
 	 */
 	includeArchivedRepos?: boolean;
+
+	/**
+	 * GitHub Enterprise Cloud slug to sync enterprise-level tables from, e.g. `github_copilot_enterprise_usage_metrics`.
+	 * When set, `orgs` is not configured, so org-level tables cannot be synced.
+	 */
+	enterprise?: string;
 }
 
 interface GitHubCloudqueryTableConfigForRepository extends CloudqueryTableConfig {
@@ -221,7 +227,8 @@ export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
 	syncMode?: SyncMode,
 ): CloudQuerySourceConfig {
-	const { tables, org, includeArchivedRepos, concurrency } = tableConfig;
+	const { tables, org, includeArchivedRepos, concurrency, enterprise } =
+		tableConfig;
 
 	if (concurrency && concurrency > 100) {
 		console.error({
@@ -245,7 +252,8 @@ export function githubSourceConfig(
 			backend_options: backendOptions('github', syncMode),
 			spec: {
 				concurrency: concurrency ?? 100, // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2026-03-10#about-secondary-rate-limits
-				orgs: [org],
+				// Omit `orgs` for enterprise syncs, as org repo discovery fails with an enterprise-only installation.
+				...(enterprise ? { enterprises: [enterprise] } : { orgs: [org] }),
 				app_auth: [
 					{
 						org,

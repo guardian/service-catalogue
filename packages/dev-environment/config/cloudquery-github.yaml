@@ -2,7 +2,7 @@ kind: source
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v${CQ_GITHUB}
   tables:
     - github_copilot_seats
   skip_dependent_tables: true

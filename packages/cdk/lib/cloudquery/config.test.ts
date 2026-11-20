@@ -167,7 +167,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v15.2.0
+		  version: v17.3.3
 		  tables:
 		    - github_repositories
 		  skip_dependent_tables: true
@@ -200,7 +200,7 @@ describe('Config generation, and converting to YAML', () => {
 		spec:
 		  name: github
 		  path: cloudquery/github
-		  version: v15.2.0
+		  version: v17.3.3
 		  tables:
 		    - github_repositories
 		  skip_dependent_tables: true
@@ -212,6 +212,37 @@ describe('Config generation, and converting to YAML', () => {
 		  spec:
 		    concurrency: 100
 		    orgs:
+		      - guardian
+		    app_auth:
+		      - org: guardian
+		        private_key_path: /usr/share/cloudquery/github-private-key
+		        app_id: \${file:/usr/share/cloudquery/github-app-id}
+		        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+		    include_archived_repos: true
+		"
+	`);
+	});
+
+	it('Should create a GitHub source configuration with an enterprise', () => {
+		const config = githubSourceConfig({
+			tables: ['github_copilot_enterprise_usage_metrics'],
+			org: 'guardian',
+			enterprise: 'guardian',
+		});
+		expect(dump(config)).toMatchInlineSnapshot(`
+		"kind: source
+		spec:
+		  name: github
+		  path: cloudquery/github
+		  version: v17.3.3
+		  tables:
+		    - github_copilot_enterprise_usage_metrics
+		  skip_dependent_tables: true
+		  destinations:
+		    - postgresql
+		  spec:
+		    concurrency: 100
+		    enterprises:
 		      - guardian
 		    app_auth:
 		      - org: guardian

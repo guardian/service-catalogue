@@ -97,6 +97,11 @@ export interface ServiceCatalogueProps extends GuStackProps {
 	gitHubOrg?: string;
 
 	/**
+	 * The GitHub Enterprise to collect enterprise-level data from.
+	 */
+	gitHubEnterprise?: string;
+
+	/**
 	 * Each CloudQuery data collection task has a schedule.
 	 * When true, the schedule will be enabled, and data collection will occur as defined.
 	 * When false, the schedule will be disabled. Tasks will need to be run manually using the CLI.
@@ -138,6 +143,7 @@ export class ServiceCatalogue extends GuStack {
 
 		const {
 			gitHubOrg = 'guardian',
+			gitHubEnterprise = 'guardian',
 			securityAlertSchedule,
 			enableCloudquerySchedules,
 			enableCloudqueryOnDemandTasks,
@@ -345,6 +351,7 @@ export class ServiceCatalogue extends GuStack {
 			loggingStreamName,
 			logShippingPolicy,
 			gitHubOrg,
+			gitHubEnterprise,
 			cloudqueryApiKey,
 		});
 

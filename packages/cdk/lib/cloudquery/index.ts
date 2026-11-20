@@ -9,6 +9,7 @@ import { Secret } from 'aws-cdk-lib/aws-ecs';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 import type { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import type { DatabaseInstance } from 'aws-cdk-lib/aws-rds';
+import type { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Secret as SecretsManager } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import {
@@ -58,6 +59,7 @@ interface CloudqueryEcsClusterProps {
 	loggingStreamName: string;
 	logShippingPolicy: PolicyStatement;
 	gitHubOrg: string;
+	gitHubEnterprise: string;
 	cloudqueryApiKey: SecretsManager;
 
 	/**
@@ -73,6 +75,17 @@ interface CloudqueryEcsClusterProps {
 	enableCloudqueryOnDemandTasks: boolean;
 }
 
+function githubAppSecrets(secret: ISecret): Record<string, Secret> {
+	return {
+		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(secret, 'private-key'),
+		GITHUB_APP_ID: Secret.fromSecretsManager(secret, 'app-id'),
+		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+			secret,
+			'installation-id',
+		),
+	};
+}
+
 export function addCloudqueryEcsCluster(
 	scope: GuStack,
 	props: CloudqueryEcsClusterProps,
@@ -85,6 +98,7 @@ export function addCloudqueryEcsCluster(
 		loggingStreamName,
 		logShippingPolicy,
 		gitHubOrg: gitHubOrgName,
+		gitHubEnterprise: gitHubEnterpriseName,
 		cloudqueryApiKey,
 		enableCloudquerySchedules,
 		enableCloudqueryOnDemandTasks,
@@ -440,20 +454,19 @@ export function addCloudqueryEcsCluster(
 		},
 	);
 
-	const githubSecrets: Record<string, Secret> = {
-		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
-			'private-key',
-		),
-		GITHUB_APP_ID: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
-			'app-id',
-		),
-		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-			cloudqueryGithubCredentials,
-			'installation-id',
-		),
-	};
+	const githubSecrets = githubAppSecrets(cloudqueryGithubCredentials);
+
+	const cloudqueryGithubEnterpriseCredentials = new SecretsManager(
+		scope,
+		'github-ent-credentials',
+		{
+			secretName: `/${stage}/${stack}/${app}/github-ent-credentials`,
+		},
+	);
+
+	const githubEnterpriseSecrets = githubAppSecrets(
+		cloudqueryGithubEnterpriseCredentials,
+	);
 
 	const additionalGithubCommands = [
 		`echo -n $GITHUB_PRIVATE_KEY | base64 -d > ${serviceCatalogueConfigDirectory}/github-private-key`,
@@ -529,6 +542,42 @@ export function addCloudqueryEcsCluster(
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubCopilotMetrics',
+			description:
+				'Collect GitHub Copilot usage metrics for the organisation, users and teams',
+			schedule: Schedule.cron({ hour: '4', minute: '30' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: [
+						'github_copilot_organization_usage_metrics',
+						// Join these two on (org, user_id, day) for team-level metrics
+						'github_copilot_organization_user_teams',
+						'github_copilot_organization_user_usage_metrics',
+					],
+				},
+				'incremental',
+			),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubCopilotEnterpriseMetrics',
+			description: 'Collect GitHub Copilot usage metrics for the enterprise',
+			schedule: Schedule.cron({ hour: '4', minute: '45' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					enterprise: gitHubEnterpriseName,
+					tables: ['github_copilot_enterprise_usage_metrics'],
+				},
+				'incremental',
+			),
+			secrets: githubEnterpriseSecrets,
+			additionalCommands: additionalGithubCommands,
 		},
 		{
 			name: 'GitHubReleases',
