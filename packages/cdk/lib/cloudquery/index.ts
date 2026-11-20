@@ -443,6 +443,14 @@ export function addCloudqueryEcsCluster(
 		},
 	);
 
+	const cloudqueryGithubEnterpriseCredentials = new SecretsManager(
+		scope,
+		'github-ent-credentials',
+		{
+			secretName: `/${stage}/${stack}/${app}/github-ent-credentials`,
+		},
+	);
+
 	const githubAppSecrets = (secret: ISecret): Record<string, Secret> => ({
 		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(secret, 'private-key'),
 		GITHUB_APP_ID: Secret.fromSecretsManager(secret, 'app-id'),
@@ -453,23 +461,15 @@ export function addCloudqueryEcsCluster(
 	});
 
 	const githubSecrets = githubAppSecrets(cloudqueryGithubCredentials);
+	const githubEnterpriseSecrets = githubAppSecrets(
+		cloudqueryGithubEnterpriseCredentials,
+	);
 
 	const additionalGithubCommands = [
 		`echo -n $GITHUB_PRIVATE_KEY | base64 -d > ${serviceCatalogueConfigDirectory}/github-private-key`,
 		`echo -n $GITHUB_APP_ID >  ${serviceCatalogueConfigDirectory}/github-app-id`,
 		`echo -n $GITHUB_INSTALLATION_ID >  ${serviceCatalogueConfigDirectory}/github-installation-id`,
 	];
-
-	// Created manually. Credentials for the GitHub App installed on the enterprise, which cannot access org resources.
-	const cloudqueryGithubEnterpriseCredentials = SecretsManager.fromSecretNameV2(
-		scope,
-		'github-ent-credentials',
-		`/${stage}/${stack}/${app}/github-ent-credentials`,
-	);
-
-	const githubEnterpriseSecrets = githubAppSecrets(
-		cloudqueryGithubEnterpriseCredentials,
-	);
 
 	const githubSources: CloudquerySource[] = [
 		{

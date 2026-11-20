@@ -20406,15 +20406,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubentcredentialsA234DAB3",
                       },
-                      ":secretsmanager:eu-west-1:",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/PROD/deploy/service-catalogue/github-ent-credentials:private-key::",
+                      ":private-key::",
                     ],
                   ],
                 },
@@ -20425,15 +20420,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubentcredentialsA234DAB3",
                       },
-                      ":secretsmanager:eu-west-1:",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/PROD/deploy/service-catalogue/github-ent-credentials:app-id::",
+                      ":app-id::",
                     ],
                   ],
                 },
@@ -20444,15 +20434,10 @@ spec:
                   "Fn::Join": [
                     "",
                     [
-                      "arn:",
                       {
-                        "Ref": "AWS::Partition",
+                        "Ref": "githubentcredentialsA234DAB3",
                       },
-                      ":secretsmanager:eu-west-1:",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":secret:/PROD/deploy/service-catalogue/github-ent-credentials:installation-id::",
+                      ":installation-id::",
                     ],
                   ],
                 },
@@ -20969,20 +20954,7 @@ spec:
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":secretsmanager:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":secret:/PROD/deploy/service-catalogue/github-ent-credentials-??????",
-                  ],
-                ],
+                "Ref": "githubentcredentialsA234DAB3",
               },
             },
             {
@@ -30416,6 +30388,37 @@ spec:
       "Properties": {
         "GenerateSecretString": {},
         "Name": "/PROD/deploy/service-catalogue/github-credentials",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "githubentcredentialsA234DAB3": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "GenerateSecretString": {},
+        "Name": "/PROD/deploy/service-catalogue/github-ent-credentials",
         "Tags": [
           {
             "Key": "gu:cdk:version",
