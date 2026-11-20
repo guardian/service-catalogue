@@ -75,6 +75,17 @@ interface CloudqueryEcsClusterProps {
 	enableCloudqueryOnDemandTasks: boolean;
 }
 
+function githubAppSecrets(secret: ISecret): Record<string, Secret> {
+	return {
+		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(secret, 'private-key'),
+		GITHUB_APP_ID: Secret.fromSecretsManager(secret, 'app-id'),
+		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+			secret,
+			'installation-id',
+		),
+	};
+}
+
 export function addCloudqueryEcsCluster(
 	scope: GuStack,
 	props: CloudqueryEcsClusterProps,
@@ -450,15 +461,6 @@ export function addCloudqueryEcsCluster(
 			secretName: `/${stage}/${stack}/${app}/github-ent-credentials`,
 		},
 	);
-
-	const githubAppSecrets = (secret: ISecret): Record<string, Secret> => ({
-		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(secret, 'private-key'),
-		GITHUB_APP_ID: Secret.fromSecretsManager(secret, 'app-id'),
-		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
-			secret,
-			'installation-id',
-		),
-	});
 
 	const githubSecrets = githubAppSecrets(cloudqueryGithubCredentials);
 	const githubEnterpriseSecrets = githubAppSecrets(
