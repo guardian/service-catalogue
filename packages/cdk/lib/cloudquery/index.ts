@@ -454,6 +454,8 @@ export function addCloudqueryEcsCluster(
 		},
 	);
 
+	const githubSecrets = githubAppSecrets(cloudqueryGithubCredentials);
+
 	const cloudqueryGithubEnterpriseCredentials = new SecretsManager(
 		scope,
 		'github-ent-credentials',
@@ -462,7 +464,6 @@ export function addCloudqueryEcsCluster(
 		},
 	);
 
-	const githubSecrets = githubAppSecrets(cloudqueryGithubCredentials);
 	const githubEnterpriseSecrets = githubAppSecrets(
 		cloudqueryGithubEnterpriseCredentials,
 	);
