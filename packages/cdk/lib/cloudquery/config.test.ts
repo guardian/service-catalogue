@@ -223,11 +223,11 @@ describe('Config generation, and converting to YAML', () => {
 	`);
 	});
 
-	it('Should create a GitHub source configuration with enterprises', () => {
+	it('Should create a GitHub source configuration with an enterprise', () => {
 		const config = githubSourceConfig({
 			tables: ['github_copilot_enterprise_usage_metrics'],
 			org: 'guardian',
-			enterprises: ['guardian'],
+			enterprise: 'guardian',
 		});
 		expect(dump(config)).toMatchInlineSnapshot(`
 		"kind: source

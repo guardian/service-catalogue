@@ -59,6 +59,7 @@ interface CloudqueryEcsClusterProps {
 	loggingStreamName: string;
 	logShippingPolicy: PolicyStatement;
 	gitHubOrg: string;
+	gitHubEnterprise: string;
 	cloudqueryApiKey: SecretsManager;
 
 	/**
@@ -86,6 +87,7 @@ export function addCloudqueryEcsCluster(
 		loggingStreamName,
 		logShippingPolicy,
 		gitHubOrg: gitHubOrgName,
+		gitHubEnterprise: gitHubEnterpriseName,
 		cloudqueryApiKey,
 		enableCloudquerySchedules,
 		enableCloudqueryOnDemandTasks,
@@ -566,7 +568,7 @@ export function addCloudqueryEcsCluster(
 			config: githubSourceConfig(
 				{
 					org: gitHubOrgName,
-					enterprises: ['guardian'],
+					enterprise: gitHubEnterpriseName,
 					tables: ['github_copilot_enterprise_usage_metrics'],
 				},
 				'incremental',
