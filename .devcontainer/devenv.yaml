@@ -7,3 +7,7 @@ modules:
 
 mounts:
   - 'source=${localEnv:HOME}/.gu/service_catalogue,target=/home/vscode/.gu/service_catalogue,type=bind,consistency=cached'
+
+forwardPorts:
+  - 3000
+  - 5432
