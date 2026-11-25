@@ -119,21 +119,21 @@ async function getAlertsForRepo(
 	}
 
 	try {
-		const alert: DependabotVulnResponse =
-			await octokit.rest.dependabot.listAlertsForRepo({
+		const alert: DependabotVulnResponse = await octokit.paginate(
+			octokit.rest.dependabot.listAlertsForRepo,
+			{
 				owner: orgName,
 				repo: repoName,
 				per_page: 100,
 				classification,
 				severity: severities,
 				state: 'open',
-				sort: 'created',
-				direction: 'asc', //retrieve oldest vulnerabilities first
-			});
+			},
+		);
 		logger.log({
-			message: `Found ${alert.data.length} Dependabot alerts for ${orgName}/${repoName}.`,
+			message: `Found ${alert.length} Dependabot alerts for ${orgName}/${repoName}.`,
 		});
-		return alert.data as Alert[];
+		return alert as Alert[];
 	} catch (error) {
 		logger.log({
 			message: `Dependabot - ${repoName}: Could not get alerts. Dependabot may not be enabled.`,
