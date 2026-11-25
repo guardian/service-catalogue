@@ -44,3 +44,16 @@ This project’s dev container relies on a few host resources, so startup can fa
 
 - Docker Desktop must be running.
 - Connect to the Guardian VPN if you want to run the local dev-environment.
+
+In IntelliJ, you can click on the cube icon in the first line of the `devcontainer.json` and choose "Create Dev Container and Mount Resources" to open a dev container.
+
+### After opening the Dev Container
+
+Run the following scripts to set up and start the dev environment with the janus credentials present, for more detail see the [dev-environment README](../packages/dev-environment/README.md):
+
+```sh
+./scripts/setup.sh
+```
+```sh
+./scripts/start.sh
+```

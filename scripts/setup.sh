@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
 set -e
+# This script sets up the local dev environment for the service-catalogue repo.
 
 # Set up text colours
 red='\033[0;31m'
