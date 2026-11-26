@@ -25913,7 +25913,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -26422,7 +26422,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -27190,7 +27190,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -27683,7 +27683,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -28180,7 +28180,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -28974,7 +28974,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -29313,7 +29313,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",
@@ -32502,7 +32502,7 @@ spec:
             "Arn",
           ],
         },
-        "Runtime": "nodejs24.x",
+        "Runtime": "nodejs26.x",
         "Tags": [
           {
             "Key": "App",

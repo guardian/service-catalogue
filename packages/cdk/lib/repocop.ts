@@ -48,7 +48,7 @@ export class Repocop {
 			memorySize: 2048,
 			monitoringConfiguration,
 			rules: [{ schedule }],
-			runtime: Runtime.NODEJS_24_X,
+			runtime: Runtime.NODEJS_26_X,
 			environment: {
 				ANGHAMMARAD_SNS_ARN: anghammaradTopic.topicArn,
 				DATABASE_HOSTNAME: cloudqueryDB.dbInstanceEndpointAddress,
@@ -118,7 +118,7 @@ function createDependencyGraphIntegratorLambda(
 		fileName: `${app}.zip`,
 		handler: 'index.handler',
 		memorySize: 1024,
-		runtime: Runtime.NODEJS_24_X,
+		runtime: Runtime.NODEJS_26_X,
 		vpc,
 		timeout: Duration.minutes(5),
 		environment: {
