@@ -73,6 +73,10 @@ interface GitHubCloudqueryTableConfig extends CloudqueryTableConfig {
 	includeArchivedRepos?: boolean;
 }
 
+type GitHubDiscoveryScope =
+	| { orgs: [string]; enterprises?: never }
+	| { enterprises: [string]; orgs?: never };
+
 interface GitHubCloudqueryTableConfigForRepository extends CloudqueryTableConfig {
 	/**
 	 * The organisation to authenticate GitHub requests against.
@@ -221,6 +225,30 @@ export function githubSourceConfig(
 	tableConfig: GitHubCloudqueryTableConfig,
 	syncMode?: SyncMode,
 ): CloudQuerySourceConfig {
+	return buildGithubSourceConfig(
+		tableConfig,
+		{ orgs: [tableConfig.org] },
+		syncMode,
+	);
+}
+
+export function githubEnterpriseSourceConfig(
+	tableConfig: GitHubCloudqueryTableConfig,
+	syncMode?: SyncMode,
+): CloudQuerySourceConfig {
+	// Omit `orgs` for enterprise syncs, as org repo discovery fails with an enterprise-only installation.
+	return buildGithubSourceConfig(
+		tableConfig,
+		{ enterprises: ['guardian'] },
+		syncMode,
+	);
+}
+
+function buildGithubSourceConfig(
+	tableConfig: GitHubCloudqueryTableConfig,
+	scope: GitHubDiscoveryScope,
+	syncMode?: SyncMode,
+): CloudQuerySourceConfig {
 	const { tables, org, includeArchivedRepos, concurrency } = tableConfig;
 
 	if (concurrency && concurrency > 100) {
@@ -245,7 +273,7 @@ export function githubSourceConfig(
 			backend_options: backendOptions('github', syncMode),
 			spec: {
 				concurrency: concurrency ?? 100, // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2026-03-10#about-secondary-rate-limits
-				orgs: [org],
+				...scope,
 				app_auth: [
 					{
 						org,

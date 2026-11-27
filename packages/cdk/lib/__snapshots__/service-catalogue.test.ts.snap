@@ -18697,7 +18697,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_code_scanning_alerts
     - github_secret_scanning_alerts
@@ -18841,7 +18841,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -19497,7 +19497,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_copilot_billing
     - github_copilot_seats
@@ -19638,7 +19638,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -20212,6 +20212,1606 @@ spec:
       },
       "Type": "AWS::IAM::Policy",
     },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsScheduledEventRuleE096256B": {
+      "Properties": {
+        "ScheduleExpression": "cron(45 4 * * ? *)",
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "PropagateTags": "TASK_DEFINITION",
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinition20547D1C",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionEventsRole3C092594",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinition20547D1C": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
+spec:
+  name: github
+  path: cloudquery/github
+  version: v17.3.3
+  tables:
+    - github_copilot_enterprise_usage_metrics
+  skip_dependent_tables: true
+  destinations:
+    - postgresql
+  backend_options:
+    table_name: cq_state_github
+    connection: '\\''@@plugins.postgresql.connection'\\''
+  spec:
+    concurrency: 100
+    enterprises:
+      - guardian
+    app_auth:
+      - org: guardian
+        private_key_path: /usr/share/cloudquery/github-private-key
+        app_id: \${file:/usr/share/cloudquery/github-app-id}
+        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+    include_archived_repos: true
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: cloudquery
+  path: cloudquery/postgresql
+  version: v8.13.0
+  write_mode: overwrite-delete-stale
+  migrate_mode: forced
+  send_sync_summary: true
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-GitHubCopilotEnterpriseMetricsAWSOTELCollector",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubCopilotEnterpriseMetrics",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "409MiB",
+              },
+              {
+                "Name": "CLOUDQUERY_LOG_LEVEL",
+                "Value": "info",
+              },
+            ],
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ArtifactsAccountId",
+                  },
+                  ".dkr.ecr.eu-west-1.",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/guardian/service-catalogue/cloudquery:test",
+                ],
+              ],
+            },
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubCopilotEnterpriseMetricsContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "GITHUB_PRIVATE_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":private-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_APP_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":app-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_INSTALLATION_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":enterprise-installation-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "CLOUDQUERY_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "cloudqueryapikeyCCF82F53",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Command": [
+              "--config=/etc/ecs/ecs-xray.yaml",
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubCopilotEnterpriseMetricsAWSOTELCollector",
+            "PortMappings": [
+              {
+                "ContainerPort": 4318,
+                "Protocol": "tcp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubCopilotEnterpriseMetrics",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionCloudquerySourceGitHubCopilotEnterpriseMetricsFirelensLogGroup48E429DB",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubCopilotEnterpriseMetricsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_copilot_enterprise_usage_metrics', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubCopilotEnterpriseMetrics",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "public.ecr.aws/docker/library/postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubCopilotEnterpriseMetricsPostgresContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "PGUSER",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGHOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGPASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionExecutionRoleA4348302",
+            "Arn",
+          ],
+        },
+        "Family": "GitHubCopilotEnterpriseMetrics",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotEnterpriseMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "servicecataloguePRODtaskGitHubCopilotEnterpriseMetrics588C15F5",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionCloudquerySourceGitHubCopilotEnterpriseMetricsFirelensLogGroup48E429DB": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotEnterpriseMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionEventsRole3C092594": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotEnterpriseMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionEventsRoleDefaultPolicyB761E7EB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinition20547D1C",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionExecutionRoleA4348302",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecataloguePRODtaskGitHubCopilotEnterpriseMetrics588C15F5",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionEventsRoleDefaultPolicyB761E7EB",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionEventsRole3C092594",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionExecutionRoleA4348302": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotEnterpriseMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionExecutionRoleDefaultPolicy4CD748E5": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:eu-west-1:",
+                    {
+                      "Ref": "ArtifactsAccountId",
+                    },
+                    ":repository/guardian/service-catalogue/cloudquery",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "githubcredentialsAF453741",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionCloudquerySourceGitHubCopilotEnterpriseMetricsFirelensLogGroup48E429DB",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionExecutionRoleDefaultPolicy4CD748E5",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubCopilotEnterpriseMetricsTaskDefinitionExecutionRoleA4348302",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceGitHubCopilotMetricsScheduledEventRuleA5A8AD88": {
+      "Properties": {
+        "ScheduleExpression": "cron(30 4 * * ? *)",
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "servicecatalogueCluster5FC34DC5",
+                "Arn",
+              ],
+            },
+            "EcsParameters": {
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsVpcConfiguration": {
+                  "AssignPublicIp": "DISABLED",
+                  "SecurityGroups": [
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresAccessSecurityGroupServicecatalogue03C78F14",
+                        "GroupId",
+                      ],
+                    },
+                  ],
+                  "Subnets": {
+                    "Ref": "PrivateSubnets",
+                  },
+                },
+              },
+              "PropagateTags": "TASK_DEFINITION",
+              "TaskCount": 1,
+              "TaskDefinitionArn": {
+                "Ref": "CloudquerySourceGitHubCopilotMetricsTaskDefinition011A437B",
+              },
+            },
+            "Id": "Target0",
+            "Input": "{}",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CloudquerySourceGitHubCopilotMetricsTaskDefinitionEventsRole8598F60B",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CloudquerySourceGitHubCopilotMetricsTaskDefinition011A437B": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "echo -n $GITHUB_PRIVATE_KEY | base64 -d > /usr/share/cloudquery/github-private-key;echo -n $GITHUB_APP_ID >  /usr/share/cloudquery/github-app-id;echo -n $GITHUB_INSTALLATION_ID >  /usr/share/cloudquery/github-installation-id;printf 'kind: source
+spec:
+  name: github
+  path: cloudquery/github
+  version: v17.3.3
+  tables:
+    - github_copilot_organization_usage_metrics
+    - github_copilot_organization_user_teams
+    - github_copilot_organization_user_usage_metrics
+  skip_dependent_tables: true
+  destinations:
+    - postgresql
+  backend_options:
+    table_name: cq_state_github
+    connection: '\\''@@plugins.postgresql.connection'\\''
+  spec:
+    concurrency: 100
+    orgs:
+      - guardian
+    app_auth:
+      - org: guardian
+        private_key_path: /usr/share/cloudquery/github-private-key
+        app_id: \${file:/usr/share/cloudquery/github-app-id}
+        installation_id: \${file:/usr/share/cloudquery/github-installation-id}
+    include_archived_repos: true
+' > /usr/share/cloudquery/source.yaml;printf 'kind: destination
+spec:
+  name: postgresql
+  registry: cloudquery
+  path: cloudquery/postgresql
+  version: v8.13.0
+  write_mode: overwrite-delete-stale
+  migrate_mode: forced
+  send_sync_summary: true
+  spec:
+    connection_string: >-
+      user=\${DB_USERNAME} password=\${DB_PASSWORD} host=\${DB_HOST} port=5432
+      dbname=postgres sslmode=verify-full
+' > /usr/share/cloudquery/destination.yaml;/app/cloudquery sync /usr/share/cloudquery/source.yaml /usr/share/cloudquery/destination.yaml --log-format json --log-console --no-log-file --log-level \${CLOUDQUERY_LOG_LEVEL}",
+            ],
+            "DependsOn": [
+              {
+                "Condition": "HEALTHY",
+                "ContainerName": "CloudquerySource-GitHubCopilotMetricsAWSOTELCollector",
+              },
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubCopilotMetrics",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Environment": [
+              {
+                "Name": "GOMEMLIMIT",
+                "Value": "1638MiB",
+              },
+              {
+                "Name": "CLOUDQUERY_LOG_LEVEL",
+                "Value": "info",
+              },
+            ],
+            "Essential": true,
+            "Image": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ArtifactsAccountId",
+                  },
+                  ".dkr.ecr.eu-west-1.",
+                  {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/guardian/service-catalogue/cloudquery:test",
+                ],
+              ],
+            },
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/usr/share/cloudquery",
+                "ReadOnly": false,
+                "SourceVolume": "config-volume",
+              },
+              {
+                "ContainerPath": "/app/.cq",
+                "ReadOnly": false,
+                "SourceVolume": "cloudquery-volume",
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubCopilotMetricsContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "GITHUB_PRIVATE_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":private-key::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_APP_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":app-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "GITHUB_INSTALLATION_ID",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "githubcredentialsAF453741",
+                      },
+                      ":org-installation-id::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_USERNAME",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_HOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "CLOUDQUERY_API_KEY",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "cloudqueryapikeyCCF82F53",
+                      },
+                      ":api-key::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            "Command": [
+              "--config=/etc/ecs/ecs-xray.yaml",
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "/healthcheck",
+              ],
+              "Interval": 5,
+              "Retries": 3,
+              "Timeout": 5,
+            },
+            "Image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.35.0",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubCopilotMetricsAWSOTELCollector",
+            "PortMappings": [
+              {
+                "ContainerPort": 4318,
+                "Protocol": "tcp",
+              },
+            ],
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Environment": [
+              {
+                "Name": "STACK",
+                "Value": "deploy",
+              },
+              {
+                "Name": "STAGE",
+                "Value": "PROD",
+              },
+              {
+                "Name": "APP",
+                "Value": "service-catalogue",
+              },
+              {
+                "Name": "GU_REPO",
+                "Value": "guardian/service-catalogue",
+              },
+              {
+                "Name": "TASK_NAME",
+                "Value": "GitHubCopilotMetrics",
+              },
+            ],
+            "Essential": true,
+            "FirelensConfiguration": {
+              "Type": "fluentbit",
+            },
+            "Image": "ghcr.io/guardian/devx-logs:2.1.0",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudquerySourceGitHubCopilotMetricsTaskDefinitionCloudquerySourceGitHubCopilotMetricsFirelensLogGroup740A1FBB",
+                },
+                "awslogs-region": "eu-west-1",
+                "awslogs-stream-prefix": "deploy/PROD/service-catalogue",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/init",
+                "ReadOnly": false,
+                "SourceVolume": "firelens-volume",
+              },
+            ],
+            "Name": "CloudquerySource-GitHubCopilotMetricsFirelens",
+            "ReadonlyRootFilesystem": true,
+          },
+          {
+            "Command": [
+              "/bin/sh",
+              "-c",
+              "psql -c "INSERT INTO cloudquery_table_frequency VALUES ('github_copilot_organization_usage_metrics', 86400000),('github_copilot_organization_user_teams', 86400000),('github_copilot_organization_user_usage_metrics', 86400000) ON CONFLICT (table_name) DO UPDATE SET frequency = 86400000"",
+            ],
+            "DockerLabels": {
+              "App": "service-catalogue",
+              "Name": "GitHubCopilotMetrics",
+              "Stack": "deploy",
+              "Stage": "PROD",
+            },
+            "EntryPoint": [
+              "",
+            ],
+            "Essential": false,
+            "Image": "public.ecr.aws/docker/library/postgres:18.3-alpine3.23@sha256:1b13c640ae11f2f165d1e89667e5862b0017baf4c80fec2fb7377d86319859ba",
+            "LogConfiguration": {
+              "LogDriver": "awsfirelens",
+              "Options": {
+                "Name": "kinesis_streams",
+                "region": "eu-west-1",
+                "retry_limit": "2",
+                "stream": {
+                  "Ref": "LoggingStreamName",
+                },
+              },
+            },
+            "Name": "CloudquerySource-GitHubCopilotMetricsPostgresContainer",
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "PGUSER",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGHOST",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              {
+                "Name": "PGPASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "CloudquerySourceGitHubCopilotMetricsTaskDefinitionExecutionRole976A83D0",
+            "Arn",
+          ],
+        },
+        "Family": "GitHubCopilotMetrics",
+        "Memory": "2048",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "servicecataloguePRODtaskGitHubCopilotMetricsBA8FB0A2",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "Name": "config-volume",
+          },
+          {
+            "Name": "cloudquery-volume",
+          },
+          {
+            "Name": "tmp-volume",
+          },
+          {
+            "Name": "firelens-volume",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "CloudquerySourceGitHubCopilotMetricsTaskDefinitionCloudquerySourceGitHubCopilotMetricsFirelensLogGroup740A1FBB": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 1,
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "CloudquerySourceGitHubCopilotMetricsTaskDefinitionEventsRole8598F60B": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubCopilotMetricsTaskDefinitionEventsRoleDefaultPolicyDE9C0939": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:RunTask",
+              "Condition": {
+                "ArnEquals": {
+                  "ecs:cluster": {
+                    "Fn::GetAtt": [
+                      "servicecatalogueCluster5FC34DC5",
+                      "Arn",
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CloudquerySourceGitHubCopilotMetricsTaskDefinition011A437B",
+              },
+            },
+            {
+              "Action": "ecs:TagResource",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecs:eu-west-1:*:task/",
+                    {
+                      "Ref": "servicecatalogueCluster5FC34DC5",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubCopilotMetricsTaskDefinitionExecutionRole976A83D0",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "servicecataloguePRODtaskGitHubCopilotMetricsBA8FB0A2",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubCopilotMetricsTaskDefinitionEventsRoleDefaultPolicyDE9C0939",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubCopilotMetricsTaskDefinitionEventsRole8598F60B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudquerySourceGitHubCopilotMetricsTaskDefinitionExecutionRole976A83D0": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Name",
+            "Value": "GitHubCopilotMetrics",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CloudquerySourceGitHubCopilotMetricsTaskDefinitionExecutionRoleDefaultPolicyA253360D": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:eu-west-1:",
+                    {
+                      "Ref": "ArtifactsAccountId",
+                    },
+                    ":repository/guardian/service-catalogue/cloudquery",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "githubcredentialsAF453741",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+              },
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "cloudqueryapikeyCCF82F53",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CloudquerySourceGitHubCopilotMetricsTaskDefinitionCloudquerySourceGitHubCopilotMetricsFirelensLogGroup740A1FBB",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ecr:eu-west-1:694911143906:repository/aws-guardduty-agent-fargate",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudquerySourceGitHubCopilotMetricsTaskDefinitionExecutionRoleDefaultPolicyA253360D",
+        "Roles": [
+          {
+            "Ref": "CloudquerySourceGitHubCopilotMetricsTaskDefinitionExecutionRole976A83D0",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "CloudquerySourceGitHubIssuesScheduledEventRuleAF7C253C": {
       "Properties": {
         "ScheduleExpression": "cron(45 3 * * ? *)",
@@ -20584,7 +22184,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_issues
   skip_dependent_tables: true
@@ -20727,7 +22327,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -21262,7 +22862,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -21884,7 +23484,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_releases
   skip_dependent_tables: true
@@ -22023,7 +23623,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -22679,7 +24279,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_repositories
     - github_repository_branches
@@ -22824,7 +24424,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -23480,7 +25080,7 @@ spec:
 spec:
   name: github
   path: cloudquery/github
-  version: v15.2.0
+  version: v17.3.3
   tables:
     - github_organization_members
     - github_organizations
@@ -23625,7 +25225,7 @@ spec:
                       {
                         "Ref": "githubcredentialsAF453741",
                       },
-                      ":installation-id::",
+                      ":org-installation-id::",
                     ],
                   ],
                 },
@@ -36613,6 +38213,260 @@ spec:
         "Roles": [
           {
             "Ref": "servicecataloguePRODtaskGitHubCopilotBilling27C5A61D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "servicecataloguePRODtaskGitHubCopilotEnterpriseMetrics588C15F5": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-GitHubCopilotEnterpriseMetrics",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskGitHubCopilotEnterpriseMetricsDefaultPolicyE6D2746C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "servicecataloguePRODtaskGitHubCopilotEnterpriseMetricsDefaultPolicyE6D2746C",
+        "Roles": [
+          {
+            "Ref": "servicecataloguePRODtaskGitHubCopilotEnterpriseMetrics588C15F5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "servicecataloguePRODtaskGitHubCopilotMetricsBA8FB0A2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AWSXrayWriteOnlyAccess",
+              ],
+            ],
+          },
+        ],
+        "RoleName": "service-catalogue-PROD-task-GitHubCopilotMetrics",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/service-catalogue",
+          },
+          {
+            "Key": "gu:riff-raff:project",
+            "Value": "deploy::service-catalogue",
+          },
+          {
+            "Key": "Stack",
+            "Value": "deploy",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "servicecataloguePRODtaskGitHubCopilotMetricsDefaultPolicyC1114CC1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:Describe*",
+                "kinesis:Put*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kinesis:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stream/",
+                    {
+                      "Ref": "LoggingStreamName",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "rds-db:connect",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":rds-db:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dbuser:",
+                    {
+                      "Fn::GetAtt": [
+                        "PostgresInstance16DE4286E",
+                        "DbiResourceId",
+                      ],
+                    },
+                    "/{{resolve:secretsmanager:",
+                    {
+                      "Ref": "PostgresInstance1SecretAttachmentBA0D257D",
+                    },
+                    ":SecretString:username::}}",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "servicecataloguePRODtaskGitHubCopilotMetricsDefaultPolicyC1114CC1",
+        "Roles": [
+          {
+            "Ref": "servicecataloguePRODtaskGitHubCopilotMetricsBA8FB0A2",
           },
         ],
       },

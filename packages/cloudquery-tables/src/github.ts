@@ -4,6 +4,10 @@
 export const githubTables = [
 	'github_code_scanning_alerts',
 	'github_copilot_billing',
+	'github_copilot_enterprise_usage_metrics',
+	'github_copilot_organization_usage_metrics',
+	'github_copilot_organization_user_teams',
+	'github_copilot_organization_user_usage_metrics',
 	'github_copilot_seats',
 	'github_issues',
 	'github_organization_members',
