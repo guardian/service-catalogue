@@ -28,6 +28,7 @@ import {
 	endOfLifeSourceConfig,
 	fastlySourceConfig,
 	galaxiesSourceConfig,
+	githubEnterpriseSourceConfig,
 	githubLanguagesConfig,
 	githubSourceConfig,
 	githubSourceConfigForRepository,
@@ -451,7 +452,23 @@ export function addCloudqueryEcsCluster(
 		),
 		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
 			cloudqueryGithubCredentials,
-			'installation-id',
+			'org-installation-id',
+		),
+	};
+
+	// The same app is installed on the org and the enterprise, each with its own installation ID.
+	const githubEnterpriseSecrets: Record<string, Secret> = {
+		GITHUB_PRIVATE_KEY: Secret.fromSecretsManager(
+			cloudqueryGithubCredentials,
+			'private-key',
+		),
+		GITHUB_APP_ID: Secret.fromSecretsManager(
+			cloudqueryGithubCredentials,
+			'app-id',
+		),
+		GITHUB_INSTALLATION_ID: Secret.fromSecretsManager(
+			cloudqueryGithubCredentials,
+			'enterprise-installation-id',
 		),
 	};
 
@@ -529,6 +546,41 @@ export function addCloudqueryEcsCluster(
 			secrets: githubSecrets,
 			additionalCommands: additionalGithubCommands,
 			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubCopilotMetrics',
+			description:
+				'Collect GitHub Copilot usage metrics for the organisation, users and teams',
+			schedule: Schedule.cron({ hour: '4', minute: '30' }),
+			config: githubSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: [
+						'github_copilot_organization_usage_metrics',
+						// Join these two on (org, user_id, day) for team-level metrics
+						'github_copilot_organization_user_teams',
+						'github_copilot_organization_user_usage_metrics',
+					],
+				},
+				'incremental',
+			),
+			secrets: githubSecrets,
+			additionalCommands: additionalGithubCommands,
+			memoryLimitMiB: 2048,
+		},
+		{
+			name: 'GitHubCopilotEnterpriseMetrics',
+			description: 'Collect GitHub Copilot usage metrics for the enterprise',
+			schedule: Schedule.cron({ hour: '4', minute: '45' }),
+			config: githubEnterpriseSourceConfig(
+				{
+					org: gitHubOrgName,
+					tables: ['github_copilot_enterprise_usage_metrics'],
+				},
+				'incremental',
+			),
+			secrets: githubEnterpriseSecrets,
+			additionalCommands: additionalGithubCommands,
 		},
 		{
 			name: 'GitHubReleases',
